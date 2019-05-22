@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { WorldView } from 'react-native-magic-script-components';
+import { Scene3dView } from 'react-native-scene3d';
 
 export default class App extends React.Component {
   render() {
     return (
-      <WorldView showStatistics={true} style={styles.container}>
+      <Scene3dView showStatistics={true} style={styles.container}>
         <Text>Sample</Text>
-      </WorldView>
+      </Scene3dView>
     );
   }
 }

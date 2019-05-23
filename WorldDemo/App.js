@@ -15,9 +15,10 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.titleText}>Sample React Native App</Text>
+        <Text style={styles.headerText}>Sample React Native App</Text>
         <Scene3dView showStatistics={true} style={styles.scene3d}>
-          <Text>Sample</Text>
+          <Text style={styles.sceneTitle}>Scene 3d view</Text>
+          {/* <ml_text>3d text</ml_text> */}
         </Scene3dView>
         <View style={styles.footer}>
           <Text style={styles.footerText}>Render debug nodes</Text>
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  titleText: {
+  headerText: {
     color: 'black',
     fontSize: 20,
     fontWeight: '900',
@@ -49,10 +50,18 @@ const styles = StyleSheet.create({
     lineHeight: 41,
     marginTop: 44,
   },
+  sceneTitle: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '700',
+    fontStyle: 'normal',
+    fontFamily: 'System',
+    marginTop: 10,
+  },
   scene3d: {
     flex: 1,
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#555555',
   },

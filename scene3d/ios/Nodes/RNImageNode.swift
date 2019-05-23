@@ -1,0 +1,44 @@
+//
+//  RNImageNode.swift
+//  SceneKitDemo
+//
+//  Created by Pawel Leszkiewicz on 23/05/2019.
+//  Copyright © 2019 Nomtek. All rights reserved.
+//
+
+import SceneKit
+
+@objc class RNImageNode: SCNNode {
+
+    @objc var image: UIImage? {
+        get { return planeGeometry.materials.first?.diffuse.contents as? UIImage }
+        set { planeGeometry.materials.first?.diffuse.contents = newValue }
+    }
+    
+    @objc var width: CGFloat {
+        get { return planeGeometry.width }
+        set { planeGeometry.width = newValue }
+    }
+
+    @objc var height: CGFloat  {
+        get { return planeGeometry.height }
+        set { planeGeometry.height = newValue }
+    }
+
+    fileprivate var planeGeometry: SCNPlane!
+
+    @objc override init() {
+        super.init()
+        setupNode()
+    }
+
+    @objc required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupNode()
+    }
+
+    fileprivate func setupNode() {
+        planeGeometry = SCNPlane(width: 1, height: 1)
+        addChildNode(SCNNode(geometry: planeGeometry))
+    }
+}

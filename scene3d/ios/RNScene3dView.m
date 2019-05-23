@@ -8,6 +8,7 @@
 
 #import "RNScene3dView.h"
 #import <SceneKit/SceneKit.h>
+#import "RNScene3d-Swift.h"
 
 @interface RNScene3dView ()
 
@@ -40,11 +41,6 @@
     return _scnView.showsStatistics;
 }
 
-- (void)addSubview:(UIView *)view {
-    [super addSubview:view];
-    NSLog(@"addSubview: %@", view);
-}
-
 - (SCNScene *)createScene {
     // create a new scene
     SCNScene *scene = [SCNScene new];
@@ -54,12 +50,21 @@
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
 
+    cameraNode.position = SCNVector3Make(0, 0, 15);
+
     const float boxSize = 1.f;
     SCNBox *box = [SCNBox boxWithWidth:boxSize height:boxSize length:boxSize chamferRadius:0.f];
     SCNNode *boxNode = [SCNNode nodeWithGeometry:box];
+    boxNode.position = SCNVector3Make(0, -2, 0);
     [scene.rootNode addChildNode:boxNode];
 
-    cameraNode.position = SCNVector3Make(0, 0, 15);
+    RNTextNode *textNode = [RNTextNode new];
+    textNode.text = @"abc";
+    [scene.rootNode addChildNode:textNode];
+
+    RNButtonNode *buttonNode = [RNButtonNode new];
+    buttonNode.title = @"button";
+    [scene.rootNode addChildNode:buttonNode];
 
     return scene;
 }

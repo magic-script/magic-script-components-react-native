@@ -10,6 +10,9 @@
 		44437D4522958DD600EF1F42 /* RNScene3dView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44437D4122958DD600EF1F42 /* RNScene3dView.m */; };
 		44437DC62296992500EF1F42 /* RNScene3dViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44437DC52296992500EF1F42 /* RNScene3dViewManager.m */; };
 		44437DF422969CAB00EF1F42 /* RNScene3dBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 44437DF322969CAB00EF1F42 /* RNScene3dBridge.m */; };
+		44437E162296BDA400EF1F42 /* RNTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E152296BDA400EF1F42 /* RNTextNode.swift */; };
+		44437E4822974C8300EF1F42 /* RNButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E4622974C8300EF1F42 /* RNButtonNode.swift */; };
+		44437E4922974C8300EF1F42 /* RNImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E4722974C8300EF1F42 /* RNImageNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +35,10 @@
 		44437DC52296992500EF1F42 /* RNScene3dViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNScene3dViewManager.m; sourceTree = "<group>"; };
 		44437DF222969CAB00EF1F42 /* RNScene3dBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNScene3dBridge.h; sourceTree = "<group>"; };
 		44437DF322969CAB00EF1F42 /* RNScene3dBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNScene3dBridge.m; sourceTree = "<group>"; };
+		44437E112296BB7C00EF1F42 /* RNScene3d-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNScene3d-Bridging-Header.h"; sourceTree = "<group>"; };
+		44437E152296BDA400EF1F42 /* RNTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNTextNode.swift; sourceTree = "<group>"; };
+		44437E4622974C8300EF1F42 /* RNButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNButtonNode.swift; sourceTree = "<group>"; };
+		44437E4722974C8300EF1F42 /* RNImageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNImageNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,15 +60,27 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		44437E142296BDA400EF1F42 /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				44437E4622974C8300EF1F42 /* RNButtonNode.swift */,
+				44437E4722974C8300EF1F42 /* RNImageNode.swift */,
+				44437E152296BDA400EF1F42 /* RNTextNode.swift */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				44437E142296BDA400EF1F42 /* Nodes */,
 				44437DF222969CAB00EF1F42 /* RNScene3dBridge.h */,
 				44437DF322969CAB00EF1F42 /* RNScene3dBridge.m */,
 				44437DC42296992500EF1F42 /* RNScene3dViewManager.h */,
 				44437DC52296992500EF1F42 /* RNScene3dViewManager.m */,
 				44437D4222958DD600EF1F42 /* RNScene3dView.h */,
 				44437D4122958DD600EF1F42 /* RNScene3dView.m */,
+				44437E112296BB7C00EF1F42 /* RNScene3d-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +116,7 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -124,7 +144,10 @@
 			files = (
 				44437D4522958DD600EF1F42 /* RNScene3dView.m in Sources */,
 				44437DC62296992500EF1F42 /* RNScene3dViewManager.m in Sources */,
+				44437E162296BDA400EF1F42 /* RNTextNode.swift in Sources */,
 				44437DF422969CAB00EF1F42 /* RNScene3dBridge.m in Sources */,
+				44437E4822974C8300EF1F42 /* RNButtonNode.swift in Sources */,
+				44437E4922974C8300EF1F42 /* RNImageNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +157,7 @@
 		58B511ED1A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -151,6 +175,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -178,6 +203,7 @@
 		58B511EE1A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -195,6 +221,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -215,32 +242,41 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNScene3d;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNScene3d-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNScene3d;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNScene3d-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

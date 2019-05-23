@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "16.8.3",
     "react-native": "0.59.8",
-    "react-native-magic-script-components": "file:../magic-script-components"
+    "react-native-scene3d": "file:../scene3d"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",

@@ -5,7 +5,7 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
-@interface RNScene3d : NSObject <RCTBridgeModule>
+@interface RNScene3dBridge : NSObject <RCTBridgeModule>
 
 @end
   

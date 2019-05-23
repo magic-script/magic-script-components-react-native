@@ -1,7 +1,7 @@
 
-#import "RNScene3d.h"
+#import "RNScene3dBridge.h"
 
-@implementation RNScene3d
+@implementation RNScene3dBridge
 
 - (dispatch_queue_t)methodQueue
 {

@@ -36,7 +36,7 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* WorldDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* WorldDemoTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
-		44437DB622958E5C00EF1F42 /* libRNScene3d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44437DB522958E4D00EF1F42 /* libRNScene3d.a */; };
+		44437DF522969CC100EF1F42 /* libRNScene3d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44437DF122969C9200EF1F42 /* libRNScene3d.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
@@ -282,9 +282,9 @@
 			remoteGlobalIDString = ED296FEE214C9CF800B7C4FE;
 			remoteInfo = "jsiexecutor-tvOS";
 		};
-		44437DB422958E4D00EF1F42 /* PBXContainerItemProxy */ = {
+		44437DF022969C9200EF1F42 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 44437DB022958E4D00EF1F42 /* RNScene3d.xcodeproj */;
+			containerPortal = 44437DEC22969C9200EF1F42 /* RNScene3d.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNScene3d;
@@ -349,7 +349,7 @@
 		2D02E47B1E0B4A5D006451C7 /* WorldDemo-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WorldDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* WorldDemo-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WorldDemo-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		44437DB022958E4D00EF1F42 /* RNScene3d.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNScene3d.xcodeproj; path = "../node_modules/react-native-scene3d/ios/RNScene3d.xcodeproj"; sourceTree = "<group>"; };
+		44437DEC22969C9200EF1F42 /* RNScene3d.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNScene3d.xcodeproj; path = ../../scene3d/ios/RNScene3d.xcodeproj; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -371,7 +371,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44437DB622958E5C00EF1F42 /* libRNScene3d.a in Frameworks */,
+				44437DF522969CC100EF1F42 /* libRNScene3d.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -541,10 +541,10 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		44437DB122958E4D00EF1F42 /* Products */ = {
+		44437DED22969C9200EF1F42 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				44437DB522958E4D00EF1F42 /* libRNScene3d.a */,
+				44437DF122969C9200EF1F42 /* libRNScene3d.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -570,7 +570,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				44437DB022958E4D00EF1F42 /* RNScene3d.xcodeproj */,
+				44437DEC22969C9200EF1F42 /* RNScene3d.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -790,8 +790,8 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = 44437DB122958E4D00EF1F42 /* Products */;
-					ProjectRef = 44437DB022958E4D00EF1F42 /* RNScene3d.xcodeproj */;
+					ProductGroup = 44437DED22969C9200EF1F42 /* Products */;
+					ProjectRef = 44437DEC22969C9200EF1F42 /* RNScene3d.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1029,11 +1029,11 @@
 			remoteRef = 443F30CD2292B007002CDD97 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		44437DB522958E4D00EF1F42 /* libRNScene3d.a */ = {
+		44437DF122969C9200EF1F42 /* libRNScene3d.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNScene3d.a;
-			remoteRef = 44437DB422958E4D00EF1F42 /* PBXContainerItemProxy */;
+			remoteRef = 44437DF022969C9200EF1F42 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {

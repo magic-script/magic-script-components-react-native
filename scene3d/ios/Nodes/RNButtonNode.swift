@@ -41,11 +41,6 @@ import SceneKit
     }
 
     fileprivate func setupNode() {
-        borderGeometry = SCNRectangle(rect: CGRect(origin: CGPoint.zero, size: CGSize(width: 2, height: 1)), thickness: 0.075)
-        borderGeometry.materials.first?.diffuse.contents = borderNode
-        borderNode = SCNNode(geometry: borderGeometry)
-        addChildNode(borderNode)
-
         textNode = RNTextNode()
         textNode.color = color
         addChildNode(textNode)
@@ -56,9 +51,10 @@ import SceneKit
     fileprivate func updateNodeSize() {
         textNode.size = CGSize(width: size.width, height: size.height)
 
-        borderNode.removeFromParentNode()
+        borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
-        borderGeometry = SCNRectangle(rect: rect, thickness: 0.075)
+        let radius: CGFloat = 0.5 * min(rect.width, rect.height)
+        borderGeometry = SCNRectangle(rect: rect, thickness: 0.07, radius: radius)
         borderGeometry.materials.first?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
         addChildNode(borderNode)

@@ -12,7 +12,7 @@
 
 @interface RNScene3dView ()
 
-@property(strong, nonatomic) SCNView *scnView;
+@property(strong, nonatomic) SCNView *sceneView;
 @property(assign, nonatomic) BOOL showStatistics;
 
 @end
@@ -21,24 +21,39 @@
 
 - (instancetype)init {
     self = [super init];
-    _scnView = [self createSceneView:0.f];
+    _sceneView = [self createSceneView:0.f];
+    [self setupComponents];
     return self;
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
-    _scnView.backgroundColor = backgroundColor;
+    _sceneView.backgroundColor = backgroundColor;
 }
 
 - (UIColor *)backgroundColor {
-    return _scnView.backgroundColor;
+    return _sceneView.backgroundColor;
 }
 
 - (void)setShowStatistics:(BOOL)showStatistics {
-    _scnView.showsStatistics = showStatistics;
+    _sceneView.showsStatistics = showStatistics;
 }
 
 - (BOOL)showStatistics {
-    return _scnView.showsStatistics;
+    return _sceneView.showsStatistics;
+}
+
+- (SCNView *)createSceneView:(CGFloat)inset {
+    SCNView *scnView = [[SCNView alloc] init];
+    scnView.scene = [self createScene];
+    scnView.allowsCameraControl = YES;
+    scnView.showsStatistics = YES;
+    scnView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:scnView];
+    [scnView.leftAnchor constraintEqualToAnchor:self.leftAnchor constant:inset].active = YES;
+    [scnView.topAnchor constraintEqualToAnchor:self.topAnchor constant:inset].active = YES;
+    [scnView.rightAnchor constraintEqualToAnchor:self.rightAnchor constant:-inset].active = YES;
+    [scnView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-inset].active = YES;
+    return scnView;
 }
 
 - (SCNScene *)createScene {
@@ -52,35 +67,39 @@
 
     cameraNode.position = SCNVector3Make(0, 0, 15);
 
-    const float boxSize = 1.f;
-    SCNBox *box = [SCNBox boxWithWidth:boxSize height:boxSize length:boxSize chamferRadius:0.f];
-    SCNNode *boxNode = [SCNNode nodeWithGeometry:box];
-    boxNode.position = SCNVector3Make(0, -2, 0);
-    [scene.rootNode addChildNode:boxNode];
-
-    RNTextNode *textNode = [RNTextNode new];
-    textNode.text = @"abc";
-    [scene.rootNode addChildNode:textNode];
-
-    RNButtonNode *buttonNode = [RNButtonNode new];
-    buttonNode.title = @"button";
-    [scene.rootNode addChildNode:buttonNode];
-
     return scene;
 }
 
-- (SCNView *)createSceneView:(CGFloat)inset {
-    SCNView *sceneView = [[SCNView alloc] init];
-    sceneView.scene = [self createScene];
-    sceneView.allowsCameraControl = YES;
-    sceneView.showsStatistics = YES;
-    sceneView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:sceneView];
-    [sceneView.leftAnchor constraintEqualToAnchor:self.leftAnchor constant:inset].active = YES;
-    [sceneView.topAnchor constraintEqualToAnchor:self.topAnchor constant:inset].active = YES;
-    [sceneView.rightAnchor constraintEqualToAnchor:self.rightAnchor constant:-inset].active = YES;
-    [sceneView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-inset].active = YES;
-    return sceneView;
+- (void)setupComponents {
+
+    SCNScene *scene = self.sceneView.scene;
+
+    SCNSphere *sphere = [SCNSphere sphereWithRadius:0.05f];
+    sphere.firstMaterial.diffuse.contents = [UIColor yellowColor];
+    SCNNode *sphereNode = [SCNNode nodeWithGeometry:sphere];
+    sphereNode.position = SCNVector3Make(0, 0, 0.1f);
+    [scene.rootNode addChildNode:sphereNode];
+
+    // Text node
+    RNTextNode *textNode = [RNTextNode new];
+    textNode.text = @"abc";
+    textNode.size = CGSizeMake(1.f, 1.f);
+    [scene.rootNode addChildNode:textNode];
+
+    // Image node
+    RNImageNode *imageNode = [RNImageNode new];
+    imageNode.size = CGSizeMake(2.f, 2.f);
+    imageNode.image = [UIImage imageNamed: @"sample_image"];
+    imageNode.position = SCNVector3Make(-2, 0, 0);
+    [scene.rootNode addChildNode:imageNode];
+
+    RNButtonNode *buttonNode = [RNButtonNode new];
+    buttonNode.title = @"Button";
+    buttonNode.size = CGSizeMake(2.f, 1.f);
+    buttonNode.color = [UIColor yellowColor];
+    buttonNode.position = SCNVector3Make(2, 0, 0);
+    [scene.rootNode addChildNode:buttonNode];
+    textNode.text = @"wxyz";
 }
 
 @end

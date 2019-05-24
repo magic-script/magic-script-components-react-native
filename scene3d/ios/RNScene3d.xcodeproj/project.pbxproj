@@ -13,6 +13,13 @@
 		44437E162296BDA400EF1F42 /* RNTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E152296BDA400EF1F42 /* RNTextNode.swift */; };
 		44437E4822974C8300EF1F42 /* RNButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E4622974C8300EF1F42 /* RNButtonNode.swift */; };
 		44437E4922974C8300EF1F42 /* RNImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437E4722974C8300EF1F42 /* RNImageNode.swift */; };
+		44437EB022982B1100EF1F42 /* SCNBBoxNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EA922982B1000EF1F42 /* SCNBBoxNode.swift */; };
+		44437EB122982B1100EF1F42 /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAA22982B1000EF1F42 /* SCNRectangle.swift */; };
+		44437EB222982B1100EF1F42 /* SCNNode+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAB22982B1000EF1F42 /* SCNNode+Debug.swift */; };
+		44437EB322982B1100EF1F42 /* Maths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAC22982B1000EF1F42 /* Maths.swift */; };
+		44437EB422982B1100EF1F42 /* SCNQuaternionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAD22982B1000EF1F42 /* SCNQuaternionExtension.swift */; };
+		44437EB522982B1100EF1F42 /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAE22982B1000EF1F42 /* SCNMatrix4Extension.swift */; };
+		44437EB622982B1100EF1F42 /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437EAF22982B1000EF1F42 /* SCNVector3Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +46,13 @@
 		44437E152296BDA400EF1F42 /* RNTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNTextNode.swift; sourceTree = "<group>"; };
 		44437E4622974C8300EF1F42 /* RNButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNButtonNode.swift; sourceTree = "<group>"; };
 		44437E4722974C8300EF1F42 /* RNImageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNImageNode.swift; sourceTree = "<group>"; };
+		44437EA922982B1000EF1F42 /* SCNBBoxNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNBBoxNode.swift; sourceTree = "<group>"; };
+		44437EAA22982B1000EF1F42 /* SCNRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNRectangle.swift; sourceTree = "<group>"; };
+		44437EAB22982B1000EF1F42 /* SCNNode+Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Debug.swift"; sourceTree = "<group>"; };
+		44437EAC22982B1000EF1F42 /* Maths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maths.swift; sourceTree = "<group>"; };
+		44437EAD22982B1000EF1F42 /* SCNQuaternionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtension.swift; sourceTree = "<group>"; };
+		44437EAE22982B1000EF1F42 /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
+		44437EAF22982B1000EF1F42 /* SCNVector3Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,11 +77,26 @@
 		44437E142296BDA400EF1F42 /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				44437EA822982B1000EF1F42 /* Utils */,
 				44437E4622974C8300EF1F42 /* RNButtonNode.swift */,
 				44437E4722974C8300EF1F42 /* RNImageNode.swift */,
 				44437E152296BDA400EF1F42 /* RNTextNode.swift */,
 			);
 			path = Nodes;
+			sourceTree = "<group>";
+		};
+		44437EA822982B1000EF1F42 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				44437EA922982B1000EF1F42 /* SCNBBoxNode.swift */,
+				44437EAA22982B1000EF1F42 /* SCNRectangle.swift */,
+				44437EAB22982B1000EF1F42 /* SCNNode+Debug.swift */,
+				44437EAC22982B1000EF1F42 /* Maths.swift */,
+				44437EAD22982B1000EF1F42 /* SCNQuaternionExtension.swift */,
+				44437EAE22982B1000EF1F42 /* SCNMatrix4Extension.swift */,
+				44437EAF22982B1000EF1F42 /* SCNVector3Extension.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		58B511D21A9E6C8500147676 = {
@@ -145,8 +174,15 @@
 				44437D4522958DD600EF1F42 /* RNScene3dView.m in Sources */,
 				44437DC62296992500EF1F42 /* RNScene3dViewManager.m in Sources */,
 				44437E162296BDA400EF1F42 /* RNTextNode.swift in Sources */,
+				44437EB322982B1100EF1F42 /* Maths.swift in Sources */,
 				44437DF422969CAB00EF1F42 /* RNScene3dBridge.m in Sources */,
+				44437EB022982B1100EF1F42 /* SCNBBoxNode.swift in Sources */,
 				44437E4822974C8300EF1F42 /* RNButtonNode.swift in Sources */,
+				44437EB622982B1100EF1F42 /* SCNVector3Extension.swift in Sources */,
+				44437EB222982B1100EF1F42 /* SCNNode+Debug.swift in Sources */,
+				44437EB422982B1100EF1F42 /* SCNQuaternionExtension.swift in Sources */,
+				44437EB122982B1100EF1F42 /* SCNRectangle.swift in Sources */,
+				44437EB522982B1100EF1F42 /* SCNMatrix4Extension.swift in Sources */,
 				44437E4922974C8300EF1F42 /* RNImageNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

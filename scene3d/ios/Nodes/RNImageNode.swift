@@ -15,14 +15,9 @@ import SceneKit
         set { planeGeometry.materials.first?.diffuse.contents = newValue }
     }
     
-    @objc var width: CGFloat {
-        get { return planeGeometry.width }
-        set { planeGeometry.width = newValue }
-    }
-
-    @objc var height: CGFloat  {
-        get { return planeGeometry.height }
-        set { planeGeometry.height = newValue }
+    @objc var size: CGSize {
+        get { return CGSize(width: planeGeometry.width, height: planeGeometry.height) }
+        set { planeGeometry.width = newValue.width; planeGeometry.height = newValue.height; updateImageSize() }
     }
 
     fileprivate var planeGeometry: SCNPlane!
@@ -40,5 +35,10 @@ import SceneKit
     fileprivate func setupNode() {
         planeGeometry = SCNPlane(width: 1, height: 1)
         addChildNode(SCNNode(geometry: planeGeometry))
+        updateImageSize()
+    }
+
+    fileprivate func updateImageSize() {
+        setBBox(visible: true, forceUpdate: true)
     }
 }

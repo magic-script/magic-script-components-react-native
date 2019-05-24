@@ -15,21 +15,20 @@ import SceneKit
         set { textNode.text = newValue }
     }
 
-    @objc var size: CGSize = CGSize(width: 2, height: 0.8) {
+    @objc var size: CGSize = CGSize(width: 2, height: 1) {
         didSet { updateNodeSize() }
     }
 
     @objc var color: UIColor = UIColor.blue {
         didSet {
             textNode.color = color
-            shapeGeometry.materials.first?.diffuse.contents = color
+            borderGeometry.materials.first?.diffuse.contents = color
         }
     }
 
-    fileprivate var shapeGeometry: SCNShape!
-    fileprivate var shapeNode: SCNNode!
+    fileprivate var borderGeometry: SCNRectangle!
+    fileprivate var borderNode: SCNNode!
     fileprivate var textNode: RNTextNode!
-
 
     @objc override init() {
         super.init()
@@ -42,13 +41,13 @@ import SceneKit
     }
 
     fileprivate func setupNode() {
-        shapeGeometry = SCNShape(path: nil, extrusionDepth: 0)
-        shapeGeometry.materials.first?.diffuse.contents = color
-        shapeNode = SCNNode(geometry: shapeGeometry)
-        addChildNode(shapeNode)
+        borderGeometry = SCNRectangle(rect: CGRect(origin: CGPoint.zero, size: CGSize(width: 2, height: 1)), thickness: 0.075)
+        borderGeometry.materials.first?.diffuse.contents = borderNode
+        borderNode = SCNNode(geometry: borderGeometry)
+        addChildNode(borderNode)
 
         textNode = RNTextNode()
-        textNode.color = UIColor.white
+        textNode.color = color
         addChildNode(textNode)
 
         updateNodeSize()
@@ -56,12 +55,15 @@ import SceneKit
 
     fileprivate func updateNodeSize() {
         textNode.size = CGSize(width: size.width, height: size.height)
-//        textNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0.001)
-        textNode.position = SCNVector3(-size.width / 3, -size.height, 0.001)
-        let rect: CGRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        let bezierPath = UIBezierPath(rect: rect)
-        shapeGeometry.path = bezierPath
-        shapeNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0)
+
+        borderNode.removeFromParentNode()
+        let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
+        borderGeometry = SCNRectangle(rect: rect, thickness: 0.075)
+        borderGeometry.materials.first?.diffuse.contents = color
+        borderNode = SCNNode(geometry: borderGeometry)
+        addChildNode(borderNode)
+
+        borderNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0)
     }
 }
 

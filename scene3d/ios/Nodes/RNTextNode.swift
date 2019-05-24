@@ -12,12 +12,12 @@ import SceneKit
 
     @objc var text: String? {
         get { return textGeometry.string as? String }
-        set { textGeometry.string = newValue }
+        set { textGeometry.string = newValue; updateTextNodePosition() }
     }
 
     @objc var font: UIFont {
         get { return textGeometry.font }
-        set { textGeometry.font = newValue }
+        set { textGeometry.font = newValue; updateTextNodePosition() }
     }
 
     @objc var color: UIColor? {
@@ -29,12 +29,13 @@ import SceneKit
         get { return textGeometry.containerFrame.size }
         set {
             textGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: newValue)
-            updateTextNodePoisition()
+            updateTextNodePosition()
         }
     }
     
     fileprivate var textGeometry: SCNText!
     fileprivate var textNode: SCNNode!
+    fileprivate var bboxNode: SCNBBoxNode?
 
     override init() {
         super.init()
@@ -53,16 +54,20 @@ import SceneKit
         textGeometry.flatness = 0.5
         textGeometry.materials.first?.diffuse.contents = UIColor.white
         textNode = SCNNode(geometry: textGeometry)
+        textNode.position = SCNVector3()
         addChildNode(textNode)
     }
 
-    fileprivate func updateTextNodePoisition() {
-        let frameSize = size
-        let textBBox = textGeometry.boundingBox
-        let textSize = CGSize(width: CGFloat(textBBox.max.x - textBBox.min.x), height: CGFloat(textBBox.max.y - textBBox.min.y))
+    fileprivate func updateTextNodePosition() {
+        let textBBox = textNode.boundingBox
+        let textBBoxCenter: SCNVector3 = 0.5 * (textBBox.max + textBBox.min)
+        textNode.pivot = SCNMatrix4MakeTranslation(textBBoxCenter.x, textBBoxCenter.y, textBBoxCenter.z)
 
-        let x: CGFloat = -frameSize.width / 2 + 0.5 * (frameSize.width - textSize.width)
-        let y: CGFloat = -frameSize.height / 2 + 0.5 * (frameSize.height - textSize.height)
-        textNode.position = SCNVector3(x, y, 0)
+//        let frameSize = size
+//        bboxNode?.removeFromParentNode()
+//        bboxNode = SCNBBoxNode((min: SCNVector3(-0.5 * frameSize.width, -0.5 * frameSize.height, 0), max: SCNVector3(0.5 * frameSize.width, 0.5 * frameSize.height, 0)))
+//        addChildNode(bboxNode!)
+
+//        setBBox(visible: true, forceUpdate: true)
     }
 }

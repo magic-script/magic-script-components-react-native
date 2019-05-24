@@ -73,23 +73,32 @@
 
     SCNScene *scene = self.sceneView.scene;
 
+    SCNSphere *sphere = [SCNSphere sphereWithRadius:0.05f];
+    sphere.firstMaterial.diffuse.contents = [UIColor yellowColor];
+    SCNNode *sphereNode = [SCNNode nodeWithGeometry:sphere];
+    sphereNode.position = SCNVector3Make(0, 0, 0.1f);
+    [scene.rootNode addChildNode:sphereNode];
+
     // Text node
     RNTextNode *textNode = [RNTextNode new];
     textNode.text = @"abc";
+    textNode.size = CGSizeMake(1.f, 1.f);
     [scene.rootNode addChildNode:textNode];
 
     // Image node
     RNImageNode *imageNode = [RNImageNode new];
-    imageNode.width = 2;
-    imageNode.height = 2;
+    imageNode.size = CGSizeMake(2.f, 2.f);
     imageNode.image = [UIImage imageNamed: @"sample_image"];
     imageNode.position = SCNVector3Make(-2, 0, 0);
     [scene.rootNode addChildNode:imageNode];
 
     RNButtonNode *buttonNode = [RNButtonNode new];
     buttonNode.title = @"Button";
-    buttonNode.position = SCNVector3Make(1, 0, 0);
+    buttonNode.size = CGSizeMake(2.f, 1.f);
+    buttonNode.color = [UIColor yellowColor];
+    buttonNode.position = SCNVector3Make(2, 0, 0);
     [scene.rootNode addChildNode:buttonNode];
+    textNode.text = @"wxyz";
 }
 
 - (BOOL)shouldAutorotate

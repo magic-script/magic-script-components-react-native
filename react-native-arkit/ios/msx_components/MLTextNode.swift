@@ -60,9 +60,13 @@ import SceneKit
     }
 
     fileprivate func updateTextNodePosition() {
-        let textBBox = textNode.boundingBox
-        let textBBoxCenter: SCNVector3 = 0.5 * (textBBox.max + textBBox.min)
-        textNode.pivot = SCNMatrix4MakeTranslation(textBBoxCenter.x, textBBoxCenter.y, textBBoxCenter.z)
+
+        DispatchQueue.main.async() { [weak self] in
+            guard let strongSelf = self else { return }
+            let textBBox = strongSelf.textNode.boundingBox
+            let textBBoxCenter: SCNVector3 = 0.5 * (textBBox.max + textBBox.min)
+            strongSelf.textNode.pivot = SCNMatrix4MakeTranslation(textBBoxCenter.x, textBBoxCenter.y, textBBoxCenter.z)
+        }
 
 //        let frameSize = size
 //        bboxNode?.removeFromParentNode()

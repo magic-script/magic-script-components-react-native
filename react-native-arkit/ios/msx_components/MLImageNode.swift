@@ -34,6 +34,7 @@ import SceneKit
 
     fileprivate func setupNode() {
         planeGeometry = SCNPlane(width: 1, height: 1)
+        planeGeometry.firstMaterial?.lightingModel = .constant
         addChildNode(SCNNode(geometry: planeGeometry))
         updateImageSize()
     }

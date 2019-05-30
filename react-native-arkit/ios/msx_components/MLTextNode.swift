@@ -21,8 +21,8 @@ import SceneKit
     }
 
     @objc var color: UIColor? {
-        get { return textGeometry.materials.first?.diffuse.contents as? UIColor }
-        set { textGeometry.materials.first?.diffuse.contents = newValue }
+        get { return textGeometry.firstMaterial?.diffuse.contents as? UIColor }
+        set { textGeometry.firstMaterial?.diffuse.contents = newValue }
     }
 
     @objc var size: CGSize {
@@ -52,7 +52,8 @@ import SceneKit
         textGeometry.font = UIFont.systemFont(ofSize: 0.4)
         textGeometry.alignmentMode = CATextLayerAlignmentMode.center.rawValue
         textGeometry.flatness = 0.5
-        textGeometry.materials.first?.diffuse.contents = UIColor.white
+        textGeometry.firstMaterial?.lightingModel = .constant
+        textGeometry.firstMaterial?.diffuse.contents = UIColor.white
         textNode = SCNNode(geometry: textGeometry)
         textNode.position = SCNVector3()
         addChildNode(textNode)

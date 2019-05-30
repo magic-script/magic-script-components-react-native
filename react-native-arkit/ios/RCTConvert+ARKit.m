@@ -7,6 +7,8 @@
 //
 
 #import "RCTConvert+ARKit.h"
+#import <React/RCTImageSource.h>
+#import <React/RCTImageLoader.h>
 
 @implementation RCTConvert (ARKit)
 
@@ -252,7 +254,6 @@
 
     MLButtonNode *buttonNode = [MLButtonNode new];
     buttonNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
-
     buttonNode.title = title;
     buttonNode.size = size;
     buttonNode.color = color;
@@ -260,6 +261,44 @@
     return buttonNode;
 }
 
++ (MLImageNode *)MLImageNode:(id)json {
+    MLImageNode *imageNode = [MLImageNode new];
+    imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
+    imageNode.size = [self CGSize:json[@"size"]];
+
+//    RCTImageSource *source = [self RCTImageSource:json[@"source"]];
+//    RCTImageLoader *loader = [RCTImageLoader new];
+//    [loader loadImageWithURLRequest:source.request size:source.size scale:source.scale clipped:YES resizeMode:RCTResizeModeContain progressBlock:nil partialLoadBlock:nil completionBlock:^(NSError *error, UIImage *image) {
+//        imageNode.image = image;
+//    }];
+
+    return imageNode;
+}
+
++ (MLTextNode *)MLTextNode:(id)json {
+    NSString *text = [NSString stringWithFormat:@"%@", json[@"text"]];
+    if (!text) {
+        text = @"(null)";
+    }
+
+    NSDictionary *sizeDict = json[@"size"];
+    CGSize size = CGSizeMake(2.f, 1.f);
+    if (sizeDict) {
+        size.width = [sizeDict[@"width"] floatValue];
+        size.height = [sizeDict[@"height"] floatValue];
+    }
+
+    UIColor *color = json[@"color"] ? [self UIColor:json[@"color"]] : UIColor.whiteColor;
+
+    MLTextNode *textNode = [MLTextNode new];
+    textNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
+    textNode.text = text;
+//    textNode.font = font;
+    textNode.size = size;
+    textNode.color = color;
+
+    return textNode;
+}
 
 + (void)setMaterialPropertyContents:(id)property material:(SCNMaterialProperty *)material {
     

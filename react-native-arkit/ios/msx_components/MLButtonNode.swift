@@ -55,7 +55,7 @@ import SceneKit
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
         let radius: CGFloat = 0.5 * min(rect.width, rect.height)
         borderGeometry = SCNRectangle(rect: rect, thickness: 0.07, radius: radius)
-        borderGeometry.materials.first?.diffuse.contents = color
+        borderGeometry.firstMaterial?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
         addChildNode(borderNode)
 

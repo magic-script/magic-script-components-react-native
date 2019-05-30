@@ -37,6 +37,8 @@
 
 + (SCNTextNode *)SCNTextNode:(id)json;
 + (MLButtonNode *)MLButtonNode:(id)json;
++ (MLTextNode *)MLTextNode:(id)json;
++ (MLImageNode *)MLImageNode:(id)json;
 
 + (void)setNodeProperties:(SCNNode *)node properties:(id)json;
 + (void)setMaterialProperties:(SCNMaterial *)material properties:(id)json;

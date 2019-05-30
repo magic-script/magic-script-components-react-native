@@ -8,7 +8,6 @@
 
 #import "RCTConvert+ARKit.h"
 #import <React/RCTImageSource.h>
-#import <React/RCTImageLoader.h>
 
 @implementation RCTConvert (ARKit)
 
@@ -266,11 +265,8 @@
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];
 
-//    RCTImageSource *source = [self RCTImageSource:json[@"source"]];
-//    RCTImageLoader *loader = [RCTImageLoader new];
-//    [loader loadImageWithURLRequest:source.request size:source.size scale:source.scale clipped:YES resizeMode:RCTResizeModeContain progressBlock:nil partialLoadBlock:nil completionBlock:^(NSError *error, UIImage *image) {
-//        imageNode.image = image;
-//    }];
+    RCTImageSource *source = [self RCTImageSource:json[@"source"]];
+    imageNode.URL = source.request.URL;
 
     return imageNode;
 }

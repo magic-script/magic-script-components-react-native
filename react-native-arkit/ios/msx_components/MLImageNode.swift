@@ -9,10 +9,23 @@
 import SceneKit
 
 @objc class MLImageNode: SCNNode {
+    fileprivate var dataTask: URLSessionDataTask?
+    deinit {
+        dataTask?.cancel()
+    }
+
+    @objc var URL: URL? {
+        didSet {
+            guard let url = URL else { return }
+            downloadImage(imageURL: url) { [weak self] (image) -> (Void) in
+                self?.image = image
+            }
+        }
+    }
 
     @objc var image: UIImage? {
-        get { return planeGeometry.materials.first?.diffuse.contents as? UIImage }
-        set { planeGeometry.materials.first?.diffuse.contents = newValue }
+        get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
+        set { planeGeometry.firstMaterial?.diffuse.contents = newValue }
     }
     
     @objc var size: CGSize {
@@ -41,5 +54,21 @@ import SceneKit
 
     fileprivate func updateImageSize() {
         setBBox(visible: true, forceUpdate: true)
+    }
+}
+
+extension MLImageNode {
+    fileprivate func downloadImage(imageURL: URL, completion: @escaping (UIImage?) -> (Void)) {
+        dataTask?.cancel()
+        dataTask = URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in
+            self?.dataTask = nil
+            guard let data = data, error == nil else { DispatchQueue.main.async() { completion(nil) }; return }
+            if let downloadedImage = UIImage(data: data) {
+                DispatchQueue.main.async() { completion(downloadedImage) }
+            } else {
+                DispatchQueue.main.async() { completion(nil) }
+            }
+        }
+        dataTask?.resume()
     }
 }

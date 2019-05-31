@@ -6,6 +6,8 @@
 //
 
 import MLButton from './components/MLButton';
+import MLImage from './components/MLImage';
+import MLText from './components/MLText';
 
 import ARBox from './components/ARBox';
 import ARCapsule from './components/ARCapsule';
@@ -49,6 +51,8 @@ startup();
 
 const msx = {};
 msx.button = MLButton;
+msx.image = MLImage;
+msx.text = MLText;
 
 export {
   msx,

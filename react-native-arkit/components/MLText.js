@@ -7,10 +7,10 @@ import { NativeModules } from 'react-native';
 import { material } from './lib/propTypes';
 import createArComponent from './lib/createArComponent';
 
-const MLButton = createArComponent(
-  { mount: NativeModules.ARComponentManager.addButton, pick: ['id', 'title', 'size', 'color'] },
+const MLText = createArComponent(
+  { mount: NativeModules.ARComponentManager.addText, pick: ['id', 'text', 'size', 'color'] },
   {
-    title: PropTypes.string,
+    text: PropTypes.string,
     size: PropTypes.shape({
       width: PropTypes.number,
       height: PropTypes.number,
@@ -21,4 +21,4 @@ const MLButton = createArComponent(
   []
 );
 
-export default MLButton;
+export default MLText;

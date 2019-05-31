@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "16.8.3",
     "react-native": "0.59.8",
-    "react-native-arkit": "file:/../react-native-arkit"
+    "react-native-arkit": "../react-native-arkit"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

@@ -1,4 +1,4 @@
-import { NativeModules, processColor } from 'react-native';
+import { Image, NativeModules, processColor } from 'react-native';
 import PropTypes from 'prop-types';
 import React, { PureComponent, Fragment } from 'react';
 import filter from 'lodash/filter';
@@ -76,11 +76,10 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
 
   const parseMaterials = props => ({
     ...props,
-    ...(props.shadowColor
-      ? { shadowColor: processColor(props.shadowColor) }
-      : {}),
+    ...(props.shadowColor ? { shadowColor: processColor(props.shadowColor) } : {}),
     ...(props.color ? { color: processColor(props.color) } : {}),
     ...(props.material ? { material: processMaterial(props.material) } : {}),
+    ...(props.source ? { source: Image.resolveAssetSource(props.source) } : {}),
   });
 
   const getNonNodeProps = props => parseMaterials(pick(props, nonNodePropKeys));

@@ -11,6 +11,10 @@
 #import "RCTConvert+ARKit.h"
 #import "RCTARKit-Swift.h"
 
+@interface ARComponentManager ()
+@property(strong, nonatomic) NSMutableDictionary *callbackByNodeId;
+@end
+
 @implementation ARComponentManager
 
 RCT_EXPORT_MODULE()
@@ -31,6 +35,15 @@ RCT_EXPORT_METHOD(addText:(MLTextNode *)textNode node:(SCNNode *)node frame:(NSS
     [node addChildNode:textNode];
     [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
     resolve(nil);
+}
+
+RCT_EXPORT_METHOD(addButtonPressEvent:(NSString *)buttonId callback:(RCTResponseSenderBlock)callback)
+{
+    if (!self.callbackByNodeId) {
+        self.callbackByNodeId = [@{} mutableCopy];
+    }
+    self.callbackByNodeId[buttonId] = callback;
+//    callback(@[[NSNull null], events]);
 }
 
 @end

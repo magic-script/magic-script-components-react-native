@@ -5,7 +5,7 @@ AppRegistry.registerComponent('ARDemo', () => App);
 
 
 import React from 'react';
-import ARKitRenderer from './src/ARKitRenderer';
-import ARKitApp from './src/ARKitApp';
+import ARKitScript from './src_custom/renderer/arkit-script';
+import ARKitApp from './src_custom/ARKitApp';
 
-ARKitRenderer.render(<ARKitApp />, { name: 'foo' });
+ARKitScript.render(<ARKitApp />, { name: 'foo' });

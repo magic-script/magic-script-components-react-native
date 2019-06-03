@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ErrorBoundary from './ErrorBoundary';
-import View from './View';
-import Text from './Text';
+import ErrorBoundary from './components/ErrorBoundary';
+import View from './components/View';
+import Text from './components/Text';
 
 class ARKitApp extends Component {
   render() {

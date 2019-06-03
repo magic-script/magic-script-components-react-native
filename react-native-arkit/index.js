@@ -8,6 +8,7 @@
 import MLButton from './components/MLButton';
 import MLImage from './components/MLImage';
 import MLText from './components/MLText';
+import createArComponent from './components/lib/createArComponent';
 
 import ARBox from './components/ARBox';
 import ARCapsule from './components/ARCapsule';
@@ -53,6 +54,9 @@ const msx = {};
 msx.button = MLButton;
 msx.image = MLImage;
 msx.text = MLText;
+msx.createElement = (type, rootContainerInstance, props) => {
+  return MLText;
+}
 
 export {
   msx,

@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Text from './Text';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>{this.state.error}</h1>;
+      return <Text>{this.state.error}</Text>;
     }
 
     return this.props.children; 

@@ -1,4 +1,5 @@
 import ReactReconciler from 'react-reconciler';
+import { msx } from 'react-native-arkit';
 // import mxs from '../index.js';
 
 // Flow type definitions ------------------------------------------------------
@@ -37,8 +38,8 @@ function createInstance(type, props, rootContainerInstance, hostContext, interna
   console.log(rootContainerInstance);
   console.log(hostContext);
   console.log(internalInstanceHandle);
-  const domElement = document.createElement('div');
-  return domElement;
+  // const domElement = document.createElement('div');
+  return msx.createElement(type, rootContainerInstance, props);
   // return mxs._nativeFactory.createElement(type, rootContainerInstance, props);
 }
 

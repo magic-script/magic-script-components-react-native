@@ -1,5 +1,5 @@
 import ReactReconciler from 'react-reconciler';
-import { msx } from 'react-native-arkit';
+import { mxs } from '../../index';
 // import mxs from '../index.js';
 
 // Flow type definitions ------------------------------------------------------
@@ -33,14 +33,12 @@ const UPDATE_SIGNAL = {};
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
 function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
-  console.log(`[MSX] createInstance ${type}`);
+  console.log(`[MXS] createInstance ${type}`);
   console.log(props);
   console.log(rootContainerInstance);
   console.log(hostContext);
   console.log(internalInstanceHandle);
-  // const domElement = document.createElement('div');
-  return msx.createElement(type, rootContainerInstance, props);
-  // return mxs._nativeFactory.createElement(type, rootContainerInstance, props);
+  return mxs._nativeFactory.createElement(type, rootContainerInstance, props);
 }
 
 // Function: This function is used to create separate text nodes if the target allows only creating text in separate text nodes
@@ -52,7 +50,7 @@ function createInstance(type, props, rootContainerInstance, hostContext, interna
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
 function createTextInstance(text, rootContainerInstance, hostContext, internalInstanceHandle) {
-  console.log(`[MSX] createTextInstance ${text}`);
+  console.log(`[MXS] createTextInstance ${text}`);
   return text;
 }
 
@@ -63,11 +61,10 @@ function createTextInstance(text, rootContainerInstance, hostContext, internalIn
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendInitialChild(parentInstance, child) {
-  console.log('[MSX] appendInitialChild');
+  console.log('[MXS] appendInitialChild');
   console.log(parentInstance);
   console.log(child);
-
-  // mxs._nativeFactory.addChildElement(parentInstance, child);
+  mxs._nativeFactory.addChildElement(parentInstance, child);
 }
 
 // Function: finalizeInitialChildren
@@ -80,7 +77,7 @@ function appendInitialChild(parentInstance, child) {
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
 function finalizeInitialChildren(parentInstance, type, props, rootContainerInstance, hostContext) {
-  console.log('[MSX] finalizeInitialChildren');
+  console.log('[MXS] finalizeInitialChildren');
   return false;
 }
 
@@ -90,7 +87,7 @@ function finalizeInitialChildren(parentInstance, type, props, rootContainerInsta
 // Input parameters:
 //  rootContainerInstance: Container
 function getRootHostContext(rootContainerInstance) {
-  console.log('[MSX] getRootHostContext');
+  console.log('[MXS] getRootHostContext');
 
   // React-360
   // return {};
@@ -107,7 +104,7 @@ function getRootHostContext(rootContainerInstance) {
 //  type: string,
 //  rootContainerInstance: Container
 function getChildHostContext(parentHostContext, type, rootContainerInstance) {
-  console.log('[MSX] getChildHostContext');
+  console.log('[MXS] getChildHostContext');
   // React-360
   // return {};
 
@@ -121,7 +118,7 @@ function getChildHostContext(parentHostContext, type, rootContainerInstance) {
 // Input parameters:
 //  instance: Instance
 function getPublicInstance(instance) {
-  console.log('[MSX] getPublicInstance');
+  console.log('[MXS] getPublicInstance');
   return instance;
 }
 
@@ -131,7 +128,7 @@ function getPublicInstance(instance) {
 // Input parameters:
 //  containerInfo: Container
 function prepareForCommit(containerInfo) {
-  console.log('[MSX] prepareForCommit');
+  console.log('[MXS] prepareForCommit');
 }
 
 // Function: resetAfterCommit
@@ -140,7 +137,7 @@ function prepareForCommit(containerInfo) {
 // Input parameters:
 //  containerInfo: Container
 function resetAfterCommit(containerInfo) {
-  console.log('[MSX] resetAfterCommit');
+  console.log('[MXS] resetAfterCommit');
 }
 
 // Function: prepareUpdate
@@ -154,7 +151,7 @@ function resetAfterCommit(containerInfo) {
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
 function prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance, hostContext) {
-  console.log('[MSX] prepareUpdate');
+  console.log('[MXS] prepareUpdate');
   return true;
 }
 
@@ -180,7 +177,7 @@ function shouldSetTextContent(type, props) {
   //  Always returning false simplifies the createInstance() implementation,
   //  But creates an additional child Fiber for raw text children.
   //  No additional native views are created though.
-  console.log('[MSX] shouldSetTextContent');
+  console.log('[MXS] shouldSetTextContent');
   console.log(type);
   console.log(props);
 
@@ -194,11 +191,10 @@ function shouldSetTextContent(type, props) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendChild(parentInstance, child) {
-  console.log('[MSX] appendChild');
+  console.log('[MXS] appendChild');
   console.log(parentInstance);
   console.log(child);
-
-  // mxs._nativeFactory.addChildElement(parentInstance, child);
+  mxs._nativeFactory.addChildElement(parentInstance, child);
 }
 
 // Function: appendChildToContainer
@@ -208,11 +204,10 @@ function appendChild(parentInstance, child) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendChildToContainer(container, child) {
-  console.log('[MSX] appendChildToContainer');
+  console.log('[MXS] appendChildToContainer');
   console.log(container);
   console.log(child);
-
-  // mxs._nativeFactory.appendChildToContainer(container, child);
+  mxs._nativeFactory.appendChildToContainer(container, child);
 }
 
 // Function: commitTextUpdate
@@ -253,14 +248,13 @@ function commitMount(instance, type, newProps, internalInstanceHandle) {
 //  internalInstanceHandle: Object
 function commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
   // logNotImplemented('commitUpdate');
-  console.log('[MSX] commitUpdate');
+  console.log('[MXS] commitUpdate');
   console.log(instance);
   console.log(type);
   console.log(updatePayload);
   console.log(oldProps);
   console.log(newProps);
-
-  // mxs._nativeFactory.updateElement(type, instance, oldProps, newProps);
+  mxs._nativeFactory.updateElement(type, instance, oldProps, newProps);
 }
 
 // Function: insertBefore
@@ -292,9 +286,8 @@ function insertInContainerBefore(container, child, beforeChild) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function removeChild(parentInstance, child) {
-  console.log('[MSX] removeChild');
-  
-  // mxs._nativeFactory.removeChildElement(parentInstance, child);
+  console.log('[MXS] removeChild');
+  mxs._nativeFactory.removeChildElement(parentInstance, child);
 }
 
 // Function: removeChildFromContainer
@@ -307,7 +300,7 @@ function removeChildFromContainer(parentInstance, child) {
   logNotImplemented('removeChildFromContainer');
   console.log(parentInstance);
   console.log(child);
-  // mxs._nativeFactory.removeChildFromContainer(parentInstance, child);
+  mxs._nativeFactory.removeChildFromContainer(parentInstance, child);
 }
 
 // Function: resetTextContent
@@ -447,7 +440,7 @@ const HostConfig = {
 };
 
 function logNotImplemented(functionName) {
-  const message = `[MSX] ${functionName} has not been implemented yet`;
+  const message = `[MXS] ${functionName} has not been implemented yet`;
 
   console.log(message);
   print(message);
@@ -455,7 +448,7 @@ function logNotImplemented(functionName) {
 
 function throwNotImplemented(functionName) {
   return () => {
-    throw new Error(`[MSX] ${functionName} has not been implemented yet`);
+    throw new Error(`[MXS] ${functionName} has not been implemented yet`);
   };
 }
 

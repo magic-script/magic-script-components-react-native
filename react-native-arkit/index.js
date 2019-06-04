@@ -8,74 +8,24 @@
 import MLButton from './components/MLButton';
 import MLImage from './components/MLImage';
 import MLText from './components/MLText';
-import createArComponent from './components/lib/createArComponent';
 
-import ARBox from './components/ARBox';
-import ARCapsule from './components/ARCapsule';
-import ARCone from './components/ARCone';
-import ARCylinder from './components/ARCylinder';
-import ARGroup from './components/ARGroup';
 import ARKit from './ARKit';
-import ARLight from './components/ARLight';
-import ARModel from './components/ARModel';
-import ARPlane from './components/ARPlane';
-import ARPyramid from './components/ARPyramid';
-import ARShape from './components/ARShape';
-import ARSphere from './components/ARSphere';
-import ARSprite from './components/ARSprite';
-import ARText from './components/ARText';
-import ARTorus from './components/ARTorus';
-import ARTube from './components/ARTube';
-import DeviceMotion from './DeviceMotion';
+import ARKitView from './ARKitView';
+import ARKitScript from './arkit/arkit-script/arkit-script';
+import { PlatformFactory } from './arkit/platform/platform-factory';
+
 import startup from './startup';
-import withProjectedPosition from './hocs/withProjectedPosition';
-
-import * as colorUtils from './lib/colorUtils';
-
-ARKit.Box = ARBox;
-ARKit.Sphere = ARSphere;
-ARKit.Cylinder = ARCylinder;
-ARKit.Cone = ARCone;
-ARKit.Pyramid = ARPyramid;
-ARKit.Tube = ARTube;
-ARKit.Torus = ARTorus;
-ARKit.Capsule = ARCapsule;
-ARKit.Plane = ARPlane;
-ARKit.Text = ARText;
-ARKit.Model = ARModel;
-ARKit.Sprite = ARSprite;
-ARKit.Group = ARGroup;
-ARKit.Shape = ARShape;
-ARKit.Light = ARLight;
-
 startup();
 
-const msx = {};
-msx.button = MLButton;
-msx.image = MLImage;
-msx.text = MLText;
-msx.createElement = (type, rootContainerInstance, props) => {
-  return MLText;
-}
+const mxs = {};
+mxs.button = MLButton;
+mxs.image = MLImage;
+mxs.text = MLText;
+mxs._nativeFactory = new PlatformFactory();
 
 export {
-  msx,
-  colorUtils,
+  mxs,
   ARKit,
-  DeviceMotion,
-  ARBox,
-  ARSphere,
-  ARSprite,
-  ARCylinder,
-  ARCone,
-  ARPyramid,
-  ARTube,
-  ARTorus,
-  ARCapsule,
-  ARPlane,
-  ARText,
-  ARModel,
-  ARLight,
-  ARGroup,
-  withProjectedPosition,
+  ARKitView,
+  ARKitScript,
 };

@@ -19,6 +19,12 @@
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(addView:(SCNNode *)viewNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    [node addChildNode:viewNode];
+    [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(addButton:(MLButtonNode *)buttonNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     [node addChildNode:buttonNode];
     [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];

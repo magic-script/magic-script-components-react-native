@@ -8,4 +8,4 @@ import React from 'react';
 import { ARKitScript } from 'react-native-arkit';
 import ARKitApp from './src/ARKitApp';
 
-ARKitScript.render(<ARKitApp />, { name: 'foo' });
+ARKitScript.render(<ARKitApp />, { name: 'root' });

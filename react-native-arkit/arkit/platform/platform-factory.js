@@ -6,12 +6,13 @@ import { NativeModules } from 'react-native';
 import PropTypes from 'prop-types';
 import { material } from '../../components/lib/propTypes';
 import createArComponent from '../../components/lib/createArComponent';
+import generateId from '../../components/lib/generateId';
 
 export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
         super(componentMapping);
 
-        console.log('factory.ctor');
+        console.log('[FACTORY] ctor');
         // { type, builder }
         this.elementBuilders = {};
         this.controllerBuilders = {};
@@ -43,7 +44,9 @@ export class PlatformFactory extends NativeFactory {
     }
 
     createElement(name, container, ...args) {
-        console.log('factory.createElement');
+        console.log(`[FACTORY] createElement <${name}>`, args[0]);
+        console.log('[FACTORY] createElement.container', container);
+        if (args.length > 1) { console.log('[FACTORY] createElement.args', args); }
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.createElement expects "name" to be string');
         }
@@ -59,8 +62,12 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _createElement(name, container, ...args) {
+        // const props = args[0];
+        // const identifier = props.id || generateId();
+        // return NativeModules.ARComponentManager.addText(identifier, props, null);
+        var component = undefined;
         if (name === 'text') {
-            return createArComponent(
+            component = createArComponent(
                 { mount: NativeModules.ARComponentManager.addText, pick: ['id', 'text', 'size', 'color'] },
                 {
                     text: PropTypes.string,
@@ -69,7 +76,7 @@ export class PlatformFactory extends NativeFactory {
                     material
                 }, []);
         } else if (name === 'button') {
-            return createArComponent(
+            component = createArComponent(
                 { mount: NativeModules.ARComponentManager.addButton, pick: ['id', 'title', 'size', 'color'] },
                 {
                     title: PropTypes.string,
@@ -78,11 +85,14 @@ export class PlatformFactory extends NativeFactory {
                     material
                 }, []);
         } else if (name === 'view') {
-            return createArComponent(
+            component = createArComponent(
                 { mount: NativeModules.ARComponentManager.addView, pick: ['id'] },
                 {
                 }, []);
         }
+        component.mount('id_foo', args[0], null)
+        return component.ARComponent;
+
         // if (this.elementBuilders[name] === undefined) {
         //     const createBuilder = this._mapping.elements[name];
         //     this.elementBuilders[name] = createBuilder();
@@ -112,6 +122,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     updateElement(name, ...args) {
+        console.log('[FACTORY] updateElement.name', name);
+        console.log('[FACTORY] updateElement.args', args);
         // if (typeof name !== 'string')
         // {
         //     throw new Error('PlatformFactory.updateElement expects "name" to be string');
@@ -231,8 +243,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     addChildElement(parent, child) {
-        console.log('addChildElement.parent: ', parent);
-        console.log('addChildElement.child: ', child);
+        console.log('[FACTORY] addChildElement.parent: ', parent);
+        console.log('[FACTORY] addChildElement.child: ', child);
         // if (typeof child === 'string') {
         //     parent.setText(child);
         // } else if (typeof child === 'number') {
@@ -290,6 +302,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     removeChildElement(parent, child) {
+        console.log('[FACTORY] addChildElement.parent: ', parent);
+        console.log('[FACTORY] addChildElement.child: ', child);
         // if (typeof child === 'string' || typeof child === 'number') {
         //     parent.setText('');
         // } else {
@@ -307,8 +321,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     appendChildToContainer(container, child) {
-        console.log(child);
-        console.log(container);
+        console.log('[FACTORY] appendChildToContainer.container: ', container);
+        console.log('[FACTORY] appendChildToContainer.child: ', child);
 
         // if (this.isController(child)){
         //     container.controller.addChildController(child);
@@ -319,6 +333,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     removeChildFromContainer(container, child) {
+        console.log('[FACTORY] removeChildFromContainer.container: ', container);
+        console.log('[FACTORY] removeChildFromContainer.child: ', child);
         // if (this.isController(child)) {
         //     container.controller.removeChildController(child);
         // } else {

@@ -237,8 +237,8 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
     arkitParentId: PropTypes.string,
   };
 
-  const ARComponentAnimated = addAnimatedSupport(ARComponent);
-  ARComponentAnimated.propTypes = allPropTypes;
+  // const ARComponentAnimated = addAnimatedSupport(ARComponent);
+  // ARComponentAnimated.propTypes = allPropTypes;
 
-  return ARComponentAnimated;
+  return { ARComponent, mount };
 };

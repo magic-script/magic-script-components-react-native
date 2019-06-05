@@ -1,6 +1,5 @@
 import ReactReconciler from 'react-reconciler';
-import { mxs } from '../../index';
-// import mxs from '../index.js';
+import mxs from '../../mxs';
 
 // Flow type definitions ------------------------------------------------------
 //  Type = string;

@@ -5,23 +5,13 @@
 //  Copyright © 2017 HippoAR. All rights reserved.
 //
 
-import MLButton from './components/MLButton';
-import MLImage from './components/MLImage';
-import MLText from './components/MLText';
-
 import ARKit from './ARKit';
+import mxs from './mxs';
 import ARKitView from './ARKitView';
 import ARKitScript from './arkit/arkit-script/arkit-script';
-import { PlatformFactory } from './arkit/platform/platform-factory';
 
 import startup from './startup';
 startup();
-
-const mxs = {};
-mxs.button = MLButton;
-mxs.image = MLImage;
-mxs.text = MLText;
-mxs._nativeFactory = new PlatformFactory();
 
 export {
   mxs,

@@ -231,6 +231,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     addChildElement(parent, child) {
+        console.log('addChildElement.parent: ', parent);
+        console.log('addChildElement.child: ', child);
         // if (typeof child === 'string') {
         //     parent.setText(child);
         // } else if (typeof child === 'number') {

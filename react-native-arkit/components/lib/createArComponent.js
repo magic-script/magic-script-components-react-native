@@ -25,7 +25,7 @@ import addAnimatedSupport from './addAnimatedSupport';
 import generateId from './generateId';
 import processMaterial from './processMaterial';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const { ARGeosManager } = NativeModules;
 
@@ -93,10 +93,7 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
     if (DEBUG) console.log(`[${id}] [${new Date().getTime()}] mount`, props);
     return mountFunc(
       getNonNodeProps(props),
-      {
-        id,
-        ...pick(props, NODE_PROPS),
-      },
+      { id, ...pick(props, NODE_PROPS), },
       props.frame,
       parentId,
     );
@@ -134,6 +131,7 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
       } else {
         this.mountWithProps(props);
       }
+      // this.mountWithProps(this.props);
     }
 
     async mountWithProps(props) {
@@ -154,21 +152,12 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
           IMMUTABLE_PROPS.includes(k),
         );
         if (nonAllowedUpdates.length > 0) {
-          throw new Error(
-            `[${this
-              .identifier}] prop can't be updated: '${nonAllowedUpdates.join(
-              ', ',
-            )}'`,
-          );
+          throw new Error(`[${this.identifier}] prop can't be updated: '${nonAllowedUpdates.join(', ')}'`);
         }
       }
 
       if (some(changedKeys, k => nonUpdateablePropKeys.includes(k))) {
-        if (DEBUG)
-          console.log(
-            `[${this.identifier}] need to remount node because of `,
-            changedKeys,
-          );
+        if (DEBUG) console.log(`[${this.identifier}] need to remount node because of `, changedKeys);
         this.mountWithProps({ ...this.props, ...props });
       } else {
         // every property is updateable

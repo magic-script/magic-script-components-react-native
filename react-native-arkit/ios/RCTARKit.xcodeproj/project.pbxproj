@@ -111,8 +111,8 @@
 		106999E21F3EC2FB00032829 /* components */ = {
 			isa = PBXGroup;
 			children = (
-				B1CEA2A2204C160D0025C1B8 /* RCTARKitSpriteViewManager.m */,
 				B1CEA2A1204C15FE0025C1B8 /* RCTARKitSpriteViewManager.h */,
+				B1CEA2A2204C160D0025C1B8 /* RCTARKitSpriteViewManager.m */,
 				B1CEA2A0204C15500025C1B8 /* RCTARKitSpriteView.h */,
 				B1CEA29E204C14090025C1B8 /* RCTARKitSpriteView.m */,
 				10DCBC491F7CE836008C89E7 /* ARGeosManager.h */,

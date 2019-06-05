@@ -111,11 +111,13 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
 
   const ARComponent = class extends PureComponent {
     constructor(props) {
+      console.log('[CREATE_AR_COMPONENT].ctor');
       super(props);
       this.identifier = props.id || generateId();
     }
     identifier = null;
     componentDidMount() {
+      console.log('[CREATE_AR_COMPONENT].componentDidMount');
       const { propsOnMount, ...props } = this.props;
       if (propsOnMount) {
         const fullPropsOnMount = { ...props, ...propsOnMount };

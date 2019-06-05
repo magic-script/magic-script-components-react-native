@@ -62,8 +62,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _createElement(name, container, ...args) {
-        // const props = args[0];
-        // const identifier = props.id || generateId();
+        const props = args[0];
+        const identifier = props.id || generateId();
         // return NativeModules.ARComponentManager.addText(identifier, props, null);
         var component = undefined;
         if (name === 'text') {
@@ -90,8 +90,8 @@ export class PlatformFactory extends NativeFactory {
                 {
                 }, []);
         }
-        component.mount('id_foo', args[0], null)
-        return component.ARComponent;
+        // component.mount(identifier, props, null)
+        return new component.ARComponent(props);
 
         // if (this.elementBuilders[name] === undefined) {
         //     const createBuilder = this._mapping.elements[name];

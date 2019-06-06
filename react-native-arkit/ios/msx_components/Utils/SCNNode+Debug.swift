@@ -27,10 +27,7 @@ import SceneKit
         guard visible != bboxVisible else { return }
 
         if visible {
-            var bbox = self.boundingBox
-            bbox.min -= self.position
-            bbox.max -= self.position
-            let node = SCNBBoxNode(bbox)
+            let node = SCNBBoxNode(self.boundingBox)
             node.name = SCNNode.debugNodeName
             addChildNode(node)
         } else {

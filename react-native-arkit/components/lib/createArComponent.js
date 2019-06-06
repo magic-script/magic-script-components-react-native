@@ -25,7 +25,7 @@ import addAnimatedSupport from './addAnimatedSupport';
 import generateId from './generateId';
 import processMaterial from './processMaterial';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const { ARGeosManager } = NativeModules;
 
@@ -93,10 +93,7 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
     if (DEBUG) console.log(`[${id}] [${new Date().getTime()}] mount`, props);
     return mountFunc(
       getNonNodeProps(props),
-      {
-        id,
-        ...pick(props, NODE_PROPS),
-      },
+      { id, ...pick(props, NODE_PROPS), },
       props.frame,
       parentId,
     );
@@ -114,11 +111,13 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
 
   const ARComponent = class extends PureComponent {
     constructor(props) {
+      console.log('[CREATE_AR_COMPONENT].ctor');
       super(props);
       this.identifier = props.id || generateId();
     }
     identifier = null;
     componentDidMount() {
+      console.log('[CREATE_AR_COMPONENT].componentDidMount');
       const { propsOnMount, ...props } = this.props;
       if (propsOnMount) {
         const fullPropsOnMount = { ...props, ...propsOnMount };
@@ -134,6 +133,7 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
       } else {
         this.mountWithProps(props);
       }
+      // this.mountWithProps(this.props);
     }
 
     async mountWithProps(props) {
@@ -154,21 +154,12 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
           IMMUTABLE_PROPS.includes(k),
         );
         if (nonAllowedUpdates.length > 0) {
-          throw new Error(
-            `[${this
-              .identifier}] prop can't be updated: '${nonAllowedUpdates.join(
-              ', ',
-            )}'`,
-          );
+          throw new Error(`[${this.identifier}] prop can't be updated: '${nonAllowedUpdates.join(', ')}'`);
         }
       }
 
       if (some(changedKeys, k => nonUpdateablePropKeys.includes(k))) {
-        if (DEBUG)
-          console.log(
-            `[${this.identifier}] need to remount node because of `,
-            changedKeys,
-          );
+        if (DEBUG) console.log(`[${this.identifier}] need to remount node because of `, changedKeys);
         this.mountWithProps({ ...this.props, ...props });
       } else {
         // every property is updateable
@@ -248,8 +239,8 @@ export default (mountConfig, propTypes = {}, nonUpdateablePropKeys = []) => {
     arkitParentId: PropTypes.string,
   };
 
-  const ARComponentAnimated = addAnimatedSupport(ARComponent);
-  ARComponentAnimated.propTypes = allPropTypes;
+  // const ARComponentAnimated = addAnimatedSupport(ARComponent);
+  // ARComponentAnimated.propTypes = allPropTypes;
 
-  return ARComponentAnimated;
+  return { ARComponent, mount };
 };

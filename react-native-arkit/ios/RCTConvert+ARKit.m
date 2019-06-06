@@ -252,6 +252,7 @@
     UIColor *color = json[@"color"] ? [self UIColor:json[@"color"]] : UIColor.whiteColor;
 
     MLButtonNode *buttonNode = [MLButtonNode new];
+    [self setNodeProperties:buttonNode properties:json];
     buttonNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     buttonNode.title = title;
     buttonNode.size = size;
@@ -262,8 +263,10 @@
 
 + (MLImageNode *)MLImageNode:(id)json {
     MLImageNode *imageNode = [MLImageNode new];
+    [self setNodeProperties:imageNode properties:json];
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];
+    NSLog(@"imageNode=%@", imageNode);
 
     RCTImageSource *source = [self RCTImageSource:json[@"source"]];
     imageNode.URL = source.request.URL;
@@ -287,6 +290,7 @@
     UIColor *color = json[@"color"] ? [self UIColor:json[@"color"]] : UIColor.whiteColor;
 
     MLTextNode *textNode = [MLTextNode new];
+    [self setNodeProperties:textNode properties:json];
     textNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     textNode.text = text;
 //    textNode.font = font;

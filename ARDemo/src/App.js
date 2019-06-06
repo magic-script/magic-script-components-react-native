@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Switch, Text, View } from 'react-native';
-import { msx } from 'react-native-arkit';
-import ARKitView from './ARKitView';
+import { mxs, ARKitView } from 'react-native-arkit';
 
 export default class App extends React.Component {
   state = { 
@@ -25,11 +24,13 @@ export default class App extends React.Component {
         <Text style={styles.headerText}>Sample React Native App</Text>
         <ARKitView style={styles.arkitView}>
             <Text style={styles.sceneTitle}>Scene 3d view</Text>
-            <msx.text position={{ x: 0, y: 1.2, z: 0 }} text={'Main menu'} color='cyan'/>
-            <msx.button position={{ x: 0, y: 0.0, z: 0 }} title={'Button1'} color='yellow' />
-            <msx.button position={{ x: 0, y: -1.1, z: 0 }} title={'Button2'} color='red' />
-            <msx.button position={{ x: 0, y: -2.2, z: 0 }} title={'Button3'} color='orange' />
-            <msx.image position={{ x: 2, y: -1.1, z: 0 }} source={sampleImage} size={{ width: 1, height: 1 }}/>
+            {/* <mxs.view position={{ x: 0, y: 0, z: 0 }}>
+              <mxs.text position={{ x: 0, y: 1.2, z: 0 }} text={'Main menu'} color='cyan'/>
+              <mxs.button position={{ x: 0, y: 0.0, z: 0 }} title={'Button1'} color='yellow' />
+              <mxs.button position={{ x: 0, y: -1.1, z: 0 }} title={'Button2'} color='red' />
+              <mxs.button position={{ x: 0, y: -2.2, z: 0 }} title={'Button3'} color='orange' />
+              <mxs.image position={{ x: 2, y: -1.1, z: 0 }} source={sampleImage} size={{ width: 1, height: 1 }}/>
+            </mxs.view> */}
         </ARKitView>
         {/* <Image source={sampleImage} /> */}
         <View style={styles.footer}>

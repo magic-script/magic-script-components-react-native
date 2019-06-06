@@ -153,8 +153,8 @@ CGFloat focDistance = 0.2f;
     node.referenceFrame = RFReferenceFrameLocal;
     
     [self.localOrigin addChildNode:node];
-    //NSLog(@"[RCTARKitNodes] Add node %@ to Local frame at (%.2f, %.2f, %.2f)", node.name, node.position.x, node.position.y, node.position.z);
-    
+    NSLog(@"[RCTARKitNodes] Add node %@ to Local frame at (%.2f, %.2f, %.2f)", node.name, node.position.x, node.position.y, node.position.z);
+
 }
 
 - (void)addNodeToCameraFrame:(SCNNode *)node {
@@ -289,6 +289,7 @@ static id ObjectOrNull(id object)
 }
 
 #pragma mark - node register
+
 - (void)registerNode:(SCNNode *)node withId:(NSString *)nodeId {
     [self removeNode:nodeId];
     if (node) {
@@ -345,8 +346,7 @@ static id ObjectOrNull(id object)
     }
 }
 
-- (bool)updateNode:(NSString *)nodeId
-        properties:(NSDictionary *) properties {
+- (bool)updateNode:(NSString *)nodeId properties:(NSDictionary *) properties {
     
     SCNNode *node = [self getNodeWithId:nodeId];
     //NSLog(@"updating node %@ :%@", nodeId, properties);
@@ -392,16 +392,10 @@ static id ObjectOrNull(id object)
 }
 
 static float getDistance(const SCNVector3 pointA, const SCNVector3 pointB) {
-    float xd = pointB.x - pointA.x;
-    float yd = pointB.y - pointA.y;
-    float zd = pointB.z - pointA.z;
-    float distance = sqrt(xd * xd + yd * yd + zd * zd);
-    
-    if (distance < 0){
-        return (distance * -1);
-    } else {
-        return (distance);
-    }
+    const float xd = pointB.x - pointA.x;
+    const float yd = pointB.y - pointA.y;
+    const float zd = pointB.z - pointA.z;
+    return sqrt(xd * xd + yd * yd + zd * zd);
 }
 
 @end

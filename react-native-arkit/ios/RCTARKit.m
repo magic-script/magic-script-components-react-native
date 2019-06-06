@@ -39,7 +39,7 @@ void dispatch_once_on_main_thread(dispatch_once_t *predicate,
 static RCTARKit *instance = nil;
 
 + (bool)isInitialized {
-    return instance !=nil;
+    return instance != nil;
 }
 
 + (instancetype)sharedInstance {
@@ -81,6 +81,8 @@ static RCTARKit *instance = nil;
         self.nodeManager = [RCTARKitNodes sharedInstance];
         self.nodeManager.arView = arView;
         [self.sessionDelegates addObject:self.nodeManager];
+
+        [MLNodesManager.instance registerScene:arView.scene];
         
         // configuration(s)
         arView.autoenablesDefaultLighting = YES;
@@ -471,18 +473,33 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
 - (void)handleTapFrom: (UITapGestureRecognizer *)recognizer {
     // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
     CGPoint tapPoint = [recognizer locationInView:self.arView];
-    //
-    if(self.onTapOnPlaneUsingExtent) {
-        // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
-        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlaneUsingExtent];
-        self.onTapOnPlaneUsingExtent(planeHitResult);
-    }
-    
-    if(self.onTapOnPlaneNoExtent) {
-        // Take the screen space tap coordinates    and pass them to the hitTest method on the ARSCNView instance
-        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlane];
-        self.onTapOnPlaneNoExtent(planeHitResult);
-    }
+
+    NSDictionary<SCNHitTestOption, id> *options = @{
+//                                                        SCNHitTestClipToZRangeKey: @(YES),
+                                                        SCNHitTestBoundingBoxOnlyKey: @YES,
+                                                        SCNHitTestIgnoreHiddenNodesKey: @YES,
+                                                        SCNHitTestOptionCategoryBitMask: @(6077601),
+//                                                        SCNHitTestRootNodeKey: MLNodesManager.instance.rootNode
+                                                    };
+    NSArray<SCNHitTestResult *> *results = [self.arView hitTest:tapPoint options:options];
+    SCNHitTestResult *result = results.firstObject;
+    NSLog(@"result: %@", result);
+    [MLNodesManager.instance handleNodeTap: result.node];
+//    if(self.onTapOnPlaneUsingExtent) {
+//        // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
+//        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlaneUsingExtent];
+//        self.onTapOnPlaneUsingExtent(planeHitResult);
+//    }
+//
+//    if(self.onTapOnPlaneNoExtent) {
+//        // Take the screen space tap coordinates    and pass them to the hitTest method on the ARSCNView instance
+//        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlane];
+//        self.onTapOnPlaneNoExtent(planeHitResult);
+//    }
+
+//    SCNVector3 from;
+//    SCNVector3 to;
+//    [MLNodesManager.instance hitTestFrom:from to:to];
 }
 
 

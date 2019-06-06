@@ -23,9 +23,34 @@ import SceneKit
         scene.rootNode.addChildNode(rootNode)
     }
 
+    @objc func hitTest(from: SCNVector3, to: SCNVector3) -> SCNNode? {
+        let options: [String: Any] = [
+            SCNHitTestOption.boundingBoxOnly.rawValue: true,
+            SCNHitTestOption.ignoreHiddenNodes.rawValue: true,
+            SCNHitTestOption.rootNode.rawValue: rootNode
+        ]
+        let results = rootNode.hitTestWithSegment(from: from, to: to, options: options)
+        return results.first?.node
+    }
+
+    @objc func handleNodeTap(_ node: SCNNode?) {
+        var componentNode: SCNNode? = node
+        while componentNode != nil {
+            if componentNode?.categoryBitMask == 6077601 {
+                break
+            }
+            componentNode = componentNode?.parent
+        }
+        guard let button = componentNode as? MLButtonNode else { return }
+//        print("validateScene: \(nodesById)")
+        print("button tap: \(button)")
+        button.simulateTap()
+    }
+
     @objc func registerNode(_ node: SCNNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
+        print("regieter node: \(node)")
     }
 
     @objc func addNode(_ nodeId: String, toParent parentId: String) {

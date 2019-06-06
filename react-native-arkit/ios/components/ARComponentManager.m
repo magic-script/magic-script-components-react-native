@@ -38,7 +38,7 @@ RCT_EXPORT_METHOD(createButtonNode:(MLButtonNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createImageNode:(MLTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(createImageNode:(MLImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createImageNode: %@", nodeId);
     [MLNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);

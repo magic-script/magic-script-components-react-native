@@ -1,7 +1,7 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
+import { Image, NativeModules, processColor } from 'react-native';
 import { NativeFactory } from '../../arkit/core/native-factory.js';
-import { NativeModules } from 'react-native';
 import PropTypes from 'prop-types';
 import { material } from '../../components/lib/propTypes';
 import createArComponent from '../../components/lib/createArComponent';
@@ -63,8 +63,16 @@ export class PlatformFactory extends NativeFactory {
         // }
     }
 
+    _parseCustomProps = (props) => ({
+        ...props,
+        ...(props.shadowColor ? { shadowColor: processColor(props.shadowColor) } : {}),
+        ...(props.color ? { color: processColor(props.color) } : {}),
+        ...(props.material ? { material: processMaterial(props.material) } : {}),
+        ...(props.source ? { source: Image.resolveAssetSource(props.source) } : {}),
+      });
+
     _createElement(name, container, ...args) {
-        const props = omit(args[0], 'children');
+        const props = this._parseCustomProps(omit(args[0], 'children'));
         const id = props.id || generateId();
         const type = name;
         

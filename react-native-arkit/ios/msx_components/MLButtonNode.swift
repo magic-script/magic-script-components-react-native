@@ -27,6 +27,7 @@ import SceneKit
     }
 
     fileprivate var borderGeometry: SCNRectangle!
+    fileprivate var contentNode: SCNNode!
     fileprivate var borderNode: SCNNode!
     fileprivate var textNode: MLTextNode!
 
@@ -40,10 +41,26 @@ import SceneKit
         setupNode()
     }
 
+    @objc func simulateTap() {
+
+        let initialPosition = contentNode.position
+        let animation = CABasicAnimation(keyPath: "position.z")
+        animation.fromValue = initialPosition.z
+        animation.toValue = initialPosition.z - 0.4
+        animation.duration = 0.1
+        animation.autoreverses = true
+        animation.repeatCount = 1
+        contentNode.addAnimation(animation, forKey: "button_tap")
+    }
+
     fileprivate func setupNode() {
+        contentNode = SCNNode()
+        addChildNode(contentNode)
+
+        categoryBitMask = 6077601
         textNode = MLTextNode()
         textNode.color = color
-        addChildNode(textNode)
+        contentNode.addChildNode(textNode)
 
         updateNodeSize()
     }
@@ -57,7 +74,7 @@ import SceneKit
         borderGeometry = SCNRectangle(rect: rect, thickness: 0.07, radius: radius)
         borderGeometry.firstMaterial?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
-        addChildNode(borderNode)
+        contentNode.addChildNode(borderNode)
 
         borderNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0)
     }

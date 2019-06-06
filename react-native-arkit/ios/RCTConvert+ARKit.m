@@ -266,6 +266,7 @@
     [self setNodeProperties:imageNode properties:json];
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];
+    NSLog(@"imageNode=%@", imageNode);
 
     RCTImageSource *source = [self RCTImageSource:json[@"source"]];
     imageNode.URL = source.request.URL;

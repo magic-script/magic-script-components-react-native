@@ -39,7 +39,7 @@ void dispatch_once_on_main_thread(dispatch_once_t *predicate,
 static RCTARKit *instance = nil;
 
 + (bool)isInitialized {
-    return instance !=nil;
+    return instance != nil;
 }
 
 + (instancetype)sharedInstance {
@@ -81,6 +81,8 @@ static RCTARKit *instance = nil;
         self.nodeManager = [RCTARKitNodes sharedInstance];
         self.nodeManager.arView = arView;
         [self.sessionDelegates addObject:self.nodeManager];
+
+        [MLNodesManager.instance registerScene:arView.scene];
         
         // configuration(s)
         arView.autoenablesDefaultLighting = YES;

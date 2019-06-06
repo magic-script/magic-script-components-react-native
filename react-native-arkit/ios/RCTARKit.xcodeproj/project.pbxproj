@@ -8,10 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		10062C831F127572009AE974 /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 10062C821F127572009AE974 /* RCTARKitManager.m */; };
-		1021FE1C1F3EDB98000E7339 /* ARModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1021FE181F3EDB90000E7339 /* ARModelManager.m */; };
-		1021FE1D1F3EDB9B000E7339 /* ARTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1021FE191F3EDB90000E7339 /* ARTextManager.m */; };
 		105F124E1F7C0719006D4BA3 /* RCTConvert+ARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 105F124D1F7C0718006D4BA3 /* RCTConvert+ARKit.m */; };
-		10DCBC4B1F7CE836008C89E7 /* ARGeosManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 10DCBC4A1F7CE836008C89E7 /* ARGeosManager.m */; };
 		10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 10ED47A61F38BC00004DF043 /* DeviceMotion.m */; };
 		10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */; };
 		10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */; };
@@ -26,9 +23,13 @@
 		44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F50229F000100EF1F42 /* SCNMatrix4Extension.swift */; };
 		44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F51229F000100EF1F42 /* SCNVector3Extension.swift */; };
 		44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44437FC0229F143700EF1F42 /* ARComponentManager.m */; };
+		44896CD222A8ED1C0019855C /* ARGeosManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CC922A8ED1C0019855C /* ARGeosManager.m */; };
+		44896CD322A8ED1C0019855C /* RCTARKitSpriteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */; };
+		44896CD422A8ED1C0019855C /* ARTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CCF22A8ED1C0019855C /* ARTextManager.m */; };
+		44896CD522A8ED1C0019855C /* RCTARKitSpriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */; };
+		44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD122A8ED1C0019855C /* ARModelManager.m */; };
+		44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44896CDA22A8F83D0019855C /* MLNodesManager.swift */; };
 		B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */ = {isa = PBXBuildFile; fileRef = B1990B211FCEEBD60001AE2F /* color-grabber.m */; };
-		B1CEA29F204C14090025C1B8 /* RCTARKitSpriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CEA29E204C14090025C1B8 /* RCTARKitSpriteView.m */; };
-		B1CEA2A3204C160D0025C1B8 /* RCTARKitSpriteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CEA2A2204C160D0025C1B8 /* RCTARKitSpriteViewManager.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RCTARKit.m */; };
 /* End PBXBuildFile section */
 
@@ -56,14 +57,8 @@
 /* Begin PBXFileReference section */
 		10062C811F127566009AE974 /* RCTARKitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitManager.h; sourceTree = "<group>"; };
 		10062C821F127572009AE974 /* RCTARKitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
-		1021FE181F3EDB90000E7339 /* ARModelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARModelManager.m; sourceTree = "<group>"; };
-		1021FE191F3EDB90000E7339 /* ARTextManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARTextManager.m; sourceTree = "<group>"; };
-		1021FE1A1F3EDB90000E7339 /* ARTextManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARTextManager.h; sourceTree = "<group>"; };
-		1021FE1B1F3EDB90000E7339 /* ARModelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARModelManager.h; sourceTree = "<group>"; };
 		105F124C1F7C0718006D4BA3 /* RCTConvert+ARKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+ARKit.h"; sourceTree = "<group>"; };
 		105F124D1F7C0718006D4BA3 /* RCTConvert+ARKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+ARKit.m"; sourceTree = "<group>"; };
-		10DCBC491F7CE836008C89E7 /* ARGeosManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARGeosManager.h; sourceTree = "<group>"; };
-		10DCBC4A1F7CE836008C89E7 /* ARGeosManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARGeosManager.m; sourceTree = "<group>"; };
 		10ED47A51F38BC00004DF043 /* DeviceMotion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceMotion.h; sourceTree = "<group>"; };
 		10ED47A61F38BC00004DF043 /* DeviceMotion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceMotion.m; sourceTree = "<group>"; };
 		10FEF60F1F774C8F00EC21AE /* RCTARKitNodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitNodes.h; sourceTree = "<group>"; };
@@ -85,14 +80,21 @@
 		44437F52229F001200EF1F42 /* RCTARKit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTARKit-Bridging-Header.h"; sourceTree = "<group>"; };
 		44437FBF229F141E00EF1F42 /* ARComponentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
 		44437FC0229F143700EF1F42 /* ARComponentManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARComponentManager.m; sourceTree = "<group>"; };
+		44896CC822A8ED1C0019855C /* RCTARKitSpriteViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteViewManager.h; sourceTree = "<group>"; };
+		44896CC922A8ED1C0019855C /* ARGeosManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARGeosManager.m; sourceTree = "<group>"; };
+		44896CCA22A8ED1C0019855C /* ARTextManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARTextManager.h; sourceTree = "<group>"; };
+		44896CCB22A8ED1C0019855C /* ARModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARModelManager.h; sourceTree = "<group>"; };
+		44896CCC22A8ED1C0019855C /* RCTARKitSpriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteView.h; sourceTree = "<group>"; };
+		44896CCD22A8ED1C0019855C /* ARGeosManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGeosManager.h; sourceTree = "<group>"; };
+		44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteViewManager.m; sourceTree = "<group>"; };
+		44896CCF22A8ED1C0019855C /* ARTextManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARTextManager.m; sourceTree = "<group>"; };
+		44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteView.m; sourceTree = "<group>"; };
+		44896CD122A8ED1C0019855C /* ARModelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARModelManager.m; sourceTree = "<group>"; };
+		44896CDA22A8F83D0019855C /* MLNodesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLNodesManager.swift; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1990B201FCEEBD60001AE2F /* color-grabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "color-grabber.h"; sourceTree = "<group>"; };
 		B1990B211FCEEBD60001AE2F /* color-grabber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "color-grabber.m"; sourceTree = "<group>"; };
-		B1CEA29E204C14090025C1B8 /* RCTARKitSpriteView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteView.m; sourceTree = "<group>"; };
-		B1CEA2A0204C15500025C1B8 /* RCTARKitSpriteView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteView.h; sourceTree = "<group>"; };
-		B1CEA2A1204C15FE0025C1B8 /* RCTARKitSpriteViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteViewManager.h; sourceTree = "<group>"; };
-		B1CEA2A2204C160D0025C1B8 /* RCTARKitSpriteViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteViewManager.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RCTARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKit.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RCTARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,18 +113,9 @@
 		106999E21F3EC2FB00032829 /* components */ = {
 			isa = PBXGroup;
 			children = (
-				B1CEA2A1204C15FE0025C1B8 /* RCTARKitSpriteViewManager.h */,
-				B1CEA2A2204C160D0025C1B8 /* RCTARKitSpriteViewManager.m */,
-				B1CEA2A0204C15500025C1B8 /* RCTARKitSpriteView.h */,
-				B1CEA29E204C14090025C1B8 /* RCTARKitSpriteView.m */,
-				10DCBC491F7CE836008C89E7 /* ARGeosManager.h */,
-				10DCBC4A1F7CE836008C89E7 /* ARGeosManager.m */,
-				1021FE1A1F3EDB90000E7339 /* ARTextManager.h */,
-				1021FE191F3EDB90000E7339 /* ARTextManager.m */,
+				44896CC722A8ED1C0019855C /* legacy */,
 				44437FBF229F141E00EF1F42 /* ARComponentManager.h */,
 				44437FC0229F143700EF1F42 /* ARComponentManager.m */,
-				1021FE1B1F3EDB90000E7339 /* ARModelManager.h */,
-				1021FE181F3EDB90000E7339 /* ARModelManager.m */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -142,6 +135,7 @@
 				44437F49229F000100EF1F42 /* MLButtonNode.swift */,
 				44437F47229F000100EF1F42 /* MLImageNode.swift */,
 				44437F48229F000100EF1F42 /* MLTextNode.swift */,
+				44896CDA22A8F83D0019855C /* MLNodesManager.swift */,
 			);
 			path = msx_components;
 			sourceTree = "<group>";
@@ -158,6 +152,23 @@
 				44437F51229F000100EF1F42 /* SCNVector3Extension.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		44896CC722A8ED1C0019855C /* legacy */ = {
+			isa = PBXGroup;
+			children = (
+				44896CC822A8ED1C0019855C /* RCTARKitSpriteViewManager.h */,
+				44896CC922A8ED1C0019855C /* ARGeosManager.m */,
+				44896CCA22A8ED1C0019855C /* ARTextManager.h */,
+				44896CCB22A8ED1C0019855C /* ARModelManager.h */,
+				44896CCC22A8ED1C0019855C /* RCTARKitSpriteView.h */,
+				44896CCD22A8ED1C0019855C /* ARGeosManager.h */,
+				44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */,
+				44896CCF22A8ED1C0019855C /* ARTextManager.m */,
+				44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */,
+				44896CD122A8ED1C0019855C /* ARModelManager.m */,
+			);
+			path = legacy;
 			sourceTree = "<group>";
 		};
 		58B511D21A9E6C8500147676 = {
@@ -231,7 +242,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1010;
-				ORGANIZATIONNAME = HippoAR;
+				ORGANIZATIONNAME = nomtek;
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -262,28 +273,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */,
-				10DCBC4B1F7CE836008C89E7 /* ARGeosManager.m in Sources */,
 				10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */,
 				44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */,
 				44437FBC229F112600EF1F42 /* SCNQuaternionExtension.swift in Sources */,
 				44437FBB229F112600EF1F42 /* Maths.swift in Sources */,
+				44896CD222A8ED1C0019855C /* ARGeosManager.m in Sources */,
 				B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */,
+				44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */,
 				44437FBA229F112600EF1F42 /* SCNNode+Debug.swift in Sources */,
-				1021FE1C1F3EDB98000E7339 /* ARModelManager.m in Sources */,
-				1021FE1D1F3EDB9B000E7339 /* ARTextManager.m in Sources */,
 				44437FB5229F112200EF1F42 /* MLButtonNode.swift in Sources */,
 				105F124E1F7C0719006D4BA3 /* RCTConvert+ARKit.m in Sources */,
+				44896CD422A8ED1C0019855C /* ARTextManager.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */,
+				44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */,
 				10062C831F127572009AE974 /* RCTARKitManager.m in Sources */,
-				B1CEA29F204C14090025C1B8 /* RCTARKitSpriteView.m in Sources */,
 				44437FB7229F112200EF1F42 /* MLTextNode.swift in Sources */,
 				44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */,
 				44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */,
 				44437FB6229F112200EF1F42 /* MLImageNode.swift in Sources */,
 				44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */,
-				B1CEA2A3204C160D0025C1B8 /* RCTARKitSpriteViewManager.m in Sources */,
 				10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */,
 				44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */,
+				44896CD322A8ED1C0019855C /* RCTARKitSpriteViewManager.m in Sources */,
+				44896CD522A8ED1C0019855C /* RCTARKitSpriteView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

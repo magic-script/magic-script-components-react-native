@@ -1,7 +1,7 @@
 import ARKitRenderer from './arkit-renderer.js';
 
-const ARKitScript = {
-  render(element, container, callback) {
+const ARKitScript = {    
+    render: (element, container, callback) => {
         console.log('[MSX] render.element: ', element);
         if (!container.__rootContainer) {
         container.__rootContainer = ARKitRenderer.createContainer(container);

@@ -289,6 +289,7 @@ static id ObjectOrNull(id object)
 }
 
 #pragma mark - node register
+
 - (void)registerNode:(SCNNode *)node withId:(NSString *)nodeId {
     [self removeNode:nodeId];
     if (node) {

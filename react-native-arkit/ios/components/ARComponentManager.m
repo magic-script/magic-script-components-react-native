@@ -19,6 +19,59 @@
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(createViewNode:(SCNNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createViewNode: %@", nodeId);
+
+    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createTextNode:(MLTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createTextNode: %@", nodeId);
+    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createButtonNode:(MLButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createButtonNode: %@", nodeId);
+    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createImageNode:(MLTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createImageNode: %@", nodeId);
+    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
+    [MLNodesManager.instance addNode: nodeId toParent: parentId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"addChildNodeToContainer: %@", nodeId);
+    [MLNodesManager.instance addNodeToRoot: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"clearScene");
+    [MLNodesManager.instance clear];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(validateScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"validateScene");
+    [MLNodesManager.instance validateScene];
+    resolve(nil);
+}
+
+
+
+
+
 RCT_EXPORT_METHOD(addView:(SCNNode *)viewNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"addView: %@ [parentId: %@]", viewNode.name, parentId);
     [node addChildNode:viewNode];

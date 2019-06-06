@@ -10,9 +10,6 @@ import mxs from './mxs';
 import ARKitView from './ARKitView';
 import ARKitScript from './arkit/arkit-script/arkit-script';
 
-import startup from './startup';
-startup();
-
 export {
   mxs,
   ARKit,

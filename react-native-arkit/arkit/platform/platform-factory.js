@@ -1,12 +1,12 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
 import { NativeFactory } from '../../arkit/core/native-factory.js';
-// import { MxsLandscapeApp } from './mxs-landscape-app.js';
 import { NativeModules } from 'react-native';
 import PropTypes from 'prop-types';
 import { material } from '../../components/lib/propTypes';
 import createArComponent from '../../components/lib/createArComponent';
 import generateId from '../../components/lib/generateId';
+import omit from 'lodash/omit';
 
 export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
@@ -17,6 +17,8 @@ export class PlatformFactory extends NativeFactory {
         this.elementBuilders = {};
         this.controllerBuilders = {};
         this.controllers = new WeakMap();
+        this.componentManager = NativeModules.ARComponentManager;
+        this.componentManager.clearScene();
     }
 
     isController(element) {
@@ -62,36 +64,49 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _createElement(name, container, ...args) {
-        const props = args[0];
-        const identifier = props.id || generateId();
-        // return NativeModules.ARComponentManager.addText(identifier, props, null);
-        var component = undefined;
+        const props = omit(args[0], 'children');
+        const id = props.id || generateId();
+        const type = name;
+        
         if (name === 'text') {
-            component = createArComponent(
-                { mount: NativeModules.ARComponentManager.addText, pick: ['id', 'text', 'size', 'color'] },
-                {
-                    text: PropTypes.string,
-                    size: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number }),
-                    color: PropTypes.string,
-                    material
-                }, []);
+            this.componentManager.createTextNode(props, id);
         } else if (name === 'button') {
-            component = createArComponent(
-                { mount: NativeModules.ARComponentManager.addButton, pick: ['id', 'title', 'size', 'color'] },
-                {
-                    title: PropTypes.string,
-                    size: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number }),
-                    color: PropTypes.string,
-                    material
-                }, []);
+            this.componentManager.createButtonNode(props, id);
         } else if (name === 'view') {
-            component = createArComponent(
-                { mount: NativeModules.ARComponentManager.addView, pick: ['id'] },
-                {
-                }, []);
+            this.componentManager.createViewNode(props, id);
+        } else if (name === 'image') {
+            this.componentManager.createImageNode(props, id);
         }
-        // component.mount(identifier, props, null)
-        return new component.ARComponent(props);
+
+        return { type, id, props };
+
+        // var component = undefined;
+        // if (name === 'text') {
+        //     component = createArComponent(
+        //         { mount: NativeModules.ARComponentManager.addText, pick: ['id', 'text', 'size', 'color'] },
+        //         {
+        //             text: PropTypes.string,
+        //             size: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number }),
+        //             color: PropTypes.string,
+        //             material
+        //         }, []);
+        // } else if (name === 'button') {
+        //     component = createArComponent(
+        //         { mount: NativeModules.ARComponentManager.addButton, pick: ['id', 'title', 'size', 'color'] },
+        //         {
+        //             title: PropTypes.string,
+        //             size: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number }),
+        //             color: PropTypes.string,
+        //             material
+        //         }, []);
+        // } else if (name === 'view') {
+        //     component = createArComponent(
+        //         { mount: NativeModules.ARComponentManager.addView, pick: ['id'] },
+        //         {
+        //         }, []);
+        // }
+        // // component.mount(identifier, props, null);
+        // return component.ARComponent;
 
         // if (this.elementBuilders[name] === undefined) {
         //     const createBuilder = this._mapping.elements[name];
@@ -245,6 +260,7 @@ export class PlatformFactory extends NativeFactory {
     addChildElement(parent, child) {
         console.log('[FACTORY] addChildElement.parent: ', parent);
         console.log('[FACTORY] addChildElement.child: ', child);
+        this.componentManager.addChildNode(child.id, parent.id);
         // if (typeof child === 'string') {
         //     parent.setText(child);
         // } else if (typeof child === 'number') {
@@ -324,6 +340,7 @@ export class PlatformFactory extends NativeFactory {
         console.log('[FACTORY] appendChildToContainer.container: ', container);
         console.log('[FACTORY] appendChildToContainer.child: ', child);
 
+        this.componentManager.addChildNodeToContainer(child.id);
         // if (this.isController(child)){
         //     container.controller.addChildController(child);
         //     container.parent.addChild(child.getRoot());

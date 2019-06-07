@@ -55,7 +55,7 @@ import SceneKit
         node.name = nodeId
         if node is MLButtonNode {
             node.categoryBitMask = componentNodeBitMask
-            node.setBBox(visible: true)
+//            node.setBBox(visible: true)
         }
         nodesById[nodeId] = node
         print("register node: \(node)")

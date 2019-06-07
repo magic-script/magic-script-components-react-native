@@ -472,19 +472,19 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
 
 - (void)handleTapFrom: (UITapGestureRecognizer *)recognizer {
     // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
-    CGPoint tapPoint = [recognizer locationInView:self.arView];
-
+    const CGPoint tapPoint = [recognizer locationInView:self.arView];
+    MLNodesManager *nodesManager = MLNodesManager.instance;
     NSDictionary<SCNHitTestOption, id> *options = @{
-//                                                        SCNHitTestClipToZRangeKey: @(YES),
                                                         SCNHitTestBoundingBoxOnlyKey: @YES,
                                                         SCNHitTestIgnoreHiddenNodesKey: @YES,
-                                                        SCNHitTestOptionCategoryBitMask: @(6077601),
-//                                                        SCNHitTestRootNodeKey: MLNodesManager.instance.rootNode
+//                                                        SCNHitTestOptionCategoryBitMask: @(nodesManager.componentNodeBitMask),
+                                                        SCNHitTestRootNodeKey: nodesManager.rootNode,
                                                     };
     NSArray<SCNHitTestResult *> *results = [self.arView hitTest:tapPoint options:options];
     SCNHitTestResult *result = results.firstObject;
-    NSLog(@"result: %@", result);
-    [MLNodesManager.instance handleNodeTap: result.node];
+    if (result != nil) {
+        [MLNodesManager.instance handleNodeTap: result.node];
+    }
 //    if(self.onTapOnPlaneUsingExtent) {
 //        // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
 //        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlaneUsingExtent];
@@ -496,10 +496,6 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
 //        NSDictionary * planeHitResult = [self getPlaneHitResult:tapPoint types:ARHitTestResultTypeExistingPlane];
 //        self.onTapOnPlaneNoExtent(planeHitResult);
 //    }
-
-//    SCNVector3 from;
-//    SCNVector3 to;
-//    [MLNodesManager.instance hitTestFrom:from to:to];
 }
 
 

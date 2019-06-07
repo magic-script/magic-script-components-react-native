@@ -10,4 +10,6 @@
 
 @interface ARComponentManager : NSObject <RCTBridgeModule>
 
++ (instancetype)instance;
+
 @end

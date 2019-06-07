@@ -1,6 +1,6 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
-import { Image, NativeModules, processColor } from 'react-native';
+import { Image, NativeEventEmitter, NativeModules, processColor } from 'react-native';
 import { NativeFactory } from '../../arkit/core/native-factory.js';
 import PropTypes from 'prop-types';
 import { material } from '../../components/lib/propTypes';
@@ -19,30 +19,69 @@ export class PlatformFactory extends NativeFactory {
         this.controllers = new WeakMap();
         this.componentManager = NativeModules.ARComponentManager;
         this.componentManager.clearScene();
+        this.setupEventsManager();
+    }
+
+    setupEventsManager() {
+        this.eventsByElementId = {};
+
+        this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
+        const subscription = this.eventsManager.addListener('onPress', (sender) => {
+            const elementId = sender.nodeId;
+            console.log('[EVENTS] onPress received: ', elementId);
+            const events = this.eventsByElementId[elementId];
+            if (events !== undefined) {
+                const onPressEvents = events.filter(item => item.name === 'onPress');
+                onPressEvents.forEach(item => {
+                    console.log('[EVENTS] item: ', item);
+                    item.handler();
+                });
+            }
+        });
+        // Don't forget to unsubscribe, typically in componentWillUnmount
+        // subscription.remove();
+    }
+
+    registerEvent(elementId, name, handler) {
+        if (elementId === undefined) { return; }
+
+        this.componentManager.addOnPressEventHandler(elementId);
+
+        const pair = { name, handler };
+        var events = this.eventsByElementId[elementId];
+        if (events === undefined) {
+            events = [pair];
+            this.eventsByElementId[elementId] = events;
+            console.log(`[EVENTS] "${elementId}" register first ${name} event (${this.eventsByElementId[elementId].length}).`);
+        } else {
+            events.push(pair);
+            console.log(`[EVENTS] "${elementId}" register another ${name} event (${this.eventsByElementId[elementId].length}).`);
+        }
     }
 
     isController(element) {
         return this.controllers[element] !== undefined;
     }
 
-    setComponentEvents(element, properties) {
-        // const eventHandlers = Object.keys(properties)
-        //     .filter(key => key.length > 2 && key.startsWith('on'))
-        //     .map(key => ({ name: key, handler: properties[key] }));
+    setComponentEvents(elementId, properties) {
+        const eventHandlers = Object.keys(properties)
+            .filter(key => key.length > 2 && key.startsWith('on'))
+            .map(key => ({ name: key, handler: properties[key] }));
 
-        // for (const pair of eventHandlers) {
-        //     const eventName = UiNodeEvents[pair.name];
+        for (const pair of eventHandlers) {
+            const eventName = pair.name;//UiNodeEvents[pair.name];
 
-        //     if (eventName !== undefined) {
-        //         if (typeof pair.handler === 'function') {
-        //             element[eventName](pair.handler);
-        //         } else {
-        //             throw new TypeError(`The event handler for ${pair.name} is not a function`);
-        //         }
-        //     } else {
-        //         throw new TypeError(`Event ${pair.name} is not recognized event`);
-        //     }
-        // }
+            if (eventName !== undefined) {
+                if (typeof pair.handler === 'function') {
+                    this.registerEvent(elementId, pair.name, pair.handler);
+                    // element[eventName](pair.handler);
+                } else {
+                    throw new TypeError(`The event handler for ${pair.name} is not a function`);
+                }
+            } else {
+                throw new TypeError(`Event ${pair.name} is not recognized event`);
+            }
+        }
     }
 
     createElement(name, container, ...args) {
@@ -80,6 +119,7 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.createTextNode(props, id);
         } else if (name === 'button') {
             this.componentManager.createButtonNode(props, id);
+            this.setComponentEvents(id, props);
         } else if (name === 'view') {
             this.componentManager.createViewNode(props, id);
         } else if (name === 'image') {

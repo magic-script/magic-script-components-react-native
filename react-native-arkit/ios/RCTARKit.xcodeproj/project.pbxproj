@@ -29,6 +29,7 @@
 		44896CD522A8ED1C0019855C /* RCTARKitSpriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */; };
 		44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD122A8ED1C0019855C /* ARModelManager.m */; };
 		44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44896CDA22A8F83D0019855C /* MLNodesManager.swift */; };
+		44896D1E22AA796D0019855C /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896D1D22AA796C0019855C /* AREventsManager.m */; };
 		B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */ = {isa = PBXBuildFile; fileRef = B1990B211FCEEBD60001AE2F /* color-grabber.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RCTARKit.m */; };
 /* End PBXBuildFile section */
@@ -91,6 +92,8 @@
 		44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteView.m; sourceTree = "<group>"; };
 		44896CD122A8ED1C0019855C /* ARModelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARModelManager.m; sourceTree = "<group>"; };
 		44896CDA22A8F83D0019855C /* MLNodesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLNodesManager.swift; sourceTree = "<group>"; };
+		44896D1C22AA794B0019855C /* AREventsManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
+		44896D1D22AA796C0019855C /* AREventsManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1990B201FCEEBD60001AE2F /* color-grabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "color-grabber.h"; sourceTree = "<group>"; };
@@ -116,6 +119,8 @@
 				44896CC722A8ED1C0019855C /* legacy */,
 				44437FBF229F141E00EF1F42 /* ARComponentManager.h */,
 				44437FC0229F143700EF1F42 /* ARComponentManager.m */,
+				44896D1C22AA794B0019855C /* AREventsManager.h */,
+				44896D1D22AA796C0019855C /* AREventsManager.m */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -277,6 +282,7 @@
 				44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */,
 				44437FBC229F112600EF1F42 /* SCNQuaternionExtension.swift in Sources */,
 				44437FBB229F112600EF1F42 /* Maths.swift in Sources */,
+				44896D1E22AA796D0019855C /* AREventsManager.m in Sources */,
 				44896CD222A8ED1C0019855C /* ARGeosManager.m in Sources */,
 				B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */,
 				44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */,

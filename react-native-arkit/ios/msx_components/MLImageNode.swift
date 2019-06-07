@@ -46,7 +46,6 @@ import SceneKit
     }
 
     fileprivate func setupNode() {
-        categoryBitMask = 6077601
         planeGeometry = SCNPlane(width: 1, height: 1)
         planeGeometry.firstMaterial?.lightingModel = .constant
         addChildNode(SCNNode(geometry: planeGeometry))

@@ -237,6 +237,8 @@
 }
 
 + (MLButtonNode *)MLButtonNode:(id)json {
+    NSLog(@"json: %@", json);
+    NSLog(@"json.onPress: %@", json[@"onPress"]);
     NSString *title = [NSString stringWithFormat:@"%@", json[@"title"]];
     if (!title) {
         title = @"(null)";

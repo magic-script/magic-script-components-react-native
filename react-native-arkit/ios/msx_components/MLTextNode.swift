@@ -48,7 +48,6 @@ import SceneKit
     }
 
     fileprivate func setupNode() {
-        categoryBitMask = 6077601
         textGeometry = SCNText(string: "", extrusionDepth: 0)
         textGeometry.font = UIFont.systemFont(ofSize: 0.4)
         textGeometry.alignmentMode = CATextLayerAlignmentMode.center.rawValue

@@ -7,15 +7,34 @@
 //
 
 #import "ARComponentManager.h"
+#import "AREventsManager.h"
 #import "RCTARKitNodes.h"
 #import "RCTConvert+ARKit.h"
 #import "RCTARKit-Swift.h"
 
+static ARComponentManager *_instance = nil;
+
 @interface ARComponentManager ()
-@property(strong, nonatomic) NSMutableDictionary *callbackByNodeId;
+
+@property(nonatomic, strong) NSMutableDictionary *callbackByNodeId;
+//@property(nonatomic, copy) RCTResponseSenderBlock onPressCallback;
+
 @end
 
+
 @implementation ARComponentManager
+
++ (instancetype)instance {
+    return _instance;
+}
+
+- (id)init {
+    if (self = [super init]) {
+        _instance = self;
+    }
+    return self;
+}
+
 
 RCT_EXPORT_MODULE()
 
@@ -68,6 +87,33 @@ RCT_EXPORT_METHOD(validateScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromi
     resolve(nil);
 }
 
+//RCT_EXPORT_METHOD(listenToOnPressEvents:(RCTResponseSenderBlock)callback) {
+//    NSLog(@"listenToOnPressEvents");
+//    self.onPressCallback = callback;
+//}
+
+RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
+    NSLog(@"addOnPressEventHandler: %@", nodeId);
+    SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[MLButtonNode class]]) {
+        NSLog(@"startListeningToOnPressEvents: found button");
+        MLButtonNode *button = (MLButtonNode *)node;
+        button.onTap = ^(SCNNode *sender) {
+            NSLog(@"button onTap");
+//            weakSelf.onPressCallback(@[[NSNull null], sender.name]);
+            [[AREventsManager instance] onPressEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
+    NSLog(@"removeOnPressEventHandler: %@", nodeId);
+    SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[MLButtonNode class]]) {
+        MLButtonNode *button = (MLButtonNode *)node;
+        button.onTap = nil;
+    }
+}
 
 
 

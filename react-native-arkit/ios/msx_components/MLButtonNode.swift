@@ -26,6 +26,8 @@ import SceneKit
         }
     }
 
+    @objc var onTap: ((_ sender: SCNNode) -> (Void))?
+
     fileprivate var borderGeometry: SCNRectangle!
     fileprivate var contentNode: SCNNode!
     fileprivate var borderNode: SCNNode!
@@ -51,13 +53,13 @@ import SceneKit
         animation.autoreverses = true
         animation.repeatCount = 1
         contentNode.addAnimation(animation, forKey: "button_tap")
+        onTap?(self)
     }
 
     fileprivate func setupNode() {
         contentNode = SCNNode()
         addChildNode(contentNode)
 
-        categoryBitMask = 6077601
         textNode = MLTextNode()
         textNode.color = color
         contentNode.addChildNode(textNode)

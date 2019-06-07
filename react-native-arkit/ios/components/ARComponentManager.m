@@ -35,6 +35,10 @@ static ARComponentManager *_instance = nil;
     return self;
 }
 
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
 
 RCT_EXPORT_MODULE()
 
@@ -84,6 +88,12 @@ RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseR
 RCT_EXPORT_METHOD(validateScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"validateScene");
     [MLNodesManager.instance validateScene];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)properties resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"updateNode: %@", nodeId);
+    [MLNodesManager.instance updateNode:nodeId properties:properties];
     resolve(nil);
 }
 

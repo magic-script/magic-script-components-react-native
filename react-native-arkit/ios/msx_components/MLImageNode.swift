@@ -16,7 +16,7 @@ import SceneKit
 
     @objc var URL: URL? {
         didSet {
-            guard let url = URL else { return }
+            guard let url = URL else { image = nil; return }
             downloadImage(imageURL: url) { [weak self] (image) -> (Void) in
                 self?.image = image
             }

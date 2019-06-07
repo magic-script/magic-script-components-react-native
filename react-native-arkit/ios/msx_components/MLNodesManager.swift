@@ -107,4 +107,23 @@ import SceneKit
 
         return true
     }
+
+    @objc func updateNode(_ nodeId: String, properties: [String: Any]) {
+        guard let node = nodesById[nodeId] else { return }
+
+        if let imageNode = node as? MLImageNode {
+            if let source = properties["source"] {
+                print("source: \(source)")
+                imageNode.URL = RCTConvert.rctImageSource(source).request?.url
+            } else {
+                imageNode.URL = nil
+            }
+        } else if let textNode = node as? MLTextNode {
+            textNode.text = properties["text"] as? String
+
+            if let color = properties["color"] {
+                textNode.color = RCTConvert.uiColor(color)
+            }
+        }
+    }
 }

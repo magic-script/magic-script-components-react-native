@@ -348,28 +348,28 @@ static id ObjectOrNull(id object)
 
 - (bool)updateNode:(NSString *)nodeId properties:(NSDictionary *) properties {
     
-    SCNNode *node = [self getNodeWithId:nodeId];
-    //NSLog(@"updating node %@ :%@", nodeId, properties);
-    if(node) {
-        [RCTConvert setNodeProperties:node properties:properties];
-        if(node.geometry && properties[@"shape"]) {
-            [RCTConvert setShapeProperties:node.geometry properties:properties[@"shape"]];
-        }
-        if(properties[@"material"]) {
-            for (id material in node.geometry.materials) {
-                [RCTConvert setMaterialProperties:material properties:properties[@"material"]];
-            }
-        }
-        if(node.light) {
-            [RCTConvert setLightProperties:node.light properties:properties];
-        }
-        return true;
-    } else {
-        NSLog(@"WARNING: node does not exists: %@. This means that the node has not been mounted yet, so native calls got out of order", nodeId);
-        
-        return false;
-    }
-    
+//    SCNNode *node = [self getNodeWithId:nodeId];
+//    //NSLog(@"updating node %@ :%@", nodeId, properties);
+//    if(node) {
+//        [RCTConvert setNodeProperties:node properties:properties];
+//        if(node.geometry && properties[@"shape"]) {
+//            [RCTConvert setShapeProperties:node.geometry properties:properties[@"shape"]];
+//        }
+//        if(properties[@"material"]) {
+//            for (id material in node.geometry.materials) {
+//                [RCTConvert setMaterialProperties:material properties:properties[@"material"]];
+//            }
+//        }
+//        if(node.light) {
+//            [RCTConvert setLightProperties:node.light properties:properties];
+//        }
+//        return true;
+//    } else {
+//        NSLog(@"WARNING: node does not exists: %@. This means that the node has not been mounted yet, so native calls got out of order", nodeId);
+//
+//        return false;
+//    }
+    return false;
 }
 
 

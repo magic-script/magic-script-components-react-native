@@ -17,17 +17,13 @@
 
 RCT_EXPORT_MODULE()
 
-
-
 - (UIView *)view {
     return [ARKit sharedInstance];
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
     return YES;
 }
-
 
 - (NSDictionary *)constantsToExport
 {

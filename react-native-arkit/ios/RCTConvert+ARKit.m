@@ -14,27 +14,23 @@
 + (SCNMaterial *)SCNMaterial:(id)json {
     SCNMaterial *material = [SCNMaterial new];
     [self setMaterialProperties:material properties:json];
-    
     return material;
 }
 
-
-
 + (SCNVector3)SCNVector3:(id)json {
-    CGFloat x = [json[@"x"] floatValue];
-    CGFloat y = [json[@"y"] floatValue];
-    CGFloat z = [json[@"z"] floatValue];
+    const CGFloat x = [json[@"x"] floatValue];
+    const CGFloat y = [json[@"y"] floatValue];
+    const CGFloat z = [json[@"z"] floatValue];
     return SCNVector3Make(x, y, z);
 }
 
 + (SCNVector4)SCNVector4:(id)json {
-    CGFloat x = [json[@"x"] floatValue];
-    CGFloat y = [json[@"y"] floatValue];
-    CGFloat z = [json[@"z"] floatValue];
-    CGFloat w = [json[@"w"] floatValue];
+    const CGFloat x = [json[@"x"] floatValue];
+    const CGFloat y = [json[@"y"] floatValue];
+    const CGFloat z = [json[@"z"] floatValue];
+    const CGFloat w = [json[@"w"] floatValue];
     return SCNVector4Make(x, y, z, w);
 }
-
 
 + (SCNNode *)SCNNode:(id)json {
     SCNNode *node = [SCNNode new];
@@ -45,7 +41,6 @@
     return node;
 }
 
-
 + (void)addMaterials:(SCNGeometry *)geometry json:(id)json sides:(int) sides {
     SCNMaterial *material = [self SCNMaterial:json[@"material"]];
     
@@ -53,123 +48,6 @@
     for (int i = 0; i < sides; i++)
         [materials addObject: material];
     geometry.materials = materials;
-}
-
-+ (SCNBox *)SCNBox:(id)json {
-    NSDictionary *shape = json[@"shape"];
-    
-    
-    CGFloat width = [shape[@"width"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    CGFloat length = [shape[@"length"] floatValue];
-    CGFloat chamfer = [shape[@"chamfer"] floatValue];
-    SCNBox *geometry = [SCNBox boxWithWidth:width height:height length:length chamferRadius:chamfer];
-    
-    [self addMaterials:geometry json:json sides:6];
-    
-    return geometry;
-}
-
-
-+ (SCNSphere *)SCNSphere:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat radius = [shape[@"radius"] floatValue];
-    SCNSphere *geometry = [SCNSphere sphereWithRadius:radius];
-    
-    [self addMaterials:geometry json:json sides:1];
-    
-    return geometry;
-}
-
-+ (SCNCylinder *)SCNCylinder:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat radius = [shape[@"radius"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNCylinder *geometry = [SCNCylinder cylinderWithRadius:radius height:height];
-    
-    [self addMaterials:geometry json:json sides:3];
-    
-    return geometry;
-}
-
-+ (SCNCone *)SCNCone:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat topR = [shape[@"topR"] floatValue];
-    CGFloat bottomR = [shape[@"bottomR"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNCone *geometry = [SCNCone coneWithTopRadius:topR bottomRadius:bottomR height:height];
-    
-    [self addMaterials:geometry json:json sides:2];
-    
-    return geometry;
-}
-
-+ (SCNPyramid *)SCNPyramid:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat width = [shape[@"width"] floatValue];
-    CGFloat length = [shape[@"length"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNPyramid *geometry = [SCNPyramid pyramidWithWidth:width height:height length:length];
-    
-    [self addMaterials:geometry json:json sides:5];
-    
-    return geometry;
-}
-
-+ (SCNTube *)SCNTube:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat innerR = [shape[@"innerR"] floatValue];
-    CGFloat outerR = [shape[@"outerR"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNTube *geometry = [SCNTube tubeWithInnerRadius:innerR outerRadius:outerR height:height];
-    
-    [self addMaterials:geometry json:json sides:4];
-    
-    return geometry;
-}
-
-+ (SCNTorus *)SCNTorus:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat ringR = [shape[@"ringR"] floatValue];
-    CGFloat pipeR = [shape[@"pipeR"] floatValue];
-    SCNTorus *geometry = [SCNTorus torusWithRingRadius:ringR pipeRadius:pipeR];
-    
-    [self addMaterials:geometry json:json sides:1];
-    
-    return geometry;
-}
-
-+ (SCNCapsule *)SCNCapsule:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat capR = [shape[@"capR"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNCapsule *geometry = [SCNCapsule capsuleWithCapRadius:capR height:height];
-    
-    [self addMaterials:geometry json:json sides:1];
-    
-    return geometry;
-}
-
-+ (SCNPlane *)SCNPlane:(id)json {
-    NSDictionary* shape = json[@"shape"];
-    CGFloat width = [shape[@"width"] floatValue];
-    CGFloat height = [shape[@"height"] floatValue];
-    SCNPlane *geometry = [SCNPlane planeWithWidth:width height:height];
-    if(shape[@"cornerRadius"]) {
-        geometry.cornerRadius = [shape[@"cornerRadius"] floatValue];
-    }
-    if(shape[@"cornerSegmentCount"]) {
-        geometry.cornerSegmentCount = [shape[@"cornerSegmentCount"] intValue];
-    }
-    if(shape[@"widthSegmentCount"]) {
-        geometry.widthSegmentCount = [shape[@"widthSegmentCount"] intValue];
-    }
-    if(shape[@"heightSegmentCount"]) {
-        geometry.heightSegmentCount = [shape[@"heightSegmentCount"] intValue];
-    }
-    [self addMaterials:geometry json:json sides:1];
-    
-    return geometry;
 }
 
 + (SCNTextNode *)SCNTextNode:(id)json {
@@ -229,16 +107,7 @@
     return textNode;
 }
 
-
-+ (SCNLight *)SCNLight:(id)json {
-    SCNLight * light = [SCNLight light];
-    [self setLightProperties:light properties:json];
-    return light;
-}
-
 + (MLButtonNode *)MLButtonNode:(id)json {
-    NSLog(@"json: %@", json);
-    NSLog(@"json.onPress: %@", json[@"onPress"]);
     NSString *title = [NSString stringWithFormat:@"%@", json[@"title"]];
     if (!title) {
         title = @"(null)";
@@ -268,7 +137,6 @@
     [self setNodeProperties:imageNode properties:json];
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];
-    NSLog(@"imageNode=%@", imageNode);
 
     RCTImageSource *source = [self RCTImageSource:json[@"source"]];
     imageNode.URL = source.request.URL;
@@ -500,42 +368,6 @@
     }
 }
 
-
-+ (NSSet *) specialShapeProperties {
-    return [[NSSet alloc] initWithArray:
-            @[@"pathSvg", @"chamferProfilePathSvg"]];
-}
-
-
-+ (void)setShapeProperties:(SCNGeometry *)geometry properties:(id)shapeJson {
-    
-    // most properties are strings
-    for (NSString* key in shapeJson) {
-        if(![self.specialShapeProperties containsObject:key]) {
-            id value = [NSNumber numberWithFloat:[shapeJson[key] floatValue]];
-            [geometry setValue:value forKey:key];
-        }
-    }
-    
-//    if([geometry isKindOfClass:[SCNShape class]]) {
-//        SCNShape * shapeGeometry = (SCNShape * ) geometry;
-//        if(shapeJson[@"pathSvg"]) {
-//            NSString * pathString = shapeJson[@"pathSvg"];
-//            SVGBezierPath * path = [self svgStringToBezier:pathString];
-//            if (shapeJson[@"pathFlatness"]) {
-//                path.flatness = [shapeJson[@"pathFlatness"] floatValue];
-//            }
-//            shapeGeometry.path = path;
-//        }
-//        if (shapeJson[@"chamferProfilePathSvg"]) {
-//            [self setChamferProfilePathSvg: shapeGeometry properties:shapeJson];
-//        }
-//
-//    }
-}
-
-
-
 + (void)setLightProperties:(SCNLight *)light properties:(id)json {
     if (json[@"lightCategoryBitMask"]) {
         light.categoryBitMask = [json[@"lightCategoryBitMask"] integerValue];
@@ -606,11 +438,5 @@
         light.zNear = [json[@"zNear"] floatValue];
     }
 }
-
-+ (ARPlaneDetection)ARPlaneDetection:(id)number {
-    return (ARPlaneDetection)  [number integerValue];
-}
-
-
 
 @end

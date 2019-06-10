@@ -185,21 +185,29 @@
 			path = legacy;
 			sourceTree = "<group>";
 		};
-		58B511D21A9E6C8500147676 = {
+		449AF2D222AEF1FA0046938D /* legacy */ = {
 			isa = PBXGroup;
 			children = (
 				B1990B1F1FCEEBD60001AE2F /* color-grabber */,
-				106999E21F3EC2FB00032829 /* components */,
-				44437F46229F000100EF1F42 /* msx_components */,
 				10ED47A51F38BC00004DF043 /* DeviceMotion.h */,
 				10ED47A61F38BC00004DF043 /* DeviceMotion.m */,
-				B3E7B5881CC2AC0600A0062D /* RCTARKit.h */,
-				B3E7B5891CC2AC0600A0062D /* RCTARKit.m */,
-				10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */,
 				10FEF6111F774C8F00EC21AE /* RCTARKitIO.h */,
 				10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */,
 				10FEF60F1F774C8F00EC21AE /* RCTARKitNodes.h */,
 				10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */,
+			);
+			path = legacy;
+			sourceTree = "<group>";
+		};
+		58B511D21A9E6C8500147676 = {
+			isa = PBXGroup;
+			children = (
+				449AF2D222AEF1FA0046938D /* legacy */,
+				106999E21F3EC2FB00032829 /* components */,
+				44437F46229F000100EF1F42 /* msx_components */,
+				B3E7B5881CC2AC0600A0062D /* RCTARKit.h */,
+				B3E7B5891CC2AC0600A0062D /* RCTARKit.m */,
+				10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */,
 				10062C811F127566009AE974 /* RCTARKitManager.h */,
 				10062C821F127572009AE974 /* RCTARKitManager.m */,
 				105F124C1F7C0718006D4BA3 /* RCTConvert+ARKit.h */,

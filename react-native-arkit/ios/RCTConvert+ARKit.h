@@ -24,17 +24,6 @@
 + (SCNVector4)SCNVector4:(id)json;
 + (SCNNode *)SCNNode:(id)json;
 
-+ (SCNBox *)SCNBox:(id)json;
-+ (SCNSphere *)SCNSphere:(id)json;
-+ (SCNCylinder *)SCNCylinder:(id)json;
-+ (SCNCone *)SCNCone:(id)json;
-+ (SCNPyramid *)SCNPyramid:(id)json;
-+ (SCNTube *)SCNTube:(id)json;
-+ (SCNTorus *)SCNTorus:(id)json;
-+ (SCNCapsule *)SCNCapsule:(id)json;
-+ (SCNPlane *)SCNPlane:(id)json;
-+ (SCNLight *)SCNLight:(id)json;
-
 + (SCNTextNode *)SCNTextNode:(id)json;
 + (MLButtonNode *)MLButtonNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
@@ -42,10 +31,7 @@
 
 + (void)setNodeProperties:(SCNNode *)node properties:(id)json;
 + (void)setMaterialProperties:(SCNMaterial *)material properties:(id)json;
-+ (void)setShapeProperties:(SCNGeometry *)geometry properties:(id)json;
 + (void)setLightProperties:(SCNLight *)light properties:(id)json;
-
-+ (ARPlaneDetection)ARPlaneDetection:(id)number;
 
 @end
 

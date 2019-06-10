@@ -22,12 +22,11 @@ class ListApp extends Component {
 
     renderList = () => {
         const { items } = this.state;
-        const foo = items.map((item, index) => {
+        return items.map((item, index) => {
             const x = -2 + 2 * Math.floor(index / 5);
             const y = -(index % 5);
             return <text key={index} text={item} position={{ x: x, y, z: 0 }} />;
         });
-        return foo;
     }
     
     render() {
@@ -37,6 +36,7 @@ class ListApp extends Component {
                     <button position={{ x: -1.5, y: 0, z: 0 }} title={'Add'} color='cyan' onPress={() => this.onAddItemButtonPress()} />
                     <button position={{ x: 1.5, y: 0, z: 0 }} title={'Remove'} color='cyan' onPress={() => this.onRemoveItemButtonPress()} />
                 </view>
+                <text text={'ffdsajdf'}>fdsfsd</text>
                 <view name='list'>
                     {this.renderList()}
                 </view>

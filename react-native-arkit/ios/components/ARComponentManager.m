@@ -79,6 +79,12 @@ RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId resolve:(RCTPromise
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"removeChildNode: %@ fromParentNode: %@", nodeId, parentId);
+    [MLNodesManager.instance removeNode: nodeId fromParent: parentId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"clearScene");
     [MLNodesManager.instance clear];

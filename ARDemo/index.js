@@ -6,6 +6,6 @@ AppRegistry.registerComponent('ARDemo', () => App);
 
 import React from 'react';
 import { ARKitScript } from 'react-native-arkit';
-import ARKitApp from './src/ARKitApp';
+import ListApp from './src/ListApp';
 
-ARKitScript.render(<ARKitApp />, { name: 'root' });
+ARKitScript.render(<ListApp />, { name: 'root' });

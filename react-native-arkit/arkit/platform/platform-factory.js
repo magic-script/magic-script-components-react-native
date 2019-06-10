@@ -7,6 +7,7 @@ import { material } from '../../components/lib/propTypes';
 import createArComponent from '../../components/lib/createArComponent';
 import generateId from '../../components/lib/generateId';
 import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
 
 export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
@@ -187,6 +188,14 @@ export class PlatformFactory extends NativeFactory {
     updateElement(name, ...args) {
         console.log('[FACTORY] updateElement.name', name);
         console.log('[FACTORY] updateElement.args', args);
+        const oldProps = this._parseCustomProps(omit(args[1], 'children'));
+        const newProps = this._parseCustomProps(omit(args[2], 'children'));
+        if (!isEqual(oldProps, newProps)) {
+            console.log('[FACTORY] updateElement.newProps: ', newProps);
+            const element = args[0];
+            this.componentManager.updateNode(element.id, newProps);
+        }
+        
         // if (typeof name !== 'string')
         // {
         //     throw new Error('PlatformFactory.updateElement expects "name" to be string');
@@ -366,8 +375,9 @@ export class PlatformFactory extends NativeFactory {
     }
 
     removeChildElement(parent, child) {
-        console.log('[FACTORY] addChildElement.parent: ', parent);
-        console.log('[FACTORY] addChildElement.child: ', child);
+        console.log('[FACTORY] removeChildElement.parent: ', parent);
+        console.log('[FACTORY] removeChildElement.child: ', child);
+        this.componentManager.removeChildNode(child.id, parent.id);
         // if (typeof child === 'string' || typeof child === 'number') {
         //     parent.setText('');
         // } else {

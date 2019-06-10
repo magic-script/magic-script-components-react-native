@@ -74,6 +74,14 @@ import SceneKit
         }
     }
 
+    @objc func removeNode(_ nodeId: String, fromParent parentId: String) {
+        if let node = nodesById[nodeId],
+            let parentNode = nodesById[parentId],
+            parentNode == node.parent {
+            node.removeFromParentNode()
+        }
+    }
+
     @objc func clear() {
         nodesById.forEach { (key: String, value: SCNNode) in
             value.removeFromParentNode()

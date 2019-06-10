@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class ARKitApp extends Component {
+class MenuApp extends Component {
   state = { sampleImage: undefined, counter: 0 }
 
   onPlayButtonPress = () => {
@@ -17,7 +17,6 @@ class ARKitApp extends Component {
   }
 
   render() {
-    console.log('[EVENTS] render ', this.state.source);
     return (
       <view position={{ x: 0, y: 0, z: 0 }}>
         <text text={`Main menu ${this.state.counter}`} position={{ x: 0, y: 0, z: 0 }} color={'yellow'} />
@@ -35,4 +34,4 @@ class ARKitApp extends Component {
   }
 }
 
-export default ARKitApp;
+export default MenuApp;

@@ -30,6 +30,9 @@
 		44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD122A8ED1C0019855C /* ARModelManager.m */; };
 		44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44896CDA22A8F83D0019855C /* MLNodesManager.swift */; };
 		44896D1E22AA796D0019855C /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896D1D22AA796C0019855C /* AREventsManager.m */; };
+		449AF2CD22AE87100046938D /* UiGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2CC22AE87100046938D /* UiGroupNode.swift */; };
+		449AF2CF22AE8D810046938D /* UiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2CE22AE8D810046938D /* UiNode.swift */; };
+		449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2D022AE8D8D0046938D /* TransformNode.swift */; };
 		B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */ = {isa = PBXBuildFile; fileRef = B1990B211FCEEBD60001AE2F /* color-grabber.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RCTARKit.m */; };
 /* End PBXBuildFile section */
@@ -94,6 +97,9 @@
 		44896CDA22A8F83D0019855C /* MLNodesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLNodesManager.swift; sourceTree = "<group>"; };
 		44896D1C22AA794B0019855C /* AREventsManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
 		44896D1D22AA796C0019855C /* AREventsManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
+		449AF2CC22AE87100046938D /* UiGroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNode.swift; sourceTree = "<group>"; };
+		449AF2CE22AE8D810046938D /* UiNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNode.swift; sourceTree = "<group>"; };
+		449AF2D022AE8D8D0046938D /* TransformNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformNode.swift; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1990B201FCEEBD60001AE2F /* color-grabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "color-grabber.h"; sourceTree = "<group>"; };
@@ -140,6 +146,9 @@
 				44437F49229F000100EF1F42 /* MLButtonNode.swift */,
 				44437F47229F000100EF1F42 /* MLImageNode.swift */,
 				44437F48229F000100EF1F42 /* MLTextNode.swift */,
+				449AF2CC22AE87100046938D /* UiGroupNode.swift */,
+				449AF2CE22AE8D810046938D /* UiNode.swift */,
+				449AF2D022AE8D8D0046938D /* TransformNode.swift */,
 				44896CDA22A8F83D0019855C /* MLNodesManager.swift */,
 			);
 			path = msx_components;
@@ -280,6 +289,7 @@
 				10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */,
 				10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */,
 				44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */,
+				449AF2CD22AE87100046938D /* UiGroupNode.swift in Sources */,
 				44437FBC229F112600EF1F42 /* SCNQuaternionExtension.swift in Sources */,
 				44437FBB229F112600EF1F42 /* Maths.swift in Sources */,
 				44896D1E22AA796D0019855C /* AREventsManager.m in Sources */,
@@ -295,6 +305,8 @@
 				10062C831F127572009AE974 /* RCTARKitManager.m in Sources */,
 				44437FB7229F112200EF1F42 /* MLTextNode.swift in Sources */,
 				44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */,
+				449AF2CF22AE8D810046938D /* UiNode.swift in Sources */,
+				449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */,
 				44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */,
 				44437FB6229F112200EF1F42 /* MLImageNode.swift in Sources */,
 				44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */,

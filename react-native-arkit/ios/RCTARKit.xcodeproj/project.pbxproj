@@ -14,7 +14,7 @@
 		10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */; };
 		44437FB5229F112200EF1F42 /* MLButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F49229F000100EF1F42 /* MLButtonNode.swift */; };
 		44437FB6229F112200EF1F42 /* MLImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F47229F000100EF1F42 /* MLImageNode.swift */; };
-		44437FB7229F112200EF1F42 /* MLTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F48229F000100EF1F42 /* MLTextNode.swift */; };
+		44437FB7229F112200EF1F42 /* UiTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F48229F000100EF1F42 /* UiTextNode.swift */; };
 		44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */; };
 		44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4C229F000100EF1F42 /* SCNRectangle.swift */; };
 		44437FBA229F112600EF1F42 /* SCNNode+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4D229F000100EF1F42 /* SCNNode+Debug.swift */; };
@@ -72,7 +72,7 @@
 		10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitDelegate.h; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRCTARKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTARKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		44437F47229F000100EF1F42 /* MLImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLImageNode.swift; sourceTree = "<group>"; };
-		44437F48229F000100EF1F42 /* MLTextNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLTextNode.swift; sourceTree = "<group>"; };
+		44437F48229F000100EF1F42 /* UiTextNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTextNode.swift; sourceTree = "<group>"; };
 		44437F49229F000100EF1F42 /* MLButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLButtonNode.swift; sourceTree = "<group>"; };
 		44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNBBoxNode.swift; sourceTree = "<group>"; };
 		44437F4C229F000100EF1F42 /* SCNRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRectangle.swift; sourceTree = "<group>"; };
@@ -145,7 +145,7 @@
 				44437F4A229F000100EF1F42 /* Utils */,
 				44437F49229F000100EF1F42 /* MLButtonNode.swift */,
 				44437F47229F000100EF1F42 /* MLImageNode.swift */,
-				44437F48229F000100EF1F42 /* MLTextNode.swift */,
+				44437F48229F000100EF1F42 /* UiTextNode.swift */,
 				449AF2CC22AE87100046938D /* UiGroupNode.swift */,
 				449AF2CE22AE8D810046938D /* UiNode.swift */,
 				449AF2D022AE8D8D0046938D /* TransformNode.swift */,
@@ -303,7 +303,7 @@
 				B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */,
 				44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */,
 				10062C831F127572009AE974 /* RCTARKitManager.m in Sources */,
-				44437FB7229F112200EF1F42 /* MLTextNode.swift in Sources */,
+				44437FB7229F112200EF1F42 /* UiTextNode.swift in Sources */,
 				44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */,
 				449AF2CF22AE8D810046938D /* UiNode.swift in Sources */,
 				449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */,

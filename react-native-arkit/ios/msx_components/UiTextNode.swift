@@ -1,5 +1,5 @@
 //
-//  MLTextNode.swift
+//  UiTextNode.swift
 //  SceneKitDemo
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
@@ -8,29 +8,39 @@
 
 import SceneKit
 
-@objc class MLTextNode: SCNNode {
+@objc class UiTextNode: SCNNode {
 
     @objc var text: String? {
         get { return textGeometry.string as? String }
         set { textGeometry.string = newValue; updateTextNodePosition() }
     }
-
-    @objc var font: UIFont {
-        get { return textGeometry.font }
-        set { textGeometry.font = newValue; updateTextNodePosition() }
-    }
-
-    @objc var color: UIColor? {
+    @objc var textColor: UIColor? {
         get { return textGeometry.firstMaterial?.diffuse.contents as? UIColor }
         set { textGeometry.firstMaterial?.diffuse.contents = newValue }
     }
+    @objc var textSize: CGFloat {
+        get { return self.font.pointSize }
+        set { self.font = UIFont(name: self.font.familyName, size: newValue)! }
+    }
 
-    @objc var size: CGSize {
+    // @objc var allCaps: Bool // TODO: property to defined
+    // @objc var charSpacing: CGFloat // TODO: property to defined
+    // @objc var lineSpacing: CGFloat // TODO: property to defined
+    // @objc var textAlignment: HorizontalTextAlignment // TODO: property to defined
+    // @objc var style: UIFont.TextStyle // TODO: property to defined
+    // @objc var weight: UIFont.Weight // TODO: property to defined
+    @objc var boundsSize: CGSize {
         get { return textGeometry.containerFrame.size }
         set {
             textGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: newValue)
             updateTextNodePosition()
         }
+    }
+    @objc var wrap: Bool = true
+    // @objc var font: FontParams // use UIFont instead
+    @objc var font: UIFont {
+        get { return textGeometry.font }
+        set { textGeometry.font = newValue; updateTextNodePosition() }
     }
 
     fileprivate var textGeometry: SCNText!

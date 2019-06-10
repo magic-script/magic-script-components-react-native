@@ -126,11 +126,11 @@ import SceneKit
             } else {
                 imageNode.URL = nil
             }
-        } else if let textNode = node as? MLTextNode {
+        } else if let textNode = node as? UiTextNode {
             textNode.text = properties["text"] as? String
 
             if let color = properties["color"] {
-                textNode.color = RCTConvert.uiColor(color)
+                textNode.textColor = RCTConvert.uiColor(color)
             }
         }
     }

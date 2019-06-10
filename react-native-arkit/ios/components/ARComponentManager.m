@@ -49,7 +49,7 @@ RCT_EXPORT_METHOD(createViewNode:(SCNNode *)node nodeId:(NSString *)nodeId resol
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createTextNode:(MLTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createTextNode: %@", nodeId);
     [MLNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
@@ -155,7 +155,7 @@ RCT_EXPORT_METHOD(addImage:(MLImageNode *)imageNode node:(SCNNode *)node frame:(
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(addText:(MLTextNode *)textNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(addText:(UiTextNode *)textNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"addText: %@ [parentId: %@]", textNode.name, parentId);
     [node addChildNode:textNode];
     [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];

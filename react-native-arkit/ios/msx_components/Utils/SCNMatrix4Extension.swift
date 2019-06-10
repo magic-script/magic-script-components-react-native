@@ -43,7 +43,10 @@ extension SCNMatrix4 {
     var right: SCNVector3 { return SCNVector3(m11, m12, m13) }
     var up: SCNVector3 { return SCNVector3(m21, m22, m23) }
     var forward: SCNVector3 { return SCNVector3(m31, m32, m33) }
-    var position: SCNVector3 { return SCNVector3(m41, m42, m43) }
+    var position: SCNVector3 {
+        get { return SCNVector3(m41, m42, m43) }
+        set { m41 = newValue.x; m42 = newValue.y; m43 = newValue.z; }
+    }
 
     public static func fromQuaternion(quat: SCNQuaternion) -> SCNMatrix4 {
         let q: GLKQuaternion = GLKQuaternionMake(Float(quat.x), Float(quat.y), Float(quat.z), Float(quat.w))

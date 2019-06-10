@@ -21,7 +21,7 @@ import SceneKit
 
     @objc var color: UIColor = UIColor.blue {
         didSet {
-            textNode.color = color
+            textNode.textColor = color
             borderGeometry.materials.first?.diffuse.contents = color
         }
     }
@@ -31,7 +31,7 @@ import SceneKit
     fileprivate var borderGeometry: SCNRectangle!
     fileprivate var contentNode: SCNNode!
     fileprivate var borderNode: SCNNode!
-    fileprivate var textNode: MLTextNode!
+    fileprivate var textNode: UiTextNode!
 
     @objc override init() {
         super.init()
@@ -60,15 +60,15 @@ import SceneKit
         contentNode = SCNNode()
         addChildNode(contentNode)
 
-        textNode = MLTextNode()
-        textNode.color = color
+        textNode = UiTextNode()
+        textNode.textColor = color
         contentNode.addChildNode(textNode)
 
         updateNodeSize()
     }
 
     fileprivate func updateNodeSize() {
-        textNode.size = CGSize(width: size.width, height: size.height)
+        textNode.boundsSize = CGSize(width: size.width, height: size.height)
 
         borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)

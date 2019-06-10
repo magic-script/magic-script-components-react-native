@@ -276,28 +276,28 @@
     return imageNode;
 }
 
-+ (MLTextNode *)MLTextNode:(id)json {
++ (UiTextNode *)UiTextNode:(id)json {
     NSString *text = [NSString stringWithFormat:@"%@", json[@"text"]];
     if (!text) {
         text = @"(null)";
     }
 
-    NSDictionary *sizeDict = json[@"size"];
+    NSDictionary *sizeDict = json[@"boundsSize"];
     CGSize size = CGSizeMake(2.f, 1.f);
     if (sizeDict) {
-        size.width = [sizeDict[@"width"] floatValue];
-        size.height = [sizeDict[@"height"] floatValue];
+        size.width = [sizeDict[@"x"] floatValue];
+        size.height = [sizeDict[@"y"] floatValue];
     }
 
-    UIColor *color = json[@"color"] ? [self UIColor:json[@"color"]] : UIColor.whiteColor;
+    UIColor *textColor = json[@"textColor"] ? [self UIColor:json[@"textColor"]] : UIColor.whiteColor;
 
-    MLTextNode *textNode = [MLTextNode new];
+    UiTextNode *textNode = [UiTextNode new];
     [self setNodeProperties:textNode properties:json];
     textNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     textNode.text = text;
 //    textNode.font = font;
-    textNode.size = size;
-    textNode.color = color;
+    textNode.boundsSize = size;
+    textNode.textColor = textColor;
 
     return textNode;
 }

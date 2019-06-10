@@ -38,6 +38,7 @@ typedef void (^RCTARKitReject)(NSString *code, NSString *message, NSError *error
 @property (nonatomic, assign) ARPlaneDetection planeDetection;
 @property (nonatomic, assign) BOOL lightEstimationEnabled;
 @property (nonatomic, assign) BOOL autoenablesDefaultLighting;
+@property (nonatomic, assign) BOOL rendersContinuously;
 @property (nonatomic, assign) NSDictionary* origin;
 @property (nonatomic, assign) ARWorldAlignment worldAlignment;
 @property (nonatomic, assign) NSArray* detectionImages;

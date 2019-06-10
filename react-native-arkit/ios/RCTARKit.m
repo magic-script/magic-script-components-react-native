@@ -86,6 +86,7 @@ static RCTARKit *instance = nil;
         
         // configuration(s)
         arView.autoenablesDefaultLighting = YES;
+        arView.rendersContinuously = YES;
         arView.scene.rootNode.name = @"root";
         
         #if TARGET_IPHONE_SIMULATOR
@@ -218,6 +219,16 @@ static RCTARKit *instance = nil;
 
 - (BOOL)autoenablesDefaultLighting {
     return self.arView.autoenablesDefaultLighting;
+}
+
+- (void)setRendersContinuously:(BOOL)rendersContinuously {
+    NSLog(@"setRendersContinuously1: %d", (int)rendersContinuously);
+    self.arView.rendersContinuously = rendersContinuously;
+    NSLog(@"setRendersContinuously2: %d", (int)self.arView.rendersContinuously);
+}
+
+- (BOOL)rendersContinuously {
+    return self.arView.rendersContinuously;
 }
 
 - (ARWorldAlignment)worldAlignment {

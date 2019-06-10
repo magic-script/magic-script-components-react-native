@@ -22,7 +22,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>Sample React Native App</Text>
-        <ARKitView style={styles.arkitView}>
+        <ARKitView style={styles.arkitView} rendersContinuously={true}>
             <Text style={styles.sceneTitle}>Scene 3d view</Text>
             {/* <mxs.view position={{ x: 0, y: 0, z: 0 }}>
               <mxs.text position={{ x: 0, y: 1.2, z: 0 }} text={'Main menu'} color='cyan'/>

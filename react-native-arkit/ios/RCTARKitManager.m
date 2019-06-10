@@ -161,6 +161,7 @@ RCT_EXPORT_VIEW_PROPERTY(planeDetection, ARPlaneDetection)
 RCT_EXPORT_VIEW_PROPERTY(origin, NSDictionary *)
 RCT_EXPORT_VIEW_PROPERTY(lightEstimationEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(autoenablesDefaultLighting, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rendersContinuously, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(worldAlignment, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(detectionImages, NSArray *)
 

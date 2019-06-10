@@ -45,6 +45,7 @@ import SceneKit
 
     @objc func simulateTap() {
 
+        onTap?(self)
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
         animation.fromValue = initialPosition.z
@@ -53,7 +54,6 @@ import SceneKit
         animation.autoreverses = true
         animation.repeatCount = 1
         contentNode.addAnimation(animation, forKey: "button_tap")
-        onTap?(self)
     }
 
     fileprivate func setupNode() {

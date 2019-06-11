@@ -42,7 +42,7 @@ import SceneKit
             }
             componentNode = componentNode?.parent
         }
-        guard let button = componentNode as? MLButtonNode else { return }
+        guard let button = componentNode as? UiButtonNode else { return }
         print("button tap: \(button)")
         button.simulateTap()
     }
@@ -53,7 +53,7 @@ import SceneKit
 
     @objc func registerNode(_ node: SCNNode, nodeId: String) {
         node.name = nodeId
-        if node is MLButtonNode {
+        if node is UiButtonNode {
             node.categoryBitMask = componentNodeBitMask
 //            node.setBBox(visible: true)
         }
@@ -116,10 +116,10 @@ import SceneKit
         return true
     }
 
-    @objc func updateNode(_ nodeId: String, properties: [String: Any]) {
-        guard let node = nodesById[nodeId] else { return }
+    @objc func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
+        guard let node = nodesById[nodeId] else { return false }
 
-        if let imageNode = node as? MLImageNode {
+        if let imageNode = node as? UiImageNode {
             if let source = properties["source"] {
                 print("source: \(source)")
                 imageNode.URL = RCTConvert.rctImageSource(source).request?.url
@@ -133,5 +133,7 @@ import SceneKit
                 textNode.textColor = RCTConvert.uiColor(color)
             }
         }
+
+        return true
     }
 }

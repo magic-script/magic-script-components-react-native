@@ -36,7 +36,7 @@ class ListApp extends Component {
                     <button position={{ x: -1.5, y: 0, z: 0 }} title={'Add'} color='cyan' onPress={() => this.onAddItemButtonPress()} />
                     <button position={{ x: 1.5, y: 0, z: 0 }} title={'Remove'} color='cyan' onPress={() => this.onRemoveItemButtonPress()} />
                 </view>
-                <text text={'ffdsajdf'}>fdsfsd</text>
+                <text text={'text through attribute'}>text through children</text>
                 <view name='list'>
                     {this.renderList()}
                 </view>

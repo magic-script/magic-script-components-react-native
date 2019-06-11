@@ -12,8 +12,8 @@
 		10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 10ED47A61F38BC00004DF043 /* DeviceMotion.m */; };
 		10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */; };
 		10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */; };
-		44437FB5229F112200EF1F42 /* MLButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F49229F000100EF1F42 /* MLButtonNode.swift */; };
-		44437FB6229F112200EF1F42 /* MLImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F47229F000100EF1F42 /* MLImageNode.swift */; };
+		44437FB5229F112200EF1F42 /* UiButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F49229F000100EF1F42 /* UiButtonNode.swift */; };
+		44437FB6229F112200EF1F42 /* UiImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F47229F000100EF1F42 /* UiImageNode.swift */; };
 		44437FB7229F112200EF1F42 /* UiTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F48229F000100EF1F42 /* UiTextNode.swift */; };
 		44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */; };
 		44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4C229F000100EF1F42 /* SCNRectangle.swift */; };
@@ -71,9 +71,9 @@
 		10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitNodes.m; sourceTree = "<group>"; };
 		10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitDelegate.h; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRCTARKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTARKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		44437F47229F000100EF1F42 /* MLImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLImageNode.swift; sourceTree = "<group>"; };
+		44437F47229F000100EF1F42 /* UiImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiImageNode.swift; sourceTree = "<group>"; };
 		44437F48229F000100EF1F42 /* UiTextNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTextNode.swift; sourceTree = "<group>"; };
-		44437F49229F000100EF1F42 /* MLButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLButtonNode.swift; sourceTree = "<group>"; };
+		44437F49229F000100EF1F42 /* UiButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiButtonNode.swift; sourceTree = "<group>"; };
 		44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNBBoxNode.swift; sourceTree = "<group>"; };
 		44437F4C229F000100EF1F42 /* SCNRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRectangle.swift; sourceTree = "<group>"; };
 		44437F4D229F000100EF1F42 /* SCNNode+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Debug.swift"; sourceTree = "<group>"; };
@@ -143,8 +143,8 @@
 			isa = PBXGroup;
 			children = (
 				44437F4A229F000100EF1F42 /* Utils */,
-				44437F49229F000100EF1F42 /* MLButtonNode.swift */,
-				44437F47229F000100EF1F42 /* MLImageNode.swift */,
+				44437F49229F000100EF1F42 /* UiButtonNode.swift */,
+				44437F47229F000100EF1F42 /* UiImageNode.swift */,
 				44437F48229F000100EF1F42 /* UiTextNode.swift */,
 				449AF2CC22AE87100046938D /* UiGroupNode.swift */,
 				449AF2CE22AE8D810046938D /* UiNode.swift */,
@@ -305,7 +305,7 @@
 				B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */,
 				44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */,
 				44437FBA229F112600EF1F42 /* SCNNode+Debug.swift in Sources */,
-				44437FB5229F112200EF1F42 /* MLButtonNode.swift in Sources */,
+				44437FB5229F112200EF1F42 /* UiButtonNode.swift in Sources */,
 				105F124E1F7C0719006D4BA3 /* RCTConvert+ARKit.m in Sources */,
 				44896CD422A8ED1C0019855C /* ARTextManager.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */,
@@ -316,7 +316,7 @@
 				449AF2CF22AE8D810046938D /* UiNode.swift in Sources */,
 				449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */,
 				44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */,
-				44437FB6229F112200EF1F42 /* MLImageNode.swift in Sources */,
+				44437FB6229F112200EF1F42 /* UiImageNode.swift in Sources */,
 				44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */,
 				10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */,
 				44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */,

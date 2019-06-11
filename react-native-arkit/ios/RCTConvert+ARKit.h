@@ -25,9 +25,10 @@
 + (SCNNode *)SCNNode:(id)json;
 
 + (SCNTextNode *)SCNTextNode:(id)json;
-+ (MLButtonNode *)MLButtonNode:(id)json;
++ (UiGroupNode *)UiGroupNode:(id)json;
++ (UiButtonNode *)UiButtonNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
-+ (MLImageNode *)MLImageNode:(id)json;
++ (UiImageNode *)UiImageNode:(id)json;
 
 + (void)setNodeProperties:(SCNNode *)node properties:(id)json;
 + (void)setMaterialProperties:(SCNMaterial *)material properties:(id)json;

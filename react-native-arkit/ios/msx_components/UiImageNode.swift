@@ -1,5 +1,5 @@
 //
-//  MLImageNode.swift
+//  UiImageNode.swift
 //  SceneKitDemo
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class MLImageNode: SCNNode {
+@objc class UiImageNode: SCNNode {
     fileprivate var dataTask: URLSessionDataTask?
     deinit {
         dataTask?.cancel()
@@ -57,7 +57,7 @@ import SceneKit
     }
 }
 
-extension MLImageNode {
+extension UiImageNode {
     fileprivate func downloadImage(imageURL: URL, completion: @escaping (UIImage?) -> (Void)) {
         dataTask?.cancel()
         dataTask = URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in

@@ -1,5 +1,5 @@
 //
-//  MLButtonNode.swift
+//  UiButtonNode.swift
 //  SceneKitDemo
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class MLButtonNode: SCNNode {
+@objc class UiButtonNode: SCNNode {
 
     @objc var title: String? {
         get { return textNode.text }

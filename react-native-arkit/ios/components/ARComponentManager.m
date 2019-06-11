@@ -15,10 +15,6 @@
 static ARComponentManager *_instance = nil;
 
 @interface ARComponentManager ()
-
-@property(nonatomic, strong) NSMutableDictionary *callbackByNodeId;
-//@property(nonatomic, copy) RCTResponseSenderBlock onPressCallback;
-
 @end
 
 
@@ -44,7 +40,6 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(createViewNode:(SCNNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createViewNode: %@", nodeId);
-
     [MLNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -55,13 +50,19 @@ RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId re
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createButtonNode:(MLButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createGroupNode: %@", nodeId);
+    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createButtonNode: %@", nodeId);
     [MLNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createImageNode:(MLImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createImageNode: %@", nodeId);
     [MLNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
@@ -99,24 +100,22 @@ RCT_EXPORT_METHOD(validateScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromi
 
 RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)properties resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"updateNode: %@", nodeId);
-    [MLNodesManager.instance updateNode:nodeId properties:properties];
-    resolve(nil);
+    if ([MLNodesManager.instance updateNode:nodeId properties:properties]) {
+        resolve(nil);
+    } else {
+        NSString *message = [NSString stringWithFormat:@"Could not update node \"%@\"", nodeId];
+        reject(@"updateNodeError", message, nil);
+    }
 }
-
-//RCT_EXPORT_METHOD(listenToOnPressEvents:(RCTResponseSenderBlock)callback) {
-//    NSLog(@"listenToOnPressEvents");
-//    self.onPressCallback = callback;
-//}
 
 RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     NSLog(@"addOnPressEventHandler: %@", nodeId);
     SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
-    if (node && [node isKindOfClass:[MLButtonNode class]]) {
+    if (node && [node isKindOfClass:[UiButtonNode class]]) {
         NSLog(@"startListeningToOnPressEvents: found button");
-        MLButtonNode *button = (MLButtonNode *)node;
+        UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = ^(SCNNode *sender) {
             NSLog(@"button onTap");
-//            weakSelf.onPressCallback(@[[NSNull null], sender.name]);
             [[AREventsManager instance] onPressEventReceived:sender];
         };
     }
@@ -125,55 +124,10 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
 RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
     NSLog(@"removeOnPressEventHandler: %@", nodeId);
     SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
-    if (node && [node isKindOfClass:[MLButtonNode class]]) {
-        MLButtonNode *button = (MLButtonNode *)node;
+    if (node && [node isKindOfClass:[UiButtonNode class]]) {
+        UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = nil;
     }
-}
-
-
-
-
-RCT_EXPORT_METHOD(addView:(SCNNode *)viewNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"addView: %@ [parentId: %@]", viewNode.name, parentId);
-    [node addChildNode:viewNode];
-    [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(addButton:(MLButtonNode *)buttonNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"addButton: %@ [parentId: %@]", buttonNode.name, parentId);
-    [node addChildNode:buttonNode];
-    [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(addImage:(MLImageNode *)imageNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"addImage: %@ [parentId: %@]", imageNode.name, parentId);
-    [node addChildNode:imageNode];
-    [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(addText:(UiTextNode *)textNode node:(SCNNode *)node frame:(NSString *)frame parentId:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"addText: %@ [parentId: %@]", textNode.name, parentId);
-    [node addChildNode:textNode];
-    [[RCTARKitNodes sharedInstance] addNodeToScene:node inReferenceFrame:frame withParentId:parentId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(unmount:(NSString *)identifier) {
-    NSLog(@"unmounting node: %@ ", identifier);
-    [[RCTARKitNodes sharedInstance] removeNode:identifier];
-}
-
-RCT_EXPORT_METHOD(addButtonPressEvent:(NSString *)buttonId callback:(RCTResponseSenderBlock)callback)
-{
-    if (!self.callbackByNodeId) {
-        self.callbackByNodeId = [@{} mutableCopy];
-    }
-    self.callbackByNodeId[buttonId] = callback;
-//    callback(@[[NSNull null], events]);
 }
 
 @end

@@ -107,7 +107,14 @@
     return textNode;
 }
 
-+ (MLButtonNode *)MLButtonNode:(id)json {
++ (UiGroupNode *)UiGroupNode:(id)json {
+    UiGroupNode *groupNode = [UiGroupNode new];
+    [self setNodeProperties:groupNode properties:json];
+    groupNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
+    return groupNode;
+}
+
++ (UiButtonNode *)UiButtonNode:(id)json {
     NSString *title = [NSString stringWithFormat:@"%@", json[@"title"]];
     if (!title) {
         title = @"(null)";
@@ -122,7 +129,7 @@
 
     UIColor *color = json[@"color"] ? [self UIColor:json[@"color"]] : UIColor.whiteColor;
 
-    MLButtonNode *buttonNode = [MLButtonNode new];
+    UiButtonNode *buttonNode = [UiButtonNode new];
     [self setNodeProperties:buttonNode properties:json];
     buttonNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     buttonNode.title = title;
@@ -132,8 +139,8 @@
     return buttonNode;
 }
 
-+ (MLImageNode *)MLImageNode:(id)json {
-    MLImageNode *imageNode = [MLImageNode new];
++ (UiImageNode *)UiImageNode:(id)json {
+    UiImageNode *imageNode = [UiImageNode new];
     [self setNodeProperties:imageNode properties:json];
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];

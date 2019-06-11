@@ -82,7 +82,7 @@ static RCTARKit *instance = nil;
         self.nodeManager.arView = arView;
         [self.sessionDelegates addObject:self.nodeManager];
 
-        [MLNodesManager.instance registerScene:arView.scene];
+        [UiNodesManager.instance registerScene:arView.scene];
         
         // configuration(s)
         arView.autoenablesDefaultLighting = YES;
@@ -222,9 +222,7 @@ static RCTARKit *instance = nil;
 }
 
 - (void)setRendersContinuously:(BOOL)rendersContinuously {
-    NSLog(@"setRendersContinuously1: %d", (int)rendersContinuously);
     self.arView.rendersContinuously = rendersContinuously;
-    NSLog(@"setRendersContinuously2: %d", (int)self.arView.rendersContinuously);
 }
 
 - (BOOL)rendersContinuously {
@@ -484,7 +482,7 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
 - (void)handleTapFrom: (UITapGestureRecognizer *)recognizer {
     // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance
     const CGPoint tapPoint = [recognizer locationInView:self.arView];
-    MLNodesManager *nodesManager = MLNodesManager.instance;
+    UiNodesManager *nodesManager = UiNodesManager.instance;
     NSDictionary<SCNHitTestOption, id> *options = @{
                                                         SCNHitTestBoundingBoxOnlyKey: @YES,
                                                         SCNHitTestIgnoreHiddenNodesKey: @YES,
@@ -494,7 +492,7 @@ static NSDictionary * getPlaneHitResult(NSMutableArray *resultsMapped, const CGP
     NSArray<SCNHitTestResult *> *results = [self.arView hitTest:tapPoint options:options];
     SCNHitTestResult *result = results.firstObject;
     if (result != nil) {
-        [MLNodesManager.instance handleNodeTap: result.node];
+        [nodesManager handleNodeTap: result.node];
     }
 //    if(self.onTapOnPlaneUsingExtent) {
 //        // Take the screen space tap coordinates and pass them to the hitTest method on the ARSCNView instance

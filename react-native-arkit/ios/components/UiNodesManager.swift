@@ -1,5 +1,5 @@
 //
-//  MLNodesManager.swift
+//  UiNodesManager.swift
 //  RCTARKit
 //
 //  Created by Pawel Leszkiewicz on 06/06/2019.
@@ -9,8 +9,8 @@
 import Foundation
 import SceneKit
 
-@objc class MLNodesManager: NSObject {
-    @objc static let instance = MLNodesManager()
+@objc class UiNodesManager: NSObject {
+    @objc static let instance = UiNodesManager()
     @objc let rootNode: SCNNode = SCNNode()
     @objc let componentNodeBitMask: Int = 8
     fileprivate var nodesById: [String: SCNNode] = [:]
@@ -20,7 +20,6 @@ import SceneKit
     }
 
     @objc func registerScene(_ scene: SCNScene) {
-        print("[MLNodesManager] registerScene")
         scene.rootNode.addChildNode(rootNode)
     }
 
@@ -43,7 +42,6 @@ import SceneKit
             componentNode = componentNode?.parent
         }
         guard let button = componentNode as? UiButtonNode else { return }
-        print("button tap: \(button)")
         button.simulateTap()
     }
 
@@ -58,7 +56,6 @@ import SceneKit
 //            node.setBBox(visible: true)
         }
         nodesById[nodeId] = node
-        print("register node: \(node)")
     }
 
     @objc func addNode(_ nodeId: String, toParent parentId: String) {
@@ -79,6 +76,7 @@ import SceneKit
             let parentNode = nodesById[parentId],
             parentNode == node.parent {
             node.removeFromParentNode()
+            nodesById.removeValue(forKey: nodeId)
         }
     }
 
@@ -93,12 +91,12 @@ import SceneKit
     @discardableResult
     @objc func validateScene() -> Bool {
         if nodesById.isEmpty && rootNode.childNodes.isEmpty {
-            print("[MLNodesManager] Nodes tree hierarchy and nodes list are empty.")
+            print("[UiNodesManager] Nodes tree hierarchy and nodes list are empty.")
             return true
         }
 
         if nodesById.isEmpty != rootNode.childNodes.isEmpty {
-            print("[MLNodesManager] One nodes container (either nodes tree hierarchy (\(rootNode.childNodes.count)) or nodes list (\(nodesById.count)) is empty!")
+            print("[UiNodesManager] One nodes container (either nodes tree hierarchy (\(rootNode.childNodes.count)) or nodes list (\(nodesById.count)) is empty!")
             return true
         }
 
@@ -109,7 +107,7 @@ import SceneKit
         })
 
         if (!looseNodes.isEmpty) {
-            print("[MLNodesManager] Found \(looseNodes.count) loose nodes.")
+            print("[UiNodesManager] Found \(looseNodes.count) loose nodes.")
             return false
         }
 

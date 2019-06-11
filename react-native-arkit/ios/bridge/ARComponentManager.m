@@ -8,7 +8,6 @@
 
 #import "ARComponentManager.h"
 #import "AREventsManager.h"
-#import "RCTARKitNodes.h"
 #import "RCTConvert+ARKit.h"
 #import "RCTARKit-Swift.h"
 
@@ -40,67 +39,67 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(createViewNode:(SCNNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createViewNode: %@", nodeId);
-    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createTextNode: %@", nodeId);
-    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createGroupNode: %@", nodeId);
-    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createButtonNode: %@", nodeId);
-    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createImageNode: %@", nodeId);
-    [MLNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
-    [MLNodesManager.instance addNode: nodeId toParent: parentId];
+    [UiNodesManager.instance addNode: nodeId toParent: parentId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"addChildNodeToContainer: %@", nodeId);
-    [MLNodesManager.instance addNodeToRoot: nodeId];
+    [UiNodesManager.instance addNodeToRoot: nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"removeChildNode: %@ fromParentNode: %@", nodeId, parentId);
-    [MLNodesManager.instance removeNode: nodeId fromParent: parentId];
+    [UiNodesManager.instance removeNode: nodeId fromParent: parentId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"clearScene");
-    [MLNodesManager.instance clear];
+    [UiNodesManager.instance clear];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(validateScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"validateScene");
-    [MLNodesManager.instance validateScene];
+    [UiNodesManager.instance validateScene];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)properties resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"updateNode: %@", nodeId);
-    if ([MLNodesManager.instance updateNode:nodeId properties:properties]) {
+    if ([UiNodesManager.instance updateNode:nodeId properties:properties]) {
         resolve(nil);
     } else {
         NSString *message = [NSString stringWithFormat:@"Could not update node \"%@\"", nodeId];
@@ -110,7 +109,7 @@ RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)prope
 
 RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     NSLog(@"addOnPressEventHandler: %@", nodeId);
-    SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         NSLog(@"startListeningToOnPressEvents: found button");
         UiButtonNode *button = (UiButtonNode *)node;
@@ -123,7 +122,7 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
 
 RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
     NSLog(@"removeOnPressEventHandler: %@", nodeId);
-    SCNNode *node = [MLNodesManager.instance findNodeWithId:nodeId];
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = nil;

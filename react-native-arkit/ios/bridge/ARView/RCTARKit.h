@@ -76,8 +76,8 @@ typedef void (^RCTARKitReject)(NSString *code, NSString *message, NSError *error
 - (float)getCameraDistanceToPoint:(SCNVector3)point;
 - (UIImage *)getSnapshot:(NSDictionary*)selection;
 - (UIImage *)getSnapshotCamera:(NSDictionary*)selection;
-- (void)focusScene;
-- (void)clearScene;
+//- (void)focusScene;
+//- (void)clearScene;
 - (NSDictionary *)readCameraPosition;
 - (NSDictionary *)readCamera;
 - (NSDictionary* )getCurrentLightEstimation;

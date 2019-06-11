@@ -7,34 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		10062C831F127572009AE974 /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 10062C821F127572009AE974 /* RCTARKitManager.m */; };
-		105F124E1F7C0719006D4BA3 /* RCTConvert+ARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 105F124D1F7C0718006D4BA3 /* RCTConvert+ARKit.m */; };
-		10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 10ED47A61F38BC00004DF043 /* DeviceMotion.m */; };
-		10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */; };
-		10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */; };
-		44437FB5229F112200EF1F42 /* UiButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F49229F000100EF1F42 /* UiButtonNode.swift */; };
-		44437FB6229F112200EF1F42 /* UiImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F47229F000100EF1F42 /* UiImageNode.swift */; };
-		44437FB7229F112200EF1F42 /* UiTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F48229F000100EF1F42 /* UiTextNode.swift */; };
-		44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */; };
-		44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4C229F000100EF1F42 /* SCNRectangle.swift */; };
-		44437FBA229F112600EF1F42 /* SCNNode+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4D229F000100EF1F42 /* SCNNode+Debug.swift */; };
-		44437FBB229F112600EF1F42 /* Maths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4E229F000100EF1F42 /* Maths.swift */; };
-		44437FBC229F112600EF1F42 /* SCNQuaternionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F4F229F000100EF1F42 /* SCNQuaternionExtension.swift */; };
-		44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F50229F000100EF1F42 /* SCNMatrix4Extension.swift */; };
-		44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437F51229F000100EF1F42 /* SCNVector3Extension.swift */; };
-		44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44437FC0229F143700EF1F42 /* ARComponentManager.m */; };
-		44896CD222A8ED1C0019855C /* ARGeosManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CC922A8ED1C0019855C /* ARGeosManager.m */; };
-		44896CD322A8ED1C0019855C /* RCTARKitSpriteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */; };
-		44896CD422A8ED1C0019855C /* ARTextManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CCF22A8ED1C0019855C /* ARTextManager.m */; };
-		44896CD522A8ED1C0019855C /* RCTARKitSpriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */; };
-		44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896CD122A8ED1C0019855C /* ARModelManager.m */; };
-		44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44896CDA22A8F83D0019855C /* MLNodesManager.swift */; };
-		44896D1E22AA796D0019855C /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44896D1D22AA796C0019855C /* AREventsManager.m */; };
-		449AF2CD22AE87100046938D /* UiGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2CC22AE87100046938D /* UiGroupNode.swift */; };
-		449AF2CF22AE8D810046938D /* UiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2CE22AE8D810046938D /* UiNode.swift */; };
-		449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2D022AE8D8D0046938D /* TransformNode.swift */; };
-		B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */ = {isa = PBXBuildFile; fileRef = B1990B211FCEEBD60001AE2F /* color-grabber.m */; };
-		B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RCTARKit.m */; };
+		449AF30E22AFD3CA0046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2F822AFD3C90046938D /* AREventsManager.m */; };
+		449AF30F22AFD3CA0046938D /* RCTConvert+ARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2FA22AFD3C90046938D /* RCTConvert+ARKit.m */; };
+		449AF31122AFD3CA0046938D /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF2FC22AFD3C90046938D /* ARComponentManager.m */; };
+		449AF31622AFD3CA0046938D /* SCNBBoxNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30322AFD3CA0046938D /* SCNBBoxNode.swift */; };
+		449AF31722AFD3CA0046938D /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30422AFD3CA0046938D /* SCNRectangle.swift */; };
+		449AF31822AFD3CA0046938D /* SCNNode+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30522AFD3CA0046938D /* SCNNode+Debug.swift */; };
+		449AF31922AFD3CA0046938D /* Maths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30622AFD3CA0046938D /* Maths.swift */; };
+		449AF31A22AFD3CA0046938D /* SCNQuaternionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30722AFD3CA0046938D /* SCNQuaternionExtension.swift */; };
+		449AF31B22AFD3CA0046938D /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30822AFD3CA0046938D /* SCNMatrix4Extension.swift */; };
+		449AF31C22AFD3CA0046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30922AFD3CA0046938D /* SCNVector3Extension.swift */; };
+		449AF31E22AFD3CA0046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30B22AFD3CA0046938D /* UiNodesManager.swift */; };
+		449AF33C22AFD50C0046938D /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF32E22AFD50B0046938D /* RCTARKitNodes.m */; };
+		449AF34722AFD7050046938D /* TransformNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34022AFD7040046938D /* TransformNode.swift */; };
+		449AF34822AFD7050046938D /* UiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34122AFD7040046938D /* UiNode.swift */; };
+		449AF34922AFD7050046938D /* UiGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34322AFD7040046938D /* UiGroupNode.swift */; };
+		449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34422AFD7040046938D /* UiTextNode.swift */; };
+		449AF34B22AFD7050046938D /* UiImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34522AFD7040046938D /* UiImageNode.swift */; };
+		449AF34C22AFD7050046938D /* UiButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34622AFD7040046938D /* UiButtonNode.swift */; };
+		449AF35322AFD7690046938D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34E22AFD7680046938D /* RCTARKit.m */; };
+		449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF35222AFD7680046938D /* RCTARKitManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,53 +51,37 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		10062C811F127566009AE974 /* RCTARKitManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitManager.h; sourceTree = "<group>"; };
-		10062C821F127572009AE974 /* RCTARKitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
-		105F124C1F7C0718006D4BA3 /* RCTConvert+ARKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+ARKit.h"; sourceTree = "<group>"; };
-		105F124D1F7C0718006D4BA3 /* RCTConvert+ARKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+ARKit.m"; sourceTree = "<group>"; };
-		10ED47A51F38BC00004DF043 /* DeviceMotion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceMotion.h; sourceTree = "<group>"; };
-		10ED47A61F38BC00004DF043 /* DeviceMotion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeviceMotion.m; sourceTree = "<group>"; };
-		10FEF60F1F774C8F00EC21AE /* RCTARKitNodes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitNodes.h; sourceTree = "<group>"; };
-		10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitIO.m; sourceTree = "<group>"; };
-		10FEF6111F774C8F00EC21AE /* RCTARKitIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitIO.h; sourceTree = "<group>"; };
-		10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARKitNodes.m; sourceTree = "<group>"; };
-		10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARKitDelegate.h; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRCTARKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTARKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		44437F47229F000100EF1F42 /* UiImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiImageNode.swift; sourceTree = "<group>"; };
-		44437F48229F000100EF1F42 /* UiTextNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTextNode.swift; sourceTree = "<group>"; };
-		44437F49229F000100EF1F42 /* UiButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiButtonNode.swift; sourceTree = "<group>"; };
-		44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNBBoxNode.swift; sourceTree = "<group>"; };
-		44437F4C229F000100EF1F42 /* SCNRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRectangle.swift; sourceTree = "<group>"; };
-		44437F4D229F000100EF1F42 /* SCNNode+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Debug.swift"; sourceTree = "<group>"; };
-		44437F4E229F000100EF1F42 /* Maths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maths.swift; sourceTree = "<group>"; };
-		44437F4F229F000100EF1F42 /* SCNQuaternionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtension.swift; sourceTree = "<group>"; };
-		44437F50229F000100EF1F42 /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
-		44437F51229F000100EF1F42 /* SCNVector3Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
 		44437F52229F001200EF1F42 /* RCTARKit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTARKit-Bridging-Header.h"; sourceTree = "<group>"; };
-		44437FBF229F141E00EF1F42 /* ARComponentManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
-		44437FC0229F143700EF1F42 /* ARComponentManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARComponentManager.m; sourceTree = "<group>"; };
-		44896CC822A8ED1C0019855C /* RCTARKitSpriteViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteViewManager.h; sourceTree = "<group>"; };
-		44896CC922A8ED1C0019855C /* ARGeosManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARGeosManager.m; sourceTree = "<group>"; };
-		44896CCA22A8ED1C0019855C /* ARTextManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARTextManager.h; sourceTree = "<group>"; };
-		44896CCB22A8ED1C0019855C /* ARModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARModelManager.h; sourceTree = "<group>"; };
-		44896CCC22A8ED1C0019855C /* RCTARKitSpriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitSpriteView.h; sourceTree = "<group>"; };
-		44896CCD22A8ED1C0019855C /* ARGeosManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGeosManager.h; sourceTree = "<group>"; };
-		44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteViewManager.m; sourceTree = "<group>"; };
-		44896CCF22A8ED1C0019855C /* ARTextManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARTextManager.m; sourceTree = "<group>"; };
-		44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitSpriteView.m; sourceTree = "<group>"; };
-		44896CD122A8ED1C0019855C /* ARModelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARModelManager.m; sourceTree = "<group>"; };
-		44896CDA22A8F83D0019855C /* MLNodesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLNodesManager.swift; sourceTree = "<group>"; };
-		44896D1C22AA794B0019855C /* AREventsManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
-		44896D1D22AA796C0019855C /* AREventsManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
-		449AF2CC22AE87100046938D /* UiGroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNode.swift; sourceTree = "<group>"; };
-		449AF2CE22AE8D810046938D /* UiNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNode.swift; sourceTree = "<group>"; };
-		449AF2D022AE8D8D0046938D /* TransformNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformNode.swift; sourceTree = "<group>"; };
+		449AF2F222AFD3C90046938D /* RCTConvert+ARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+ARKit.h"; sourceTree = "<group>"; };
+		449AF2F422AFD3C90046938D /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
+		449AF2F722AFD3C90046938D /* ARComponentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
+		449AF2F822AFD3C90046938D /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
+		449AF2FA22AFD3C90046938D /* RCTConvert+ARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+ARKit.m"; sourceTree = "<group>"; };
+		449AF2FC22AFD3C90046938D /* ARComponentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARComponentManager.m; sourceTree = "<group>"; };
+		449AF30322AFD3CA0046938D /* SCNBBoxNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNBBoxNode.swift; sourceTree = "<group>"; };
+		449AF30422AFD3CA0046938D /* SCNRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNRectangle.swift; sourceTree = "<group>"; };
+		449AF30522AFD3CA0046938D /* SCNNode+Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Debug.swift"; sourceTree = "<group>"; };
+		449AF30622AFD3CA0046938D /* Maths.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maths.swift; sourceTree = "<group>"; };
+		449AF30722AFD3CA0046938D /* SCNQuaternionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtension.swift; sourceTree = "<group>"; };
+		449AF30822AFD3CA0046938D /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
+		449AF30922AFD3CA0046938D /* SCNVector3Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
+		449AF30B22AFD3CA0046938D /* UiNodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodesManager.swift; sourceTree = "<group>"; };
+		449AF32E22AFD50B0046938D /* RCTARKitNodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitNodes.m; sourceTree = "<group>"; };
+		449AF33022AFD50B0046938D /* RCTARKitNodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitNodes.h; sourceTree = "<group>"; };
+		449AF34022AFD7040046938D /* TransformNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNode.swift; sourceTree = "<group>"; };
+		449AF34122AFD7040046938D /* UiNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNode.swift; sourceTree = "<group>"; };
+		449AF34322AFD7040046938D /* UiGroupNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiGroupNode.swift; sourceTree = "<group>"; };
+		449AF34422AFD7040046938D /* UiTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiTextNode.swift; sourceTree = "<group>"; };
+		449AF34522AFD7040046938D /* UiImageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiImageNode.swift; sourceTree = "<group>"; };
+		449AF34622AFD7040046938D /* UiButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiButtonNode.swift; sourceTree = "<group>"; };
+		449AF34E22AFD7680046938D /* RCTARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKit.m; sourceTree = "<group>"; };
+		449AF34F22AFD7680046938D /* RCTARKitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitManager.h; sourceTree = "<group>"; };
+		449AF35022AFD7680046938D /* RCTARKitDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitDelegate.h; sourceTree = "<group>"; };
+		449AF35122AFD7680046938D /* RCTARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKit.h; sourceTree = "<group>"; };
+		449AF35222AFD7680046938D /* RCTARKitManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1990B201FCEEBD60001AE2F /* color-grabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "color-grabber.h"; sourceTree = "<group>"; };
-		B1990B211FCEEBD60001AE2F /* color-grabber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "color-grabber.m"; sourceTree = "<group>"; };
-		B3E7B5881CC2AC0600A0062D /* RCTARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKit.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* RCTARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,18 +95,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		106999E21F3EC2FB00032829 /* components */ = {
-			isa = PBXGroup;
-			children = (
-				44896CC722A8ED1C0019855C /* legacy */,
-				44437FBF229F141E00EF1F42 /* ARComponentManager.h */,
-				44437FC0229F143700EF1F42 /* ARComponentManager.m */,
-				44896D1C22AA794B0019855C /* AREventsManager.h */,
-				44896D1D22AA796C0019855C /* AREventsManager.m */,
-			);
-			path = components;
-			sourceTree = "<group>";
-		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,79 +103,100 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		44437F46229F000100EF1F42 /* msx_components */ = {
+		449AF2F122AFD3C90046938D /* bridge */ = {
 			isa = PBXGroup;
 			children = (
-				44437F4A229F000100EF1F42 /* Utils */,
-				44437F49229F000100EF1F42 /* UiButtonNode.swift */,
-				44437F47229F000100EF1F42 /* UiImageNode.swift */,
-				44437F48229F000100EF1F42 /* UiTextNode.swift */,
-				449AF2CC22AE87100046938D /* UiGroupNode.swift */,
-				449AF2CE22AE8D810046938D /* UiNode.swift */,
-				449AF2D022AE8D8D0046938D /* TransformNode.swift */,
-				44896CDA22A8F83D0019855C /* MLNodesManager.swift */,
+				449AF34D22AFD7680046938D /* ARView */,
+				449AF2F222AFD3C90046938D /* RCTConvert+ARKit.h */,
+				449AF2FA22AFD3C90046938D /* RCTConvert+ARKit.m */,
+				449AF2F722AFD3C90046938D /* ARComponentManager.h */,
+				449AF2FC22AFD3C90046938D /* ARComponentManager.m */,
+				449AF2F422AFD3C90046938D /* AREventsManager.h */,
+				449AF2F822AFD3C90046938D /* AREventsManager.m */,
 			);
-			path = msx_components;
+			path = bridge;
 			sourceTree = "<group>";
 		};
-		44437F4A229F000100EF1F42 /* Utils */ = {
+		449AF2FD22AFD3CA0046938D /* components */ = {
 			isa = PBXGroup;
 			children = (
-				44437F4B229F000100EF1F42 /* SCNBBoxNode.swift */,
-				44437F4C229F000100EF1F42 /* SCNRectangle.swift */,
-				44437F4D229F000100EF1F42 /* SCNNode+Debug.swift */,
-				44437F4E229F000100EF1F42 /* Maths.swift */,
-				44437F4F229F000100EF1F42 /* SCNQuaternionExtension.swift */,
-				44437F50229F000100EF1F42 /* SCNMatrix4Extension.swift */,
-				44437F51229F000100EF1F42 /* SCNVector3Extension.swift */,
+				449AF33F22AFD7040046938D /* BaseNodes */,
+				449AF34222AFD7040046938D /* UiNodes */,
+				449AF30222AFD3CA0046938D /* Utils */,
+				449AF30B22AFD3CA0046938D /* UiNodesManager.swift */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
+		449AF30222AFD3CA0046938D /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				449AF30322AFD3CA0046938D /* SCNBBoxNode.swift */,
+				449AF30422AFD3CA0046938D /* SCNRectangle.swift */,
+				449AF30522AFD3CA0046938D /* SCNNode+Debug.swift */,
+				449AF30622AFD3CA0046938D /* Maths.swift */,
+				449AF30722AFD3CA0046938D /* SCNQuaternionExtension.swift */,
+				449AF30822AFD3CA0046938D /* SCNMatrix4Extension.swift */,
+				449AF30922AFD3CA0046938D /* SCNVector3Extension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		44896CC722A8ED1C0019855C /* legacy */ = {
+		449AF32022AFD50B0046938D /* trash */ = {
 			isa = PBXGroup;
 			children = (
-				44896CC822A8ED1C0019855C /* RCTARKitSpriteViewManager.h */,
-				44896CC922A8ED1C0019855C /* ARGeosManager.m */,
-				44896CCA22A8ED1C0019855C /* ARTextManager.h */,
-				44896CCB22A8ED1C0019855C /* ARModelManager.h */,
-				44896CCC22A8ED1C0019855C /* RCTARKitSpriteView.h */,
-				44896CCD22A8ED1C0019855C /* ARGeosManager.h */,
-				44896CCE22A8ED1C0019855C /* RCTARKitSpriteViewManager.m */,
-				44896CCF22A8ED1C0019855C /* ARTextManager.m */,
-				44896CD022A8ED1C0019855C /* RCTARKitSpriteView.m */,
-				44896CD122A8ED1C0019855C /* ARModelManager.m */,
+				449AF32C22AFD50B0046938D /* legacy */,
+			);
+			path = trash;
+			sourceTree = "<group>";
+		};
+		449AF32C22AFD50B0046938D /* legacy */ = {
+			isa = PBXGroup;
+			children = (
+				449AF33022AFD50B0046938D /* RCTARKitNodes.h */,
+				449AF32E22AFD50B0046938D /* RCTARKitNodes.m */,
 			);
 			path = legacy;
 			sourceTree = "<group>";
 		};
-		449AF2D222AEF1FA0046938D /* legacy */ = {
+		449AF33F22AFD7040046938D /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
-				B1990B1F1FCEEBD60001AE2F /* color-grabber */,
-				10ED47A51F38BC00004DF043 /* DeviceMotion.h */,
-				10ED47A61F38BC00004DF043 /* DeviceMotion.m */,
-				10FEF6111F774C8F00EC21AE /* RCTARKitIO.h */,
-				10FEF6101F774C8F00EC21AE /* RCTARKitIO.m */,
-				10FEF60F1F774C8F00EC21AE /* RCTARKitNodes.h */,
-				10FEF6121F774C9000EC21AE /* RCTARKitNodes.m */,
+				449AF34022AFD7040046938D /* TransformNode.swift */,
+				449AF34122AFD7040046938D /* UiNode.swift */,
 			);
-			path = legacy;
+			path = BaseNodes;
+			sourceTree = "<group>";
+		};
+		449AF34222AFD7040046938D /* UiNodes */ = {
+			isa = PBXGroup;
+			children = (
+				449AF34322AFD7040046938D /* UiGroupNode.swift */,
+				449AF34422AFD7040046938D /* UiTextNode.swift */,
+				449AF34522AFD7040046938D /* UiImageNode.swift */,
+				449AF34622AFD7040046938D /* UiButtonNode.swift */,
+			);
+			path = UiNodes;
+			sourceTree = "<group>";
+		};
+		449AF34D22AFD7680046938D /* ARView */ = {
+			isa = PBXGroup;
+			children = (
+				449AF35122AFD7680046938D /* RCTARKit.h */,
+				449AF34E22AFD7680046938D /* RCTARKit.m */,
+				449AF34F22AFD7680046938D /* RCTARKitManager.h */,
+				449AF35222AFD7680046938D /* RCTARKitManager.m */,
+				449AF35022AFD7680046938D /* RCTARKitDelegate.h */,
+			);
+			path = ARView;
 			sourceTree = "<group>";
 		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				449AF2D222AEF1FA0046938D /* legacy */,
-				106999E21F3EC2FB00032829 /* components */,
-				44437F46229F000100EF1F42 /* msx_components */,
-				B3E7B5881CC2AC0600A0062D /* RCTARKit.h */,
-				B3E7B5891CC2AC0600A0062D /* RCTARKit.m */,
-				10FEF6131F774C9000EC21AE /* RCTARKitDelegate.h */,
-				10062C811F127566009AE974 /* RCTARKitManager.h */,
-				10062C821F127572009AE974 /* RCTARKitManager.m */,
-				105F124C1F7C0718006D4BA3 /* RCTConvert+ARKit.h */,
-				105F124D1F7C0718006D4BA3 /* RCTConvert+ARKit.m */,
+				449AF2F122AFD3C90046938D /* bridge */,
+				449AF2FD22AFD3CA0046938D /* components */,
+				449AF32022AFD50B0046938D /* trash */,
 				44437F52229F001200EF1F42 /* RCTARKit-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				B13FF7601F94F72400A6C92B /* Frameworks */,
@@ -225,15 +210,6 @@
 				B14C36631F960C500047CB67 /* PocketSVG.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		B1990B1F1FCEEBD60001AE2F /* color-grabber */ = {
-			isa = PBXGroup;
-			children = (
-				B1990B201FCEEBD60001AE2F /* color-grabber.h */,
-				B1990B211FCEEBD60001AE2F /* color-grabber.m */,
-			);
-			path = "color-grabber";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,34 +270,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10FEF6141F774C9000EC21AE /* RCTARKitIO.m in Sources */,
-				10FEF6151F774C9000EC21AE /* RCTARKitNodes.m in Sources */,
-				44437FC1229F143700EF1F42 /* ARComponentManager.m in Sources */,
-				449AF2CD22AE87100046938D /* UiGroupNode.swift in Sources */,
-				44437FBC229F112600EF1F42 /* SCNQuaternionExtension.swift in Sources */,
-				44437FBB229F112600EF1F42 /* Maths.swift in Sources */,
-				44896D1E22AA796D0019855C /* AREventsManager.m in Sources */,
-				44896CD222A8ED1C0019855C /* ARGeosManager.m in Sources */,
-				B1990B221FCEEBD60001AE2F /* color-grabber.m in Sources */,
-				44896CDB22A8F83D0019855C /* MLNodesManager.swift in Sources */,
-				44437FBA229F112600EF1F42 /* SCNNode+Debug.swift in Sources */,
-				44437FB5229F112200EF1F42 /* UiButtonNode.swift in Sources */,
-				105F124E1F7C0719006D4BA3 /* RCTConvert+ARKit.m in Sources */,
-				44896CD422A8ED1C0019855C /* ARTextManager.m in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* RCTARKit.m in Sources */,
-				44896CD622A8ED1C0019855C /* ARModelManager.m in Sources */,
-				10062C831F127572009AE974 /* RCTARKitManager.m in Sources */,
-				44437FB7229F112200EF1F42 /* UiTextNode.swift in Sources */,
-				44437FB9229F112600EF1F42 /* SCNRectangle.swift in Sources */,
-				449AF2CF22AE8D810046938D /* UiNode.swift in Sources */,
-				449AF2D122AE8D8D0046938D /* TransformNode.swift in Sources */,
-				44437FBE229F112600EF1F42 /* SCNVector3Extension.swift in Sources */,
-				44437FB6229F112200EF1F42 /* UiImageNode.swift in Sources */,
-				44437FBD229F112600EF1F42 /* SCNMatrix4Extension.swift in Sources */,
-				10ED47A71F38BC01004DF043 /* DeviceMotion.m in Sources */,
-				44437FB8229F112600EF1F42 /* SCNBBoxNode.swift in Sources */,
-				44896CD322A8ED1C0019855C /* RCTARKitSpriteViewManager.m in Sources */,
-				44896CD522A8ED1C0019855C /* RCTARKitSpriteView.m in Sources */,
+				449AF30E22AFD3CA0046938D /* AREventsManager.m in Sources */,
+				449AF31622AFD3CA0046938D /* SCNBBoxNode.swift in Sources */,
+				449AF31822AFD3CA0046938D /* SCNNode+Debug.swift in Sources */,
+				449AF31B22AFD3CA0046938D /* SCNMatrix4Extension.swift in Sources */,
+				449AF31722AFD3CA0046938D /* SCNRectangle.swift in Sources */,
+				449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */,
+				449AF34722AFD7050046938D /* TransformNode.swift in Sources */,
+				449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */,
+				449AF30F22AFD3CA0046938D /* RCTConvert+ARKit.m in Sources */,
+				449AF33C22AFD50C0046938D /* RCTARKitNodes.m in Sources */,
+				449AF31922AFD3CA0046938D /* Maths.swift in Sources */,
+				449AF31E22AFD3CA0046938D /* UiNodesManager.swift in Sources */,
+				449AF34922AFD7050046938D /* UiGroupNode.swift in Sources */,
+				449AF34822AFD7050046938D /* UiNode.swift in Sources */,
+				449AF31C22AFD3CA0046938D /* SCNVector3Extension.swift in Sources */,
+				449AF31A22AFD3CA0046938D /* SCNQuaternionExtension.swift in Sources */,
+				449AF34B22AFD7050046938D /* UiImageNode.swift in Sources */,
+				449AF35322AFD7690046938D /* RCTARKit.m in Sources */,
+				449AF34C22AFD7050046938D /* UiButtonNode.swift in Sources */,
+				449AF31122AFD3CA0046938D /* ARComponentManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

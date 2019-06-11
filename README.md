@@ -24,7 +24,7 @@
 
 ## Components included
 
-- [List of Components](docs/Components.md)
+- [List of Components](https://github.com/magic-script/magic-script-components/blob/master/docs/Components.md)
 
 ## License
 

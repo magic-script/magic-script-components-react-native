@@ -76,8 +76,6 @@
 		449AF3B722B147B70046938D /* RCTARView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
 		449AF3B922B14B610046938D /* RCTARViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
 		449AF3BB22B14B730046938D /* RCTARViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARViewManager.h; sourceTree = "<group>"; };
-		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,8 +181,6 @@
 		B13FF7601F94F72400A6C92B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B14C36651F960C6E0047CB67 /* PocketSVG.framework */,
-				B14C36631F960C500047CB67 /* PocketSVG.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -380,7 +376,6 @@
 					"$(SRCROOT)/../../react-native-arcl/ios",
 					../../../ios/Pods/Headers/Public/,
 					../../../ios/Pods/Headers/Public/React,
-					"$(SRCROOT)/PocketSVG",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -407,7 +402,6 @@
 					"$(SRCROOT)/../../react-native-arcl/ios",
 					../../../ios/Pods/Headers/Public/,
 					../../../ios/Pods/Headers/Public/React,
-					"$(SRCROOT)/PocketSVG",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

@@ -5,11 +5,7 @@ const animatableNumber = PropTypes.oneOfType([
   PropTypes.object,
 ]);
 
-export const deprecated = (propType, hint = null) => (
-  props,
-  propName,
-  componentName,
-) => {
+export const deprecated = (propType, hint = null) => (props, propName, componentName) => {
   if (props[propName]) {
     console.warn(`Prop \`${propName}\` supplied to` + ` \`${componentName}\` is deprecated. ${hint}`);
   }

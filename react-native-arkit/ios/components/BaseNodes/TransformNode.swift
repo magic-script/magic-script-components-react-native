@@ -11,11 +11,14 @@ import SceneKit
 @objc class TransformNode: SCNNode {
 
     // var name: String // native property
-    // var parentedBoneName: String // TODO: property to define
-    var skipRaycast: Bool = false
-    var triggerable: Bool = true
-    var visible: Bool = true
-    var visibilityInherited: Bool = true
+    // var parentedBoneName: String
+    // var skipRaycast: Bool = false
+    // var triggerable: Bool = true
+    var visible: Bool {
+        get { return !self.isHidden }
+        set { self.isHidden = !newValue }
+    }
+    // var visibilityInherited: Bool = true
     var anchorPosition: SCNVector3 {
         get { return self.pivot.position }
         set { self.pivot.position = newValue }
@@ -47,6 +50,16 @@ import SceneKit
     @objc required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupNode()
+    }
+
+    @objc init?(props: [String: Any]) {
+        super.init()
+        update(props)
+    }
+
+    @objc func update(_ props: [String: Any]) {
+        visible = (props["visible"] as? Bool) ?? !self.isHidden
+//        anchorPosition = props["anchorPosition"]
     }
 
     fileprivate func setupNode() {

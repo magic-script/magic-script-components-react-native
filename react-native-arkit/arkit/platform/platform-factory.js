@@ -2,9 +2,9 @@
 
 import { Image, NativeEventEmitter, NativeModules, processColor } from 'react-native';
 import { NativeFactory } from '../../arkit/core/native-factory.js';
-import PropTypes from 'prop-types';
-import { material } from '../../components/lib/propTypes';
-import createArComponent from '../../components/lib/createArComponent';
+// import PropTypes from 'prop-types';
+// import { material } from '../../components/lib/propTypes';
+// import createArComponent from '../../components/lib/createArComponent';
 import generateId from '../../components/lib/generateId';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
@@ -107,7 +107,7 @@ export class PlatformFactory extends NativeFactory {
         ...props,
         ...(props.shadowColor ? { shadowColor: processColor(props.shadowColor) } : {}),
         ...(props.color ? { color: processColor(props.color) } : {}),
-        ...(props.material ? { material: processMaterial(props.material) } : {}),
+        // ...(props.material ? { material: processMaterial(props.material) } : {}),
         ...(props.source ? { source: Image.resolveAssetSource(props.source) } : {}),
       });
 

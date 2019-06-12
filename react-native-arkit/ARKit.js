@@ -23,7 +23,6 @@ import {
   position,
   transition,
 } from './components/lib/propTypes';
-import { pickColors, pickColorsFromFile } from './lib/pickColors';
 import generateId from './components/lib/generateId';
 
 const ARKitManager = NativeModules.ARKitManager;
@@ -206,8 +205,6 @@ ARKit.exportModel = presetId => {
   return ARKitManager.exportModel(property).then(result => ({ ...result, id }));
 };
 
-ARKit.pickColors = pickColors;
-ARKit.pickColorsFromFile = pickColorsFromFile;
 ARKit.propTypes = {
   debug: PropTypes.bool,
   planeDetection,

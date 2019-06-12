@@ -8,17 +8,17 @@
 
 import SceneKit
 
-@objc class UiNode: SCNNode {
+@objc class UiNode: TransformNode {
 
-    //var alignment: Alignment // TODO: property to define
-    //var activateResponse: FocusRequest // TODO: property to define
-    //var renderingLayer: RenderingLayer // TODO: property to define
-    var enabled: Bool = true
-    var eventPassThrough: Bool = true
-    var eventPassThroughChildren: Bool = true
-    var gravityWellEnabled: Bool = true
-    //var eventSoundId: ClassProperty // TODO: property to define
-    //var gravityWellProperties: GravityWellProperties // TODO: property to define
+    //var alignment: Alignment
+    //var activateResponse: FocusRequest
+    //var renderingLayer: RenderingLayer
+    //var enabled: Bool = true   // (check SCNNodeFocusBehavior)
+    //var eventPassThrough: Bool = true
+    //var eventPassThroughChildren: Bool = true
+    //var gravityWellEnabled: Bool = true
+    //var eventSoundId: ClassProperty
+    //var gravityWellProperties: GravityWellProperties
 
     @objc override init() {
         super.init()
@@ -28,6 +28,10 @@ import SceneKit
     @objc required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupNode()
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
     }
 
     fileprivate func setupNode() {

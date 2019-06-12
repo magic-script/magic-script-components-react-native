@@ -1,5 +1,5 @@
 import ARView from './ARView';
-import ARKitScript from './arkit/arkit-script/arkit-script';
+import ARKitScript from './components/arkit-script/arkit-script';
 
 export {
   ARView,

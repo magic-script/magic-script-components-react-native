@@ -1,11 +1,8 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
 import { Image, NativeEventEmitter, NativeModules, processColor } from 'react-native';
-import { NativeFactory } from '../../arkit/core/native-factory.js';
-// import PropTypes from 'prop-types';
-// import { material } from '../../components/lib/propTypes';
-// import createArComponent from '../../components/lib/createArComponent';
-import generateId from '../../components/lib/generateId';
+import { NativeFactory } from '../core/native-factory';
+import generateId from '../lib/generateId';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 

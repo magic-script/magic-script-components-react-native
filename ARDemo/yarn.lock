@@ -4866,7 +4866,7 @@ react-is@^16.8.1, react-is@^16.8.3, react-is@^16.8.4:
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
 
 react-native-arkit@../react-native-arkit:
-  version "0.9.0"
+  version "0.1.0"
   dependencies:
     "@panter/react-animation-frame" "^0.3.7"
     fast-deep-equal "^1.0.0"

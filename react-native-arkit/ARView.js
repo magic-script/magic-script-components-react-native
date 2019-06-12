@@ -1,8 +1,9 @@
 import React from 'react';
-import ARKit from './ARKit';
+import { requireNativeComponent } from 'react-native';
+const RCTARKit = requireNativeComponent('RCTARKit');
 
 export default class ARView extends React.Component {
     render() {
-        return <ARKit {...this.props} />
+        return <RCTARKit {...this.props} />
     }
 }

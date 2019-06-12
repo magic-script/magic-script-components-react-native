@@ -18,7 +18,6 @@
 		449AF31B22AFD3CA0046938D /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30822AFD3CA0046938D /* SCNMatrix4Extension.swift */; };
 		449AF31C22AFD3CA0046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30922AFD3CA0046938D /* SCNVector3Extension.swift */; };
 		449AF31E22AFD3CA0046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF30B22AFD3CA0046938D /* UiNodesManager.swift */; };
-		449AF33C22AFD50C0046938D /* RCTARKitNodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF32E22AFD50B0046938D /* RCTARKitNodes.m */; };
 		449AF34722AFD7050046938D /* TransformNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34022AFD7040046938D /* TransformNode.swift */; };
 		449AF34822AFD7050046938D /* UiNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34122AFD7040046938D /* UiNode.swift */; };
 		449AF34922AFD7050046938D /* UiGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34322AFD7040046938D /* UiGroupNode.swift */; };
@@ -27,6 +26,7 @@
 		449AF34C22AFD7050046938D /* UiButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34622AFD7040046938D /* UiButtonNode.swift */; };
 		449AF35322AFD7690046938D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34E22AFD7680046938D /* RCTARKit.m */; };
 		449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF35222AFD7680046938D /* RCTARKitManager.m */; };
+		449AF3B822B147B70046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF3B722B147B70046938D /* RCTARView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,8 +67,6 @@
 		449AF30822AFD3CA0046938D /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
 		449AF30922AFD3CA0046938D /* SCNVector3Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
 		449AF30B22AFD3CA0046938D /* UiNodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodesManager.swift; sourceTree = "<group>"; };
-		449AF32E22AFD50B0046938D /* RCTARKitNodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitNodes.m; sourceTree = "<group>"; };
-		449AF33022AFD50B0046938D /* RCTARKitNodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitNodes.h; sourceTree = "<group>"; };
 		449AF34022AFD7040046938D /* TransformNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNode.swift; sourceTree = "<group>"; };
 		449AF34122AFD7040046938D /* UiNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNode.swift; sourceTree = "<group>"; };
 		449AF34322AFD7040046938D /* UiGroupNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiGroupNode.swift; sourceTree = "<group>"; };
@@ -77,9 +75,10 @@
 		449AF34622AFD7040046938D /* UiButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiButtonNode.swift; sourceTree = "<group>"; };
 		449AF34E22AFD7680046938D /* RCTARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKit.m; sourceTree = "<group>"; };
 		449AF34F22AFD7680046938D /* RCTARKitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitManager.h; sourceTree = "<group>"; };
-		449AF35022AFD7680046938D /* RCTARKitDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitDelegate.h; sourceTree = "<group>"; };
 		449AF35122AFD7680046938D /* RCTARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKit.h; sourceTree = "<group>"; };
 		449AF35222AFD7680046938D /* RCTARKitManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
+		449AF3B622B147A10046938D /* RCTARView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARView.h; sourceTree = "<group>"; };
+		449AF3B722B147B70046938D /* RCTARView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -142,23 +141,6 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		449AF32022AFD50B0046938D /* trash */ = {
-			isa = PBXGroup;
-			children = (
-				449AF32C22AFD50B0046938D /* legacy */,
-			);
-			path = trash;
-			sourceTree = "<group>";
-		};
-		449AF32C22AFD50B0046938D /* legacy */ = {
-			isa = PBXGroup;
-			children = (
-				449AF33022AFD50B0046938D /* RCTARKitNodes.h */,
-				449AF32E22AFD50B0046938D /* RCTARKitNodes.m */,
-			);
-			path = legacy;
-			sourceTree = "<group>";
-		};
 		449AF33F22AFD7040046938D /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
@@ -186,7 +168,8 @@
 				449AF34E22AFD7680046938D /* RCTARKit.m */,
 				449AF34F22AFD7680046938D /* RCTARKitManager.h */,
 				449AF35222AFD7680046938D /* RCTARKitManager.m */,
-				449AF35022AFD7680046938D /* RCTARKitDelegate.h */,
+				449AF3B622B147A10046938D /* RCTARView.h */,
+				449AF3B722B147B70046938D /* RCTARView.m */,
 			);
 			path = ARView;
 			sourceTree = "<group>";
@@ -196,7 +179,6 @@
 			children = (
 				449AF2F122AFD3C90046938D /* bridge */,
 				449AF2FD22AFD3CA0046938D /* components */,
-				449AF32022AFD50B0046938D /* trash */,
 				44437F52229F001200EF1F42 /* RCTARKit-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				B13FF7601F94F72400A6C92B /* Frameworks */,
@@ -275,11 +257,11 @@
 				449AF31822AFD3CA0046938D /* SCNNode+Debug.swift in Sources */,
 				449AF31B22AFD3CA0046938D /* SCNMatrix4Extension.swift in Sources */,
 				449AF31722AFD3CA0046938D /* SCNRectangle.swift in Sources */,
+				449AF3B822B147B70046938D /* RCTARView.m in Sources */,
 				449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */,
 				449AF34722AFD7050046938D /* TransformNode.swift in Sources */,
 				449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */,
 				449AF30F22AFD3CA0046938D /* RCTConvert+ARKit.m in Sources */,
-				449AF33C22AFD50C0046938D /* RCTARKitNodes.m in Sources */,
 				449AF31922AFD3CA0046938D /* Maths.swift in Sources */,
 				449AF31E22AFD3CA0046938D /* UiNodesManager.swift in Sources */,
 				449AF34922AFD7050046938D /* UiGroupNode.swift in Sources */,

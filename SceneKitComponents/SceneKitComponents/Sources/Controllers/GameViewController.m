@@ -11,13 +11,13 @@
 
 @interface GameViewController ()
 @property (weak, nonatomic) SCNView *sceneView;
+@property (strong, nonatomic) UISwitch *switchView;
 @end
 
 
 @implementation GameViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     // create a new scene
@@ -80,29 +80,45 @@
     [scene.rootNode addChildNode:sphereNode];
 
     // Text node
-    RNTextNode *textNode = [RNTextNode new];
+    UiTextNode *textNode = [UiTextNode new];
     textNode.text = @"abc";
-    textNode.size = CGSizeMake(1.f, 1.f);
+    textNode.textSize = 0.3f;
     [scene.rootNode addChildNode:textNode];
 
     // Image node
-    RNImageNode *imageNode = [RNImageNode new];
+    UiImageNode *imageNode = [UiImageNode new];
     imageNode.size = CGSizeMake(2.f, 2.f);
     imageNode.image = [UIImage imageNamed: @"sample_image"];
     imageNode.position = SCNVector3Make(-2, 0, 0);
     [scene.rootNode addChildNode:imageNode];
 
-    RNButtonNode *buttonNode = [RNButtonNode new];
+    UiButtonNode *buttonNode = [UiButtonNode new];
     buttonNode.title = @"Button";
     buttonNode.size = CGSizeMake(2.f, 1.f);
     buttonNode.color = [UIColor yellowColor];
     buttonNode.position = SCNVector3Make(2, 0, 0);
     [scene.rootNode addChildNode:buttonNode];
     textNode.text = @"wxyz";
+
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.switchView = [UISwitch new];
+//    button.frame = CGRectMake(0, 0, 10.f, 4.f);
+//    button.backgroundColor = UIColor.yellowColor;
+//    [button setTitle:@"button" forState:UIControlStateNormal];
+    const CGSize viewSize = self.switchView.bounds.size;
+    NSLog(@"viewSize: %@", NSStringFromCGSize(viewSize));
+    SCNPlane *plane = [SCNPlane planeWithWidth:viewSize.width height:viewSize.height];
+    SCNNode *viewNode = [SCNNode nodeWithGeometry:plane];
+
+    plane.firstMaterial.lightingModelName = SCNLightingModelConstant;
+    plane.firstMaterial.diffuse.contents = self.switchView;
+//    plane.firstMaterial.fillMode = SCNFillModeFill;
+    viewNode.position = SCNVector3Make(0, 2, 0);
+    viewNode.scale = SCNVector3Make(0.05f, 0.05f, 0.05f);
+    [scene.rootNode addChildNode:viewNode];
 }
 
-- (BOOL)shouldAutorotate
-{
+- (BOOL)shouldAutorotate {
     return YES;
 }
 
@@ -110,8 +126,7 @@
     return YES;
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return UIInterfaceOrientationMaskAllButUpsideDown;
     } else {

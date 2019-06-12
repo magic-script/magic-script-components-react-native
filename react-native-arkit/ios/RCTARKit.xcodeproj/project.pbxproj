@@ -27,6 +27,7 @@
 		449AF35322AFD7690046938D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34E22AFD7680046938D /* RCTARKit.m */; };
 		449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF35222AFD7680046938D /* RCTARKitManager.m */; };
 		449AF3B822B147B70046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF3B722B147B70046938D /* RCTARView.m */; };
+		449AF3BA22B14B620046938D /* RCTARViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF3B922B14B610046938D /* RCTARViewManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,6 +80,8 @@
 		449AF35222AFD7680046938D /* RCTARKitManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
 		449AF3B622B147A10046938D /* RCTARView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARView.h; sourceTree = "<group>"; };
 		449AF3B722B147B70046938D /* RCTARView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
+		449AF3B922B14B610046938D /* RCTARViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
+		449AF3BB22B14B730046938D /* RCTARViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARViewManager.h; sourceTree = "<group>"; };
 		B14C36631F960C500047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14C36651F960C6E0047CB67 /* PocketSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PocketSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -170,6 +173,8 @@
 				449AF35222AFD7680046938D /* RCTARKitManager.m */,
 				449AF3B622B147A10046938D /* RCTARView.h */,
 				449AF3B722B147B70046938D /* RCTARView.m */,
+				449AF3BB22B14B730046938D /* RCTARViewManager.h */,
+				449AF3B922B14B610046938D /* RCTARViewManager.m */,
 			);
 			path = ARView;
 			sourceTree = "<group>";
@@ -261,6 +266,7 @@
 				449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */,
 				449AF34722AFD7050046938D /* TransformNode.swift in Sources */,
 				449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */,
+				449AF3BA22B14B620046938D /* RCTARViewManager.m in Sources */,
 				449AF30F22AFD3CA0046938D /* RCTConvert+ARKit.m in Sources */,
 				449AF31922AFD3CA0046938D /* Maths.swift in Sources */,
 				449AF31E22AFD3CA0046938D /* UiNodesManager.swift in Sources */,

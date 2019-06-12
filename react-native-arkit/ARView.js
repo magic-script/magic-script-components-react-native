@@ -1,9 +1,10 @@
 import React from 'react';
 import { requireNativeComponent } from 'react-native';
-const RCTARKit = requireNativeComponent('RCTARKit');
+
+const RCTARView = requireNativeComponent('RCTARView');
 
 export default class ARView extends React.Component {
     render() {
-        return <RCTARKit {...this.props} />
+        return <RCTARView {...this.props} />
     }
 }

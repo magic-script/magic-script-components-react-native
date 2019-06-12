@@ -16,8 +16,7 @@ export const deprecated = (propType, hint = null) => (
 ) => {
   if (props[propName]) {
     console.warn(
-      `Prop \`${propName}\` supplied to` +
-        ` \`${componentName}\` is deprecated. ${hint}`,
+      `Prop \`${propName}\` supplied to` + ` \`${componentName}\` is deprecated. ${hint}`,
     );
   }
   return PropTypes.checkPropTypes(

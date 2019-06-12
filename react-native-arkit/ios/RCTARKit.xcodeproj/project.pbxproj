@@ -24,8 +24,6 @@
 		449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34422AFD7040046938D /* UiTextNode.swift */; };
 		449AF34B22AFD7050046938D /* UiImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34522AFD7040046938D /* UiImageNode.swift */; };
 		449AF34C22AFD7050046938D /* UiButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34622AFD7040046938D /* UiButtonNode.swift */; };
-		449AF35322AFD7690046938D /* RCTARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF34E22AFD7680046938D /* RCTARKit.m */; };
-		449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF35222AFD7680046938D /* RCTARKitManager.m */; };
 		449AF3B822B147B70046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF3B722B147B70046938D /* RCTARView.m */; };
 		449AF3BA22B14B620046938D /* RCTARViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF3B922B14B610046938D /* RCTARViewManager.m */; };
 /* End PBXBuildFile section */
@@ -74,10 +72,6 @@
 		449AF34422AFD7040046938D /* UiTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiTextNode.swift; sourceTree = "<group>"; };
 		449AF34522AFD7040046938D /* UiImageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiImageNode.swift; sourceTree = "<group>"; };
 		449AF34622AFD7040046938D /* UiButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiButtonNode.swift; sourceTree = "<group>"; };
-		449AF34E22AFD7680046938D /* RCTARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKit.m; sourceTree = "<group>"; };
-		449AF34F22AFD7680046938D /* RCTARKitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKitManager.h; sourceTree = "<group>"; };
-		449AF35122AFD7680046938D /* RCTARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARKit.h; sourceTree = "<group>"; };
-		449AF35222AFD7680046938D /* RCTARKitManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARKitManager.m; sourceTree = "<group>"; };
 		449AF3B622B147A10046938D /* RCTARView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTARView.h; sourceTree = "<group>"; };
 		449AF3B722B147B70046938D /* RCTARView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
 		449AF3B922B14B610046938D /* RCTARViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
@@ -167,10 +161,6 @@
 		449AF34D22AFD7680046938D /* ARView */ = {
 			isa = PBXGroup;
 			children = (
-				449AF35122AFD7680046938D /* RCTARKit.h */,
-				449AF34E22AFD7680046938D /* RCTARKit.m */,
-				449AF34F22AFD7680046938D /* RCTARKitManager.h */,
-				449AF35222AFD7680046938D /* RCTARKitManager.m */,
 				449AF3B622B147A10046938D /* RCTARView.h */,
 				449AF3B722B147B70046938D /* RCTARView.m */,
 				449AF3BB22B14B730046938D /* RCTARViewManager.h */,
@@ -265,7 +255,6 @@
 				449AF3B822B147B70046938D /* RCTARView.m in Sources */,
 				449AF34A22AFD7050046938D /* UiTextNode.swift in Sources */,
 				449AF34722AFD7050046938D /* TransformNode.swift in Sources */,
-				449AF35422AFD7690046938D /* RCTARKitManager.m in Sources */,
 				449AF3BA22B14B620046938D /* RCTARViewManager.m in Sources */,
 				449AF30F22AFD3CA0046938D /* RCTConvert+ARKit.m in Sources */,
 				449AF31922AFD3CA0046938D /* Maths.swift in Sources */,
@@ -275,7 +264,6 @@
 				449AF31C22AFD3CA0046938D /* SCNVector3Extension.swift in Sources */,
 				449AF31A22AFD3CA0046938D /* SCNQuaternionExtension.swift in Sources */,
 				449AF34B22AFD7050046938D /* UiImageNode.swift in Sources */,
-				449AF35322AFD7690046938D /* RCTARKit.m in Sources */,
 				449AF34C22AFD7050046938D /* UiButtonNode.swift in Sources */,
 				449AF31122AFD3CA0046938D /* ARComponentManager.m in Sources */,
 			);

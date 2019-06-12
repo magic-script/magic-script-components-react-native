@@ -11,29 +11,15 @@
 #import "RCTConvert+ARKit.h"
 #import "RCTARKit-Swift.h"
 
-static ARComponentManager *_instance = nil;
-
 @interface ARComponentManager ()
 @end
 
 
 @implementation ARComponentManager
 
-+ (instancetype)instance {
-    return _instance;
-}
-
-- (id)init {
-    if (self = [super init]) {
-        _instance = self;
-    }
-    return self;
-}
-
 + (BOOL)requiresMainQueueSetup {
     return YES;
 }
-
 
 RCT_EXPORT_MODULE()
 
@@ -111,7 +97,6 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     NSLog(@"addOnPressEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
-        NSLog(@"startListeningToOnPressEvents: found button");
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = ^(SCNNode *sender) {
             NSLog(@"button onTap");

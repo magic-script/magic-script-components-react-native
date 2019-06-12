@@ -10,3 +10,15 @@
 #import <SceneKit/SceneKit.h>
 #import <ARKit/ARKit.h>
 
+@interface RCTARView : UIView
+
+@property (nonatomic, strong) ARSCNView *arView;
+
+@property (nonatomic, assign) BOOL debug;
+@property (nonatomic, assign) BOOL rendersContinuously;
+
+- (void)pause;
+- (void)resume;
+- (void)reset;
+
+@end

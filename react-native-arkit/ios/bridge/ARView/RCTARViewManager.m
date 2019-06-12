@@ -14,11 +14,14 @@
 RCT_EXPORT_MODULE()
 
 - (UIView *)view {
-    return [UIView new];
+    return [RCTARView new];
 }
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
 }
+
+RCT_EXPORT_VIEW_PROPERTY(debug, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(rendersContinuously, BOOL)
 
 @end

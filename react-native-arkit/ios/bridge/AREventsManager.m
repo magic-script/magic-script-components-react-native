@@ -10,8 +10,7 @@
 
 static AREventsManager *_instance = nil;
 
-@implementation AREventsManager
-{
+@implementation AREventsManager {
     bool hasListeners;
 }
 
@@ -21,8 +20,7 @@ RCT_EXPORT_MODULE();
     return _instance;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
     [super setBridge:bridge];
     _instance = self;
 }

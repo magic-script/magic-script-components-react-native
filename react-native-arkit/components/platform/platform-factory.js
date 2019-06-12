@@ -104,6 +104,7 @@ export class PlatformFactory extends NativeFactory {
         ...props,
         ...(props.shadowColor ? { shadowColor: processColor(props.shadowColor) } : {}),
         ...(props.color ? { color: processColor(props.color) } : {}),
+        ...(props.textColor ? { textColor: processColor(props.textColor) } : {}),
         // ...(props.material ? { material: processMaterial(props.material) } : {}),
         ...(props.source ? { source: Image.resolveAssetSource(props.source) } : {}),
       });

@@ -11,12 +11,10 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { sampleImage } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>Sample React Native App</Text>
         <ARView style={styles.arView} rendersContinuously={true}>
-            <Text style={styles.sceneTitle}>Scene 3d view</Text>
         </ARView>
         <View style={styles.footer}>
           <Text style={styles.footerText}>Render debug nodes</Text>

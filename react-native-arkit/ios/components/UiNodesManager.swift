@@ -58,6 +58,13 @@ import SceneKit
         nodesById[nodeId] = node
     }
 
+    @objc func unregisterNode(_ nodeId: String) {
+        if let node = nodesById[nodeId] {
+            node.removeFromParentNode()
+            nodesById.removeValue(forKey: nodeId)
+        }
+    }
+
     @objc func addNode(_ nodeId: String, toParent parentId: String) {
         if let node = nodesById[nodeId],
            let parentNode = nodesById[parentId] {
@@ -76,7 +83,6 @@ import SceneKit
             let parentNode = nodesById[parentId],
             parentNode == node.parent {
             node.removeFromParentNode()
-            nodesById.removeValue(forKey: nodeId)
         }
     }
 

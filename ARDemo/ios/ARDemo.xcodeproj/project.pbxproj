@@ -23,8 +23,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		44437FA2229F06E500EF1F42 /* libRCTARKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44437FA1229F06D300EF1F42 /* libRCTARKit.a */; };
 		44437FB2229F078E00EF1F42 /* EmptyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437FB1229F078E00EF1F42 /* EmptyFile.swift */; };
+		449AF4A622B248300046938D /* libRNMagicScript.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 449AF44822B2478D0046938D /* libRNMagicScript.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
@@ -262,12 +262,12 @@
 			remoteGlobalIDString = ED296FEE214C9CF800B7C4FE;
 			remoteInfo = "jsiexecutor-tvOS";
 		};
-		44437FA0229F06D300EF1F42 /* PBXContainerItemProxy */ = {
+		449AF44722B2478D0046938D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 44437F9C229F06D300EF1F42 /* RCTARKit.xcodeproj */;
+			containerPortal = 449AF41D22B2478D0046938D /* RNMagicScript.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RCTARKit;
+			remoteInfo = RNMagicScript;
 		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -327,9 +327,9 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ARDemo/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		44437F9C229F06D300EF1F42 /* RCTARKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTARKit.xcodeproj; path = "../../react-native-arkit/ios/RCTARKit.xcodeproj"; sourceTree = "<group>"; };
 		44437FB0229F078E00EF1F42 /* ARDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		44437FB1229F078E00EF1F42 /* EmptyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFile.swift; sourceTree = "<group>"; };
+		449AF41D22B2478D0046938D /* RNMagicScript.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMagicScript.xcodeproj; path = "../../react-native-magic-script/ios/RNMagicScript.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -351,7 +351,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44437FA2229F06E500EF1F42 /* libRCTARKit.a in Frameworks */,
+				449AF4A622B248300046938D /* libRNMagicScript.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -499,10 +499,10 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		44437F9D229F06D300EF1F42 /* Products */ = {
+		449AF41E22B2478D0046938D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				44437FA1229F06D300EF1F42 /* libRCTARKit.a */,
+				449AF44822B2478D0046938D /* libRNMagicScript.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -528,7 +528,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				44437F9C229F06D300EF1F42 /* RCTARKit.xcodeproj */,
+				449AF41D22B2478D0046938D /* RNMagicScript.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -665,10 +665,6 @@
 					ProjectRef = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
 				},
 				{
-					ProductGroup = 44437F9D229F06D300EF1F42 /* Products */;
-					ProjectRef = 44437F9C229F06D300EF1F42 /* RCTARKit.xcodeproj */;
-				},
-				{
 					ProductGroup = ADBDB9201DFEBF0600ED6528 /* Products */;
 					ProjectRef = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
 				},
@@ -707,6 +703,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 449AF41E22B2478D0046938D /* Products */;
+					ProjectRef = 449AF41D22B2478D0046938D /* RNMagicScript.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -942,11 +942,11 @@
 			remoteRef = 44437EFF229C7F6900EF1F42 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		44437FA1229F06D300EF1F42 /* libRCTARKit.a */ = {
+		449AF44822B2478D0046938D /* libRNMagicScript.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libRCTARKit.a;
-			remoteRef = 44437FA0229F06D300EF1F42 /* PBXContainerItemProxy */;
+			path = libRNMagicScript.a;
+			remoteRef = 449AF44722B2478D0046938D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {

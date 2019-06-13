@@ -9,7 +9,7 @@
 #import "ARComponentManager.h"
 #import "AREventsManager.h"
 #import "RCTConvert+ARKit.h"
-#import "RCTARKit-Swift.h"
+#import "RNMagicScript-Swift.h"
 
 @interface ARComponentManager ()
 @end

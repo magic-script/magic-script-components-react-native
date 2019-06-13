@@ -32,7 +32,7 @@ class Demo1App extends Component {
         const { selectedImageIndex } = this.state;
         const imageSource = this.images[selectedImageIndex];
         return (
-            <view name='demo1' position={{ x: 0, y: 0, z: 0 }}>
+            <view name='demo1' position={{ x: 0, y: 0, z: 0 }} scale={0.05}>
                 <text position={{ x: 0, y: 3.5, z: 0 }} text={'Demo 1'} textColor={'pink'}></text>
                 <image position={{ x: 0, y: 1.5, z: 0 }} source={imageSource} size={{ width: 3, height: 3 }} />
                 <view name='control' position={{ x: 0, y: -1, z: 0 }}>

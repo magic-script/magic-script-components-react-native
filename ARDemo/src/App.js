@@ -13,18 +13,22 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.headerText}>Sample React Native App</Text>
-        <ARView style={styles.arView} rendersContinuously={true}>
-        </ARView>
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Render debug nodes</Text>
-          <Switch
-            value={this.state.debugNodesValue}
-            style={styles.switch}
-            onValueChange={this.onSwitchValueChange}
-          />
-        </View>
+          <ARView style={styles.arView} rendersContinuously={true} />
       </View>
+      
+      // <View style={styles.container}>
+      //   <Text style={styles.headerText}>Sample React Native App</Text>
+      //   <ARView style={styles.arView} rendersContinuously={true}>
+      //   </ARView>
+      //   <View style={styles.footer}>
+      //     <Text style={styles.footerText}>Render debug nodes</Text>
+      //     <Switch
+      //       value={this.state.debugNodesValue}
+      //       style={styles.switch}
+      //       onValueChange={this.onSwitchValueChange}
+      //     />
+      //   </View>
+      // </View>
     );
   }
 }

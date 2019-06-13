@@ -5,7 +5,7 @@ AppRegistry.registerComponent('ARDemo', () => App);
 
 
 import React from 'react';
-import { ARKitScript } from 'react-native-arkit';
+import { ARKitScript } from 'react-native-magic-script';
 import Demo1App from './src/Demo1App';
 
 ARKitScript.render(<Demo1App />, { name: 'root' });

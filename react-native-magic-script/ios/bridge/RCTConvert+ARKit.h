@@ -10,7 +10,7 @@
 #import <SceneKit/SceneKit.h>
 #import <React/RCTConvert.h>
 #import <ARKit/ARKit.h>
-#import "RCTARKit-Swift.h"
+#import "RNMagicScript-Swift.h"
 
 @interface SCNTextNode : SCNNode
 @end

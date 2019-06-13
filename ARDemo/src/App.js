@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
-import { ARView } from 'react-native-arkit';
+import { ARView } from 'react-native-magic-script';
 
 export default class App extends React.Component {
   state = { debugNodesValue: false }

@@ -10,7 +10,7 @@
     "react": "16.8.3",
     "react-native": "0.59.8",
     "react-reconciler": "^0.20.4",
-    "react-native-arkit": "../react-native-arkit"
+    "react-native-magic-script": "../react-native-magic-script"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

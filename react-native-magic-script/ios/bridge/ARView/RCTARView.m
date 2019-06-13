@@ -7,7 +7,7 @@
 //
 
 #import "RCTARView.h"
-#import "RCTARKit-Swift.h"
+#import "RNMagicScript-Swift.h"
 
 @interface RCTARView() <UIGestureRecognizerDelegate>
 

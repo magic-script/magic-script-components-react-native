@@ -19,6 +19,23 @@ import SceneKit
         didSet { updateNodeSize() }
     }
 
+    @objc var width: CGFloat = 2 {
+        didSet { updateNodeSize() }
+    }
+
+    @objc var height: CGFloat = 1 {
+        didSet { updateNodeSize() }
+    }
+
+    @objc var textSize: CGFloat {
+        get { return textNode.textSize }
+        set { textNode.textSize = newValue }
+    }
+
+    @objc var roundness: CGFloat = 0.5 {
+        didSet { updateNodeSize() }
+    }
+
     @objc var color: UIColor = UIColor.blue {
         didSet {
             textNode.textColor = color
@@ -49,7 +66,7 @@ import SceneKit
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
         animation.fromValue = initialPosition.z
-        animation.toValue = initialPosition.z - 0.4
+        animation.toValue = initialPosition.z - 0.2
         animation.duration = 0.1
         animation.autoreverses = true
         animation.repeatCount = 1
@@ -72,8 +89,8 @@ import SceneKit
 
         borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
-        let radius: CGFloat = 0.5 * min(rect.width, rect.height)
-        borderGeometry = SCNRectangle(rect: rect, thickness: 0.07, radius: radius)
+        let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
+        borderGeometry = SCNRectangle(rect: rect, thickness: 0.01, radius: radius)
         borderGeometry.firstMaterial?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
         contentNode.addChildNode(borderNode)

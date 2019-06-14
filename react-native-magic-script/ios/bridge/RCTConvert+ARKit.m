@@ -18,10 +18,16 @@
 }
 
 + (SCNVector3)SCNVector3:(id)json {
-    const CGFloat x = [json[@"x"] floatValue];
-    const CGFloat y = [json[@"y"] floatValue];
-    const CGFloat z = [json[@"z"] floatValue];
-    return SCNVector3Make(x, y, z);
+    if ([json isKindOfClass:[NSArray class]]) {
+        NSArray *components = (NSArray *)json;
+        if ([components count] >= 3) {
+            const CGFloat x = [components[0] floatValue];
+            const CGFloat y = [components[1] floatValue];
+            const CGFloat z = [components[2] floatValue];
+            return SCNVector3Make(x, y, z);
+        }
+    }
+    return SCNVector3Zero;
 }
 
 + (SCNVector4)SCNVector4:(id)json {
@@ -115,13 +121,32 @@
 }
 
 + (UiButtonNode *)UiButtonNode:(id)json {
-    NSString *title = [NSString stringWithFormat:@"%@", json[@"title"]];
+    NSString *title = json[@"title"];
     if (!title) {
-        title = @"(null)";
+        title = @"";
+    }
+
+    CGFloat width = 2.f;
+    if (json[@"width"]) {
+        width = [json[@"width"] floatValue];
+    }
+    CGFloat height = 1.f;
+    if (json[@"height"]) {
+        height = [json[@"height"] floatValue];
+    }
+
+    CGFloat roundness = 0.5f;
+    if (json[@"roundness"]) {
+        roundness = [json[@"roundness"] floatValue];
+    }
+
+    CGFloat textSize = 0.5f;
+    if (json[@"textSize"]) {
+        textSize = [json[@"textSize"] floatValue];
     }
 
     NSDictionary *sizeDict = json[@"size"];
-    CGSize size = CGSizeMake(2.f, 1.f);
+    CGSize size = CGSizeMake(width, height);
     if (sizeDict) {
         size.width = [sizeDict[@"width"] floatValue];
         size.height = [sizeDict[@"height"] floatValue];
@@ -134,7 +159,9 @@
     buttonNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     buttonNode.title = title;
     buttonNode.size = size;
+    buttonNode.roundness = roundness;
     buttonNode.color = color;
+    buttonNode.textSize = textSize;
 
     return buttonNode;
 }
@@ -144,6 +171,15 @@
     [self setNodeProperties:imageNode properties:json];
     imageNode.name = [NSString stringWithFormat:@"%@", json[@"id"]];
     imageNode.size = [self CGSize:json[@"size"]];
+    if (json[@"width"]) {
+        imageNode.width = [json[@"width"] floatValue];
+    }
+    if (json[@"height"]) {
+        imageNode.height = [json[@"height"] floatValue];
+    }
+
+    NSLog(@"filePath: %@", json[@"filePath"]);
+    NSLog(@"source: %@", json[@"source"]);
 
     RCTImageSource *source = [self RCTImageSource:json[@"source"]];
     imageNode.URL = source.request.URL;
@@ -152,9 +188,9 @@
 }
 
 + (UiTextNode *)UiTextNode:(id)json {
-    NSString *text = [NSString stringWithFormat:@"%@", json[@"text"]];
+    NSString *text = json[@"text"];
     if (!text) {
-        text = @"(null)";
+        text = @"";
     }
 
     NSDictionary *sizeDict = json[@"boundsSize"];
@@ -162,6 +198,11 @@
     if (sizeDict) {
         size.width = [sizeDict[@"x"] floatValue];
         size.height = [sizeDict[@"y"] floatValue];
+    }
+
+    CGFloat textSize = 0.5f;
+    if (json[@"textSize"]) {
+        textSize = [json[@"textSize"] floatValue];
     }
 
     UIColor *textColor = json[@"textColor"] ? [self UIColor:json[@"textColor"]] : UIColor.whiteColor;
@@ -172,6 +213,7 @@
     textNode.text = text;
 //    textNode.font = font;
     textNode.boundsSize = size;
+    textNode.textSize = textSize;
     textNode.textColor = textColor;
 
     return textNode;
@@ -349,6 +391,10 @@
     }
     if (json[@"position"]) {
         node.position = [self SCNVector3:json[@"position"]];
+    }
+
+    if (json[@"localPosition"]) {
+        node.position = [self SCNVector3:json[@"localPosition"]];
     }
     
     if (json[@"scale"]) {

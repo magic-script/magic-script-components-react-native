@@ -10,7 +10,6 @@ export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
         super(componentMapping);
 
-        console.log('[FACTORY] ctor');
         // { type, builder }
         this.elementBuilders = {};
         this.controllerBuilders = {};
@@ -315,7 +314,13 @@ export class PlatformFactory extends NativeFactory {
     addChildElement(parent, child) {
         console.log('[FACTORY] addChildElement.parent: ', parent);
         console.log('[FACTORY] addChildElement.child: ', child);
-        this.componentManager.addChildNode(child.id, parent.id);
+        if (typeof child === 'string' || typeof child === 'number') {
+            const props = (parent.type === 'button') ? { title: child.toString() } : { text: child.toString() };
+            this.componentManager.updateNode(parent.id, props);
+        } else {
+            this.componentManager.addChildNode(child.id, parent.id);
+        }
+        
         // if (typeof child === 'string') {
         //     parent.setText(child);
         // } else if (typeof child === 'number') {

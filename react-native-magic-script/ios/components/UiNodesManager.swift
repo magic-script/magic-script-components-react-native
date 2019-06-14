@@ -133,8 +133,16 @@ import SceneKit
         } else if let textNode = node as? UiTextNode {
             textNode.text = properties["text"] as? String
 
-            if let color = properties["color"] {
+            if let color = properties["textColor"] {
                 textNode.textColor = RCTConvert.uiColor(color)
+            }
+        } else if let buttonNode = node as? UiButtonNode {
+            if let title = properties["title"] as? String {
+                buttonNode.title = title
+            }
+
+            if let color = properties["color"] {
+                buttonNode.color = RCTConvert.uiColor(color)
             }
         }
 

@@ -33,6 +33,16 @@ import SceneKit
         set { planeGeometry.width = newValue.width; planeGeometry.height = newValue.height; updateImageSize() }
     }
 
+    @objc var width: CGFloat {
+        get { return planeGeometry.width }
+        set { planeGeometry.width = newValue; updateImageSize() }
+    }
+
+    @objc var height: CGFloat {
+        get { return planeGeometry.height }
+        set { planeGeometry.height = newValue; updateImageSize() }
+    }
+
     fileprivate var planeGeometry: SCNPlane!
 
     @objc override init() {
@@ -53,7 +63,7 @@ import SceneKit
     }
 
     fileprivate func updateImageSize() {
-        setBBox(visible: true, forceUpdate: true)
+//        setBBox(visible: true, forceUpdate: true)
     }
 }
 

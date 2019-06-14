@@ -10,6 +10,8 @@ import SceneKit
 
 @objc class UiTextNode: SCNNode {
 
+    fileprivate let fixedTextSize: CGFloat = 0.4
+
     @objc var text: String? {
         get { return textGeometry.string as? String }
         set { textGeometry.string = newValue; updateTextNodePosition() }
@@ -20,7 +22,10 @@ import SceneKit
     }
     @objc var textSize: CGFloat {
         get { return self.font.pointSize }
-        set { self.font = UIFont(name: self.font.familyName, size: newValue)! }
+        set {
+            let scale: CGFloat = newValue / fixedTextSize
+            textNode.scale = SCNVector3(scale, scale, scale)
+        }
     }
 
     // @objc var allCaps: Bool // TODO: property to defined
@@ -59,7 +64,7 @@ import SceneKit
 
     fileprivate func setupNode() {
         textGeometry = SCNText(string: "", extrusionDepth: 0)
-        textGeometry.font = UIFont.systemFont(ofSize: 0.4)
+        textGeometry.font = UIFont.systemFont(ofSize: fixedTextSize)
         textGeometry.alignmentMode = CATextLayerAlignmentMode.center.rawValue
         textGeometry.flatness = 0.5
         textGeometry.firstMaterial?.lightingModel = .constant

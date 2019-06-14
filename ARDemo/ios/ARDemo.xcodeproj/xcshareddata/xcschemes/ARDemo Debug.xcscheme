@@ -30,7 +30,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "ARDemo.app"
-               BlueprintName = "ARDemo"
+               BlueprintName = "ARDemo Debug"
                ReferencedContainer = "container:ARDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -72,7 +72,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "ARDemo.app"
-            BlueprintName = "ARDemo"
+            BlueprintName = "ARDemo Debug"
             ReferencedContainer = "container:ARDemo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -80,7 +80,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -95,7 +95,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "ARDemo.app"
-            BlueprintName = "ARDemo"
+            BlueprintName = "ARDemo Debug"
             ReferencedContainer = "container:ARDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -114,7 +114,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "ARDemo.app"
-            BlueprintName = "ARDemo"
+            BlueprintName = "ARDemo Debug"
             ReferencedContainer = "container:ARDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

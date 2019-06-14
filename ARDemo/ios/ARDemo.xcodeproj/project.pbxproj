@@ -23,6 +23,25 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		4410DED822B2992100A8522B /* EmptyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437FB1229F078E00EF1F42 /* EmptyFile.swift */; };
+		4410DED922B2992100A8522B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		4410DEDA22B2992100A8522B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		4410DEDC22B2992100A8522B /* libRNMagicScript.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 449AF44822B2478D0046938D /* libRNMagicScript.a */; };
+		4410DEDD22B2992100A8522B /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		4410DEDE22B2992100A8522B /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		4410DEDF22B2992100A8522B /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		4410DEE022B2992100A8522B /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		4410DEE122B2992100A8522B /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
+		4410DEE222B2992100A8522B /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
+		4410DEE322B2992100A8522B /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
+		4410DEE422B2992100A8522B /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
+		4410DEE522B2992100A8522B /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
+		4410DEE622B2992100A8522B /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
+		4410DEE722B2992100A8522B /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		4410DEE822B2992100A8522B /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
+		4410DEE922B2992100A8522B /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
+		4410DEEB22B2992100A8522B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		4410DEEC22B2992100A8522B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		44437FB2229F078E00EF1F42 /* EmptyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44437FB1229F078E00EF1F42 /* EmptyFile.swift */; };
 		449AF4A622B248300046938D /* libRNMagicScript.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 449AF44822B2478D0046938D /* libRNMagicScript.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -327,6 +346,8 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ARDemo/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4410DEF122B2992100A8522B /* ARDemo Release.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ARDemo Release.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4410DEF222B2992100A8522B /* ARDemo copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ARDemo copy-Info.plist"; path = "/Users/lechec/Nomtek/Apps/SeeMore/magic-script-components-platform-ios/ARDemo/ios/ARDemo copy-Info.plist"; sourceTree = "<absolute>"; };
 		44437FB0229F078E00EF1F42 /* ARDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		44437FB1229F078E00EF1F42 /* EmptyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFile.swift; sourceTree = "<group>"; };
 		449AF41D22B2478D0046938D /* RNMagicScript.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMagicScript.xcodeproj; path = "../../react-native-magic-script/ios/RNMagicScript.xcodeproj"; sourceTree = "<group>"; };
@@ -365,6 +386,27 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4410DEDB22B2992100A8522B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4410DEDC22B2992100A8522B /* libRNMagicScript.a in Frameworks */,
+				4410DEDD22B2992100A8522B /* JavaScriptCore.framework in Frameworks */,
+				4410DEDE22B2992100A8522B /* libRCTBlob.a in Frameworks */,
+				4410DEDF22B2992100A8522B /* libRCTAnimation.a in Frameworks */,
+				4410DEE022B2992100A8522B /* libReact.a in Frameworks */,
+				4410DEE122B2992100A8522B /* libRCTActionSheet.a in Frameworks */,
+				4410DEE222B2992100A8522B /* libRCTGeolocation.a in Frameworks */,
+				4410DEE322B2992100A8522B /* libRCTImage.a in Frameworks */,
+				4410DEE422B2992100A8522B /* libRCTLinking.a in Frameworks */,
+				4410DEE522B2992100A8522B /* libRCTNetwork.a in Frameworks */,
+				4410DEE622B2992100A8522B /* libRCTSettings.a in Frameworks */,
+				4410DEE722B2992100A8522B /* libRCTText.a in Frameworks */,
+				4410DEE822B2992100A8522B /* libRCTVibration.a in Frameworks */,
+				4410DEE922B2992100A8522B /* libRCTWebSocket.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,6 +604,7 @@
 				00E356EF1AD99517003FC87E /* ARDemoTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				4410DEF222B2992100A8522B /* ARDemo copy-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -573,6 +616,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* ARDemo.app */,
 				00E356EE1AD99517003FC87E /* ARDemoTests.xctest */,
+				4410DEF122B2992100A8522B /* ARDemo Release.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -607,9 +651,9 @@
 			productReference = 00E356EE1AD99517003FC87E /* ARDemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* ARDemo */ = {
+		13B07F861A680F5B00A75B9A /* ARDemo Debug */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ARDemo" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ARDemo Debug" */;
 			buildPhases = (
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
@@ -620,9 +664,27 @@
 			);
 			dependencies = (
 			);
-			name = ARDemo;
+			name = "ARDemo Debug";
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* ARDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4410DED622B2992100A8522B /* ARDemo Release */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4410DEEE22B2992100A8522B /* Build configuration list for PBXNativeTarget "ARDemo Release" */;
+			buildPhases = (
+				4410DED722B2992100A8522B /* Sources */,
+				4410DEDB22B2992100A8522B /* Frameworks */,
+				4410DEEA22B2992100A8522B /* Resources */,
+				4410DEED22B2992100A8522B /* Bundle React Native code and images */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ARDemo Release";
+			productName = "Hello World";
+			productReference = 4410DEF122B2992100A8522B /* ARDemo Release.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -641,6 +703,9 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = DEURTTZ5DW;
 						LastSwiftMigration = 1010;
+					};
+					4410DED622B2992100A8522B = {
+						DevelopmentTeam = DEURTTZ5DW;
 					};
 				};
 			};
@@ -711,7 +776,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* ARDemo */,
+				13B07F861A680F5B00A75B9A /* ARDemo Debug */,
+				4410DED622B2992100A8522B /* ARDemo Release */,
 				00E356ED1AD99517003FC87E /* ARDemoTests */,
 			);
 		};
@@ -1003,10 +1069,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4410DEEA22B2992100A8522B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4410DEEB22B2992100A8522B /* Images.xcassets in Resources */,
+				4410DEEC22B2992100A8522B /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		4410DEED22B2992100A8522B /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1041,12 +1130,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4410DED722B2992100A8522B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4410DED822B2992100A8522B /* EmptyFile.swift in Sources */,
+				4410DED922B2992100A8522B /* AppDelegate.m in Sources */,
+				4410DEDA22B2992100A8522B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* ARDemo */;
+			target = 13B07F861A680F5B00A75B9A /* ARDemo Debug */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1145,6 +1244,52 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.nomtek.ARDemo;
 				PRODUCT_NAME = ARDemo;
+				SWIFT_OBJC_BRIDGING_HEADER = "ARDemo-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		4410DEEF22B2992100A8522B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
+				INFOPLIST_FILE = "ARDemo copy-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.nomtek.ARDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ARDemo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		4410DEF022B2992100A8522B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
+				INFOPLIST_FILE = "ARDemo copy-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.nomtek.ARDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ARDemo-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1263,11 +1408,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ARDemo" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ARDemo Debug" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4410DEEE22B2992100A8522B /* Build configuration list for PBXNativeTarget "ARDemo Release" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4410DEEF22B2992100A8522B /* Debug */,
+				4410DEF022B2992100A8522B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

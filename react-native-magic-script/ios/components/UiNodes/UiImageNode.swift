@@ -69,9 +69,13 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
+        // bundle.url file:///var/containers/Bundle/Application/3E4ECDCA-D4AD-4C3A-93A1-A8B91DAB263F/ARDemo%20Release.app/
+        //            file:///var/containers/Bundle/Application/62FE4E48-5D00-4E13-8F46-78CB10D95CB6/ARDemo%20Release.app/assets/
         if let filePath = props["filePath"] as? String {
-            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
-            url = localURL.appendingPathComponent(filePath);
+//            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
+            let localURL: URL = Bundle.main.bundleURL.appendingPathComponent("assets")
+            url = localURL.appendingPathComponent(filePath)
+            print("image.url: \(url!)")
         } else if let source = props["source"] {
             print("source: \(source)")
             url = RCTConvert.rctImageSource(source).request?.url

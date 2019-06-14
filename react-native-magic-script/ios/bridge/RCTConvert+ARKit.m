@@ -178,16 +178,17 @@
         imageNode.height = [json[@"height"] floatValue];
     }
 
-    RCTImageSource *source = [self RCTImageSource:json[@"source"]];
-    if (source) {
-        NSLog(@"source: %@", source);
-        imageNode.url = source.request.URL;
-    }
+//    RCTImageSource *source = [self RCTImageSource:json[@"source"]];
+//    if (source) {
+//        NSLog(@"source: %@", source);
+//        imageNode.url = source.request.URL;
+//    }
 
     NSString *filePath = json[@"filePath"];
     if (filePath) {
         NSLog(@"filePath: %@", filePath);
-        NSURL *URL = [NSURL URLWithString:@"http://localhost:8081/assets/"];
+//        NSURL *URL = [NSURL URLWithString:@"http://localhost:8081/assets/"]; // debug
+        NSURL *URL = [NSBundle.mainBundle.bundleURL URLByAppendingPathComponent:@"assets"]; // release
         imageNode.url = [URL URLByAppendingPathComponent:filePath];
     }
 

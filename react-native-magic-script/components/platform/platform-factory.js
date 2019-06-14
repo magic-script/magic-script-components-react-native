@@ -23,14 +23,18 @@ export class PlatformFactory extends NativeFactory {
         this.eventsByElementId = {};
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
-        const subscription = this.eventsManager.addListener('onPress', (sender) => {
+        this.startListeningEvent('onPress');
+        this.startListeningEvent('onClick');
+    }
+
+    startListeningEvent(eventName) {
+        const subscription = this.eventsManager.addListener(eventName, (sender) => {
             const elementId = sender.nodeId;
-            console.log('[EVENTS] onPress received: ', elementId);
             const events = this.eventsByElementId[elementId];
             if (events !== undefined) {
-                const onPressEvents = events.filter(item => item.name === 'onPress');
+                const onPressEvents = events.filter(item => item.name === eventName);
                 onPressEvents.forEach(item => {
-                    console.log('[EVENTS] item: ', item);
+                    console.log(`[EVENTS] ${eventName} received: ${elementId}\nitem: `, item);
                     item.handler();
                 });
             }
@@ -207,6 +211,15 @@ export class PlatformFactory extends NativeFactory {
         // }
     }
 
+    insertBefore(parent, child, beforeChild) {
+        if (typeof child === 'string' || typeof child === 'number') {
+            const props = (parent.type === 'button') ? { title: child.toString() } : { text: child.toString() };
+            this.componentManager.updateNode(parent.id, props);
+        } else {
+            this.componentManager.addChildNode(child.id, parent.id);
+        }
+    }
+
     // TODO: Should be replaced by Proxy.addChild(parent, child)
     // after replacing builders with proxies
     _addChildNodeToParentNode(parent, child) {
@@ -320,7 +333,6 @@ export class PlatformFactory extends NativeFactory {
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
         }
-        
         // if (typeof child === 'string') {
         //     parent.setText(child);
         // } else if (typeof child === 'number') {
@@ -413,6 +425,7 @@ export class PlatformFactory extends NativeFactory {
     removeChildFromContainer(container, child) {
         console.log('[FACTORY] removeChildFromContainer.container: ', container);
         console.log('[FACTORY] removeChildFromContainer.child: ', child);
+        this.componentManager.removeChildNodeFromRoot(child.id);
         // if (this.isController(child)) {
         //     container.controller.removeChildController(child);
         // } else {

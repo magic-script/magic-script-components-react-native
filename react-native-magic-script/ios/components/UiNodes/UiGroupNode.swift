@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiGroupNode: SCNNode {
+@objc class UiGroupNode: UiNode {
 
     @objc override init() {
         super.init()

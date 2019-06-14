@@ -14,5 +14,6 @@
 
 + (instancetype)instance;
 - (void)onPressEventReceived:(SCNNode *)sender;
+- (void)onClickEventReceived:(SCNNode *)sender;
 
 @end

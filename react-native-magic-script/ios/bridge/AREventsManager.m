@@ -38,12 +38,18 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onPress"];
+    return @[@"onPress", @"onClick"];
 }
 
 - (void)onPressEventReceived:(SCNNode *)sender {
     if (hasListeners) {
         [self sendEventWithName:@"onPress" body:@{ @"nodeId": sender.name }];
+    }
+}
+
+- (void)onClickEventReceived:(SCNNode *)sender {
+    if (hasListeners) {
+        [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
     }
 }
 

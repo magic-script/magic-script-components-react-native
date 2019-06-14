@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiButtonNode: SCNNode {
+@objc class UiButtonNode: UiNode {
 
     @objc var title: String? {
         get { return textNode.text }
@@ -90,12 +90,24 @@ import SceneKit
         borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
         let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
-        borderGeometry = SCNRectangle(rect: rect, thickness: 0.01, radius: radius)
+        borderGeometry = SCNRectangle(rect: rect, thickness: 0.005, radius: radius)
         borderGeometry.firstMaterial?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
         contentNode.addChildNode(borderNode)
 
         borderNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0)
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let title = props["title"] as? String {
+            self.title = title
+        }
+
+        if let color = props["color"] {
+            self.color = RCTConvert.uiColor(color)
+        }
     }
 }
 

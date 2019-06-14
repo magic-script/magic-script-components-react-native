@@ -8,15 +8,15 @@
 
 import SceneKit
 
-@objc class UiImageNode: SCNNode {
+@objc class UiImageNode: UiNode {
     fileprivate var dataTask: URLSessionDataTask?
     deinit {
         dataTask?.cancel()
     }
 
-    @objc var URL: URL? {
+    @objc var url: URL? {
         didSet {
-            guard let url = URL else { image = nil; return }
+            guard let url = url else { image = nil; return }
             downloadImage(imageURL: url) { [weak self] (image) -> (Void) in
                 self?.image = image
             }
@@ -64,6 +64,20 @@ import SceneKit
 
     fileprivate func updateImageSize() {
 //        setBBox(visible: true, forceUpdate: true)
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let filePath = props["filePath"] as? String {
+            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
+            url = localURL.appendingPathComponent(filePath);
+        } else if let source = props["source"] {
+            print("source: \(source)")
+            url = RCTConvert.rctImageSource(source).request?.url
+        } else {
+            url = nil
+        }
     }
 }
 

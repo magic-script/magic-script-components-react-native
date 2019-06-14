@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiTextNode: SCNNode {
+@objc class UiTextNode: UiNode {
 
     fileprivate let fixedTextSize: CGFloat = 0.4
 
@@ -89,5 +89,17 @@ import SceneKit
 //        addChildNode(bboxNode!)
 
 //        setBBox(visible: true, forceUpdate: true)
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let text = props["text"] as? String {
+            self.text = text
+        }
+
+        if let color = props["textColor"] {
+            self.textColor = RCTConvert.uiColor(color)
+        }
     }
 }

@@ -264,7 +264,7 @@ function commitUpdate(instance, updatePayload, type, oldProps, newProps, interna
 //  child: Instance | TextInstance,
 //  beforeChild: Instance | TextInstance
 function insertBefore(parentInstance, child, beforeChild) {
-  logNotImplemented('insertBefore');
+  mxs._nativeFactory.insertBefore(parentInstance, child, beforeChild);
 }
 
 // Function: insertInContainerBefore

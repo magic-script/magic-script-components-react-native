@@ -71,6 +71,12 @@ RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(removeChildNodeFromRoot:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"removeNodeFromRoot: %@", nodeId);
+    [UiNodesManager.instance removeNodeFromRoot: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"clearScene");
     [UiNodesManager.instance clear];
@@ -101,6 +107,7 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
         button.onTap = ^(SCNNode *sender) {
             NSLog(@"button onTap");
             [[AREventsManager instance] onPressEventReceived:sender];
+            [[AREventsManager instance] onClickEventReceived:sender];
         };
     }
 }

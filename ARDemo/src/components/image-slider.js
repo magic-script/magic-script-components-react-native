@@ -41,7 +41,6 @@ export default class ImageSlider extends React.Component {
                     key={this.state.currentPosition}
                     filePath={this.state.items[this.state.currentPosition]}
                     // localPosition={[-0.25,  0.25,  -0.25]}
-                    source={require('../../resources/DemoPicture1.jpg')}
                     width={0.75}
                     height={0.5}
                 ></image>

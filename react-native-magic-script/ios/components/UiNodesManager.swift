@@ -13,7 +13,7 @@ import SceneKit
     @objc static let instance = UiNodesManager()
     @objc let rootNode: SCNNode = SCNNode()
     @objc let componentNodeBitMask: Int = 8
-    fileprivate var nodesById: [String: SCNNode] = [:]
+    fileprivate var nodesById: [String: UiNode] = [:]
 
     private override init() {
         super.init()
@@ -45,11 +45,11 @@ import SceneKit
         button.simulateTap()
     }
 
-    @objc func findNodeWithId(_ nodeId: String) -> SCNNode? {
+    @objc func findNodeWithId(_ nodeId: String) -> UiNode? {
         return nodesById[nodeId]
     }
 
-    @objc func registerNode(_ node: SCNNode, nodeId: String) {
+    @objc func registerNode(_ node: UiNode, nodeId: String) {
         node.name = nodeId
         if node is UiButtonNode {
             node.categoryBitMask = componentNodeBitMask
@@ -82,6 +82,13 @@ import SceneKit
         if let node = nodesById[nodeId],
             let parentNode = nodesById[parentId],
             parentNode == node.parent {
+            node.removeFromParentNode()
+        }
+    }
+
+    @objc func removeNodeFromRoot(_ nodeId: String) {
+        if let node = nodesById[nodeId],
+            rootNode == node.parent {
             node.removeFromParentNode()
         }
     }
@@ -122,30 +129,7 @@ import SceneKit
 
     @objc func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
         guard let node = nodesById[nodeId] else { return false }
-
-        if let imageNode = node as? UiImageNode {
-            if let source = properties["source"] {
-                print("source: \(source)")
-                imageNode.URL = RCTConvert.rctImageSource(source).request?.url
-            } else {
-                imageNode.URL = nil
-            }
-        } else if let textNode = node as? UiTextNode {
-            textNode.text = properties["text"] as? String
-
-            if let color = properties["textColor"] {
-                textNode.textColor = RCTConvert.uiColor(color)
-            }
-        } else if let buttonNode = node as? UiButtonNode {
-            if let title = properties["title"] as? String {
-                buttonNode.title = title
-            }
-
-            if let color = properties["color"] {
-                buttonNode.color = RCTConvert.uiColor(color)
-            }
-        }
-
+        node.update(properties)
         return true
     }
 }

@@ -14,28 +14,28 @@ import SceneKit
     // var parentedBoneName: String
     // var skipRaycast: Bool = false
     // var triggerable: Bool = true
-    var visible: Bool {
+    @objc var visible: Bool {
         get { return !self.isHidden }
         set { self.isHidden = !newValue }
     }
     // var visibilityInherited: Bool = true
-    var anchorPosition: SCNVector3 {
+    @objc var anchorPosition: SCNVector3 {
         get { return self.pivot.position }
         set { self.pivot.position = newValue }
     }
-    var localPosition: SCNVector3 {
+    @objc var localPosition: SCNVector3 {
         get { return self.position }
         set { self.position = newValue }
     }
-    var localRotation: SCNQuaternion {
+    @objc var localRotation: SCNQuaternion {
         get { return self.orientation }
         set { self.orientation = newValue }
     }
-    var localScale: SCNVector3 {
+    @objc var localScale: SCNVector3 {
         get { return self.scale }
         set { self.scale = newValue }
     }
-    var localTransform: SCNMatrix4 {
+    @objc var localTransform: SCNMatrix4 {
         get { return self.transform }
         set { self.transform = newValue }
     }
@@ -52,16 +52,36 @@ import SceneKit
         setupNode()
     }
 
-    @objc init?(props: [String: Any]) {
-        super.init()
+    @objc convenience init(props: [String: Any]) {
+        self.init()
+//        setupNode()
         update(props)
     }
 
-    @objc func update(_ props: [String: Any]) {
-        visible = (props["visible"] as? Bool) ?? !self.isHidden
-//        anchorPosition = props["anchorPosition"]
+    @objc func setupNode() {
     }
 
-    fileprivate func setupNode() {
+    @objc func update(_ props: [String: Any]) {
+        if let name = Convert.toString(props["id"]) {
+            self.name = name
+        }
+        if let visible = Convert.toBool(props["visible"]) {
+            self.visible = visible
+        }
+        if let anchorPosition = Convert.toVector3(props["anchorPosition"]) {
+            self.anchorPosition = anchorPosition
+        }
+        if let localPosition = Convert.toVector3(props["localPosition"]) {
+            self.localPosition = localPosition
+        }
+        if let localRotation = Convert.toQuaternion(props["localRotation"]) {
+            self.localRotation = localRotation
+        }
+        if let localScale = Convert.toVector3(props["localScale"]) {
+            self.localScale = localScale
+        }
+        if let localTransform = Convert.toMatrix4(props["localTransform"]) {
+            self.localTransform = localTransform
+        }
     }
 }

@@ -8,7 +8,7 @@
 
 #import "ARComponentManager.h"
 #import "AREventsManager.h"
-#import "RCTConvert+ARKit.h"
+#import "RCTConvert+Components.h"
 #import "RNMagicScript-Swift.h"
 
 @interface ARComponentManager ()
@@ -23,7 +23,7 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(createViewNode:(SCNNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+RCT_EXPORT_METHOD(createViewNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createViewNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);

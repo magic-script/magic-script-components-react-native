@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
+		447A017C22B462EB00C9C75F /* RCTConverter+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConverter+Components.m */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
-		449AF45B22B247C40046938D /* RCTConvert+ARKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44E22B247C40046938D /* RCTConvert+ARKit.m */; };
 		449AF45C22B247C40046938D /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44F22B247C40046938D /* ARComponentManager.m */; };
 		449AF45E22B247C40046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF45322B247C40046938D /* RCTARView.m */; };
 		449AF45F22B247C40046938D /* RCTARViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF45722B247C40046938D /* RCTARViewManager.m */; };
@@ -42,11 +43,12 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		449AF44A22B247C40046938D /* RCTConvert+ARKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+ARKit.h"; sourceTree = "<group>"; };
+		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
+		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
+		447A017B22B462EB00C9C75F /* RCTConverter+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConverter+Components.m"; sourceTree = "<group>"; };
 		449AF44B22B247C40046938D /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
 		449AF44C22B247C40046938D /* ARComponentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
 		449AF44D22B247C40046938D /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
-		449AF44E22B247C40046938D /* RCTConvert+ARKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+ARKit.m"; sourceTree = "<group>"; };
 		449AF44F22B247C40046938D /* ARComponentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARComponentManager.m; sourceTree = "<group>"; };
 		449AF45322B247C40046938D /* RCTARView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
 		449AF45422B247C40046938D /* RCTARViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARViewManager.h; sourceTree = "<group>"; };
@@ -92,8 +94,8 @@
 			isa = PBXGroup;
 			children = (
 				449AF45022B247C40046938D /* ARView */,
-				449AF44A22B247C40046938D /* RCTConvert+ARKit.h */,
-				449AF44E22B247C40046938D /* RCTConvert+ARKit.m */,
+				447A017A22B462D200C9C75F /* RCTConvert+Components.h */,
+				447A017B22B462EB00C9C75F /* RCTConverter+Components.m */,
 				449AF44C22B247C40046938D /* ARComponentManager.h */,
 				449AF44F22B247C40046938D /* ARComponentManager.m */,
 				449AF44B22B247C40046938D /* AREventsManager.h */,
@@ -127,6 +129,7 @@
 		449AF48722B248090046938D /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
+				447A017822B4494100C9C75F /* Convert.swift */,
 				449AF48822B248090046938D /* TransformNode.swift */,
 				449AF48922B248090046938D /* UiNode.swift */,
 			);
@@ -136,10 +139,10 @@
 		449AF48A22B248090046938D /* UiNodes */ = {
 			isa = PBXGroup;
 			children = (
-				449AF48B22B248090046938D /* UiGroupNode.swift */,
-				449AF48C22B248090046938D /* UiTextNode.swift */,
-				449AF48D22B248090046938D /* UiImageNode.swift */,
 				449AF48E22B248090046938D /* UiButtonNode.swift */,
+				449AF48B22B248090046938D /* UiGroupNode.swift */,
+				449AF48D22B248090046938D /* UiImageNode.swift */,
+				449AF48C22B248090046938D /* UiTextNode.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,
+				447A017C22B462EB00C9C75F /* RCTConverter+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				449AF45C22B247C40046938D /* ARComponentManager.m in Sources */,
@@ -239,9 +243,9 @@
 				449AF4A122B248090046938D /* Maths.swift in Sources */,
 				449AF49F22B248090046938D /* SCNRectangle.swift in Sources */,
 				449AF45F22B247C40046938D /* RCTARViewManager.m in Sources */,
+				447A017922B4494100C9C75F /* Convert.swift in Sources */,
 				449AF49822B248090046938D /* TransformNode.swift in Sources */,
 				449AF45A22B247C40046938D /* AREventsManager.m in Sources */,
-				449AF45B22B247C40046938D /* RCTConvert+ARKit.m in Sources */,
 				449AF49E22B248090046938D /* SCNBBoxNode.swift in Sources */,
 				449AF49922B248090046938D /* UiNode.swift in Sources */,
 			);
@@ -295,7 +299,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -340,7 +344,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

@@ -20,20 +20,7 @@ import SceneKit
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
 
-    @objc override init() {
-        super.init()
-        setupNode()
-    }
-
-    @objc required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupNode()
-    }
-
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
-    }
-
-    fileprivate func setupNode() {
     }
 }

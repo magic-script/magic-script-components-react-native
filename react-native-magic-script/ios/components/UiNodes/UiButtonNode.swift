@@ -15,10 +15,6 @@ import SceneKit
         set { textNode.text = newValue }
     }
 
-    @objc var size: CGSize = CGSize(width: 2, height: 1) {
-        didSet { updateNodeSize() }
-    }
-
     @objc var width: CGFloat = 2 {
         didSet { updateNodeSize() }
     }
@@ -36,7 +32,7 @@ import SceneKit
         didSet { updateNodeSize() }
     }
 
-    @objc var color: UIColor = UIColor.blue {
+    @objc var color: UIColor = UIColor.white {
         didSet {
             textNode.textColor = color
             borderGeometry.materials.first?.diffuse.contents = color
@@ -73,7 +69,9 @@ import SceneKit
         contentNode.addAnimation(animation, forKey: "button_tap")
     }
 
-    fileprivate func setupNode() {
+    @objc override func setupNode() {
+        super.setupNode()
+        
         contentNode = SCNNode()
         addChildNode(contentNode)
 
@@ -84,8 +82,37 @@ import SceneKit
         updateNodeSize()
     }
 
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let title = Convert.toString(props["title"]) {
+            self.title = title
+        }
+
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
+        }
+
+        if let textSize = Convert.toCGFloat(props["textSize"]) {
+            self.textSize = textSize
+        }
+
+        if let roundness = Convert.toCGFloat(props["roundness"]) {
+            self.roundness = roundness
+        }
+
+        if let color = Convert.toColor(props["color"]) {
+            self.color = color
+        }
+    }
+
     fileprivate func updateNodeSize() {
-        textNode.boundsSize = CGSize(width: size.width, height: size.height)
+        let size = CGSize(width: width, height: height)
+        textNode.boundsSize = size
 
         borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
@@ -95,19 +122,7 @@ import SceneKit
         borderNode = SCNNode(geometry: borderGeometry)
         contentNode.addChildNode(borderNode)
 
-        borderNode.position = SCNVector3(-size.width / 2, -size.height / 2, 0)
-    }
-
-    @objc override func update(_ props: [String: Any]) {
-        super.update(props)
-
-        if let title = props["title"] as? String {
-            self.title = title
-        }
-
-        if let color = props["color"] {
-            self.color = RCTConvert.uiColor(color)
-        }
+        borderNode.position = SCNVector3(-width / 2, -height / 2, 0)
     }
 }
 

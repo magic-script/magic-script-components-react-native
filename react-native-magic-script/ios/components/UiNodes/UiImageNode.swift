@@ -27,60 +27,48 @@ import SceneKit
         get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
         set { planeGeometry.firstMaterial?.diffuse.contents = newValue }
     }
-    
-    @objc var size: CGSize {
-        get { return CGSize(width: planeGeometry.width, height: planeGeometry.height) }
-        set { planeGeometry.width = newValue.width; planeGeometry.height = newValue.height; updateImageSize() }
-    }
 
     @objc var width: CGFloat {
         get { return planeGeometry.width }
-        set { planeGeometry.width = newValue; updateImageSize() }
+        set { planeGeometry.width = newValue }
     }
 
     @objc var height: CGFloat {
         get { return planeGeometry.height }
-        set { planeGeometry.height = newValue; updateImageSize() }
+        set { planeGeometry.height = newValue }
     }
 
     fileprivate var planeGeometry: SCNPlane!
 
-    @objc override init() {
-        super.init()
-        setupNode()
-    }
-
-    @objc required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupNode()
-    }
-
-    fileprivate func setupNode() {
+    @objc override func setupNode() {
+        super.setupNode()
+        
         planeGeometry = SCNPlane(width: 1, height: 1)
         planeGeometry.firstMaterial?.lightingModel = .constant
         addChildNode(SCNNode(geometry: planeGeometry))
-        updateImageSize()
-    }
-
-    fileprivate func updateImageSize() {
-//        setBBox(visible: true, forceUpdate: true)
     }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        // bundle.url file:///var/containers/Bundle/Application/3E4ECDCA-D4AD-4C3A-93A1-A8B91DAB263F/ARDemo%20Release.app/
-        //            file:///var/containers/Bundle/Application/62FE4E48-5D00-4E13-8F46-78CB10D95CB6/ARDemo%20Release.app/assets/
-        if let filePath = props["filePath"] as? String {
-//            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
+        if let filePath = Convert.toString(props["filePath"]) {
+            #if targetEnvironment(simulator)
+            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
+            #else
+            // bundle.url: file:///var/containers/Bundle/Application/3E4ECDCA-D4AD-4C3A-93A1-A8B91DAB263F/ARDemo%20Release.app/
+            // target.url: file:///var/containers/Bundle/Application/62FE4E48-5D00-4E13-8F46-78CB10D95CB6/ARDemo%20Release.app/assets/
             let localURL: URL = Bundle.main.bundleURL.appendingPathComponent("assets")
+            #endif
+            print("image.url = \(localURL.appendingPathComponent(filePath))")
             url = localURL.appendingPathComponent(filePath)
-            print("image.url: \(url!)")
-        } else if let source = props["source"] {
-            print("source: \(source)")
-            url = RCTConvert.rctImageSource(source).request?.url
-        } else {
-            url = nil
+        }
+
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
         }
     }
 }

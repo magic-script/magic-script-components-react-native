@@ -52,17 +52,9 @@ import SceneKit
     fileprivate var textNode: SCNNode!
     fileprivate var bboxNode: SCNBBoxNode?
 
-    override init() {
-        super.init()
-        setupNode()
-    }
+    @objc override func setupNode() {
+        super.setupNode()
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupNode()
-    }
-
-    fileprivate func setupNode() {
         textGeometry = SCNText(string: "", extrusionDepth: 0)
         textGeometry.font = UIFont.systemFont(ofSize: fixedTextSize)
         textGeometry.alignmentMode = CATextLayerAlignmentMode.center.rawValue
@@ -74,6 +66,34 @@ import SceneKit
         addChildNode(textNode)
     }
 
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let text = Convert.toString(props["text"]) {
+            self.text = text
+        }
+
+        if let textColor = Convert.toColor(props["textColor"]) {
+            self.textColor = textColor
+        }
+
+        if let textSize = Convert.toCGFloat(props["textSize"]) {
+            self.textSize = textSize
+        }
+
+        if let boundsSize = Convert.toCGSize(props["boundsSize"]) {
+            self.boundsSize = boundsSize
+        }
+
+        if let wrap = Convert.toBool(props["wrap"]) {
+            self.wrap = wrap
+        }
+
+        if let font = Convert.toFont(props["font"]) {
+            self.font = font
+        }
+    }
+
     fileprivate func updateTextNodePosition() {
 
         DispatchQueue.main.async() { [weak self] in
@@ -83,23 +103,11 @@ import SceneKit
             strongSelf.textNode.pivot = SCNMatrix4MakeTranslation(textBBoxCenter.x, textBBoxCenter.y, textBBoxCenter.z)
         }
 
-//        let frameSize = size
-//        bboxNode?.removeFromParentNode()
-//        bboxNode = SCNBBoxNode((min: SCNVector3(-0.5 * frameSize.width, -0.5 * frameSize.height, 0), max: SCNVector3(0.5 * frameSize.width, 0.5 * frameSize.height, 0)))
-//        addChildNode(bboxNode!)
+        //        let frameSize = size
+        //        bboxNode?.removeFromParentNode()
+        //        bboxNode = SCNBBoxNode((min: SCNVector3(-0.5 * frameSize.width, -0.5 * frameSize.height, 0), max: SCNVector3(0.5 * frameSize.width, 0.5 * frameSize.height, 0)))
+        //        addChildNode(bboxNode!)
 
-//        setBBox(visible: true, forceUpdate: true)
-    }
-
-    @objc override func update(_ props: [String: Any]) {
-        super.update(props)
-
-        if let text = props["text"] as? String {
-            self.text = text
-        }
-
-        if let color = props["textColor"] {
-            self.textColor = RCTConvert.uiColor(color)
-        }
+        //        setBBox(visible: true, forceUpdate: true)
     }
 }

@@ -9,17 +9,4 @@
 import SceneKit
 
 @objc class UiGroupNode: UiNode {
-
-    @objc override init() {
-        super.init()
-        setupNode()
-    }
-
-    @objc required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupNode()
-    }
-
-    fileprivate func setupNode() {
-    }
 }

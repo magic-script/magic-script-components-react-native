@@ -86,8 +86,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     createElement(name, container, ...args) {
-        console.log(`[FACTORY] createElement <${name}>`, args[0]);
-        console.log('[FACTORY] createElement.container', container);
+        // console.log(`[FACTORY] createElement <${name}>`, args[0]);
+        // console.log('[FACTORY] createElement.container', container);
         if (args.length > 1) { console.log('[FACTORY] createElement.args', args); }
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.createElement expects "name" to be string');
@@ -187,8 +187,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     updateElement(name, ...args) {
-        console.log('[FACTORY] updateElement.name', name);
-        console.log('[FACTORY] updateElement.args', args);
+        // console.log('[FACTORY] updateElement.name', name);
+        // console.log('[FACTORY] updateElement.args', args);
         const oldProps = this._parseCustomProps(omit(args[1], 'children'));
         const newProps = this._parseCustomProps(omit(args[2], 'children'));
         if (!isEqual(oldProps, newProps)) {
@@ -325,8 +325,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     addChildElement(parent, child) {
-        console.log('[FACTORY] addChildElement.parent: ', parent);
-        console.log('[FACTORY] addChildElement.child: ', child);
+        // console.log('[FACTORY] addChildElement.parent: ', parent);
+        // console.log('[FACTORY] addChildElement.child: ', child);
         if (typeof child === 'string' || typeof child === 'number') {
             const props = (parent.type === 'button') ? { title: child.toString() } : { text: child.toString() };
             this.componentManager.updateNode(parent.id, props);
@@ -390,8 +390,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     removeChildElement(parent, child) {
-        console.log('[FACTORY] removeChildElement.parent: ', parent);
-        console.log('[FACTORY] removeChildElement.child: ', child);
+        // console.log('[FACTORY] removeChildElement.parent: ', parent);
+        // console.log('[FACTORY] removeChildElement.child: ', child);
         this.componentManager.removeChildNode(child.id, parent.id);
         // if (typeof child === 'string' || typeof child === 'number') {
         //     parent.setText('');
@@ -410,8 +410,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     appendChildToContainer(container, child) {
-        console.log('[FACTORY] appendChildToContainer.container: ', container);
-        console.log('[FACTORY] appendChildToContainer.child: ', child);
+        // console.log('[FACTORY] appendChildToContainer.container: ', container);
+        // console.log('[FACTORY] appendChildToContainer.child: ', child);
 
         this.componentManager.addChildNodeToContainer(child.id);
         // if (this.isController(child)){
@@ -423,8 +423,8 @@ export class PlatformFactory extends NativeFactory {
     }
 
     removeChildFromContainer(container, child) {
-        console.log('[FACTORY] removeChildFromContainer.container: ', container);
-        console.log('[FACTORY] removeChildFromContainer.child: ', child);
+        // console.log('[FACTORY] removeChildFromContainer.container: ', container);
+        // console.log('[FACTORY] removeChildFromContainer.child: ', child);
         this.componentManager.removeChildNodeFromRoot(child.id);
         // if (this.isController(child)) {
         //     container.controller.removeChildController(child);

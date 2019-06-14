@@ -33,10 +33,10 @@ const UPDATE_SIGNAL = {};
 //  internalInstanceHandle: Object
 function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
   console.log(`[MXS] createInstance ${type}`);
-  console.log(props);
-  console.log(rootContainerInstance);
-  console.log(hostContext);
-  console.log(internalInstanceHandle);
+  // console.log(props);
+  // console.log(rootContainerInstance);
+  // console.log(hostContext);
+  // console.log(internalInstanceHandle);
   return mxs._nativeFactory.createElement(type, rootContainerInstance, props);
 }
 
@@ -61,8 +61,8 @@ function createTextInstance(text, rootContainerInstance, hostContext, internalIn
 //  child: Instance | TextInstance
 function appendInitialChild(parentInstance, child) {
   console.log('[MXS] appendInitialChild');
-  console.log(parentInstance);
-  console.log(child);
+  // console.log(parentInstance);
+  // console.log(child);
   mxs._nativeFactory.addChildElement(parentInstance, child);
 }
 
@@ -177,8 +177,8 @@ function shouldSetTextContent(type, props) {
   //  But creates an additional child Fiber for raw text children.
   //  No additional native views are created though.
   console.log('[MXS] shouldSetTextContent');
-  console.log(type);
-  console.log(props);
+  // console.log(type);
+  // console.log(props);
 
   return false;
 }
@@ -191,8 +191,8 @@ function shouldSetTextContent(type, props) {
 //  child: Instance | TextInstance
 function appendChild(parentInstance, child) {
   console.log('[MXS] appendChild');
-  console.log(parentInstance);
-  console.log(child);
+  // console.log(parentInstance);
+  // console.log(child);
   mxs._nativeFactory.addChildElement(parentInstance, child);
 }
 
@@ -204,8 +204,8 @@ function appendChild(parentInstance, child) {
 //  child: Instance | TextInstance
 function appendChildToContainer(container, child) {
   console.log('[MXS] appendChildToContainer');
-  console.log(container);
-  console.log(child);
+  // console.log(container);
+  // console.log(child);
   mxs._nativeFactory.appendChildToContainer(container, child);
 }
 
@@ -218,9 +218,9 @@ function appendChildToContainer(container, child) {
 //  newText: string
 function commitTextUpdate(textInstance, oldText, newText) {
   logNotImplemented('commitTextUpdate');
-  console.log(textInstance);
-  console.log(oldText);
-  console.log(newText);
+  // console.log(textInstance);
+  // console.log(oldText);
+  // console.log(newText);
 }
 
 // Function: commitMount
@@ -246,13 +246,12 @@ function commitMount(instance, type, newProps, internalInstanceHandle) {
 //  newProps: Props,
 //  internalInstanceHandle: Object
 function commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
-  // logNotImplemented('commitUpdate');
   console.log('[MXS] commitUpdate');
-  console.log(instance);
-  console.log(type);
-  console.log(updatePayload);
-  console.log(oldProps);
-  console.log(newProps);
+  // console.log(instance);
+  // console.log(type);
+  // console.log(updatePayload);
+  // console.log(oldProps);
+  // console.log(newProps);
   mxs._nativeFactory.updateElement(type, instance, oldProps, newProps);
 }
 
@@ -296,9 +295,9 @@ function removeChild(parentInstance, child) {
 //  parentInstance: Container,
 //  child: Instance | TextInstance
 function removeChildFromContainer(parentInstance, child) {
-  logNotImplemented('removeChildFromContainer');
-  console.log(parentInstance);
-  console.log(child);
+  console.log('[MXS] removeChildFromContainer');
+  // console.log(parentInstance);
+  // console.log(child);
   mxs._nativeFactory.removeChildFromContainer(parentInstance, child);
 }
 

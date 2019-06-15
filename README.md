@@ -1,31 +1,53 @@
-# MagicScript Components for iOS platform.
 
-## Prerequisites
+# react-native-magic-script
 
-1. Install React Native:
+## Getting started
 
-- To install React Native please follow the instructions on [React Native](https://facebook.github.io/react-native/docs/getting-started.html) site.
+`$ npm install react-native-magic-script --save`
 
-2. Install the required `yarn` packages from the app (`./ARDemo`) folder:
-- `yarn`
+### Mostly automatic installation
 
-## Running the demo app (iOS)
+`$ react-native link react-native-magic-script`
 
-1. Run iOS project in Xcode:
+### Manual installation
 
-- open iOS project at `./ARDemo/ios/ARDemo.xcodeproj` in Xcode
-- run the app by pressing `Cmd+Shift+R` or by pressing the `Build and run` button
 
-2. Run metro bundler:
+#### iOS
 
-- from the app folder run: `react-native start`
+1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+2. Go to `node_modules` ➜ `react-native-magic-script` and add `RNMagicScript.xcodeproj`
+3. In XCode, in the project navigator, select your project. Add `libRNMagicScript.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+4. Run your project (`Cmd+R`)<
 
-3. In the iOS simulator press `Cmd+R` to reload the app.
+#### Android
 
-## Components included
+1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+  - Add `import com.reactlibrary.RNMagicScriptPackage;` to the imports at the top of the file
+  - Add `new RNMagicScriptPackage()` to the list returned by the `getPackages()` method
+2. Append the following lines to `android/settings.gradle`:
+  	```
+  	include ':react-native-magic-script'
+  	project(':react-native-magic-script').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-magic-script/android')
+  	```
+3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+  	```
+      compile project(':react-native-magic-script')
+  	```
 
-- [List of Components](https://github.com/magic-script/magic-script-components/blob/master/docs/Components.md)
+#### Windows
+[Read it! :D](https://github.com/ReactWindows/react-native)
 
-## License
+1. In Visual Studio add the `RNMagicScript.sln` in `node_modules/react-native-magic-script/windows/RNMagicScript.sln` folder to their solution, reference from their app.
+2. Open up your `MainPage.cs` app
+  - Add `using Magic.Script.RNMagicScript;` to the usings at the top of the file
+  - Add `new RNMagicScriptPackage()` to the `List<IReactPackage>` returned by the `Packages` method
 
-This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details
+
+## Usage
+```javascript
+import RNMagicScript from 'react-native-magic-script';
+
+// TODO: What to do with the module?
+RNMagicScript;
+```
+  

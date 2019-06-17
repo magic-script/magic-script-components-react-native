@@ -15,11 +15,11 @@ export default {
         // 'scene': () => new ControllerBuilder(),
     },
     elements: {
-        'view': () => new GroupBuilder(),
-        'text': () => new TextBuilder(),
-        // 'textEdit': () => new TextEditBuilder(),
-        'button': () => new ButtonBuilder(),
-        'image': () => new ImageBuilder(),
-        'model': () => new ModelBuilder(),
+        'view': (componentManager) => new GroupBuilder(componentManager),
+        'text': (componentManager) => new TextBuilder(componentManager),
+        // 'textEdit': (componentManager) => new TextEditBuilder(componentManager),
+        'button': (componentManager) => new ButtonBuilder(componentManager),
+        'image': (componentManager) => new ImageBuilder(componentManager),
+        'model': (componentManager) => new ModelBuilder(componentManager),
     }
 };

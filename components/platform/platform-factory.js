@@ -12,8 +12,8 @@ export class PlatformFactory extends NativeFactory {
 
         // { type, builder }
         this.elementBuilders = {};
-        this.controllerBuilders = {};
-        this.controllers = new WeakMap();
+        // this.controllerBuilders = {};
+        // this.controllers = new WeakMap();
         this.componentManager = NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
@@ -90,77 +90,56 @@ export class PlatformFactory extends NativeFactory {
             throw new Error('PlatformFactory.createElement expects "name" to be string');
         }
 
-        return this._createElement(name, container, ...args);
-        // if (this._mapping.elements[name] !== undefined) {
-        //     return this._createElement(name, container, ...args)
-        // } else if (this._mapping.controllers[name] !== undefined) {
-        //     return this._createController(name, container, ...args);
-        // } else {
-        //     throw new Error(`Unknown tag: ${name}`);
-        // }
+        if (this._mapping.elements[name] !== undefined) {
+            return this._createElement(name, container, ...args)
+        } else {
+            throw new Error(`Unknown tag: ${name}`);
+        }
     }
 
-    _parseCustomProps = (props) => ({
-        ...props,
-        ...(props.shadowColor ? { shadowColor: processColor(props.shadowColor) } : {}),
-        ...(props.color ? { color: processColor(props.color) } : {}),
-        ...(props.textColor ? { textColor: processColor(props.textColor) } : {}),
-        // ...(props.material ? { material: processMaterial(props.material) } : {}),
-        ...(props.source ? { source: Image.resolveAssetSource(props.source) } : {}),
-    });
+    _processCustomProps = (props) => {
+        const properties = omit(props, 'children');
+        return ({
+            ...properties,
+            ...(properties.shadowColor ? { shadowColor: processColor(properties.shadowColor) } : {}),
+            ...(properties.color ? { color: processColor(properties.color) } : {}),
+            ...(properties.textColor ? { textColor: processColor(properties.textColor) } : {}),
+            // ...(properties.material ? { material: processMaterial(properties.material) } : {}),
+            ...(properties.source ? { source: Image.resolveAssetSource(properties.source) } : {}),
+        });
+    }
 
     _createElement(name, container, ...args) {
-        const props = this._parseCustomProps(omit(args[0], 'children'));
-        const id = props.id || generateId();
-        const type = name;
-        
-        if (name === 'text') {
-            this.componentManager.createTextNode(props, id);
-        } else if (name === 'button') {
-            this.componentManager.createButtonNode(props, id);
-            this.setComponentEvents(id, props);
-        } else if (name === 'view') {
-            this.componentManager.createViewNode(props, id);
-        } else if (name === 'image') {
-            this.componentManager.createImageNode(props, id);
+        if (this.elementBuilders[name] === undefined) {
+            const createBuilder = this._mapping.elements[name];
+            this.elementBuilders[name] = createBuilder(this.componentManager);
         }
 
+        const props = this._processCustomProps(args[0]);
+        const id = props.id || generateId();
+        const type = type;
+
+        this.elementBuilders[name].create(props, id);
+        this.setComponentEvents(id, props);
+
         return { type, id, props };
-
-        // if (this.elementBuilders[name] === undefined) {
-        //     const createBuilder = this._mapping.elements[name];
-        //     this.elementBuilders[name] = createBuilder();
-        // }
-
-        // const prism = container.controller.getPrism();
-        // const element = this.elementBuilders[name].create(prism, ...args);
-
-        // // TODO: Move setComponentEvents to the builders !!!
-        // this.setComponentEvents(element, args[0]); // args = [props]
-
-        // return element;
     }
 
     updateElement(name, ...args) {
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.updateElement expects "name" to be string');
         }
-
-        const oldProps = this._parseCustomProps(omit(args[1], 'children'));
-        const newProps = this._parseCustomProps(omit(args[2], 'children'));
-        if (!isEqual(oldProps, newProps)) {
-            console.log('[FACTORY] updateElement.newProps: ', newProps);
-            const element = args[0];
-            this.componentManager.updateNode(element.id, newProps);
-        }
         
-        // if (this._mapping.elements[name] !== undefined) {
-        //     this.elementBuilders[name].update(...args);
-        // } else if (this._mapping.controllers[name] !== undefined) {
-        //     this.controllerBuilders[name].update(...args);
-        // } else {
-        //     throw new Error(`Unknown tag: ${name}`);
-        // }
+        if (this._mapping.elements[name] !== undefined) {
+            const oldProps = this._processCustomProps(args[1]);
+            const newProps = this._processCustomProps(args[2]);
+            if (!isEqual(oldProps, newProps)) {
+                const element = args[0];
+                this.componentManager.updateNode(element.id, newProps);
+            }
+        } else {
+            throw new Error(`Unknown tag: ${name}`);
+        }
     }
 
     insertBefore(parent, child, beforeChild) {

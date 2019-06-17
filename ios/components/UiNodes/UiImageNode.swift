@@ -25,17 +25,15 @@ import SceneKit
 
     @objc var image: UIImage? {
         get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
-        set { planeGeometry.firstMaterial?.diffuse.contents = newValue }
+        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updatePlaneSize() }
     }
 
-    @objc var width: CGFloat {
-        get { return planeGeometry.width }
-        set { planeGeometry.width = newValue }
+    @objc var width: CGFloat = 0.5 {
+        didSet { updatePlaneSize() }
     }
 
-    @objc var height: CGFloat {
-        get { return planeGeometry.height }
-        set { planeGeometry.height = newValue }
+    @objc var height: CGFloat = 0.5 {
+        didSet { updatePlaneSize() }
     }
 
     fileprivate var planeGeometry: SCNPlane!
@@ -43,7 +41,7 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
         
-        planeGeometry = SCNPlane(width: 1, height: 1)
+        planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant
         addChildNode(SCNNode(geometry: planeGeometry))
     }
@@ -51,16 +49,8 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let filePath = Convert.toString(props["filePath"]) {
-            #if targetEnvironment(simulator)
-            let localURL: URL = URL(string: "http://localhost:8081/assets/")!
-            #else
-            // bundle.url: file:///var/containers/Bundle/Application/3E4ECDCA-D4AD-4C3A-93A1-A8B91DAB263F/ARDemo%20Release.app/
-            // target.url: file:///var/containers/Bundle/Application/62FE4E48-5D00-4E13-8F46-78CB10D95CB6/ARDemo%20Release.app/assets/
-            let localURL: URL = Bundle.main.bundleURL.appendingPathComponent("assets")
-            #endif
-            print("image.url = \(localURL.appendingPathComponent(filePath))")
-            url = localURL.appendingPathComponent(filePath)
+        if let url = Convert.toFileURL(props["filePath"]) {
+            self.url = url
         }
 
         if let width = Convert.toCGFloat(props["width"]) {
@@ -70,6 +60,20 @@ import SceneKit
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
         }
+    }
+
+    fileprivate func updatePlaneSize() {
+        guard let image = self.image else {
+            planeGeometry.width = width
+            planeGeometry.height = height
+            return
+        }
+
+        let horizontalFactor: CGFloat = width / image.size.width
+        let verticalFactor: CGFloat = height / image.size.height
+        let factor = min(horizontalFactor, verticalFactor)
+        planeGeometry.width = factor * image.size.width
+        planeGeometry.height = factor * image.size.height
     }
 }
 

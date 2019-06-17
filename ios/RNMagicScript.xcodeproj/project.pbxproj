@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
-		447A017C22B462EB00C9C75F /* RCTConverter+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConverter+Components.m */; };
+		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
 		449AF45C22B247C40046938D /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44F22B247C40046938D /* ARComponentManager.m */; };
 		449AF45E22B247C40046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF45322B247C40046938D /* RCTARView.m */; };
@@ -45,7 +45,7 @@
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
-		447A017B22B462EB00C9C75F /* RCTConverter+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConverter+Components.m"; sourceTree = "<group>"; };
+		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
 		449AF44B22B247C40046938D /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
 		449AF44C22B247C40046938D /* ARComponentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
 		449AF44D22B247C40046938D /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 			children = (
 				449AF45022B247C40046938D /* ARView */,
 				447A017A22B462D200C9C75F /* RCTConvert+Components.h */,
-				447A017B22B462EB00C9C75F /* RCTConverter+Components.m */,
+				447A017B22B462EB00C9C75F /* RCTConvert+Components.m */,
 				449AF44C22B247C40046938D /* ARComponentManager.h */,
 				449AF44F22B247C40046938D /* ARComponentManager.m */,
 				449AF44B22B247C40046938D /* AREventsManager.h */,
@@ -234,7 +234,7 @@
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,
-				447A017C22B462EB00C9C75F /* RCTConverter+Components.m in Sources */,
+				447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				449AF45C22B247C40046938D /* ARComponentManager.m in Sources */,

@@ -62,4 +62,20 @@ class Convert {
     static func toFont(_ value: Any?) -> UIFont? {
         return nil
     }
+
+    static func toFileURL(_ value: Any?) -> URL? {
+        guard let filePath = value as? String else { return nil }
+
+        let targetURL: URL = Bundle.main.bundleURL.appendingPathComponent("assets").appendingPathComponent(filePath)
+        if FileManager.default.fileExists(atPath: targetURL.path) {
+            return targetURL
+        }
+
+        #if targetEnvironment(simulator)
+        let assetsURL = URL(string: "http://localhost:8081/assets/")
+        #else
+        let assetsURL = URL(string: "http://192.168.0.94:8081/assets/")
+        #endif
+        return assetsURL?.appendingPathComponent(filePath)
+    }
 }

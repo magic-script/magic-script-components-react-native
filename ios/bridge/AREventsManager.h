@@ -10,10 +10,12 @@
 #import <React/RCTEventEmitter.h>
 #import <SceneKit/SceneKit.h>
 
+@class UiNode;
+
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
 + (instancetype)instance;
-- (void)onPressEventReceived:(SCNNode *)sender;
-- (void)onClickEventReceived:(SCNNode *)sender;
+- (void)onPressEventReceived:(UiNode *)sender;
+- (void)onClickEventReceived:(UiNode *)sender;
 
 @end

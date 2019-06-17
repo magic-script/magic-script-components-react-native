@@ -39,7 +39,7 @@ import SceneKit
         }
     }
 
-    @objc var onTap: ((_ sender: SCNNode) -> (Void))?
+    @objc var onTap: ((_ sender: UiNode) -> (Void))?
 
     fileprivate var borderGeometry: SCNRectangle!
     fileprivate var contentNode: SCNNode!

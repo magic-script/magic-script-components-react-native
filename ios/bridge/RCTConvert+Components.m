@@ -1,5 +1,5 @@
 //
-//  RCTConverter+Components.m
+//  RCTConvert+Components.m
 //  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 15/06/2019.

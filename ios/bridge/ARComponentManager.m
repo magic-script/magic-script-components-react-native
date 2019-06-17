@@ -104,7 +104,7 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
-        button.onTap = ^(SCNNode *sender) {
+        button.onTap = ^(UiNode *sender) {
             NSLog(@"button onTap");
             [[AREventsManager instance] onPressEventReceived:sender];
             [[AREventsManager instance] onClickEventReceived:sender];

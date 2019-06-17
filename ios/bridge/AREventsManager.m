@@ -7,6 +7,7 @@
 //
 
 #import "AREventsManager.h"
+#import "RNMagicScript-Swift.h"
 
 static AREventsManager *_instance = nil;
 
@@ -41,15 +42,19 @@ RCT_EXPORT_MODULE();
     return @[@"onPress", @"onClick"];
 }
 
-- (void)onPressEventReceived:(SCNNode *)sender {
+- (void)onPressEventReceived:(UiNode *)sender {
     if (hasListeners) {
-        [self sendEventWithName:@"onPress" body:@{ @"nodeId": sender.name }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onPress" body:@{ @"nodeId": sender.name }];
+        });
     }
 }
 
-- (void)onClickEventReceived:(SCNNode *)sender {
+- (void)onClickEventReceived:(UiNode *)sender {
     if (hasListeners) {
-        [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
+        });
     }
 }
 

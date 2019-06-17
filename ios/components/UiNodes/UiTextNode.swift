@@ -1,6 +1,6 @@
 //
 //  UiTextNode.swift
-//  SceneKitDemo
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
 //  Copyright © 2019 Nomtek. All rights reserved.

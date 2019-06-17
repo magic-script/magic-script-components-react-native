@@ -1,6 +1,6 @@
 //
 //  UiImageNode.swift
-//  SceneKitDemo
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
 //  Copyright © 2019 Nomtek. All rights reserved.
@@ -43,6 +43,7 @@ import SceneKit
         
         planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant
+        planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
         addChildNode(SCNNode(geometry: planeGeometry))
     }
 

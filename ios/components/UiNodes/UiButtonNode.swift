@@ -1,6 +1,6 @@
 //
 //  UiButtonNode.swift
-//  SceneKitDemo
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 23/05/2019.
 //  Copyright © 2019 Nomtek. All rights reserved.
@@ -62,7 +62,7 @@ import SceneKit
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
         animation.fromValue = initialPosition.z
-        animation.toValue = initialPosition.z - 0.2
+        animation.toValue = initialPosition.z - 0.05
         animation.duration = 0.1
         animation.autoreverses = true
         animation.repeatCount = 1

@@ -53,6 +53,12 @@ RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId 
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createModelNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
     [UiNodesManager.instance addNode: nodeId toParent: parentId];

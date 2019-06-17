@@ -11,9 +11,10 @@
 
 @interface RCTConvert (Components)
 
-+ (UiGroupNode *)UiGroupNode:(id)json;
 + (UiButtonNode *)UiButtonNode:(id)json;
-+ (UiTextNode *)UiTextNode:(id)json;
++ (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
++ (UiModelNode *)UiModelNode:(id)json;
++ (UiTextNode *)UiTextNode:(id)json;
 
 @end

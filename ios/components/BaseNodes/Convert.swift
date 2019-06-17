@@ -56,7 +56,7 @@ class Convert {
 
     static func toColor(_ value: Any?) -> UIColor? {
         guard value != nil else { return nil }
-        return RCTConvert.uiColor(value!)
+        return nil//RCTConvert.uiColor(value!)
     }
 
     static func toFont(_ value: Any?) -> UIFont? {

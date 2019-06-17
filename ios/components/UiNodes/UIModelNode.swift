@@ -10,7 +10,11 @@ import SceneKit
 
 @objc class UiModelNode: UiNode {
 
-    @objc var url: URL?
+    fileprivate var modelRefNode: SCNReferenceNode?
+
+    @objc var url: URL? {
+        didSet { loadModel(url) }
+    }
 
     @objc override func setupNode() {
         super.setupNode()
@@ -22,6 +26,17 @@ import SceneKit
         if let url = Convert.toFileURL(props["modelPath"]) {
             self.url = url
         }
+    }
+
+    fileprivate func loadModel(_ modelURL: URL?) {
+        modelRefNode?.removeFromParentNode()
+        guard let modelURL = modelURL, let node = SCNReferenceNode(url: modelURL) else {
+            return
+        }
+
+        node.load();
+        addChildNode(node)
+        modelRefNode = node
     }
 
 }

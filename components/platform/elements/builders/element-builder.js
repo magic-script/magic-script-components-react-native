@@ -1,6 +1,4 @@
-import isEqual from 'lodash/isEqual';
-
-export class ElementBuilder {
+export default class ElementBuilder {
     constructor(componentManager) {
         this._componentManager = componentManager;
     }

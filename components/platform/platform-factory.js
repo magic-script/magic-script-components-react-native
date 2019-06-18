@@ -117,12 +117,11 @@ export class PlatformFactory extends NativeFactory {
 
         const props = this._processCustomProps(args[0]);
         const id = props.id || generateId();
-        const type = type;
 
         this.elementBuilders[name].create(props, id);
         this.setComponentEvents(id, props);
 
-        return { type, id, props };
+        return { name, id, props };
     }
 
     updateElement(name, ...args) {
@@ -144,7 +143,7 @@ export class PlatformFactory extends NativeFactory {
 
     insertBefore(parent, child, beforeChild) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.type === 'button') ? { title: child.toString() } : { text: child.toString() };
+            const props = (parent.name === 'button') ? { title: child.toString() } : { text: child.toString() };
             this.componentManager.updateNode(parent.id, props);
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
@@ -153,7 +152,7 @@ export class PlatformFactory extends NativeFactory {
 
     addChildElement(parent, child) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.type === 'button') ? { title: child.toString() } : { text: child.toString() };
+            const props = (parent.name === 'button') ? { title: child.toString() } : { text: child.toString() };
             this.componentManager.updateNode(parent.id, props);
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
@@ -162,7 +161,7 @@ export class PlatformFactory extends NativeFactory {
 
     removeChildElement(parent, child) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.type === 'button') ? { title: '' } : { text: '' };
+            const props = (parent.name === 'button') ? { title: '' } : { text: '' };
             this.componentManager.updateNode(parent.id, props);
         } else {
             this.componentManager.removeChildNode(child.id, parent.id);

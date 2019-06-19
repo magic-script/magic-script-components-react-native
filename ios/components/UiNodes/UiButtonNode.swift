@@ -117,7 +117,8 @@ import SceneKit
         borderNode?.removeFromParentNode()
         let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
         let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
-        borderGeometry = SCNRectangle(rect: rect, thickness: 0.005, radius: radius)
+        let thickness: CGFloat = min(0.01 * min(rect.width, rect.height), 0.005)
+        borderGeometry = SCNRectangle(rect: rect, thickness: thickness, radius: radius)
         borderGeometry.firstMaterial?.diffuse.contents = color
         borderNode = SCNNode(geometry: borderGeometry)
         contentNode.addChildNode(borderNode)

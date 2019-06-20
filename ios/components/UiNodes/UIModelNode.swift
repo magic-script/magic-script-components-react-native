@@ -10,7 +10,7 @@ import SceneKit
 
 @objc class UiModelNode: UiNode {
 
-    fileprivate var modelRefNode: SCNReferenceNode?
+    fileprivate var modelNode: SCNNode?
 
     @objc var url: URL? {
         didSet { loadModel(url) }
@@ -29,14 +29,17 @@ import SceneKit
     }
 
     fileprivate func loadModel(_ modelURL: URL?) {
-        modelRefNode?.removeFromParentNode()
-        guard let modelURL = modelURL, let node = SCNReferenceNode(url: modelURL) else {
+        modelNode?.removeFromParentNode()
+        guard let modelURL = modelURL else { return }
+        do {
+            let sceneSource = GLTFSceneSource(url: modelURL, options: nil)
+            let scene = try sceneSource.scene()
+
+            addChildNode(scene.rootNode)
+            modelNode = scene.rootNode
+        } catch {
+            print("\(error.localizedDescription)")
             return
         }
-
-        node.load();
-        addChildNode(node)
-        modelRefNode = node
     }
-
 }

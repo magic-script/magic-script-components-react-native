@@ -23,6 +23,12 @@
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(initAR:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    // Empty method, created for consistency with Android API.
+    NSLog(@"initAR");
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createTextNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];

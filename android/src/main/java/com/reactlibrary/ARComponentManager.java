@@ -81,6 +81,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
      * @param nodeId id of the node
      */
     @ReactMethod
+    public void createGroupNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                UiNode node = nodesFactory.createViewGroup(props);
+                UiNodesManager.registerNode(node, nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
     public void createViewNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override

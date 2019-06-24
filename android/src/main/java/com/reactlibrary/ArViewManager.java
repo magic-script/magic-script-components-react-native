@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  */
 public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupManager
 
-    private static final String REACT_CLASS = "RCTARKit";
+    private static final String REACT_CLASS = "RCTARView";
     private static WeakReference<AppCompatActivity> activityRef;
 
     @Override

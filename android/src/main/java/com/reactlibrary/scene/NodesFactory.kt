@@ -36,11 +36,8 @@ class NodesFactory(private val context: Context) {
     fun createButton(props: ReadableMap): UiNode {
         val node = createUiNode(props)
         val view = LayoutInflater.from(context).inflate(R.layout.button, null) as Button
-
-        val textSize = PropertiesReader.Common.getTextSize(props)
-        if (textSize != null) {
-            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, metersToPx(textSize).toFloat())
-        }
+        val textSizeInMeters = PropertiesReader.Common.getTextSize(props)
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, metersToPx(textSizeInMeters).toFloat())
 
         createRenderable(view, props) { renderable ->
             node.renderable = renderable
@@ -63,26 +60,18 @@ class NodesFactory(private val context: Context) {
         val node = createUiNode(props)
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
 
-        val source = props.getMap("source")
-        val path = source?.getString("uri") ?: ""
-
-        val uri = if (path.startsWith("resources_")) { // for release
-            val packageName = context.packageName
-            Uri.parse("android.resource://$packageName/drawable/$path")
-        } else { // for debug (metro, image located in localhost)
-            Uri.parse(path)
-        }
-
         createRenderable(view, props) { renderable ->
             node.renderable = renderable
             view.setOnClickListener { node.clickListener?.invoke() }
         }
 
+        val imagePath: Uri = PropertiesReader.Image.getFilePath(props, context)
+
         // TODO doesn't work without delay (load after attached?)
         Handler().postDelayed({
             // http://localhost:8081/assets/resources/DemoPicture1.jpg
             Glide.with(context)
-                    .load(uri)
+                    .load(imagePath)
                     .into(view)
         }, 3000)
 

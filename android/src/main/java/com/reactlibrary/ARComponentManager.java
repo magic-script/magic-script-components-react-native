@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -65,7 +66,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                AppCompatActivity activity = (AppCompatActivity)getCurrentActivity();
+                AppCompatActivity activity = (AppCompatActivity) getCurrentActivity();
                 ArViewManager.initActivity(activity);
             }
         });
@@ -76,7 +77,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
      * Creates node that is a parent for other nodes
      * (it does not contain a view)
      *
-     * @param props properties (e.g. localPosition)
+     * @param props  properties (e.g. localPosition)
      * @param nodeId id of the node
      */
     @ReactMethod
@@ -93,7 +94,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     /**
      * Creates a button
      *
-     * @param props properties (e.g. localPosition)
+     * @param props  properties (e.g. localPosition)
      * @param nodeId id of the node
      */
     @ReactMethod
@@ -101,6 +102,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
+                Log.d(LOG_TAG, "props button: " + props);
                 UiNode node = nodesFactory.createButton(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
@@ -207,7 +209,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             public void run() {
                 Node node = UiNodesManager.findNodeWithId(nodeId);
                 if (node instanceof UiNode) {
-                    ((UiNode)node).setClickListener(new Function0<Unit>() {
+                    ((UiNode) node).setClickListener(new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
                             WritableMap pressParams = Arguments.createMap();
@@ -234,7 +236,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             public void run() {
                 Node node = UiNodesManager.findNodeWithId(nodeId);
                 if (node instanceof UiNode) {
-                    ((UiNode)node).setClickListener(null);
+                    ((UiNode) node).setClickListener(null);
                 }
             }
         });

@@ -190,7 +190,7 @@ func / (vector: SCNVector3, scalar: Float) -> SCNVector3 {
 /**
  * Divides the x, y and z of a SCNVector3 by the same scalar value.
  */
-func /= ( vector: inout SCNVector3, scalar: Float) {
+func /= (vector: inout SCNVector3, scalar: Float) {
     vector = vector / scalar
 }
 

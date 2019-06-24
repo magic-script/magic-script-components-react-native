@@ -23,9 +23,9 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(createViewNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"createViewNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+RCT_EXPORT_METHOD(initAR:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    // Empty method, created for consistency with Android API.
+    NSLog(@"initAR");
     resolve(nil);
 }
 
@@ -36,6 +36,13 @@ RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId re
 }
 
 RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
+    NSLog(@"createGroupNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+// TODO: Remove this method (use "createGroupNode" instead)
+RCT_EXPORT_METHOD(createViewNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createGroupNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);

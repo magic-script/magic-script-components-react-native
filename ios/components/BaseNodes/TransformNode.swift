@@ -54,7 +54,7 @@ import SceneKit
 
     @objc convenience init(props: [String: Any]) {
         self.init()
-//        setupNode()
+        setupNode()
         update(props)
     }
 

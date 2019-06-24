@@ -46,16 +46,6 @@ import SceneKit
     fileprivate var borderNode: SCNNode!
     fileprivate var textNode: UiTextNode!
 
-    @objc override init() {
-        super.init()
-        setupNode()
-    }
-
-    @objc required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupNode()
-    }
-
     @objc func simulateTap() {
 
         onTap?(self)

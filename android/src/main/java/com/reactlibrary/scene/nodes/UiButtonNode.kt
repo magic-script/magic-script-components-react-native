@@ -49,7 +49,7 @@ class UiButtonNode(context: Context) : UiNode(context) {
     private fun Button.setRoundness(props: ReadableMap, useDefaults: Boolean) {
         val roundness = props.getDoubleSafely("roundness")
         if (roundness != null) {
-            // PaintDrawable
+            // TODO
         }
     }
 

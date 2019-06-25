@@ -9,23 +9,13 @@ import com.reactlibrary.utils.toVector3
 // Base node
 open class TransformNode(props: ReadableMap) : Node() {
 
-    init {
-        setProperties(props)
-    }
-
-    open fun update(props: ReadableMap) {
-        setProperties(props)
-        this.localPosition
-    }
-
-    private fun setProperties(props: ReadableMap) {
+    open fun update(props: ReadableMap, useDefaults: Boolean) {
         val localPosition = props.getArraySafely("localPosition")?.toVector3()
         if (localPosition != null) {
             this.localPosition = localPosition
-        } else {
+        } else if (useDefaults) {
             this.localPosition = Vector3.zero()
         }
-
     }
 
 }

@@ -12,12 +12,6 @@ import com.reactlibrary.scene.nodes.UiTextNode
  */
 class NodesFactory(private val context: Context) {
 
-    companion object {
-        // By default, every 250dp for the view becomes 1 meter for the renderable
-        // https://developers.google.com/ar/develop/java/sceneform/create-renderables
-        const val DP_TO_METER_RATIO = 250
-    }
-
     fun createViewGroup(props: ReadableMap): UiNode {
         return UiGroupNode(props, context)
     }
@@ -33,6 +27,5 @@ class NodesFactory(private val context: Context) {
     fun createImageView(props: ReadableMap): UiNode {
         return UiImageNode(props, context)
     }
-
 
 }

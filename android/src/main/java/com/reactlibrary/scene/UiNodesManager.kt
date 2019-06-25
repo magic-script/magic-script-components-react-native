@@ -11,7 +11,7 @@ import com.google.ar.sceneform.Scene
 object UiNodesManager {
 
     private val rootNode = Node()
-    private val nodesById = HashMap<String, Node>()
+    private val nodesById = HashMap<String, TransformNode>()
 
     private const val LOG_TAG = "UiNodesManager"
 
@@ -41,7 +41,7 @@ object UiNodesManager {
 
     @JvmStatic
     @Synchronized
-    fun registerNode(node: Node, nodeId: String) {
+    fun registerNode(node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
         Log.d(LOG_TAG, "register node: $node)")
@@ -85,9 +85,7 @@ object UiNodesManager {
             Log.e(LOG_TAG, "cannot update node: not found")
             return false
         }
-
-        // TODO
-
+        node.update(properties, false)
         return true
     }
 

@@ -17,7 +17,7 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
         val imagePath = getImagePath(props, context)
 
-        // TODO doesn't work without delay (load after attached?)
+        // TODO doesn't work without delay (load starts after view is attached?)
         Handler().postDelayed({
             // http://localhost:8081/assets/resources/DemoPicture1.jpg
             Glide.with(context)
@@ -28,8 +28,8 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         attachView(view, props)
     }
 
-    override fun update(props: ReadableMap) {
-        super.update(props)
+    override fun update(props: ReadableMap, useDefaults: Boolean) {
+        super.update(props, useDefaults)
 
     }
 

@@ -132,11 +132,24 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createTextNode(ReadableMap props, final String nodeId) {
+    public void createTextNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                // TODO
+                UiNode node = nodesFactory.createText(props);
+                UiNodesManager.registerNode(node, nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createModelNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO ( only stub currently)
+                UiNode node = nodesFactory.createViewGroup(props);
+                UiNodesManager.registerNode(node, nodeId);
             }
         });
     }

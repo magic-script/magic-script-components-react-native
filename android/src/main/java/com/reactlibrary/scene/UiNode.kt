@@ -16,17 +16,25 @@ open class UiNode(props: ReadableMap, private val context: Context) : TransformN
 
     var clickListener: (() -> Unit)? = null
 
+    // width in meters
+    var width = 0.0
+        private set
+
+    // height in meters
+    var height = 0.0
+        private set
+
+    // view that represents the Node
+    protected var view: View? = null
+
+    override fun update(props: ReadableMap, useDefaults: Boolean) {
+        super.update(props, useDefaults)
+        setViewSize(props)
+    }
+
     protected fun attachView(view: View, props: ReadableMap) {
-        val width = props.getDoubleSafely("width")
-        val height = props.getDoubleSafely("height")
-
-        if (width != null && height != null) {
-            // convert meters to px (1m is DP_TO_METER_RATIO by default)
-            val widthPx = metersToPx(width, context)
-            val heightPx = metersToPx(height, context)
-            view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-        }
-
+        this.view = view
+        setViewSize(props)
         // TODO replace delay with callback when AR fragment has been loaded
         // Wait until AR engine was loaded
         // @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
@@ -40,6 +48,20 @@ open class UiNode(props: ReadableMap, private val context: Context) : TransformN
                         view.setOnClickListener { clickListener?.invoke() }
                     }
         }, 1000)
+    }
+
+    private fun setViewSize(props: ReadableMap) {
+        val width = props.getDoubleSafely("width")
+        val height = props.getDoubleSafely("height")
+
+        if (width != null && height != null) {
+            this.width = width
+            this.height = height
+            // convert meters to px (1m is DP_TO_METER_RATIO by default)
+            val widthPx = metersToPx(width, context)
+            val heightPx = metersToPx(height, context)
+            view?.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        }
     }
 
 

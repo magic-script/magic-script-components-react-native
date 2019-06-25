@@ -41,13 +41,6 @@ RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId 
     resolve(nil);
 }
 
-// TODO: Remove this method (use "createGroupNode" instead)
-RCT_EXPORT_METHOD(createViewNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
-    NSLog(@"createGroupNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
-}
-
 RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject ) {
     NSLog(@"createButtonNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];

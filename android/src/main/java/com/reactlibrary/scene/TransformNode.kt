@@ -7,7 +7,7 @@ import com.reactlibrary.utils.getArraySafely
 import com.reactlibrary.utils.toVector3
 
 // Base node
-open class TransformNode(props: ReadableMap) : Node() {
+open class TransformNode : Node() {
 
     open fun update(props: ReadableMap, useDefaults: Boolean) {
         val localPosition = props.getArraySafely("localPosition")?.toVector3()

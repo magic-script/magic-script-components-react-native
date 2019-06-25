@@ -11,7 +11,7 @@ import com.reactlibrary.BuildConfig
 import com.reactlibrary.R
 import com.reactlibrary.scene.UiNode
 
-class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context) {
+class UiImageNode(props: ReadableMap, context: Context) : UiNode(context) {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
@@ -26,6 +26,7 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         }, 3000)
 
         attachView(view, props)
+        update(props, true)
     }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {

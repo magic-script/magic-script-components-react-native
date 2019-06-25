@@ -12,7 +12,7 @@ import com.reactlibrary.utils.metersToPx
 /**
  * Base node that represents UI controls
  */
-open class UiNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
+open class UiNode(private val context: Context) : TransformNode() {
 
     var clickListener: (() -> Unit)? = null
 
@@ -42,6 +42,8 @@ open class UiNode(props: ReadableMap, private val context: Context) : TransformN
             ViewRenderable
                     .builder()
                     .setView(context, view)
+                    .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
+                    .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
                     .build()
                     .thenAccept {
                         this.renderable = it

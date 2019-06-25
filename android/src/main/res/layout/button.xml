@@ -5,4 +5,5 @@
     android:background="@drawable/bg_rounded"
     android:foreground="?android:attr/selectableItemBackground"
     android:text="Hello AR"
+    android:textAllCaps="false"
     android:textColor="#fff" />

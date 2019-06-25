@@ -11,7 +11,7 @@ import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.metersToPx
 
-class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
+class UiTextNode(props: ReadableMap, context: Context) : UiNode(context) {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.text, null)

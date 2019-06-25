@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
@@ -11,9 +12,9 @@ import com.reactlibrary.BuildConfig
 import com.reactlibrary.R
 import com.reactlibrary.scene.UiNode
 
-class UiImageNode(props: ReadableMap, context: Context) : UiNode(context) {
+class UiImageNode(context: Context) : UiNode(context) {
 
-    init {
+    override fun provideView(props: ReadableMap, context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
         val imagePath = getImagePath(props, context)
 
@@ -25,8 +26,7 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(context) {
                     .into(view)
         }, 3000)
 
-        attachView(view, props)
-        update(props, true)
+        return view
     }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {

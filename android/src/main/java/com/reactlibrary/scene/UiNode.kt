@@ -12,7 +12,7 @@ import com.reactlibrary.utils.metersToPx
 /**
  * Base node that represents UI controls
  */
-open class UiNode(private val context: Context) : TransformNode() {
+abstract class UiNode(private val context: Context) : TransformNode() {
 
     var clickListener: (() -> Unit)? = null
 
@@ -25,15 +25,23 @@ open class UiNode(private val context: Context) : TransformNode() {
         private set
 
     // view that represents the Node
-    protected var view: View? = null
+    protected lateinit var view: View
+
+    // builds the view and sets the properties
+    override fun build(props: ReadableMap) {
+        view = provideView(props, context)
+        attachView(props)
+        super.build(props) // this calls update (we need create view before)
+    }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {
         super.update(props, useDefaults)
         setViewSize(props)
     }
 
-    protected fun attachView(view: View, props: ReadableMap) {
-        this.view = view
+    protected abstract fun provideView(props: ReadableMap, context: Context): View
+
+    private fun attachView(props: ReadableMap) {
         setViewSize(props)
         // TODO replace delay with callback when AR fragment has been loaded
         // Wait until AR engine was loaded
@@ -62,7 +70,7 @@ open class UiNode(private val context: Context) : TransformNode() {
             // convert meters to px (1m is DP_TO_METER_RATIO by default)
             val widthPx = metersToPx(width, context)
             val heightPx = metersToPx(height, context)
-            view?.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+            view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
         }
     }
 

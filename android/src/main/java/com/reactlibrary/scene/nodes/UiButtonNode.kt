@@ -3,6 +3,7 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
@@ -11,12 +12,10 @@ import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.metersToPx
 
-class UiButtonNode(props: ReadableMap, context: Context) : UiNode(context) {
+class UiButtonNode(context: Context) : UiNode(context) {
 
-    init {
-        val view = LayoutInflater.from(context).inflate(R.layout.button, null)
-        attachView(view, props)
-        update(props, true)
+    override fun provideView(props: ReadableMap, context: Context): View {
+        return LayoutInflater.from(context).inflate(R.layout.button, null)
     }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {
@@ -25,6 +24,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(context) {
         if (btnView != null) {
             btnView.setTitle(props)
             btnView.setTextSize(props, useDefaults)
+            btnView.setRoundness(props, useDefaults)
         }
     }
 
@@ -43,6 +43,13 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(context) {
         } else if (useDefaults) {
             val size = (this@UiButtonNode.height / 3).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        }
+    }
+
+    private fun Button.setRoundness(props: ReadableMap, useDefaults: Boolean) {
+        val roundness = props.getDoubleSafely("roundness")
+        if (roundness != null) {
+            // PaintDrawable
         }
     }
 

@@ -9,6 +9,11 @@ import com.reactlibrary.utils.toVector3
 // Base node
 open class TransformNode : Node() {
 
+    // builds the view and sets the properties
+    open fun build(props: ReadableMap) {
+        update(props, true)
+    }
+
     open fun update(props: ReadableMap, useDefaults: Boolean) {
         val localPosition = props.getArraySafely("localPosition")?.toVector3()
         if (localPosition != null) {

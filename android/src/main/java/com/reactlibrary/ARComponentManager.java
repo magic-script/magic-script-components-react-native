@@ -14,9 +14,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
-import com.reactlibrary.scene.NodesFactory;
+import com.reactlibrary.scene.TransformNode;
 import com.reactlibrary.scene.UiNode;
 import com.reactlibrary.scene.UiNodesManager;
+import com.reactlibrary.scene.nodes.GroupNode;
+import com.reactlibrary.scene.nodes.UiButtonNode;
+import com.reactlibrary.scene.nodes.UiImageNode;
+import com.reactlibrary.scene.nodes.UiTextNode;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,7 +38,6 @@ import kotlin.jvm.functions.Function0;
 public class ARComponentManager extends ReactContextBaseJavaModule {
 
     private static final String LOG_TAG = "ARComponentManager";
-    private NodesFactory nodesFactory;
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -43,8 +46,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
-        // here activity is null (so we use initAR method)
-        nodesFactory = new NodesFactory(reactContext);
+        // here activity is null yet (so we use initAR method)
         this.context = reactContext;
     }
 
@@ -85,7 +87,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = nodesFactory.createViewGroup(props);
+                TransformNode node = new GroupNode();
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -96,7 +99,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = nodesFactory.createViewGroup(props);
+                TransformNode node = new GroupNode();
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -114,7 +118,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Log.d(LOG_TAG, "props button: " + props);
-                UiNode node = nodesFactory.createButton(props);
+                UiNode node = new UiButtonNode(context);
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -125,7 +130,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = nodesFactory.createImageView(props);
+                UiNode node = new UiImageNode(context);
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -136,7 +142,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = nodesFactory.createText(props);
+                UiNode node = new UiTextNode(context);
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -148,7 +155,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 // TODO ( only stub currently)
-                UiNode node = nodesFactory.createViewGroup(props);
+                TransformNode node = new GroupNode();
+                node.build(props);
                 UiNodesManager.registerNode(node, nodeId);
             }
         });

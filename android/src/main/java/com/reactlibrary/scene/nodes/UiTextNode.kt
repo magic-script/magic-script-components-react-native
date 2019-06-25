@@ -3,6 +3,7 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
@@ -11,12 +12,10 @@ import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.metersToPx
 
-class UiTextNode(props: ReadableMap, context: Context) : UiNode(context) {
+class UiTextNode(context: Context) : UiNode(context) {
 
-    init {
-        val view = LayoutInflater.from(context).inflate(R.layout.text, null)
-        attachView(view, props)
-        update(props, true)
+    override fun provideView(props: ReadableMap, context: Context): View {
+        return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {

@@ -17,9 +17,7 @@
   "author": "Magic Leap",
   "license": "",
   "peerDependencies": {
-    "react-native": ">=0.46.0"
-  },
-  "devDependencies": {
-    "react-reconciler": "^0.20.4"
+    "react-reconciler": "^0.20.4",
+    "react-native": ">=0.59.8"
   }
 }

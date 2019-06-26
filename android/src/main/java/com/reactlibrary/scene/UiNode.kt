@@ -31,7 +31,8 @@ abstract class UiNode(private val context: Context) : TransformNode() {
     override fun build(props: ReadableMap) {
         view = provideView(props, context)
         attachView(props)
-        super.build(props) // this calls update (we need create view before)
+        // this calls update, so we need to create the view before
+        super.build(props)
     }
 
     override fun update(props: ReadableMap, useDefaults: Boolean) {

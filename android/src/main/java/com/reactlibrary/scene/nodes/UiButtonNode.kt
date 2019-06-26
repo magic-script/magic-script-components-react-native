@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -46,10 +47,16 @@ class UiButtonNode(context: Context) : UiNode(context) {
         }
     }
 
+    // Sets the corners roundness (0 - sharp, 1 - fully rounded)
     private fun Button.setRoundness(props: ReadableMap, useDefaults: Boolean) {
         val roundness = props.getDoubleSafely("roundness")
+        val background = background.current as GradientDrawable
         if (roundness != null) {
-            // TODO
+            background.mutate() // must be called to modify shared drawables loaded from resources
+            background.cornerRadius = (roundness * 90).toFloat()
+        } else if (useDefaults) {
+            background.mutate()
+            background.cornerRadius = 90f // fully rounded by default
         }
     }
 

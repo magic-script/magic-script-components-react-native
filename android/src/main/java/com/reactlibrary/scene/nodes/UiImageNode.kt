@@ -2,7 +2,6 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.net.Uri
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -10,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.BuildConfig
 import com.reactlibrary.R
-import com.reactlibrary.scene.UiNode
+import com.reactlibrary.scene.nodes.base.UiNode
 
 class UiImageNode(context: Context) : UiNode(context) {
 
@@ -18,13 +17,10 @@ class UiImageNode(context: Context) : UiNode(context) {
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
         val imagePath = getImagePath(props, context)
 
-        // TODO doesn't work without delay (load starts after view is attached?)
-        Handler().postDelayed({
-            // http://localhost:8081/assets/resources/DemoPicture1.jpg
-            Glide.with(context)
-                    .load(imagePath)
-                    .into(view)
-        }, 3000)
+        // e.g. http://localhost:8081/assets/resources/DemoPicture1.jpg
+        Glide.with(context)
+                .load(imagePath)
+                .into(view)
 
         return view
     }

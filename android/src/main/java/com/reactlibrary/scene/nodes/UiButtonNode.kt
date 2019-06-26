@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.Button
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
-import com.reactlibrary.scene.UiNode
+import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.metersToPx
@@ -41,7 +41,7 @@ class UiButtonNode(context: Context) : UiNode(context) {
         if (textSize != null) {
             val size = metersToPx(textSize, context).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-        } else if (!update) {
+        } else if (!update) {  // set default value
             val size = (this@UiButtonNode.height / 3).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
@@ -52,9 +52,10 @@ class UiButtonNode(context: Context) : UiNode(context) {
         val roundness = props.getDoubleSafely("roundness")
         val background = background.current as GradientDrawable
         if (roundness != null) {
-            background.mutate() // must be called to modify shared drawables loaded from resources
+            // must be called to modify shared drawables loaded from resources
+            background.mutate()
             background.cornerRadius = (roundness * 90).toFloat()
-        } else if (!update) {
+        } else if (!update) { // set default value
             background.mutate()
             background.cornerRadius = 90f // fully rounded by default
         }

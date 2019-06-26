@@ -4,6 +4,7 @@ import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
+import com.reactlibrary.scene.nodes.base.TransformNode
 
 /**
  * It manages nodes registration and attaching them to scene

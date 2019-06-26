@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
-import com.reactlibrary.scene.UiNode
+import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.metersToPx

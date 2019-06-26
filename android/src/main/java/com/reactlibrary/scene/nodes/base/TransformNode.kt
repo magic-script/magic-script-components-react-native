@@ -1,4 +1,4 @@
-package com.reactlibrary.scene
+package com.reactlibrary.scene.nodes.base
 
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
@@ -24,6 +24,10 @@ open class TransformNode : Node() {
         setup(props, true)
     }
 
+    /**
+     * Applies properties on the node.
+     * @param update if true it's called on [update], else it's called when initialized ([build])
+     */
     protected open fun setup(props: ReadableMap, update: Boolean) {
         val localPosition = props.getArraySafely("localPosition")?.toVector3()
         if (localPosition != null) {

@@ -1,4 +1,4 @@
-package com.reactlibrary.scene
+package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
 import android.os.Handler
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
+import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.metersToPx
 

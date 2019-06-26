@@ -29,8 +29,8 @@ class UiImageNode(context: Context) : UiNode(context) {
         return view
     }
 
-    override fun update(props: ReadableMap, useDefaults: Boolean) {
-        super.update(props, useDefaults)
+    override fun setup(props: ReadableMap, update: Boolean) {
+        super.setup(props, update)
 
     }
 

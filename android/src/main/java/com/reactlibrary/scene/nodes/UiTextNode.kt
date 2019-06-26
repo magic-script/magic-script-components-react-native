@@ -18,8 +18,8 @@ class UiTextNode(context: Context) : UiNode(context) {
         return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
-    override fun update(props: ReadableMap, useDefaults: Boolean) {
-        super.update(props, useDefaults)
+    override fun setup(props: ReadableMap, update: Boolean) {
+        super.setup(props, update)
         val textView = view as TextView?
         textView?.setText(props)
         textView?.setTextSize(props)

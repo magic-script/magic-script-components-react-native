@@ -1,19 +1,25 @@
-
 {
   "private": true,
   "name": "react-native-magic-script",
   "version": "0.1.0",
-  "description": "Magic Script Components module for React Native.",
+  "description": "Magic Script Components package for React Native.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native", "magic-script", "ios", "android", "ar"
+    "react-native",
+    "magic-script",
+    "ios",
+    "android",
+    "ar"
   ],
   "author": "Magic Leap",
   "license": "",
   "peerDependencies": {
     "react-native": ">=0.46.0"
+  },
+  "devDependencies": {
+    "react-reconciler": "^0.20.4"
   }
 }

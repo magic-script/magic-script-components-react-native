@@ -14,13 +14,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
-import com.reactlibrary.scene.nodes.base.TransformNode;
-import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
+import com.reactlibrary.scene.nodes.base.TransformNode;
+import com.reactlibrary.scene.nodes.base.UiNode;
 
 import java.util.Collections;
 import java.util.Map;
@@ -73,7 +73,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             }
         });
     }
-
 
     /**
      * Creates node that is a parent for other nodes

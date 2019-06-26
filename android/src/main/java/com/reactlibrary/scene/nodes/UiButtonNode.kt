@@ -42,8 +42,10 @@ class UiButtonNode(context: Context) : UiNode(context) {
             val size = metersToPx(textSize, context).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         } else if (!update) {  // set default value
-            val size = (this@UiButtonNode.height / 3).toFloat()
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            this@UiButtonNode.height?.let {
+                val size = (it / 3).toFloat()
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            }
         }
     }
 

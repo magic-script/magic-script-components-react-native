@@ -24,19 +24,17 @@ abstract class UiNode(private val context: Context) : TransformNode() {
     var height = 0.0
         private set
 
-    // view that represents the Node
     protected lateinit var view: View
 
-    // builds the view and sets the properties
     override fun build(props: ReadableMap) {
         view = provideView(props, context)
         attachView(props)
-        // this calls update, so we need to create the view before
+        // this calls setup, so we need to create the view before
         super.build(props)
     }
 
-    override fun update(props: ReadableMap, useDefaults: Boolean) {
-        super.update(props, useDefaults)
+    override fun setup(props: ReadableMap, update: Boolean) {
+        super.setup(props, update)
         setViewSize(props)
     }
 

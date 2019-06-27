@@ -5,7 +5,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.scene.nodes.base.UiNode
 
 /**
  * It manages nodes registration and attaching them to scene
@@ -27,8 +26,8 @@ object UiNodesManager {
         arReady = true
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
-            if (node is UiNode && !node.isViewAttached) {
-                node.attachView()
+            if (!node.isRenderableAttached) {
+                node.attachRenderable()
             }
         }
     }
@@ -55,8 +54,8 @@ object UiNodesManager {
         nodesById[nodeId] = node
         Log.d(LOG_TAG, "register node: $node)")
 
-        if (arReady && node is UiNode && !node.isViewAttached) {
-            node.attachView()
+        if (arReady && !node.isRenderableAttached) {
+            node.attachRenderable()
         }
     }
 

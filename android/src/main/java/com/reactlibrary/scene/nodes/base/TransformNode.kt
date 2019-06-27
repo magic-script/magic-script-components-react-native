@@ -9,7 +9,7 @@ import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.toVector3
 
 // Base node
-open class TransformNode : Node() {
+abstract class TransformNode : Node() {
 
     companion object {
         // properties
@@ -17,6 +17,12 @@ open class TransformNode : Node() {
         private const val PROP_LOCAL_SCALE = "localScale"
         private const val PROP_LOCAL_ROTATION = "localRotation"
     }
+
+    /**
+     * Return true if already tried to attach the view (otherwise false)
+     */
+    var isRenderableAttached = false
+        private set
 
     /**
      * Builds the node by calling [setup]
@@ -44,6 +50,18 @@ open class TransformNode : Node() {
         setLocalScale(props)
         setLocalRotation(props)
     }
+
+    /**
+     * Should attach renderable to the node (view or model)
+     */
+    fun attachRenderable() {
+        isRenderableAttached = loadRenderable()
+    }
+
+    /** Should assign renderable to the node
+     *  @return true if renderable has been assigned to the node, false otherwise
+     */
+    protected abstract fun loadRenderable(): Boolean
 
     private fun setPosition(props: ReadableMap, update: Boolean) {
         val localPosition = props.getArraySafely(PROP_LOCAL_POSITION)?.toVector3()

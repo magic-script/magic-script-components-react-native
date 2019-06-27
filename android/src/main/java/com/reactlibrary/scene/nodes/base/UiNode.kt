@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getBooleanSafely
 import com.reactlibrary.utils.getDoubleSafely
-import com.reactlibrary.utils.metersToPx
 
 /**
  * Base node that represents UI controls
@@ -36,15 +36,11 @@ abstract class UiNode(private val context: Context) : TransformNode() {
         private set
 
     /**
-     * Return true if already tried to attach the view (otherwise false)
-     */
-    var isViewAttached = false
-        private set
-
-    /**
      * A view attached to the node
      */
     protected lateinit var view: View
+
+    protected abstract fun provideView(props: ReadableMap, context: Context): View
 
     override fun build(props: ReadableMap) {
         view = provideView(props, context)
@@ -61,18 +57,16 @@ abstract class UiNode(private val context: Context) : TransformNode() {
         setEnabled(props)
     }
 
-    protected abstract fun provideView(props: ReadableMap, context: Context): View
-
     /**
      * Attaches view to the Node (must be called after AR Core native code has been loaded)
      * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
      */
-    fun attachView() {
+    override fun loadRenderable(): Boolean {
         val widthTmp = width
         val heightTmp = height
         if (widthTmp != null && heightTmp != null) {
-            val widthPx = metersToPx(widthTmp, context)
-            val heightPx = metersToPx(heightTmp, context)
+            val widthPx = Utils.metersToPx(widthTmp, context)
+            val heightPx = Utils.metersToPx(heightTmp, context)
 
             val params = view.layoutParams
             if (params != null) {
@@ -95,7 +89,7 @@ abstract class UiNode(private val context: Context) : TransformNode() {
                     this.renderable = it
                 }
 
-        isViewAttached = true
+        return true
     }
 
     private fun readSize(props: ReadableMap) {

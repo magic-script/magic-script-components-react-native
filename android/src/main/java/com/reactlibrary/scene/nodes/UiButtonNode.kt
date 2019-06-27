@@ -9,9 +9,9 @@ import android.widget.Button
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
-import com.reactlibrary.utils.metersToPx
 
 class UiButtonNode(context: Context) : UiNode(context) {
 
@@ -46,7 +46,7 @@ class UiButtonNode(context: Context) : UiNode(context) {
     private fun Button.setTextSize(props: ReadableMap, update: Boolean) {
         val textSize = props.getDoubleSafely(PROP_TEXT_SIZE)
         if (textSize != null) {
-            val size = metersToPx(textSize, context).toFloat()
+            val size = Utils.metersToPx(textSize, context).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         } else if (!update) {  // set default value
             this@UiButtonNode.height?.let {

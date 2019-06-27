@@ -8,10 +8,10 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getBooleanSafely
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
-import com.reactlibrary.utils.metersToPx
 
 class UiTextNode(context: Context) : UiNode(context) {
 
@@ -47,7 +47,7 @@ class UiTextNode(context: Context) : UiNode(context) {
 
     private fun TextView.setTextSize(props: ReadableMap) {
         props.getDoubleSafely(PROP_TEXT_SIZE)?.let { textSize ->
-            val size = metersToPx(textSize, context).toFloat()
+            val size = Utils.metersToPx(textSize, context).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }

@@ -44,7 +44,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.facebook.react:react-native:+' // from node_modules (not maven)
+    // react native is taken from node_modules (main project), not from maven
+    implementation 'com.facebook.react:react-native:+'
     // Provides ArFragment, and other Sceneform UX resources:
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.10.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

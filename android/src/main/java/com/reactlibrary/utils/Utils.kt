@@ -1,13 +1,21 @@
 package com.reactlibrary.utils
 
 import android.content.Context
+import android.util.Log
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.BuildConfig
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
 const val DP_TO_METER_RATIO = 250
+
+fun Any.logDebug(message: String) {
+    if (BuildConfig.DEBUG) {
+        Log.d(this.javaClass.name, message)
+    }
+}
 
 // converts ARCore's meters to pixels
 fun metersToPx(meters: Double, context: Context): Int {
@@ -37,3 +45,4 @@ fun ReadableMap.getDoubleSafely(key: String): Double? {
 fun ReadableMap.getStringSafely(key: String): String? {
     return if (hasKey(key)) getString(key)!! else null
 }
+

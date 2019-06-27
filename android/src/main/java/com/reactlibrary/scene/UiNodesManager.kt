@@ -27,7 +27,7 @@ object UiNodesManager {
         arReady = true
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
-            if (node is UiNode && !node.viewAttached) {
+            if (node is UiNode && !node.isViewAttached) {
                 node.attachView()
             }
         }
@@ -55,7 +55,7 @@ object UiNodesManager {
         nodesById[nodeId] = node
         Log.d(LOG_TAG, "register node: $node)")
 
-        if (arReady && node is UiNode && !node.viewAttached) {
+        if (arReady && node is UiNode && !node.isViewAttached) {
             node.attachView()
         }
     }

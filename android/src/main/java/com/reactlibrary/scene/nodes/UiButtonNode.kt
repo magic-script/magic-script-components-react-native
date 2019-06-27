@@ -15,6 +15,13 @@ import com.reactlibrary.utils.metersToPx
 
 class UiButtonNode(context: Context) : UiNode(context) {
 
+    companion object {
+        // properties
+        private const val PROP_TITLE = "title"
+        private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_ROUNDNESS = "roundness"
+    }
+
     override fun provideView(props: ReadableMap, context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.button, null)
     }
@@ -30,14 +37,14 @@ class UiButtonNode(context: Context) : UiNode(context) {
     }
 
     private fun Button.setTitle(props: ReadableMap) {
-        val title = props.getStringSafely("title")
+        val title = props.getStringSafely(PROP_TITLE)
         if (title != null) {
             text = title
         }
     }
 
     private fun Button.setTextSize(props: ReadableMap, update: Boolean) {
-        val textSize = props.getDoubleSafely("textSize")
+        val textSize = props.getDoubleSafely(PROP_TEXT_SIZE)
         if (textSize != null) {
             val size = metersToPx(textSize, context).toFloat()
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
@@ -51,7 +58,7 @@ class UiButtonNode(context: Context) : UiNode(context) {
 
     // Sets the corners roundness (0 - sharp, 1 - fully rounded)
     private fun Button.setRoundness(props: ReadableMap, update: Boolean) {
-        val roundness = props.getDoubleSafely("roundness")
+        val roundness = props.getDoubleSafely(PROP_ROUNDNESS)
         val background = background.current as GradientDrawable
         if (roundness != null) {
             // must be called to modify shared drawables loaded from resources

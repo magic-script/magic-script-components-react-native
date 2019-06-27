@@ -5,16 +5,17 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.utils.getArraySafely
-import com.reactlibrary.utils.logDebug
+import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.toVector3
 
 // Base node
 open class TransformNode : Node() {
 
     companion object {
-        protected const val PROP_LOCAL_POSITION = "localPosition"
-        protected const val PROP_LOCAL_SCALE = "localScale"
-        protected const val PROP_LOCAL_ROTATION = "localRotation"
+        // properties
+        private const val PROP_LOCAL_POSITION = "localPosition"
+        private const val PROP_LOCAL_SCALE = "localScale"
+        private const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
     /**
@@ -38,7 +39,7 @@ open class TransformNode : Node() {
      * else it's called when initialized ([build])
      */
     protected open fun setup(props: ReadableMap, update: Boolean) {
-        logDebug("setup")
+        logMessage("setup")
         setPosition(props, update)
         setLocalScale(props)
         setLocalRotation(props)
@@ -56,7 +57,7 @@ open class TransformNode : Node() {
     private fun setLocalScale(props: ReadableMap) {
         val localScale = props.getArraySafely(PROP_LOCAL_SCALE)?.toVector3()
         if (localScale != null) {
-            logDebug("setting scale")
+            logMessage("setting scale")
             this.localScale = localScale
         }
     }
@@ -64,12 +65,13 @@ open class TransformNode : Node() {
     private fun setLocalRotation(props: ReadableMap) {
         val quaternionArray = props.getArraySafely(PROP_LOCAL_ROTATION)
         if (quaternionArray != null && quaternionArray.size() == 4) {
-            logDebug("setting rotation")
+            logMessage("setting rotation")
             val x = quaternionArray.getDouble(0).toFloat()
             val y = quaternionArray.getDouble(1).toFloat()
             val z = quaternionArray.getDouble(2).toFloat()
-            val angle = quaternionArray.getDouble(3).toFloat()
-            this.localRotation = Quaternion(x, y, z, angle)
+            val w = quaternionArray.getDouble(3).toFloat()
+
+            this.localRotation = Quaternion(x, y, z, w)  // Quaternion.axisAngle
         }
     }
 

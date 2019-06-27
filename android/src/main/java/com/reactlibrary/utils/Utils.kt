@@ -11,9 +11,9 @@ import com.reactlibrary.BuildConfig
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
 const val DP_TO_METER_RATIO = 250
 
-fun Any.logDebug(message: String) {
+fun Any.logMessage(message: String) {
     if (BuildConfig.DEBUG) {
-        Log.d(this.javaClass.name, message)
+        Log.d(this.javaClass.name, message) //this.javaClass.name
     }
 }
 
@@ -44,5 +44,9 @@ fun ReadableMap.getDoubleSafely(key: String): Double? {
 
 fun ReadableMap.getStringSafely(key: String): String? {
     return if (hasKey(key)) getString(key)!! else null
+}
+
+fun ReadableMap.getBooleanSafely(key: String): Boolean? {
+    return if (hasKey(key)) getBoolean(key) else null
 }
 

@@ -25,11 +25,6 @@ class UiImageNode(context: Context) : UiNode(context) {
         return view
     }
 
-    override fun setup(props: ReadableMap, update: Boolean) {
-        super.setup(props, update)
-
-    }
-
     private fun getImagePath(props: ReadableMap, context: Context): Uri {
         // e.g. resources\DemoPicture1.jpg
         val filePath = props.getString("filePath") ?: ""
@@ -38,10 +33,11 @@ class UiImageNode(context: Context) : UiNode(context) {
             Uri.parse("http://localhost:8081/assets/$filePath")
         } else {
             val packageName = context.packageName
-            val resourcesPath = "android.resource://$packageName/drawable/"
-            // convert string to format: resources_demopicture1
-            val normalizedPath = filePath.toLowerCase().replace("/", "_")
-            Uri.parse(normalizedPath)
+            val basePath = "android.resource://$packageName/drawable/"
+            // resources\DemoPicture1.jpg is copied to
+            // res/drawable in format: resources_demopicture1
+            val fileName = filePath.toLowerCase().replace("/", "_")
+            Uri.parse(basePath + fileName)
         }
     }
 

@@ -16,42 +16,43 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         private const val PROP_MODEL_PATH = "modelPath"
     }
 
-    private lateinit var modelPath: String
-
-    init {
-        readModelPath(props)
+    override fun applyProperties(props: ReadableMap, update: Boolean) {
+        super.applyProperties(props, update)
+        // cannot update before [isRenderableAttached],
+        // because Sceneform may be uninitialized
+        if (update && isRenderableAttached) {
+            loadModel()
+        }
     }
 
     override fun loadRenderable(): Boolean {
-
-        val androidPathUri = Utils.getFilePath(modelPath, context)
-
-        logMessage("path: $modelPath")
-        logMessage("android path: $androidPathUri")
-
-        ModelRenderable.builder()
-                .setSource(context, RenderableSource.builder().setSource(
-                        context,
-                        androidPathUri,
-                        RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
-                        // .setScale(2.5f)
-                        .setRecenterMode(RenderableSource.RecenterMode.ROOT)
-                        .build())
-                .setRegistryId(modelPath)
-                .build()
-                .thenAccept {
-                    this.renderable = it
-                }
-                .exceptionally { throwable ->
-                    logMessage("error loading model: $throwable")
-                    null
-                }
-
+        loadModel()
         return true
     }
 
-    private fun readModelPath(props: ReadableMap) {
-        props.getStringSafely(PROP_MODEL_PATH)?.let { this.modelPath = it }
+    private fun loadModel() {
+        val path = props.getStringSafely(PROP_MODEL_PATH)
+        if (path != null) {
+            val androidPathUri = Utils.getFilePath(path, context)
+            ModelRenderable.builder()
+                    .setSource(context, RenderableSource.builder().setSource(
+                            context,
+                            androidPathUri,
+                            RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
+                            // .setScale(2.5f)
+                            .setRecenterMode(RenderableSource.RecenterMode.ROOT)
+                            .build())
+                    .setRegistryId(path)
+                    .build()
+                    .thenAccept {
+                        this.renderable = it
+                    }
+                    .exceptionally { throwable ->
+                        logMessage("error loading model: $throwable")
+                        null
+                    }
+        }
+
     }
 
 }

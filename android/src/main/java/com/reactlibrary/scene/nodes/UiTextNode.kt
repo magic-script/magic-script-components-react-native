@@ -13,7 +13,7 @@ import com.reactlibrary.utils.getBooleanSafely
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 
-class UiTextNode(context: Context) : UiNode(context) {
+class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {
         // properties
@@ -23,12 +23,12 @@ class UiTextNode(context: Context) : UiNode(context) {
         private const val PROP_CHARACTER_SPACING = "charSpacing"
     }
 
-    override fun provideView(props: ReadableMap, context: Context): View {
+    override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
-    override fun setup(props: ReadableMap, update: Boolean) {
-        super.setup(props, update)
+    override fun applyProperties(props: ReadableMap, update: Boolean) {
+        super.applyProperties(props, update)
         val textView = view as TextView?
         if (textView != null) {
             textView.setText(props) // text (value) is available on update

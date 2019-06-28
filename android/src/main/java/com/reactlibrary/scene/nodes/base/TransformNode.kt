@@ -9,7 +9,7 @@ import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.toVector3
 
 // Base node
-abstract class TransformNode : Node() {
+abstract class TransformNode(props: ReadableMap) : Node() {
 
     companion object {
         // properties
@@ -18,6 +18,9 @@ abstract class TransformNode : Node() {
         private const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
+    protected var props: ReadableMap = props
+        private set
+
     /**
      * Return true if already tried to attach the view (otherwise false)
      */
@@ -25,10 +28,10 @@ abstract class TransformNode : Node() {
         private set
 
     /**
-     * Builds the node by calling [setup]
+     * Builds the node by calling [applyProperties]
      */
-    open fun build(props: ReadableMap) {
-        setup(props, false)
+    open fun build() {
+        applyProperties(props, false)
     }
 
     /**
@@ -36,7 +39,8 @@ abstract class TransformNode : Node() {
      * It should be called after [build]
      */
     fun update(props: ReadableMap) {
-        setup(props, true)
+        this.props = props
+        applyProperties(props, true)
     }
 
     /**
@@ -44,8 +48,8 @@ abstract class TransformNode : Node() {
      * @param update if true it's called on [update],
      * else it's called when initialized ([build])
      */
-    protected open fun setup(props: ReadableMap, update: Boolean) {
-        logMessage("setup")
+    protected open fun applyProperties(props: ReadableMap, update: Boolean) {
+        logMessage("applyProperties")
         setPosition(props, update)
         setLocalScale(props)
         setLocalRotation(props)

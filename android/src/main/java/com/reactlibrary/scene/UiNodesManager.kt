@@ -94,7 +94,7 @@ object UiNodesManager {
     fun updateNode(nodeId: String, properties: ReadableMap): Boolean {
         val node = nodesById[nodeId]
         if (node == null) {
-            Log.e(LOG_TAG, "cannot setup node: not found")
+            Log.e(LOG_TAG, "cannot applyProperties node: not found")
             return false
         }
         node.update(properties)

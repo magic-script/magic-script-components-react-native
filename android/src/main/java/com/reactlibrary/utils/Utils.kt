@@ -12,18 +12,45 @@ import com.reactlibrary.BuildConfig
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
 const val DP_TO_METER_RATIO = 250
 
+private const val DEBUG_ASSETS_PATH = "http://localhost:8081/assets/"
+
 class Utils {
     companion object {
 
-        fun getAndroidPath(filePath: String, context: Context): Uri {
+        /**
+         * Converts React project's image path to path
+         * that can be accessed from android code.
+         */
+        fun getImagePath(imagePath: String, context: Context): Uri {
             // e.g. resources\DemoPicture1.jpg
             return if (BuildConfig.DEBUG) {
-                Uri.parse("http://localhost:8081/assets/$filePath")
+                Uri.parse(DEBUG_ASSETS_PATH + imagePath)
             } else {
                 val packageName = context.packageName
                 val basePath = "android.resource://$packageName/drawable/"
                 // resources\DemoPicture1.jpg is copied to
-                // res/drawable in format: resources_demopicture1
+                // res/drawable with file name = "resources_demopicture1"
+                val fileName = imagePath.toLowerCase().replace("/", "_")
+                Uri.parse(basePath + fileName)
+            }
+        }
+
+        /**
+         *
+         * Converts React project's file path (other than image) to path
+         * that can be accessed from android code.
+         *
+         * TODO (currently working only in debug when device is connected to PC)
+         */
+        fun getFilePath(filePath: String, context: Context): Uri {
+            // e.g. resources\model.glb
+            return if (BuildConfig.DEBUG) {
+                Uri.parse(DEBUG_ASSETS_PATH + filePath)
+            } else {
+                val packageName = context.packageName
+                val basePath = "android.resource://$packageName/raw/"
+                // TODO check if resources\model.glb is copied to
+                // TODO res/raw with file name = "resources_model"
                 val fileName = filePath.toLowerCase().replace("/", "_")
                 Uri.parse(basePath + fileName)
             }
@@ -43,7 +70,7 @@ class Utils {
  */
 fun Any.logMessage(message: String) {
     if (BuildConfig.DEBUG) {
-        Log.d(this.javaClass.name, message) //this.javaClass.name
+        Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
     }
 }
 

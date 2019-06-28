@@ -8,11 +8,12 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getBooleanSafely
 import com.reactlibrary.utils.getDoubleSafely
+import com.reactlibrary.utils.logMessage
 
 /**
  * Base node that represents UI controls
  */
-abstract class UiNode(private val context: Context) : TransformNode() {
+abstract class UiNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
 
     companion object {
         // properties
@@ -40,18 +41,21 @@ abstract class UiNode(private val context: Context) : TransformNode() {
      */
     protected lateinit var view: View
 
-    protected abstract fun provideView(props: ReadableMap, context: Context): View
-
-    override fun build(props: ReadableMap) {
-        view = provideView(props, context)
-        view.setOnClickListener { clickListener?.invoke() }
-        // build calls setup, so we need to initialize the view before
+    init {
         readSize(props)
-        super.build(props)
     }
 
-    override fun setup(props: ReadableMap, update: Boolean) {
-        super.setup(props, update)
+    override fun build() {
+        view = provideView(context)
+        view.setOnClickListener { clickListener?.invoke() }
+        // build calls applyProperties, so we need to initialize the view before
+        super.build()
+    }
+
+    protected abstract fun provideView(context: Context): View
+
+    override fun applyProperties(props: ReadableMap, update: Boolean) {
+        super.applyProperties(props, update)
         // currently we don't resize the view on update
         readSize(props)
         setEnabled(props)
@@ -87,6 +91,11 @@ abstract class UiNode(private val context: Context) : TransformNode() {
                 .build()
                 .thenAccept {
                     this.renderable = it
+                    //renderable?.material?.setBoolean("doubleSided", false)
+                }
+                .exceptionally { throwable ->
+                    logMessage("error loading view renderable: $throwable")
+                    null
                 }
 
         return true

@@ -11,14 +11,19 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getStringSafely
 
-class UiImageNode(context: Context) : UiNode(context) {
+class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
-    override fun provideView(props: ReadableMap, context: Context): View {
+    companion object {
+        // properties
+        private const val PROP_FILE_PATH = "filePath"
+    }
+
+    override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
         // path to folder in react project
-        val filePath = props.getStringSafely("filePath")
+        val filePath = props.getStringSafely(PROP_FILE_PATH)
         if (filePath != null) {
-            val androidPath = Utils.getAndroidPath(filePath, context)
+            val androidPath = Utils.getImagePath(filePath, context)
             // e.g. http://localhost:8081/assets/resources/DemoPicture1.jpg
             Glide.with(context)
                     .load(androidPath)

@@ -13,7 +13,7 @@ import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.getStringSafely
 
-class UiButtonNode(context: Context) : UiNode(context) {
+class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {
         // properties
@@ -22,12 +22,12 @@ class UiButtonNode(context: Context) : UiNode(context) {
         private const val PROP_ROUNDNESS = "roundness"
     }
 
-    override fun provideView(props: ReadableMap, context: Context): View {
+    override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.button, null)
     }
 
-    override fun setup(props: ReadableMap, update: Boolean) {
-        super.setup(props, update)
+    override fun applyProperties(props: ReadableMap, update: Boolean) {
+        super.applyProperties(props, update)
         val btnView = view as Button?
         if (btnView != null) {
             btnView.setTitle(props)

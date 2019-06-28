@@ -16,6 +16,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
+import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
@@ -86,8 +87,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                TransformNode node = new GroupNode();
-                node.build(props);
+                TransformNode node = new GroupNode(props);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -98,8 +99,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                TransformNode node = new GroupNode();
-                node.build(props);
+                TransformNode node = new GroupNode(props);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -117,8 +118,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Log.d(LOG_TAG, "props button: " + props);
-                UiNode node = new UiButtonNode(context);
-                node.build(props);
+                UiNode node = new UiButtonNode(props, context);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -129,8 +130,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiImageNode(context);
-                node.build(props);
+                UiNode node = new UiImageNode(props, context);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -141,8 +142,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiTextNode(context);
-                node.build(props);
+                UiNode node = new UiTextNode(props, context);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });
@@ -154,8 +155,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 // TODO ( only stub currently)
-                TransformNode node = new GroupNode();
-                node.build(props);
+                ModelNode node = new ModelNode(props, context);
+                node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }
         });

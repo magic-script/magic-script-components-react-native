@@ -110,6 +110,7 @@ import SceneKit
         let thickness: CGFloat = min(0.01 * min(rect.width, rect.height), 0.005)
         borderGeometry = SCNRectangle(rect: rect, thickness: thickness, radius: radius)
         borderGeometry.firstMaterial?.diffuse.contents = color
+        borderGeometry.firstMaterial?.isDoubleSided = true
         borderNode = SCNNode(geometry: borderGeometry)
         contentNode.addChildNode(borderNode)
 

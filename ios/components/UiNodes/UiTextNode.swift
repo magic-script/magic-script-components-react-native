@@ -61,6 +61,7 @@ import SceneKit
         textGeometry.flatness = 0.5
         textGeometry.firstMaterial?.lightingModel = .constant
         textGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        textGeometry.firstMaterial?.isDoubleSided = true
         textNode = SCNNode(geometry: textGeometry)
         textNode.position = SCNVector3()
         addChildNode(textNode)

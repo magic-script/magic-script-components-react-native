@@ -56,7 +56,7 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
 
     override fun applyProperties(props: ReadableMap, update: Boolean) {
         super.applyProperties(props, update)
-        // currently we don't resize the view on update
+        // TODO resize the view when dimensions changed on update
         readSize(props)
         setEnabled(props)
     }

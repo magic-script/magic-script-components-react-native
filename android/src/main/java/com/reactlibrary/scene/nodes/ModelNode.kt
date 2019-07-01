@@ -18,8 +18,8 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
 
     override fun applyProperties(props: ReadableMap, update: Boolean) {
         super.applyProperties(props, update)
-        // cannot update before [isRenderableAttached],
-        // because Sceneform may be uninitialized
+        // cannot update the ModelRenderable before [isRenderableAttached],
+        // because Sceneform may be uninitialized yet
         if (update && isRenderableAttached) {
             loadModel()
         }

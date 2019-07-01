@@ -14,7 +14,7 @@ import com.reactlibrary.scene.UiNodesManager;
 import java.lang.ref.WeakReference;
 
 /**
- * View INSTANCE that is responsible for creating AR Fragment
+ * View manager that is responsible for creating the AR Fragment
  */
 public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupManager
 
@@ -44,6 +44,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupMa
 
     @Override
     public boolean needsCustomLayoutForChildren() {
+        // TODO check if this is required
         return true;
     }
 

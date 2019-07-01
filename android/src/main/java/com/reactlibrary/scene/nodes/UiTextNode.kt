@@ -23,44 +23,43 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_CHARACTER_SPACING = "charSpacing"
     }
 
+    private val textView by lazy { view as TextView }
+
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
     override fun applyProperties(props: ReadableMap, update: Boolean) {
         super.applyProperties(props, update)
-        val textView = view as TextView?
-        if (textView != null) {
-            textView.setText(props) // text (value) is available on update
-            textView.setTextSize(props)
-            textView.setAllCaps(props)
-            textView.setCharacterSpacing(props)
-        }
+        setText(props) // currently text value is available only on update
+        setTextSize(props)
+        setAllCaps(props)
+        setCharacterSpacing(props)
     }
 
-    private fun TextView.setText(props: ReadableMap) {
+    private fun setText(props: ReadableMap) {
         val text = props.getStringSafely(PROP_TEXT)
         if (text != null) {
-            this.text = text
+            textView.text = text
         }
     }
 
-    private fun TextView.setTextSize(props: ReadableMap) {
+    private fun setTextSize(props: ReadableMap) {
         props.getDoubleSafely(PROP_TEXT_SIZE)?.let { textSize ->
-            val size = Utils.metersToPx(textSize, context).toFloat()
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            val size = Utils.metersToPx(textSize, textView.context).toFloat()
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
 
-    private fun TextView.setAllCaps(props: ReadableMap) {
+    private fun setAllCaps(props: ReadableMap) {
         props.getBooleanSafely(PROP_ALL_CAPS)?.let { allCaps ->
-            isAllCaps = allCaps
+            textView.isAllCaps = allCaps
         }
     }
 
-    private fun TextView.setCharacterSpacing(props: ReadableMap) {
+    private fun setCharacterSpacing(props: ReadableMap) {
         props.getDoubleSafely(PROP_CHARACTER_SPACING)?.let { spacing ->
-            letterSpacing = spacing.toFloat()
+            textView.letterSpacing = spacing.toFloat()
         }
     }
 

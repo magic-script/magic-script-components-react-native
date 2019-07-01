@@ -18,6 +18,8 @@ class UiImageNode(props: ReadableMap, private val context: Context) : UiNode(pro
         private const val PROP_FILE_PATH = "filePath"
     }
 
+    private val imageView by lazy { view as ImageView }
+
     override fun applyProperties(props: ReadableMap, update: Boolean) {
         super.applyProperties(props, update)
         setImagePath(props)
@@ -35,7 +37,7 @@ class UiImageNode(props: ReadableMap, private val context: Context) : UiNode(pro
             // e.g. http://localhost:8081/assets/resources/DemoPicture1.jpg
             Glide.with(context)
                     .load(androidPath)
-                    .into(view as ImageView)
+                    .into(imageView)
 
         }
     }

@@ -22,44 +22,43 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_ROUNDNESS = "roundness"
     }
 
+    private val buttonView by lazy { view as Button }
+
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.button, null)
     }
 
     override fun applyProperties(props: ReadableMap, update: Boolean) {
         super.applyProperties(props, update)
-        val btnView = view as Button?
-        if (btnView != null) {
-            btnView.setTitle(props)
-            btnView.setTextSize(props, update)
-            btnView.setRoundness(props, update)
-        }
+        setTitle(props)
+        setTextSize(props, update)
+        setRoundness(props, update)
     }
 
-    private fun Button.setTitle(props: ReadableMap) {
+    private fun setTitle(props: ReadableMap) {
         val title = props.getStringSafely(PROP_TITLE)
         if (title != null) {
-            text = title
+            buttonView.text = title
         }
     }
 
-    private fun Button.setTextSize(props: ReadableMap, update: Boolean) {
+    private fun setTextSize(props: ReadableMap, update: Boolean) {
         val textSize = props.getDoubleSafely(PROP_TEXT_SIZE)
         if (textSize != null) {
-            val size = Utils.metersToPx(textSize, context).toFloat()
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            val size = Utils.metersToPx(textSize, buttonView.context).toFloat()
+            buttonView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         } else if (!update) {  // set default value
-            this@UiButtonNode.height?.let {
+            this.height?.let {
                 val size = (it / 3).toFloat()
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+                buttonView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
             }
         }
     }
 
     // Sets the corners roundness (0 - sharp, 1 - fully rounded)
-    private fun Button.setRoundness(props: ReadableMap, update: Boolean) {
+    private fun setRoundness(props: ReadableMap, update: Boolean) {
         val roundness = props.getDoubleSafely(PROP_ROUNDNESS)
-        val background = background.current as GradientDrawable
+        val background = buttonView.background.current as GradientDrawable
         if (roundness != null) {
             // must be called to modify shared drawables loaded from resources
             background.mutate()

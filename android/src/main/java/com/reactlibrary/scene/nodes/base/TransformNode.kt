@@ -22,7 +22,8 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         private set
 
     /**
-     * Return true if already tried to attach the view (otherwise false)
+     * Return true if already tried to attach the renderable (view or model),
+     * otherwise false
      */
     var isRenderableAttached = false
         private set

@@ -24,8 +24,8 @@
     - `<toggle>`
     - `<video>`
 
-- else 
-    - what about `<spinner>` and `<progressBar>`?
+- else?
+
 2. Coding style guideline
 - Swift
 - Kotlin

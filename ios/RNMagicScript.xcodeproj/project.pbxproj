@@ -49,6 +49,7 @@
 		4447D4B022BC2BC40043CA89 /* GLTFFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D48522BC2BC30043CA89 /* GLTFFunctions.swift */; };
 		4447D4B122BC2BC40043CA89 /* GLTFTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D48622BC2BC30043CA89 /* GLTFTypes.swift */; };
 		4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */; };
+		4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461548422CA413100159F18 /* UiSpinnerNode.swift */; };
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
 		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
@@ -135,6 +136,7 @@
 		4447D53922BCA2C90043CA89 /* GLTFShaderModifierSurface.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLTFShaderModifierSurface.shader; sourceTree = "<group>"; };
 		4447D53A22BCA2C90043CA89 /* GLTFShaderModifierFragment_alphaCutoff.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLTFShaderModifierFragment_alphaCutoff.shader; sourceTree = "<group>"; };
 		4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLTFShaderModifier.swift; sourceTree = "<group>"; };
+		4461548422CA413100159F18 /* UiSpinnerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiSpinnerNode.swift; sourceTree = "<group>"; };
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
 		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 				449AF48B22B248090046938D /* UiGroupNode.swift */,
 				449AF48D22B248090046938D /* UiImageNode.swift */,
 				44FA561B22B7A0EA00B42251 /* UIModelNode.swift */,
+				4461548422CA413100159F18 /* UiSpinnerNode.swift */,
 				449AF48C22B248090046938D /* UiTextNode.swift */,
 			);
 			path = UiNodes;
@@ -410,6 +413,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -444,6 +448,7 @@
 				447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
 				4447D49A22BC2BC40043CA89 /* GLTFExtras.swift in Sources */,
+				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */,
 				4447D49C22BC2BC40043CA89 /* GLTFExtension.swift in Sources */,

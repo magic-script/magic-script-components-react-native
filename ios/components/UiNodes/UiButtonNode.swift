@@ -46,6 +46,10 @@ import SceneKit
     fileprivate var borderNode: SCNNode!
     fileprivate var textNode: UiTextNode!
 
+    deinit {
+        contentNode.removeAllAnimations()
+    }
+
     @objc func simulateTap() {
 
         onTap?(self)

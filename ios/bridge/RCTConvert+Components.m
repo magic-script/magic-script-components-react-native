@@ -26,6 +26,10 @@
     return [[UiModelNode alloc] initWithProps:json];
 }
 
++ (UiSpinnerNode *)UiSpinnerNode:(id)json {
+    return [[UiSpinnerNode alloc] initWithProps:json];
+}
+
 + (UiTextNode *)UiTextNode:(id)json {
     return [[UiTextNode alloc] initWithProps:json];
 }

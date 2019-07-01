@@ -15,6 +15,7 @@
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
++ (UiSpinnerNode *)UiSpinnerNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
 
 @end

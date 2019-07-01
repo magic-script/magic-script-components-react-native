@@ -24,7 +24,19 @@
     - `<toggle>`
     - `<video>`
 
-- else ?
+- else 
+    - what about `<spinner>` and `<progressBar>`?
 2. Coding style guideline
 - Swift
 - Kotlin
+3. Validators for components (JavaScript)
+4. Tests + CI
+- unit tests on native side (iOS/Android)
+- React Native app that lists all components
+- QA
+5. Proper repository management
+- GitFlow (develop + feature branches)
+- mandatory code review (Pull Requests)
+- version management
+6. Misc
+- Should we open source an implementation of Lumin components for iOS/Android? Source code of Lumin components is not publicly available.

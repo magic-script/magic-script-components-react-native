@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +10,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.getBooleanSafely
-import com.reactlibrary.utils.getDoubleSafely
-import com.reactlibrary.utils.getStringSafely
+import com.reactlibrary.utils.logMessage
 
 class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -23,43 +22,47 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_CHARACTER_SPACING = "charSpacing"
     }
 
-    private val textView by lazy { view as TextView }
-
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
-    override fun applyProperties(props: ReadableMap, update: Boolean) {
-        super.applyProperties(props, update)
-        setText(props) // currently text value is available only on update
-        setTextSize(props)
-        setAllCaps(props)
-        setCharacterSpacing(props)
+    override fun applyProperties(properties: Bundle, update: Boolean) {
+        super.applyProperties(properties, update)
+        setText(properties) // currently text value is available only on update
+        setTextSize(properties)
+        setAllCaps(properties)
+        setCharacterSpacing(properties)
     }
 
-    private fun setText(props: ReadableMap) {
-        val text = props.getStringSafely(PROP_TEXT)
+    private fun setText(properties: Bundle) {
+        val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            textView.text = text
+            logMessage("Setting text: $text,  properties: $properties")
+            (view as TextView).text = text
+        } else {
+            logMessage("Setting text: null, properties: $properties")
         }
     }
 
-    private fun setTextSize(props: ReadableMap) {
-        props.getDoubleSafely(PROP_TEXT_SIZE)?.let { textSize ->
-            val size = Utils.metersToPx(textSize, textView.context).toFloat()
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+    private fun setTextSize(properties: Bundle) {
+        if (properties.containsKey(PROP_TEXT_SIZE)) {
+            val sizeMeters = properties.getDouble(PROP_TEXT_SIZE)
+            val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
+            (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        }
+
+    }
+
+    private fun setAllCaps(properties: Bundle) {
+        if (properties.containsKey(PROP_ALL_CAPS)) {
+            (view as TextView).isAllCaps = properties.getBoolean(PROP_ALL_CAPS)
         }
     }
 
-    private fun setAllCaps(props: ReadableMap) {
-        props.getBooleanSafely(PROP_ALL_CAPS)?.let { allCaps ->
-            textView.isAllCaps = allCaps
-        }
-    }
-
-    private fun setCharacterSpacing(props: ReadableMap) {
-        props.getDoubleSafely(PROP_CHARACTER_SPACING)?.let { spacing ->
-            textView.letterSpacing = spacing.toFloat()
+    private fun setCharacterSpacing(properties: Bundle) {
+        if (properties.containsKey(PROP_CHARACTER_SPACING)) {
+            val spacing = properties.getDouble(PROP_CHARACTER_SPACING)
+            (view as TextView).letterSpacing = spacing.toFloat()
         }
     }
 

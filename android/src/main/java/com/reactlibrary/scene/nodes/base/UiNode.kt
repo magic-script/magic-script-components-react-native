@@ -1,12 +1,12 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.getBooleanSafely
 import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.logMessage
 
@@ -42,23 +42,22 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
     protected lateinit var view: View
 
     init {
-        readSize(props)
+        width = props.getDoubleSafely(PROP_WIDTH)
+        height = props.getDoubleSafely(PROP_HEIGHT)
     }
 
     override fun build() {
-        view = provideView(context)
-        view.setOnClickListener { clickListener?.invoke() }
-        // build calls applyProperties, so we need to initialize the view before
+        initView()
         super.build()
     }
 
     protected abstract fun provideView(context: Context): View
 
-    override fun applyProperties(props: ReadableMap, update: Boolean) {
-        super.applyProperties(props, update)
-        // TODO resize the view when dimensions changed on update
-        readSize(props)
-        setEnabled(props)
+    override fun applyProperties(properties: Bundle, update: Boolean) {
+        super.applyProperties(properties, update)
+
+        setSize(properties, update)
+        setEnabled(properties)
     }
 
     /**
@@ -66,21 +65,40 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
      * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
      */
     override fun loadRenderable(): Boolean {
-        val widthTmp = width
-        val heightTmp = height
-        if (widthTmp != null && heightTmp != null) {
-            val widthPx = Utils.metersToPx(widthTmp, context)
-            val heightPx = Utils.metersToPx(heightTmp, context)
+        attachViewRenderable()
+        return true
+    }
 
-            val params = view.layoutParams
-            if (params != null) {
-                params.width = widthPx
-                params.height = heightPx
-                view.layoutParams = params
-            } else {
-                view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-            }
+    private fun initView() {
+        logMessage("assigning view")
+        this.view = provideView(context)
+        this.view.setOnClickListener { clickListener?.invoke() }
+        // build calls applyProperties, so we need to initialize the view before
+    }
+
+    private fun attachViewRenderable() {
+        // default dimensions
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        width?.let {
+            widthPx = Utils.metersToPx(it, context)
         }
+
+        height?.let {
+            heightPx = Utils.metersToPx(it, context)
+        }
+
+        val params = view.layoutParams
+        if (params != null) {
+            params.width = widthPx
+            params.height = heightPx
+            view.layoutParams = params
+        } else {
+            view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        }
+
+        logMessage("attachViewRenderable widthPx= $widthPx, heightPx= $heightPx")
 
         // TODO handle error exceptionally { }
         ViewRenderable
@@ -92,31 +110,40 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
                 .thenAccept {
                     this.renderable = it
                     //renderable?.material?.setBoolean("doubleSided", false)
+                    logMessage("loaded ViewRenderable")
                 }
                 .exceptionally { throwable ->
                     logMessage("error loading view renderable: $throwable")
                     null
                 }
-
-        return true
     }
 
-    private fun readSize(props: ReadableMap) {
-        val width = props.getDoubleSafely(PROP_WIDTH)
-        val height = props.getDoubleSafely(PROP_HEIGHT)
+    private fun setSize(properties: Bundle, update: Boolean) {
+        var sizeRead = false
 
-        if (width != null && height != null) {
-            this.width = width
-            this.height = height
+        if (properties.containsKey(PROP_WIDTH)) {
+            this.width = properties.getDouble(PROP_WIDTH)
+            sizeRead = true
+        }
+
+        if (properties.containsKey(PROP_HEIGHT)) {
+            this.height = properties.getDouble(PROP_HEIGHT)
+            sizeRead = true
+        }
+
+        // cannot update renderable before [isRenderableAttached],
+        // because Sceneform may be uninitialized yet
+        if (sizeRead && update && isRenderableAttached) {
+            build()
+            attachViewRenderable()
+            logMessage("set size building UI renderable")
         }
     }
 
-    private fun setEnabled(props: ReadableMap) {
-        val enabled = props.getBooleanSafely(PROP_ENABLED)
-        if (enabled != null) {
-            view.isEnabled = enabled
+    private fun setEnabled(properties: Bundle) {
+        if (properties.containsKey(PROP_ENABLED)) {
+            view.isEnabled = properties.getBoolean(PROP_ENABLED)
         }
     }
-
 
 }

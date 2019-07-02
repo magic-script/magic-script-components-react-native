@@ -1,12 +1,12 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.getStringSafely
 import com.reactlibrary.utils.logMessage
 
 class ModelNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
@@ -16,13 +16,11 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         private const val PROP_MODEL_PATH = "modelPath"
     }
 
-    override fun applyProperties(props: ReadableMap, update: Boolean) {
-        super.applyProperties(props, update)
-        // cannot update the ModelRenderable before [isRenderableAttached],
-        // because Sceneform may be uninitialized yet
-        if (update && isRenderableAttached) {
-            loadModel()
-        }
+    private var modelPath: String? = null
+
+    override fun applyProperties(properties: Bundle, update: Boolean) {
+        super.applyProperties(properties, update)
+        setModelPath(properties, update)
     }
 
     override fun loadRenderable(): Boolean {
@@ -30,8 +28,21 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         return true
     }
 
+    private fun setModelPath(properties: Bundle, update: Boolean) {
+        if (properties.containsKey(PROP_MODEL_PATH)) {
+            modelPath = properties.getString(PROP_MODEL_PATH)
+
+            // cannot update the ModelRenderable before [isRenderableAttached],
+            // because Sceneform may be uninitialized yet
+            if (update && isRenderableAttached) {
+                loadModel()
+            }
+        }
+
+    }
+
     private fun loadModel() {
-        val path = props.getStringSafely(PROP_MODEL_PATH)
+        val path = this.modelPath
         if (path != null) {
             val androidPathUri = Utils.getFilePath(path, context)
             ModelRenderable.builder()
@@ -46,6 +57,7 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
                     .build()
                     .thenAccept {
                         this.renderable = it
+                        logMessage("loaded ModelRenderable")
                     }
                     .exceptionally { throwable ->
                         logMessage("error loading model: $throwable")

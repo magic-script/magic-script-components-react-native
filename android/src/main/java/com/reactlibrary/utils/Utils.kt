@@ -3,10 +3,11 @@ package com.reactlibrary.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.BuildConfig
+import java.io.Serializable
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
@@ -74,16 +75,32 @@ fun Any.logMessage(message: String) {
     }
 }
 
-fun ReadableMap.getArraySafely(key: String): ReadableArray? {
-    return if (hasKey(key)) getArray(key) else null
+fun Serializable?.toVector3(): Vector3? {
+    if (this == null) {
+        return null
+    }
+    this as ArrayList<Double>
+    return if (size == 3) {
+        val x = get(0).toFloat()
+        val y = get(1).toFloat()
+        val z = get(2).toFloat()
+        Vector3(x, y, z)
+    } else {
+        null
+    }
 }
 
-fun ReadableArray.toVector3(): Vector3? {
-    return if (size() == 3) {
-        val x = getDouble(0).toFloat()
-        val y = getDouble(1).toFloat()
-        val z = getDouble(2).toFloat()
-        Vector3(x, y, z)
+fun Serializable?.toQuaternion(): Quaternion? {
+    if (this == null) {
+        return null
+    }
+    this as ArrayList<Double>
+    return if (size == 4) {
+        val x = get(0).toFloat()
+        val y = get(1).toFloat()
+        val z = get(2).toFloat()
+        val w = get(3).toFloat()
+        Quaternion(x, y, z, w) // Quaternion.axisAngle
     } else {
         null
     }
@@ -91,13 +108,5 @@ fun ReadableArray.toVector3(): Vector3? {
 
 fun ReadableMap.getDoubleSafely(key: String): Double? {
     return if (hasKey(key)) getDouble(key) else null
-}
-
-fun ReadableMap.getStringSafely(key: String): String? {
-    return if (hasKey(key)) getString(key)!! else null
-}
-
-fun ReadableMap.getBooleanSafely(key: String): Boolean? {
-    return if (hasKey(key)) getBoolean(key) else null
 }
 

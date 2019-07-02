@@ -1,15 +1,16 @@
 package com.reactlibrary.scene.nodes.base
 
+import android.os.Bundle
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.utils.getArraySafely
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.toQuaternion
 import com.reactlibrary.utils.toVector3
 
 // Base node
-abstract class TransformNode(props: ReadableMap) : Node() {
+abstract class TransformNode(properties: ReadableMap) : Node() {
 
     companion object {
         // properties
@@ -18,8 +19,12 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         private const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
-    protected var props: ReadableMap = props
-        private set
+    // converting to Bundle to avoid "already consumed" bugs
+    private val props = Arguments.toBundle(properties) ?: Bundle()
+
+    init {
+        logMessage("init props = $props")
+    }
 
     /**
      * Return true if already tried to attach the renderable (view or model),
@@ -33,15 +38,20 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      */
     open fun build() {
         applyProperties(props, false)
+        logMessage("build props = $props")
     }
 
     /**
-     * Updates node's properties.
+     * Updates some node's properties.
      * It should be called after [build]
      */
-    fun update(props: ReadableMap) {
-        this.props = props
-        applyProperties(props, true)
+    fun update(properties: ReadableMap) {
+        val propsToUpdate = Arguments.toBundle(properties) ?: Bundle()
+        this.props.putAll(propsToUpdate) // save new properties
+
+        applyProperties(propsToUpdate, true)
+        logMessage("update: new properties: $propsToUpdate")
+        logMessage("update: all properties: $props")
     }
 
     /**
@@ -49,11 +59,12 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      * @param update if true it's called on [update],
      * else it's called when initialized ([build])
      */
-    protected open fun applyProperties(props: ReadableMap, update: Boolean) {
+    protected open fun applyProperties(properties: Bundle, update: Boolean) {
         logMessage("applyProperties")
-        setPosition(props, update)
-        setLocalScale(props)
-        setLocalRotation(props)
+
+        setPosition(properties, update)
+        setLocalScale(properties)
+        setLocalRotation(properties)
     }
 
     /**
@@ -68,33 +79,28 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      */
     protected abstract fun loadRenderable(): Boolean
 
-    private fun setPosition(props: ReadableMap, update: Boolean) {
-        val localPosition = props.getArraySafely(PROP_LOCAL_POSITION)?.toVector3()
+    private fun setPosition(properties: Bundle, update: Boolean) {
+        val localPosition = properties.getSerializable(PROP_LOCAL_POSITION).toVector3()
         if (localPosition != null) {
             this.localPosition = localPosition
         } else if (!update) { // build with default position
             this.localPosition = Vector3.zero()
+            logMessage("position is null, bundle= $properties")
         }
     }
 
-    private fun setLocalScale(props: ReadableMap) {
-        val localScale = props.getArraySafely(PROP_LOCAL_SCALE)?.toVector3()
+    private fun setLocalScale(properties: Bundle) {
+        val localScale = properties.getSerializable(PROP_LOCAL_SCALE).toVector3()
         if (localScale != null) {
             logMessage("setting scale")
             this.localScale = localScale
         }
     }
 
-    private fun setLocalRotation(props: ReadableMap) {
-        val quaternionArray = props.getArraySafely(PROP_LOCAL_ROTATION)
-        if (quaternionArray != null && quaternionArray.size() == 4) {
-            logMessage("setting rotation")
-            val x = quaternionArray.getDouble(0).toFloat()
-            val y = quaternionArray.getDouble(1).toFloat()
-            val z = quaternionArray.getDouble(2).toFloat()
-            val w = quaternionArray.getDouble(3).toFloat()
-
-            this.localRotation = Quaternion(x, y, z, w)  // Quaternion.axisAngle
+    private fun setLocalRotation(properties: Bundle) {
+        val quaternion = properties.getSerializable(PROP_LOCAL_ROTATION).toQuaternion()
+        if (quaternion != null) {
+            this.localRotation = quaternion
         }
     }
 

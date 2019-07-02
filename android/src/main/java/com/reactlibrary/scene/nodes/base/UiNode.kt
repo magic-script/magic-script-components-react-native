@@ -65,18 +65,17 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
      * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
      */
     override fun loadRenderable(): Boolean {
-        attachViewRenderable()
+        attachView()
         return true
     }
 
     private fun initView() {
-        logMessage("assigning view")
         this.view = provideView(context)
         this.view.setOnClickListener { clickListener?.invoke() }
         // build calls applyProperties, so we need to initialize the view before
     }
 
-    private fun attachViewRenderable() {
+    private fun attachView() {
         // default dimensions
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -98,8 +97,6 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
             view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
         }
 
-        logMessage("attachViewRenderable widthPx= $widthPx, heightPx= $heightPx")
-
         // TODO handle error exceptionally { }
         ViewRenderable
                 .builder()
@@ -113,7 +110,7 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
                     logMessage("loaded ViewRenderable")
                 }
                 .exceptionally { throwable ->
-                    logMessage("error loading view renderable: $throwable")
+                    logMessage("error loading ViewRenderable: $throwable")
                     null
                 }
     }
@@ -135,8 +132,7 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
         // because Sceneform may be uninitialized yet
         if (sizeRead && update && isRenderableAttached) {
             build()
-            attachViewRenderable()
-            logMessage("set size building UI renderable")
+            attachView()
         }
     }
 

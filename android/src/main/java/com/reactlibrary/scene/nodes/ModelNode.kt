@@ -60,7 +60,7 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
                         logMessage("loaded ModelRenderable")
                     }
                     .exceptionally { throwable ->
-                        logMessage("error loading model: $throwable")
+                        logMessage("error loading ModelRenderable: $throwable")
                         null
                     }
         }

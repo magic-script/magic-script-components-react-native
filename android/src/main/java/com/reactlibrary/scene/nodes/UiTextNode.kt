@@ -10,7 +10,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
 
 class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -37,10 +36,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            logMessage("Setting text: $text,  properties: $properties")
             (view as TextView).text = text
-        } else {
-            logMessage("Setting text: null, properties: $properties")
         }
     }
 

@@ -38,7 +38,6 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
      */
     open fun build() {
         applyProperties(props, false)
-        logMessage("build props = $props")
     }
 
     /**
@@ -49,9 +48,8 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
         val propsToUpdate = Arguments.toBundle(properties) ?: Bundle()
         this.props.putAll(propsToUpdate) // save new properties
 
+        logMessage("updating properties: $propsToUpdate")
         applyProperties(propsToUpdate, true)
-        logMessage("update: new properties: $propsToUpdate")
-        logMessage("update: all properties: $props")
     }
 
     /**
@@ -60,8 +58,6 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
      * else it's called when initialized ([build])
      */
     protected open fun applyProperties(properties: Bundle, update: Boolean) {
-        logMessage("applyProperties")
-
         setPosition(properties, update)
         setLocalScale(properties)
         setLocalRotation(properties)
@@ -85,14 +81,12 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
             this.localPosition = localPosition
         } else if (!update) { // build with default position
             this.localPosition = Vector3.zero()
-            logMessage("position is null, bundle= $properties")
         }
     }
 
     private fun setLocalScale(properties: Bundle) {
         val localScale = properties.getSerializable(PROP_LOCAL_SCALE).toVector3()
         if (localScale != null) {
-            logMessage("setting scale")
             this.localScale = localScale
         }
     }

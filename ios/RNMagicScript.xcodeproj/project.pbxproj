@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44318E6422CB44B60060575D /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318E6322CB44B60060575D /* ImageAssets.swift */; };
+		44318E9522CB4E9A0060575D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44318E5F22CB424A0060575D /* Images.xcassets */; };
 		4447D48922BC2BC40043CA89 /* GLTFSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45522BC2BC30043CA89 /* GLTFSceneSource.swift */; };
 		4447D48A22BC2BC40043CA89 /* GLTFUnarchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45622BC2BC30043CA89 /* GLTFUnarchiver.swift */; };
 		4447D48B22BC2BC40043CA89 /* GLTFErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45822BC2BC30043CA89 /* GLTFErrors.swift */; };
@@ -73,12 +75,22 @@
 		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		44318E9E22CB56A00060575D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 58B511D31A9E6C8500147676 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44318E8E22CB4E0C0060575D;
+			remoteInfo = RNMagicScriptResources;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 7;
+			dstSubfolderSpec = 16;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +99,10 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		44318E5F22CB424A0060575D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		44318E6322CB44B60060575D /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
+		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4447D45522BC2BC30043CA89 /* GLTFSceneSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFSceneSource.swift; sourceTree = "<group>"; };
 		4447D45622BC2BC30043CA89 /* GLTFUnarchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFUnarchiver.swift; sourceTree = "<group>"; };
 		4447D45822BC2BC30043CA89 /* GLTFErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFErrors.swift; sourceTree = "<group>"; };
@@ -167,6 +183,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		44318E8C22CB4E0C0060575D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D81A9E6C8500147676 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -183,6 +206,14 @@
 				134814201AA4EA6300B7C361 /* libRNMagicScript.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
+			isa = PBXGroup;
+			children = (
+				44318E9122CB4E0C0060575D /* Info.plist */,
+			);
+			path = RNMagicScriptResources;
 			sourceTree = "<group>";
 		};
 		443F8DEB22BAC50300021B2B /* libraries */ = {
@@ -288,6 +319,15 @@
 			path = KHR_materials_pbrSpecularGlossiness;
 			sourceTree = "<group>";
 		};
+		4461548722CA422100159F18 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				44318E5F22CB424A0060575D /* Images.xcassets */,
+				44318E6322CB44B60060575D /* ImageAssets.swift */,
+			);
+			path = resources;
+			sourceTree = "<group>";
+		};
 		449AF44922B247C40046938D /* bridge */ = {
 			isa = PBXGroup;
 			children = (
@@ -367,15 +407,35 @@
 				449AF44922B247C40046938D /* bridge */,
 				449AF48622B248090046938D /* components */,
 				443F8DEB22BAC50300021B2B /* libraries */,
+				4461548722CA422100159F18 /* resources */,
+				44318E9022CB4E0C0060575D /* RNMagicScriptResources */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				449AF48322B248000046938D /* RNMagicScript-Bridging-Header.h */,
 				443F8DEE22BAC71A00021B2B /* Frameworks */,
+				44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		44318E8E22CB4E0C0060575D /* RNMagicScriptResources */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 44318E9222CB4E0C0060575D /* Build configuration list for PBXNativeTarget "RNMagicScriptResources" */;
+			buildPhases = (
+				44318E8B22CB4E0C0060575D /* Sources */,
+				44318E8C22CB4E0C0060575D /* Frameworks */,
+				44318E8D22CB4E0C0060575D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RNMagicScriptResources;
+			productName = RNMagicScriptResources;
+			productReference = 44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		58B511DA1A9E6C8500147676 /* RNMagicScript */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNMagicScript" */;
@@ -383,10 +443,12 @@
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
+				44318E6122CB42B60060575D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				44318E9F22CB56A00060575D /* PBXTargetDependency */,
 			);
 			name = RNMagicScript;
 			productName = RCTDataManager;
@@ -400,8 +462,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1010;
-				ORGANIZATIONNAME = Facebook;
+				ORGANIZATIONNAME = MagicLeap;
 				TargetAttributes = {
+					44318E8E22CB4E0C0060575D = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = DEURTTZ5DW;
+						ProvisioningStyle = Automatic;
+					};
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
 						LastSwiftMigration = 1010;
@@ -422,11 +489,37 @@
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNMagicScript */,
+				44318E8E22CB4E0C0060575D /* RNMagicScriptResources */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		44318E6122CB42B60060575D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44318E8D22CB4E0C0060575D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44318E9522CB4E9A0060575D /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		44318E8B22CB4E0C0060575D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D71A9E6C8500147676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -461,6 +554,7 @@
 				4447D4B022BC2BC40043CA89 /* GLTFFunctions.swift in Sources */,
 				4447D4AF22BC2BC40043CA89 /* GLTFMeshPrimitive.swift in Sources */,
 				4447D49522BC2BC40043CA89 /* GLTFBufferView.swift in Sources */,
+				44318E6422CB44B60060575D /* ImageAssets.swift in Sources */,
 				449AF45C22B247C40046938D /* ARComponentManager.m in Sources */,
 				4447D49822BC2BC40043CA89 /* GLTFBuffer.swift in Sources */,
 				449AF45E22B247C40046938D /* RCTARView.m in Sources */,
@@ -500,7 +594,73 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		44318E9F22CB56A00060575D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44318E8E22CB4E0C0060575D /* RNMagicScriptResources */;
+			targetProxy = 44318E9E22CB56A00060575D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		44318E9322CB4E0C0060575D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = RNMagicScriptResources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nomtek.RNMagicScriptResources;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		44318E9422CB4E0C0060575D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = RNMagicScriptResources/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nomtek.RNMagicScriptResources;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		58B511ED1A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -603,6 +763,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
@@ -628,6 +789,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
@@ -651,6 +813,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		44318E9222CB4E0C0060575D /* Build configuration list for PBXNativeTarget "RNMagicScriptResources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44318E9322CB4E0C0060575D /* Debug */,
+				44318E9422CB4E0C0060575D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNMagicScript" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

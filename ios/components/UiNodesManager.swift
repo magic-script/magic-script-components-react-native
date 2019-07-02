@@ -21,6 +21,8 @@ import SceneKit
 
     @objc func registerScene(_ scene: SCNScene) {
         scene.rootNode.addChildNode(rootNode)
+        let spinner = UiSpinnerNode()
+        rootNode.addChildNode(spinner)
     }
 
     @objc func hitTest(from: SCNVector3, to: SCNVector3) -> SCNNode? {

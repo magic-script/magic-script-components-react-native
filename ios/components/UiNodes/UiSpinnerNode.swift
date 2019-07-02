@@ -32,7 +32,7 @@ import SceneKit
 
         planeGeometry = SCNPlane(width: UiSpinnerNode.defaultSize, height: UiSpinnerNode.defaultSize)
         planeGeometry.firstMaterial?.lightingModel = .constant
-        planeGeometry.firstMaterial?.diffuse.contents = UIImage(named: "spinner")
+        planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
         planeGeometry.firstMaterial?.isDoubleSided = true
         spinnerNode = SCNNode(geometry: planeGeometry)
         addChildNode(spinnerNode)

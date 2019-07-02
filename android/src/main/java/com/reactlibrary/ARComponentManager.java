@@ -19,6 +19,7 @@ import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
+import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
@@ -156,6 +157,18 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             public void run() {
                 // TODO ( only stub currently)
                 ModelNode node = new ModelNode(props, context);
+                node.build();
+                UiNodesManager.registerNode(node, nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createSpinnerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                UiNode node = new UiSpinnerNode(props, context);
                 node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }

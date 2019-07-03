@@ -27,8 +27,8 @@
 - else?
 
 2. Coding style guideline
-- Swift - add link to the document
-- Kotlin - add link to the document
+- [Swift Style Guide]('./docs/swift_style_guide.md')
+- [Kotlin Style Guide]('./docs/kitlin_style_guide.md')
 3. Validators for components (JavaScript)
 
     The most proper validation is at the element level. This way the validator can evaluate the current value based on property description and previous value.

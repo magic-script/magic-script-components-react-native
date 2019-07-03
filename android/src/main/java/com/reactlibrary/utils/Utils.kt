@@ -11,7 +11,7 @@ import java.io.Serializable
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
-const val DP_TO_METER_RATIO = 250
+private const val DP_TO_METER_RATIO = 250
 
 private const val DEBUG_ASSETS_PATH = "http://localhost:8081/assets/"
 
@@ -67,7 +67,7 @@ class Utils {
 }
 
 /**
- * Extension methods
+ * ==========Extension methods============
  */
 fun Any.logMessage(message: String) {
     if (BuildConfig.DEBUG) {

@@ -25,12 +25,12 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         return LayoutInflater.from(context).inflate(R.layout.text, null)
     }
 
-    override fun applyProperties(properties: Bundle, update: Boolean) {
-        super.applyProperties(properties, update)
-        setText(properties) // currently text value is available only on update
-        setTextSize(properties)
-        setAllCaps(properties)
-        setCharacterSpacing(properties)
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+        setText(props)
+        setTextSize(props)
+        setAllCaps(props)
+        setCharacterSpacing(props)
     }
 
     private fun setText(properties: Bundle) {
@@ -40,24 +40,23 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         }
     }
 
-    private fun setTextSize(properties: Bundle) {
-        if (properties.containsKey(PROP_TEXT_SIZE)) {
-            val sizeMeters = properties.getDouble(PROP_TEXT_SIZE)
+    private fun setTextSize(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_SIZE)) {
+            val sizeMeters = props.getDouble(PROP_TEXT_SIZE)
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
-
     }
 
-    private fun setAllCaps(properties: Bundle) {
-        if (properties.containsKey(PROP_ALL_CAPS)) {
-            (view as TextView).isAllCaps = properties.getBoolean(PROP_ALL_CAPS)
+    private fun setAllCaps(props: Bundle) {
+        if (props.containsKey(PROP_ALL_CAPS)) {
+            (view as TextView).isAllCaps = props.getBoolean(PROP_ALL_CAPS)
         }
     }
 
-    private fun setCharacterSpacing(properties: Bundle) {
-        if (properties.containsKey(PROP_CHARACTER_SPACING)) {
-            val spacing = properties.getDouble(PROP_CHARACTER_SPACING)
+    private fun setCharacterSpacing(props: Bundle) {
+        if (props.containsKey(PROP_CHARACTER_SPACING)) {
+            val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             (view as TextView).letterSpacing = spacing.toFloat()
         }
     }

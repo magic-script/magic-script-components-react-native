@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -20,6 +19,7 @@ import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
+import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 
@@ -117,7 +117,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(LOG_TAG, "props button: " + props);
                 UiNode node = new UiButtonNode(props, context);
                 node.build();
                 UiNodesManager.registerNode(node, nodeId);
@@ -142,7 +141,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiSpinnerNode(props, context);// UiTextNode(props, context);
+                UiNode node = new UiTextNode(props, context);
                 node.build();
                 UiNodesManager.registerNode(node, nodeId);
             }

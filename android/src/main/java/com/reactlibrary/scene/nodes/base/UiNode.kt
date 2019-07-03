@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.getDoubleSafely
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -17,34 +16,18 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
 
     companion object {
         // properties
-        private const val PROP_WIDTH = "width"
-        private const val PROP_HEIGHT = "height"
-        private const val PROP_ENABLED = "enabled"
+        const val PROP_WIDTH = "width"
+        const val PROP_HEIGHT = "height"
+        const val PROP_ENABLED = "enabled"
     }
 
     var clickListener: (() -> Unit)? = null
 
     /**
-     * Width in meters (optional)
-     */
-    var width: Double? = null
-        private set
-
-    /**
-     * Height in meters (optional)
-     */
-    var height: Double? = null
-        private set
-
-    /**
      * A view attached to the node
      */
     protected lateinit var view: View
-
-    init {
-        width = props.getDoubleSafely(PROP_WIDTH)
-        height = props.getDoubleSafely(PROP_HEIGHT)
-    }
+    private var replacingView = false
 
     override fun build() {
         initView()
@@ -53,11 +36,16 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
 
     protected abstract fun provideView(context: Context): View
 
-    override fun applyProperties(properties: Bundle, update: Boolean) {
-        super.applyProperties(properties, update)
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
 
-        setSize(properties, update)
-        setEnabled(properties)
+        if (replacingView) {
+            replacingView = false
+        } else {
+            setSize(props)
+        }
+
+        setEnabled(props)
     }
 
     /**
@@ -80,12 +68,14 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        width?.let {
-            widthPx = Utils.metersToPx(it, context)
+        if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH)
+            widthPx = Utils.metersToPx(widthInMeters, context)
         }
 
-        height?.let {
-            heightPx = Utils.metersToPx(it, context)
+        if (properties.containsKey(PROP_HEIGHT)) {
+            val widthInMeters = properties.getDouble(PROP_HEIGHT)
+            heightPx = Utils.metersToPx(widthInMeters, context)
         }
 
         val params = view.layoutParams
@@ -115,30 +105,22 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
                 }
     }
 
-    private fun setSize(properties: Bundle, update: Boolean) {
-        var sizeRead = false
-
-        if (properties.containsKey(PROP_WIDTH)) {
-            this.width = properties.getDouble(PROP_WIDTH)
-            sizeRead = true
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            this.height = properties.getDouble(PROP_HEIGHT)
-            sizeRead = true
-        }
-
-        // cannot update renderable before [isRenderableAttached],
-        // because Sceneform may be uninitialized yet
-        if (sizeRead && update && isRenderableAttached) {
-            build()
-            attachView()
+    private fun setSize(props: Bundle) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            // cannot update renderable before [isRenderableAttached],
+            // because Sceneform may be uninitialized yet
+            if (isRenderableAttached) {
+                replacingView = true
+                // in order to resize the view have to be rebuild
+                build()
+                attachView()
+            }
         }
     }
 
-    private fun setEnabled(properties: Bundle) {
-        if (properties.containsKey(PROP_ENABLED)) {
-            view.isEnabled = properties.getBoolean(PROP_ENABLED)
+    private fun setEnabled(props: Bundle) {
+        if (props.containsKey(PROP_ENABLED)) {
+            view.isEnabled = props.getBoolean(PROP_ENABLED)
         }
     }
 

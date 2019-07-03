@@ -4,26 +4,35 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.toQuaternion
 import com.reactlibrary.utils.toVector3
 
-// Base node
-abstract class TransformNode(properties: ReadableMap) : Node() {
+/**
+ * Base node.
+ * It's characterised by [properties] bundle based on [props].
+ * Some properties may be added or changed on [update] function.
+ * @param props the initial properties of the node
+ */
+abstract class TransformNode(props: ReadableMap) : Node() {
 
     companion object {
-        // properties
+        // props
         private const val PROP_LOCAL_POSITION = "localPosition"
         private const val PROP_LOCAL_SCALE = "localScale"
         private const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
     // converting to Bundle to avoid "already consumed" bugs
-    private val props = Arguments.toBundle(properties) ?: Bundle()
+    protected val properties = Arguments.toBundle(props) ?: Bundle()
 
     init {
-        logMessage("init props = $props")
+        // Set default properties if not present
+        if (!properties.containsKey(PROP_LOCAL_POSITION)) {
+            val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
+            properties.putSerializable(PROP_LOCAL_POSITION, position)
+        }
+        logMessage("initial properties = ${this.properties}")
     }
 
     /**
@@ -34,33 +43,34 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
         private set
 
     /**
-     * Builds the node by calling [applyProperties]
+     * Builds the node by calling [applyProperties] with all initial properties
      */
     open fun build() {
-        applyProperties(props, false)
+        applyProperties(properties)
     }
 
     /**
-     * Updates some node's properties.
+     * Updates properties of the node
      * It should be called after [build]
+     * @param props properties to change or new properties to apply
      */
-    fun update(properties: ReadableMap) {
-        val propsToUpdate = Arguments.toBundle(properties) ?: Bundle()
-        this.props.putAll(propsToUpdate) // save new properties
+    fun update(props: ReadableMap) {
+        val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
+        this.properties.putAll(propsToUpdate) // save new props
 
         logMessage("updating properties: $propsToUpdate")
-        applyProperties(propsToUpdate, true)
+        applyProperties(propsToUpdate)
     }
 
     /**
-     * Applies properties on the node.localRotation
+     * Applies props on the node.localRotation
      * @param update if true it's called on [update],
      * else it's called when initialized ([build])
      */
-    protected open fun applyProperties(properties: Bundle, update: Boolean) {
-        setPosition(properties, update)
-        setLocalScale(properties)
-        setLocalRotation(properties)
+    protected open fun applyProperties(props: Bundle) {
+        setPosition(props)
+        setLocalScale(props)
+        setLocalRotation(props)
     }
 
     /**
@@ -75,24 +85,22 @@ abstract class TransformNode(properties: ReadableMap) : Node() {
      */
     protected abstract fun loadRenderable(): Boolean
 
-    private fun setPosition(properties: Bundle, update: Boolean) {
-        val localPosition = properties.getSerializable(PROP_LOCAL_POSITION).toVector3()
+    private fun setPosition(props: Bundle) {
+        val localPosition = props.getSerializable(PROP_LOCAL_POSITION).toVector3()
         if (localPosition != null) {
             this.localPosition = localPosition
-        } else if (!update) { // build with default position
-            this.localPosition = Vector3.zero()
         }
     }
 
-    private fun setLocalScale(properties: Bundle) {
-        val localScale = properties.getSerializable(PROP_LOCAL_SCALE).toVector3()
+    private fun setLocalScale(props: Bundle) {
+        val localScale = props.getSerializable(PROP_LOCAL_SCALE).toVector3()
         if (localScale != null) {
             this.localScale = localScale
         }
     }
 
-    private fun setLocalRotation(properties: Bundle) {
-        val quaternion = properties.getSerializable(PROP_LOCAL_ROTATION).toQuaternion()
+    private fun setLocalRotation(props: Bundle) {
+        val quaternion = props.getSerializable(PROP_LOCAL_ROTATION).toQuaternion()
         if (quaternion != null) {
             this.localRotation = quaternion
         }

@@ -16,11 +16,9 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         private const val PROP_MODEL_PATH = "modelPath"
     }
 
-    private var modelPath: String? = null
-
-    override fun applyProperties(properties: Bundle, update: Boolean) {
-        super.applyProperties(properties, update)
-        setModelPath(properties, update)
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+        setModelPath(props)
     }
 
     override fun loadRenderable(): Boolean {
@@ -28,21 +26,19 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         return true
     }
 
-    private fun setModelPath(properties: Bundle, update: Boolean) {
-        if (properties.containsKey(PROP_MODEL_PATH)) {
-            modelPath = properties.getString(PROP_MODEL_PATH)
-
+    private fun setModelPath(props: Bundle) {
+        if (props.containsKey(PROP_MODEL_PATH)) {
             // cannot update the ModelRenderable before [isRenderableAttached],
             // because Sceneform may be uninitialized yet
-            if (update && isRenderableAttached) {
+            // (loadRenderable may have not been called)
+            if (isRenderableAttached) {
                 loadModel()
             }
         }
-
     }
 
     private fun loadModel() {
-        val path = this.modelPath
+        val path = properties.getString(PROP_MODEL_PATH)
         if (path != null) {
             val androidPathUri = Utils.getFilePath(path, context)
             ModelRenderable.builder()
@@ -64,7 +60,6 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
                         null
                     }
         }
-
     }
 
 }

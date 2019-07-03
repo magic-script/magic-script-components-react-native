@@ -30,7 +30,7 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
                     Animation.RELATIVE_TO_SELF, 0.5f)
 
             rotateAnimation.interpolator = LinearInterpolator()
-            rotateAnimation.duration = 500
+            rotateAnimation.duration = 1000
             rotateAnimation.repeatCount = Animation.INFINITE
             view.findViewById<ImageView>(R.id.spinner).startAnimation(rotateAnimation)
         }
@@ -38,9 +38,20 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
         return view
     }
 
-    override fun applyProperties(properties: Bundle, update: Boolean) {
-        super.applyProperties(properties, update)
-        // TODO
+    override fun applyProperties(props: Bundle) {
+        // firstly override width and height, because spinner uses the [size] instead
+        setSize(props)
+        super.applyProperties(props)
+        //apply other properties here
     }
+
+    private fun setSize(props: Bundle) {
+        if (props.containsKey(PROP_SIZE)) {
+            val size = properties.getDouble(PROP_SIZE)
+            props.putDouble(PROP_WIDTH, size)
+            props.putDouble(PROP_HEIGHT, size)
+        }
+    }
+
 
 }

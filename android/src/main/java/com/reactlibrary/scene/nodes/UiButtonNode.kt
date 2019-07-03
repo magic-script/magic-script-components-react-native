@@ -21,49 +21,57 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_ROUNDNESS = "roundness"
     }
 
+    init {
+
+        // Set default properties
+
+        if (!properties.containsKey(PROP_ROUNDNESS)) {
+            properties.putDouble(PROP_ROUNDNESS, 1.0)
+        }
+
+        if (!properties.containsKey(PROP_TEXT_SIZE)) {
+            // calculate default text size based on button height
+            if (properties.containsKey(PROP_HEIGHT)) {
+                val textSize = properties.getDouble(PROP_HEIGHT) / 3
+                properties.putDouble(PROP_TEXT_SIZE, textSize)
+            }
+        }
+    }
+
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.button, null)
     }
 
-    override fun applyProperties(properties: Bundle, update: Boolean) {
-        super.applyProperties(properties, update)
-        setTitle(properties)
-        setTextSize(properties, update)
-        setRoundness(properties, update)
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+        setTitle(props)
+        setTextSize(props)
+        setRoundness(props)
     }
 
-    private fun setTitle(properties: Bundle) {
-        val title = properties.getString(PROP_TITLE)
+    private fun setTitle(props: Bundle) {
+        val title = props.getString(PROP_TITLE)
         if (title != null) {
             (view as Button).text = title
         }
     }
 
-    private fun setTextSize(properties: Bundle, update: Boolean) {
-        val buttonView = view as Button
-        if (properties.containsKey(PROP_TEXT_SIZE)) {
-            val textSize = properties.getDouble(PROP_TEXT_SIZE)
-            val size = Utils.metersToPx(textSize, buttonView.context).toFloat()
-            buttonView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-        } else if (!update) {  // set default value
-            this.height?.let {
-                val size = (it / 3).toFloat()
-                buttonView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            }
+    private fun setTextSize(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_SIZE)) {
+            val textSize = props.getDouble(PROP_TEXT_SIZE)
+            val size = Utils.metersToPx(textSize, view.context).toFloat()
+            (view as Button).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
 
     // Sets the corners roundness (0 - sharp, 1 - fully rounded)
-    private fun setRoundness(properties: Bundle, update: Boolean) {
+    private fun setRoundness(props: Bundle) {
         val background = view.background.current as GradientDrawable
-        if (properties.containsKey(PROP_ROUNDNESS)) {
-            val roundness = properties.getDouble(PROP_ROUNDNESS)
+        if (props.containsKey(PROP_ROUNDNESS)) {
+            val roundness = props.getDouble(PROP_ROUNDNESS)
             // must be called to modify shared drawables loaded from resources
             background.mutate()
             background.cornerRadius = (roundness * 90).toFloat()
-        } else if (!update) { // set default value
-            background.mutate()
-            background.cornerRadius = 90f // fully rounded by default
         }
     }
 

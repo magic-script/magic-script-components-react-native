@@ -87,9 +87,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                TransformNode node = new GroupNode(props);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new GroupNode(props), nodeId);
             }
         });
     }
@@ -99,9 +97,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                TransformNode node = new GroupNode(props);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new GroupNode(props), nodeId);
             }
         });
     }
@@ -117,9 +113,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiButtonNode(props, context);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new UiButtonNode(props, context), nodeId);
             }
         });
     }
@@ -129,9 +123,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiImageNode(props, context);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new UiImageNode(props, context), nodeId);
             }
         });
     }
@@ -141,9 +133,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiTextNode(props, context);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new UiTextNode(props, context), nodeId);
             }
         });
     }
@@ -153,10 +143,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                // TODO ( only stub currently)
-                ModelNode node = new ModelNode(props, context);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new ModelNode(props, context), nodeId);
             }
         });
     }
@@ -166,9 +153,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                UiNode node = new UiSpinnerNode(props, context);
-                node.build();
-                UiNodesManager.registerNode(node, nodeId);
+                addNode(new UiSpinnerNode(props, context), nodeId);
             }
         });
     }
@@ -285,6 +270,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         });
     }
 
+    private void addNode(TransformNode node, String nodeId) {
+        node.build();
+        UiNodesManager.registerNode(node, nodeId);
+    }
 
     private void sendEvent(String eventName, @Nullable WritableMap params) {
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);

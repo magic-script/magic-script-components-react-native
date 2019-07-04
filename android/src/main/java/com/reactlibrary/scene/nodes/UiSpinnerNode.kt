@@ -12,7 +12,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 
-
+// TODO fix: spinner animation is paused after disabling and enabling the screen
 class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {

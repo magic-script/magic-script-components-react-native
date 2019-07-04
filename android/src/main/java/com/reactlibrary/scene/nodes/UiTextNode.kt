@@ -11,14 +11,14 @@ import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 
-class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
+open class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {
         // properties
-        private const val PROP_TEXT = "text"
-        private const val PROP_TEXT_SIZE = "textSize"
-        private const val PROP_ALL_CAPS = "allCaps"
-        private const val PROP_CHARACTER_SPACING = "charSpacing"
+        protected const val PROP_TEXT = "text"
+        protected const val PROP_TEXT_SIZE = "textSize"
+        protected const val PROP_ALL_CAPS = "allCaps"
+        protected const val PROP_CHARACTER_SPACING = "charSpacing"
     }
 
     override fun provideView(context: Context): View {

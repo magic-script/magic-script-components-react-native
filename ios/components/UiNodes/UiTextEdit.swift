@@ -12,12 +12,6 @@ import SpriteKit
 @objc class UiTextEditNode: UiNode {
 
     static fileprivate let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
-    fileprivate func pixels(in meters: CGFloat) -> CGFloat {
-        let ppi: CGFloat = 326.0
-        let inchesInMeters: CGFloat = 39.3700787
-        let ppm: CGFloat = ppi * inchesInMeters
-        return ppm * meters
-    }
 
     @objc var text: String = "" {
         didSet { labelNode.text = text }
@@ -26,7 +20,7 @@ import SpriteKit
         didSet { labelNode.fontColor = textColor }
     }
     @objc var textSize: CGFloat = 0.02 {
-        didSet { labelNode.fontSize = min(0.5 * pixels(in: textSize), 0.9 * sprite.size.height) }
+        didSet { labelNode.fontSize = min(0.5 * Measures.pixels(in: textSize), 0.9 * sprite.size.height) }
     }
     @objc var width: CGFloat = 0 {
         didSet { reloadNeeded = true }
@@ -39,9 +33,32 @@ import SpriteKit
     fileprivate var labelNode: SKLabelNode!
     fileprivate var underlineNode: SKShapeNode!
     fileprivate var contentNode: SCNNode!
+    fileprivate var outlineNode: OutlineNode?
     fileprivate var reloadNeeded: Bool = true
 
     deinit {
+    }
+
+    @objc override var canHaveFocus: Bool {
+        return true
+    }
+
+    @objc override func enterFocus() {
+        super.enterFocus()
+        guard hasFocus else { return }
+
+        if outlineNode == nil {
+            let sizeInMeters = getPrefferedSize()
+            outlineNode = OutlineNode(contentSize: sizeInMeters)
+            insertChildNode(outlineNode!, at: 0)
+        }
+
+        outlineNode?.isHidden = false
+    }
+
+    @objc override func leaveFocus() {
+        super.leaveFocus()
+        outlineNode?.isHidden = true
     }
 
     @objc override func setupNode() {
@@ -52,12 +69,12 @@ import SpriteKit
     fileprivate func createSpriteScene(size: CGSize) -> SKScene {
         // Create SpriteKit scene
         let scene = SKScene(size: size)
-        scene.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
+        scene.backgroundColor = UIColor.clear
 
         // Add underline node
-        let linePath = UIBezierPath()
         let lineWidth: CGFloat = 5
         let underlineY: CGFloat = scene.size.height - lineWidth
+        let linePath = UIBezierPath()
         linePath.move(to: CGPoint(x: 0, y: 0))
         linePath.addLine(to: CGPoint(x: scene.size.width, y: 0))
         underlineNode = SKShapeNode(path: linePath.cgPath)
@@ -72,7 +89,7 @@ import SpriteKit
         let labelBottom: CGFloat = underlineY - bottomMargin
         labelNode = SKLabelNode(text: text)
         labelNode.fontColor = textColor
-        labelNode.fontSize = min(0.5 * pixels(in: textSize), scene.size.height - (topMargin + bottomMargin))
+        labelNode.fontSize = min(0.5 * Measures.pixels(in: textSize), scene.size.height - (topMargin + bottomMargin))
         labelNode.horizontalAlignmentMode = .left
         labelNode.position = CGPoint(x: 0, y: labelBottom)
         labelNode.preferredMaxLayoutWidth = scene.size.width
@@ -82,14 +99,18 @@ import SpriteKit
         return scene
     }
 
+    fileprivate func getPrefferedSize() -> CGSize {
+        let width: CGFloat = (self.width > 0) ? self.width : UiTextEditNode.defaultSize.width
+        let height: CGFloat = (self.height > 0) ? self.height : UiTextEditNode.defaultSize.height
+        return CGSize(width: width, height: height)
+    }
+
     @objc func reload() {
         guard reloadNeeded else { return }
         reloadNeeded = false
 
-        let width: CGFloat = (self.width > 0) ? self.width : UiTextEditNode.defaultSize.width
-        let height: CGFloat = (self.height > 0) ? self.height : UiTextEditNode.defaultSize.height
-        let sizeInPixels = CGSize(width: pixels(in: width), height: pixels(in: height))
-
+        let sizeInMeters = getPrefferedSize()
+        let sizeInPixels = CGSize(width: ceil(Measures.pixels(in: sizeInMeters.width)), height: ceil(Measures.pixels(in: sizeInMeters.height)))
         sprite = createSpriteScene(size: sizeInPixels)
 
         if let plane = contentNode?.geometry as? SCNPlane {

@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiModelNode: UiNode {
+@objc class UiModelNode: TransformNode {
     fileprivate var downloadTask: URLSessionDownloadTask?
     fileprivate var dataTask: URLSessionDataTask?
     deinit {

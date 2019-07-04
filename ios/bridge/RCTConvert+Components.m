@@ -34,5 +34,9 @@
     return [[UiTextNode alloc] initWithProps:json];
 }
 
++ (UiTextEditNode *)UiTextEditNode:(id)json {
+    return [[UiTextEditNode alloc] initWithProps:json];
+}
+
 @end
 

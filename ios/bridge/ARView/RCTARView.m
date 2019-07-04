@@ -125,9 +125,7 @@
                                                     };
     NSArray<SCNHitTestResult *> *results = [self.arView hitTest:tapPoint options:options];
     SCNHitTestResult *result = results.firstObject;
-    if (result != nil) {
-        [nodesManager handleNodeTap: result.node];
-    }
+    [nodesManager handleNodeTap: result ? result.node : nil];
 }
 
 @end

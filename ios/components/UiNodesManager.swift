@@ -12,8 +12,9 @@ import SceneKit
 @objc class UiNodesManager: NSObject {
     @objc static let instance = UiNodesManager()
     @objc let rootNode: SCNNode = SCNNode()
-    @objc let componentNodeBitMask: Int = 8
-    fileprivate var nodesById: [String: UiNode] = [:]
+    @objc let focusableNodeBitMask: Int = 8
+    fileprivate var nodesById: [String: TransformNode] = [:]
+    fileprivate var focusedNode: UiNode?
 
     private override init() {
         super.init()
@@ -21,43 +22,32 @@ import SceneKit
 
     @objc func registerScene(_ scene: SCNScene) {
         scene.rootNode.addChildNode(rootNode)
-        let spinner = UiSpinnerNode()
-        rootNode.addChildNode(spinner)
-    }
-
-    @objc func hitTest(from: SCNVector3, to: SCNVector3) -> SCNNode? {
-        let options: [String: Any] = [
-            SCNHitTestOption.boundingBoxOnly.rawValue: true,
-            SCNHitTestOption.ignoreHiddenNodes.rawValue: true,
-            SCNHitTestOption.rootNode.rawValue: rootNode
-        ]
-        let results = rootNode.hitTestWithSegment(from: from, to: to, options: options)
-        return results.first?.node
     }
 
     @objc func handleNodeTap(_ node: SCNNode?) {
         var componentNode: SCNNode? = node
         while componentNode != nil {
-            if componentNode?.categoryBitMask == componentNodeBitMask {
+            if componentNode?.categoryBitMask == focusableNodeBitMask {
                 break
             }
             componentNode = componentNode?.parent
         }
-        guard let button = componentNode as? UiButtonNode else { return }
-        button.simulateTap()
+        
+        focusedNode?.leaveFocus()
+        focusedNode = componentNode as? UiNode
+        focusedNode?.enterFocus()
     }
 
-    @objc func findNodeWithId(_ nodeId: String) -> UiNode? {
+    @objc func findNodeWithId(_ nodeId: String) -> TransformNode? {
         return nodesById[nodeId]
     }
 
-    @objc func registerNode(_ node: UiNode, nodeId: String) {
+    @objc func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
-        if node is UiButtonNode {
-            node.categoryBitMask = componentNodeBitMask
-//            node.setBBox(visible: true)
-        }
         nodesById[nodeId] = node
+        if let node = node as? UiNode, node.canHaveFocus {
+            node.categoryBitMask = focusableNodeBitMask
+        }
     }
 
     @objc func unregisterNode(_ nodeId: String) {

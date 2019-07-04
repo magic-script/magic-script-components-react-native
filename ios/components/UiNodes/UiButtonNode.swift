@@ -50,6 +50,18 @@ import SceneKit
         contentNode.removeAllAnimations()
     }
 
+    @objc override var canHaveFocus: Bool {
+        return true
+    }
+
+    @objc override func enterFocus() {
+        super.enterFocus()
+        guard hasFocus else { return }
+
+        simulateTap()
+        leaveFocus()
+    }
+
     @objc func simulateTap() {
 
         onTap?(self)

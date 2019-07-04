@@ -17,5 +17,6 @@
 + (UiModelNode *)UiModelNode:(id)json;
 + (UiSpinnerNode *)UiSpinnerNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
++ (UiTextEditNode *)UiTextEditNode:(id)json;
 
 @end

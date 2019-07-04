@@ -7,6 +7,7 @@
 //
 
 import SceneKit
+import SpriteKit
 
 @objc class UiNode: TransformNode {
 
@@ -20,7 +21,29 @@ import SceneKit
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
 
+    fileprivate var outlineNode: SCNNode?
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+    }
+
+    // MARK: - Focus
+    @objc var onFocusChanged: ((_ sender: UiNode) -> (Void))?
+
+    @objc var canHaveFocus: Bool {
+        return false
+    }
+
+    @objc private(set) var hasFocus: Bool = false {
+        didSet { if oldValue != hasFocus { onFocusChanged?(self) } }
+    }
+
+    @objc func enterFocus() {
+        guard canHaveFocus else { return }
+        hasFocus = true
+    }
+
+    @objc func leaveFocus() {
+        hasFocus = false
     }
 }

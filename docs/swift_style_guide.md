@@ -1,7 +1,7 @@
 # The react-native-magic-script Swift Style Guide.
 ### Updated for Swift 4.2
 
-Our overarching goals are clarity, consistency and brevity, in that order.
+This style guide has been provided to keep the code of this repository as consistent and legible as possible. Also, to make it easier for new contributors to get to know the rules and styles we use.
 
 ## Table of Contents
 

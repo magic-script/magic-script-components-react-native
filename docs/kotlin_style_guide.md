@@ -1,4 +1,4 @@
-# Kotlin rules
+# Kotlin style guide
 
 ## Naming
 - Start class and file names with a capital letter,
@@ -33,4 +33,4 @@ Example:
         android:src="@drawable/img"
         android:contentDescription="@string/desc" />
 		
-# General rules: https://kotlinlang.org/docs/reference/coding-conventions.html
+# General coding conventions: https://kotlinlang.org/docs/reference/coding-conventions.html

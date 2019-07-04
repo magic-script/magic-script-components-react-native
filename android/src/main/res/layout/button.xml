@@ -6,4 +6,4 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:text="Hello AR"
     android:textAllCaps="false"
-    android:textColor="#fff" />
+    android:textColor="@color/text_color_default" />

@@ -6,5 +6,5 @@
     android:gravity="center"
     android:text="Hello AR"
     android:textAlignment="center"
-    android:textColor="#FFF"
+    android:textColor="@color/text_color_default"
     android:textSize="20sp" />

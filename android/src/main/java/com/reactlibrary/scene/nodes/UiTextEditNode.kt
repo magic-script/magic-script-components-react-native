@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
+import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
+
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -20,8 +24,26 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_CHARACTER_SPACING = "charSpacing"
     }
 
+    private var addedNativeView = false
+
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        view.findViewById<TextView>(R.id.text_edit_hint).setOnClickListener {
+            logMessage("click")
+            if (!addedNativeView) { //append view above the keyboard
+                val et = LayoutInflater.from(context).inflate(R.layout.edit_text_native, null)
+                ArViewManager.addViewToContainer(et)
+
+                // TODO force keyboard to be shown (below is not working)
+                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                imm?.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT)
+                et.requestFocus()
+
+                addedNativeView = true
+                logMessage("added native view")
+            }
+        }
+        return view
     }
 
     override fun applyProperties(props: Bundle) {

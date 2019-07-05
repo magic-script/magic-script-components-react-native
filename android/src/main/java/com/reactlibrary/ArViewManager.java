@@ -2,6 +2,8 @@ package com.reactlibrary;
 
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -16,10 +18,11 @@ import java.lang.ref.WeakReference;
 /**
  * View manager that is responsible for creating the AR Fragment
  */
-public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupManager
+public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     private static final String REACT_CLASS = "RCTARView";
     private static WeakReference<AppCompatActivity> activityRef;
+    private static WeakReference<FrameLayout> containerRef = new WeakReference<>(null);
 
     @Override
     public String getName() {
@@ -29,7 +32,8 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupMa
     @Override
     protected FrameLayout createViewInstance(final ThemedReactContext reactContext) {
         // view that contains AR fragment
-        FrameLayout mContainer = new FrameLayout(reactContext);
+        FrameLayout mContainer = new DynamicContainer(reactContext);
+        containerRef = new WeakReference<>(mContainer);
         CustomArFragment fragment = new CustomArFragment(); // new ArFragment();
         AppCompatActivity activity = activityRef.get();
         if (activity != null) {
@@ -52,11 +56,19 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> { //ViewGroupMa
         activityRef = new WeakReference<>(activity);
     }
 
+    public static void addViewToContainer(View view) {
+        FrameLayout container = containerRef.get();
+        if (container != null) {
+            Log.d("ArViewManager", "adding child view");
+            container.addView(view);
+            container.requestLayout();
+        }
+    }
+
     // for tests
     @ReactProp(name = "text")
     public void setText(FrameLayout view, @Nullable String text) {
         // view.setText(text);
     }
-
 
 }

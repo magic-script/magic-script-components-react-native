@@ -235,7 +235,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Node node = UiNodesManager.findNodeWithId(nodeId);
+                final Node node = UiNodesManager.findNodeWithId(nodeId);
                 if (node instanceof UiNode) {
                     ((UiNode) node).setClickListener(new Function0<Unit>() {
                         @Override

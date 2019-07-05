@@ -13,6 +13,10 @@ import SceneKit
     @objc static let instance = UiNodesManager()
     @objc let rootNode: SCNNode = SCNNode()
     @objc let focusableNodeBitMask: Int = 8
+
+    @objc var onInputFocused: ((_ textEdit: UiTextEditNode) -> (Void))?
+    @objc var onInputUnfocused: (() -> (Void))?
+
     fileprivate var nodesById: [String: TransformNode] = [:]
     fileprivate var focusedNode: UiNode?
 
@@ -34,8 +38,15 @@ import SceneKit
         }
         
         focusedNode?.leaveFocus()
+        if focusedNode != nil {
+            onInputUnfocused?()
+        }
+
         focusedNode = componentNode as? UiNode
         focusedNode?.enterFocus()
+        if let textEdit = focusedNode as? UiTextEditNode {
+            onInputFocused?(textEdit)
+        }
     }
 
     @objc func findNodeWithId(_ nodeId: String) -> TransformNode? {
@@ -123,5 +134,16 @@ import SceneKit
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
         return true
+    }
+
+    @objc func textFieldShouldReturn() {
+        focusedNode?.leaveFocus()
+        onInputUnfocused?()
+    }
+
+    @objc func textFieldDidChange(text: String?) {
+        if let textEdit = focusedNode as? UiTextEditNode {
+            textEdit.text = text
+        }
     }
 }

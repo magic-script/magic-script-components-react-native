@@ -13,14 +13,14 @@ import SpriteKit
 
     static fileprivate let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
 
-    @objc var text: String = "" {
+    @objc var text: String? {
         didSet { labelNode.text = text }
     }
     @objc var textColor: UIColor = UIColor.white {
         didSet { labelNode.fontColor = textColor }
     }
     @objc var textSize: CGFloat = 0.02 {
-        didSet { labelNode.fontSize = min(0.5 * Measures.pixels(in: textSize), 0.9 * sprite.size.height) }
+        didSet { reloadNeeded = true }
     }
     @objc var width: CGFloat = 0 {
         didSet { reloadNeeded = true }
@@ -66,10 +66,11 @@ import SpriteKit
         reload()
     }
 
-    fileprivate func createSpriteScene(size: CGSize) -> SKScene {
+    fileprivate func createSpriteScene(size: CGSize, scale: CGFloat) -> SKScene {
         // Create SpriteKit scene
         let scene = SKScene(size: size)
         scene.backgroundColor = UIColor.clear
+        scene.setScale(scale)
 
         // Add underline node
         let lineWidth: CGFloat = 5
@@ -110,8 +111,13 @@ import SpriteKit
         reloadNeeded = false
 
         let sizeInMeters = getPrefferedSize()
-        let sizeInPixels = CGSize(width: ceil(Measures.pixels(in: sizeInMeters.width)), height: ceil(Measures.pixels(in: sizeInMeters.height)))
-        sprite = createSpriteScene(size: sizeInPixels)
+
+        let maxSceneSize: CGFloat = 2048
+        let widthInPixels = Measures.pixels(in: sizeInMeters.width)
+        let heightInPixels = Measures.pixels(in: sizeInMeters.height)
+        let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
+        let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
+        sprite = createSpriteScene(size: sizeInPixels, scale: 1.0 / scaleFactor)
 
         if let plane = contentNode?.geometry as? SCNPlane {
             plane.width = width

@@ -46,9 +46,14 @@ import SpriteKit
         guard width > 0 && height > 0 else { return }
 
         // Create SpriteKit scene
-        let sizeInPixels = CGSize(width: ceil(Measures.pixels(in: width)), height: ceil(Measures.pixels(in: height)))
+        let maxSceneSize: CGFloat = 2048
+        let widthInPixels = Measures.pixels(in: width)
+        let heightInPixels = Measures.pixels(in: height)
+        let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
+        let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
         let scene = SKScene(size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height))
         scene.backgroundColor = UIColor.clear
+        scene.setScale(1.0 / scaleFactor)
 
         // Add outline node
         let outlineWidth: CGFloat = 5

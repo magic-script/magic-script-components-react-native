@@ -1,7 +1,11 @@
 import ARView from './ARView';
-import ARKitScript from './components/arkit-script/arkit-script';
+import ReactNativeMagicScript from './components/react-native-magic-script/react-native-magic-script';
+
+// backward compatibility, should be removed in the future
+const ARKitScript = ReactNativeMagicScript,
 
 export {
   ARView,
   ARKitScript,
+  ReactNativeMagicScript
 };

@@ -1,6 +1,6 @@
 //
 //  RCTARView.h
-//  RCTARKit
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 12/06/2019.
 //  Copyright © 2019 nomtek. All rights reserved.

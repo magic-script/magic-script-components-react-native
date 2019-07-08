@@ -1,6 +1,6 @@
 //
 //  ARComponentManager.m
-//  RCTARKit
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 29/05/2019.
 //  Copyright © 2019 HippoAR. All rights reserved.

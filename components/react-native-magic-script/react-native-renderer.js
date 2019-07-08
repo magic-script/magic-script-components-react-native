@@ -450,5 +450,5 @@ function throwNotImplemented(functionName) {
   };
 }
 
-const ARKitRenderer = ReactReconciler(HostConfig);
-export default ARKitRenderer;
+const ReactNativeRenderer = ReactReconciler(HostConfig);
+export default ReactNativeRenderer;

@@ -1,6 +1,6 @@
 //
 //  UiNodesManager.swift
-//  RCTARKit
+//  RNMagicScript
 //
 //  Created by Pawel Leszkiewicz on 06/06/2019.
 //  Copyright © 2019 nomtek. All rights reserved.

@@ -8,21 +8,20 @@
         android:id="@+id/text_edit_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hint"
+        android:text="Text edit"
         android:textColor="@color/text_color_default"
-        android:textSize="20sp" />
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/text_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rounded"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:text="Text"
         android:textColor="@color/text_color_default"
         android:textSize="20sp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/text_color_default" />
 
 </LinearLayout>

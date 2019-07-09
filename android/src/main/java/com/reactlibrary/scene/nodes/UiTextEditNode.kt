@@ -31,6 +31,13 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private var text = ""
     private var editText2d: EditText? = null
 
+    init {
+        // set default width
+        if (!properties.containsKey(PROP_WIDTH)) {
+            properties.putDouble(PROP_WIDTH, 0.4)
+        }
+    }
+
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
         view.text_edit.setOnClickListener {
@@ -100,7 +107,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             val hintTv = view.findViewById<TextView>(R.id.text_edit_hint)
             val editTv = view.findViewById<TextView>(R.id.text_edit)
             editTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            hintTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            hintTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1.5f * size)
         }
     }
 

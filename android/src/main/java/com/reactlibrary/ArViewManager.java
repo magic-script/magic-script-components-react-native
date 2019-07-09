@@ -32,6 +32,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     @Override
     protected FrameLayout createViewInstance(final ThemedReactContext reactContext) {
         // view that contains AR fragment
+        Log.d("ArViewManager", "createViewInstance");
         FrameLayout mContainer = new DynamicContainer(reactContext);
         containerRef = new WeakReference<>(mContainer);
         CustomArFragment fragment = new CustomArFragment(); // new ArFragment();
@@ -59,7 +60,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     public static void addViewToContainer(View view) {
         FrameLayout container = containerRef.get();
         if (container != null) {
-            Log.d("ArViewManager", "adding child view");
+            Log.d("ArViewManager", "addViewToContainer");
             container.addView(view);
             container.requestLayout();
         }

@@ -6,13 +6,16 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.afterTextChanged
 import com.reactlibrary.utils.logMessage
+import kotlinx.android.synthetic.main.text_edit.view.*
 
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
@@ -25,19 +28,32 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     private var addedNativeView = false
+    private var cursorVisible = false
+    private var text = ""
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
-        view.findViewById<TextView>(R.id.text_edit_hint).setOnClickListener {
+        view.text_edit.setOnClickListener {
             logMessage("click")
             if (!addedNativeView) { //append view above the keyboard
-                val et = LayoutInflater.from(context).inflate(R.layout.edit_text_native, null)
-                ArViewManager.addViewToContainer(et)
+                val editTextContainer = LayoutInflater.from(context).inflate(R.layout.edit_text_native, null)
+                val editText = editTextContainer.findViewById<EditText>(R.id.et_native)
 
-                // TODO force keyboard to be shown (below is not working)
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                imm?.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT)
-                et.requestFocus()
+                ArViewManager.addViewToContainer(editTextContainer)
+
+                view.post {
+                    // show the keyboard
+                    editText.requestFocus()
+                    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    imm!!.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+                }
+
+                editText.afterTextChanged { text ->
+                    this.text = text
+                    view.text_edit.text = text
+                }
+
+                startCursorAnimation()
 
                 addedNativeView = true
                 logMessage("added native view")
@@ -57,6 +73,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
             view.findViewById<TextView>(R.id.text_edit).text = text
+            this.text = text
         }
     }
 
@@ -74,8 +91,26 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private fun setCharacterSpacing(props: Bundle) {
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
-            view.findViewById<TextView>(R.id.text_edit).letterSpacing = spacing.toFloat()
+            view.text_edit.letterSpacing = spacing.toFloat()
         }
+    }
+
+
+    private fun startCursorAnimation() {
+        val runnable = object : Runnable {
+            override fun run() {
+                if (cursorVisible) {
+                    view.text_edit.text = text
+                } else {
+                    val textWithCursor = "$text|"
+                    view.text_edit.text = textWithCursor
+                }
+                cursorVisible = !cursorVisible
+                view.text_edit.postDelayed(this, 400)
+            }
+
+        }
+        runnable.run()
     }
 
 }

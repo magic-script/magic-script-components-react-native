@@ -2,8 +2,10 @@ package com.reactlibrary.utils
 
 import android.content.Context
 import android.net.Uri
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import com.facebook.react.bridge.ReadableMap
+import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.BuildConfig
@@ -106,7 +108,16 @@ fun Serializable?.toQuaternion(): Quaternion? {
     }
 }
 
-fun ReadableMap.getDoubleSafely(key: String): Double? {
-    return if (hasKey(key)) getDouble(key) else null
-}
+fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
 
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun afterTextChanged(editable: Editable?) {
+            afterTextChanged.invoke(editable.toString())
+        }
+    })
+}

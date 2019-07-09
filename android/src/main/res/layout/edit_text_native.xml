@@ -10,6 +10,7 @@
     from ViewGroupManager, see [ArViewManager] -->
 
     <EditText
+        android:id="@+id/et_native"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"

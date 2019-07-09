@@ -121,3 +121,8 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         }
     })
 }
+
+fun EditText.setTextAndMoveCursor(text: String) {
+    this.setText("")
+    this.append(text)
+}

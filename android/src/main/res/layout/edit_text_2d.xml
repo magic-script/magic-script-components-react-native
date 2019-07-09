@@ -10,19 +10,20 @@
     from ViewGroupManager, see [ArViewManager] -->
 
     <EditText
-        android:id="@+id/et_native"
-        android:layout_width="200dp"
+        android:id="@+id/edit_text_2d"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:backgroundTint="@color/text_color_default"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:paddingTop="0dp"
-        android:text="Text"
-        android:textColor="@color/text_color_default"
-        android:textCursorDrawable="@drawable/text_edit_cursor"
         android:textSize="20sp"
         tools:ignore="UnusedAttribute" />
+
+    <!--
+        android:backgroundTint="@color/text_color_default"
+        android:textColor="@color/text_color_default"
+        android:textCursorDrawable="@drawable/text_edit_cursor"
+     -->
 
 </FrameLayout>
 

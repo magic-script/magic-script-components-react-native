@@ -30,7 +30,7 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
 /**
- * Android module that is responisble for "parsing" JS tags to generate AR Nodes
+ * Android module that is responisble for "parsing" JS tags in order to generate AR Nodes
  * Based on: https://facebook.github.io/react-native/docs/native-modules-android
  * <p>
  * Node creation methods are called from

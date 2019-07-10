@@ -12,6 +12,7 @@
         android:textColor="@color/text_color_default"
         android:textSize="30sp" />
 
+    <!-- Not using EditText, because it has some bugs in ArCore -->
     <TextView
         android:id="@+id/text_edit"
         android:layout_width="match_parent"

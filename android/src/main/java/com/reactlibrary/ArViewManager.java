@@ -24,6 +24,22 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     private static WeakReference<AppCompatActivity> activityRef;
     private static WeakReference<FrameLayout> containerRef = new WeakReference<>(null);
 
+    static void initActivity(final AppCompatActivity activity) {
+        activityRef = new WeakReference<>(activity);
+    }
+
+    public static WeakReference<AppCompatActivity> getActivityRef() {
+        return activityRef;
+    }
+
+    public static void addViewToContainer(View view) {
+        FrameLayout container = containerRef.get();
+        if (container != null) {
+            container.addView(view);
+            container.requestLayout();
+        }
+    }
+
     @Override
     public String getName() {
         return REACT_CLASS;
@@ -39,7 +55,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
         AppCompatActivity activity = activityRef.get();
         if (activity != null) {
             activity.getSupportFragmentManager().beginTransaction().add(fragment, "arFragment").commitNow();
-            addView(mContainer, fragment.getView(), 0);
+            addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
             Scene scene = fragment.getArSceneView().getScene();
             UiNodesManager.registerScene(scene);
         }
@@ -51,19 +67,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     public boolean needsCustomLayoutForChildren() {
         // TODO check if this is required
         return true;
-    }
-
-    static void initActivity(final AppCompatActivity activity) {
-        activityRef = new WeakReference<>(activity);
-    }
-
-    public static void addViewToContainer(View view) {
-        FrameLayout container = containerRef.get();
-        if (container != null) {
-            Log.d("ArViewManager", "addViewToContainer");
-            container.addView(view);
-            container.requestLayout();
-        }
     }
 
     // for tests

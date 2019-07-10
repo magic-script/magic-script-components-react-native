@@ -2,18 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <!-- Must be in a container, because the most outer view is automatically
-    stretched to full screen (bug in React?) after adding to ViewGroup returned
-    from ViewGroupManager, see [ArViewManager] -->
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <EditText
         android:id="@+id/edit_text_2d"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
+        android:layout_gravity="center"
         android:importantForAutofill="no"
         android:inputType="text"
         android:textSize="20sp"

@@ -1,11 +1,12 @@
 package com.reactlibrary.scene.nodes
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
@@ -13,10 +14,9 @@ import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.afterTextChanged
+import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.text_edit.view.*
-
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -29,7 +29,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     private var cursorVisible = false
     private var text = ""
-    private var editText2d: EditText? = null
 
     init {
         // set default width
@@ -41,8 +40,10 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
         view.text_edit.setOnClickListener {
-            if (editText2d == null) { //append view above the keyboard
-                add2dView(context)
+            logMessage("UiTextNode on click")
+            val activity = ArViewManager.getActivityRef().get()
+            if (activity != null) {
+                showInputDialog(activity)
             }
         }
         startCursorAnimation(view.text_edit)
@@ -54,25 +55,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setText(props)
         setTextSize(props)
         setCharacterSpacing(props)
-    }
-
-    private fun add2dView(context: Context) {
-        val editTextContainer = LayoutInflater.from(context).inflate(R.layout.edit_text_2d, null)
-        val editText = editTextContainer.findViewById<EditText>(R.id.edit_text_2d)
-        editText.afterTextChanged { text ->
-            this.text = text
-            view.text_edit.text = text
-        }
-
-        editText.post {
-            // show the keyboard
-            editText.requestFocus()
-            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            imm!!.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-        }
-        ArViewManager.addViewToContainer(editTextContainer)
-        editText.setTextAndMoveCursor(text)
-        this.editText2d = editText
     }
 
     private fun startCursorAnimation(textEdit: TextView) {
@@ -96,7 +78,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         if (text != null) {
             view.findViewById<TextView>(R.id.text_edit).text = text
             this.text = text
-            this.editText2d?.setTextAndMoveCursor(text)
         }
     }
 
@@ -116,6 +97,25 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
         }
+    }
+
+    private fun showInputDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.input_dialog_title)
+        val viewInflated = LayoutInflater.from(context).inflate(R.layout.edit_text_2d, null)
+        val input = viewInflated.findViewById(R.id.edit_text_2d) as EditText
+        input.setTextAndMoveCursor(text)
+        builder.setView(viewInflated)
+
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            text = input.text.toString()
+            view.text_edit.text = text
+        }
+        builder.setNegativeButton(android.R.string.cancel, null)
+
+        val dialog = builder.create()
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show()
     }
 
 }

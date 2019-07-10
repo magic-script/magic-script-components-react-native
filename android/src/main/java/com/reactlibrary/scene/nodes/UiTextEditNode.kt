@@ -3,18 +3,19 @@ package com.reactlibrary.scene.nodes
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.InputType
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
-import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.text_edit.view.*
 
@@ -25,10 +26,25 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
+        private const val PROP_PASSWORD = "password"
     }
 
     private var cursorVisible = false
     private var text = ""
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private val cursorAnimationRunnable = object : Runnable {
+        override fun run() {
+            if (cursorVisible) {
+                view.text_edit.text = generateVisibleText(text)
+            } else {
+                val textWithCursor = generateVisibleText(text) + "|"
+                view.text_edit.text = textWithCursor
+            }
+            cursorVisible = !cursorVisible
+            mainHandler.postDelayed(this, 400)
+        }
+    }
 
     init {
         // set default width
@@ -38,16 +54,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
-        view.text_edit.setOnClickListener {
-            logMessage("UiTextNode on click")
-            val activity = ArViewManager.getActivityRef().get()
-            if (activity != null) {
-                showInputDialog(activity)
-            }
-        }
-        startCursorAnimation(view.text_edit)
-        return view
+        return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
     }
 
     override fun applyProperties(props: Bundle) {
@@ -57,26 +64,19 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setCharacterSpacing(props)
     }
 
-    private fun startCursorAnimation(textEdit: TextView) {
-        val runnable = object : Runnable {
-            override fun run() {
-                if (cursorVisible) {
-                    textEdit.text = text
-                } else {
-                    val textWithCursor = "$text|"
-                    textEdit.text = textWithCursor
-                }
-                cursorVisible = !cursorVisible
-                textEdit.postDelayed(this, 400)
-            }
+    override fun onClick() {
+        super.onClick()
+        val activity = ArViewManager.getActivityRef().get()
+        if (activity != null) {
+            startCursorAnimation()
+            showInputDialog(activity)
         }
-        runnable.run()
     }
 
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            view.findViewById<TextView>(R.id.text_edit).text = text
+            view.text_edit.text = generateVisibleText(text)
             this.text = text
         }
     }
@@ -85,10 +85,8 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE)
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
-            val hintTv = view.findViewById<TextView>(R.id.text_edit_hint)
-            val editTv = view.findViewById<TextView>(R.id.text_edit)
-            editTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            hintTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1.5f * size)
+            view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            view.text_edit_hint.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1.5f * size)
         }
     }
 
@@ -99,23 +97,55 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         }
     }
 
+    private fun startCursorAnimation() {
+        cursorAnimationRunnable.run()
+    }
+
+    private fun stopCursorAnimation() {
+        mainHandler.removeCallbacks(cursorAnimationRunnable)
+        view.text_edit.text = generateVisibleText(text) // remove cursor if present
+    }
+
     private fun showInputDialog(context: Context) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.input_dialog_title)
         val viewInflated = LayoutInflater.from(context).inflate(R.layout.edit_text_2d, null)
         val input = viewInflated.findViewById(R.id.edit_text_2d) as EditText
-        input.setTextAndMoveCursor(text)
+        val visibleText = generateVisibleText(text)
+        if (isPassword()) {
+            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        input.setTextAndMoveCursor(visibleText)
         builder.setView(viewInflated)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             text = input.text.toString()
-            view.text_edit.text = text
+            view.text_edit.text = generateVisibleText(text)
         }
         builder.setNegativeButton(android.R.string.cancel, null)
 
         val dialog = builder.create()
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        // show keyboard
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+        dialog.setOnDismissListener {
+            stopCursorAnimation()
+        }
+
         dialog.show()
+    }
+
+
+    private fun generateVisibleText(input: String): String {
+        return if (isPassword()) {
+            "*".repeat(input.length)
+        } else {
+            input
+        }
+    }
+
+    private fun isPassword(): Boolean {
+        return properties.getBoolean(PROP_PASSWORD, false)
     }
 
 }

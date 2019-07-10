@@ -34,8 +34,6 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
         super.build()
     }
 
-    protected abstract fun provideView(context: Context): View
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -57,9 +55,16 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
         return true
     }
 
+    protected abstract fun provideView(context: Context): View
+
+    protected open fun onClick() {}
+
     private fun initView() {
         this.view = provideView(context)
-        this.view.setOnClickListener { clickListener?.invoke() }
+        this.view.setOnClickListener {
+            onClick()
+            clickListener?.invoke()
+        }
         // build calls applyProperties, so we need to initialize the view before
     }
 

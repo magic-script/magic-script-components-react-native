@@ -23,7 +23,10 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         private const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
-    // converting to Bundle to avoid "already consumed" bugs
+    /**
+     * All node's properties
+     * Packed to Bundle to avoid "already consumed" bugs
+     */
     protected val properties = Arguments.toBundle(props) ?: Bundle()
 
     init {

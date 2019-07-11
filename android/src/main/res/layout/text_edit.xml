@@ -12,13 +12,23 @@
         android:textColor="@color/text_color_default"
         android:textSize="30sp" />
 
-    <!-- Not using EditText, because it has some bugs in ArCore -->
-    <TextView
-        android:id="@+id/text_edit"
+
+    <ScrollView
+        android:id="@+id/sv_text_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_color_default"
-        android:textSize="20sp" />
+        android:fillViewport="true">
+
+        <!-- Not using EditText, because it has some bugs in ArCore -->
+        <TextView
+            android:id="@+id/text_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:textColor="@color/text_color_default"
+            android:textSize="20sp" />
+
+    </ScrollView>
 
     <View
         android:layout_width="wrap_content"

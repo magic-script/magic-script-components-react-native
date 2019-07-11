@@ -9,13 +9,16 @@ import android.text.InputType
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.text_edit.view.*
 
@@ -27,6 +30,10 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
         private const val PROP_PASSWORD = "password"
+        private const val PROP_MULTILINE = "multiline"
+
+        private const val DEFAULT_WIDTH = 0.4 // in meters
+        private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
     }
 
     private var cursorVisible = false
@@ -47,14 +54,36 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     init {
-        // set default width
+        // set default values of properties
+
         if (!properties.containsKey(PROP_WIDTH)) {
-            properties.putDouble(PROP_WIDTH, 0.4)
+            properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)
         }
+
+        if (!properties.containsKey(PROP_MULTILINE)) {
+            properties.putBoolean(PROP_MULTILINE, false)
+        }
+
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        val v = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+
+        val multiline = properties.getBoolean(PROP_MULTILINE, false)
+        if (multiline) {
+            val textBoxHeight = Utils.metersToPx(MULTILINE_BOX_HEIGHT, context)
+            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, textBoxHeight)
+            v.sv_text_edit.layoutParams = params
+        }
+        v.text_edit.setOnClickListener {
+            logMessage("on text edit click")
+            val activity = ArViewManager.getActivityRef().get()
+            if (activity != null) {
+                startCursorAnimation()
+                showInputDialog(activity)
+            }
+        }
+        return v
     }
 
     override fun applyProperties(props: Bundle) {
@@ -62,15 +91,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setText(props)
         setTextSize(props)
         setCharacterSpacing(props)
-    }
-
-    override fun onClick() {
-        super.onClick()
-        val activity = ArViewManager.getActivityRef().get()
-        if (activity != null) {
-            startCursorAnimation()
-            showInputDialog(activity)
-        }
+        setMultiline(props)
     }
 
     private fun setText(properties: Bundle) {
@@ -94,6 +115,14 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
+        }
+    }
+
+    private fun setMultiline(props: Bundle) {
+        if (props.containsKey(PROP_MULTILINE)) {
+            val isMultiline = props.getBoolean(PROP_MULTILINE)
+            view.text_edit.setSingleLine(!isMultiline)
+            //  view.text_edit.setLines(5)
         }
     }
 

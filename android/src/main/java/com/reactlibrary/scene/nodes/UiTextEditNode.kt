@@ -20,6 +20,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.setTextAndMoveCursor
+import com.reactlibrary.utils.toVector4
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
@@ -31,6 +32,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_CHARACTER_SPACING = "charSpacing"
         private const val PROP_PASSWORD = "password"
         private const val PROP_MULTILINE = "multiline"
+        private const val PROP_TEXT_PADDING = "padding"
 
         private const val DEFAULT_WIDTH = 0.4 // in meters
         private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
@@ -92,6 +94,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setTextSize(props)
         setCharacterSpacing(props)
         setMultiline(props)
+        setTextPadding(props)
     }
 
     private fun setText(properties: Bundle) {
@@ -123,6 +126,20 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             val isMultiline = props.getBoolean(PROP_MULTILINE)
             view.text_edit.setSingleLine(!isMultiline)
             //  view.text_edit.setLines(5)
+        }
+    }
+
+    private fun setTextPadding(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_PADDING)) {
+            val paddingMeters = props.getSerializable(PROP_TEXT_PADDING)?.toVector4()
+            if (paddingMeters != null) {
+                // The padding order is: top, right, bottom, left.
+                val top = Utils.metersToPx(paddingMeters[0], view.context)
+                val right = Utils.metersToPx(paddingMeters[1], view.context)
+                val bottom = Utils.metersToPx(paddingMeters[2], view.context)
+                val left = Utils.metersToPx(paddingMeters[3], view.context)
+                view.text_edit.setPadding(left, top, right, bottom)
+            }
         }
     }
 

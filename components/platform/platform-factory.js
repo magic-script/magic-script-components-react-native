@@ -12,8 +12,6 @@ export class PlatformFactory extends NativeFactory {
 
         // { type, builder }
         this.elementBuilders = {};
-        // this.controllerBuilders = {};
-        // this.controllers = new WeakMap();
         this.componentManager = NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
@@ -97,8 +95,14 @@ export class PlatformFactory extends NativeFactory {
         }
     }
 
-    _processCustomProps = (props) => {
+    _processCustomProps = (name, props) => {
         const properties = omit(props, 'children');
+        const child = props.children;
+        if (typeof child === 'string' || typeof child === 'number') {
+            const key = (name === 'button') ? 'title' : 'text';
+            properties[key] = child.toString();
+        }
+
         return ({
             ...properties,
             ...(properties.shadowColor ? { shadowColor: processColor(properties.shadowColor) } : {}),
@@ -115,7 +119,7 @@ export class PlatformFactory extends NativeFactory {
             this.elementBuilders[name] = createBuilder(this.componentManager);
         }
 
-        const props = this._processCustomProps(args[0]);
+        const props = this._processCustomProps(name, args[0]);
         const id = props.id || generateId();
 
         this.elementBuilders[name].create(props, id);
@@ -130,8 +134,8 @@ export class PlatformFactory extends NativeFactory {
         }
         
         if (this._mapping.elements[name] !== undefined) {
-            const oldProps = this._processCustomProps(args[1]);
-            const newProps = this._processCustomProps(args[2]);
+            const oldProps = this._processCustomProps(name, args[1]);
+            const newProps = this._processCustomProps(name, args[2]);
             if (!isEqual(oldProps, newProps)) {
                 const element = args[0];
                 this.componentManager.updateNode(element.id, newProps);
@@ -174,6 +178,10 @@ export class PlatformFactory extends NativeFactory {
 
     removeChildFromContainer(container, child) {
         this.componentManager.removeChildNodeFromRoot(child.id);
+    }
+
+    commitTextUpdate(textInstance, oldText, newText) {
+        // Nothing to implement here.
     }
 
     createApp(appComponent) {

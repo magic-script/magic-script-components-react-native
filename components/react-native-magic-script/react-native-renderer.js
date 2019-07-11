@@ -217,10 +217,11 @@ function appendChildToContainer(container, child) {
 //  oldText: string,
 //  newText: string
 function commitTextUpdate(textInstance, oldText, newText) {
-  logNotImplemented('commitTextUpdate');
+  // console.log('[MXS] commitTextUpdate');
   // console.log(textInstance);
   // console.log(oldText);
   // console.log(newText);
+  mxs._nativeFactory.commitTextUpdate(textInstance, oldText, newText);
 }
 
 // Function: commitMount
@@ -441,7 +442,7 @@ function logNotImplemented(functionName) {
   const message = `[MXS] ${functionName} has not been implemented yet`;
 
   console.log(message);
-  print(message);
+  // print(message);
 }
 
 function throwNotImplemented(functionName) {

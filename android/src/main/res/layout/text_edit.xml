@@ -8,7 +8,6 @@
         android:id="@+id/text_edit_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Text edit"
         android:textColor="@color/text_color_default"
         android:textSize="30sp" />
 

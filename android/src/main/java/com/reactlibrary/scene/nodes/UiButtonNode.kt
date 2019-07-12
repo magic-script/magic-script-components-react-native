@@ -11,6 +11,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.toColor
+import com.reactlibrary.utils.toVector4
 
 class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -18,6 +20,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         // properties
         private const val PROP_TITLE = "title"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ROUNDNESS = "roundness"
     }
 
@@ -46,6 +49,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         super.applyProperties(props)
         setTitle(props)
         setTextSize(props)
+        setTextColor(props)
         setRoundness(props)
     }
 
@@ -61,6 +65,15 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
             val textSize = props.getDouble(PROP_TEXT_SIZE)
             val size = Utils.metersToPx(textSize, view.context).toFloat()
             (view as Button).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        }
+    }
+
+    private fun setTextColor(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_COLOR)) {
+            val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
+            if (color != null) {
+                (view as Button).setTextColor(color)
+            }
         }
     }
 

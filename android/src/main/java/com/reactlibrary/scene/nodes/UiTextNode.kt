@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.toColor
+import com.reactlibrary.utils.toVector4
 
 class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -17,6 +20,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         // properties
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
     }
@@ -29,6 +33,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         super.applyProperties(props)
         setText(props)
         setTextSize(props)
+        setTextColor(props)
         setAllCaps(props)
         setCharacterSpacing(props)
     }
@@ -45,6 +50,15 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE)
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        }
+    }
+
+    private fun setTextColor(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_COLOR)) {
+            val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
+            if (color != null) {
+                (view as TextView).setTextColor(color)
+            }
         }
     }
 

@@ -83,7 +83,7 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         isRenderableAttached = loadRenderable()
     }
 
-    /** Should assign renderable to the node
+    /** Should assign renderable to the node (if any)
      *  @return true if renderable has been assigned to the node, false otherwise
      */
     protected abstract fun loadRenderable(): Boolean

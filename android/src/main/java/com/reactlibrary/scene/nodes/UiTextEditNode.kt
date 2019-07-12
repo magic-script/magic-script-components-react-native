@@ -17,10 +17,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.setTextAndMoveCursor
-import com.reactlibrary.utils.toVector4
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
@@ -28,7 +25,9 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     companion object {
         // properties
         private const val PROP_TEXT = "text"
+        private const val PROP_HINT = "hint"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
         private const val PROP_PASSWORD = "password"
         private const val PROP_MULTILINE = "multiline"
@@ -91,17 +90,26 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setText(props)
+        setHint(props)
         setTextSize(props)
+        setTextColor(props)
         setCharacterSpacing(props)
         setMultiline(props)
         setTextPadding(props)
     }
 
-    private fun setText(properties: Bundle) {
-        val text = properties.getString(PROP_TEXT)
+    private fun setText(props: Bundle) {
+        val text = props.getString(PROP_TEXT)
         if (text != null) {
             view.text_edit.text = generateVisibleText(text)
             this.text = text
+        }
+    }
+
+    private fun setHint(props: Bundle) {
+        val text = props.getString(PROP_HINT)
+        if (text != null) {
+            view.text_edit_hint.text = text
         }
     }
 
@@ -111,6 +119,15 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
             view.text_edit_hint.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1.5f * size)
+        }
+    }
+
+    private fun setTextColor(props: Bundle) {
+        if (props.containsKey(PROP_TEXT_COLOR)) {
+            val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
+            if (color != null) {
+                view.text_edit.setTextColor(color)
+            }
         }
     }
 

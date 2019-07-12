@@ -1,6 +1,7 @@
 package com.reactlibrary.utils
 
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.widget.EditText
@@ -69,6 +70,7 @@ class Utils {
 /**
  * ==========Extension methods============
  */
+
 fun Any.logMessage(message: String) {
     if (BuildConfig.DEBUG) {
         Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
@@ -90,6 +92,18 @@ fun Serializable.toVector3(): Vector3? {
 fun Serializable.toVector4(): List<Double>? {
     return if ((this as ArrayList<Double>).size == 4) {
         this
+    } else {
+        null
+    }
+}
+
+fun List<Double>.toColor(): Int? {
+    return if (this.size == 4) {
+        val r = get(0) * 255
+        val g = get(1) * 255
+        val b = get(2) * 255
+        val a = get(3) * 255
+        Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
     } else {
         null
     }

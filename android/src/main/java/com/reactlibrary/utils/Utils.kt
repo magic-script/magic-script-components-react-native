@@ -2,8 +2,6 @@ package com.reactlibrary.utils
 
 import android.content.Context
 import android.net.Uri
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
@@ -77,10 +75,7 @@ fun Any.logMessage(message: String) {
     }
 }
 
-fun Serializable?.toVector3(): Vector3? {
-    if (this == null) {
-        return null
-    }
+fun Serializable.toVector3(): Vector3? {
     this as ArrayList<Double>
     return if (size == 3) {
         val x = get(0).toFloat()
@@ -92,10 +87,15 @@ fun Serializable?.toVector3(): Vector3? {
     }
 }
 
-fun Serializable?.toQuaternion(): Quaternion? {
-    if (this == null) {
-        return null
+fun Serializable.toVector4(): List<Double>? {
+    return if ((this as ArrayList<Double>).size == 4) {
+        this
+    } else {
+        null
     }
+}
+
+fun Serializable.toQuaternion(): Quaternion? {
     this as ArrayList<Double>
     return if (size == 4) {
         val x = get(0).toFloat()
@@ -106,20 +106,6 @@ fun Serializable?.toQuaternion(): Quaternion? {
     } else {
         null
     }
-}
-
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
-
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
-
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged.invoke(editable.toString())
-        }
-    })
 }
 
 fun EditText.setTextAndMoveCursor(text: String) {

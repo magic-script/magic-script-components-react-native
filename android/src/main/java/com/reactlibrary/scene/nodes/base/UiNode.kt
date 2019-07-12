@@ -84,11 +84,12 @@ abstract class UiNode(props: ReadableMap, private val context: Context) : Transf
         }
 
         val params = view.layoutParams
-        if (params != null) {
+        if (params != null) { // it's an update (view has been already attached)
             params.width = widthPx
             params.height = heightPx
             view.layoutParams = params
         } else {
+            // the size should be set before attaching view to the node
             view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
         }
 

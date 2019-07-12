@@ -20,6 +20,7 @@ import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
+import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 
@@ -130,6 +131,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void createTextNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                addNode(new UiTextNode(props, context), nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createTextEditNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {

@@ -89,21 +89,21 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     protected abstract fun loadRenderable(): Boolean
 
     private fun setPosition(props: Bundle) {
-        val localPosition = props.getSerializable(PROP_LOCAL_POSITION).toVector3()
+        val localPosition = props.getSerializable(PROP_LOCAL_POSITION)?.toVector3()
         if (localPosition != null) {
             this.localPosition = localPosition
         }
     }
 
     private fun setLocalScale(props: Bundle) {
-        val localScale = props.getSerializable(PROP_LOCAL_SCALE).toVector3()
+        val localScale = props.getSerializable(PROP_LOCAL_SCALE)?.toVector3()
         if (localScale != null) {
             this.localScale = localScale
         }
     }
 
     private fun setLocalRotation(props: Bundle) {
-        val quaternion = props.getSerializable(PROP_LOCAL_ROTATION).toQuaternion()
+        val quaternion = props.getSerializable(PROP_LOCAL_ROTATION)?.toQuaternion()
         if (quaternion != null) {
             this.localRotation = quaternion
         }

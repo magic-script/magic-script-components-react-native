@@ -1,13 +1,13 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
@@ -23,6 +23,10 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
+    }
+
+    init {
+        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
     }
 
     override fun provideView(context: Context): View {

@@ -14,6 +14,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -42,6 +43,8 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
 
+
+
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
             if (cursorVisible) {
@@ -57,6 +60,8 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     init {
         // set default values of properties
+
+        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
 
         if (!properties.containsKey(PROP_WIDTH)) {
             properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)

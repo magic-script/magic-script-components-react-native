@@ -23,6 +23,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     var clickListener: (() -> Unit)? = null
 
+    protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
+    protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
+
     /**
      * A view attached to the node
      */
@@ -97,8 +100,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         ViewRenderable
                 .builder()
                 .setView(context, view)
-                .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
-                .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
+                .setHorizontalAlignment(horizontalAlignment)
+                .setVerticalAlignment(verticalAlignment)
                 .build()
                 .thenAccept {
                     this.renderable = it

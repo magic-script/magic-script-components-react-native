@@ -103,8 +103,7 @@ export class PlatformFactory extends NativeFactory {
         const properties = omit(props, 'children');
         const child = props.children;
         if (typeof child === 'string' || typeof child === 'number') {
-            const key = (name === 'button') ? 'title' : 'text';
-            properties[key] = child.toString();
+            properties['text'] = child.toString();
         }
 
         return ({
@@ -151,8 +150,7 @@ export class PlatformFactory extends NativeFactory {
 
     insertBefore(parent, child, beforeChild) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.name === 'button') ? { title: child.toString() } : { text: child.toString() };
-            this.componentManager.updateNode(parent.id, props);
+            this.componentManager.updateNode(parent.id, { text: child.toString() });
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
         }
@@ -160,8 +158,7 @@ export class PlatformFactory extends NativeFactory {
 
     addChildElement(parent, child) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.name === 'button') ? { title: child.toString() } : { text: child.toString() };
-            this.componentManager.updateNode(parent.id, props);
+            this.componentManager.updateNode(parent.id, { text: child.toString() });
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
         }
@@ -169,8 +166,7 @@ export class PlatformFactory extends NativeFactory {
 
     removeChildElement(parent, child) {
         if (typeof child === 'string' || typeof child === 'number') {
-            const props = (parent.name === 'button') ? { title: '' } : { text: '' };
-            this.componentManager.updateNode(parent.id, props);
+            this.componentManager.updateNode(parent.id, { text: '' });
         } else {
             this.componentManager.removeChildNode(child.id, parent.id);
         }

@@ -11,7 +11,7 @@
 		44318E9522CB4E9A0060575D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44318E5F22CB424A0060575D /* Images.xcassets */; };
 		44318EB622CE28EA0060575D /* OutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318EB522CE28EA0060575D /* OutlineNode.swift */; };
 		44318EB822CE29250060575D /* Measures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318EB722CE29250060575D /* Measures.swift */; };
-		44318EBA22CE29CA0060575D /* UiTextEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318EB922CE29CA0060575D /* UiTextEdit.swift */; };
+		44318EBA22CE29CA0060575D /* UiTextEditNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318EB922CE29CA0060575D /* UiTextEditNode.swift */; };
 		4447D48922BC2BC40043CA89 /* GLTFSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45522BC2BC30043CA89 /* GLTFSceneSource.swift */; };
 		4447D48A22BC2BC40043CA89 /* GLTFUnarchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45622BC2BC30043CA89 /* GLTFUnarchiver.swift */; };
 		4447D48B22BC2BC40043CA89 /* GLTFErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D45822BC2BC30043CA89 /* GLTFErrors.swift */; };
@@ -108,7 +108,7 @@
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44318EB522CE28EA0060575D /* OutlineNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutlineNode.swift; sourceTree = "<group>"; };
 		44318EB722CE29250060575D /* Measures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measures.swift; sourceTree = "<group>"; };
-		44318EB922CE29CA0060575D /* UiTextEdit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiTextEdit.swift; sourceTree = "<group>"; };
+		44318EB922CE29CA0060575D /* UiTextEditNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiTextEditNode.swift; sourceTree = "<group>"; };
 		4447D45522BC2BC30043CA89 /* GLTFSceneSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFSceneSource.swift; sourceTree = "<group>"; };
 		4447D45622BC2BC30043CA89 /* GLTFUnarchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFUnarchiver.swift; sourceTree = "<group>"; };
 		4447D45822BC2BC30043CA89 /* GLTFErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLTFErrors.swift; sourceTree = "<group>"; };
@@ -390,7 +390,7 @@
 				44FA561B22B7A0EA00B42251 /* UIModelNode.swift */,
 				4461548422CA413100159F18 /* UiSpinnerNode.swift */,
 				449AF48C22B248090046938D /* UiTextNode.swift */,
-				44318EB922CE29CA0060575D /* UiTextEdit.swift */,
+				44318EB922CE29CA0060575D /* UiTextEditNode.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -585,7 +585,7 @@
 				4447D4AA22BC2BC40043CA89 /* GLTFAnimation.swift in Sources */,
 				449AF45F22B247C40046938D /* RCTARViewManager.m in Sources */,
 				447A017922B4494100C9C75F /* Convert.swift in Sources */,
-				44318EBA22CE29CA0060575D /* UiTextEdit.swift in Sources */,
+				44318EBA22CE29CA0060575D /* UiTextEditNode.swift in Sources */,
 				4447D48C22BC2BC40043CA89 /* GLTFScene.swift in Sources */,
 				44318EB622CE28EA0060575D /* OutlineNode.swift in Sources */,
 				4447D49622BC2BC40043CA89 /* GLTFMesh.swift in Sources */,

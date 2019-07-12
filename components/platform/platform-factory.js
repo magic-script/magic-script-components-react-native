@@ -95,6 +95,10 @@ export class PlatformFactory extends NativeFactory {
         }
     }
 
+    _processColor = (color) => {
+        return Array.isArray(color) ? color : processColor(color);
+    }
+
     _processCustomProps = (name, props) => {
         const properties = omit(props, 'children');
         const child = props.children;
@@ -105,9 +109,9 @@ export class PlatformFactory extends NativeFactory {
 
         return ({
             ...properties,
-            ...(properties.shadowColor ? { shadowColor: processColor(properties.shadowColor) } : {}),
-            ...(properties.color ? { color: processColor(properties.color) } : {}),
-            ...(properties.textColor ? { textColor: processColor(properties.textColor) } : {}),
+            ...(properties.shadowColor ? { shadowColor: this._processColor(properties.shadowColor) } : {}),
+            ...(properties.color ? { color: this._processColor(properties.color) } : {}),
+            ...(properties.textColor ? { textColor: this._processColor(properties.textColor) } : {}),
             // ...(properties.material ? { material: processMaterial(properties.material) } : {}),
             ...(properties.source ? { source: Image.resolveAssetSource(properties.source) } : {}),
         });

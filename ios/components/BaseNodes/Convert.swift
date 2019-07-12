@@ -56,7 +56,13 @@ class Convert {
 
     static func toColor(_ value: Any?) -> UIColor? {
         guard value != nil else { return nil }
-        return RCTConvert.uiColor(value!)
+        let color = RCTConvert.uiColor(value!)
+        if color != nil {
+            return color
+        }
+        guard let rgba = value as? [CGFloat], rgba.count >= 3 else { return nil }
+        let alpha: CGFloat = (rgba.count >= 4) ? rgba[3] : 1.0
+        return UIColor(red: rgba[0], green: rgba[1], blue: rgba[3], alpha: alpha)
     }
 
     static func toFont(_ value: Any?) -> UIFont? {

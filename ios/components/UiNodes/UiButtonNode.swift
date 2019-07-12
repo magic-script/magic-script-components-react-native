@@ -10,10 +10,26 @@ import SceneKit
 
 @objc class UiButtonNode: UiNode {
 
-    @objc var title: String? {
+    @objc var text: String? {
         get { return textNode.text }
         set { textNode.text = newValue }
     }
+
+    @objc var textColor: UIColor = UIColor.white {
+        didSet {
+            textNode.textColor = textColor
+            outlineNode?.color = textColor
+        }
+    }
+
+    @objc var iconColor: UIColor = UIColor.white
+
+    @objc var textSize: CGFloat {
+        get { return textNode.textSize }
+        set { textNode.textSize = newValue }
+    }
+
+    @objc var iconSize: CGFloat = 0.1
 
     @objc var width: CGFloat = 2 {
         didSet { updateNodeSize() }
@@ -23,27 +39,14 @@ import SceneKit
         didSet { updateNodeSize() }
     }
 
-    @objc var textSize: CGFloat {
-        get { return textNode.textSize }
-        set { textNode.textSize = newValue }
-    }
-
     @objc var roundness: CGFloat = 0.5 {
         didSet { updateNodeSize() }
     }
 
-    @objc var color: UIColor = UIColor.white {
-        didSet {
-            textNode.textColor = color
-            borderGeometry.materials.first?.diffuse.contents = color
-        }
-    }
-
     @objc var onTap: ((_ sender: UiNode) -> (Void))?
 
-    fileprivate var borderGeometry: SCNRectangle!
     fileprivate var contentNode: SCNNode!
-    fileprivate var borderNode: SCNNode!
+    fileprivate var outlineNode: OutlineNode?
     fileprivate var textNode: UiTextNode!
 
     deinit {
@@ -63,7 +66,6 @@ import SceneKit
     }
 
     @objc func simulateTap() {
-
         onTap?(self)
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
@@ -82,7 +84,7 @@ import SceneKit
         addChildNode(contentNode)
 
         textNode = UiTextNode()
-        textNode.textColor = color
+        textNode.textColor = textColor
         contentNode.addChildNode(textNode)
 
         updateNodeSize()
@@ -91,8 +93,24 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let title = Convert.toString(props["title"]) {
-            self.title = title
+        if let text = Convert.toString(props["text"]) {
+            self.text = text
+        }
+
+        if let textColor = Convert.toColor(props["textColor"]) {
+            self.textColor = textColor
+        }
+
+        if let iconColor = Convert.toColor(props["iconColor"]) {
+            self.iconColor = iconColor
+        }
+
+        if let textSize = Convert.toCGFloat(props["textSize"]) {
+            self.textSize = textSize
+        }
+
+        if let iconSize = Convert.toCGFloat(props["iconSize"]) {
+            self.iconSize = iconSize
         }
 
         if let width = Convert.toCGFloat(props["width"]) {
@@ -103,16 +121,8 @@ import SceneKit
             self.height = height
         }
 
-        if let textSize = Convert.toCGFloat(props["textSize"]) {
-            self.textSize = textSize
-        }
-
         if let roundness = Convert.toCGFloat(props["roundness"]) {
             self.roundness = roundness
-        }
-
-        if let color = Convert.toColor(props["color"]) {
-            self.color = color
         }
     }
 
@@ -120,17 +130,23 @@ import SceneKit
         let size = CGSize(width: width, height: height)
         textNode.boundsSize = size
 
-        borderNode?.removeFromParentNode()
-        let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
-        let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
-        let thickness: CGFloat = min(0.01 * min(rect.width, rect.height), 0.005)
-        borderGeometry = SCNRectangle(rect: rect, thickness: thickness, radius: radius)
-        borderGeometry.firstMaterial?.diffuse.contents = color
-        borderGeometry.firstMaterial?.isDoubleSided = true
-        borderNode = SCNNode(geometry: borderGeometry)
-        contentNode.addChildNode(borderNode)
+        outlineNode?.removeFromParentNode()
+//        let sizeInMeters = getPrefferedSize()
+        let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
+        let thickness: CGFloat = min(0.01 * min(size.width, size.height), 0.005)
+        outlineNode = OutlineNode(contentSize: size, cornerRadius: radius, lineWidth: thickness)
 
-        borderNode.position = SCNVector3(-width / 2, -height / 2, 0)
+//        borderNode?.removeFromParentNode()
+//        let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
+//        let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
+//        let thickness: CGFloat = min(0.01 * min(rect.width, rect.height), 0.005)
+//        borderGeometry = SCNRectangle(rect: rect, thickness: thickness, radius: radius)
+//        borderGeometry.firstMaterial?.diffuse.contents = textColor
+//        borderGeometry.firstMaterial?.isDoubleSided = true
+//        borderNode = SCNNode(geometry: borderGeometry)
+//        contentNode.addChildNode(borderNode)
+//
+//        borderNode.position = SCNVector3(-width / 2, -height / 2, 0)
     }
 }
 

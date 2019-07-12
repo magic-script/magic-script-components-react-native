@@ -49,7 +49,11 @@ import SpriteKit
 
         if outlineNode == nil {
             let sizeInMeters = getPrefferedSize()
-            outlineNode = OutlineNode(contentSize: sizeInMeters)
+            let margin: CGFloat = 0.003
+            let radius: CGFloat = 0.5 * min(sizeInMeters.width, sizeInMeters.height) + margin
+            let outlineWidth = sizeInMeters.width + ((sizeInMeters.width > sizeInMeters.height) ? 2 * radius : 2 * margin)
+            let outlineHeight = sizeInMeters.height + ((sizeInMeters.height > sizeInMeters.width) ? 2 * radius : 2 * margin)
+            outlineNode = OutlineNode(width: outlineWidth, height: outlineHeight, cornerRadius: radius)
             insertChildNode(outlineNode!, at: 0)
         }
 

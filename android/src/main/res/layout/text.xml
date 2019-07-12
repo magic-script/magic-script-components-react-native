@@ -7,4 +7,4 @@
     android:text="Hello AR"
     android:textAlignment="center"
     android:textColor="@color/text_color_default"
-    android:textSize="20sp" />
+    android:textSize="14sp" />

@@ -12,7 +12,7 @@ import com.reactlibrary.utils.logMessage
 /**
  * Base node that represents UI controls
  */
-abstract class UiNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
+abstract class UiNode(props: ReadableMap, protected val context: Context) : TransformNode(props) {
 
     companion object {
         // properties

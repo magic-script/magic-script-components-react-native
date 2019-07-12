@@ -4,14 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_edit_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_color_default"
-        android:textSize="30sp" />
-
-
     <ScrollView
         android:id="@+id/sv_text_edit"
         android:layout_width="match_parent"
@@ -25,7 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="start|top"
             android:textColor="@color/text_color_default"
-            android:textSize="20sp" />
+            android:textSize="14sp" />
 
     </ScrollView>
 

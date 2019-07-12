@@ -18,7 +18,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     companion object {
         // properties
-        private const val PROP_TITLE = "title"
+        private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ROUNDNESS = "roundness"
@@ -47,16 +47,16 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setTitle(props)
+        setText(props)
         setTextSize(props)
         setTextColor(props)
         setRoundness(props)
     }
 
-    private fun setTitle(props: Bundle) {
-        val title = props.getString(PROP_TITLE)
-        if (title != null) {
-            (view as Button).text = title
+    private fun setText(props: Bundle) {
+        val text = props.getString(PROP_TEXT)
+        if (text != null) {
+            (view as Button).text = text
         }
     }
 

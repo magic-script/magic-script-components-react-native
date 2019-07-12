@@ -11,7 +11,7 @@ import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 
-class UiImageNode(props: ReadableMap, private val context: Context) : UiNode(props, context) {
+class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {
         // properties

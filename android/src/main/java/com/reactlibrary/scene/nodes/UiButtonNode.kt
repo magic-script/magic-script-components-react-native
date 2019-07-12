@@ -25,8 +25,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
     }
 
     init {
-
-        // Set default properties
+        // set default values of properties
 
         if (!properties.containsKey(PROP_ROUNDNESS)) {
             properties.putDouble(PROP_ROUNDNESS, 1.0)

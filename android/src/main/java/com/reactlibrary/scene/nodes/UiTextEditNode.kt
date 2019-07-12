@@ -34,6 +34,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_MULTILINE = "multiline"
         private const val PROP_TEXT_PADDING = "padding"
 
+        private const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         private const val DEFAULT_WIDTH = 0.4 // in meters
         private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
     }
@@ -42,7 +43,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private var text = ""
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
-
 
 
     private val cursorAnimationRunnable = object : Runnable {
@@ -59,9 +59,13 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     init {
-        // set default values of properties
-
         horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
+        verticalAlignment = ViewRenderable.VerticalAlignment.TOP
+
+        // set default values of properties
+        if (!properties.containsKey(PROP_TEXT_SIZE)) {
+            properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        }
 
         if (!properties.containsKey(PROP_WIDTH)) {
             properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)

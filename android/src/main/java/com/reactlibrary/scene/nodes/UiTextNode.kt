@@ -23,10 +23,17 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
+
+        private const val DEFAULT_TEXT_SIZE = 0.025 // in meters
     }
 
     init {
         horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
+
+        // set default values of properties
+        if (!properties.containsKey(PROP_TEXT_SIZE)) {
+            properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        }
     }
 
     override fun provideView(context: Context): View {

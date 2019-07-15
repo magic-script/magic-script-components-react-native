@@ -58,10 +58,17 @@ class Utils {
             }
         }
 
-        // converts ARCore's meters to pixels
+        /**
+         *  Converts ARCore's meters to pixels
+         *  (Uses an average of horizontal and vertical density -
+         *  usually they are almost the same)
+         */
         fun metersToPx(meters: Double, context: Context): Int {
-            val screenDensity = context.resources.displayMetrics.density
-            return (meters * DP_TO_METER_RATIO * screenDensity).toInt()
+            val xdpi = context.resources.displayMetrics.xdpi
+            val ydpi = context.resources.displayMetrics.ydpi
+            val densityAvgFactor = (xdpi + ydpi) / 320
+            logMessage("density avg=$densityAvgFactor")
+            return (meters * DP_TO_METER_RATIO * densityAvgFactor).toInt()
         }
     }
 

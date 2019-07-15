@@ -7,10 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.InputType
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
@@ -28,6 +25,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val PROP_TEXT = "text"
         private const val PROP_HINT = "hint"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_TEXT_ALIGNMENT = "textAlignment"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
         private const val PROP_PASSWORD = "password"
@@ -41,6 +39,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     private var cursorVisible = false
     private var text = ""
+    private var hint = ""
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
 
@@ -102,6 +101,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setText(props)
         setHint(props)
         setTextSize(props)
+        setTextAlignment(props)
         setTextColor(props)
         setCharacterSpacing(props)
         setMultiline(props)
@@ -120,6 +120,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private fun setHint(props: Bundle) {
         val hint = props.getString(PROP_HINT)
         if (hint != null) {
+            this.hint = hint
             view.text_edit.text = hint
             view.text_edit.setTextColor(context.getColor(R.color.text_color_hint))
         }
@@ -133,12 +134,28 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         }
     }
 
+    private fun setTextAlignment(props: Bundle) {
+        when (props.getString(PROP_TEXT_ALIGNMENT)) {
+            "left" -> {
+                view.text_edit.gravity = Gravity.LEFT
+            }
+            "center" -> {
+                view.text_edit.gravity = Gravity.CENTER_HORIZONTAL
+            }
+            "right" -> {
+                view.text_edit.gravity = Gravity.RIGHT
+            }
+        }
+    }
+
     private fun setTextColor(props: Bundle) {
         if (props.containsKey(PROP_TEXT_COLOR)) {
             val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
             if (color != null) {
                 this.textColor = color
-                view.text_edit.setTextColor(color)
+                if (view.text_edit.text.toString() != hint) {
+                    view.text_edit.setTextColor(color)
+                }
             }
         }
     }

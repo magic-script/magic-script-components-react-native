@@ -67,7 +67,6 @@ class Utils {
             val xdpi = context.resources.displayMetrics.xdpi
             val ydpi = context.resources.displayMetrics.ydpi
             val densityAvgFactor = (xdpi + ydpi) / 320
-            logMessage("density avg=$densityAvgFactor")
             return (meters * DP_TO_METER_RATIO * densityAvgFactor).toInt()
         }
     }

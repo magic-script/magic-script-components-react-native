@@ -3,6 +3,7 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -20,6 +21,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         // properties
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_TEXT_ALIGNMENT = "textAlignment"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
         private const val PROP_CHARACTER_SPACING = "charSpacing"
@@ -44,6 +46,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         super.applyProperties(props)
         setText(props)
         setTextSize(props)
+        setTextAlignment(props)
         setTextColor(props)
         setAllCaps(props)
         setCharacterSpacing(props)
@@ -61,6 +64,20 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE)
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        }
+    }
+
+    private fun setTextAlignment(props: Bundle) {
+        when (props.getString(PROP_TEXT_ALIGNMENT)) {
+            "left" -> {
+                (view as TextView).gravity = Gravity.LEFT
+            }
+            "center" -> {
+                (view as TextView).gravity = Gravity.CENTER_HORIZONTAL
+            }
+            "right" -> {
+                (view as TextView).gravity = Gravity.RIGHT
+            }
         }
     }
 

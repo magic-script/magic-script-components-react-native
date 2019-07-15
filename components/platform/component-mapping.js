@@ -5,7 +5,7 @@ import GroupBuilder from './elements/builders/group-builder.js';
 import ImageBuilder from './elements/builders/image-builder.js';
 import TextBuilder from './elements/builders/text-builder.js';
 import TextEditBuilder from './elements/builders/text-edit-builder.js';
-
+import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
 
@@ -24,5 +24,6 @@ export default {
         'image': (componentManager) => new ImageBuilder(componentManager),
         'model': (componentManager) => new ModelBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
+        'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
     }
 };

@@ -23,6 +23,7 @@ import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
+import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 
 import java.util.Collections;
 import java.util.Map;
@@ -165,6 +166,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 addNode(new UiSpinnerNode(props, context), nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createGridLayout(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                addNode(new UiGridLayout(props), nodeId);
             }
         });
     }

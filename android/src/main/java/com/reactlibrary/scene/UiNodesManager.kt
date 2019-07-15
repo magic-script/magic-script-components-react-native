@@ -4,6 +4,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -81,7 +82,12 @@ object UiNodesManager {
             return
         }
 
-        parentNode.addChild(node)
+        if (parentNode is UiLayout) {
+            parentNode.addChildToLayout(node)
+        } else {
+            parentNode.addChild(node)
+        }
+
     }
 
     @JvmStatic

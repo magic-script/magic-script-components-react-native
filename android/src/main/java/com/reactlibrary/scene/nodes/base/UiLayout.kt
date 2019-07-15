@@ -1,5 +1,6 @@
 package com.reactlibrary.scene.nodes.base
 
+import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 
@@ -7,17 +8,32 @@ import com.google.ar.sceneform.Node
 abstract class UiLayout(props: ReadableMap) : TransformNode(props) {
 
     companion object {
-        /**
-         * Setting a size of zero or less in either the X or Y dimension
-         * indicates the layout should grow to fit content in that
-         * dimension.
-         */
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+    }
+
+    // Zero or less means the dimensions fits to the content
+    protected var width: Double = 0.0 // in meters
+    protected var height: Double = 0.0 // in meters
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+        setSize(props)
     }
 
     /**
      * Add child via this method to be laid out correctly
      */
     abstract fun addChildToLayout(child: Node)
+
+    private fun setSize(props: Bundle) {
+        if (props.containsKey(PROP_WIDTH)) {
+            this.width = props.getDouble(PROP_WIDTH)
+        }
+
+        if (props.containsKey(PROP_HEIGHT)) {
+            this.height = props.getDouble(PROP_HEIGHT)
+        }
+    }
+
 }

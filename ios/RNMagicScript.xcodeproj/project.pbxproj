@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		442463BE22DCBFCA00FD4ABB /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442463BD22DCBFC900FD4ABB /* LabelNode.swift */; };
 		44318E6422CB44B60060575D /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318E6322CB44B60060575D /* ImageAssets.swift */; };
 		44318E9522CB4E9A0060575D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44318E5F22CB424A0060575D /* Images.xcassets */; };
 		44318EB622CE28EA0060575D /* OutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318EB522CE28EA0060575D /* OutlineNode.swift */; };
@@ -55,6 +56,7 @@
 		4447D4B122BC2BC40043CA89 /* GLTFTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D48622BC2BC30043CA89 /* GLTFTypes.swift */; };
 		4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */; };
 		4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461548422CA413100159F18 /* UiSpinnerNode.swift */; };
+		446A927922DDE5CA00B4C12D /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446A927822DDE5CA00B4C12D /* Consts.swift */; };
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
 		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
@@ -102,6 +104,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
 		44318E5F22CB424A0060575D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44318E6322CB44B60060575D /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +162,7 @@
 		4447D53A22BCA2C90043CA89 /* GLTFShaderModifierFragment_alphaCutoff.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLTFShaderModifierFragment_alphaCutoff.shader; sourceTree = "<group>"; };
 		4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLTFShaderModifier.swift; sourceTree = "<group>"; };
 		4461548422CA413100159F18 /* UiSpinnerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiSpinnerNode.swift; sourceTree = "<group>"; };
+		446A927822DDE5CA00B4C12D /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
 		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
@@ -212,6 +216,16 @@
 				134814201AA4EA6300B7C361 /* libRNMagicScript.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		442463AC22DC8AF200FD4ABB /* UiHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				447A017822B4494100C9C75F /* Convert.swift */,
+				44318EB722CE29250060575D /* Measures.swift */,
+				446A927822DDE5CA00B4C12D /* Consts.swift */,
+			);
+			path = UiHelpers;
 			sourceTree = "<group>";
 		};
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
@@ -363,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				449AF48722B248090046938D /* BaseNodes */,
+				442463AC22DC8AF200FD4ABB /* UiHelpers */,
 				449AF48A22B248090046938D /* UiNodes */,
 				449AF48F22B248090046938D /* Utils */,
 				449AF49722B248090046938D /* UiNodesManager.swift */,
@@ -373,7 +388,7 @@
 		449AF48722B248090046938D /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
-				447A017822B4494100C9C75F /* Convert.swift */,
+				442463BD22DCBFC900FD4ABB /* LabelNode.swift */,
 				44318EB522CE28EA0060575D /* OutlineNode.swift */,
 				449AF48822B248090046938D /* TransformNode.swift */,
 				449AF48922B248090046938D /* UiNode.swift */,
@@ -399,7 +414,6 @@
 			isa = PBXGroup;
 			children = (
 				449AF49322B248090046938D /* Maths.swift */,
-				44318EB722CE29250060575D /* Measures.swift */,
 				449AF49022B248090046938D /* SCNBBoxNode.swift */,
 				449AF49122B248090046938D /* SCNRectangle.swift */,
 				449AF49222B248090046938D /* SCNNode+Debug.swift */,
@@ -544,6 +558,7 @@
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
+				446A927922DDE5CA00B4C12D /* Consts.swift in Sources */,
 				4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */,
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,
@@ -583,6 +598,7 @@
 				4447D4AB22BC2BC40043CA89 /* GLTFAsset.swift in Sources */,
 				449AF49F22B248090046938D /* SCNRectangle.swift in Sources */,
 				4447D4AA22BC2BC40043CA89 /* GLTFAnimation.swift in Sources */,
+				442463BE22DCBFCA00FD4ABB /* LabelNode.swift in Sources */,
 				449AF45F22B247C40046938D /* RCTARViewManager.m in Sources */,
 				447A017922B4494100C9C75F /* Convert.swift in Sources */,
 				44318EBA22CE29CA0060575D /* UiTextEditNode.swift in Sources */,

@@ -22,6 +22,10 @@ import SpriteKit
     @objc var textSize: CGFloat = 0.02 {
         didSet { reloadNeeded = true }
     }
+//    @objc var textAlignment: HorizontalTextAlignment {
+//        get { return labelNode.textAlignment }
+//        set { labelNode.textAlignment = newValue }
+//    }
     @objc var width: CGFloat = 0 {
         didSet { reloadNeeded = true }
     }
@@ -94,7 +98,7 @@ import SpriteKit
         let labelBottom: CGFloat = underlineY - bottomMargin
         labelNode = SKLabelNode(text: text)
         labelNode.fontColor = textColor
-        labelNode.fontSize = min(0.5 * Measures.pixels(in: textSize), scene.size.height - (topMargin + bottomMargin))
+        labelNode.fontSize = min(0.5 * Measures.pixels(from: textSize), scene.size.height - (topMargin + bottomMargin))
         labelNode.horizontalAlignmentMode = .left
         labelNode.position = CGPoint(x: 0, y: labelBottom)
         labelNode.preferredMaxLayoutWidth = scene.size.width
@@ -117,8 +121,8 @@ import SpriteKit
         let sizeInMeters = getPrefferedSize()
 
         let maxSceneSize: CGFloat = 2048
-        let widthInPixels = Measures.pixels(in: sizeInMeters.width)
-        let heightInPixels = Measures.pixels(in: sizeInMeters.height)
+        let widthInPixels = Measures.pixels(from: sizeInMeters.width)
+        let heightInPixels = Measures.pixels(from: sizeInMeters.height)
         let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
         sprite = createSpriteScene(size: sizeInPixels, scale: 1.0 / scaleFactor)

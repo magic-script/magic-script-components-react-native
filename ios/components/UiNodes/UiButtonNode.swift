@@ -11,13 +11,13 @@ import SceneKit
 @objc class UiButtonNode: UiNode {
 
     @objc var text: String? {
-        get { return textNode.text }
-        set { textNode.text = newValue }
+        get { return labelNode.text }
+        set { labelNode.text = newValue }
     }
 
     @objc var textColor: UIColor = UIColor.white {
         didSet {
-            textNode.textColor = textColor
+            labelNode.textColor = textColor
             outlineNode?.color = textColor
         }
     }
@@ -25,29 +25,32 @@ import SceneKit
     @objc var iconColor: UIColor = UIColor.white
 
     @objc var textSize: CGFloat {
-        get { return textNode.textSize }
-        set { textNode.textSize = newValue }
+        get { return labelNode.textSize }
+        set { labelNode.textSize = newValue }
     }
 
     @objc var iconSize: CGFloat = 0.1
 
-    @objc var width: CGFloat = 2 {
-        didSet { updateNodeSize() }
+    @objc var width: CGFloat {
+        get { return labelNode.boundsSize.width }
+        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true }
     }
 
-    @objc var height: CGFloat = 1 {
-        didSet { updateNodeSize() }
+    @objc var height: CGFloat {
+        get { return labelNode.boundsSize.height }
+        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true }
     }
 
     @objc var roundness: CGFloat = 0.5 {
-        didSet { updateNodeSize() }
+        didSet { reloadOutline = true }
     }
 
     @objc var onTap: ((_ sender: UiNode) -> (Void))?
 
     fileprivate var contentNode: SCNNode!
     fileprivate var outlineNode: OutlineNode?
-    fileprivate var textNode: UiTextNode!
+    fileprivate var labelNode: LabelNode!
+    fileprivate var reloadOutline: Bool = true
 
     deinit {
         contentNode.removeAllAnimations()
@@ -83,11 +86,8 @@ import SceneKit
         contentNode = SCNNode()
         addChildNode(contentNode)
 
-        textNode = UiTextNode()
-        textNode.textColor = textColor
-        contentNode.addChildNode(textNode)
-
-        updateNodeSize()
+        labelNode = LabelNode()
+        contentNode.addChildNode(labelNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -124,11 +124,15 @@ import SceneKit
         if let roundness = Convert.toCGFloat(props["roundness"]) {
             self.roundness = roundness
         }
+
+        labelNode.reload()
+        if reloadOutline {
+            reloadOutlineNode()
+        }
     }
 
-    fileprivate func updateNodeSize() {
-        let size = CGSize(width: width, height: height)
-        textNode.boundsSize = size
+    fileprivate func reloadOutlineNode() {
+        let size = labelNode.boundsSize
 
         outlineNode?.removeFromParentNode()
 //        let sizeInMeters = getPrefferedSize()

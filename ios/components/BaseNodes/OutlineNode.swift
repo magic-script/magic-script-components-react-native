@@ -55,9 +55,9 @@ import SpriteKit
 
         // Create SpriteKit scene
         let maxSceneSize: CGFloat = 2048
-        let widthInPixels = Measures.pixels(in: width)
-        let heightInPixels = Measures.pixels(in: height)
-        let outlineWidth = Measures.pixels(in: lineWidth)
+        let widthInPixels = Measures.pixels(from: width)
+        let heightInPixels = Measures.pixels(from: height)
+        let outlineWidth = Measures.pixels(from: lineWidth)
         let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
         let scene = SKScene(size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height))
@@ -66,7 +66,7 @@ import SpriteKit
 
         // Add outline node
         let outlineRect = CGRect(origin: CGPoint.zero, size: scene.size).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
-        let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(in: cornerRadius))
+        let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
         let outlineNode = SKShapeNode(path: outlinePath.cgPath)
         outlineNode.strokeColor = color
         outlineNode.lineWidth = outlineWidth

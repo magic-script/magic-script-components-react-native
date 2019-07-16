@@ -18,6 +18,11 @@ class CustomArFragment : ArFragment() {
                 onReadyCalled = true
             }
         }
+
+        // Hide the instructions
+        planeDiscoveryController.hide()
+        planeDiscoveryController.setInstructionView(null)
+
     }
 
 }

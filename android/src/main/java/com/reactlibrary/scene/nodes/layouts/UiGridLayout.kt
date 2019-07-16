@@ -3,6 +3,7 @@ package com.reactlibrary.scene.nodes.layouts
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.logMessage
@@ -50,12 +51,21 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         addChild(child)
         val columnWidth = width / columns
         val columnHeight = columnWidth // TODO
-        val startX = -width / 2
+        val paddingSum = (columns - 1) * padding
+        val startX = -width / 2 - paddingSum / 2
+        val startY = 0
         val col = childIdx % columns
         val row = childIdx / columns
 
         var x = startX + col * columnWidth
-        var y = -row * columnHeight
+        var y = startY - row * columnHeight
+
+        if (col > 0) {
+            x += col * padding
+        }
+        if (row > 0) {
+            y -= row * padding
+        }
 
         // TODO in order to apply alignment the item's width and height must be known
         if (itemHorizontalAlignment == HorizontalAlignment.CENTER) {
@@ -68,6 +78,14 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
         child.localPosition = Vector3(x.toFloat(), y.toFloat(), child.localPosition.z)
         logMessage("addChildToLayout idx=$childIdx, x=$x, y=$y, width=$width, columns=$columns, colWidth=$columnWidth")
+
+        // TODO wait until renderable of a child is attached and get the
+        // child size using collisionShape
+        val collisionShape = child.renderable?.collisionShape as? Box
+        if (collisionShape != null) {
+            logMessage("child size=${collisionShape.size}")
+        }
+
         childIdx++
     }
 
@@ -96,8 +114,14 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
     private fun setItemAlignment(props: Bundle) {
         if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
-            // TODO should an array be in the following format ['left', 'center'] ?
+            // TODO check the alignment array format
             val alignment = props.getSerializable(PROP_ITEM_ALIGNMENT) as ArrayList<String>
+            if (alignment.size == 2) {
+                val horizontalAlign = alignment[0]
+                val verticalAlign = alignment[1]
+                itemHorizontalAlignment = HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
+                itemVerticalAlignment = VerticalAlignment.valueOf(verticalAlign.toUpperCase())
+            }
         }
     }
 

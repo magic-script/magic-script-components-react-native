@@ -81,6 +81,11 @@ class Convert {
         return nil
     }
 
+    static func toHorizontalTextAlignment(_ value: Any?) -> HorizontalTextAlignment? {
+        guard let alignment = value as? String else { return nil }
+        return HorizontalTextAlignment(rawValue: alignment)
+    }
+
     static func toFileURL(_ value: Any?) -> URL? {
         guard let filePath = value as? String else { return nil }
 

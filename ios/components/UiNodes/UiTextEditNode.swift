@@ -22,6 +22,10 @@ import SpriteKit
     @objc var textSize: CGFloat = 0.02 {
         didSet { reloadNeeded = true }
     }
+//    @objc var textAlignment: HorizontalTextAlignment {
+//        get { return labelNode.textAlignment }
+//        set { labelNode.textAlignment = newValue }
+//    }
     @objc var width: CGFloat = 0 {
         didSet { reloadNeeded = true }
     }

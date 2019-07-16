@@ -87,6 +87,7 @@ import SceneKit
         addChildNode(contentNode)
 
         labelNode = LabelNode()
+        labelNode.textAlignment = .center
         contentNode.addChildNode(labelNode)
     }
 

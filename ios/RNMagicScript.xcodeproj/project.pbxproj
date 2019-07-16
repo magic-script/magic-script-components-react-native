@@ -56,6 +56,7 @@
 		4447D4B122BC2BC40043CA89 /* GLTFTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D48622BC2BC30043CA89 /* GLTFTypes.swift */; };
 		4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */; };
 		4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461548422CA413100159F18 /* UiSpinnerNode.swift */; };
+		446A927922DDE5CA00B4C12D /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446A927822DDE5CA00B4C12D /* Consts.swift */; };
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
 		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
@@ -161,6 +162,7 @@
 		4447D53A22BCA2C90043CA89 /* GLTFShaderModifierFragment_alphaCutoff.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLTFShaderModifierFragment_alphaCutoff.shader; sourceTree = "<group>"; };
 		4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLTFShaderModifier.swift; sourceTree = "<group>"; };
 		4461548422CA413100159F18 /* UiSpinnerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiSpinnerNode.swift; sourceTree = "<group>"; };
+		446A927822DDE5CA00B4C12D /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
 		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			children = (
 				447A017822B4494100C9C75F /* Convert.swift */,
 				44318EB722CE29250060575D /* Measures.swift */,
+				446A927822DDE5CA00B4C12D /* Consts.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -555,6 +558,7 @@
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
+				446A927922DDE5CA00B4C12D /* Consts.swift in Sources */,
 				4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */,
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,

@@ -16,6 +16,9 @@ class LabelNode: SCNNode {
     @objc var text: String? {
         didSet { reloadNeeded = true }
     }
+    @objc var textAlignment: HorizontalTextAlignment = .left {
+        didSet { reloadNeeded = true }
+    }
     @objc var textColor: UIColor = UIColor.white {
         didSet { reloadNeeded = true }
     }
@@ -101,7 +104,7 @@ class LabelNode: SCNNode {
             labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
             labelGeometry.firstMaterial?.diffuse.contents = textColor
             labelGeometry.isWrapped = wrap
-//            labelGeometry.alignmentMode = CATextLayerAlignmentMode.left.rawValue // kCAAlignmentNatural
+            labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
 //            labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue
             labelNode?.removeFromParentNode()
             labelNode = SCNNode(geometry: labelGeometry)

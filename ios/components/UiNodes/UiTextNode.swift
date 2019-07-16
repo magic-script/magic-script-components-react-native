@@ -25,7 +25,10 @@ import SceneKit
     // @objc var allCaps: Bool // TODO: property to defined
     // @objc var charSpacing: CGFloat // TODO: property to defined
     // @objc var lineSpacing: CGFloat // TODO: property to defined
-    // @objc var textAlignment: HorizontalTextAlignment // TODO: property to defined
+    @objc var textAlignment: HorizontalTextAlignment {
+        get { return labelNode.textAlignment }
+        set { labelNode.textAlignment = newValue }
+    }
     // @objc var style: UIFont.TextStyle // TODO: property to defined
     // @objc var weight: UIFont.Weight // TODO: property to defined
     @objc var boundsSize: CGSize {
@@ -59,6 +62,10 @@ import SceneKit
         
         if let textSize = Convert.toCGFloat(props["textSize"]) {
             self.textSize = textSize
+        }
+
+        if let textAlignment = Convert.toHorizontalTextAlignment(props["textAlignment"]) {
+            self.textAlignment = textAlignment
         }
 
         if let boundsSize = Convert.toCGSize(props["boundsSize"]) {

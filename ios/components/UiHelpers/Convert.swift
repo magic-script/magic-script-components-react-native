@@ -18,25 +18,36 @@ class Convert {
     }
 
     static func toCGFloat(_ value: Any?) -> CGFloat? {
-        return value as? CGFloat
+        guard let value = value else { return nil }
+        let floatValue: Float? = NumberFormatter().number(from: "\(value)")?.floatValue
+        return (floatValue != nil) ? CGFloat(floatValue!) : nil
     }
 
     static func toCGSize(_ value: Any?) -> CGSize? {
-        guard let vec = value as? [CGFloat] else { return nil }
+        guard let vec = value as? [Any] else { return nil }
         guard vec.count == 2 else { return nil }
-        return CGSize(width: vec[0], height: vec[1])
+        guard let v0 = Convert.toCGFloat(vec[0]),
+            let v1 = Convert.toCGFloat(vec[1]) else { return nil }
+        return CGSize(width: v0, height: v1)
     }
 
     static func toVector3(_ value: Any?) -> SCNVector3? {
-        guard let vec = value as? [CGFloat] else { return nil }
+        guard let vec = value as? [Any] else { return nil }
         guard vec.count == 3 else { return nil }
-        return SCNVector3(vec[0], vec[1], vec[2])
+        guard let v0 = Convert.toCGFloat(vec[0]),
+            let v1 = Convert.toCGFloat(vec[1]),
+            let v2 = Convert.toCGFloat(vec[2]) else { return nil }
+        return SCNVector3(v0, v1, v2)
     }
 
     static func toVector4(_ value: Any?) -> SCNVector4? {
-        guard let vec = value as? [CGFloat] else { return nil }
+        guard let vec = value as? [Any] else { return nil }
         guard vec.count == 4 else { return nil }
-        return SCNVector4(vec[0], vec[1], vec[2], vec[3])
+        guard let v0 = Convert.toCGFloat(vec[0]),
+            let v1 = Convert.toCGFloat(vec[1]),
+            let v2 = Convert.toCGFloat(vec[2]),
+            let v3 = Convert.toCGFloat(vec[3]) else { return nil }
+        return SCNVector4(v0, v1, v2, v3)
     }
 
     static func toQuaternion(_ value: Any?) -> SCNQuaternion? {
@@ -55,14 +66,15 @@ class Convert {
     }
 
     static func toColor(_ value: Any?) -> UIColor? {
-        guard value != nil else { return nil }
-//        let color = RCTConvert.uiColor(value!)
-//        if color != nil {
-//            return color
-//        }
-        guard let rgba = value as? [CGFloat], rgba.count >= 3 else { return RCTConvert.uiColor(value!) }
-        let alpha: CGFloat = (rgba.count >= 4) ? rgba[3] : 1.0
-        return UIColor(red: rgba[0], green: rgba[1], blue: rgba[3], alpha: alpha)
+        guard let value = value else { return nil }
+        guard let rgba = value as? [Any], rgba.count >= 3 else {
+            return RCTConvert.uiColor(value)
+        }
+        guard let red = Convert.toCGFloat(rgba[0]),
+            let green = Convert.toCGFloat(rgba[1]),
+            let blue = Convert.toCGFloat(rgba[2]) else { return nil }
+        let alpha: CGFloat? = (rgba.count >= 4) ? Convert.toCGFloat(rgba[3]) : nil
+        return UIColor(red: red, green: green, blue: blue, alpha: alpha ?? 1.0)
     }
 
     static func toFont(_ value: Any?) -> UIFont? {

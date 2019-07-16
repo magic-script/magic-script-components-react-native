@@ -11,7 +11,7 @@ import UIKit
 
 class LabelNode: SCNNode {
     static fileprivate let defaultTextSizeInMeters: CGFloat = 0.015
-    static fileprivate let geometryFixedTextSizeInMeters: CGFloat = 0.4
+    static fileprivate let geometryFixedTextSizeInMeters: CGFloat = 20.0
 
     @objc var text: String? {
         didSet { reloadNeeded = true }
@@ -33,7 +33,7 @@ class LabelNode: SCNNode {
     fileprivate var label: UILabel!
     fileprivate var labelNode: SCNNode!
     fileprivate var reloadNeeded: Bool = false
-    fileprivate let useGeometry: Bool = false
+    fileprivate let useGeometry: Bool = true
 
     @objc override init() {
         super.init()
@@ -43,6 +43,10 @@ class LabelNode: SCNNode {
     @objc required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupNode()
+    }
+
+    deinit {
+        labelNode.geometry?.firstMaterial?.diffuse.contents = nil
     }
 
 //    #if targetEnvironment(simulator)
@@ -129,8 +133,8 @@ class LabelNode: SCNNode {
         let size = getPreferredSize()
         plane.width = size.width
         plane.height = size.height
-        let widthInPixels = Measures.pixels(from: size.width)
-        let heightInPixels = Measures.pixels(from: size.height)
+        let widthInPixels = CGFloat(Int(Int(Measures.pixels(from: size.width)) / 16) * 16)
+        let heightInPixels = CGFloat(Int(Int(Measures.pixels(from: size.height)) / 16) * 16)
 
         let maxFrameSize: CGFloat = 2048
         let scaleFactor: CGFloat
@@ -138,9 +142,11 @@ class LabelNode: SCNNode {
         if widthInPixels < maxFrameSize && heightInPixels < maxFrameSize {
             scaleFactor = 1
             sizeInPixels = CGSize(width: ceil(widthInPixels), height: ceil(heightInPixels))
+//            print("sizeInPixels1: \(sizeInPixels)")
         } else {
             scaleFactor = min(min(maxFrameSize / widthInPixels, maxFrameSize / heightInPixels), 1)
             sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
+//            print("sizeInPixels2: \(sizeInPixels) - \(scaleFactor)")
         }
 
         label.frame = CGRect(x: 0, y: 0, width: sizeInPixels.width, height: sizeInPixels.height)

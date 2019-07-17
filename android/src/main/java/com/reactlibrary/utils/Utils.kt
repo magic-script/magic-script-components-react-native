@@ -12,6 +12,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.BuildConfig
 import com.reactlibrary.scene.nodes.base.TransformNode
+import java.io.File
 import java.io.Serializable
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
@@ -28,6 +29,11 @@ class Utils {
          * that can be accessed from android code.
          */
         fun getImagePath(imagePath: String, context: Context): Uri {
+            val path = parseNormalPath(imagePath)
+            if (path != null) {
+                return path
+            }
+
             // e.g. resources\DemoPicture1.jpg
             return if (BuildConfig.DEBUG) {
                 Uri.parse(DEBUG_ASSETS_PATH + imagePath)
@@ -43,12 +49,17 @@ class Utils {
 
         /**
          *
-         * Converts React project's file path (other than image) to path
+         * Converts React project's file path (other than image) or standard path to path
          * that can be accessed from android code.
          *
-         * TODO (currently working only in debug when device is connected to PC)
+         * TODO currently debug path works only when device is connected to PC
          */
         fun getFilePath(filePath: String, context: Context): Uri {
+            val path = parseNormalPath(filePath)
+            if (path != null) {
+                return path
+            }
+
             // e.g. resources\model.glb
             return if (BuildConfig.DEBUG) {
                 Uri.parse(DEBUG_ASSETS_PATH + filePath)
@@ -73,6 +84,28 @@ class Utils {
             val densityAvgFactor = (xdpi + ydpi) / 320
             return (meters * DP_TO_METER_RATIO * densityAvgFactor).toInt()
         }
+
+        /**
+         * Converts path to Uri
+         */
+        private fun parseNormalPath(path: String): Uri? {
+            // check if it's a remote path
+            if (path.startsWith("http")) {
+                return Uri.parse(path)
+            }
+
+            // check if it's a standard filesystem path (e.g from react-native-fs library)
+            val file = File(path)
+            try {
+                if (file.exists()) {
+                    return Uri.fromFile(file)
+                }
+            } catch (e: SecurityException) {
+                logMessage("cannot read file: $path exception: $e")
+            }
+            return null
+        }
+
     }
 
 }
@@ -165,7 +198,8 @@ fun List<Node>.calculateBounds(): Bounding {
     val bounds = Bounding(0f, 0f, 0f, 0f)
 
     for (node in this) {
-        val childBounds = if (node is TransformNode) node.getBounding() ?: Bounding() else Bounding()
+        val childBounds = if (node is TransformNode) node.getBounding()
+                ?: Bounding() else Bounding()
         if (childBounds.left < bounds.left) {
             bounds.left = childBounds.left
         }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.toQuaternion
 import com.reactlibrary.utils.toVector3
@@ -44,6 +45,12 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      */
     var isRenderableAttached = false
         private set
+
+    open fun addChildNode(child: Node) {
+        addChild(child)
+    }
+
+    abstract fun getBounding(): Bounding?
 
     /**
      * Builds the node by calling [applyProperties] with all initial properties

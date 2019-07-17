@@ -6,6 +6,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
@@ -24,6 +25,11 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
     override fun loadRenderable(): Boolean {
         loadModel()
         return true
+    }
+
+    override fun getBounding(): Bounding? {
+        // TODO calculate bounding the same way as inside UiNode
+        return Bounding()
     }
 
     private fun setModelPath(props: Bundle) {

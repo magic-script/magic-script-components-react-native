@@ -82,12 +82,7 @@ object UiNodesManager {
             return
         }
 
-        if (parentNode is UiLayout) {
-            parentNode.addChildToLayout(node)
-        } else {
-            parentNode.addChild(node)
-        }
-
+        parentNode.addChildNode(node)
     }
 
     @JvmStatic

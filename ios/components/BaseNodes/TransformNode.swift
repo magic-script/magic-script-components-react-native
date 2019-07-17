@@ -84,4 +84,8 @@ import SceneKit
             self.localTransform = localTransform
         }
     }
+
+    @objc func getSize() -> CGSize {
+        return CGSize.zero
+    }
 }

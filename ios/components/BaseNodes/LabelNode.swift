@@ -121,10 +121,18 @@ class LabelNode: SCNNode {
         }
     }
 
-    fileprivate func getPreferredSize() -> CGSize {
-        guard let text = text, !text.isEmpty else { return CGSize.zero }
+    fileprivate func getFont() -> UIFont {
+        if useGeometry {
+            return labelGeometry.font
+        } else {
+            return label.font
+        }
+    }
 
-        let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : label.font])
+    func getSize() -> CGSize {
+        guard let text = text, !text.isEmpty else { return boundsSize }
+
+        let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : getFont()])
         let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : Measures.meters(from: preferredSizeInPixels.width)
         let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : Measures.meters(from: preferredSizeInPixels.height)
         return CGSize(width: width, height: height)
@@ -133,7 +141,7 @@ class LabelNode: SCNNode {
     fileprivate func updateLabelSize() {
         guard let plane = labelNode.geometry as? SCNPlane else { return }
 
-        let size = getPreferredSize()
+        let size = getSize()
         plane.width = size.width
         plane.height = size.height
         let widthInPixels = CGFloat(Int(Int(Measures.pixels(from: size.width)) / 16) * 16)

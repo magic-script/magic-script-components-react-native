@@ -33,6 +33,7 @@
     view.autoenablesDefaultLighting = YES;
     view.rendersContinuously = YES;
     view.scene.rootNode.name = @"root";
+    // MLXRCLientSession init with view.session !important
 
 #if TARGET_IPHONE_SIMULATOR
     // Allow for basic orbit gestures if we're running in the simulator

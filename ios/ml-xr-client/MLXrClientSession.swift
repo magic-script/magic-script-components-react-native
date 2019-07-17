@@ -8,6 +8,7 @@
 
 import Foundation
 import mlxr_ios_client
+import ARKit
 
 @objc(MLXrClientSession)
 class MLXrClientSession: NSObject {
@@ -16,9 +17,14 @@ class MLXrClientSession: NSObject {
     fileprivate var interval: TimeInterval
 
     @objc
+    init(arSession: ARSession) {
+        session = mlxs_ios_client.MLXrClientSession(nil, arSession);
+        return self;
+    }
+
+    @objc
     public func connect(address: String, deviceId: String, token: String, callback: RCTResponseSenderBlock) {
-        assert(session == nil, "Session is nil")
-        session = mlxr_ios_client.MLXrClientSession()
+        assert(self.session != nil, "Session should not be nil")
         let result: Bool = session.connect(address, deviceId, token)
         callback([NSNull(), result])
     }
@@ -32,7 +38,7 @@ class MLXrClientSession: NSObject {
     public func update(_ callback: RCTResponseSenderBlock) {
 //        let frame: ARFrame = arView.session.currentFrame
 //        let location: CLLocation =
-        let result: Bool = session.update(frame, location)
+        let result: Bool = self.session.update(frame, location)
         callback([NSNull(), result])
     }
 

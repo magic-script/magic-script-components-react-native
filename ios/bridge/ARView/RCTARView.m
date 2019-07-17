@@ -33,7 +33,6 @@
     view.autoenablesDefaultLighting = YES;
     view.rendersContinuously = YES;
     view.scene.rootNode.name = @"root";
-    // MLXRCLientSession init with view.session !important
 
 #if TARGET_IPHONE_SIMULATOR
     // Allow for basic orbit gestures if we're running in the simulator
@@ -51,6 +50,9 @@
 
     // Resgister scene in nodes manager
     [UiNodesManager.instance registerScene:view.scene];
+
+    // Tell MLXRCLientSession about the ARSession
+    [MLXRCLientSession registerSession:view.session];
 
     // Add AR view as a child
     view.translatesAutoresizingMaskIntoConstraints = NO;

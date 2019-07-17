@@ -13,25 +13,24 @@ import ARKit
 @objc(MLXrClientSession)
 class MLXrClientSession: NSObject {
 
+    static fileprivate var arSession: ARSession?
     fileprivate var session: mlxr_ios_client.MLXrClientSession?
     fileprivate var interval: TimeInterval
 
-    @objc
-    init(arSession: ARSession) {
-        session = mlxs_ios_client.MLXrClientSession(nil, arSession);
-        return self;
+    @objc public func registerARSession(_ arSession: ARSession) {
+        MLXrClientSession.arSession = arSession
     }
 
     @objc
     public func connect(address: String, deviceId: String, token: String, callback: RCTResponseSenderBlock) {
         assert(self.session != nil, "Session should not be nil")
+        session = mlxs_ios_client.MLXrClientSession(nil, MLXrClientSession.arSession);
         let result: Bool = session.connect(address, deviceId, token)
         callback([NSNull(), result])
     }
 
     func setUpdateInterval(_ interval: TimeInterval) {
         self.interval = interval
-
     }
 
     @objc

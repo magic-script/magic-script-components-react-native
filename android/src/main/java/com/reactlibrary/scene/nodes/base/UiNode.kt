@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
+import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.calculateBounds
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -25,6 +27,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
     protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
+
+    private var mBounds: Bounding? = null
 
     /**
      * A view attached to the node
@@ -49,6 +53,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         setEnabled(props)
     }
 
+
     /**
      * Attaches view to the Node (must be called after AR Core native code has been loaded)
      * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
@@ -58,9 +63,14 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         return true
     }
 
+    override fun getBounding(): Bounding? {
+        return mBounds
+    }
+
     protected abstract fun provideView(context: Context): View
 
     protected open fun onClick() {}
+
 
     private fun initView() {
         this.view = provideView(context)
@@ -105,7 +115,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                 .build()
                 .thenAccept {
                     this.renderable = it
-                    //renderable?.material?.setBoolean("doubleSided", false)
+                    this.mBounds = it.calculateBounds()
+                    //renderable?.material?.setBoolean("doubleSided", false) does not work
                     logMessage("loaded ViewRenderable")
                 }
                 .exceptionally { throwable ->

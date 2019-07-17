@@ -5,9 +5,13 @@ import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.widget.EditText
+import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.BuildConfig
+import com.reactlibrary.scene.nodes.base.TransformNode
 import java.io.Serializable
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
@@ -77,9 +81,13 @@ class Utils {
  * ==========Extension methods============
  */
 
-fun Any.logMessage(message: String) {
+fun Any.logMessage(message: String, warn: Boolean = false) {
     if (BuildConfig.DEBUG) {
-        Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
+        if (warn) {
+            Log.w("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
+        } else {
+            Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
+        }
     }
 }
 
@@ -126,6 +134,53 @@ fun Serializable.toQuaternion(): Quaternion? {
     } else {
         null
     }
+}
+
+data class Bounding(
+        var left: Float = 0f,
+        var bottom: Float = 0f,
+        var right: Float = 0f,
+        var top: Float = 0f
+)
+
+/**
+ * Calculates the bounds of a [Renderable]
+ */
+fun Renderable.calculateBounds(): Bounding {
+    // TODO add Sphere collision shape support
+    val collisionShape = collisionShape as? Box
+    return if (collisionShape != null) {
+        val left = collisionShape.center.x - collisionShape.size.x / 2
+        val right = collisionShape.center.x + collisionShape.size.x / 2
+        val top = collisionShape.center.y - collisionShape.size.y / 2
+        val bottom = collisionShape.center.y + collisionShape.size.y / 2
+        Bounding(left, bottom, right, top)
+    } else {
+        logMessage("Renderable.calculateBounding(): collision shape is null!", true)
+        Bounding(0f, 0f, 0f, 0f)
+    }
+}
+
+fun List<Node>.calculateBounds(): Bounding {
+    val bounds = Bounding(0f, 0f, 0f, 0f)
+
+    for (node in this) {
+        val childBounds = if (node is TransformNode) node.getBounding() ?: Bounding() else Bounding()
+        if (childBounds.left < bounds.left) {
+            bounds.left = childBounds.left
+        }
+        if (childBounds.right > bounds.right) {
+            bounds.right = childBounds.right
+        }
+        if (childBounds.top < bounds.top) {
+            bounds.top = childBounds.top
+        }
+        if (childBounds.bottom > bounds.bottom) {
+            bounds.bottom = childBounds.bottom
+        }
+    }
+
+    return bounds
 }
 
 fun EditText.setTextAndMoveCursor(text: String) {

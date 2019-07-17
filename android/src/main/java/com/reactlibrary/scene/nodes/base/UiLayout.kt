@@ -2,7 +2,6 @@ package com.reactlibrary.scene.nodes.base
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(props: ReadableMap) : TransformNode(props) {
@@ -20,11 +19,6 @@ abstract class UiLayout(props: ReadableMap) : TransformNode(props) {
         super.applyProperties(props)
         setSize(props)
     }
-
-    /**
-     * Add child via this method to be laid out correctly
-     */
-    abstract fun addChildToLayout(child: Node)
 
     private fun setSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH)) {

@@ -89,6 +89,15 @@ class Convert {
     static func toFileURL(_ value: Any?) -> URL? {
         guard let filePath = value as? String else { return nil }
 
+        if filePath.starts(with: "http") {
+            return URL(string: filePath)
+        }
+
+        let fileURL = URL(fileURLWithPath: filePath)
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            return fileURL
+        }
+
         let targetURL: URL = Bundle.main.bundleURL.appendingPathComponent("assets").appendingPathComponent(filePath)
         if FileManager.default.fileExists(atPath: targetURL.path) {
             return targetURL

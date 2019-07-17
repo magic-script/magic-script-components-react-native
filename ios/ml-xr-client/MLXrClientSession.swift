@@ -7,22 +7,32 @@
 //
 
 import Foundation
-
+import mlxr_ios_client
 
 @objc(MLXrClientSession)
 class MLXrClientSession: NSObject {
 
+    fileprivate var session: mlxr_ios_client.MLXrClientSession?
+    fileprivate var interval: TimeInterval
+
     @objc
     public func connect(address: String, deviceId: String, token: String, callback: RCTResponseSenderBlock) {
-        let result: Bool = true // MLXrClientSession.theSession.connect(address, deviceId, token)
+        assert(session == nil, "Session is nil")
+        session = mlxr_ios_client.MLXrClientSession()
+        let result: Bool = session.connect(address, deviceId, token)
         callback([NSNull(), result])
+    }
+
+    func setUpdateInterval(_ interval: TimeInterval) {
+        self.interval = interval
+
     }
 
     @objc
     public func update(_ callback: RCTResponseSenderBlock) {
-//        let frame: ARFrame =
+//        let frame: ARFrame = arView.session.currentFrame
 //        let location: CLLocation =
-        let result: Bool = true // MLXrClientSession.theSession.update(frame, location)
+        let result: Bool = session.update(frame, location)
         callback([NSNull(), result])
     }
 
@@ -41,20 +51,20 @@ class MLXrClientSession: NSObject {
             return
         }
 
-//        guard let anchorData: mlxr_ios_client.MLXrClientAnchorData? = MLXrClientSession.theSession.getAnchorByPcfId(uuid) else {
-//            callback([NSNull(), NSNull()])
-//            return
-//        }
+        guard let anchorData: mlxr_ios_client.MLXrClientAnchorData? = session.getAnchorByPcfId(uuid) else {
+            callback([NSNull(), NSNull()])
+            return
+        }
 
-//        let result: MLXrClientAnchorData = MLXrClientAnchorData(anchorData: anchorData)
-        let result: [String : Any] = MLXrClientAnchorData().getJsonRepresentation()
+        let result: [String : Any] = MLXrClientAnchorData(anchorData: anchorData).getJsonRepresentation()
+//        let result: [String : Any] = MLXrClientAnchorData().getJsonRepresentation()
         callback([NSNull(), result])
     }
 
     @objc
     public func getLocalizationStatus(_ callback: RCTResponseSenderBlock) {
-//        let status: MLXrClientLocalization = MLXrClientLocalization(localizationStatus: MLXrClientSession.theSession.getLocalizationStatus())
-        let status: MLXrClientLocalization = MLXrClientLocalization.localized
+        let status: MLXrClientLocalization = MLXrClientLocalization(localizationStatus: session.getLocalizationStatus())
+//        let status: MLXrClientLocalization = MLXrClientLocalization.localized
         callback([NSNull(), status.rawValue])
     }
 

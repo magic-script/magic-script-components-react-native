@@ -9,7 +9,6 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.BuildConfig
 import com.reactlibrary.scene.nodes.base.TransformNode
 import java.io.File
@@ -106,6 +105,57 @@ class Utils {
             return null
         }
 
+        /**
+         * Calculates local bounds of a node
+         */
+        fun calculateBoundsOfNode(node: Node): Bounding {
+            // TODO add Sphere collision shape support (as Sphere)
+            val collShape = node.collisionShape
+            return if (collShape != null) {
+                collShape as Box
+                val left = collShape.center.x - collShape.size.x / 2 + node.localPosition.x
+                val right = collShape.center.x + collShape.size.x / 2 + node.localPosition.x
+                val top = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
+                val bottom = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
+                Bounding(left, bottom, right, top)
+            } else {
+                Bounding(
+                        node.localPosition.x,
+                        node.localPosition.y,
+                        node.localPosition.x,
+                        node.localPosition.y
+                )
+            }
+        }
+
+        /**
+         * Calculates local bounds of group of nodes
+         * (minimum possible frame that contains all [nodes])
+         */
+        fun calculateSumBounds(nodes: List<Node>): Bounding {
+            val bounds = Bounding(0f, 0f, 0f, 0f)
+
+            for (node in nodes) {
+                val childBounds = if (node is TransformNode) node.getBounding()
+                        ?: Bounding() else Bounding()
+                if (childBounds.left < bounds.left) {
+                    bounds.left = childBounds.left
+                }
+                if (childBounds.right > bounds.right) {
+                    bounds.right = childBounds.right
+                }
+                if (childBounds.top < bounds.top) {
+                    bounds.top = childBounds.top
+                }
+                if (childBounds.bottom > bounds.bottom) {
+                    bounds.bottom = childBounds.bottom
+                }
+            }
+
+            return bounds
+        }
+
+
     }
 
 }
@@ -175,47 +225,6 @@ data class Bounding(
         var right: Float = 0f,
         var top: Float = 0f
 )
-
-/**
- * Calculates the bounds of a [Renderable]
- */
-fun Renderable.calculateBounds(): Bounding {
-    // TODO add Sphere collision shape support
-    val collisionShape = collisionShape as? Box
-    return if (collisionShape != null) {
-        val left = collisionShape.center.x - collisionShape.size.x / 2
-        val right = collisionShape.center.x + collisionShape.size.x / 2
-        val top = collisionShape.center.y - collisionShape.size.y / 2
-        val bottom = collisionShape.center.y + collisionShape.size.y / 2
-        Bounding(left, bottom, right, top)
-    } else {
-        logMessage("Renderable.calculateBounding(): collision shape is null!", true)
-        Bounding(0f, 0f, 0f, 0f)
-    }
-}
-
-fun List<Node>.calculateBounds(): Bounding {
-    val bounds = Bounding(0f, 0f, 0f, 0f)
-
-    for (node in this) {
-        val childBounds = if (node is TransformNode) node.getBounding()
-                ?: Bounding() else Bounding()
-        if (childBounds.left < bounds.left) {
-            bounds.left = childBounds.left
-        }
-        if (childBounds.right > bounds.right) {
-            bounds.right = childBounds.right
-        }
-        if (childBounds.top < bounds.top) {
-            bounds.top = childBounds.top
-        }
-        if (childBounds.bottom > bounds.bottom) {
-            bounds.bottom = childBounds.bottom
-        }
-    }
-
-    return bounds
-}
 
 fun EditText.setTextAndMoveCursor(text: String) {
     this.setText("")

@@ -10,7 +10,6 @@ import Foundation
 import SceneKit
 //import mlxr_ios_client
 
-@objc(MLXrClientAnchorData)
 class MLXrClientAnchorData: NSObject {
 //    fileprivate let anchorData: mlxr_ios_client.MLXrClientAnchorData
 //
@@ -18,7 +17,14 @@ class MLXrClientAnchorData: NSObject {
 //        self.anchorData = anchorData
 //    }
 
-    @objc
+    static public let uuidString1 = "A621E1F8-C36C-495A-93FC-0C247A3E6E5F"
+    static public let uuidString2 = "B721E1F8-C36C-495A-93FC-0C247A3E6E5F"
+    fileprivate let uuidString: String
+
+    public init(_ uuidString: String) {
+        self.uuidString = uuidString
+    }
+
     public func getState() -> String {
 //        let state: anchorData.getState()
 //        switch state {
@@ -30,7 +36,6 @@ class MLXrClientAnchorData: NSObject {
         return "tracked"
     }
 
-     @objc
     public func getConfidence() -> [String: Any] {
 //        let confidence = anchorData.getConfidence()
 //        return [
@@ -48,10 +53,23 @@ class MLXrClientAnchorData: NSObject {
 
      }
 
-    @objc
+//    var right: SCNVector3 { return SCNVector3(m11, m12, m13) }
+//    var up: SCNVector3 { return SCNVector3(m21, m22, m23) }
+//    var forward: SCNVector3 { return SCNVector3(m31, m32, m33) }
+//    var position: SCNVector3 { return SCNVector3(m41, m42, m43) }
     public func getPose() -> [Float] {
 //        let pose: simd_float4x4 = anchorData.getPose()
-        let pose: simd_float4x4 = simd_float4x4(SCNMatrix4Identity)
+
+        let matrix: SCNMatrix4
+        if uuidString == MLXrClientAnchorData.uuidString1 {
+            matrix = SCNMatrix4MakeTranslation(-0.5, 0.3, 1)
+        } else if uuidString == MLXrClientAnchorData.uuidString2 {
+            matrix = SCNMatrix4MakeTranslation(-1.5, -0.1, -2)
+        } else {
+            matrix = SCNMatrix4Identity
+        }
+        let pose: simd_float4x4 = simd_float4x4(matrix)
+
         return [
             pose[0][0], pose[1][0], pose[2][0], pose[3][0],
             pose[0][1], pose[1][1], pose[2][1], pose[3][1],
@@ -60,10 +78,9 @@ class MLXrClientAnchorData: NSObject {
         ]
     }
 
-    @objc
     public func getAnchorId() -> String {
 //        let uuid: UUID = MLXrClientAnchorData.theAnchorData.getAnchorId()
-        let uuid: UUID = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!
+        let uuid: UUID = UUID(uuidString: uuidString)!
         return uuid.uuidString
     }
 

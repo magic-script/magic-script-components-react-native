@@ -51,7 +51,7 @@
     // Resgister scene in nodes manager
     [UiNodesManager.instance registerScene:view.scene];
 
-    // Register ARSessiob in MLXrClientSession
+    // Register ARSession in MLXrClientSession
     [MLXrClientSession registerARSession:view.session];
 
     // Add AR view as a child

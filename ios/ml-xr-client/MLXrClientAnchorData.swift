@@ -53,12 +53,10 @@ class MLXrClientAnchorData: NSObject {
 
      }
 
-//    var right: SCNVector3 { return SCNVector3(m11, m12, m13) }
-//    var up: SCNVector3 { return SCNVector3(m21, m22, m23) }
-//    var forward: SCNVector3 { return SCNVector3(m31, m32, m33) }
-//    var position: SCNVector3 { return SCNVector3(m41, m42, m43) }
     public func getPose() -> [Float] {
-//        let pose: simd_float4x4 = anchorData.getPose()
+//        let anchorPose: simd_float4x4 = anchorData.getPose()
+//        let magic_rotation = simd_float4x4(simd_quatf(angle: Float.pi, axis: float3(1.0, 0, 0)))
+//        let pose: simd_float4x4 = anchorPose * magic_rotation
 
         let matrix: SCNMatrix4
         if uuidString == MLXrClientAnchorData.uuidString1 {
@@ -68,7 +66,7 @@ class MLXrClientAnchorData: NSObject {
         } else {
             matrix = SCNMatrix4Identity
         }
-        let pose: simd_float4x4 = simd_float4x4(matrix)
+        let pose = simd_float4x4(matrix)
 
         return [
             pose[0][0], pose[1][0], pose[2][0], pose[3][0],

@@ -51,8 +51,8 @@
     // Resgister scene in nodes manager
     [UiNodesManager.instance registerScene:view.scene];
 
-    // Tell MLXRCLientSession about the ARSession
-    [MLXRCLientSession registerSession:view.session];
+    // Register ARSessiob in MLXrClientSession
+    [MLXrClientSession registerARSession:view.session];
 
     // Add AR view as a child
     view.translatesAutoresizingMaskIntoConstraints = NO;

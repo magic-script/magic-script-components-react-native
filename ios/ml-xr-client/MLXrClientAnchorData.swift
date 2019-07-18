@@ -8,11 +8,11 @@
 
 import Foundation
 import SceneKit
-import mlxr_ios_client
+//import mlxr_ios_client
 
 @objc(MLXrClientAnchorData)
 class MLXrClientAnchorData: NSObject {
-    fileprivate let anchorData: mlxr_ios_client.MLXrClientAnchorData
+//    fileprivate let anchorData: mlxr_ios_client.MLXrClientAnchorData
 //
 //    public init(_ anchorData: mlxr_ios_client.MLXrClientAnchorData) {
 //        self.anchorData = anchorData

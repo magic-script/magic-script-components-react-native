@@ -3,7 +3,7 @@ package com.reactlibrary.scene.nodes
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Bounding
-import com.reactlibrary.utils.calculateBounds
+import com.reactlibrary.utils.Utils
 
 /**
  * Container for other Nodes
@@ -16,7 +16,7 @@ class GroupNode(props: ReadableMap) : TransformNode(props) {
     }
 
     override fun getBounding(): Bounding? {
-        return children.calculateBounds()
+        return Utils.calculateSumBounds(children)
     }
 }
 

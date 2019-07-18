@@ -8,7 +8,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.calculateBounds
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -27,8 +26,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
     protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
-
-    private var mBounds: Bounding? = null
 
     /**
      * A view attached to the node
@@ -64,7 +61,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     }
 
     override fun getBounding(): Bounding? {
-        return mBounds
+        return Utils.calculateBoundsOfNode(this)
     }
 
     protected abstract fun provideView(context: Context): View
@@ -115,7 +112,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                 .build()
                 .thenAccept {
                     this.renderable = it
-                    this.mBounds = it.calculateBounds()
                     //renderable?.material?.setBoolean("doubleSided", false) does not work
                     logMessage("loaded ViewRenderable")
                 }

@@ -6,9 +6,10 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.Bounding
-import com.reactlibrary.utils.calculateBounds
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
 class UiGridLayout(props: ReadableMap) : UiLayout(props) {
@@ -40,6 +41,14 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     override fun loadRenderable(): Boolean {
         // it does not contain its own renderable
         Handler().postDelayed({
+
+            children.forEachIndexed { index, node ->
+                val childBounds = if (node is TransformNode) node.getBounding()
+                        ?: Bounding() else Bounding()
+
+                logMessage("child[$index] bounds= $childBounds")
+            }
+
             val bounds = getBounding()
             logMessage("grid bounds= $bounds")
         }, 3000)
@@ -55,7 +64,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     }
 
     override fun getBounding(): Bounding? {
-        return children.calculateBounds()
+        return Utils.calculateSumBounds(children)
     }
 
     override fun addChildNode(child: Node) {

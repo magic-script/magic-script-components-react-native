@@ -64,7 +64,7 @@ class MLXrClientAnchorData: NSObject {
         if uuidString == MLXrClientAnchorData.uuidString1 {
             matrix = SCNMatrix4MakeTranslation(-0.5, 0.3, 1)
         } else if uuidString == MLXrClientAnchorData.uuidString2 {
-            matrix = SCNMatrix4MakeTranslation(-1.5, -0.1, -2)
+            matrix = SCNMatrix4MakeTranslation(-1.5, -0.1, -1)
         } else {
             matrix = SCNMatrix4Identity
         }

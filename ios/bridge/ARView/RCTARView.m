@@ -111,7 +111,7 @@
     }
 
     _configuration = [ARWorldTrackingConfiguration new];
-//    _configuration.planeDetection = ARPlaneDetectionHorizontal;
+    //    _configuration.planeDetection = ARPlaneDetectionHorizontal;
     return _configuration;
 }
 

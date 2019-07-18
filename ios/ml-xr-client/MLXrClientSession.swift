@@ -34,9 +34,9 @@ class MLXrClientSession: NSObject {
     }
 
     @objc
-    public func connect(_ address: String, deviceId: String, token: String, callback: RCTResponseSenderBlock) {
+    public func connect(_ address: String, deviceId: String, token: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         guard let arSession = MLXrClientSession.arSession else {
-            callback(["ARSession does not exist.", false])
+            reject("code", "ARSession does not exist.", nil)
             return
         }
 
@@ -44,21 +44,21 @@ class MLXrClientSession: NSObject {
 //        if let xrSession = xrClientSession {
 //            let result: Bool = xrSession.connect(address, deviceId, token)
 //            resetTimer()
-//            callback([NSNull(), result])
+//            resolve(result)
 //        } else {
-//            callback(["XrClientSession has not been initialized!", NSNull()])
+//            reject("code", "XrClientSession has not been initialized!", nil)
 //        }
 
         // Mocked response
         resetTimer()
-        callback([NSNull(), true])
+        resolve(true)
     }
 
     @objc
-    public func setUpdateInterval(_ interval: TimeInterval, callback: RCTResponseSenderBlock) {
+    public func setUpdateInterval(_ interval: TimeInterval, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         updateInterval = max(0.5, interval)
         resetTimer()
-        callback([NSNull(), true])
+        resolve(true)
     }
 
     fileprivate func resetTimer() {
@@ -94,60 +94,60 @@ class MLXrClientSession: NSObject {
     }
 
     @objc
-    public func getAllAnchors(_ callback: RCTResponseSenderBlock) {
+    public func getAllAnchors(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
 //        guard let xrSession = xrClientSession else {
-//            callback(["XrClientSession has not been initialized!", NSNull()])
+//            reject("code", "XrClientSession has not been initialized!", nil)
 //            return
 //        }
 //        let anchors: [mlxr_ios_client.MLXrClientAnchorData] = xrSession.getAllAnchors()
 //        let results: [[String : Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresenation() })
-//        callback([NSNull(), results])
+//        resolve(results)
 
         // Mocked response
         let anchors: [String] = [MLXrClientAnchorData.uuidString1, MLXrClientAnchorData.uuidString2, "ABCDE1F8-C36C-495A-93FC-8C247A3E6E5F"]
         let results: [[String : Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresentation() })
-        callback([NSNull(), results])
+        resolve(results)
     }
 
     @objc
-    public func getAnchorByPcfId(id: String, callback: RCTResponseSenderBlock) {
-//        guard let uuid = UUID(uuidString: id) else {
-//            callback(["Incorrect PCF id", NSNull()])
+    public func getAnchorByPcfId(pcfId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+//        guard let uuid = UUID(uuidString: pcfId) else {
+//            reject("code", "Incorrect PCF id", nil)
 //            return
 //        }
 //
 //        guard let xrSession = xrClientSession else {
-//            callback(["XrClientSession has not been initialized!", NSNull()])
+//            reject("code", "XrClientSession has not been initialized!", nil)
 //            return
 //        }
 //
 //        guard let anchorData = xrSession.getAnchorByPcfId(uuid) else {
 //            // Achor data does not exist for given PCF id
-//            callback([NSNull(), NSNull()])
+//            resolve(nil)
 //            return
 //        }
 //
 //        let result: [String : Any] = MLXrClientAnchorData(anchorData: anchorData).getJsonRepresentation()
-//        callback([NSNull(), result])
+//        resolve(result])
 
         // Mocked response
         let result: [String : Any] = MLXrClientAnchorData("A621E1F8-C36C-495A-93FC-0C247A3E6E5F").getJsonRepresentation()
-        callback([NSNull(), result])
+        resolve(result)
     }
 
     @objc
-    public func getLocalizationStatus(_ callback: RCTResponseSenderBlock) {
+    public func getLocalizationStatus(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
 //        guard let xrSession = xrClientSession else {
-//            callback(["XrClientSession has not been initialized!", NSNull()])
+//            reject("code", "XrClientSession has not been initialized!", nil)
 //            return
 //        }
 //
 //        let status: MLXrClientLocalization = MLXrClientLocalization(localizationStatus: xrSession.getLocalizationStatus())
-//        callback([NSNull(), status.rawValue])
+//        resolve(status.rawValue)
 
         // Mocked response
         let status: MLXrClientLocalization = MLXrClientLocalization.localized
-        callback([NSNull(), status.rawValue])
+        resolve(status.rawValue)
     }
 
     @objc

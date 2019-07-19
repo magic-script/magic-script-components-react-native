@@ -14,31 +14,24 @@ import SceneKit
         get { return labelNode.text }
         set { labelNode.text = newValue }
     }
-
     @objc var textColor: UIColor = UIColor.white {
         didSet {
             labelNode.textColor = textColor
             reloadOutline = true
         }
     }
-
     @objc var iconColor: UIColor = UIColor.white
-
     @objc var textSize: CGFloat {
         get { return labelNode.textSize }
         set { labelNode.textSize = newValue }
     }
-
     @objc var iconSize: CGFloat = 0.1
-
     @objc var width: CGFloat = 0 {
         didSet { reloadOutline = true }
     }
-
     @objc var height: CGFloat = 0 {
         didSet { reloadOutline = true }
     }
-
     @objc var roundness: CGFloat = 0.5 {
         didSet { reloadOutline = true }
     }

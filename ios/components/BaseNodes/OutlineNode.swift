@@ -15,28 +15,26 @@ import SpriteKit
     let height: CGFloat
     let cornerRadius: CGFloat
     let lineWidth: CGFloat
-
-    var color: UIColor = UIColor.white {
-        didSet { outlineNode?.strokeColor = color }
-    }
+    let color: UIColor
 
     fileprivate var outlineNode: SKShapeNode!
 
-    @objc init(width: CGFloat, height: CGFloat, cornerRadius: CGFloat, lineWidth: CGFloat = 0.005) {
-        let radius: CGFloat = min(0.5 * min(width, height), 5)
+    @objc init(width: CGFloat, height: CGFloat, cornerRadius: CGFloat, lineWidth: CGFloat = 0.005, color: UIColor = UIColor.white) {
         self.width = width
         self.height = height
-        self.cornerRadius = radius
+        self.cornerRadius = cornerRadius
         self.lineWidth = lineWidth
+        self.color = color
         super.init()
         setupNode()
     }
 
-    @objc init(contentSize: CGSize, cornerRadius: CGFloat, lineWidth: CGFloat = 5) {
+    @objc init(contentSize: CGSize, cornerRadius: CGFloat, lineWidth: CGFloat = 0.005, color: UIColor = UIColor.white) {
         self.width = contentSize.width
         self.height = contentSize.height
         self.cornerRadius = cornerRadius
         self.lineWidth = lineWidth
+        self.color = color
         super.init()
         setupNode()
     }
@@ -46,6 +44,7 @@ import SpriteKit
         self.height = 0
         self.cornerRadius = 0
         self.lineWidth = 0
+        self.color = UIColor.white
         super.init(coder: aDecoder)
         setupNode()
     }

@@ -47,6 +47,8 @@ import SceneKit
         super.setupNode()
         labelNode = LabelNode()
         addChildNode(labelNode)
+
+//        setOriginVisible(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -81,5 +83,9 @@ import SceneKit
 //        }
 
         labelNode.reload()
+    }
+
+    @objc override func getSize() -> CGSize {
+        return labelNode.getSize()
     }
 }

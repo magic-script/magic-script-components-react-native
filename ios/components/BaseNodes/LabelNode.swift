@@ -35,6 +35,7 @@ class LabelNode: SCNNode {
     fileprivate var labelGeometry: SCNText!
     fileprivate var label: UILabel!
     fileprivate var labelNode: SCNNode!
+    fileprivate var borderNode: OutlineNode!
     fileprivate var reloadNeeded: Bool = false
     fileprivate let useGeometry: Bool = true
 
@@ -133,10 +134,14 @@ class LabelNode: SCNNode {
     func getSize() -> CGSize {
         guard let text = text, !text.isEmpty else { return boundsSize }
 
+        if boundsSize.width > 0 && boundsSize.height > 0 {
+            return boundsSize
+        }
+
         let scale: CGFloat = useGeometry ? (textSize / LabelNode.geometryFixedTextSizeInMeters) : 1.0
         let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : getFont()])
-        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : ceil(Measures.meters(from: preferredSizeInPixels.width) * scale)
-        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : ceil(Measures.meters(from: preferredSizeInPixels.height) * scale)
+        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : (ceil(preferredSizeInPixels.width) * scale)
+        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : (ceil(preferredSizeInPixels.height) * scale)
         return CGSize(width: width, height: height)
     }
 
@@ -172,11 +177,26 @@ class LabelNode: SCNNode {
     }
 
     fileprivate func updateTextNodePosition() {
-        DispatchQueue.main.async() { [weak self] in
-            guard let strongSelf = self else { return }
-            let textBBox = strongSelf.labelNode.boundingBox
-            let textBBoxCenter: SCNVector3 = 0.5 * (textBBox.max + textBBox.min)
-            strongSelf.labelNode.pivot = SCNMatrix4MakeTranslation(textBBoxCenter.x, textBBoxCenter.y, textBBoxCenter.z)
+        let size = getSize()
+        #if targetEnvironment(simulator)
+//        borderNode?.removeFromParentNode()
+//        borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
+//        addChildNode(borderNode)
+        #endif
+
+        if boundsSize.width > 0 {
+            labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+        } else {
+            switch textAlignment {
+            case .left:
+                labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
+                borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
+            case .center, .justify:
+                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+            case .right:
+                labelNode.position = SCNVector3(-size.width, -0.5 * size.height, 0)
+                borderNode?.position = SCNVector3(-0.5 * size.width, 0, 0)
+            }
         }
     }
 }

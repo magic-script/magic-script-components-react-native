@@ -18,7 +18,7 @@ import SceneKit
     @objc var textColor: UIColor = UIColor.white {
         didSet {
             labelNode.textColor = textColor
-            outlineNode?.color = textColor
+            reloadOutline = true
         }
     }
 
@@ -31,14 +31,12 @@ import SceneKit
 
     @objc var iconSize: CGFloat = 0.1
 
-    @objc var width: CGFloat {
-        get { return labelNode.boundsSize.width }
-        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true }
+    @objc var width: CGFloat = 0 {
+        didSet { reloadOutline = true }
     }
 
-    @objc var height: CGFloat {
-        get { return labelNode.boundsSize.height }
-        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true }
+    @objc var height: CGFloat = 0 {
+        didSet { reloadOutline = true }
     }
 
     @objc var roundness: CGFloat = 0.5 {
@@ -133,13 +131,22 @@ import SceneKit
         }
     }
 
+    @objc override func getSize() -> CGSize {
+        let labelSize = labelNode.getSize()
+        let margin: CGFloat = 0.01
+        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * margin
+        let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * margin
+        return CGSize(width: contentWidth, height: contentHeight)
+    }
+
     fileprivate func reloadOutlineNode() {
-        let size = labelNode.boundsSize
+        let size = getSize()
 
         outlineNode?.removeFromParentNode()
-//        let sizeInMeters = getPrefferedSize()
+
         let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
         let thickness: CGFloat = min(0.01 * min(size.width, size.height), 0.005)
+        guard thickness > 0 else { return }
         outlineNode = OutlineNode(contentSize: size, cornerRadius: radius, lineWidth: thickness)
         contentNode.addChildNode(outlineNode)
     }

@@ -48,7 +48,7 @@ import SceneKit
     @objc var onTap: ((_ sender: UiNode) -> (Void))?
 
     fileprivate var contentNode: SCNNode!
-    fileprivate var outlineNode: OutlineNode?
+    fileprivate var outlineNode: OutlineNode!
     fileprivate var labelNode: LabelNode!
     fileprivate var reloadOutline: Bool = true
 
@@ -128,6 +128,7 @@ import SceneKit
 
         labelNode.reload()
         if reloadOutline {
+            reloadOutline = false
             reloadOutlineNode()
         }
     }
@@ -140,18 +141,7 @@ import SceneKit
         let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
         let thickness: CGFloat = min(0.01 * min(size.width, size.height), 0.005)
         outlineNode = OutlineNode(contentSize: size, cornerRadius: radius, lineWidth: thickness)
-
-//        borderNode?.removeFromParentNode()
-//        let rect: CGRect = CGRect(origin: CGPoint.zero, size: size)
-//        let radius: CGFloat = 0.5 * min(rect.width, rect.height) * roundness
-//        let thickness: CGFloat = min(0.01 * min(rect.width, rect.height), 0.005)
-//        borderGeometry = SCNRectangle(rect: rect, thickness: thickness, radius: radius)
-//        borderGeometry.firstMaterial?.diffuse.contents = textColor
-//        borderGeometry.firstMaterial?.isDoubleSided = true
-//        borderNode = SCNNode(geometry: borderGeometry)
-//        contentNode.addChildNode(borderNode)
-//
-//        borderNode.position = SCNVector3(-width / 2, -height / 2, 0)
+        contentNode.addChildNode(outlineNode)
     }
 }
 

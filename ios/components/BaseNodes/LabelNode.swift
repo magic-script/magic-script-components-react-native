@@ -99,9 +99,10 @@ class LabelNode: SCNNode {
     fileprivate func updateLabelContents() {
         if useGeometry {
             let scale = textSize / LabelNode.geometryFixedTextSizeInMeters
-            let size = CGSize(width: boundsSize.width / scale, height: boundsSize.height / scale)
             labelGeometry.string = text
-            labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
+            let size = getSize()
+            let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
+            labelGeometry.containerFrame = rect
             labelGeometry.firstMaterial?.diffuse.contents = textColor
             labelGeometry.isWrapped = wrap
             labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
@@ -132,9 +133,10 @@ class LabelNode: SCNNode {
     func getSize() -> CGSize {
         guard let text = text, !text.isEmpty else { return boundsSize }
 
+        let scale: CGFloat = useGeometry ? (textSize / LabelNode.geometryFixedTextSizeInMeters) : 1.0
         let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : getFont()])
-        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : Measures.meters(from: preferredSizeInPixels.width)
-        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : Measures.meters(from: preferredSizeInPixels.height)
+        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : ceil(Measures.meters(from: preferredSizeInPixels.width) * scale)
+        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : ceil(Measures.meters(from: preferredSizeInPixels.height) * scale)
         return CGSize(width: width, height: height)
     }
 

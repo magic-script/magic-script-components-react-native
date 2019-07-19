@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.os.Handler
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.collision.Box
-import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
+import com.reactlibrary.scene.nodes.layouts.manager.FixedGridManager
+import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
 import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
@@ -20,38 +21,46 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_ROWS = "rows"
         const val PROP_ITEM_PADDING = "itemPadding"
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
+
+        private const val COLUMNS_DEFAULT = 2
+        private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
     }
 
-    private var columns: Int = 2
-    private var rows: Int? = null
-    private var padding = 0.0 // in meters
-    private var childIdx = 0
+    var itemHorizontalAlignment = Alignment.Horizontal.CENTER
+        private set
 
-    private var itemHorizontalAlignment = HorizontalAlignment.CENTER
-    private var itemVerticalAlignment = VerticalAlignment.CENTER
+    var itemVerticalAlignment = Alignment.Vertical.CENTER
+        private set
 
-    private enum class HorizontalAlignment {
-        LEFT, CENTER, RIGHT
-    }
+    private var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
 
-    private enum class VerticalAlignment {
-        TOP, CENTER, BOTTOM
+    private var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
+
+    private var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
+
+    private var layoutManager: LayoutManager
+
+    init {
+        layoutManager = if (width == 0.0) {
+            FlexGridManager(this, columns, padding)
+        } else {
+            FixedGridManager(this, columns, padding)
+        }
     }
 
     override fun loadRenderable(): Boolean {
-        // it does not contain its own renderable
+
+        // TODO remove handler (for tests only)
         Handler().postDelayed({
-
             children.forEachIndexed { index, node ->
-                val childBounds = if (node is TransformNode) node.getBounding()
-                        ?: Bounding() else Bounding()
-
+                val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
                 logMessage("child[$index] bounds= $childBounds")
             }
 
             val bounds = getBounding()
             logMessage("grid bounds= $bounds")
         }, 3000)
+
         return false
     }
 
@@ -63,50 +72,12 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         setItemAlignment(props)
     }
 
-    override fun getBounding(): Bounding? {
-        return Utils.calculateSumBounds(children)
+    override fun getBounding(): Bounding {
+        return Utils.calculateBounds(children)
     }
 
     override fun addChildNode(child: Node) {
-        addChild(child)
-        val columnWidth = width / columns
-        val columnHeight = columnWidth // TODO
-        val paddingSum = (columns - 1) * padding
-        val startX = -width / 2 - paddingSum / 2
-        val startY = 0
-        val col = childIdx % columns
-        val row = childIdx / columns
-
-        var x = startX + col * columnWidth
-        var y = startY - row * columnHeight
-
-        if (col > 0) {
-            x += col * padding
-        }
-        if (row > 0) {
-            y -= row * padding
-        }
-
-        // TODO in order to apply alignment the item's width and height must be known
-        if (itemHorizontalAlignment == HorizontalAlignment.CENTER) {
-            x += columnWidth / 2
-        }
-
-        if (itemVerticalAlignment == VerticalAlignment.CENTER) {
-            y -= columnHeight / 2
-        }
-
-        child.localPosition = Vector3(x.toFloat(), y.toFloat(), child.localPosition.z)
-        logMessage("addChildToLayout idx=$childIdx, x=$x, y=$y, width=$width, columns=$columns, colWidth=$columnWidth")
-
-        // TODO wait until renderable of a child is attached and get the
-        // child size using collisionShape
-        val collisionShape = child.renderable?.collisionShape as? Box
-        if (collisionShape != null) {
-            logMessage("child size=${collisionShape.size}")
-        }
-
-        childIdx++
+        layoutManager.addNode(child)
     }
 
     private fun setColumns(props: Bundle) {
@@ -139,8 +110,8 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
             if (alignment.size == 2) {
                 val horizontalAlign = alignment[0]
                 val verticalAlign = alignment[1]
-                itemHorizontalAlignment = HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
-                itemVerticalAlignment = VerticalAlignment.valueOf(verticalAlign.toUpperCase())
+                itemHorizontalAlignment = Alignment.Horizontal.valueOf(horizontalAlign.toUpperCase())
+                itemVerticalAlignment = Alignment.Vertical.valueOf(verticalAlign.toUpperCase())
             }
         }
     }

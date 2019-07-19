@@ -15,8 +15,8 @@ class GroupNode(props: ReadableMap) : TransformNode(props) {
         return false
     }
 
-    override fun getBounding(): Bounding? {
-        return Utils.calculateSumBounds(children)
+    override fun getBounding(): Bounding {
+        return Utils.calculateBounds(children)
     }
 }
 

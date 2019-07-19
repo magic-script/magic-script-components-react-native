@@ -60,7 +60,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         return true
     }
 
-    override fun getBounding(): Bounding? {
+    override fun getBounding(): Bounding {
         return Utils.calculateBoundsOfNode(this)
     }
 

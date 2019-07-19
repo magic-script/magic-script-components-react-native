@@ -9,11 +9,17 @@ abstract class UiLayout(props: ReadableMap) : TransformNode(props) {
     companion object {
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+
+        private const val DEFAULT_WIDTH = 0.0
+        private const val DEFAULT_HEIGHT = 0.0
     }
 
-    // Zero or less means the dimensions fits to the content
-    protected var width: Double = 0.0 // in meters
-    protected var height: Double = 0.0 // in meters
+    // Zero or less means the dimensions fit to the content
+    var width: Double = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH) // in meters
+        private set
+
+    var height: Double = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT) // in meters
+        private set
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)

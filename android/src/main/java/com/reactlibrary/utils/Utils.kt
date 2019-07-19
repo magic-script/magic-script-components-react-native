@@ -132,12 +132,11 @@ class Utils {
          * Calculates local bounds of group of nodes
          * (minimum possible frame that contains all [nodes])
          */
-        fun calculateSumBounds(nodes: List<Node>): Bounding {
+        fun calculateBounds(nodes: List<Node>): Bounding {
             val bounds = Bounding(0f, 0f, 0f, 0f)
 
             for (node in nodes) {
-                val childBounds = if (node is TransformNode) node.getBounding()
-                        ?: Bounding() else Bounding()
+                val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
                 if (childBounds.left < bounds.left) {
                     bounds.left = childBounds.left
                 }
@@ -219,6 +218,9 @@ fun Serializable.toQuaternion(): Quaternion? {
     }
 }
 
+/**
+ * Represents border of the node
+ */
 data class Bounding(
         var left: Float = 0f,
         var bottom: Float = 0f,

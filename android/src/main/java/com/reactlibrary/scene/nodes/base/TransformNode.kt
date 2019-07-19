@@ -50,7 +50,11 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         addChild(child)
     }
 
-    abstract fun getBounding(): Bounding?
+    /**
+     * Returns 2D (x, y) bounding of the node - the minimum rectangle
+     * that include the node
+     */
+    abstract fun getBounding(): Bounding
 
     /**
      * Builds the node by calling [applyProperties] with all initial properties

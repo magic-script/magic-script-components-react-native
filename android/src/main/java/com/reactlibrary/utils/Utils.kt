@@ -106,7 +106,7 @@ class Utils {
         }
 
         /**
-         * Calculates local bounds of a node
+         * Calculates local bounds of a node using collision shape
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
             // TODO add Sphere collision shape support (as Sphere)
@@ -136,7 +136,12 @@ class Utils {
             val bounds = Bounding(0f, 0f, 0f, 0f)
 
             for (node in nodes) {
-                val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
+                val childBounds = if (node is TransformNode) {
+                    node.getBounding()
+                } else {
+                    calculateBoundsOfNode(node)
+                }
+
                 if (childBounds.left < bounds.left) {
                     bounds.left = childBounds.left
                 }
@@ -153,7 +158,6 @@ class Utils {
 
             return bounds
         }
-
 
     }
 

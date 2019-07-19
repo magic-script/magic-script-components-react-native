@@ -21,6 +21,8 @@ class FlexGridManager(private val grid: UiGridLayout,
     private val columnsWidthMap = mutableMapOf<Int, Double>() // index, column width
 
     init {
+        // TODO remove and re-layout children every some period
+        // TODO  (implement it inside GridLayout)
         Handler().postDelayed({
             for (i in 0 until grid.children.size) {
                 layoutNode(i, grid.children[i])
@@ -38,39 +40,36 @@ class FlexGridManager(private val grid: UiGridLayout,
         val col = index % columns
         val row = index / columns
 
-        var cellWidth = columnsWidthMap[col] ?: 0.0
+        var columnWidth = columnsWidthMap[col] ?: 0.0
         val nodeBounds = Utils.calculateBoundsOfNode(node)
         logMessage("bounds=$nodeBounds")
         val nodeWidth = nodeBounds.right - nodeBounds.left
-        if (nodeWidth > cellWidth) {
-            cellWidth = nodeWidth.toDouble()
-            columnsWidthMap[col] = cellWidth
+        if (nodeWidth > columnWidth) {
+            columnWidth = nodeWidth.toDouble()
+            columnsWidthMap[col] = columnWidth
         }
 
-        val cellHeight = abs(nodeBounds.bottom - nodeBounds.top).toDouble()
+        val nodeHeight = abs(nodeBounds.bottom - nodeBounds.top).toDouble()
 
-        val paddingSum = (columns - 1) * padding
-        val startX = -grid.width / 2 - paddingSum / 2
+        // TODO center entire grid every time new child is added ?
         val startY = 0
 
+        var x = getCellX(col)
+        var y = startY - row * nodeHeight
 
-        var x = startX + col * cellWidth
-        var y = startY - row * cellHeight
-
-        if (col > 0) {
-            x += col * padding
-        }
         if (row > 0) {
             y -= row * padding
         }
 
-        // TODO in order to apply alignment the item's width and height must be known
+        // applying only horizontal alignment
+
+        // TODO check node's own alignment (if node position x != (right - left / 2), add proper shift)
         if (grid.itemHorizontalAlignment == Alignment.Horizontal.CENTER) {
-            x += cellWidth / 2
+            x += (columnWidth - nodeWidth) / 2 //shift node to the center
         }
 
-        if (grid.itemVerticalAlignment == Alignment.Vertical.CENTER) {
-            y -= cellHeight / 2
+        if (grid.itemHorizontalAlignment == Alignment.Horizontal.RIGHT) {
+            x += columnWidth - nodeWidth
         }
 
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
@@ -80,7 +79,16 @@ class FlexGridManager(private val grid: UiGridLayout,
                 "y=$y, " +
                 "width=${grid.width}," +
                 " columns=$columns," +
-                " colWidth=$cellWidth")
+                " colWidth=$columnWidth")
+    }
+
+    // return the starting position of cell at given index
+    private fun getCellX(columnIdx: Int): Double {
+        var x = 0.0
+        for (i in 0 until columnIdx) {
+            x += columnsWidthMap[i] ?: 0.0 + padding
+        }
+        return x
     }
 
 }

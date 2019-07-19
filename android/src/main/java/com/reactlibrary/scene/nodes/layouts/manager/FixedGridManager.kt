@@ -19,15 +19,15 @@ class FixedGridManager(private val grid: UiGridLayout,
 
     override fun addNode(node: Node) {
         grid.addChild(node)
-        val cellWidth = grid.width / columns
-        val cellHeight = cellWidth // TODO
+        val columnWidth = grid.width / columns
+        val cellHeight = columnWidth // TODO
         val paddingSum = (columns - 1) * padding
         val startX = -grid.width / 2 - paddingSum / 2
         val startY = 0
         val col = childIdx % columns
         val row = childIdx / columns
 
-        var x = startX + col * cellWidth
+        var x = startX + col * columnWidth
         var y = startY - row * cellHeight
 
         if (col > 0) {
@@ -39,11 +39,11 @@ class FixedGridManager(private val grid: UiGridLayout,
 
         // TODO in order to apply alignment the item's width and height must be known
         if (grid.itemHorizontalAlignment == Alignment.Horizontal.CENTER) {
-            x += cellWidth / 2
+            x += columnWidth / 2 // TODO calculate bias as inside FlexGridManager
         }
 
         if (grid.itemVerticalAlignment == Alignment.Vertical.CENTER) {
-            y -= cellHeight / 2
+            y -= cellHeight / 2 // TODO calculate bias as inside FlexGridManager
         }
 
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
@@ -53,7 +53,7 @@ class FixedGridManager(private val grid: UiGridLayout,
                 "y=$y, " +
                 "width=${grid.width}," +
                 " columns=$columns," +
-                " colWidth=$cellWidth")
+                " colWidth=$columnWidth")
 
         childIdx++
     }

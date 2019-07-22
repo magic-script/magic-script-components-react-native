@@ -34,7 +34,7 @@ export class PlatformFactory extends NativeFactory {
                 const onPressEvents = events.filter(item => item.name === eventName);
                 onPressEvents.forEach(item => {
                     console.log(`[EVENTS] ${eventName} received: ${elementId}\nitem: `, item);
-                    item.handler();
+                    item.handler(sender);
                 });
             }
         });

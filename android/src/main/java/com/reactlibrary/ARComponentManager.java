@@ -30,6 +30,7 @@ import java.util.Map;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Android module that is responisble for "parsing" JS tags in order to generate AR Nodes
@@ -250,8 +251,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         });
     }
 
-
-    // TODO separate react method for onClick ?
     @ReactMethod
     public void addOnPressEventHandler(final String nodeId) {
         mainHandler.post(new Runnable() {
@@ -271,6 +270,29 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
 
                             sendEvent("onPress", pressParams);
                             sendEvent("onClick", clickParams);
+                            return Unit.INSTANCE;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnTextChangedEventHandler(final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final Node node = UiNodesManager.findNodeWithId(nodeId);
+                if (node instanceof UiTextEditNode) {
+                    ((UiTextEditNode) node).setTextChangedListener(new Function1<String, Unit>() {
+                        @Override
+                        public Unit invoke(String text) {
+                            WritableMap params = Arguments.createMap();
+                            params.putString("nodeId", nodeId);
+                            params.putString("text", text);
+
+                            sendEvent("onTextChanged", params);
                             return Unit.INSTANCE;
                         }
                     });

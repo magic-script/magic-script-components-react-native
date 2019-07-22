@@ -37,6 +37,8 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
     }
 
+    var textChangedListener: ((text: String) -> Unit)? = null
+
     private var cursorVisible = false
     private var text = ""
     private var hint = ""
@@ -229,7 +231,11 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         builder.setView(nativeEditText)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            setText(input.text.toString())
+            val txt = input.text.toString()
+            if (txt != text) {
+                setText(txt)
+                textChangedListener?.invoke(txt)
+            }
         }
         builder.setNegativeButton(android.R.string.cancel, null)
 

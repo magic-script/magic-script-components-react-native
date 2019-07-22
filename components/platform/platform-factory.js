@@ -23,6 +23,7 @@ export class PlatformFactory extends NativeFactory {
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent('onPress');
         this.startListeningEvent('onClick');
+        this.startListeningEvent('onTextChanged');
     }
 
     startListeningEvent(eventName) {
@@ -44,7 +45,11 @@ export class PlatformFactory extends NativeFactory {
     registerEvent(elementId, name, handler) {
         if (elementId === undefined) { return; }
 
-        this.componentManager.addOnPressEventHandler(elementId);
+        if (name === 'onClick' || name === 'onPress') {
+            this.componentManager.addOnPressEventHandler(elementId);
+        } else if (name === 'onTextChanged') {
+            this.componentManager.addOnTextChangedEventHandler(elementId);
+        }
 
         const pair = { name, handler };
         var events = this.eventsByElementId[elementId];

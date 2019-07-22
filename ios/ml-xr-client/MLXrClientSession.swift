@@ -49,7 +49,7 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
     static public func registerARSession(_ arSession: ARSession) {
         MLXrClientSession.arSession = arSession
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastLocation = locations.last
     }
@@ -60,8 +60,8 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
             reject("code", "ARSession does not exist.", nil)
             return
         }
-//        print(mlxr_ios_client.mlxr_ios_clientVersionNumber);
-        xrClientSession = mlxr_ios_client.MLXrClientSession(authToken: OpaquePointer(bitPattern:0), session: arSession);
+
+        xrClientSession = mlxr_ios_client.MLXrClientSession(authToken: OpaquePointer(bitPattern: 0), session: arSession)
         if let xrSession = xrClientSession {
             let result: Bool = xrSession.connect(address: address, deviceId: deviceId, token: token)
             resetTimer()
@@ -93,30 +93,27 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
     }
 
     fileprivate func update() {
-//        print("MLXrClientSession update")
         guard let xrSession = xrClientSession else {
             print("no mlxr session avaiable")
             return
         }
-    
+
         guard let currentLocation = lastLocation else {
             print("current locationb is not available")
             return
         }
-        
+
         guard let frame = MLXrClientSession.arSession?.currentFrame else {
             print("no ar frame available")
             return
         }
-        let _ = xrSession.update(frame: frame, location: currentLocation)
-//        print("ARFrame[\(frame.timestamp)]: \(frame)")
+        _ = xrSession.update(frame: frame, location: currentLocation)
     }
-    
-    
+
     func makeRotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
         return unsafeBitCast(GLKMatrix4MakeRotation(radians, x, y, z), to: float4x4.self)
     }
-    
+
     func rotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
         return makeRotate(radians: radians, x, y, z)
     }
@@ -128,22 +125,22 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
             return
         }
         let anchors: [mlxr_ios_client.MLXrClientAnchorData] = xrSession.getAllAnchors()
-        let results: [[String : Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresentation() })
+        let results: [[String: Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresentation() })
         resolve(results)
-        
+
         if let currentAnchors = MLXrClientSession.arSession?.currentFrame?.anchors {
             for anchor in currentAnchors {
                 MLXrClientSession.arSession?.remove(anchor: anchor)
             }
         }
         let magic_rotation = rotate(radians: 3.14, 1.0, 0, 0)
-        
+
         // Only add unique anchors to the list, for existing ones just update the pose.
         for anchor in anchors {
             guard let pose = anchor.getPose() else { continue }
-            
+
             let pcf_transform = pose * magic_rotation
-            
+
             let testAnchor = ARAnchor(name: anchor.getAnchorId()?.uuidString ?? "DEFAULT", transform: pcf_transform)
             MLXrClientSession.arSession?.add(anchor: testAnchor)
         }
@@ -175,7 +172,7 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
 //        resolve(result])
 
         // Mocked response
-        let result: [String : Any] = MLXrClientAnchorData("A621E1F8-C36C-495A-93FC-0C247A3E6E5F").getJsonRepresentation()
+        let result: [String: Any] = MLXrClientAnchorData("A621E1F8-C36C-495A-93FC-0C247A3E6E5F").getJsonRepresentation()
         resolve(result)
     }
 

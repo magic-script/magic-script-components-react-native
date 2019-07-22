@@ -66,7 +66,6 @@
 }
 
 - (SCNNode*) renderer:(id<SCNSceneRenderer>)renderer nodeForAnchor:(ARAnchor *)anchor {
-    
     UiNodesManager *nodesManager = UiNodesManager.instance;
     TransformNode* node = [nodesManager findNodeWithAnchorUuid:anchor.name];
     return node;

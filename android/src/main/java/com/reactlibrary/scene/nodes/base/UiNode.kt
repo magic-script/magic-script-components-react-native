@@ -24,7 +24,14 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     var clickListener: (() -> Unit)? = null
 
+    /**
+     * Defines a horizontal alignment of the renderable
+     */
     protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
+
+    /**
+     * Defines a vertical alignment of the renderable
+     */
     protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
 
     /**
@@ -121,7 +128,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                 }
     }
 
-    private fun setSize(props: Bundle) {
+    protected open fun setSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             // cannot update renderable before [isRenderableAttached],
             // because Sceneform may be uninitialized yet

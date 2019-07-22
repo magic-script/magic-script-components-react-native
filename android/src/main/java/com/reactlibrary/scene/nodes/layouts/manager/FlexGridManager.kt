@@ -63,6 +63,10 @@ class FlexGridManager(private val grid: UiGridLayout,
 
         // applying only horizontal alignment
 
+        val nodePos = node.localPosition.x
+        val boundsCenter = (nodeBounds.right - nodeBounds.left) / 2
+        logMessage("nodePos=$nodePos bounds center=$boundsCenter")
+
         // TODO check node's own alignment (if node position x != (right - left / 2), add proper shift)
         if (grid.itemHorizontalAlignment == Alignment.Horizontal.CENTER) {
             x += (columnWidth - nodeWidth) / 2 //shift node to the center

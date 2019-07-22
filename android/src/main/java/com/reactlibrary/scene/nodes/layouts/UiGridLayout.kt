@@ -7,7 +7,6 @@ import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
-import com.reactlibrary.scene.nodes.layouts.manager.FixedGridManager
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
 import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
@@ -41,11 +40,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     private var layoutManager: LayoutManager
 
     init {
-        layoutManager = if (width == 0.0) {
-            FlexGridManager(this, columns, padding)
-        } else {
-            FixedGridManager(this, columns, padding)
-        }
+        layoutManager = FlexGridManager(this, columns, padding)
     }
 
     override fun loadRenderable(): Boolean {
@@ -105,7 +100,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
     private fun setItemAlignment(props: Bundle) {
         if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
-            // TODO check the alignment array format
+            // TODO check the alignment array format with docs
             val alignment = props.getSerializable(PROP_ITEM_ALIGNMENT) as ArrayList<String>
             if (alignment.size == 2) {
                 val horizontalAlign = alignment[0]

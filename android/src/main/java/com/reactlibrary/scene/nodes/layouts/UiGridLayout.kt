@@ -2,6 +2,7 @@ package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.Alignment
@@ -39,14 +40,23 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
     private var layoutManager: LayoutManager
 
+    // we should re-draw the grid after adding / removing a child
+    private var shouldRedraw = false
+
+    private var handler = Handler(Looper.getMainLooper())
+
+    // child index, bounding
+    private val childrenBounds = mutableMapOf<Int, Bounding>()
+
     init {
-        layoutManager = FlexGridManager(this, columns, padding)
+        layoutManager = FlexGridManager(this, columns, rows, padding)
+        layoutLoop()
     }
 
     override fun loadRenderable(): Boolean {
 
-        // TODO remove handler (for tests only)
-        Handler().postDelayed({
+        // for tests only
+        handler.postDelayed({
             children.forEachIndexed { index, node ->
                 val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
                 logMessage("child[$index] bounds= $childBounds")
@@ -72,7 +82,37 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     }
 
     override fun addChildNode(child: Node) {
-        layoutManager.addNode(child)
+        addChild(child)
+        shouldRedraw = true
+    }
+
+    // re-draws the grid if needed
+    private fun layoutLoop() {
+        handler.postDelayed({
+            measureChildren()
+            if (shouldRedraw) {
+                layoutManager.layoutChildren(children, childrenBounds)
+                shouldRedraw = false
+                logMessage("grid redraw")
+            }
+            layoutLoop()
+        }, 100)
+    }
+
+    private fun measureChildren() {
+        for (i in 0 until children.size) {
+            val node = children[i]
+            val previousBounds = childrenBounds[i]
+            childrenBounds[i] = if (node is TransformNode) {
+                node.getBounding()
+            } else {
+                Utils.calculateBoundsOfNode(node)
+            }
+            // TODO equals method should not be exact?
+            if (childrenBounds[i] != previousBounds) {
+                shouldRedraw = true
+            }
+        }
     }
 
     private fun setColumns(props: Bundle) {
@@ -81,30 +121,31 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
             if (columns <= 0) {
                 columns = 1
             }
-            logMessage("setting columns: $columns")
+            shouldRedraw = true
         }
     }
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
             this.rows = props.getDouble(PROP_ROWS).toInt()
-            logMessage("setting rows: $rows")
+            shouldRedraw = true
         }
     }
 
     private fun setItemPadding(props: Bundle) {
         if (props.containsKey(PROP_ITEM_PADDING)) {
             this.padding = props.getDouble(PROP_ITEM_PADDING)
+            shouldRedraw = true
         }
     }
 
     private fun setItemAlignment(props: Bundle) {
-        if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
-            // TODO check the alignment array format with docs
-            val alignment = props.getSerializable(PROP_ITEM_ALIGNMENT) as ArrayList<String>
-            if (alignment.size == 2) {
-                val horizontalAlign = alignment[0]
-                val verticalAlign = alignment[1]
+        val alignment = props.getString(PROP_ITEM_ALIGNMENT)
+        if (alignment != null) {
+            val alignmentArray = alignment.split("-")
+            if (alignmentArray.size == 2) {
+                val horizontalAlign = alignmentArray[0]
+                val verticalAlign = alignmentArray[1]
                 itemHorizontalAlignment = Alignment.Horizontal.valueOf(horizontalAlign.toUpperCase())
                 itemVerticalAlignment = Alignment.Vertical.valueOf(verticalAlign.toUpperCase())
             }

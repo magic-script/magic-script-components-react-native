@@ -130,9 +130,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected open fun setSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            // cannot update renderable before [isRenderableAttached],
+            // cannot update renderable before [renderableRequested],
             // because Sceneform may be uninitialized yet
-            if (isRenderableAttached) {
+            if (renderableRequested) {
                 replacingView = true
                 // in order to resize the view have to be rebuild
                 build()

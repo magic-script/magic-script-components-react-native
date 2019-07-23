@@ -34,10 +34,10 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
 
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
-            // cannot update the ModelRenderable before [isRenderableAttached],
+            // cannot update the ModelRenderable before [renderableRequested],
             // because Sceneform may be uninitialized yet
             // (loadRenderable may have not been called)
-            if (isRenderableAttached) {
+            if (renderableRequested) {
                 loadModel()
             }
         }

@@ -1,12 +1,11 @@
 package com.reactlibrary.scene.nodes.layouts.manager
 
-import android.os.Handler
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -15,41 +14,35 @@ import com.reactlibrary.utils.logMessage
  */
 class FlexGridManager(private val grid: UiGridLayout,
                       private val columns: Int,
-                      private val padding: Double) : LayoutManager {
+                      private val rows: Int,
+                      private val padding: Double
+) : LayoutManager {
 
     // <index, column width> pairs
     private val columnsWidthMap = mutableMapOf<Int, Double>()
 
-    init {
-        // TODO remove and re-layout children every some period
-        // TODO  (implement it inside GridLayout)
-        Handler().postDelayed({
-            for (i in 0 until grid.children.size) {
-                layoutNode(i, grid.children[i])
+    override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
+        columnsWidthMap.clear()
+        for (i in 0 until children.size) {
+            val col = i % columns
+            val bounds = childrenBounds[i]!!
+            val nodeWidth = bounds.right - bounds.left
+            if (nodeWidth > columnsWidthMap[col] ?: 0.0) {
+                columnsWidthMap[col] = nodeWidth.toDouble()
             }
-        }, 3000)
+        }
+        for (i in 0 until children.size) {
+            layoutNode(i, children[i], childrenBounds[i]!!)
+        }
     }
 
-    override fun addNode(node: Node) {
-        grid.addChild(node)
-        val index = grid.children.size - 1
-        layoutNode(index, node)
-    }
-
-    private fun layoutNode(index: Int, node: Node) {
+    // sets the proper position for the child node
+    private fun layoutNode(index: Int, node: Node, nodeBounds: Bounding) {
         val col = index % columns
         val row = index / columns
-
-        var columnWidth = columnsWidthMap[col] ?: 0.0 // without padding
-        val nodeBounds = Utils.calculateBoundsOfNode(node)
-        logMessage("bounds=$nodeBounds")
+        // TODO pre-fill column width array
+        val columnWidth = columnsWidthMap[col] ?: 0.0 // without padding
         val nodeWidth = nodeBounds.right - nodeBounds.left
-        if (nodeWidth > columnWidth) {
-            columnWidth = nodeWidth.toDouble()
-            columnsWidthMap[col] = columnWidth
-        }
-
-        // TODO center entire grid every time new child is added
 
         // calculating x position for a child
         val boundsCenter = nodeBounds.left + nodeWidth / 2
@@ -69,7 +62,7 @@ class FlexGridManager(private val grid: UiGridLayout,
             }
         }
 
-        logMessage("child[$index], width=$nodeWidth, columnWidth=$columnWidth boundsCenter=$boundsCenter, pivotOffset=$pivotOffset, align=${grid.itemHorizontalAlignment}")
+        logMessage("child[$index], width=$nodeWidth, columnWidth=$columnWidth, bounds=$nodeBounds, boundsCenter=$boundsCenter, pivotOffset=$pivotOffset")
 
         // calculating y position for a child
         val startY = 0
@@ -81,8 +74,7 @@ class FlexGridManager(private val grid: UiGridLayout,
         }
 
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
-
-        logMessage("addChildToLayout idx=$index")
+        logMessage("columnsWidthMap=$columnsWidthMap")
     }
 
     // returns the starting position of a column at the given index (includes padding)

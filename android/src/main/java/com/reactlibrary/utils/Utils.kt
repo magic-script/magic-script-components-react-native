@@ -106,7 +106,7 @@ class Utils {
         }
 
         /**
-         * Calculates local bounds of a node using collision shape
+         * Calculates local bounds of a node using its collision shape
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
             // TODO add Sphere collision shape support (as Sphere)

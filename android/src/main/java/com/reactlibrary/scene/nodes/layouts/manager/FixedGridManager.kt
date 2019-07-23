@@ -2,7 +2,6 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
 import com.reactlibrary.utils.logMessage
@@ -37,14 +36,7 @@ class FixedGridManager(private val grid: UiGridLayout,
             y -= row * padding
         }
 
-        // TODO in order to apply alignment the item's width and height must be known
-        if (grid.itemHorizontalAlignment == Alignment.Horizontal.CENTER) {
-            x += columnWidth / 2 // TODO calculate bias as inside FlexGridManager
-        }
-
-        if (grid.itemVerticalAlignment == Alignment.Vertical.CENTER) {
-            y -= cellHeight / 2 // TODO calculate bias as inside FlexGridManager
-        }
+        // TODO alignment
 
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
 

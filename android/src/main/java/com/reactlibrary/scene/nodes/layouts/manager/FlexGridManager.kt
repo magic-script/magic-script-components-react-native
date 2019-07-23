@@ -8,17 +8,17 @@ import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
-import kotlin.math.abs
 
 /**
- * Grid manager for a grid layout with flexible columns' width
- * (when width of the grid is not specified)
+ * Grid manager for a grid layout with flexible columns' width.
+ * Columns will grow to fit the content
  */
 class FlexGridManager(private val grid: UiGridLayout,
                       private val columns: Int,
                       private val padding: Double) : LayoutManager {
 
-    private val columnsWidthMap = mutableMapOf<Int, Double>() // index, column width
+    // <index, column width> pairs
+    private val columnsWidthMap = mutableMapOf<Int, Double>()
 
     init {
         // TODO remove and re-layout children every some period
@@ -40,7 +40,7 @@ class FlexGridManager(private val grid: UiGridLayout,
         val col = index % columns
         val row = index / columns
 
-        var columnWidth = columnsWidthMap[col] ?: 0.0
+        var columnWidth = columnsWidthMap[col] ?: 0.0 // without padding
         val nodeBounds = Utils.calculateBoundsOfNode(node)
         logMessage("bounds=$nodeBounds")
         val nodeWidth = nodeBounds.right - nodeBounds.left
@@ -49,45 +49,44 @@ class FlexGridManager(private val grid: UiGridLayout,
             columnsWidthMap[col] = columnWidth
         }
 
-        val nodeHeight = abs(nodeBounds.bottom - nodeBounds.top).toDouble()
+        // TODO center entire grid every time new child is added
 
-        // TODO center entire grid every time new child is added ?
+        // calculating x position for a child
+        val boundsCenter = nodeBounds.left + nodeWidth / 2
+        val pivotOffset = node.localPosition.x - boundsCenter // aligning according to center pivot
+
+        val x = when (grid.itemHorizontalAlignment) {
+            Alignment.Horizontal.LEFT -> {
+                getColumnX(col) + nodeWidth / 2 + pivotOffset
+            }
+
+            Alignment.Horizontal.CENTER -> {
+                getColumnX(col) + columnWidth / 2 + pivotOffset
+            }
+
+            Alignment.Horizontal.RIGHT -> {
+                getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffset
+            }
+        }
+
+        logMessage("child[$index], width=$nodeWidth, columnWidth=$columnWidth boundsCenter=$boundsCenter, pivotOffset=$pivotOffset, align=${grid.itemHorizontalAlignment}")
+
+        // calculating y position for a child
         val startY = 0
-
-        var x = getCellX(col)
+        val nodeHeight = 0.07 // abs(nodeBounds.bottom - nodeBounds.top).toDouble()
         var y = startY - row * nodeHeight
 
         if (row > 0) {
             y -= row * padding
         }
 
-        // applying only horizontal alignment
-
-        val nodePos = node.localPosition.x
-        val boundsCenter = (nodeBounds.right - nodeBounds.left) / 2
-        logMessage("nodePos=$nodePos bounds center=$boundsCenter")
-
-        // TODO check node's own alignment (if node position x != (right - left / 2), add proper shift)
-        if (grid.itemHorizontalAlignment == Alignment.Horizontal.CENTER) {
-            x += (columnWidth - nodeWidth) / 2 //shift node to the center
-        }
-
-        if (grid.itemHorizontalAlignment == Alignment.Horizontal.RIGHT) {
-            x += columnWidth - nodeWidth
-        }
-
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
 
-        logMessage("addChildToLayout idx=$index, " +
-                "x=$x, " +
-                "y=$y, " +
-                "width=${grid.width}," +
-                " columns=$columns," +
-                " colWidth=$columnWidth")
+        logMessage("addChildToLayout idx=$index")
     }
 
-    // return the starting position of cell at given index
-    private fun getCellX(columnIdx: Int): Double {
+    // returns the starting position of a column at the given index (includes padding)
+    private fun getColumnX(columnIdx: Int): Double {
         var x = 0.0
         for (i in 0 until columnIdx) {
             x += columnsWidthMap[i] ?: 0.0 + padding

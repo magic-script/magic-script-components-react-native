@@ -39,7 +39,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onPress", @"onClick"];
+    return @[@"onPress", @"onClick", @"onTextChanged"];
 }
 
 - (void)onPressEventReceived:(UiNode *)sender {

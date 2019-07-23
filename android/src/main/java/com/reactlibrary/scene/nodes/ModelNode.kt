@@ -28,8 +28,7 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
     }
 
     override fun getBounding(): Bounding {
-        // TODO calculate bounding the same way as inside UiNode
-        return Bounding()
+        return Utils.calculateBoundsOfNode(this)
     }
 
     private fun setModelPath(props: Bundle) {

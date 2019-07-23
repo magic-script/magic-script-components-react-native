@@ -25,16 +25,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     var clickListener: (() -> Unit)? = null
 
     /**
-     * Defines a horizontal alignment of the renderable
-     */
-    protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
-
-    /**
-     * Defines a vertical alignment of the renderable
-     */
-    protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
-
-    /**
      * A view attached to the node
      */
     protected lateinit var view: View
@@ -73,8 +63,21 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected abstract fun provideView(context: Context): View
 
-    protected open fun onClick() {}
+    /**
+     * Should return desired horizontal alignment of the renderable
+     */
+    protected open fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.CENTER
+    }
 
+    /**
+     * Should return desired vertical alignment of the renderable
+     */
+    protected open fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
+        return ViewRenderable.VerticalAlignment.CENTER
+    }
+
+    protected open fun onClick() {}
 
     private fun initView() {
         this.view = provideView(context)
@@ -114,8 +117,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         ViewRenderable
                 .builder()
                 .setView(context, view)
-                .setHorizontalAlignment(horizontalAlignment)
-                .setVerticalAlignment(verticalAlignment)
+                .setHorizontalAlignment(getHorizontalAlignment())
+                .setVerticalAlignment(getVerticalAlignment())
                 .build()
                 .thenAccept {
                     this.renderable = it

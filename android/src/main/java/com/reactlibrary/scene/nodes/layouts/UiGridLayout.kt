@@ -26,17 +26,20 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
     }
 
+    var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
+        private set
+
+    var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
+        private set
+
+    var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
+        private set
+
     var itemHorizontalAlignment = Alignment.Horizontal.CENTER
         private set
 
     var itemVerticalAlignment = Alignment.Vertical.CENTER
         private set
-
-    private var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
-
-    private var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
-
-    private var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
 
     private var layoutManager: LayoutManager
 
@@ -49,7 +52,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     init {
-        layoutManager = FlexGridManager(this, columns, rows, padding)
+        layoutManager = FlexGridManager(this)
         layoutLoop()
     }
 
@@ -78,7 +81,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     }
 
     override fun getBounding(): Bounding {
-        return Utils.calculateBounds(children)
+        return Utils.calculateSumBounds(children)
     }
 
     override fun addChildNode(child: Node) {

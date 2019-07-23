@@ -59,9 +59,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     init {
-        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
-        verticalAlignment = ViewRenderable.VerticalAlignment.TOP
-
         // set default values of properties
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
@@ -112,6 +109,14 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setCharacterSpacing(props)
         setMultiline(props)
         setTextPadding(props)
+    }
+
+    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.LEFT
+    }
+
+    override fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
+        return ViewRenderable.VerticalAlignment.TOP
     }
 
     private fun setText(props: Bundle) {

@@ -12,11 +12,7 @@ import com.reactlibrary.utils.logMessage
  * Grid manager for a grid layout with flexible columns' width.
  * Columns will grow to fit the content
  */
-class FlexGridManager(private val grid: UiGridLayout,
-                      private val columns: Int,
-                      private val rows: Int,
-                      private val padding: Double
-) : LayoutManager {
+class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
     // <index, column width> pairs
     private val columnsWidthMap = mutableMapOf<Int, Double>()
@@ -24,7 +20,7 @@ class FlexGridManager(private val grid: UiGridLayout,
     override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
         columnsWidthMap.clear()
         for (i in 0 until children.size) {
-            val col = i % columns
+            val col = i % grid.columns
             val bounds = childrenBounds[i]!!
             val nodeWidth = bounds.right - bounds.left
             if (nodeWidth > columnsWidthMap[col] ?: 0.0) {
@@ -38,9 +34,9 @@ class FlexGridManager(private val grid: UiGridLayout,
 
     // sets the proper position for the child node
     private fun layoutNode(index: Int, node: Node, nodeBounds: Bounding) {
-        val col = index % columns
-        val row = index / columns
-        // TODO pre-fill column width array
+        val col = index % grid.columns
+        val row = index / grid.columns
+
         val columnWidth = columnsWidthMap[col] ?: 0.0 // without padding
         val nodeWidth = nodeBounds.right - nodeBounds.left
 
@@ -70,18 +66,17 @@ class FlexGridManager(private val grid: UiGridLayout,
         var y = startY - row * nodeHeight
 
         if (row > 0) {
-            y -= row * padding
+            y -= row * grid.padding
         }
 
         node.localPosition = Vector3(x.toFloat(), y.toFloat(), node.localPosition.z)
-        logMessage("columnsWidthMap=$columnsWidthMap")
     }
 
     // returns the starting position of a column at the given index (includes padding)
     private fun getColumnX(columnIdx: Int): Double {
         var x = 0.0
         for (i in 0 until columnIdx) {
-            x += columnsWidthMap[i] ?: 0.0 + padding
+            x += (columnsWidthMap[i] ?: 0.0) + grid.padding
         }
         return x
     }

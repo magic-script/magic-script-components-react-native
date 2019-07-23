@@ -31,8 +31,6 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     }
 
     init {
-        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
-
         // set default values of properties
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
@@ -62,6 +60,10 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
             props.putDouble(PROP_HEIGHT, bounds[1])
         }
         super.setSize(props)
+    }
+
+    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.LEFT
     }
 
     private fun setText(properties: Bundle) {

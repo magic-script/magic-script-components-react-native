@@ -109,22 +109,17 @@ class Utils {
          * Calculates local bounds of a node using its collision shape
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
-            // TODO add Sphere collision shape support (as Sphere)
+            // TODO add Sphere collision shape support (there are 2 types of possible shapes)
             val collShape = node.collisionShape
-            return if (collShape != null) {
-                collShape as Box
+            return if (collShape is Box) {
                 val left = collShape.center.x - collShape.size.x / 2 + node.localPosition.x
                 val right = collShape.center.x + collShape.size.x / 2 + node.localPosition.x
                 val top = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
                 val bottom = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
                 Bounding(left, bottom, right, top)
             } else {
-                Bounding(
-                        node.localPosition.x,
-                        node.localPosition.y,
-                        node.localPosition.x,
-                        node.localPosition.y
-                )
+                // default
+                Bounding(node.localPosition.x, node.localPosition.y, node.localPosition.x, node.localPosition.y)
             }
         }
 
@@ -132,7 +127,7 @@ class Utils {
          * Calculates local bounds of group of nodes
          * (minimum possible frame that contains all [nodes])
          */
-        fun calculateBounds(nodes: List<Node>): Bounding {
+        fun calculateSumBounds(nodes: List<Node>): Bounding {
             val bounds = Bounding(0f, 0f, 0f, 0f)
 
             for (node in nodes) {

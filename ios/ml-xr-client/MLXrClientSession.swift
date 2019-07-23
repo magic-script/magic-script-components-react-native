@@ -12,7 +12,7 @@ import ARKit
 import CoreLocation
 
 @objc(MLXrClientSession)
-class MLXrClientSession: NSObject, CLLocationManagerDelegate {
+class MLXrClientSession: NSObject {
 
     static fileprivate weak var arSession: ARSession?
     fileprivate var xrClientSession: mlxr_ios_client.MLXrClientSession?
@@ -21,8 +21,7 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
     fileprivate let locationManager = CLLocationManager()
     fileprivate var internalLocation: CLLocation!
     fileprivate let internalLocationQueue: DispatchQueue = DispatchQueue(label: "internalLocationQueue")
-
-    var lastLocation: CLLocation! {
+    fileprivate var lastLocation: CLLocation? {
         get {
             return internalLocationQueue.sync { internalLocation }
         }
@@ -37,21 +36,15 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
-        print("MLXrClientSession initialized by React Native.")
     }
 
     deinit {
         timer?.invalidate()
-        print("MLXrClientSession deinitialized by React Native.")
     }
 
     @objc
     static public func registerARSession(_ arSession: ARSession) {
         MLXrClientSession.arSession = arSession
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.last
     }
 
     @objc
@@ -85,7 +78,6 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
             }
             return
         }
-        print("MLXrClientSession resetTimer")
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true, block: { [weak self] _ in
             self?.update()
@@ -99,7 +91,7 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
         }
 
         guard let currentLocation = lastLocation else {
-            print("current locationb is not available")
+            print("current location is not available")
             return
         }
 
@@ -110,44 +102,30 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
         _ = xrSession.update(frame: frame, location: currentLocation)
     }
 
-    func makeRotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
-        return unsafeBitCast(GLKMatrix4MakeRotation(radians, x, y, z), to: float4x4.self)
-    }
-
-    func rotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
-        return makeRotate(radians: radians, x, y, z)
-    }
-
     @objc
     public func getAllAnchors(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         guard let xrSession = xrClientSession else {
             reject("code", "XrClientSession has not been initialized!", nil)
             return
         }
-        let anchors: [mlxr_ios_client.MLXrClientAnchorData] = xrSession.getAllAnchors()
-        let results: [[String: Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresentation() })
-        resolve(results)
+        let allAnchors: [mlxr_ios_client.MLXrClientAnchorData] = xrSession.getAllAnchors()
+        let uniqueAnchors: [MLXrClientAnchorData] = allAnchors.map { MLXrClientAnchorData($0) }
 
+        // Remove current local anchors
         if let currentAnchors = MLXrClientSession.arSession?.currentFrame?.anchors {
             for anchor in currentAnchors {
                 MLXrClientSession.arSession?.remove(anchor: anchor)
             }
         }
-        let magic_rotation = rotate(radians: 3.14, 1.0, 0, 0)
 
         // Only add unique anchors to the list, for existing ones just update the pose.
-        for anchor in anchors {
-            guard let pose = anchor.getPose() else { continue }
-
-            let pcf_transform = pose * magic_rotation
-
-            let testAnchor = ARAnchor(name: anchor.getAnchorId()?.uuidString ?? "DEFAULT", transform: pcf_transform)
+        for anchor in uniqueAnchors {
+            let testAnchor = ARAnchor(name: anchor.getAnchorId(), transform: anchor.getMagicPose())
             MLXrClientSession.arSession?.add(anchor: testAnchor)
         }
-        // Mocked response
-        //let anchors: [String] = [MLXrClientAnchorData.uuidString1, MLXrClientAnchorData.uuidString2, "ABCDE1F8-C36C-495A-93FC-8C247A3E6E5F"]
-        //let results: [[String : Any]] = anchors.map({ MLXrClientAnchorData($0).getJsonRepresentation() })
-        //resolve(results)
+
+        let results: [[String: Any]] = uniqueAnchors.map { $0.getJsonRepresentation() }
+        resolve(results)
     }
 
     @objc
@@ -170,29 +148,28 @@ class MLXrClientSession: NSObject, CLLocationManagerDelegate {
 //
 //        let result: [String : Any] = MLXrClientAnchorData(anchorData: anchorData).getJsonRepresentation()
 //        resolve(result])
-
-        // Mocked response
-        let result: [String: Any] = MLXrClientAnchorData("A621E1F8-C36C-495A-93FC-0C247A3E6E5F").getJsonRepresentation()
-        resolve(result)
     }
 
     @objc
     public func getLocalizationStatus(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-//        guard let xrSession = xrClientSession else {
-//            reject("code", "XrClientSession has not been initialized!", nil)
-//            return
-//        }
-//
-//        let status: MLXrClientLocalization = MLXrClientLocalization(localizationStatus: xrSession.getLocalizationStatus())
-//        resolve(status.rawValue)
+        guard let xrSession = xrClientSession else {
+            reject("code", "XrClientSession has not been initialized!", nil)
+            return
+        }
 
-        // Mocked response
-        let status: MLXrClientLocalization = MLXrClientLocalization.localized
+        let status: MLXrClientLocalization = MLXrClientLocalization(localizationStatus: xrSession.getLocalizationStatus())
         resolve(status.rawValue)
     }
 
     @objc
     static func requiresMainQueueSetup() -> Bool {
         return true
+    }
+}
+
+// CLLocationManagerDelegate
+extension MLXrClientSession: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        lastLocation = locations.last
     }
 }

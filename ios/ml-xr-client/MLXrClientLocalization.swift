@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import mlxr_ios_client
 
 @objc enum MLXrClientLocalization : Int {
     case awaitingLocation
@@ -44,18 +45,16 @@ import Foundation
         }
     }
 
-//    public init?(localizationStatus: mlxr_ios_client.MLXrClientLocalization.LocalizationStatus) {
-//        switch localizationStatus {
-//        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.AwaitingLocation:
-//            self = .awaitingLocation
-//        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.ScanningLocation:
-//            self = .scanningLocation
-//        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.Localized:
-//            self = .localized
-//        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.LocalizationFailed:
-//            self = .localizationFailed
-//        default:
-//            return nil
-//        }
-//    }
+    public init(localizationStatus: mlxr_ios_client.MLXrClientLocalization.LocalizationStatus) {
+        switch localizationStatus {
+        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.AwaitingLocation:
+            self = .awaitingLocation
+        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.ScanningLocation:
+            self = .scanningLocation
+        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.Localized:
+            self = .localized
+        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.LocalizationFailed:
+            self = .localizationFailed
+        }
+    }
 }

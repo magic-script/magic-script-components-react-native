@@ -15,16 +15,6 @@ class MLXrClientAnchorData: NSObject {
 
     public init(_ anchorData: mlxr_ios_client.MLXrClientAnchorData) {
         self.anchorData = anchorData
-        self.uuidString = anchorData.getAnchorId()?.uuidString ?? ""
-    }
-
-    static public let uuidString1 = "A621E1F8-C36C-495A-93FC-0C247A3E6E5F"
-    static public let uuidString2 = "B721E1F8-C36C-495A-93FC-0C247A3E6E5F"
-    fileprivate let uuidString: String
-
-    public init(_ uuidString: String) {
-        self.uuidString = uuidString
-        self.anchorData = nil
     }
 
     public func getState() -> String {
@@ -40,27 +30,19 @@ class MLXrClientAnchorData: NSObject {
     }
 
     public func getConfidence() -> [String: Any] {
-        let confidence = anchorData.getConfidence()
+        guard let confidence = anchorData.getConfidence() else {
+            return [:]
+        }
         return [
-            "confidence": confidence?.confidence,
-            "validRadiusM": confidence?.validRadiusM,
-            "rotationErrDeg": confidence?.rotationErrDeg,
-            "translationErrM": confidence?.translationErrM
+            "confidence": confidence.confidence,
+            "validRadiusM": confidence.validRadiusM,
+            "rotationErrDeg": confidence.rotationErrDeg,
+            "translationErrM": confidence.translationErrM
         ]
     }
 
-    func makeRotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
-        return unsafeBitCast(GLKMatrix4MakeRotation(radians, x, y, z), to: float4x4.self)
-    }
-
-    func rotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
-        return makeRotate(radians: radians, x, y, z)
-    }
-
     public func getPose() -> [Float] {
-        let origPose: simd_float4x4 = anchorData.getPose()
-        let magic_rotation = rotate(radians: 3.14, 1.0, 0, 0)
-        let pose = origPose * magic_rotation
+        let pose = getMagicPose()
         return [
             pose[0][0], pose[1][0], pose[2][0], pose[3][0],
             pose[0][1], pose[1][1], pose[2][1], pose[3][1],
@@ -69,8 +51,12 @@ class MLXrClientAnchorData: NSObject {
         ]
     }
 
+    public func getMagicPose() -> simd_float4x4 {
+        return anchorData.getPose() * MLXrClientAnchorData.magic_rotation
+    }
+
     public func getAnchorId() -> String {
-        return anchorData.getAnchorId()?.uuidString ?? ""
+        return anchorData.getAnchorId()?.uuidString ?? "DEFAULT"
     }
 
     @objc public func getJsonRepresentation() -> [String: Any] {
@@ -81,4 +67,17 @@ class MLXrClientAnchorData: NSObject {
             "anchorId": getAnchorId()
         ]
     }
+}
+
+// Magic rotation
+extension MLXrClientAnchorData {
+    static fileprivate func makeRotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
+        return unsafeBitCast(GLKMatrix4MakeRotation(radians, x, y, z), to: float4x4.self)
+    }
+
+    static fileprivate func rotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
+        return makeRotate(radians: radians, x, y, z)
+    }
+
+    static public let magic_rotation: simd_float4x4 = rotate(radians: 3.14, 1.0, 0, 0)
 }

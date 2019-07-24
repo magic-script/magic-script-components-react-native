@@ -43,6 +43,8 @@ import SceneKit
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
 
+    fileprivate var originNode: SCNNode?
+
     @objc override init() {
         super.init()
         setupNode()
@@ -91,5 +93,23 @@ import SceneKit
 
     @objc func getSize() -> CGSize {
         return CGSize.zero
+    }
+
+    @objc func setOriginVisible(_ visible: Bool) {
+        guard visible else {
+            originNode?.removeFromParentNode()
+            return
+        }
+
+        if originNode == nil {
+            let sphere = SCNSphere(radius: 0.01)
+            sphere.segmentCount = 4
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.diffuse.contents = UIColor.yellow
+            originNode = SCNNode(geometry: sphere)
+        }
+
+        guard let originNode = originNode else { return }
+        addChildNode(originNode)
     }
 }

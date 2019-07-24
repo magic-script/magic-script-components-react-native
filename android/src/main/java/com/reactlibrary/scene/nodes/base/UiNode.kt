@@ -24,9 +24,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     var clickListener: (() -> Unit)? = null
 
-    protected var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
-    protected var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
-
     /**
      * A view attached to the node
      */
@@ -60,14 +57,27 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         return true
     }
 
-    override fun getBounding(): Bounding? {
+    override fun getBounding(): Bounding {
         return Utils.calculateBoundsOfNode(this)
     }
 
     protected abstract fun provideView(context: Context): View
 
-    protected open fun onClick() {}
+    /**
+     * Should return desired horizontal alignment of the renderable
+     */
+    protected open fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.CENTER
+    }
 
+    /**
+     * Should return desired vertical alignment of the renderable
+     */
+    protected open fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
+        return ViewRenderable.VerticalAlignment.CENTER
+    }
+
+    protected open fun onClick() {}
 
     private fun initView() {
         this.view = provideView(context)
@@ -107,8 +117,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         ViewRenderable
                 .builder()
                 .setView(context, view)
-                .setHorizontalAlignment(horizontalAlignment)
-                .setVerticalAlignment(verticalAlignment)
+                .setHorizontalAlignment(getHorizontalAlignment())
+                .setVerticalAlignment(getVerticalAlignment())
                 .build()
                 .thenAccept {
                     this.renderable = it
@@ -121,11 +131,11 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                 }
     }
 
-    private fun setSize(props: Bundle) {
+    protected open fun setSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            // cannot update renderable before [isRenderableAttached],
+            // cannot update renderable before [renderableRequested],
             // because Sceneform may be uninitialized yet
-            if (isRenderableAttached) {
+            if (renderableRequested) {
                 replacingView = true
                 // in order to resize the view have to be rebuild
                 build()

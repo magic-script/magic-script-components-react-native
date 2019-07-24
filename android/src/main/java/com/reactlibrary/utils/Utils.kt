@@ -13,6 +13,7 @@ import com.reactlibrary.BuildConfig
 import com.reactlibrary.scene.nodes.base.TransformNode
 import java.io.File
 import java.io.Serializable
+import kotlin.math.abs
 
 // By default, every 250dp for the view becomes 1 meter for the renderable
 // https://developers.google.com/ar/develop/java/sceneform/create-renderables
@@ -106,25 +107,20 @@ class Utils {
         }
 
         /**
-         * Calculates local bounds of a node
+         * Calculates local bounds of a node using its collision shape
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
-            // TODO add Sphere collision shape support (as Sphere)
+            // TODO add Sphere collision shape support (there are 2 types of possible shapes)
             val collShape = node.collisionShape
-            return if (collShape != null) {
-                collShape as Box
+            return if (collShape is Box) {
                 val left = collShape.center.x - collShape.size.x / 2 + node.localPosition.x
                 val right = collShape.center.x + collShape.size.x / 2 + node.localPosition.x
-                val top = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
-                val bottom = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
+                val top = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
+                val bottom = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
                 Bounding(left, bottom, right, top)
             } else {
-                Bounding(
-                        node.localPosition.x,
-                        node.localPosition.y,
-                        node.localPosition.x,
-                        node.localPosition.y
-                )
+                // default
+                Bounding(node.localPosition.x, node.localPosition.y, node.localPosition.x, node.localPosition.y)
             }
         }
 
@@ -136,18 +132,22 @@ class Utils {
             val bounds = Bounding(0f, 0f, 0f, 0f)
 
             for (node in nodes) {
-                val childBounds = if (node is TransformNode) node.getBounding()
-                        ?: Bounding() else Bounding()
+                val childBounds = if (node is TransformNode) {
+                    node.getBounding()
+                } else {
+                    calculateBoundsOfNode(node)
+                }
+
                 if (childBounds.left < bounds.left) {
                     bounds.left = childBounds.left
                 }
                 if (childBounds.right > bounds.right) {
                     bounds.right = childBounds.right
                 }
-                if (childBounds.top < bounds.top) {
+                if (childBounds.top > bounds.top) {
                     bounds.top = childBounds.top
                 }
-                if (childBounds.bottom > bounds.bottom) {
+                if (childBounds.bottom < bounds.bottom) {
                     bounds.bottom = childBounds.bottom
                 }
             }
@@ -219,12 +219,33 @@ fun Serializable.toQuaternion(): Quaternion? {
     }
 }
 
+/**
+ * Represents border of the node
+ */
 data class Bounding(
         var left: Float = 0f,
         var bottom: Float = 0f,
         var right: Float = 0f,
         var top: Float = 0f
-)
+) {
+    companion object {
+
+        private const val eps = 1e-5 //epsilon
+
+        /**
+         * Compares 2 boundings and returns true if they are the same
+         * with the accuracy of [eps]
+         */
+        fun equalInexact(a: Bounding, b: Bounding): Boolean {
+            return abs(a.left - b.left) < eps
+                    && abs(a.right - b.right) < eps
+                    && abs(a.bottom - b.bottom) < eps
+                    && abs(a.top - b.top) < eps
+
+        }
+
+    }
+}
 
 fun EditText.setTextAndMoveCursor(text: String) {
     this.setText("")

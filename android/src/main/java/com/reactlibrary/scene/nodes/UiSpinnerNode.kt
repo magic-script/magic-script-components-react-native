@@ -38,20 +38,14 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
         return view
     }
 
-    override fun applyProperties(props: Bundle) {
-        // firstly override width and height, because spinner uses the [size] instead
-        setSize(props)
-        super.applyProperties(props)
-        //apply other properties here
-    }
-
-    private fun setSize(props: Bundle) {
+    override fun setSize(props: Bundle) {
+        // convert size to WIDTH and HEIGHT to be sized correctly by the parent method
         if (props.containsKey(PROP_SIZE)) {
             val size = properties.getDouble(PROP_SIZE)
             props.putDouble(PROP_WIDTH, size)
             props.putDouble(PROP_HEIGHT, size)
         }
+        super.setSize(props)
     }
-
 
 }

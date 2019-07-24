@@ -4,7 +4,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -22,7 +21,7 @@ object UiNodesManager {
         arReady = true
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
-            if (!node.isRenderableAttached) {
+            if (!node.renderableRequested) {
                 node.attachRenderable()
             }
         }
@@ -50,7 +49,7 @@ object UiNodesManager {
         nodesById[nodeId] = node
         logMessage("register node: $node")
 
-        if (arReady && !node.isRenderableAttached) {
+        if (arReady && !node.renderableRequested) {
             node.attachRenderable()
         }
     }

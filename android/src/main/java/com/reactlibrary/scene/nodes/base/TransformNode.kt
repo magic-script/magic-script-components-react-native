@@ -43,14 +43,18 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      * Return true if already tried to attach the renderable (view or model),
      * otherwise false
      */
-    var isRenderableAttached = false
+    var renderableRequested = false
         private set
 
     open fun addChildNode(child: Node) {
         addChild(child)
     }
 
-    abstract fun getBounding(): Bounding?
+    /**
+     * Returns 2D (x, y) bounding of the node - the minimum rectangle
+     * that include the node
+     */
+    abstract fun getBounding(): Bounding
 
     /**
      * Builds the node by calling [applyProperties] with all initial properties
@@ -87,7 +91,7 @@ abstract class TransformNode(props: ReadableMap) : Node() {
      * Should attach renderable to the node (view or model)
      */
     fun attachRenderable() {
-        isRenderableAttached = loadRenderable()
+        renderableRequested = loadRenderable()
     }
 
     /** Should assign renderable to the node (if any)

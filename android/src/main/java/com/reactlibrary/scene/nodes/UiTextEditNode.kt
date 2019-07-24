@@ -37,12 +37,13 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
     }
 
+    var textChangedListener: ((text: String) -> Unit)? = null
+
     private var cursorVisible = false
     private var text = ""
     private var hint = ""
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
-
 
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
@@ -58,9 +59,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     init {
-        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
-        verticalAlignment = ViewRenderable.VerticalAlignment.TOP
-
         // set default values of properties
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
@@ -90,6 +88,11 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             val activity = ArViewManager.getActivityRef().get()
             if (activity != null) {
                 startCursorAnimation()
+                view.text_edit_underline.visibility = View.INVISIBLE
+                view.background = context.getDrawable(R.drawable.text_edit_outline)
+                val paddingLeft = if (multiline) 15 else 10
+                view.setPadding(paddingLeft, 5, 10, 5)
+                view.text_edit.setTextColor(textColor)
                 showInputDialog(activity)
             }
         }
@@ -108,22 +111,38 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setTextPadding(props)
     }
 
+    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.LEFT
+    }
+
+    override fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
+        return ViewRenderable.VerticalAlignment.TOP
+    }
+
     private fun setText(props: Bundle) {
         val text = props.getString(PROP_TEXT)
         if (text != null) {
-            view.text_edit.text = generateVisibleText(text)
-            view.text_edit.setTextColor(textColor) // clear hint color
-            this.text = text
+            setText(text)
         }
+    }
+
+    private fun setText(txt: String) {
+        view.text_edit.text = generateVisibleText(txt)
+        view.text_edit.setTextColor(textColor) // clear hint color
+        this.text = txt
     }
 
     private fun setHint(props: Bundle) {
         val hint = props.getString(PROP_HINT)
         if (hint != null) {
-            this.hint = hint
-            view.text_edit.text = hint
-            view.text_edit.setTextColor(context.getColor(R.color.text_color_hint))
+            setHint(hint)
         }
+    }
+
+    private fun setHint(hint: String) {
+        this.hint = hint
+        view.text_edit.text = hint
+        view.text_edit.setTextColor(context.getColor(R.color.text_color_hint))
     }
 
     private fun setTextSize(props: Bundle) {
@@ -201,19 +220,27 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private fun showInputDialog(context: Context) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.input_dialog_title)
-        val viewInflated = LayoutInflater.from(context).inflate(R.layout.edit_text_2d, null)
-        val input = viewInflated.findViewById(R.id.edit_text_2d) as EditText
+        val multiline = properties.getBoolean(PROP_MULTILINE)
+        val resId = if (multiline) R.layout.edit_text_2d_multiline else R.layout.edit_text_2d
+        val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
+
+        val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
         val visibleText = generateVisibleText(text)
         if (isPassword()) {
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
+        if (multiline) {
+            input.inputType = input.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        }
         input.setTextAndMoveCursor(visibleText)
-        builder.setView(viewInflated)
+        builder.setView(nativeEditText)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            text = input.text.toString()
-            view.text_edit.text = generateVisibleText(text)
-            view.text_edit.setTextColor(textColor)
+            val txt = input.text.toString()
+            if (txt != text) {
+                setText(txt)
+                textChangedListener?.invoke(txt)
+            }
         }
         builder.setNegativeButton(android.R.string.cancel, null)
 
@@ -223,6 +250,9 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
         dialog.setOnDismissListener {
             stopCursorAnimation()
+            view.background = null
+            view.setPadding(0, 0, 0, 0)
+            view.text_edit_underline.visibility = View.VISIBLE
         }
 
         dialog.show()

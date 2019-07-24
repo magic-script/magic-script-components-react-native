@@ -27,17 +27,16 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         return true
     }
 
-    override fun getBounding(): Bounding? {
-        // TODO calculate bounding the same way as inside UiNode
-        return Bounding()
+    override fun getBounding(): Bounding {
+        return Utils.calculateBoundsOfNode(this)
     }
 
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
-            // cannot update the ModelRenderable before [isRenderableAttached],
+            // cannot update the ModelRenderable before [renderableRequested],
             // because Sceneform may be uninitialized yet
             // (loadRenderable may have not been called)
-            if (isRenderableAttached) {
+            if (renderableRequested) {
                 loadModel()
             }
         }

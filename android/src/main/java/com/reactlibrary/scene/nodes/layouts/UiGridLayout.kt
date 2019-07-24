@@ -2,12 +2,13 @@ package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.collision.Box
-import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
+import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
 import com.reactlibrary.utils.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
@@ -20,38 +21,54 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_ROWS = "rows"
         const val PROP_ITEM_PADDING = "itemPadding"
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
+        const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
+
+        private const val COLUMNS_DEFAULT = 2
+        private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
     }
 
-    private var columns: Int = 2
-    private var rows: Int? = null
-    private var padding = 0.0 // in meters
-    private var childIdx = 0
+    var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
+        private set
 
-    private var itemHorizontalAlignment = HorizontalAlignment.CENTER
-    private var itemVerticalAlignment = VerticalAlignment.CENTER
+    var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
+        private set
 
-    private enum class HorizontalAlignment {
-        LEFT, CENTER, RIGHT
-    }
+    var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
+        private set
 
-    private enum class VerticalAlignment {
-        TOP, CENTER, BOTTOM
+    var itemHorizontalAlignment = Alignment.Horizontal.CENTER
+        private set
+
+    var itemVerticalAlignment = Alignment.Vertical.CENTER
+        private set
+
+    private var layoutManager: LayoutManager = FlexGridManager(this)
+
+    // we should re-draw the grid after adding / removing a child
+    private var shouldRedraw = false
+
+    private var handler = Handler(Looper.getMainLooper())
+
+    // child index, bounding
+    private val childrenBounds = mutableMapOf<Int, Bounding>()
+
+    init {
+        layoutLoop()
     }
 
     override fun loadRenderable(): Boolean {
-        // it does not contain its own renderable
-        Handler().postDelayed({
 
+        // for tests only
+        handler.postDelayed({
             children.forEachIndexed { index, node ->
-                val childBounds = if (node is TransformNode) node.getBounding()
-                        ?: Bounding() else Bounding()
-
-                logMessage("child[$index] bounds= $childBounds")
+                val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
+                logMessage("grid child[$index] bounds= $childBounds")
             }
 
             val bounds = getBounding()
             logMessage("grid bounds= $bounds")
         }, 3000)
+
         return false
     }
 
@@ -63,50 +80,49 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         setItemAlignment(props)
     }
 
-    override fun getBounding(): Bounding? {
-        return Utils.calculateSumBounds(children)
+    override fun getBounding(): Bounding {
+        val childBounds = Utils.calculateSumBounds(children)
+        return Bounding(
+                childBounds.left + localPosition.x,
+                childBounds.bottom + localPosition.y,
+                childBounds.right + localPosition.x,
+                childBounds.top + localPosition.y
+        )
     }
 
     override fun addChildNode(child: Node) {
         addChild(child)
-        val columnWidth = width / columns
-        val columnHeight = columnWidth // TODO
-        val paddingSum = (columns - 1) * padding
-        val startX = -width / 2 - paddingSum / 2
-        val startY = 0
-        val col = childIdx % columns
-        val row = childIdx / columns
+        shouldRedraw = true
+    }
 
-        var x = startX + col * columnWidth
-        var y = startY - row * columnHeight
+    // re-draws the grid if needed
+    private fun layoutLoop() {
+        handler.postDelayed({
+            measureChildren()
+            if (shouldRedraw) {
+                layoutManager.layoutChildren(children, childrenBounds)
+                shouldRedraw = false
+                logMessage("grid redraw")
+            }
+            layoutLoop()
+        }, 100)
+    }
 
-        if (col > 0) {
-            x += col * padding
+    // measures the bounds of children nodes
+    private fun measureChildren() {
+        for (i in 0 until children.size) {
+            val node = children[i]
+            val oldBounds = childrenBounds[i] ?: Bounding()
+            childrenBounds[i] = if (node is TransformNode) {
+                node.getBounding()
+            } else {
+                Utils.calculateBoundsOfNode(node)
+            }
+
+            if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+                shouldRedraw = true
+            }
         }
-        if (row > 0) {
-            y -= row * padding
-        }
-
-        // TODO in order to apply alignment the item's width and height must be known
-        if (itemHorizontalAlignment == HorizontalAlignment.CENTER) {
-            x += columnWidth / 2
-        }
-
-        if (itemVerticalAlignment == VerticalAlignment.CENTER) {
-            y -= columnHeight / 2
-        }
-
-        child.localPosition = Vector3(x.toFloat(), y.toFloat(), child.localPosition.z)
-        logMessage("addChildToLayout idx=$childIdx, x=$x, y=$y, width=$width, columns=$columns, colWidth=$columnWidth")
-
-        // TODO wait until renderable of a child is attached and get the
-        // child size using collisionShape
-        val collisionShape = child.renderable?.collisionShape as? Box
-        if (collisionShape != null) {
-            logMessage("child size=${collisionShape.size}")
-        }
-
-        childIdx++
     }
 
     private fun setColumns(props: Bundle) {
@@ -115,32 +131,37 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
             if (columns <= 0) {
                 columns = 1
             }
-            logMessage("setting columns: $columns")
+            shouldRedraw = true
         }
     }
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
             this.rows = props.getDouble(PROP_ROWS).toInt()
-            logMessage("setting rows: $rows")
+            shouldRedraw = true
         }
     }
 
     private fun setItemPadding(props: Bundle) {
         if (props.containsKey(PROP_ITEM_PADDING)) {
             this.padding = props.getDouble(PROP_ITEM_PADDING)
+            shouldRedraw = true
         }
     }
 
     private fun setItemAlignment(props: Bundle) {
-        if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
-            // TODO check the alignment array format
-            val alignment = props.getSerializable(PROP_ITEM_ALIGNMENT) as ArrayList<String>
-            if (alignment.size == 2) {
-                val horizontalAlign = alignment[0]
-                val verticalAlign = alignment[1]
-                itemHorizontalAlignment = HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
-                itemVerticalAlignment = VerticalAlignment.valueOf(verticalAlign.toUpperCase())
+        var alignment = props.getString(PROP_ITEM_ALIGNMENT)
+        if (alignment == null) {
+            alignment = props.getString(PROP_DEFAULT_ITEM_ALIGNMENT)
+        }
+
+        if (alignment != null) {
+            val alignmentArray = alignment.split("-")
+            if (alignmentArray.size == 2) {
+                val horizontalAlign = alignmentArray[0]
+                val verticalAlign = alignmentArray[1]
+                itemHorizontalAlignment = Alignment.Horizontal.valueOf(horizontalAlign.toUpperCase())
+                itemVerticalAlignment = Alignment.Vertical.valueOf(verticalAlign.toUpperCase())
             }
         }
     }

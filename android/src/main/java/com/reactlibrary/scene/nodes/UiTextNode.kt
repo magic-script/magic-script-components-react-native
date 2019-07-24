@@ -21,6 +21,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         // properties
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
+        private const val PROP_BOUNDS_SIZE = "boundsSize"
         private const val PROP_TEXT_ALIGNMENT = "textAlignment"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
@@ -30,8 +31,6 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     }
 
     init {
-        horizontalAlignment = ViewRenderable.HorizontalAlignment.LEFT
-
         // set default values of properties
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
@@ -50,6 +49,21 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         setTextColor(props)
         setAllCaps(props)
         setCharacterSpacing(props)
+    }
+
+    override fun setSize(props: Bundle) {
+        // convert bounds to WIDTH and HEIGHT to be sized correctly by the parent method
+        if (props.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
+            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
+            props.putDouble(PROP_WIDTH, bounds[0])
+            props.putDouble(PROP_HEIGHT, bounds[1])
+        }
+        super.setSize(props)
+    }
+
+    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
+        return ViewRenderable.HorizontalAlignment.LEFT
     }
 
     private fun setText(properties: Bundle) {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44107CEE22E888070007CBF5 /* UiGridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44107CED22E888070007CBF5 /* UiGridLayout.swift */; };
 		442463BE22DCBFCA00FD4ABB /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442463BD22DCBFC900FD4ABB /* LabelNode.swift */; };
 		44318E6422CB44B60060575D /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318E6322CB44B60060575D /* ImageAssets.swift */; };
 		44318E9522CB4E9A0060575D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44318E5F22CB424A0060575D /* Images.xcassets */; };
@@ -104,6 +105,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		44107CED22E888070007CBF5 /* UiGridLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGridLayout.swift; sourceTree = "<group>"; };
 		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
 		44318E5F22CB424A0060575D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44318E6322CB44B60060575D /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
@@ -401,6 +403,7 @@
 			children = (
 				449AF48E22B248090046938D /* UiButtonNode.swift */,
 				449AF48B22B248090046938D /* UiGroupNode.swift */,
+				44107CED22E888070007CBF5 /* UiGridLayout.swift */,
 				449AF48D22B248090046938D /* UiImageNode.swift */,
 				44FA561B22B7A0EA00B42251 /* UIModelNode.swift */,
 				4461548422CA413100159F18 /* UiSpinnerNode.swift */,
@@ -565,6 +568,7 @@
 				4447D49922BC2BC40043CA89 /* GLTFImage.swift in Sources */,
 				447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
+				44107CEE22E888070007CBF5 /* UiGridLayout.swift in Sources */,
 				4447D49A22BC2BC40043CA89 /* GLTFExtras.swift in Sources */,
 				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,

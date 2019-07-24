@@ -71,7 +71,7 @@ import SceneKit
     @objc func addNode(_ nodeId: String, toParent parentId: String) {
         if let node = nodesById[nodeId],
            let parentNode = nodesById[parentId] {
-            parentNode.addChildNode(node)
+            parentNode.addChild(node)
         }
     }
 
@@ -83,9 +83,8 @@ import SceneKit
 
     @objc func removeNode(_ nodeId: String, fromParent parentId: String) {
         if let node = nodesById[nodeId],
-            let parentNode = nodesById[parentId],
-            parentNode == node.parent {
-            node.removeFromParentNode()
+            let parentNode = nodesById[parentId] {
+            parentNode.removeChild(node)
         }
     }
 

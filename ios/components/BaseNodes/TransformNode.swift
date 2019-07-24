@@ -63,6 +63,16 @@ import SceneKit
     @objc func setupNode() {
     }
 
+    @objc func addChild(_ child: TransformNode) {
+        addChildNode(child)
+    }
+
+    @objc func removeChild(_ child: TransformNode) {
+        if let parent = child.parent, parent == self {
+            child.removeFromParentNode()
+        }
+    }
+
     @objc func update(_ props: [String: Any]) {
         if let name = Convert.toString(props["id"]) {
             self.name = name
@@ -89,6 +99,9 @@ import SceneKit
 
     @objc func getSize() -> CGSize {
         return CGSize.zero
+    }
+
+    @objc func updateLayout() {
     }
 
     @objc func setOriginVisible(_ visible: Bool) {

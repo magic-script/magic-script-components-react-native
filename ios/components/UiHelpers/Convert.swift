@@ -17,6 +17,10 @@ class Convert {
         return value as? Bool
     }
 
+    static func toInt(_ value: Any?) -> Int? {
+        return value as? Int
+    }
+
     static func toCGFloat(_ value: Any?) -> CGFloat? {
         guard let value = value else { return nil }
         let floatValue: Float? = NumberFormatter().number(from: "\(value)")?.floatValue

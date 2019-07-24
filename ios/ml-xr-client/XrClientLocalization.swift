@@ -9,7 +9,7 @@
 import Foundation
 import mlxr_ios_client
 
-@objc enum MLXrClientLocalization : Int {
+@objc enum XrClientLocalization : Int {
     case awaitingLocation
     case scanningLocation
     case localized
@@ -45,15 +45,15 @@ import mlxr_ios_client
         }
     }
 
-    public init(localizationStatus: mlxr_ios_client.MLXrClientLocalization.LocalizationStatus) {
+    public init(localizationStatus: MLXrClientLocalization.LocalizationStatus) {
         switch localizationStatus {
-        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.AwaitingLocation:
+        case MLXrClientLocalization.LocalizationStatus.AwaitingLocation:
             self = .awaitingLocation
-        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.ScanningLocation:
+        case MLXrClientLocalization.LocalizationStatus.ScanningLocation:
             self = .scanningLocation
-        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.Localized:
+        case MLXrClientLocalization.LocalizationStatus.Localized:
             self = .localized
-        case mlxr_ios_client.MLXrClientLocalization.LocalizationStatus.LocalizationFailed:
+        case MLXrClientLocalization.LocalizationStatus.LocalizationFailed:
             self = .localizationFailed
         }
     }

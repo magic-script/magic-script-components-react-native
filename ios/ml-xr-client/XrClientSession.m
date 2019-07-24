@@ -8,7 +8,7 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(MLXrClientSession, NSObject)
+@interface RCT_EXTERN_MODULE(XrClientSession, NSObject)
 
 RCT_EXTERN_METHOD(connect:(NSString *)address deviceId:(NSString *)deviceId token:(NSString *)token resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(setUpdateInterval:(NSTimeInterval)interval resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)

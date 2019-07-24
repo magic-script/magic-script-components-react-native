@@ -10,10 +10,10 @@ import Foundation
 import SceneKit
 import mlxr_ios_client
 
-class MLXrClientAnchorData: NSObject {
-    fileprivate let anchorData: mlxr_ios_client.MLXrClientAnchorData!
+class XrClientAnchorData: NSObject {
+    fileprivate let anchorData: MLXrClientAnchorData!
 
-    public init(_ anchorData: mlxr_ios_client.MLXrClientAnchorData) {
+    public init(_ anchorData: MLXrClientAnchorData) {
         self.anchorData = anchorData
     }
 
@@ -52,7 +52,7 @@ class MLXrClientAnchorData: NSObject {
     }
 
     public func getMagicPose() -> simd_float4x4 {
-        return anchorData.getPose() * MLXrClientAnchorData.magic_rotation
+        return anchorData.getPose() * XrClientAnchorData.magic_rotation
     }
 
     public func getAnchorId() -> String {
@@ -70,7 +70,7 @@ class MLXrClientAnchorData: NSObject {
 }
 
 // Magic rotation
-extension MLXrClientAnchorData {
+extension XrClientAnchorData {
     static fileprivate func makeRotate(radians: Float, _ x: Float, _ y: Float, _ z: Float) -> float4x4 {
         return unsafeBitCast(GLKMatrix4MakeRotation(radians, x, y, z), to: float4x4.self)
     }

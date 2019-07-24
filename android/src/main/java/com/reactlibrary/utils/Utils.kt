@@ -144,10 +144,10 @@ class Utils {
                 if (childBounds.right > bounds.right) {
                     bounds.right = childBounds.right
                 }
-                if (childBounds.top < bounds.top) {
+                if (childBounds.top > bounds.top) {
                     bounds.top = childBounds.top
                 }
-                if (childBounds.bottom > bounds.bottom) {
+                if (childBounds.bottom < bounds.bottom) {
                     bounds.bottom = childBounds.bottom
                 }
             }

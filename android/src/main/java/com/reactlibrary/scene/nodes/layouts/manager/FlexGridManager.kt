@@ -91,6 +91,9 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
             }
         }
 
+        logMessage("child[$index]," +
+                "localPosBefore=${node.localPosition}")
+
         node.localPosition = Vector3(x, y, node.localPosition.z)
 
         logMessage("child[$index]," +

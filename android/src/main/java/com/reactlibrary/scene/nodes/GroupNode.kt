@@ -16,7 +16,13 @@ class GroupNode(props: ReadableMap) : TransformNode(props) {
     }
 
     override fun getBounding(): Bounding {
-        return Utils.calculateSumBounds(children)
+        val childBounds = Utils.calculateSumBounds(children)
+        return Bounding(
+                childBounds.left + localPosition.x,
+                childBounds.bottom + localPosition.y,
+                childBounds.right + localPosition.x,
+                childBounds.top + localPosition.y
+        )
     }
 }
 

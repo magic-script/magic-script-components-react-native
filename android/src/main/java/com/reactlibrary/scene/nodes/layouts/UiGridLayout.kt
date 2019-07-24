@@ -41,7 +41,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     var itemVerticalAlignment = Alignment.Vertical.CENTER
         private set
 
-    private var layoutManager: LayoutManager
+    private var layoutManager: LayoutManager = FlexGridManager(this)
 
     // we should re-draw the grid after adding / removing a child
     private var shouldRedraw = false
@@ -52,7 +52,6 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     init {
-        layoutManager = FlexGridManager(this)
         layoutLoop()
     }
 
@@ -62,7 +61,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         handler.postDelayed({
             children.forEachIndexed { index, node ->
                 val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
-                logMessage("child[$index] bounds= $childBounds")
+                logMessage("grid child[$index] bounds= $childBounds")
             }
 
             val bounds = getBounding()
@@ -102,17 +101,18 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         }, 100)
     }
 
+    // measures the bounds of children nodes
     private fun measureChildren() {
         for (i in 0 until children.size) {
             val node = children[i]
-            val previousBounds = childrenBounds[i]
+            val oldBounds = childrenBounds[i] ?: Bounding()
             childrenBounds[i] = if (node is TransformNode) {
                 node.getBounding()
             } else {
                 Utils.calculateBoundsOfNode(node)
             }
-            // TODO equals method should not be exact?
-            if (childrenBounds[i] != previousBounds) {
+
+            if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 shouldRedraw = true
             }
         }

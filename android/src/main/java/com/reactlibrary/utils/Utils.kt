@@ -115,8 +115,8 @@ class Utils {
             return if (collShape is Box) {
                 val left = collShape.center.x - collShape.size.x / 2 + node.localPosition.x
                 val right = collShape.center.x + collShape.size.x / 2 + node.localPosition.x
-                val top = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
-                val bottom = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
+                val top = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
+                val bottom = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
                 Bounding(left, bottom, right, top)
             } else {
                 // default

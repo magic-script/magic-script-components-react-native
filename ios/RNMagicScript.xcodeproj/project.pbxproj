@@ -82,6 +82,7 @@
 		44E73D0C22E85E2B00AE779D /* XrClientSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0822E85E2B00AE779D /* XrClientSession.m */; };
 		44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0922E85E2B00AE779D /* XrClientSession.swift */; };
 		44E73D0E22E85E2B00AE779D /* XrClientLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0A22E85E2B00AE779D /* XrClientLocalization.swift */; };
+		44E73D6522E8788B00AE779D /* mlxr_ios_client.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 44A04B5022E84A64003E1C5E /* mlxr_ios_client.framework */; };
 		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -99,9 +100,10 @@
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
+			dstPath = "";
+			dstSubfolderSpec = 10;
 			files = (
+				44E73D6522E8788B00AE779D /* mlxr_ios_client.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

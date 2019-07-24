@@ -130,24 +130,24 @@ class XrClientSession: NSObject {
 
     @objc
     public func getAnchorByPcfId(pcfId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-//        guard let uuid = UUID(uuidString: pcfId) else {
-//            reject("code", "Incorrect PCF id", nil)
-//            return
-//        }
-//
-//        guard let xrSession = xrClientSession else {
-//            reject("code", "XrClientSession has not been initialized!", nil)
-//            return
-//        }
-//
-//        guard let anchorData = xrSession.getAnchorByPcfId(uuid) else {
-//            // Achor data does not exist for given PCF id
-//            resolve(nil)
-//            return
-//        }
-//
-//        let result: [String : Any] = MLXrClientAnchorData(anchorData: anchorData).getJsonRepresentation()
-//        resolve(result])
+        guard let uuid = UUID(uuidString: pcfId) else {
+            reject("code", "Incorrect PCF id", nil)
+            return
+        }
+
+        guard let xrSession = xrClientSession else {
+            reject("code", "XrClientSession has not been initialized!", nil)
+            return
+        }
+
+        guard let anchorData = xrSession.getAnchorByPcfId(id: uuid) else {
+            // Achor data does not exist for given PCF id
+            resolve(nil)
+            return
+        }
+
+        let result: [String : Any] = XrClientAnchorData(anchorData).getJsonRepresentation()
+        resolve(result)
     }
 
     @objc

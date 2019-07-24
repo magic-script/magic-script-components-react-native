@@ -21,6 +21,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_ROWS = "rows"
         const val PROP_ITEM_PADDING = "itemPadding"
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
+        const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
         private const val COLUMNS_DEFAULT = 2
         private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
@@ -149,7 +150,11 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     }
 
     private fun setItemAlignment(props: Bundle) {
-        val alignment = props.getString(PROP_ITEM_ALIGNMENT)
+        var alignment = props.getString(PROP_ITEM_ALIGNMENT)
+        if (alignment == null) {
+            alignment = props.getString(PROP_DEFAULT_ITEM_ALIGNMENT)
+        }
+
         if (alignment != null) {
             val alignmentArray = alignment.split("-")
             if (alignmentArray.size == 2) {

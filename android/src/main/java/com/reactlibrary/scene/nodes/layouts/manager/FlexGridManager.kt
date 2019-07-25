@@ -2,15 +2,15 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.logMessage
 
 /**
  * Grid manager for a grid layout with flexible columns and rows width:
- * it means that columns and rows will grow to fit the content.
+ * it means that columns and rows will grow to fit the node with padding.
  */
 class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
@@ -25,8 +25,8 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
         rowsHeightMap.clear()
 
         for (i in 0 until children.size) {
-            val col = i % grid.columns
-            val row = i / grid.columns
+            val col = getColumnIndex(i)
+            val row = getRowIndex(i)
             val bounds = childrenBounds[i]!!
             val width = calculateColumnWidth(bounds)
 
@@ -47,8 +47,8 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
     // sets the proper position for the child node
     private fun layoutNode(index: Int, node: Node, nodeBounds: Bounding) {
-        val col = index % grid.columns
-        val row = index / grid.columns
+        val col = getColumnIndex(index)
+        val row = getRowIndex(index)
 
         val columnWidth = columnsWidthMap[col] ?: 0.0F
         val nodeWidth = nodeBounds.right - nodeBounds.left
@@ -56,12 +56,12 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
         val rowHeight = rowsHeightMap[row] ?: 0.0F
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
 
-        // calculating x position for a child
         val boundsCenterX = nodeBounds.left + nodeWidth / 2
         val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
         val boundsCenterY = nodeBounds.top - nodeHeight / 2
         val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
 
+        // calculating x position for a child
         val x = when (grid.itemHorizontalAlignment) {
             Alignment.Horizontal.LEFT -> {
                 getColumnX(col) + nodeWidth / 2 + pivotOffsetX + grid.itemPadding.left
@@ -134,6 +134,23 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
     private fun calculateRowHeight(itemBounds: Bounding): Float {
         return itemBounds.top - itemBounds.bottom + grid.itemPadding.top + grid.itemPadding.bottom
+    }
+
+    // TODO when all specified columns shoudl take precedence?
+    private fun getColumnIndex(childIdx: Int): Int {
+        return if (grid.rows != 0) {
+            childIdx / grid.rows
+        } else {
+            childIdx % grid.columns
+        }
+    }
+
+    private fun getRowIndex(childIdx: Int): Int {
+        return if (grid.rows != 0) {
+            childIdx % grid.rows
+        } else {
+            childIdx / grid.columns
+        }
     }
 
 }

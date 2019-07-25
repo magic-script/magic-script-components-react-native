@@ -1,4 +1,4 @@
-package com.reactlibrary.scene.nodes
+package com.reactlibrary.scene.nodes.props
 
 class Alignment {
     enum class Horizontal {

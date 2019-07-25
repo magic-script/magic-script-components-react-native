@@ -5,10 +5,10 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
@@ -26,15 +26,29 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
-        private const val COLUMNS_DEFAULT = 2
-        private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
+        // default values
+        const val COLUMNS_DEFAULT = 1
+        const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
     }
 
     var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
-        private set
+        private set(value) {
+            if (value == 0 && rows == 0) {
+                field = 1 // can't be 0 along with rows
+            } else {
+                field = value
+            }
+
+        }
 
     var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
-        private set
+        private set(value) {
+            if (value == 0 && columns == 0) {
+                field = 1 // can't be 0 along with columns
+            } else {
+                field = value
+            }
+        }
 
     // default padding for each item [top, right, bottom, left]
     var itemPadding = Padding(0F, 0F, 0F, 0F)
@@ -99,7 +113,12 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         shouldRedraw = true
     }
 
-    // re-draws the grid if needed
+    /**
+     * Loop that requests re-drawing the grid if needed.
+     * It measures the children, because the nodes' view size is not known
+     * from the beginning, also a client may change the view size at any time: we need to
+     * re-draw the layout in such case.
+     */
     private fun layoutLoop() {
         handler.postDelayed({
             measureChildren()
@@ -112,7 +131,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         }, 100)
     }
 
-    // measures the bounds of children nodes
+    /**
+     * Measures the bounds of children nodes; if any bound has changed
+     * it sets the [shouldRedraw] flag to true.
+     */
     private fun measureChildren() {
         for (i in 0 until children.size) {
             val node = children[i]
@@ -132,9 +154,6 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     private fun setColumns(props: Bundle) {
         if (props.containsKey(PROP_COLUMNS)) {
             columns = props.getDouble(PROP_COLUMNS).toInt()
-            if (columns <= 0) {
-                columns = 1
-            }
             shouldRedraw = true
         }
     }

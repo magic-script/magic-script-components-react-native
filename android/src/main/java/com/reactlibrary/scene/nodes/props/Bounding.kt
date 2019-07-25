@@ -3,7 +3,7 @@ package com.reactlibrary.scene.nodes.props
 import kotlin.math.abs
 
 /**
- * Represents border of the node
+ * Represents bounds of a node
  */
 data class Bounding(
         var left: Float = 0f,
@@ -16,7 +16,7 @@ data class Bounding(
         private const val eps = 1e-5 //epsilon
 
         /**
-         * Compares 2 boundings and returns true if they are the same
+         * Compares 2 bounds and returns true if they are the same
          * with the accuracy of [eps]
          */
         fun equalInexact(a: Bounding, b: Bounding): Boolean {

@@ -9,7 +9,11 @@ import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
-import com.reactlibrary.utils.*
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.props.Padding
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
 
 class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
@@ -33,7 +37,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         private set
 
     // default padding for each item [top, right, bottom, left]
-    var itemPadding = Padding()
+    var itemPadding = Padding(0F, 0F, 0F, 0F)
         private set
 
     var itemHorizontalAlignment = Alignment.Horizontal.CENTER
@@ -143,12 +147,12 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     }
 
     private fun setItemPadding(props: Bundle) {
-        var padding = props.getSerializable(PROP_ITEM_PADDING)?.toVector4()
+        var padding = PropertiesReader.readPadding(props, PROP_ITEM_PADDING)
         if (padding == null) {
-            padding = props.getSerializable(PROP_DEFAULT_ITEM_PADDING)?.toVector4()
+            padding = PropertiesReader.readPadding(props, PROP_DEFAULT_ITEM_PADDING)
         }
         if (padding != null) {
-            itemPadding = Padding(padding)
+            itemPadding = padding
             shouldRedraw = true
         }
     }

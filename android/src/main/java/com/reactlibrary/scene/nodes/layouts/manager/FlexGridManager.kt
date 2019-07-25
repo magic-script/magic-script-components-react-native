@@ -5,12 +5,12 @@ import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
-import com.reactlibrary.utils.Bounding
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.logMessage
 
 /**
- * Grid manager for a grid layout with flexible columns' width.
- * Columns will grow to fit the content
+ * Grid manager for a grid layout with flexible columns and rows width:
+ * it means that columns and rows will grow to fit the content.
  */
 class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
@@ -92,9 +92,6 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
                 getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY + grid.itemPadding.bottom
             }
         }
-
-        logMessage("child[$index]," +
-                "localPosBefore=${node.localPosition}")
 
         node.localPosition = Vector3(x, y, node.localPosition.z)
 

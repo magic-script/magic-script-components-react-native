@@ -1,28 +1,26 @@
 package com.reactlibrary.utils
 
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
-import android.util.Log
-import android.widget.EditText
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.BuildConfig
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import java.io.File
-import java.io.Serializable
-import kotlin.math.abs
 
-// By default, every 250dp for the view becomes 1 meter for the renderable
-// https://developers.google.com/ar/develop/java/sceneform/create-renderables
-private const val DP_TO_METER_RATIO = 250
-
-private const val DEBUG_ASSETS_PATH = "http://localhost:8081/assets/"
-
+/**
+ * Class containing general purpose utility functions
+ */
 class Utils {
+
     companion object {
+
+        // By default, every 250dp for the view becomes 1 meter for the renderable
+        // https://developers.google.com/ar/develop/java/sceneform/create-renderables
+        private const val DP_TO_METER_RATIO = 250
+
+        private const val DEBUG_ASSETS_PATH = "http://localhost:8081/assets/"
 
         /**
          * Converts React project's image path to path
@@ -160,106 +158,3 @@ class Utils {
 
 }
 
-/**
- * ==========Extension methods============
- */
-
-fun Any.logMessage(message: String, warn: Boolean = false) {
-    if (BuildConfig.DEBUG) {
-        if (warn) {
-            Log.w("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
-        } else {
-            Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
-        }
-    }
-}
-
-fun Serializable.toVector3(): Vector3? {
-    this as ArrayList<Double>
-    return if (size == 3) {
-        val x = get(0).toFloat()
-        val y = get(1).toFloat()
-        val z = get(2).toFloat()
-        Vector3(x, y, z)
-    } else {
-        null
-    }
-}
-
-fun Serializable.toVector4(): List<Double>? {
-    return if ((this as ArrayList<Double>).size == 4) {
-        this
-    } else {
-        null
-    }
-}
-
-fun List<Double>.toColor(): Int? {
-    return if (this.size == 4) {
-        val r = get(0) * 255
-        val g = get(1) * 255
-        val b = get(2) * 255
-        val a = get(3) * 255
-        Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
-    } else {
-        null
-    }
-}
-
-fun Serializable.toQuaternion(): Quaternion? {
-    this as ArrayList<Double>
-    return if (size == 4) {
-        val x = get(0).toFloat()
-        val y = get(1).toFloat()
-        val z = get(2).toFloat()
-        val w = get(3).toFloat()
-        Quaternion(x, y, z, w) // Quaternion.axisAngle
-    } else {
-        null
-    }
-}
-
-/**
- * Represents border of the node
- */
-data class Bounding(
-        var left: Float = 0f,
-        var bottom: Float = 0f,
-        var right: Float = 0f,
-        var top: Float = 0f
-) {
-    companion object {
-
-        private const val eps = 1e-5 //epsilon
-
-        /**
-         * Compares 2 boundings and returns true if they are the same
-         * with the accuracy of [eps]
-         */
-        fun equalInexact(a: Bounding, b: Bounding): Boolean {
-            return abs(a.left - b.left) < eps
-                    && abs(a.right - b.right) < eps
-                    && abs(a.bottom - b.bottom) < eps
-                    && abs(a.top - b.top) < eps
-
-        }
-
-    }
-}
-
-/**
- * Represents padding for various nodes
- */
-class Padding(paddingArray: List<Double>) {
-    val top: Float = paddingArray[0].toFloat()
-    val right: Float = paddingArray[1].toFloat()
-    val bottom: Float = paddingArray[2].toFloat()
-    val left: Float = paddingArray[3].toFloat()
-
-    constructor() : this(listOf(0.0, 0.0, 0.0, 0.0))
-}
-
-fun EditText.setTextAndMoveCursor(text: String) {
-    this.setText("")
-    this.append(text)
-}

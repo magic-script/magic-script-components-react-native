@@ -15,7 +15,10 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
@@ -168,13 +171,11 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     private fun setTextColor(props: Bundle) {
-        if (props.containsKey(PROP_TEXT_COLOR)) {
-            val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
-            if (color != null) {
-                this.textColor = color
-                if (view.text_edit.text.toString() != hint) {
-                    view.text_edit.setTextColor(color)
-                }
+        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        if (color != null) {
+            this.textColor = color
+            if (view.text_edit.text.toString() != hint) {
+                view.text_edit.setTextColor(color)
             }
         }
     }
@@ -195,12 +196,12 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     private fun setTextPadding(props: Bundle) {
-        props.getSerializable(PROP_TEXT_PADDING)?.toVector4()?.let {
-            val paddingMeters = Padding(it)
-            val top = Utils.metersToPx(paddingMeters.top, view.context)
-            val right = Utils.metersToPx(paddingMeters.right, view.context)
-            val bottom = Utils.metersToPx(paddingMeters.bottom, view.context)
-            val left = Utils.metersToPx(paddingMeters.left, view.context)
+        val padding = PropertiesReader.readPadding(props, PROP_TEXT_PADDING)
+        if (padding != null) {
+            val top = Utils.metersToPx(padding.top, view.context)
+            val right = Utils.metersToPx(padding.right, view.context)
+            val bottom = Utils.metersToPx(padding.bottom, view.context)
+            val left = Utils.metersToPx(padding.left, view.context)
             view.text_edit.setPadding(left, top, right, bottom)
         }
     }

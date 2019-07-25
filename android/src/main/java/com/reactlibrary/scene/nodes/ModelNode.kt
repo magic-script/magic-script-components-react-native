@@ -6,7 +6,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.utils.Bounding
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 

@@ -34,7 +34,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
         private const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         private const val DEFAULT_WIDTH = 0.4 // in meters
-        private const val MULTILINE_BOX_HEIGHT = 0.12 // in meters
+        private const val MULTILINE_BOX_HEIGHT = 0.12F // in meters
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -147,7 +147,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
-            val sizeMeters = props.getDouble(PROP_TEXT_SIZE)
+            val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
@@ -195,16 +195,13 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     }
 
     private fun setTextPadding(props: Bundle) {
-        if (props.containsKey(PROP_TEXT_PADDING)) {
-            val paddingMeters = props.getSerializable(PROP_TEXT_PADDING)?.toVector4()
-            if (paddingMeters != null) {
-                // The padding order is: top, right, bottom, left.
-                val top = Utils.metersToPx(paddingMeters[0], view.context)
-                val right = Utils.metersToPx(paddingMeters[1], view.context)
-                val bottom = Utils.metersToPx(paddingMeters[2], view.context)
-                val left = Utils.metersToPx(paddingMeters[3], view.context)
-                view.text_edit.setPadding(left, top, right, bottom)
-            }
+        props.getSerializable(PROP_TEXT_PADDING)?.toVector4()?.let {
+            val paddingMeters = Padding(it)
+            val top = Utils.metersToPx(paddingMeters.top, view.context)
+            val right = Utils.metersToPx(paddingMeters.right, view.context)
+            val bottom = Utils.metersToPx(paddingMeters.bottom, view.context)
+            val left = Utils.metersToPx(paddingMeters.left, view.context)
+            view.text_edit.setPadding(left, top, right, bottom)
         }
     }
 

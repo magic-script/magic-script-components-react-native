@@ -78,7 +78,7 @@ class Utils {
          *  (Uses an average of horizontal and vertical density -
          *  usually they are almost the same)
          */
-        fun metersToPx(meters: Double, context: Context): Int {
+        fun metersToPx(meters: Float, context: Context): Int {
             val xdpi = context.resources.displayMetrics.xdpi
             val ydpi = context.resources.displayMetrics.ydpi
             val densityAvgFactor = (xdpi + ydpi) / 320
@@ -245,6 +245,18 @@ data class Bounding(
         }
 
     }
+}
+
+/**
+ * Represents padding for various nodes
+ */
+class Padding(paddingArray: List<Double>) {
+    val top: Float = paddingArray[0].toFloat()
+    val right: Float = paddingArray[1].toFloat()
+    val bottom: Float = paddingArray[2].toFloat()
+    val left: Float = paddingArray[3].toFloat()
+
+    constructor() : this(listOf(0.0, 0.0, 0.0, 0.0))
 }
 
 fun EditText.setTextAndMoveCursor(text: String) {

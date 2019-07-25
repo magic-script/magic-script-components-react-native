@@ -9,9 +9,7 @@ import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
-import com.reactlibrary.utils.Bounding
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.*
 
 class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
@@ -20,6 +18,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_COLUMNS = "columns"
         const val PROP_ROWS = "rows"
         const val PROP_ITEM_PADDING = "itemPadding"
+        const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
@@ -33,7 +32,8 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
         private set
 
-    var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
+    // default padding for each item [top, right, bottom, left]
+    var itemPadding = Padding()
         private set
 
     var itemHorizontalAlignment = Alignment.Horizontal.CENTER
@@ -137,14 +137,18 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
-            this.rows = props.getDouble(PROP_ROWS).toInt()
+            rows = props.getDouble(PROP_ROWS).toInt()
             shouldRedraw = true
         }
     }
 
     private fun setItemPadding(props: Bundle) {
-        if (props.containsKey(PROP_ITEM_PADDING)) {
-            this.padding = props.getDouble(PROP_ITEM_PADDING)
+        var padding = props.getSerializable(PROP_ITEM_PADDING)?.toVector4()
+        if (padding == null) {
+            padding = props.getSerializable(PROP_DEFAULT_ITEM_PADDING)?.toVector4()
+        }
+        if (padding != null) {
+            itemPadding = Padding(padding)
             shouldRedraw = true
         }
     }

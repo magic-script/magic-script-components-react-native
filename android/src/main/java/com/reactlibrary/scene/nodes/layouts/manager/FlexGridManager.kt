@@ -28,15 +28,15 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
             val col = i % grid.columns
             val row = i / grid.columns
             val bounds = childrenBounds[i]!!
-            val nodeWidth = bounds.right - bounds.left
+            val width = calculateColumnWidth(bounds)
 
-            if (nodeWidth > columnsWidthMap[col] ?: 0.0F) {
-                columnsWidthMap[col] = nodeWidth
+            if (width > columnsWidthMap[col] ?: 0.0F) {
+                columnsWidthMap[col] = width
             }
 
-            val nodeHeight = bounds.top - bounds.bottom
-            if (nodeHeight > rowsHeightMap[row] ?: 0.0F) {
-                rowsHeightMap[row] = nodeHeight
+            val height = calculateRowHeight(bounds)
+            if (height > rowsHeightMap[row] ?: 0.0F) {
+                rowsHeightMap[row] = height
             }
         }
 
@@ -50,10 +50,10 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
         val col = index % grid.columns
         val row = index / grid.columns
 
-        val columnWidth = columnsWidthMap[col] ?: 0.0F // without padding
+        val columnWidth = columnsWidthMap[col] ?: 0.0F
         val nodeWidth = nodeBounds.right - nodeBounds.left
 
-        val rowHeight = rowsHeightMap[row] ?: 0.0F // without padding
+        val rowHeight = rowsHeightMap[row] ?: 0.0F
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
 
         // calculating x position for a child
@@ -64,30 +64,32 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
         val x = when (grid.itemHorizontalAlignment) {
             Alignment.Horizontal.LEFT -> {
-                getColumnX(col) + nodeWidth / 2 + pivotOffsetX
+                getColumnX(col) + nodeWidth / 2 + pivotOffsetX + grid.itemPadding.left
             }
 
             Alignment.Horizontal.CENTER -> {
-                getColumnX(col) + columnWidth / 2 + pivotOffsetX
+                val paddingDiff = grid.itemPadding.left - grid.itemPadding.right
+                getColumnX(col) + columnWidth / 2 + pivotOffsetX + paddingDiff
             }
 
             Alignment.Horizontal.RIGHT -> {
-                getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffsetX
+                getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffsetX - grid.itemPadding.right
             }
         }
 
         // calculating y position for a child
         val y = when (grid.itemVerticalAlignment) {
             Alignment.Vertical.TOP -> {
-                getRowY(row) - nodeHeight / 2 + pivotOffsetY
+                getRowY(row) - nodeHeight / 2 + pivotOffsetY - grid.itemPadding.top
             }
 
             Alignment.Vertical.CENTER -> {
-                getRowY(row) - rowHeight / 2 + pivotOffsetY
+                val paddingDiff = grid.itemPadding.top - grid.itemPadding.bottom
+                getRowY(row) - rowHeight / 2 + pivotOffsetY - paddingDiff
             }
 
             Alignment.Vertical.BOTTOM -> {
-                getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY
+                getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY + grid.itemPadding.bottom
             }
         }
 
@@ -115,7 +117,7 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
     private fun getColumnX(columnIdx: Int): Float {
         var x = 0.0F // start
         for (i in 0 until columnIdx) {
-            x += (columnsWidthMap[i] ?: 0.0F) + grid.padding.toFloat()
+            x += (columnsWidthMap[i] ?: 0.0F) // + padding
         }
         return x
     }
@@ -124,9 +126,17 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
     private fun getRowY(rowIdx: Int): Float {
         var y = 0.0F // start
         for (i in 0 until rowIdx) {
-            y -= (rowsHeightMap[i] ?: 0.0F) + grid.padding.toFloat()
+            y -= (rowsHeightMap[i] ?: 0.0F) // + padding
         }
         return y
+    }
+
+    private fun calculateColumnWidth(itemBounds: Bounding): Float {
+        return itemBounds.right - itemBounds.left + grid.itemPadding.left + grid.itemPadding.right
+    }
+
+    private fun calculateRowHeight(itemBounds: Bounding): Float {
+        return itemBounds.top - itemBounds.bottom + grid.itemPadding.top + grid.itemPadding.bottom
     }
 
 }

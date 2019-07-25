@@ -94,12 +94,12 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
         if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH)
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
             widthPx = Utils.metersToPx(widthInMeters, context)
         }
 
         if (properties.containsKey(PROP_HEIGHT)) {
-            val widthInMeters = properties.getDouble(PROP_HEIGHT)
+            val widthInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
             heightPx = Utils.metersToPx(widthInMeters, context)
         }
 

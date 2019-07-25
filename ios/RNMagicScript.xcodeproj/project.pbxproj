@@ -77,6 +77,12 @@
 		449AF4A322B248090046938D /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49522B248090046938D /* SCNMatrix4Extension.swift */; };
 		449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49622B248090046938D /* SCNVector3Extension.swift */; };
 		449AF4A522B248090046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49722B248090046938D /* UiNodesManager.swift */; };
+		44A04B5122E84A64003E1C5E /* mlxr_ios_client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44A04B5022E84A64003E1C5E /* mlxr_ios_client.framework */; };
+		44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0722E85E2B00AE779D /* XrClientAnchorData.swift */; };
+		44E73D0C22E85E2B00AE779D /* XrClientSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0822E85E2B00AE779D /* XrClientSession.m */; };
+		44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0922E85E2B00AE779D /* XrClientSession.swift */; };
+		44E73D0E22E85E2B00AE779D /* XrClientLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E73D0A22E85E2B00AE779D /* XrClientLocalization.swift */; };
+		44E73D6522E8788B00AE779D /* mlxr_ios_client.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 44A04B5022E84A64003E1C5E /* mlxr_ios_client.framework */; };
 		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -94,9 +100,10 @@
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
+			dstPath = "";
+			dstSubfolderSpec = 10;
 			files = (
+				44E73D6522E8788B00AE779D /* mlxr_ios_client.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +112,14 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
+		4426DDFC22E743F4002852CB /* localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localization.h; sourceTree = "<group>"; };
+		4426DDFD22E743F4002852CB /* anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = anchor.h; sourceTree = "<group>"; };
+		4426DDFE22E743F4002852CB /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		4426DDFF22E743F4002852CB /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
+		4426DE0022E743F4002852CB /* session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = session.h; sourceTree = "<group>"; };
+		4426DE0122E743F4002852CB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		4426DE0222E743F4002852CB /* authentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authentication.h; sourceTree = "<group>"; };
+		4426DE0322E743F4002852CB /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		44318E5F22CB424A0060575D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44318E6322CB44B60060575D /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +204,11 @@
 		449AF49522B248090046938D /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
 		449AF49622B248090046938D /* SCNVector3Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
 		449AF49722B248090046938D /* UiNodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodesManager.swift; sourceTree = "<group>"; };
+		44A04B5022E84A64003E1C5E /* mlxr_ios_client.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = mlxr_ios_client.framework; sourceTree = "<group>"; };
+		44E73D0722E85E2B00AE779D /* XrClientAnchorData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XrClientAnchorData.swift; sourceTree = "<group>"; };
+		44E73D0822E85E2B00AE779D /* XrClientSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XrClientSession.m; sourceTree = "<group>"; };
+		44E73D0922E85E2B00AE779D /* XrClientSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XrClientSession.swift; sourceTree = "<group>"; };
+		44E73D0A22E85E2B00AE779D /* XrClientLocalization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XrClientLocalization.swift; sourceTree = "<group>"; };
 		44FA561B22B7A0EA00B42251 /* UIModelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModelNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,6 +224,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44A04B5122E84A64003E1C5E /* mlxr_ios_client.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +249,53 @@
 			path = UiHelpers;
 			sourceTree = "<group>";
 		};
+		4426DDF722E743F4002852CB /* MLXrRuntimeWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				4426DDF822E743F4002852CB /* runtime */,
+				4426DE0322E743F4002852CB /* module.modulemap */,
+			);
+			path = MLXrRuntimeWrapper;
+			sourceTree = "<group>";
+		};
+		4426DDF822E743F4002852CB /* runtime */ = {
+			isa = PBXGroup;
+			children = (
+				4426DDF922E743F4002852CB /* include */,
+			);
+			path = runtime;
+			sourceTree = "<group>";
+		};
+		4426DDF922E743F4002852CB /* include */ = {
+			isa = PBXGroup;
+			children = (
+				4426DDFA22E743F4002852CB /* public */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		4426DDFA22E743F4002852CB /* public */ = {
+			isa = PBXGroup;
+			children = (
+				4426DDFB22E743F4002852CB /* mlxr */,
+			);
+			path = public;
+			sourceTree = "<group>";
+		};
+		4426DDFB22E743F4002852CB /* mlxr */ = {
+			isa = PBXGroup;
+			children = (
+				4426DDFC22E743F4002852CB /* localization.h */,
+				4426DDFD22E743F4002852CB /* anchor.h */,
+				4426DDFE22E743F4002852CB /* types.h */,
+				4426DDFF22E743F4002852CB /* frame.h */,
+				4426DE0022E743F4002852CB /* session.h */,
+				4426DE0122E743F4002852CB /* common.h */,
+				4426DE0222E743F4002852CB /* authentication.h */,
+			);
+			path = mlxr;
+			sourceTree = "<group>";
+		};
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +307,8 @@
 		443F8DEB22BAC50300021B2B /* libraries */ = {
 			isa = PBXGroup;
 			children = (
+				44A04B5022E84A64003E1C5E /* mlxr_ios_client.framework */,
+				4426DDF722E743F4002852CB /* MLXrRuntimeWrapper */,
 				4447D45422BC2BC30043CA89 /* GLTF */,
 			);
 			path = libraries;
@@ -424,9 +494,21 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		44D05F7E22DF3C96009BE6D7 /* ml-xr-client */ = {
+			isa = PBXGroup;
+			children = (
+				44E73D0722E85E2B00AE779D /* XrClientAnchorData.swift */,
+				44E73D0A22E85E2B00AE779D /* XrClientLocalization.swift */,
+				44E73D0822E85E2B00AE779D /* XrClientSession.m */,
+				44E73D0922E85E2B00AE779D /* XrClientSession.swift */,
+			);
+			path = "ml-xr-client";
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				44D05F7E22DF3C96009BE6D7 /* ml-xr-client */,
 				449AF44922B247C40046938D /* bridge */,
 				449AF48622B248090046938D /* components */,
 				443F8DEB22BAC50300021B2B /* libraries */,
@@ -555,6 +637,7 @@
 				449AF49B22B248090046938D /* UiTextNode.swift in Sources */,
 				44318EB822CE29250060575D /* Measures.swift in Sources */,
 				449AF4A322B248090046938D /* SCNMatrix4Extension.swift in Sources */,
+				44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */,
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
@@ -563,14 +646,17 @@
 				449AF49A22B248090046938D /* UiGroupNode.swift in Sources */,
 				449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */,
 				4447D49922BC2BC40043CA89 /* GLTFImage.swift in Sources */,
+				44E73D0C22E85E2B00AE779D /* XrClientSession.m in Sources */,
 				447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */,
 				449AF4A222B248090046938D /* SCNQuaternionExtension.swift in Sources */,
 				4447D49A22BC2BC40043CA89 /* GLTFExtras.swift in Sources */,
 				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */,
+				44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */,
 				4447D49C22BC2BC40043CA89 /* GLTFExtension.swift in Sources */,
 				4447D48F22BC2BC40043CA89 /* GLTFGlTF.swift in Sources */,
+				44E73D0E22E85E2B00AE779D /* XrClientLocalization.swift in Sources */,
 				4447D4A422BC2BC40043CA89 /* GLTFCamera.swift in Sources */,
 				4447D49222BC2BC40043CA89 /* GLTFTexture.swift in Sources */,
 				4447D49122BC2BC40043CA89 /* GLTFAnimationSampler.swift in Sources */,
@@ -804,14 +890,16 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNMagicScript;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libraries/MLXrRuntimeWrapper";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNMagicScript-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -830,13 +918,15 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNMagicScript;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libraries/MLXrRuntimeWrapper";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNMagicScript-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

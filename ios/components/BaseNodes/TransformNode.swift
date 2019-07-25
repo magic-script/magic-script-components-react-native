@@ -39,6 +39,7 @@ import SceneKit
         get { return self.transform }
         set { self.transform = newValue }
     }
+    @objc var anchorUuid: String = "rootUuid";
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
 
@@ -84,6 +85,9 @@ import SceneKit
         }
         if let localTransform = Convert.toMatrix4(props["localTransform"]) {
             self.localTransform = localTransform
+        }
+        if let uuid = Convert.toString(props["anchorUuid"]) {
+            self.anchorUuid = uuid;
         }
     }
 

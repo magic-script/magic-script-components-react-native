@@ -9,7 +9,7 @@
 #import "RCTARView.h"
 #import "RNMagicScript-Swift.h"
 
-@interface RCTARView() <UIGestureRecognizerDelegate>
+@interface RCTARView() <UIGestureRecognizerDelegate, ARSCNViewDelegate>
 
 @property (nonatomic, strong) ARSession *session;
 @property (nonatomic, strong) ARWorldTrackingConfiguration *configuration;
@@ -51,6 +51,10 @@
     // Resgister scene in nodes manager
     [UiNodesManager.instance registerScene:view.scene];
 
+    // Register ARSession in MLXrClientSession
+    [XrClientSession registerARSession:view.session];
+    view.delegate = self;
+
     // Add AR view as a child
     view.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:view];
@@ -59,6 +63,12 @@
     [view.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
     [view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
     return view;
+}
+
+- (SCNNode*) renderer:(id<SCNSceneRenderer>)renderer nodeForAnchor:(ARAnchor *)anchor {
+    UiNodesManager *nodesManager = UiNodesManager.instance;
+    TransformNode* node = [nodesManager findNodeWithAnchorUuid:anchor.name];
+    return node;
 }
 
 - (void)pause {
@@ -108,7 +118,7 @@
     }
 
     _configuration = [ARWorldTrackingConfiguration new];
-//    _configuration.planeDetection = ARPlaneDetectionHorizontal;
+    //    _configuration.planeDetection = ARPlaneDetectionHorizontal;
     return _configuration;
 }
 

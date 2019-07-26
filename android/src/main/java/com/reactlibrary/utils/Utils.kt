@@ -111,10 +111,12 @@ class Utils {
             // TODO add Sphere collision shape support (there are 2 types of possible shapes)
             val collShape = node.collisionShape
             return if (collShape is Box) {
-                val left = collShape.center.x - collShape.size.x / 2 + node.localPosition.x
-                val right = collShape.center.x + collShape.size.x / 2 + node.localPosition.x
-                val top = collShape.center.y + collShape.size.y / 2 + node.localPosition.y
-                val bottom = collShape.center.y - collShape.size.y / 2 + node.localPosition.y
+                val scaleX = node.localScale.x
+                val scaleY = node.localScale.y
+                val left = collShape.center.x * scaleX - (collShape.size.x * scaleX) / 2 + node.localPosition.x
+                val right = collShape.center.x * scaleX + (collShape.size.x * scaleX) / 2 + node.localPosition.x
+                val top = collShape.center.y * scaleY + (collShape.size.y * scaleY) / 2 + node.localPosition.y
+                val bottom = collShape.center.y * scaleY - (collShape.size.y * scaleY) / 2 + node.localPosition.y
                 Bounding(left, bottom, right, top)
             } else {
                 // default
@@ -127,32 +129,43 @@ class Utils {
          * (minimum possible frame that contains all [nodes])
          */
         fun calculateSumBounds(nodes: List<Node>): Bounding {
-            val bounds = Bounding(0f, 0f, 0f, 0f)
+            if (nodes.isEmpty()) {
+                return Bounding(0F, 0F, 0F, 0F)
+            }
 
-            for (node in nodes) {
+            val firstNode = nodes[0]
+            val firstChildBounds = if (firstNode is TransformNode) {
+                firstNode.getBounding()
+            } else {
+                calculateBoundsOfNode(firstNode)
+            }
+
+            val sumBounds = firstChildBounds.copy()
+
+            for (i in 1 until nodes.size) {
+                val node = nodes[i]
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
                 } else {
                     calculateBoundsOfNode(node)
                 }
 
-                if (childBounds.left < bounds.left) {
-                    bounds.left = childBounds.left
+                if (childBounds.left < sumBounds.left) {
+                    sumBounds.left = childBounds.left
                 }
-                if (childBounds.right > bounds.right) {
-                    bounds.right = childBounds.right
+                if (childBounds.right > sumBounds.right) {
+                    sumBounds.right = childBounds.right
                 }
-                if (childBounds.top > bounds.top) {
-                    bounds.top = childBounds.top
+                if (childBounds.top > sumBounds.top) {
+                    sumBounds.top = childBounds.top
                 }
-                if (childBounds.bottom < bounds.bottom) {
-                    bounds.bottom = childBounds.bottom
+                if (childBounds.bottom < sumBounds.bottom) {
+                    sumBounds.bottom = childBounds.bottom
                 }
             }
 
-            return bounds
+            return sumBounds
         }
-
 
     }
 

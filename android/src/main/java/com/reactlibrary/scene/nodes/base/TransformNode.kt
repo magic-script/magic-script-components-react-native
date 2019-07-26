@@ -19,9 +19,9 @@ abstract class TransformNode(props: ReadableMap) : Node() {
 
     companion object {
         // props
-        private const val PROP_LOCAL_POSITION = "localPosition"
-        private const val PROP_LOCAL_SCALE = "localScale"
-        private const val PROP_LOCAL_ROTATION = "localRotation"
+        const val PROP_LOCAL_POSITION = "localPosition"
+        const val PROP_LOCAL_SCALE = "localScale"
+        const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
     /**

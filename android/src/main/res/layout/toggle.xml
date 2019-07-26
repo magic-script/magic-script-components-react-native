@@ -3,7 +3,6 @@
     android:id="@+id/toggle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:switchMinWidth="45dp"
-    android:switchPadding="36dp"
+    android:switchPadding="6dp"
     android:text="Toggle"
     android:textColor="@color/text_color_default" />

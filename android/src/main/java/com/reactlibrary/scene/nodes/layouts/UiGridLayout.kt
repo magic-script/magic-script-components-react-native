@@ -101,10 +101,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     override fun getBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(children)
         return Bounding(
-                childBounds.left + localPosition.x,
-                childBounds.bottom + localPosition.y,
-                childBounds.right + localPosition.x,
-                childBounds.top + localPosition.y
+                childBounds.left + localPosition.x - itemPadding.left,
+                childBounds.bottom + localPosition.y - itemPadding.bottom,
+                childBounds.right + localPosition.x + itemPadding.right,
+                childBounds.top + localPosition.y + itemPadding.top
         )
     }
 

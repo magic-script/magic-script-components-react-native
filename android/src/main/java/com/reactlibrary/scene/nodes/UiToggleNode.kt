@@ -21,10 +21,8 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
 
-        //private const val DEFAULT_TEXT_SIZE = 0.035 // in meters
-        //private const val DEFAULT_WIDTH = 0.3 // in meters
-
-        private const val DEFAULT_SCALE = 0.4
+        // can't enforce smaller height by setting android:height
+        private const val DEFAULT_SCALE = 0.75
     }
 
     init {
@@ -32,14 +30,6 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         if (!properties.containsKey(PROP_LOCAL_SCALE)) {
             properties.putSerializable(PROP_LOCAL_SCALE, arrayListOf(DEFAULT_SCALE, DEFAULT_SCALE, 1))
         }
-
-        //if (!properties.containsKey(PROP_TEXT_SIZE)) {
-        //   properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        // }
-
-        //if (!properties.containsKey(PROP_WIDTH)) {
-        //  properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        //}
     }
 
     override fun provideView(context: Context): View {

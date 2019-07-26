@@ -7,4 +7,5 @@
     android:switchPadding="6dp"
     android:text="Toggle"
     android:textColor="@color/text_color_default"
-    android:theme="@style/ToggleSwitchTheme" />
+    android:theme="@style/ToggleSwitchTheme"
+    android:trackTint="#303030" />

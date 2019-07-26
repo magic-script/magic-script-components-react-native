@@ -20,20 +20,16 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
-
-        // can't enforce smaller height by setting android:height
-        private const val DEFAULT_SCALE = 0.75
     }
 
-    init {
-        // set default values of properties
-        if (!properties.containsKey(PROP_LOCAL_SCALE)) {
-            properties.putSerializable(PROP_LOCAL_SCALE, arrayListOf(DEFAULT_SCALE, DEFAULT_SCALE, 1))
-        }
-    }
+    var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.toggle, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.toggle, null) as Switch
+        view.setOnCheckedChangeListener { _, isChecked ->
+            toggleChangedListener?.invoke(isChecked)
+        }
+        return view
     }
 
     override fun applyProperties(props: Bundle) {

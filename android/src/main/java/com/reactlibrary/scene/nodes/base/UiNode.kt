@@ -112,7 +112,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
             // the size should be set before attaching view to the node
             view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
         }
-        
+
         // TODO handle error exceptionally { }
         ViewRenderable
                 .builder()

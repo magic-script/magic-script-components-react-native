@@ -8,6 +8,7 @@ import TextEditBuilder from './elements/builders/text-edit-builder.js';
 import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
+import ToggleBuilder from './elements/builders/toggle-builder.js';
 
 
 export default {
@@ -25,5 +26,6 @@ export default {
         'model': (componentManager) => new ModelBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
+        'toggle': (componentManager) => new ToggleBuilder(componentManager),
     }
 };

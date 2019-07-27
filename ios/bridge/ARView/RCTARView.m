@@ -119,6 +119,13 @@
 
     _configuration = [ARWorldTrackingConfiguration new];
     //    _configuration.planeDetection = ARPlaneDetectionHorizontal;
+    NSUInteger videoFormatCount = ARWorldTrackingConfiguration.supportedVideoFormats.count;
+    _configuration.videoFormat = ARWorldTrackingConfiguration.supportedVideoFormats[videoFormatCount - 1];
+    _configuration.worldAlignment = 0;
+    _configuration.autoFocusEnabled = false;
+    _configuration.providesAudioData = false;
+    _configuration.maximumNumberOfTrackedImages = 1;
+
     return _configuration;
 }
 

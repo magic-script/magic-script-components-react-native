@@ -9,14 +9,14 @@
 import Foundation
 import ARKit
 import CoreLocation
-import mlxr_ios_client
+import mlxr_ios_client_internal
 
 @objc(XrClientSession)
 class XrClientSession: NSObject {
 
     static fileprivate weak var arSession: ARSession?
     static fileprivate let locationManager = CLLocationManager()
-    fileprivate var xrClientSession: MLXrClientSession?
+    fileprivate var xrClientSession: MLXRSession?
     fileprivate var updateInterval: TimeInterval = 2.0
     fileprivate var timer: Timer?
     fileprivate var internalLocation: CLLocation!
@@ -65,9 +65,9 @@ class XrClientSession: NSObject {
             return
         }
 
-        xrClientSession = MLXrClientSession(authToken: OpaquePointer(bitPattern: 0), session: arSession)
+        xrClientSession = MLXRSession(0, arSession)
         if let xrSession = xrClientSession {
-            let result: Bool = xrSession.connect(address: address, deviceId: deviceId, token: token)
+            let result: Bool = xrSession.connect(address, deviceId, token)
             resetTimer()
             resolve(result)
         } else {
@@ -110,7 +110,7 @@ class XrClientSession: NSObject {
             print("no ar frame available")
             return
         }
-        _ = xrSession.update(frame: frame, location: currentLocation)
+        _ = xrSession.update(frame, currentLocation)
     }
 
     @objc
@@ -119,7 +119,7 @@ class XrClientSession: NSObject {
             reject("code", "XrClientSession has not been initialized!", nil)
             return
         }
-        let allAnchors: [MLXrClientAnchorData] = xrSession.getAllAnchors()
+        let allAnchors: [MLXRAnchor] = xrSession.getAllAnchors()
         let uniqueAnchors: [XrClientAnchorData] = allAnchors.map { XrClientAnchorData($0) }
 
         // Remove current local anchors
@@ -151,8 +151,8 @@ class XrClientSession: NSObject {
             return
         }
 
-        guard let anchorData = xrSession.getAnchorByPcfId(id: uuid) else {
-            // Anchor data does not exist for given PCF id
+        guard let anchorData = xrSession.getAnchorByPcfId(uuid) else {
+            // Achor data does not exist for given PCF id
             resolve(nil)
             return
         }
@@ -168,13 +168,25 @@ class XrClientSession: NSObject {
             return
         }
 
-        let status: XrClientLocalization = XrClientLocalization(localizationStatus: xrSession.getLocalizationStatus())
+        let status: XrClientLocalization = XrClientLocalization(localizationStatus: xrSession.getLocalizationStatus()?.status ?? MLXRLocalizationStatus_LocalizationFailed)
         resolve(status.rawValue)
     }
 
     @objc
     static func requiresMainQueueSetup() -> Bool {
         return true
+    }
+    
+    @objc
+    public func getAllBoundedVolumes(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        guard let xrSession = xrClientSession else {
+            reject("code", "XrClientSession has not been initialized!", nil)
+            return
+        }
+        let volumes = xrSession.getAllBoundedVolumes()
+        let uniqueVolumes: [[String:Any]] = volumes.map { XrClientBoundedVolume($0).getJsonRepresentation() }
+        resolve(uniqueVolumes)
+        
     }
 }
 

@@ -1,0 +1,6 @@
+framework module mlxr_ios_client_internal {
+  umbrella header "mlxr_ios_client_internal.h"
+
+  export *
+  module * { export * }
+}

@@ -64,7 +64,7 @@ import SceneKit
         if (node.anchorUuid != "rootUuid") {
             nodeByAnchorUuid[node.anchorUuid] = node;
         }
-        print("registeredNode: \(nodeId) uuid: \(node.anchorUuid), name:\(node.name)");
+
         if let node = node as? UiNode, node.canHaveFocus {
             node.categoryBitMask = focusableNodeBitMask
         }

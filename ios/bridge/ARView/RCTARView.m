@@ -76,11 +76,13 @@
 }
 
 - (void)resume {
-    [self.arView.session runWithConfiguration:self.configuration];
+    if (self.configuration) {
+        [self.arView.session runWithConfiguration:self.configuration];
+    }
 }
 
 - (void)reset {
-    if (ARWorldTrackingConfiguration.isSupported) {
+    if (self.configuration) {
         [self.arView.session runWithConfiguration:self.configuration options:ARSessionRunOptionRemoveExistingAnchors | ARSessionRunOptionResetTracking];
     }
 }
@@ -110,17 +112,20 @@
 #pragma mark - Lazy loads
 
 - (ARWorldTrackingConfiguration *)configuration {
+    if (!ARWorldTrackingConfiguration.isSupported) {
+        return nil;
+    }
+
     if (_configuration) {
         return _configuration;
     }
 
-    if (!ARWorldTrackingConfiguration.isSupported) {
-    }
-
     _configuration = [ARWorldTrackingConfiguration new];
-    //    _configuration.planeDetection = ARPlaneDetectionHorizontal;
-    NSUInteger videoFormatCount = ARWorldTrackingConfiguration.supportedVideoFormats.count;
-    _configuration.videoFormat = ARWorldTrackingConfiguration.supportedVideoFormats[videoFormatCount - 1];
+    // _configuration.planeDetection = ARPlaneDetectionHorizontal;
+    const NSUInteger videoFormatCount = ARWorldTrackingConfiguration.supportedVideoFormats.count;
+    if (videoFormatCount > 0) {
+        _configuration.videoFormat = ARWorldTrackingConfiguration.supportedVideoFormats[videoFormatCount - 1];
+    }
     _configuration.worldAlignment = 0;
     _configuration.autoFocusEnabled = false;
     _configuration.providesAudioData = false;

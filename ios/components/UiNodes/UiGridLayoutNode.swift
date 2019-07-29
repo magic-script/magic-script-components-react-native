@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiGridLayout: UiNode {
+@objc class UiGridLayoutNode: UiNode {
 
     @objc var columns: Int = 0 {
         didSet { layoutNeeded = true }
@@ -110,7 +110,7 @@ import SceneKit
 }
 
 // Helpers
-extension UiGridLayout {
+extension UiGridLayoutNode {
     fileprivate func getColumnsWidth(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [CGFloat] {
         var columnsWidth: [CGFloat] = []
         for c in 0..<columnsCount {

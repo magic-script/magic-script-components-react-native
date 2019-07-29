@@ -14,6 +14,10 @@
     return [[UiButtonNode alloc] initWithProps:json];
 }
 
++ (UiGridLayoutNode *)UiGridLayoutNode:(id)json {
+    return [[UiGridLayoutNode alloc] initWithProps:json];
+}
+
 + (UiGroupNode *)UiGroupNode:(id)json {
     return [[UiGroupNode alloc] initWithProps:json];
 }

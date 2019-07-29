@@ -12,6 +12,7 @@
 @interface RCTConvert (Components)
 
 + (UiButtonNode *)UiButtonNode:(id)json;
++ (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;

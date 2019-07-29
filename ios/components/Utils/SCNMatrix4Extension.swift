@@ -40,9 +40,18 @@ extension SCNMatrix4 {
         return result
     }
 
-    var right: SCNVector3 { return SCNVector3(m11, m12, m13) }
-    var up: SCNVector3 { return SCNVector3(m21, m22, m23) }
-    var forward: SCNVector3 { return SCNVector3(m31, m32, m33) }
+    var right: SCNVector3 {
+        get { return SCNVector3(m11, m12, m13) }
+        set { m11 = newValue.x; m12 = newValue.y; m13 = newValue.z; }
+    }
+    var up: SCNVector3 {
+        get { return SCNVector3(m21, m22, m23) }
+        set { m21 = newValue.x; m22 = newValue.y; m23 = newValue.z; }
+    }
+    var forward: SCNVector3 {
+        get { return SCNVector3(m31, m32, m33) }
+        set { m31 = newValue.x; m32 = newValue.y; m33 = newValue.z; }
+    }
     var position: SCNVector3 {
         get { return SCNVector3(m41, m42, m43) }
         set { m41 = newValue.x; m42 = newValue.y; m43 = newValue.z; }

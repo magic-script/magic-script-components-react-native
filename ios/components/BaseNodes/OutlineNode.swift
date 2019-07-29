@@ -61,7 +61,9 @@ import SpriteKit
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
         let scene = SKScene(size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height))
         scene.backgroundColor = UIColor.clear
-        scene.setScale(1.0 / scaleFactor)
+        if (scaleFactor != 1.0) {
+            scene.setScale(1.0 / scaleFactor)
+        }
 
         // Add outline node
         let outlineRect = CGRect(origin: CGPoint.zero, size: scene.size).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)

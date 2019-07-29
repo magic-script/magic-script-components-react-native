@@ -15,10 +15,10 @@ import mlxr_ios_client
 class XrClientSession: NSObject {
 
     static fileprivate weak var arSession: ARSession?
+    static fileprivate let locationManager = CLLocationManager()
     fileprivate var xrClientSession: MLXrClientSession?
     fileprivate var updateInterval: TimeInterval = 2.0
     fileprivate var timer: Timer?
-    fileprivate let locationManager = CLLocationManager()
     fileprivate var internalLocation: CLLocation!
     fileprivate let internalLocationQueue: DispatchQueue = DispatchQueue(label: "internalLocationQueue")
     fileprivate var lastLocation: CLLocation? {
@@ -32,14 +32,25 @@ class XrClientSession: NSObject {
 
     public override init() {
         super.init()
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
+        setupLocationManager()
     }
 
     deinit {
         timer?.invalidate()
+
+        // NOTE: Due to the following warning:
+        // "Failure to deallocate CLLocationManager on the same runloop as its creation
+        // may result in a crash"
+        // locationManager is a static member and we only stop updating location in deinit.
+        XrClientSession.locationManager.stopUpdatingLocation()
+        XrClientSession.locationManager.delegate = nil
+    }
+
+    fileprivate func setupLocationManager() {
+        XrClientSession.locationManager.delegate = self
+        XrClientSession.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        XrClientSession.locationManager.requestWhenInUseAuthorization()
+        XrClientSession.locationManager.startUpdatingLocation()
     }
 
     @objc

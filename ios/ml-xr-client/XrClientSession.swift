@@ -152,7 +152,7 @@ class XrClientSession: NSObject {
         }
 
         guard let anchorData = xrSession.getAnchorByPcfId(id: uuid) else {
-            // Achor data does not exist for given PCF id
+            // Anchor data does not exist for given PCF id
             resolve(nil)
             return
         }

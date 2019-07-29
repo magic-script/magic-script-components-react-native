@@ -37,6 +37,13 @@ import SceneKit
         }
     }
 
+    @objc override func getBounds() -> UIEdgeInsets {
+        let oX: CGFloat = CGFloat(position.x)
+        let oY: CGFloat = CGFloat(position.y)
+        let bbox = self.boundingBox
+        return UIEdgeInsets(top: bbox.max.y, left: bbox.min.x, bottom: bbox.min.y, right: bbox.max.x)
+    }
+
     fileprivate func cleanNode() {
         while !childNodes.isEmpty {
             childNodes.last?.removeFromParentNode()

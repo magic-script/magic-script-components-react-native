@@ -64,6 +64,12 @@ import SceneKit
         }
     }
 
+    @objc override func getBounds() -> UIEdgeInsets {
+        let oX: CGFloat = CGFloat(position.x)
+        let oY: CGFloat = CGFloat(position.y)
+        return UIEdgeInsets(top: oY + 0.5 * height, left: oX - 0.5 * width, bottom: oY - 0.5 * height, right: oX + 0.5 * width)
+    }
+
     fileprivate func updatePlaneSize() {
         guard let image = self.image else {
             planeGeometry.width = width

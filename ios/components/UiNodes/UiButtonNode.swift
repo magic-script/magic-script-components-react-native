@@ -79,6 +79,7 @@ import SceneKit
 
         labelNode = LabelNode()
         labelNode.textAlignment = .center
+        labelNode.textSize = 0.0167
         contentNode.addChildNode(labelNode)
     }
 
@@ -116,20 +117,27 @@ import SceneKit
         if let roundness = Convert.toCGFloat(props["roundness"]) {
             self.roundness = roundness
         }
+    }
 
+    @objc override func getBounds() -> UIEdgeInsets {
+        let labelSize = labelNode.getSize()
+        let margin: CGFloat = 0.01
+        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * margin
+        let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * margin
+        let originX: CGFloat = CGFloat(position.x)
+        let originY: CGFloat = CGFloat(position.y)
+        return UIEdgeInsets(top: originY + 0.5 * contentHeight, left: originX - 0.5 * contentWidth, bottom: originY - 0.5 * contentHeight, right: originX + 0.5 * contentWidth)
+    }
+
+    @objc override func updateLayout() {
         labelNode.reload()
         if reloadOutline {
             reloadOutline = false
             reloadOutlineNode()
         }
-    }
 
-    @objc override func getSize() -> CGSize {
         let labelSize = labelNode.getSize()
-        let margin: CGFloat = 0.01
-        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * margin
-        let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * margin
-        return CGSize(width: contentWidth, height: contentHeight)
+        labelNode.position = SCNVector3(-0.5 * labelSize.width, 0.0, 0.0)
     }
 
     fileprivate func reloadOutlineNode() {

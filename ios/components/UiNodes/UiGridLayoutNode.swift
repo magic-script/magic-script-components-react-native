@@ -11,23 +11,21 @@ import SceneKit
 @objc class UiGridLayoutNode: UiNode {
 
     @objc var columns: Int = 0 {
-        didSet { layoutNeeded = true }
+        didSet { setNeedsLayout() }
     }
     @objc var rows: Int = 0 {
-        didSet { layoutNeeded = true }
+        didSet { setNeedsLayout() }
     }
     //@objc var size: CGSize = CGSize.zero
     @objc var defaultItemAlignment: Int = 0 {
-        didSet { layoutNeeded = true }
+        didSet { setNeedsLayout() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { layoutNeeded = true }
+        didSet { setNeedsLayout() }
     }
     @objc var skipInvisibleItems: Bool = false {
-        didSet { layoutNeeded = true }
+        didSet { setNeedsLayout() }
     }
-
-    fileprivate var layoutNeeded: Bool = false
 
     @objc override func setupNode() {
         super.setupNode()
@@ -51,8 +49,6 @@ import SceneKit
         if let skipInvisibleItems = Convert.toBool(props["skipInvisibleItems"]) {
             self.skipInvisibleItems = skipInvisibleItems
         }
-
-        updateLayout()
     }
 
     @objc override func addChild(_ child: TransformNode) {
@@ -60,8 +56,7 @@ import SceneKit
         proxyNode.name = child.name
         addChildNode(proxyNode)
         proxyNode.addChildNode(child)
-        layoutNeeded = true
-
+        setNeedsLayout()
     }
 
     @objc override func removeChild(_ child: TransformNode) {
@@ -69,14 +64,11 @@ import SceneKit
             let parent = proxyNode.parent, parent == self {
             proxyNode.removeFromParentNode()
             child.removeFromParentNode()
-            layoutNeeded = true
+            setNeedsLayout()
         }
     }
 
     @objc override func updateLayout() {
-        guard layoutNeeded else { return }
-        layoutNeeded = false
-
         guard !childNodes.isEmpty else { return }
 
         var cellSizes: [CGSize] = []
@@ -90,29 +82,36 @@ import SceneKit
         let rowsCount: Int = (columns > 0) ? itemsCount / columns : 1
         let columnsCount: Int = itemsCount / rowsCount
 
-        let columnsWidth = getColumnsWidth(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
-        let rowsHeight = getRowsHeight(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
+        let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
+        let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
 
         // TODO: include padding
         // TODO: include item alignment
         let minX: CGFloat = 0
         let minY: CGFloat = 0
-        let gridWidth: CGFloat = columnsWidth.reduce(0, +)
-        let gridHeight: CGFloat = rowsHeight.reduce(0, +)
         for i in 0..<cellSizes.count {
             let colId: Int = i % columnsCount
             let rowId: Int = i / columnsCount
-            let x: CGFloat = minX + 0.5 * columnsWidth[colId] // TODO: still missing offset of all pevious columns
-            let y: CGFloat = minY + 0.5 * rowsHeight[rowId] // TODO: still missing offset of all pevious rows
-            childNodes[i].position = SCNVector3(x, y, CGFloat(position.z))
+            let colBound = columnsBounds[colId];
+            let rowBound = rowsBounds[rowId];
+            let node: TransformNode = self[i]
+            let nodeSize = cellSizes[i]
+            let x: CGFloat = minX + colBound.x + 0.5 * (colBound.width - nodeSize.width)
+            let y: CGFloat = minY - (rowBound.y + 0.5 * (rowBound.height - nodeSize.height))
+            node.position = SCNVector3(x, y, CGFloat(position.z))
         }
+    }
+
+    subscript(index: Int) -> TransformNode! {
+        return (childNodes[index].childNodes[0] as! TransformNode)
     }
 }
 
 // Helpers
 extension UiGridLayoutNode {
-    fileprivate func getColumnsWidth(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [CGFloat] {
-        var columnsWidth: [CGFloat] = []
+    fileprivate func getColumnsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(x: CGFloat, width: CGFloat)] {
+        var columnsBounds: [(x: CGFloat, width: CGFloat)] = []
+        var x: CGFloat = 0
         for c in 0..<columnsCount {
             var width: CGFloat = 0
             for r in 0..<rowsCount {
@@ -121,14 +120,16 @@ extension UiGridLayoutNode {
                 let size = cellSizes[index]
                 width = max(width, size.width)
             }
-            columnsWidth.append(width)
+            columnsBounds.append((x: x, width: width))
+            x += width
         }
 
-        return columnsWidth
+        return columnsBounds
     }
 
-    fileprivate func getRowsHeight(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [CGFloat] {
-        var rowsHeight: [CGFloat] = []
+    fileprivate func getRowsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(y: CGFloat, height: CGFloat)] {
+        var rowsBounds: [(y: CGFloat, height: CGFloat)] = []
+        var y: CGFloat = 0
         for r in 0..<rowsCount {
             var height: CGFloat = 0
             for c in 0..<columnsCount {
@@ -137,9 +138,10 @@ extension UiGridLayoutNode {
                 let size = cellSizes[index]
                 height = max(height, size.height)
             }
-            rowsHeight.append(height)
+            rowsBounds.append((y: y, height: height))
+            y += height
         }
 
-        return rowsHeight
+        return rowsBounds
     }
 }

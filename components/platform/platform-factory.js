@@ -189,6 +189,10 @@ export class PlatformFactory extends NativeFactory {
         // Nothing to implement here.
     }
 
+    resetAfterCommit(containerInfo) {
+        this.componentManager.updateLayout();
+    }
+
     createApp(appComponent) {
     }
 }

@@ -11,7 +11,9 @@ import SpriteKit
 
 @objc class UiNode: TransformNode {
 
-    //var alignment: Alignment
+    @objc var alignment: Alignment = Alignment.topLeft {
+        didSet { setNeedsLayout() }
+    }
     //var activateResponse: FocusRequest
     //var renderingLayer: RenderingLayer
     //var enabled: Bool = true   // (check SCNNodeFocusBehavior)
@@ -22,9 +24,17 @@ import SpriteKit
     //var gravityWellProperties: GravityWellProperties
 
     fileprivate var outlineNode: SCNNode?
+    fileprivate var layoutNeeded: Bool = false
+    @objc func setNeedsLayout() { layoutNeeded = true }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+    }
+
+    @objc override func updateLayout() {
+        guard layoutNeeded else { return }
+        layoutNeeded = false
+        super.updateLayout()
     }
 
     // MARK: - Focus

@@ -132,6 +132,12 @@ RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)prope
     }
 }
 
+RCT_EXPORT_METHOD(updateLayout:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"updateLayout");
+    [UiNodesManager.instance updateLayout];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     ARLog(@"addOnPressEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];

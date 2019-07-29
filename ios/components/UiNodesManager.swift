@@ -11,7 +11,7 @@ import SceneKit
 
 @objc class UiNodesManager: NSObject {
     @objc static let instance = UiNodesManager()
-    @objc let rootNode: SCNNode = SCNNode()
+    @objc let rootNode: TransformNode = TransformNode()
     @objc let focusableNodeBitMask: Int = 8
 
     @objc var onInputFocused: ((_ textEdit: UiTextEditNode) -> (Void))?
@@ -142,6 +142,10 @@ import SceneKit
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
         return true
+    }
+
+    @objc func updateLayout() {
+        rootNode.updateLayout()
     }
 
     @objc func textFieldShouldReturn() {

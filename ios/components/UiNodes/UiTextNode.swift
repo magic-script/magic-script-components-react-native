@@ -22,9 +22,9 @@ import SceneKit
         set { labelNode.textSize = newValue }
     }
 
-    // @objc var allCaps: Bool // TODO: property to defined
-    // @objc var charSpacing: CGFloat // TODO: property to defined
-    // @objc var lineSpacing: CGFloat // TODO: property to defined
+    // @objc var allCaps: Bool = false // TODO: property to defined
+    // @objc var charSpacing: CGFloat = 0 // TODO: property to defined
+    // @objc var lineSpacing: CGFloat = 1// TODO: property to defined
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
         set { labelNode.textAlignment = newValue }
@@ -45,6 +45,7 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+        alignment = Alignment.bottomLeft // default alignment of UiText
         labelNode = LabelNode()
         addChildNode(labelNode)
 
@@ -81,11 +82,16 @@ import SceneKit
 //        if let font = Convert.toFont(props["font"]) {
 //            self.font = font
 //        }
+    }
 
+    @objc override func updateLayout() {
         labelNode.reload()
     }
 
-    @objc override func getSize() -> CGSize {
-        return labelNode.getSize()
+    @objc override func getBounds() -> UIEdgeInsets {
+        let labelSize = labelNode.getSize()
+        let originX: CGFloat = CGFloat(position.x)
+        let originY: CGFloat = CGFloat(position.y)
+        return UIEdgeInsets(top: originY + 0.5 * labelSize.height, left: originX - 0.5 * labelSize.width, bottom: originY - 0.5 * labelSize.height, right: originX + 0.5 * labelSize.width)
     }
 }

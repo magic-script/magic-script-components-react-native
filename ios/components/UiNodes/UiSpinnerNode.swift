@@ -51,6 +51,12 @@ import SceneKit
         }
     }
 
+    @objc override func getBounds() -> UIEdgeInsets {
+        let oX: CGFloat = CGFloat(position.x)
+        let oY: CGFloat = CGFloat(position.y)
+        return UIEdgeInsets(top: oY + 0.5 * size.height, left: oX - 0.5 * size.width, bottom: oY - 0.5 * size.height, right: oX + 0.5 * size.width)
+    }
+
     fileprivate func updatePlaneSize() {
         let width: CGFloat = size.width > 0 ? size.width : UiSpinnerNode.defaultSize
         let height: CGFloat = size.height > 0 ? size.height : UiSpinnerNode.defaultSize

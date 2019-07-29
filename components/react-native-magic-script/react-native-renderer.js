@@ -137,6 +137,7 @@ function prepareForCommit(containerInfo) {
 //  containerInfo: Container
 function resetAfterCommit(containerInfo) {
   console.log('[MXS] resetAfterCommit');
+  mxs._nativeFactory.resetAfterCommit(containerInfo);
 }
 
 // Function: prepareUpdate

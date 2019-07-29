@@ -102,10 +102,18 @@ import SceneKit
     }
 
     @objc func getSize() -> CGSize {
-        return CGSize.zero
+        let bounds = getBounds()
+        return CGSize(width: bounds.right - bounds.left, height: bounds.top - bounds.bottom)
+    }
+
+    @objc func getBounds() -> UIEdgeInsets {
+        return UIEdgeInsets.zero
     }
 
     @objc func updateLayout() {
+        childNodes.forEach { (child) in
+            (child as? TransformNode)?.updateLayout()
+        }
     }
 
     @objc func setOriginVisible(_ visible: Bool) {

@@ -21,6 +21,7 @@ import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
+import com.reactlibrary.scene.nodes.UiToggleNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
@@ -172,6 +173,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void createToggleNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                addNode(new UiToggleNode(props, context), nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
     public void createGridLayout(final ReadableMap props, final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
@@ -264,7 +275,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
                             WritableMap pressParams = Arguments.createMap();
                             pressParams.putString("nodeId", nodeId);
 
-                            // must use separte map
+                            // must use separate map
                             WritableMap clickParams = Arguments.createMap();
                             clickParams.putString("nodeId", nodeId);
 

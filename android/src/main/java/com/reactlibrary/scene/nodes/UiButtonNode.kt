@@ -10,9 +10,8 @@ import android.widget.Button
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.toColor
-import com.reactlibrary.utils.toVector4
 
 class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -61,18 +60,16 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
-            val textSize = props.getDouble(PROP_TEXT_SIZE)
+            val textSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(textSize, view.context).toFloat()
             (view as Button).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
 
     private fun setTextColor(props: Bundle) {
-        if (props.containsKey(PROP_TEXT_COLOR)) {
-            val color = props.getSerializable(PROP_TEXT_COLOR)?.toVector4()?.toColor()
-            if (color != null) {
-                (view as Button).setTextColor(color)
-            }
+        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        if (color != null) {
+            (view as Button).setTextColor(color)
         }
     }
 

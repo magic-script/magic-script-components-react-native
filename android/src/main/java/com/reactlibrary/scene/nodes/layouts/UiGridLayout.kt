@@ -5,11 +5,13 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.reactlibrary.scene.nodes.Alignment
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
-import com.reactlibrary.utils.Bounding
+import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.props.Padding
+import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
@@ -20,20 +22,36 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         const val PROP_COLUMNS = "columns"
         const val PROP_ROWS = "rows"
         const val PROP_ITEM_PADDING = "itemPadding"
+        const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
-        private const val COLUMNS_DEFAULT = 2
-        private const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
+        // default values
+        const val COLUMNS_DEFAULT = 1
+        const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
     }
 
     var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
-        private set
+        private set(value) {
+            if (value == 0 && rows == 0) {
+                field = 1 // can't be 0 along with rows
+            } else {
+                field = value
+            }
+
+        }
 
     var rows: Int = properties.getDouble(PROP_ROWS, ROWS_DEFAULT.toDouble()).toInt()
-        private set
+        private set(value) {
+            if (value == 0 && columns == 0) {
+                field = 1 // can't be 0 along with columns
+            } else {
+                field = value
+            }
+        }
 
-    var padding = properties.getDouble(PROP_ITEM_PADDING, 0.0) // in meters
+    // default padding for each item [top, right, bottom, left]
+    var itemPadding = Padding(0F, 0F, 0F, 0F)
         private set
 
     var itemHorizontalAlignment = Alignment.Horizontal.CENTER
@@ -83,10 +101,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     override fun getBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(children)
         return Bounding(
-                childBounds.left + localPosition.x,
-                childBounds.bottom + localPosition.y,
-                childBounds.right + localPosition.x,
-                childBounds.top + localPosition.y
+                childBounds.left + localPosition.x - itemPadding.left,
+                childBounds.bottom + localPosition.y - itemPadding.bottom,
+                childBounds.right + localPosition.x + itemPadding.right,
+                childBounds.top + localPosition.y + itemPadding.top
         )
     }
 
@@ -95,7 +113,12 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         shouldRedraw = true
     }
 
-    // re-draws the grid if needed
+    /**
+     * Loop that requests re-drawing the grid if needed.
+     * It measures the children, because the nodes' view size is not known
+     * from the beginning, also a client may change the view size at any time: we need to
+     * re-draw the layout in such case.
+     */
     private fun layoutLoop() {
         handler.postDelayed({
             measureChildren()
@@ -108,7 +131,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         }, 100)
     }
 
-    // measures the bounds of children nodes
+    /**
+     * Measures the bounds of children nodes; if any bound has changed
+     * it sets the [shouldRedraw] flag to true.
+     */
     private fun measureChildren() {
         for (i in 0 until children.size) {
             val node = children[i]
@@ -128,23 +154,24 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     private fun setColumns(props: Bundle) {
         if (props.containsKey(PROP_COLUMNS)) {
             columns = props.getDouble(PROP_COLUMNS).toInt()
-            if (columns <= 0) {
-                columns = 1
-            }
             shouldRedraw = true
         }
     }
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
-            this.rows = props.getDouble(PROP_ROWS).toInt()
+            rows = props.getDouble(PROP_ROWS).toInt()
             shouldRedraw = true
         }
     }
 
     private fun setItemPadding(props: Bundle) {
-        if (props.containsKey(PROP_ITEM_PADDING)) {
-            this.padding = props.getDouble(PROP_ITEM_PADDING)
+        var padding = PropertiesReader.readPadding(props, PROP_ITEM_PADDING)
+        if (padding == null) {
+            padding = PropertiesReader.readPadding(props, PROP_DEFAULT_ITEM_PADDING)
+        }
+        if (padding != null) {
+            itemPadding = padding
             shouldRedraw = true
         }
     }

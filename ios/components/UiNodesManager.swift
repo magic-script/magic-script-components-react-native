@@ -18,6 +18,7 @@ import SceneKit
     @objc var onInputUnfocused: (() -> (Void))?
 
     fileprivate var nodesById: [String: TransformNode] = [:]
+    fileprivate var nodeByAnchorUuid: [String: TransformNode] = [:]
     fileprivate var focusedNode: UiNode?
 
     private override init() {
@@ -48,14 +49,22 @@ import SceneKit
             onInputFocused?(textEdit)
         }
     }
-
+    
     @objc func findNodeWithId(_ nodeId: String) -> TransformNode? {
         return nodesById[nodeId]
+    }
+    
+    @objc func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
+        return nodeByAnchorUuid[nodeId]
     }
 
     @objc func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
+        if (node.anchorUuid != "rootUuid") {
+            nodeByAnchorUuid[node.anchorUuid] = node;
+        }
+        print("registeredNode: \(nodeId) uuid: \(node.anchorUuid), name:\(node.name)");
         if let node = node as? UiNode, node.canHaveFocus {
             node.categoryBitMask = focusableNodeBitMask
         }

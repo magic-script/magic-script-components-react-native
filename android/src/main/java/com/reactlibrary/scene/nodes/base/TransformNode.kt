@@ -4,10 +4,10 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.reactlibrary.utils.Bounding
+import com.google.ar.sceneform.math.Quaternion
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.toQuaternion
-import com.reactlibrary.utils.toVector3
 
 /**
  * Base node.
@@ -19,9 +19,9 @@ abstract class TransformNode(props: ReadableMap) : Node() {
 
     companion object {
         // props
-        private const val PROP_LOCAL_POSITION = "localPosition"
-        private const val PROP_LOCAL_SCALE = "localScale"
-        private const val PROP_LOCAL_ROTATION = "localRotation"
+        const val PROP_LOCAL_POSITION = "localPosition"
+        const val PROP_LOCAL_SCALE = "localScale"
+        const val PROP_LOCAL_ROTATION = "localRotation"
     }
 
     /**
@@ -100,23 +100,30 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     protected abstract fun loadRenderable(): Boolean
 
     private fun setPosition(props: Bundle) {
-        val localPosition = props.getSerializable(PROP_LOCAL_POSITION)?.toVector3()
+        val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)
         if (localPosition != null) {
             this.localPosition = localPosition
         }
     }
 
     private fun setLocalScale(props: Bundle) {
-        val localScale = props.getSerializable(PROP_LOCAL_SCALE)?.toVector3()
+        val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
         if (localScale != null) {
             this.localScale = localScale
         }
     }
 
     private fun setLocalRotation(props: Bundle) {
-        val quaternion = props.getSerializable(PROP_LOCAL_ROTATION)?.toQuaternion()
-        if (quaternion != null) {
-            this.localRotation = quaternion
+        val quaternionData = props.getSerializable(PROP_LOCAL_ROTATION)
+        if (quaternionData != null && quaternionData is ArrayList<*>) {
+            quaternionData as ArrayList<Double>
+            if (quaternionData.size == 4) {
+                val x = quaternionData[0].toFloat()
+                val y = quaternionData[1].toFloat()
+                val z = quaternionData[2].toFloat()
+                val w = quaternionData[3].toFloat()
+                this.localRotation = Quaternion(x, y, z, w) // Quaternion.axisAngle
+            }
         }
     }
 

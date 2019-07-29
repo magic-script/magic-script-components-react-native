@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.reactlibrary.utils.Bounding
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
@@ -94,12 +94,12 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
         if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH)
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
             widthPx = Utils.metersToPx(widthInMeters, context)
         }
 
         if (properties.containsKey(PROP_HEIGHT)) {
-            val widthInMeters = properties.getDouble(PROP_HEIGHT)
+            val widthInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
             heightPx = Utils.metersToPx(widthInMeters, context)
         }
 

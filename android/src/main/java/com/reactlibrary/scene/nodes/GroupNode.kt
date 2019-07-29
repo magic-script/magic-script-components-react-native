@@ -2,7 +2,7 @@ package com.reactlibrary.scene.nodes
 
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.utils.Bounding
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 
 /**

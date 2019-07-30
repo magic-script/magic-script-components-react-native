@@ -30,7 +30,7 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
     @objc var on: Bool = false {
-        didSet { toggleGeometry.firstMaterial?.diffuse.contents = on ? ImageAsset.toggleOn : ImageAsset.toggleOff }
+        didSet { toggleGeometry.firstMaterial?.diffuse.contents = on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image }
     }
 
     @objc var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
@@ -65,7 +65,7 @@ import SceneKit
         let toggleSize = getToggleSize()
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant
-        toggleGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
+        toggleGeometry.firstMaterial?.diffuse.contents = ImageAsset.toggleOff.image
         toggleGeometry.firstMaterial?.isDoubleSided = true
         toggleNode = SCNNode(geometry: toggleGeometry)
         addChildNode(toggleNode)

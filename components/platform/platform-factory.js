@@ -24,6 +24,7 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent('onPress');
         this.startListeningEvent('onClick');
         this.startListeningEvent('onTextChanged');
+        this.startListeningEvent('onToggleChanged');
     }
 
     startListeningEvent(eventName) {

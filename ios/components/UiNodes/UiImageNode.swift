@@ -25,15 +25,15 @@ import SceneKit
 
     @objc var image: UIImage? {
         get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
-        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updatePlaneSize() }
+        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updateLayout() }
     }
 
     @objc var width: CGFloat = 0.5 {
-        didSet { updatePlaneSize() }
+        didSet { setNeedsLayout() }
     }
 
     @objc var height: CGFloat = 0.5 {
-        didSet { updatePlaneSize() }
+        didSet { setNeedsLayout() }
     }
 
     fileprivate var planeGeometry: SCNPlane!
@@ -64,7 +64,11 @@ import SceneKit
         }
     }
 
-    fileprivate func updatePlaneSize() {
+    @objc override func getSize() -> CGSize {
+        return CGSize(width: width, height: height)
+    }
+
+    @objc override func updateLayout() {
         guard let image = self.image else {
             planeGeometry.width = width
             planeGeometry.height = height

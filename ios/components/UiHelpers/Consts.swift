@@ -57,3 +57,66 @@ import Foundation
         }
     }
 }
+
+
+@objc public enum Alignment: Int {
+    case topLeft
+    case topCenter
+    case topRight
+    case centerLeft
+    case centerCenter
+    case centerRight
+    case bottomLeft
+    case bottomCenter
+    case bottomRight
+
+    public typealias RawValue = String
+
+    public var rawValue: RawValue {
+        switch self {
+        case .topLeft:
+            return "top-left"
+        case .topCenter:
+            return "top-center"
+        case .topRight:
+            return "top-right"
+        case .centerLeft:
+            return "center-left"
+        case .centerCenter:
+            return "center-center"
+        case .centerRight:
+            return "center-right"
+        case .bottomLeft:
+            return "bottom-left"
+        case .bottomCenter:
+            return "bottom-center"
+        case .bottomRight:
+            return "bottom-right"
+        }
+    }
+
+    public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "top-left":
+            self = .topLeft
+        case "top-center":
+            self = .topCenter
+        case "top-right":
+            self = .topRight
+        case "center-left":
+            self = .centerLeft
+        case "center-center":
+            self = .centerCenter
+        case "center-right":
+            self = .centerRight
+        case "bottom-left":
+            self = .bottomLeft
+        case "bottom-center":
+            self = .bottomCenter
+        case "bottom-right":
+            self = .bottomRight
+        default:
+            return nil
+        }
+    }
+}

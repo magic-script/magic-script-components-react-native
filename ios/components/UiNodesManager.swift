@@ -11,7 +11,7 @@ import SceneKit
 
 @objc class UiNodesManager: NSObject {
     @objc static let instance = UiNodesManager()
-    @objc let rootNode: SCNNode = SCNNode()
+    @objc let rootNode: TransformNode = TransformNode()
     @objc let focusableNodeBitMask: Int = 8
 
     @objc var onInputFocused: ((_ textEdit: UiTextEditNode) -> (Void))?
@@ -80,7 +80,7 @@ import SceneKit
     @objc func addNode(_ nodeId: String, toParent parentId: String) {
         if let node = nodesById[nodeId],
            let parentNode = nodesById[parentId] {
-            parentNode.addChildNode(node)
+            parentNode.addChild(node)
         }
     }
 
@@ -92,9 +92,8 @@ import SceneKit
 
     @objc func removeNode(_ nodeId: String, fromParent parentId: String) {
         if let node = nodesById[nodeId],
-            let parentNode = nodesById[parentId],
-            parentNode == node.parent {
-            node.removeFromParentNode()
+            let parentNode = nodesById[parentId] {
+            parentNode.removeChild(node)
         }
     }
 
@@ -143,6 +142,20 @@ import SceneKit
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
         return true
+    }
+
+    @objc func updateLayout() {
+        updateLayoutFor(node: rootNode)
+    }
+
+    @objc fileprivate func updateLayoutFor(node: SCNNode) {
+        node.childNodes.forEach { (child) in
+            updateLayoutFor(node: child)
+        }
+
+        if let transformNode = node as? TransformNode {
+            transformNode.layoutIfNeeded()
+        }
     }
 
     @objc func textFieldShouldReturn() {

@@ -21,29 +21,32 @@ import SceneKit
     // var visibilityInherited: Bool = true
     @objc var anchorPosition: SCNVector3 {
         get { return self.pivot.position }
-        set { self.pivot.position = newValue }
+        set { self.pivot.position = newValue; setNeedsLayout() }
     }
     @objc var localPosition: SCNVector3 {
         get { return self.position }
-        set { self.position = newValue }
+        set { self.position = newValue; setNeedsLayout() }
     }
     @objc var localRotation: SCNQuaternion {
         get { return self.orientation }
-        set { self.orientation = newValue }
+        set { self.orientation = newValue; setNeedsLayout() }
     }
     @objc var localScale: SCNVector3 {
         get { return self.scale }
-        set { self.scale = newValue }
+        set { self.scale = newValue; setNeedsLayout() }
     }
     @objc var localTransform: SCNMatrix4 {
         get { return self.transform }
-        set { self.transform = newValue }
+        set { self.transform = newValue; setNeedsLayout() }
     }
     @objc var anchorUuid: String = "rootUuid";
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
 
     fileprivate var originNode: SCNNode?
+    fileprivate var layoutNeeded: Bool = false
+    @objc func setNeedsLayout() { layoutNeeded = true }
+    @objc var isLayoutNeeded: Bool { return layoutNeeded }
 
     @objc override init() {
         super.init()
@@ -62,6 +65,16 @@ import SceneKit
     }
 
     @objc func setupNode() {
+    }
+
+    @objc func addChild(_ child: TransformNode) {
+        addChildNode(child)
+    }
+
+    @objc func removeChild(_ child: TransformNode) {
+        if let parent = child.parent, parent == self {
+            child.removeFromParentNode()
+        }
     }
 
     @objc func update(_ props: [String: Any]) {
@@ -93,6 +106,27 @@ import SceneKit
 
     @objc func getSize() -> CGSize {
         return CGSize.zero
+    }
+
+    @objc func getBounds() -> CGRect {
+        let size = getSize()
+        let origin: CGPoint = CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y))
+        return CGRect(origin: origin, size: size)
+    }
+
+    @objc func getEdgeInsets() -> UIEdgeInsets {
+        let bounds: CGRect = getBounds()
+        return UIEdgeInsets(top: bounds.minY, left: bounds.minX, bottom: bounds.maxY, right: bounds.maxX)
+    }
+
+    @objc func layoutIfNeeded() {
+        if layoutNeeded {
+            layoutNeeded = false
+            updateLayout()
+        }
+    }
+
+    @objc func updateLayout() {
     }
 
     @objc func setOriginVisible(_ visible: Bool) {

@@ -37,6 +37,11 @@ import SceneKit
         }
     }
 
+    @objc override func getSize() -> CGSize {
+        let bbox = self.boundingBox
+        return CGSize(width: CGFloat(bbox.max.x - bbox.min.x), height: CGFloat(bbox.max.y - bbox.min.y))
+    }
+
     fileprivate func cleanNode() {
         while !childNodes.isEmpty {
             childNodes.last?.removeFromParentNode()

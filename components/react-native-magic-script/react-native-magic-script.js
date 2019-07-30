@@ -7,12 +7,12 @@ const ReactNativeMagicScript = {
             container.__rootContainer = ReactNativeRenderer.createContainer(container);
         }
 
-        console.log('[MSX] render.container: ', container);
+        console.log('[MSX] render.container');
         
         // Schedule changes on the roots
         try {
             ReactNativeRenderer.updateContainer(element, container.__rootContainer, null, callback);
-            console.log('[MSX] render.updateContainer: ', container.__rootContainer);
+            console.log('[MSX] render.updateContainer');
         } catch (error) {
             console.log('[MSX] render.updateContainer.error ', error);
         }

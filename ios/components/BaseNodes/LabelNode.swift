@@ -19,7 +19,7 @@ class LabelNode: SCNNode {
     @objc var textAlignment: HorizontalTextAlignment = .left {
         didSet { reloadNeeded = true }
     }
-    @objc var textColor: UIColor = UIColor.white {
+    @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { reloadNeeded = true }
     }
     @objc var textSize: CGFloat = LabelNode.defaultTextSizeInMeters {
@@ -187,16 +187,16 @@ class LabelNode: SCNNode {
         if boundsSize.width > 0 {
             labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
         } else {
-            switch textAlignment {
-            case .left:
+//            switch textAlignment {
+//            case .left:
                 labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
                 borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
-            case .center, .justify:
-                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
-            case .right:
-                labelNode.position = SCNVector3(-size.width, -0.5 * size.height, 0)
-                borderNode?.position = SCNVector3(-0.5 * size.width, 0, 0)
-            }
+//            case .center, .justify:
+//                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+//            case .right:
+//                labelNode.position = SCNVector3(-size.width, -0.5 * size.height, 0)
+//                borderNode?.position = SCNVector3(-0.5 * size.width, 0, 0)
+//            }
         }
     }
 }

@@ -11,7 +11,7 @@ import SceneKit
 @objc class UiTextNode: UiNode {
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue }
+        set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor {
         get { return labelNode.textColor }
@@ -19,25 +19,25 @@ import SceneKit
     }
     @objc var textSize: CGFloat {
         get { return labelNode.textSize }
-        set { labelNode.textSize = newValue }
+        set { labelNode.textSize = newValue; setNeedsLayout() }
     }
 
-    // @objc var allCaps: Bool // TODO: property to defined
-    // @objc var charSpacing: CGFloat // TODO: property to defined
-    // @objc var lineSpacing: CGFloat // TODO: property to defined
+    // @objc var allCaps: Bool = false // TODO: property to defined
+    // @objc var charSpacing: CGFloat = 0 // TODO: property to defined
+    // @objc var lineSpacing: CGFloat = 1// TODO: property to defined
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
-        set { labelNode.textAlignment = newValue }
+        set { labelNode.textAlignment = newValue; setNeedsLayout() }
     }
     // @objc var style: UIFont.TextStyle // TODO: property to defined
     // @objc var weight: UIFont.Weight // TODO: property to defined
     @objc var boundsSize: CGSize {
         get { return labelNode.boundsSize }
-        set { labelNode.boundsSize = newValue }
+        set { labelNode.boundsSize = newValue; setNeedsLayout() }
     }
     @objc var wrap: Bool {
         get { return labelNode.wrap }
-        set { labelNode.wrap = newValue }
+        set { labelNode.wrap = newValue; setNeedsLayout() }
     }
     // @objc var font: FontParams // use UIFont instead
 
@@ -45,6 +45,7 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+        alignment = Alignment.bottomLeft // default alignment of UiText
         labelNode = LabelNode()
         addChildNode(labelNode)
 
@@ -70,22 +71,22 @@ import SceneKit
             self.textAlignment = textAlignment
         }
 
-        if let boundsSize = Convert.toCGSize(props["boundsSize"]) {
-            self.boundsSize = boundsSize
+        if let boundsSizeProps = props["boundsSize"] as? [String: Any] {
+            if let boundsSize = Convert.toCGSize(boundsSizeProps["boundsSize"]) {
+                self.boundsSize = boundsSize
+            }
+
+            if let wrap = Convert.toBool(boundsSizeProps["wrap"]) {
+                self.wrap = wrap
+            }
         }
-
-        if let wrap = Convert.toBool(props["wrap"]) {
-            self.wrap = wrap
-        }
-
-//        if let font = Convert.toFont(props["font"]) {
-//            self.font = font
-//        }
-
-        labelNode.reload()
     }
 
     @objc override func getSize() -> CGSize {
         return labelNode.getSize()
+    }
+
+    @objc override func updateLayout() {
+        labelNode.reload()
     }
 }

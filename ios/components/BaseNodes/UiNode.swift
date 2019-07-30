@@ -11,7 +11,9 @@ import SpriteKit
 
 @objc class UiNode: TransformNode {
 
-    //var alignment: Alignment
+    @objc var alignment: Alignment = Alignment.topLeft {
+        didSet { setNeedsLayout() }
+    }
     //var activateResponse: FocusRequest
     //var renderingLayer: RenderingLayer
     //var enabled: Bool = true   // (check SCNNodeFocusBehavior)
@@ -25,6 +27,15 @@ import SpriteKit
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+    }
+
+    @objc override func getBounds() -> CGRect {
+        let size = getSize()
+        let origin: CGPoint = getOriginForSize(size)
+        return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
+    }
+
+    @objc override func updateLayout() {
     }
 
     // MARK: - Focus
@@ -45,5 +56,31 @@ import SpriteKit
 
     @objc func leaveFocus() {
         hasFocus = false
+    }
+}
+
+// MARK: - Helpers
+extension UiNode {
+    @objc fileprivate func getOriginForSize(_ size: CGSize) -> CGPoint {
+        switch (self.alignment) {
+        case .topLeft:
+            return CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
+        case .topCenter:
+            return CGPoint(x: 0, y: 0.5 * size.height)
+        case .topRight:
+            return CGPoint(x: 0.5 * size.width, y: 0.5 * size.height)
+        case .centerLeft:
+            return CGPoint(x: -0.5 * size.width, y: 0)
+        case .centerCenter:
+            return CGPoint(x: 0, y: 0)
+        case .centerRight:
+            return CGPoint(x: 0.5 * size.width, y: 0)
+        case .bottomLeft:
+            return CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
+        case .bottomCenter:
+            return CGPoint(x: 0, y: -0.5 * size.height)
+        case .bottomRight:
+            return CGPoint(x: 0.5 * size.width, y: -0.5 * size.height)
+        }
     }
 }

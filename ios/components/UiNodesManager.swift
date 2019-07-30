@@ -145,7 +145,17 @@ import SceneKit
     }
 
     @objc func updateLayout() {
-        rootNode.updateLayout()
+        updateLayoutFor(node: rootNode)
+    }
+
+    @objc fileprivate func updateLayoutFor(node: SCNNode) {
+        node.childNodes.forEach { (child) in
+            updateLayoutFor(node: child)
+        }
+
+        if let transformNode = node as? TransformNode {
+            transformNode.layoutIfNeeded()
+        }
     }
 
     @objc func textFieldShouldReturn() {

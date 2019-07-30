@@ -11,7 +11,7 @@ import SceneKit
 @objc class UiTextNode: UiNode {
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue }
+        set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor {
         get { return labelNode.textColor }
@@ -19,7 +19,7 @@ import SceneKit
     }
     @objc var textSize: CGFloat {
         get { return labelNode.textSize }
-        set { labelNode.textSize = newValue }
+        set { labelNode.textSize = newValue; setNeedsLayout() }
     }
 
     // @objc var allCaps: Bool = false // TODO: property to defined
@@ -27,17 +27,17 @@ import SceneKit
     // @objc var lineSpacing: CGFloat = 1// TODO: property to defined
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
-        set { labelNode.textAlignment = newValue }
+        set { labelNode.textAlignment = newValue; setNeedsLayout() }
     }
     // @objc var style: UIFont.TextStyle // TODO: property to defined
     // @objc var weight: UIFont.Weight // TODO: property to defined
     @objc var boundsSize: CGSize {
         get { return labelNode.boundsSize }
-        set { labelNode.boundsSize = newValue }
+        set { labelNode.boundsSize = newValue; setNeedsLayout() }
     }
     @objc var wrap: Bool {
         get { return labelNode.wrap }
-        set { labelNode.wrap = newValue }
+        set { labelNode.wrap = newValue; setNeedsLayout() }
     }
     // @objc var font: FontParams // use UIFont instead
 
@@ -71,27 +71,22 @@ import SceneKit
             self.textAlignment = textAlignment
         }
 
-        if let boundsSize = Convert.toCGSize(props["boundsSize"]) {
-            self.boundsSize = boundsSize
-        }
+        if let boundsSizeProps = props["boundsSize"] as? [String: Any] {
+            if let boundsSize = Convert.toCGSize(boundsSizeProps["boundsSize"]) {
+                self.boundsSize = boundsSize
+            }
 
-        if let wrap = Convert.toBool(props["wrap"]) {
-            self.wrap = wrap
+            if let wrap = Convert.toBool(boundsSizeProps["wrap"]) {
+                self.wrap = wrap
+            }
         }
+    }
 
-//        if let font = Convert.toFont(props["font"]) {
-//            self.font = font
-//        }
+    @objc override func getSize() -> CGSize {
+        return labelNode.getSize()
     }
 
     @objc override func updateLayout() {
         labelNode.reload()
-    }
-
-    @objc override func getBounds() -> UIEdgeInsets {
-        let labelSize = labelNode.getSize()
-        let originX: CGFloat = CGFloat(position.x)
-        let originY: CGFloat = CGFloat(position.y)
-        return UIEdgeInsets(top: originY + 0.5 * labelSize.height, left: originX - 0.5 * labelSize.width, bottom: originY - 0.5 * labelSize.height, right: originX + 0.5 * labelSize.width)
     }
 }

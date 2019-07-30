@@ -13,11 +13,11 @@ import SceneKit
     static fileprivate let defaultSize: CGFloat = 0.07
 
     @objc var size: CGSize = CGSize.zero {
-        didSet { updatePlaneSize() }
+        didSet { setNeedsLayout() }
     }
 
     @objc var value: CGFloat = 0 {
-        didSet { /*updatePlaneSize()*/ }
+        didSet { /*setNeedsLayout()*/ }
     }
 
     fileprivate var planeGeometry: SCNPlane!
@@ -51,17 +51,16 @@ import SceneKit
         }
     }
 
-    @objc override func getBounds() -> UIEdgeInsets {
-        let oX: CGFloat = CGFloat(position.x)
-        let oY: CGFloat = CGFloat(position.y)
-        return UIEdgeInsets(top: oY + 0.5 * size.height, left: oX - 0.5 * size.width, bottom: oY - 0.5 * size.height, right: oX + 0.5 * size.width)
-    }
-
-    fileprivate func updatePlaneSize() {
+    @objc override func getSize() -> CGSize {
         let width: CGFloat = size.width > 0 ? size.width : UiSpinnerNode.defaultSize
         let height: CGFloat = size.height > 0 ? size.height : UiSpinnerNode.defaultSize
-        planeGeometry.width = width
-        planeGeometry.height = height
+        return CGSize(width: width, height: height)
+    }
+
+    @objc override func updateLayout() {
+        let spinnerSize = getSize()
+        planeGeometry.width = spinnerSize.width
+        planeGeometry.height = spinnerSize.height
     }
 
     fileprivate func startAnimation() {

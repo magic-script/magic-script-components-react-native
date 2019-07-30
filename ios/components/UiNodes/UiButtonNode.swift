@@ -119,14 +119,12 @@ import SceneKit
         }
     }
 
-    @objc override func getBounds() -> UIEdgeInsets {
+    @objc override func getSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let margin: CGFloat = 0.01
         let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * margin
         let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * margin
-        let originX: CGFloat = CGFloat(position.x)
-        let originY: CGFloat = CGFloat(position.y)
-        return UIEdgeInsets(top: originY + 0.5 * contentHeight, left: originX - 0.5 * contentWidth, bottom: originY - 0.5 * contentHeight, right: originX + 0.5 * contentWidth)
+        return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {

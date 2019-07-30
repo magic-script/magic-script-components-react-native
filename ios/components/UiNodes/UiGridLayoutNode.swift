@@ -17,7 +17,7 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
     //@objc var size: CGSize = CGSize.zero
-    @objc var defaultItemAlignment: Int = 0 {
+    @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
         didSet { setNeedsLayout() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
@@ -69,11 +69,12 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        guard !childNodes.isEmpty else { return }
+        let children: [SCNNode] = skipInvisibleItems ? childNodes.filter { ($0.childNodes[0] as! TransformNode).visible } : childNodes
+        let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
+        guard !nodes.isEmpty else { return }
 
         var cellSizes: [CGSize] = []
-        childNodes.forEach { (child) in
-            let node: TransformNode = child.childNodes[0] as! TransformNode
+        nodes.forEach { (node) in
             node.updateLayout()
             cellSizes.append(node.getSize())
         }
@@ -94,16 +95,12 @@ import SceneKit
             let rowId: Int = i / columnsCount
             let colBound = columnsBounds[colId];
             let rowBound = rowsBounds[rowId];
-            let node: TransformNode = self[i]
             let nodeSize = cellSizes[i]
             let x: CGFloat = minX + colBound.x + 0.5 * (colBound.width - nodeSize.width)
-            let y: CGFloat = minY - (rowBound.y + 0.5 * (rowBound.height - nodeSize.height))
-            node.position = SCNVector3(x, y, CGFloat(position.z))
+            let y: CGFloat = minY + rowBound.y + 0.5 * (rowBound.height - nodeSize.height)
+//            print("[\(colId),\(rowId)] = \(nodeSize) :: [\(colBound.width), \(rowBound.height)")
+            children[i].position = SCNVector3(x, y, CGFloat(position.z))
         }
-    }
-
-    subscript(index: Int) -> TransformNode! {
-        return (childNodes[index].childNodes[0] as! TransformNode)
     }
 }
 
@@ -138,8 +135,8 @@ extension UiGridLayoutNode {
                 let size = cellSizes[index]
                 height = max(height, size.height)
             }
+            y -= height
             rowsBounds.append((y: y, height: height))
-            y += height
         }
 
         return rowsBounds

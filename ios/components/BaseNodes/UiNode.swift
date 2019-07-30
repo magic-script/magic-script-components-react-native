@@ -24,17 +24,18 @@ import SpriteKit
     //var gravityWellProperties: GravityWellProperties
 
     fileprivate var outlineNode: SCNNode?
-    fileprivate var layoutNeeded: Bool = false
-    @objc func setNeedsLayout() { layoutNeeded = true }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
     }
 
+    @objc override func getBounds() -> CGRect {
+        let size = getSize()
+        let origin: CGPoint = getOriginForSize(size)
+        return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
+    }
+
     @objc override func updateLayout() {
-        guard layoutNeeded else { return }
-        layoutNeeded = false
-        super.updateLayout()
     }
 
     // MARK: - Focus
@@ -55,5 +56,31 @@ import SpriteKit
 
     @objc func leaveFocus() {
         hasFocus = false
+    }
+}
+
+// MARK: - Helpers
+extension UiNode {
+    @objc fileprivate func getOriginForSize(_ size: CGSize) -> CGPoint {
+        switch (self.alignment) {
+        case .topLeft:
+            return CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
+        case .topCenter:
+            return CGPoint(x: 0, y: 0.5 * size.height)
+        case .topRight:
+            return CGPoint(x: 0.5 * size.width, y: 0.5 * size.height)
+        case .centerLeft:
+            return CGPoint(x: -0.5 * size.width, y: 0)
+        case .centerCenter:
+            return CGPoint(x: 0, y: 0)
+        case .centerRight:
+            return CGPoint(x: 0.5 * size.width, y: 0)
+        case .bottomLeft:
+            return CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
+        case .bottomCenter:
+            return CGPoint(x: 0, y: -0.5 * size.height)
+        case .bottomRight:
+            return CGPoint(x: 0.5 * size.width, y: -0.5 * size.height)
+        }
     }
 }

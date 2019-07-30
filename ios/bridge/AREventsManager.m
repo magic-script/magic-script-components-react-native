@@ -39,7 +39,11 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onPress", @"onClick", @"onTextChanged"];
+    return @[
+             @"onPress", @"onClick",
+             @"onTextChanged",
+             @"onToggleChanged"
+             ];
 }
 
 - (void)onPressEventReceived:(UiNode *)sender {
@@ -54,6 +58,14 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onToggleChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
         });
     }
 }

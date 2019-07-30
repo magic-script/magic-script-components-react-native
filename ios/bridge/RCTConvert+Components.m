@@ -42,5 +42,9 @@
     return [[UiTextEditNode alloc] initWithProps:json];
 }
 
++ (UiToggleNode *)UiToggleNode:(id)json {
+    return [[UiToggleNode alloc] initWithProps:json];
+}
+
 @end
 

@@ -49,6 +49,8 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnPressEventHandler(elementId);
         } else if (name === 'onTextChanged') {
             this.componentManager.addOnTextChangedEventHandler(elementId);
+        } else if (name === 'onToggleChanged') {
+            this.componentManager.addOnToggleChangedEventHandler(elementId);
         }
 
         const pair = { name, handler };

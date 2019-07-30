@@ -60,6 +60,7 @@
 		446A927922DDE5CA00B4C12D /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446A927822DDE5CA00B4C12D /* Consts.swift */; };
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
 		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
+		447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
 		449AF45C22B247C40046938D /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44F22B247C40046938D /* ARComponentManager.m */; };
 		449AF45E22B247C40046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF45322B247C40046938D /* RCTARView.m */; };
@@ -183,6 +184,7 @@
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
 		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
+		447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleNode.swift; sourceTree = "<group>"; };
 		449AF44B22B247C40046938D /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
 		449AF44C22B247C40046938D /* ARComponentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
 		449AF44D22B247C40046938D /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 				4461548422CA413100159F18 /* UiSpinnerNode.swift */,
 				449AF48C22B248090046938D /* UiTextNode.swift */,
 				44318EB922CE29CA0060575D /* UiTextEditNode.swift */,
+				447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -643,6 +646,7 @@
 				44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */,
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
+				447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */,
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
 				446A927922DDE5CA00B4C12D /* Consts.swift in Sources */,
 				4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */,

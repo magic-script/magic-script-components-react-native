@@ -86,6 +86,12 @@ RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)n
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createToggleNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
     [UiNodesManager.instance addNode: nodeId toParent: parentId];
@@ -157,6 +163,18 @@ RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = nil;
+    }
+}
+
+RCT_EXPORT_METHOD(addOnToggleChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnToggleChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiToggleNode class]]) {
+        UiToggleNode *toggle = (UiToggleNode *)node;
+        toggle.onChanged = ^(UiNode *sender, BOOL on) {
+            ARLog(@"toggle onChanged: %@", on ? @"on" : @"off");
+            [[AREventsManager instance] onToggleChangedEventReceived:sender value:on];
+        };
     }
 }
 

@@ -12,9 +12,9 @@ import SceneKit
 
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue }
+        set { labelNode.text = newValue; setNeedsLayout() }
     }
-    @objc var textColor: UIColor = UIColor.white {
+    @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet {
             labelNode.textColor = textColor
             reloadOutline = true
@@ -23,17 +23,17 @@ import SceneKit
     @objc var iconColor: UIColor = UIColor.white
     @objc var textSize: CGFloat {
         get { return labelNode.textSize }
-        set { labelNode.textSize = newValue }
+        set { labelNode.textSize = newValue; setNeedsLayout() }
     }
     @objc var iconSize: CGFloat = 0.1
     @objc var width: CGFloat = 0 {
-        didSet { reloadOutline = true }
+        didSet { reloadOutline = true; setNeedsLayout() }
     }
     @objc var height: CGFloat = 0 {
-        didSet { reloadOutline = true }
+        didSet { reloadOutline = true; setNeedsLayout() }
     }
     @objc var roundness: CGFloat = 0.5 {
-        didSet { reloadOutline = true }
+        didSet { reloadOutline = true; setNeedsLayout() }
     }
 
     @objc var onTap: ((_ sender: UiNode) -> (Void))?

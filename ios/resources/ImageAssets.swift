@@ -16,6 +16,8 @@ import AppKit.NSImage
 
 public enum ImageAsset: String {
     case spinner = "spinner"
+    case toggleOn = "toggle_on"
+    case toggleOff = "toggle_off"
 
     var image: Image {
         let bundle = Bundle.resourcesBundle()!

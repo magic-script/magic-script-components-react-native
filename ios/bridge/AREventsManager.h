@@ -17,5 +17,6 @@
 + (instancetype)instance;
 - (void)onPressEventReceived:(UiNode *)sender;
 - (void)onClickEventReceived:(UiNode *)sender;
+- (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
 
 @end

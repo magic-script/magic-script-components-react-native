@@ -22,7 +22,10 @@ class LabelNode: SCNNode {
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { reloadNeeded = true }
     }
-    @objc var textSize: CGFloat = LabelNode.defaultTextSizeInMeters {
+    @objc var textSize: CGFloat = 0 {
+        didSet { reloadNeeded = true }
+    }
+    @objc var defaultTextSize: CGFloat = LabelNode.defaultTextSizeInMeters {
         didSet { reloadNeeded = true }
     }
     @objc var boundsSize: CGSize = CGSize.zero {
@@ -105,7 +108,7 @@ class LabelNode: SCNNode {
 
     fileprivate func updateLabelContents() {
         if useGeometry {
-            let scale = textSize / LabelNode.geometryFixedTextSizeInMeters
+            let scale = getTextSize() / LabelNode.geometryFixedTextSizeInMeters
             labelGeometry.string = text
             let size = getSize()
             let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
@@ -124,9 +127,13 @@ class LabelNode: SCNNode {
             label.textColor = textColor
             label.numberOfLines = wrap ? 0 : 1
             label.lineBreakMode = wrap ? .byWordWrapping : .byTruncatingTail
-            let fontSize: CGFloat = Measures.pixels(from: textSize)
+            let fontSize: CGFloat = Measures.pixels(from: getTextSize())
             label.font = label.font.withSize(fontSize)
         }
+    }
+
+    fileprivate func getTextSize() -> CGFloat {
+        return (textSize > 0) ? textSize : defaultTextSize
     }
 
     fileprivate func getFont() -> UIFont {
@@ -144,7 +151,7 @@ class LabelNode: SCNNode {
             return boundsSize
         }
 
-        let scale: CGFloat = useGeometry ? (textSize / LabelNode.geometryFixedTextSizeInMeters) : 1.0
+        let scale: CGFloat = useGeometry ? (getTextSize() / LabelNode.geometryFixedTextSizeInMeters) : 1.0
         let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : getFont()])
         let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : (ceil(preferredSizeInPixels.width) * scale)
         let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : (ceil(preferredSizeInPixels.height) * scale)

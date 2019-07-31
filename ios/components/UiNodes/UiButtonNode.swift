@@ -8,29 +8,38 @@
 
 import SceneKit
 
+// The default values for width and height are 0, which instructs
+// the button to use the default button height and automatically
+// calculates button width based on the button text dimensions.
+//
+// Setting a value greater than 0 for width or height will override
+// the defaults.
+//
+// Button text size is automatically set based on the button height
+// unless overridden with UiButton::setTextSize().
+
 @objc class UiButtonNode: UiNode {
+    static fileprivate let defaultHeight: CGFloat = 0.02
+    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let borderInset: CGFloat = 0.01
 
     @objc var text: String? {
         get { return labelNode.text }
         set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
-        didSet {
-            labelNode.textColor = textColor
-            reloadOutline = true
-        }
+        didSet { labelNode.textColor = textColor; reloadOutline = true }
     }
     @objc var iconColor: UIColor = UIColor.white
-    @objc var textSize: CGFloat {
-        get { return labelNode.textSize }
-        set { labelNode.textSize = newValue; setNeedsLayout() }
+    @objc var textSize: CGFloat = 0 {
+        didSet { updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var iconSize: CGFloat = 0.1
     @objc var width: CGFloat = 0 {
         didSet { reloadOutline = true; setNeedsLayout() }
     }
     @objc var height: CGFloat = 0 {
-        didSet { reloadOutline = true; setNeedsLayout() }
+        didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var roundness: CGFloat = 0.5 {
         didSet { reloadOutline = true; setNeedsLayout() }
@@ -81,7 +90,7 @@ import SceneKit
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .center
-        labelNode.textSize = 0.0167
+        labelNode.defaultTextSize = UiButtonNode.defaultTextSize
         contentNode.addChildNode(labelNode)
     }
 
@@ -123,9 +132,8 @@ import SceneKit
 
     @objc override func getSize() -> CGSize {
         let labelSize = labelNode.getSize()
-        let margin: CGFloat = 0.01
-        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * margin
-        let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * margin
+        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * UiButtonNode.borderInset
+        let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * UiButtonNode.borderInset
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
@@ -138,6 +146,15 @@ import SceneKit
 
         let labelSize = labelNode.getSize()
         labelNode.position = SCNVector3(-0.5 * labelSize.width, 0.0, 0.0)
+    }
+
+    fileprivate func updateLabelTextSizeBasedOnHeight() {
+        guard textSize == 0 && height > 0 else  {
+            labelNode.textSize = textSize
+            return
+        }
+
+        labelNode.textSize = max(0, height - 2 * UiButtonNode.borderInset)
     }
 
     fileprivate func reloadOutlineNode() {

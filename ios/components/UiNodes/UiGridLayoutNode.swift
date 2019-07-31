@@ -29,6 +29,7 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -68,8 +69,39 @@ import SceneKit
         }
     }
 
+    @objc override func getSize() -> CGSize {
+        let filteredChildren: [SCNNode] = childNodes.filter { ($0.childNodes.first is TransformNode) }
+        let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
+        let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
+        guard !nodes.isEmpty else { return CGSize.zero }
+
+        var cellSizes: [CGSize] = []
+        nodes.forEach { (node) in
+            node.updateLayout()
+            cellSizes.append(node.getSize())
+        }
+
+        let itemsCount: Int = cellSizes.count
+        let rowsCount: Int = (columns > 0) ? itemsCount / columns : 1
+        let columnsCount: Int = itemsCount / rowsCount
+
+        let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
+        let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
+
+        let totalWidth: CGFloat = columnsBounds.reduce(0) { (result, bounds) -> CGFloat in
+            return result + bounds.width
+        }
+
+        let totalHeight: CGFloat = rowsBounds.reduce(0) { (result, bounds) -> CGFloat in
+            return result + bounds.height
+        }
+
+        return CGSize(width: totalWidth, height: totalHeight)
+    }
+
     @objc override func updateLayout() {
-        let children: [SCNNode] = skipInvisibleItems ? childNodes.filter { ($0.childNodes[0] as! TransformNode).visible } : childNodes
+        let filteredChildren: [SCNNode] = childNodes.filter { ($0.childNodes.first is TransformNode) }
+        let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
         let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
         guard !nodes.isEmpty else { return }
 
@@ -88,8 +120,8 @@ import SceneKit
 
         // TODO: include padding
         // TODO: include item alignment
-        let minX: CGFloat = 0
-        let minY: CGFloat = 0
+        let minX: CGFloat = -0.5 * (columnsBounds.last!.x + columnsBounds.last!.width)
+        let minY: CGFloat = -0.5 * (rowsBounds.last!.y + rowsBounds.last!.height)
         for i in 0..<cellSizes.count {
             let colId: Int = i % columnsCount
             let rowId: Int = i / columnsCount
@@ -135,8 +167,8 @@ extension UiGridLayoutNode {
                 let size = cellSizes[index]
                 height = max(height, size.height)
             }
-            y -= height
             rowsBounds.append((y: y, height: height))
+            y += height
         }
 
         return rowsBounds

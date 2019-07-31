@@ -70,7 +70,6 @@ import SceneKit
         toggleNode = SCNNode(geometry: toggleGeometry)
         addChildNode(toggleNode)
 
-//        labelNode.setDebugMode(true)
 //        setDebugMode(true)
     }
 
@@ -121,6 +120,11 @@ import SceneKit
 
         let x2: Float = Float(0.5 * (size.width - toggleSize.width))
         toggleNode.position = SCNVector3(x2, 0, 0)
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
     }
 
     fileprivate func getToggleSize() -> CGSize {

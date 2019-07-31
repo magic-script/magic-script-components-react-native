@@ -91,4 +91,9 @@ import SceneKit
     @objc override func updateLayout() {
         labelNode.reload()
     }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
+    }
 }

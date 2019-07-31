@@ -92,6 +92,8 @@ import SceneKit
         labelNode.textAlignment = .center
         labelNode.defaultTextSize = UiButtonNode.defaultTextSize
         contentNode.addChildNode(labelNode)
+
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -146,6 +148,11 @@ import SceneKit
 
         let labelSize = labelNode.getSize()
         labelNode.position = SCNVector3(-0.5 * labelSize.width, 0.0, 0.0)
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
     }
 
     fileprivate func updateLabelTextSizeBasedOnHeight() {

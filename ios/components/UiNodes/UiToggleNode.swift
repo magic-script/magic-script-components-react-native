@@ -10,10 +10,9 @@ import SceneKit
 
 @objc class UiToggleNode: UiNode {
 
-    static fileprivate let defaultTextSize: CGFloat = 0.234
-    static fileprivate let defaultWidth: CGFloat = 0.07337 //0.172719
+    static fileprivate let defaultWidth: CGFloat = 0.07337
     static fileprivate let defaultHeight: CGFloat = 0.03359
-    static fileprivate let defaultTextMargin: CGFloat = 0.03
+    static fileprivate let defaultTextMargin: CGFloat = 0.05
 
     @objc var text: String? {
         get { return labelNode.text }
@@ -57,13 +56,12 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
-        assert(labelNode == nil, "labelNode must not be initialized!")
+        assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .left
-        labelNode.textSize = UiToggleNode.defaultTextSize
         addChildNode(labelNode)
 
-        assert(toggleNode == nil, "toggleNode must not be initialized!")
+        assert(toggleNode == nil, "Node must not be initialized!")
         let toggleSize = getToggleSize()
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant
@@ -71,6 +69,9 @@ import SceneKit
         toggleGeometry.firstMaterial?.isDoubleSided = true
         toggleNode = SCNNode(geometry: toggleGeometry)
         addChildNode(toggleNode)
+
+//        labelNode.setDebugMode(true)
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -103,23 +104,23 @@ import SceneKit
         let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? UiToggleNode.defaultTextMargin : 0
 
         let heightContent: CGFloat = max(toggleSize.height, labelSize.height)
-        let widthContent: CGFloat = toggleSize.width + labelSize.height + textMargin
+        let widthContent: CGFloat = toggleSize.width + labelSize.width + textMargin
         return CGSize(width: widthContent, height: heightContent)
     }
 
     @objc override func updateLayout() {
-        let size = getSize()
-//        let labelSize = labelNode.getSize()
-        let toggleSize = getToggleSize()
+        labelNode.reload()
 
+        let size = getSize()
+        let toggleSize = getToggleSize()
         toggleGeometry.width = toggleSize.width
         toggleGeometry.height = toggleSize.height
 
         let x1: Float = Float(-0.5 * size.width)
         labelNode.position = SCNVector3(x1, 0, 0)
 
-//        let x2: Float = Float(0.5 * size.width - toggleSize.width)
-        toggleNode.position = SCNVector3(x1, 0, 0)
+        let x2: Float = Float(0.5 * (size.width - toggleSize.width))
+        toggleNode.position = SCNVector3(x2, 0, 0)
     }
 
     fileprivate func getToggleSize() -> CGSize {

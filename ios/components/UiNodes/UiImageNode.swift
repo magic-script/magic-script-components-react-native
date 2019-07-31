@@ -36,6 +36,10 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
+    @objc var color: SCNVector4 = SCNVector4(1,1,1,0) {
+        didSet { setNeedsLayout() }
+    }
+
     fileprivate var planeGeometry: SCNPlane!
 
     @objc override func setupNode() {
@@ -62,6 +66,10 @@ import SceneKit
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
         }
+
+        if let color = Convert.toVector4(props["color"]) {
+            self.color = color
+        }
     }
 
     @objc override func getSize() -> CGSize {
@@ -72,14 +80,16 @@ import SceneKit
         guard let image = self.image else {
             planeGeometry.width = width
             planeGeometry.height = height
+            self.image = UIImage.from(color: UIColor.init(displayP3Red: CGFloat(color.x), green: CGFloat(color.y), blue: CGFloat(color.z), alpha: CGFloat(color.w)), width: width, height: height);
             return
         }
-
-        let horizontalFactor: CGFloat = width / image.size.width
-        let verticalFactor: CGFloat = height / image.size.height
-        let factor = min(horizontalFactor, verticalFactor)
-        planeGeometry.width = factor * image.size.width
-        planeGeometry.height = factor * image.size.height
+        if let _ = self.url {
+            let horizontalFactor: CGFloat = width / image.size.width
+            let verticalFactor: CGFloat = height / image.size.height
+            let factor = min(horizontalFactor, verticalFactor)
+            planeGeometry.width = factor * image.size.width
+            planeGeometry.height = factor * image.size.height
+        }
     }
 }
 
@@ -96,5 +106,18 @@ extension UiImageNode {
             }
         }
         dataTask?.resume()
+    }
+}
+
+extension UIImage {
+    static func from(color: UIColor, width: CGFloat, height: CGFloat) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor)
+        context!.fill(rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
     }
 }

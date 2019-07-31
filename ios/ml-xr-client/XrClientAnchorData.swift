@@ -8,24 +8,20 @@
 
 import Foundation
 import SceneKit
-import mlxr_ios_client
+import mlxr_ios_client_internal
 
 class XrClientAnchorData: NSObject {
-    fileprivate let anchorData: MLXrClientAnchorData!
+    fileprivate let anchorData: MLXRAnchor!
 
-    public init(_ anchorData: MLXrClientAnchorData) {
+    public init(_ anchorData: MLXRAnchor) {
         self.anchorData = anchorData
     }
 
     public func getState() -> String {
-        let state = anchorData.getState()
-        switch state {
-        case .Tracked?:
+        if let state = anchorData.getState(), state.tracked {
             return "tracked"
-        case .NotTracked?:
+        } else {
             return "notTracked"
-        case .none:
-            return "tracked"
         }
     }
 
@@ -52,11 +48,11 @@ class XrClientAnchorData: NSObject {
     }
 
     public func getMagicPose() -> simd_float4x4 {
-        return anchorData.getPose() * XrClientAnchorData.magic_rotation
+        return anchorData.getPose()!.pose * XrClientAnchorData.magic_rotation
     }
 
     public func getAnchorId() -> String {
-        return anchorData.getAnchorId()?.uuidString ?? "DEFAULT"
+        return anchorData.getId()?.uuidString ?? "DEFAULT"
     }
 
     @objc public func getJsonRepresentation() -> [String: Any] {

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import mlxr_ios_client
+import mlxr_ios_client_internal
 
 @objc enum XrClientLocalization : Int {
     case awaitingLocation
@@ -45,15 +45,17 @@ import mlxr_ios_client
         }
     }
 
-    public init(localizationStatus: MLXrClientLocalization.LocalizationStatus) {
+    public init(localizationStatus: MLXRLocalizationStatus) {
         switch localizationStatus {
-        case MLXrClientLocalization.LocalizationStatus.AwaitingLocation:
+        case MLXRLocalizationStatus_AwaitingLocation:
             self = .awaitingLocation
-        case MLXrClientLocalization.LocalizationStatus.ScanningLocation:
+        case MLXRLocalizationStatus_ScanningLocation:
             self = .scanningLocation
-        case MLXrClientLocalization.LocalizationStatus.Localized:
+        case MLXRLocalizationStatus_Localized:
             self = .localized
-        case MLXrClientLocalization.LocalizationStatus.LocalizationFailed:
+        case MLXRLocalizationStatus_LocalizationFailed:
+            self = .localizationFailed
+        default:
             self = .localizationFailed
         }
     }

@@ -57,11 +57,13 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
+        assert(labelNode == nil, "labelNode must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .left
         labelNode.textSize = UiToggleNode.defaultTextSize
         addChildNode(labelNode)
 
+        assert(toggleNode == nil, "toggleNode must not be initialized!")
         let toggleSize = getToggleSize()
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant
@@ -107,7 +109,7 @@ import SceneKit
 
     @objc override func updateLayout() {
         let size = getSize()
-        let labelSize = labelNode.getSize()
+//        let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
 
         toggleGeometry.width = toggleSize.width
@@ -116,7 +118,7 @@ import SceneKit
         let x1: Float = Float(-0.5 * size.width)
         labelNode.position = SCNVector3(x1, 0, 0)
 
-        let x2: Float = Float(0.5 * size.width - toggleSize.width)
+//        let x2: Float = Float(0.5 * size.width - toggleSize.width)
         toggleNode.position = SCNVector3(x1, 0, 0)
     }
 

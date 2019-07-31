@@ -73,10 +73,12 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
-        
+
+        assert(contentNode == nil, "Node must not be initialized!")
         contentNode = SCNNode()
         addChildNode(contentNode)
 
+        assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .center
         labelNode.textSize = 0.0167

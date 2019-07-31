@@ -35,9 +35,12 @@ class LabelNode: SCNNode {
     fileprivate var labelGeometry: SCNText!
     fileprivate var label: UILabel!
     fileprivate var labelNode: SCNNode!
-    fileprivate var borderNode: OutlineNode!
     fileprivate var reloadNeeded: Bool = false
     fileprivate let useGeometry: Bool = true
+#if targetEnvironment(simulator)
+    fileprivate var originNode: SCNNode?
+    fileprivate var borderNode: OutlineNode?
+#endif
 
     @objc override init() {
         super.init()
@@ -95,6 +98,9 @@ class LabelNode: SCNNode {
 
         updateLabelContents()
         updateLabelSize()
+#if targetEnvironment(simulator)
+        updateDebugLayout()
+#endif
     }
 
     fileprivate func updateLabelContents() {
@@ -160,11 +166,9 @@ class LabelNode: SCNNode {
         if widthInPixels < maxFrameSize && heightInPixels < maxFrameSize {
             scaleFactor = 1
             sizeInPixels = CGSize(width: ceil(widthInPixels), height: ceil(heightInPixels))
-//            print("sizeInPixels1: \(sizeInPixels)")
         } else {
             scaleFactor = min(min(maxFrameSize / widthInPixels, maxFrameSize / heightInPixels), 1)
             sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
-//            print("sizeInPixels2: \(sizeInPixels) - \(scaleFactor)")
         }
 
         label.frame = CGRect(x: 0, y: 0, width: sizeInPixels.width, height: sizeInPixels.height)
@@ -178,11 +182,6 @@ class LabelNode: SCNNode {
 
     fileprivate func updateTextNodePosition() {
         let size = getSize()
-        #if targetEnvironment(simulator)
-//        borderNode?.removeFromParentNode()
-//        borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
-//        addChildNode(borderNode)
-        #endif
 
         if boundsSize.width > 0 {
             labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
@@ -190,7 +189,6 @@ class LabelNode: SCNNode {
 //            switch textAlignment {
 //            case .left:
                 labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
-                borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
 //            case .center, .justify:
 //                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
 //            case .right:
@@ -199,4 +197,45 @@ class LabelNode: SCNNode {
 //            }
         }
     }
+}
+
+
+// MARK: - Debug mode
+extension LabelNode {
+    @objc func setDebugMode(_ debug: Bool) {
+#if targetEnvironment(simulator)
+        guard debug else {
+            originNode?.removeFromParentNode()
+            borderNode?.removeFromParentNode()
+            return
+        }
+
+        // origin
+        if originNode == nil {
+            let sphere = SCNSphere(radius: 0.008)
+            sphere.segmentCount = 4
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.diffuse.contents = UIColor.white
+            originNode = SCNNode(geometry: sphere)
+        }
+        addChildNode(originNode!)
+
+        updateDebugLayout()
+#endif
+    }
+
+#if targetEnvironment(simulator)
+    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
+    @objc fileprivate func updateDebugLayout() {
+        guard isDebugMode else { return }
+
+        // border
+        let size = getSize()
+        borderNode?.removeFromParentNode()
+        borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.0005, color: UIColor.white)
+        insertChildNode(borderNode!, at: 0)
+
+        borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
+    }
+#endif
 }

@@ -30,6 +30,7 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
+        assert(spinnerNode == nil, "Node must not be initialized!")
         planeGeometry = SCNPlane(width: UiSpinnerNode.defaultSize, height: UiSpinnerNode.defaultSize)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image

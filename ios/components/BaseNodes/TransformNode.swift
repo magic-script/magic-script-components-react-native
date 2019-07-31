@@ -43,7 +43,11 @@ import SceneKit
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
 
+#if targetEnvironment(simulator)
     fileprivate var originNode: SCNNode?
+    fileprivate var borderNode: OutlineNode?
+#endif
+
     fileprivate var layoutNeeded: Bool = false
     @objc func setNeedsLayout() { layoutNeeded = true }
     @objc var isLayoutNeeded: Bool { return layoutNeeded }
@@ -122,18 +126,27 @@ import SceneKit
         if layoutNeeded {
             layoutNeeded = false
             updateLayout()
+        #if targetEnvironment(simulator)
+            updateDebugLayout()
+        #endif
         }
     }
 
     @objc func updateLayout() {
     }
+}
 
-    @objc func setOriginVisible(_ visible: Bool) {
-        guard visible else {
+// MARK: - Debug mode
+extension TransformNode {
+    @objc func setDebugMode(_ debug: Bool) {
+#if targetEnvironment(simulator)
+        guard debug else {
             originNode?.removeFromParentNode()
+            borderNode?.removeFromParentNode()
             return
         }
 
+        // origin
         if originNode == nil {
             let sphere = SCNSphere(radius: 0.01)
             sphere.segmentCount = 4
@@ -141,8 +154,21 @@ import SceneKit
             sphere.firstMaterial?.diffuse.contents = UIColor.yellow
             originNode = SCNNode(geometry: sphere)
         }
+        addChildNode(originNode!)
 
-        guard let originNode = originNode else { return }
-        addChildNode(originNode)
+        updateDebugLayout()
+#endif
     }
+
+#if targetEnvironment(simulator)
+    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
+    @objc fileprivate func updateDebugLayout() {
+        guard isDebugMode else { return }
+
+        // border
+        borderNode?.removeFromParentNode()
+        borderNode = OutlineNode(contentSize: getSize(), cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
+        insertChildNode(borderNode!, at: 0)
+    }
+#endif
 }

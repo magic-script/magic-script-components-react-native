@@ -44,7 +44,8 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
-        
+
+        assert(planeGeometry == nil, "Node must not be initialized!")
         planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)

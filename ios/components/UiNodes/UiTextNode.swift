@@ -46,10 +46,12 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
         alignment = Alignment.bottomLeft // default alignment of UiText
+
+        assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         addChildNode(labelNode)
 
-//        setOriginVisible(true)
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {

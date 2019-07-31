@@ -82,8 +82,8 @@ import SceneKit
         }
 
         let itemsCount: Int = cellSizes.count
-        let rowsCount: Int = (columns > 0) ? itemsCount / columns : 1
-        let columnsCount: Int = itemsCount / rowsCount
+        let rowsCount: Int = (columns > 0) ? ((itemsCount - 1) / columns) + 1 : 1
+        let columnsCount: Int = (columns > 0) ? columns : ((itemsCount - 1) / rowsCount) + 1
 
         let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
         let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
@@ -112,8 +112,8 @@ import SceneKit
         }
 
         let itemsCount: Int = cellSizes.count
-        let rowsCount: Int = (columns > 0) ? itemsCount / columns : 1
-        let columnsCount: Int = itemsCount / rowsCount
+        let rowsCount: Int = (columns > 0) ? ((itemsCount - 1) / columns) + 1 : 1
+        let columnsCount: Int = (columns > 0) ? columns : ((itemsCount - 1) / rowsCount) + 1
 
         let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
         let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
@@ -121,16 +121,15 @@ import SceneKit
         // TODO: include padding
         // TODO: include item alignment
         let minX: CGFloat = -0.5 * (columnsBounds.last!.x + columnsBounds.last!.width)
-        let minY: CGFloat = -0.5 * (rowsBounds.last!.y + rowsBounds.last!.height)
+        let maxY: CGFloat = 0.5 * (rowsBounds.last!.y + rowsBounds.last!.height)
         for i in 0..<cellSizes.count {
             let colId: Int = i % columnsCount
             let rowId: Int = i / columnsCount
             let colBound = columnsBounds[colId];
             let rowBound = rowsBounds[rowId];
-            let nodeSize = cellSizes[i]
-            let x: CGFloat = minX + colBound.x + 0.5 * (colBound.width - nodeSize.width)
-            let y: CGFloat = minY + rowBound.y + 0.5 * (rowBound.height - nodeSize.height)
-//            print("[\(colId),\(rowId)] = \(nodeSize) :: [\(colBound.width), \(rowBound.height)")
+//            let nodeSize = cellSizes[i]
+            let x: CGFloat = minX + colBound.x + 0.5 * colBound.width
+            let y: CGFloat = maxY - (rowBound.y + 0.5 * rowBound.height)
             children[i].position = SCNVector3(x, y, CGFloat(position.z))
         }
     }

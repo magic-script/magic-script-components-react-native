@@ -195,9 +195,9 @@ class LabelNode: SCNNode {
         } else {
 //            switch textAlignment {
 //            case .left:
-                labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
+//                labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
 //            case .center, .justify:
-//                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
 //            case .right:
 //                labelNode.position = SCNVector3(-size.width, -0.5 * size.height, 0)
 //                borderNode?.position = SCNVector3(-0.5 * size.width, 0, 0)
@@ -241,8 +241,6 @@ extension LabelNode {
         borderNode?.removeFromParentNode()
         borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.0005, color: UIColor.white)
         insertChildNode(borderNode!, at: 0)
-
-        borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
     }
 #endif
 }

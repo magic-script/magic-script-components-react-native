@@ -145,9 +145,6 @@ import SceneKit
             reloadOutline = false
             reloadOutlineNode()
         }
-
-        let labelSize = labelNode.getSize()
-        labelNode.position = SCNVector3(-0.5 * labelSize.width, 0.0, 0.0)
     }
 
     @objc override func setDebugMode(_ debug: Bool) {

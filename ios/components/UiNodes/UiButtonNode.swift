@@ -132,7 +132,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * UiButtonNode.borderInset
         let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * UiButtonNode.borderInset

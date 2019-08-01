@@ -69,7 +69,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let filteredChildren: [SCNNode] = childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
         let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }

@@ -94,7 +94,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let contentWidth: CGFloat = (width > 0) ? width : UiProgressBarNode.defaultWidth
         let contentHeight: CGFloat = (height > 0) ? height : UiProgressBarNode.defaultHeight
         return CGSize(width: contentWidth, height: contentHeight)

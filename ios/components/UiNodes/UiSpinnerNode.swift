@@ -52,7 +52,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let width: CGFloat = size.width > 0 ? size.width : UiSpinnerNode.defaultSize
         let height: CGFloat = size.height > 0 ? size.height : UiSpinnerNode.defaultSize
         return CGSize(width: width, height: height)

@@ -51,7 +51,7 @@ import SceneKit
         labelNode = LabelNode()
         addChildNode(labelNode)
 
-//        setDebugMode(true)
+        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -84,7 +84,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         return labelNode.getSize()
     }
 

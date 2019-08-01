@@ -9,7 +9,7 @@
 import SceneKit
 
 @objc class UiGroupNode: UiNode {
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         return getBoundsCollection().size
     }
 

@@ -48,8 +48,9 @@ import SceneKit
     fileprivate var borderNode: OutlineNode?
 #endif
 
+    fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
-    @objc func setNeedsLayout() { layoutNeeded = true }
+    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
     @objc var isLayoutNeeded: Bool { return layoutNeeded }
 
     @objc override init() {
@@ -108,6 +109,13 @@ import SceneKit
     }
 
     @objc func getSize() -> CGSize {
+        if currentSize == nil {
+            currentSize = _calculateSize()
+        }
+        return currentSize!
+    }
+
+    func _calculateSize() -> CGSize {
         return CGSize.zero
     }
 

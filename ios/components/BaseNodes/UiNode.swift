@@ -11,7 +11,7 @@ import SpriteKit
 
 @objc class UiNode: TransformNode {
 
-    @objc var alignment: Alignment = Alignment.topLeft {
+    @objc var alignment: Alignment = Alignment.centerCenter {
         didSet { setNeedsLayout() }
     }
     //var activateResponse: FocusRequest

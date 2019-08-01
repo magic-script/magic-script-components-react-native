@@ -97,7 +97,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
         let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? UiToggleNode.defaultTextMargin : 0

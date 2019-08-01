@@ -77,7 +77,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         return CGSize(width: width, height: height)
     }
 

@@ -37,7 +37,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let bbox = self.boundingBox
         return CGSize(width: CGFloat(bbox.max.x - bbox.min.x), height: CGFloat(bbox.max.y - bbox.min.y))
     }

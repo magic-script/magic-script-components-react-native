@@ -16,6 +16,8 @@
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
++ (UiProgressBarNode *)UiProgressBarNode:(id)json;
++ (UiSliderNode *)UiSliderNode:(id)json;
 + (UiSpinnerNode *)UiSpinnerNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
 + (UiTextEditNode *)UiTextEditNode:(id)json;

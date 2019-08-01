@@ -173,4 +173,3 @@ import SceneKit
         contentNode.addChildNode(outlineNode)
     }
 }
-

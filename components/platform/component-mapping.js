@@ -24,6 +24,8 @@ export default {
         'text': (componentManager) => new TextBuilder(componentManager),
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),
         'toggle': (componentManager) => new ToggleBuilder(componentManager),
+        'progressBar': (componentManager) => new ProgressBarBuilder(componentManager),
+        'slider': (componentManager) => new SliderBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'view': (componentManager) => new GroupBuilder(componentManager),
     }

@@ -30,6 +30,14 @@
     return [[UiModelNode alloc] initWithProps:json];
 }
 
++ (UiProgressBarNode *)UiProgressBarNode:(id)json {
+    return [[UiProgressBarNode alloc] initWithProps:json];
+}
+
++ (UiSliderNode *)UiSliderNode:(id)json {
+    return [[UiSliderNode alloc] initWithProps:json];
+}
+
 + (UiSpinnerNode *)UiSpinnerNode:(id)json {
     return [[UiSpinnerNode alloc] initWithProps:json];
 }

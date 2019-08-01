@@ -20,13 +20,15 @@ import SceneKit
     fileprivate var nodesById: [String: TransformNode] = [:]
     fileprivate var nodeByAnchorUuid: [String: TransformNode] = [:]
     fileprivate var focusedNode: UiNode?
+    fileprivate weak var view: SCNView?
 
     private override init() {
         super.init()
     }
 
-    @objc func registerScene(_ scene: SCNScene) {
-        scene.rootNode.addChildNode(rootNode)
+    @objc func registerScene(_ view: SCNView) {
+        self.view = view
+        view.scene?.rootNode.addChildNode(rootNode)
     }
 
     @objc func handleNodeTap(_ node: SCNNode?) {
@@ -146,6 +148,9 @@ import SceneKit
 
     @objc func updateLayout() {
         updateLayoutFor(node: rootNode)
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.setNeedsDisplay()
+        }
     }
 
     @objc fileprivate func updateLayoutFor(node: SCNNode) {

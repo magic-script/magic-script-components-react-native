@@ -29,36 +29,37 @@ import SceneKit
     @objc var value: CGFloat {
         get { return _value }
         set {
-            let clampedValue: CGFloat = Math.clamp(_value, _min, _max)
+            let clampedValue: CGFloat = Math.clamp(newValue, _min, _max)
             if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
         }
     }
     @objc var startColor: UIColor = UIColor.blue {
-        didSet {  }
+        didSet { if (startColor != oldValue) { barImage = nil; setNeedsLayout(); } }
     }
     @objc var endColor: UIColor = UIColor.gray {
-        didSet {  }
+        didSet { if (endColor != oldValue) { barImage = nil; setNeedsLayout(); } }
     }
 
 //    @objc var onProgressChanged: ((_ sender: UiNode, _ progress: CGFloat) -> (Void))?
 
     fileprivate var _min: CGFloat = 0
-    fileprivate var _max: CGFloat = 0
+    fileprivate var _max: CGFloat = 1
     fileprivate var _value: CGFloat = 0
-    fileprivate var bgGeometry: SCNPlane!
-    fileprivate var fgGeometry: SCNPlane!
+    fileprivate var barGeometry: SCNPlane!
+    fileprivate var barImage: UIImage?
 
     @objc override func setupNode() {
         super.setupNode()
 
-        assert(bgGeometry == nil, "Node must not be initialized!")
-        bgGeometry = SCNPlane(width: width, height: height)
-        bgGeometry.cornerRadius = 0.5 * height
-        bgGeometry.firstMaterial?.diffuse.contents = UIColor.red
-        let bgNode = SCNNode(geometry: bgGeometry)
+        assert(barGeometry == nil, "Node must not be initialized!")
+        barGeometry = SCNPlane(width: width, height: height)
+        barGeometry.firstMaterial?.lightingModel = .constant
+        barGeometry.firstMaterial?.diffuse.wrapS = SCNWrapMode.clamp
+        barGeometry.firstMaterial?.isDoubleSided = true
+        let bgNode = SCNNode(geometry: barGeometry)
         addChildNode(bgNode)
 
-        setDebugMode(true)
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -100,9 +101,18 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        if barImage == nil {
+            barImage = UIImage.image(from: [startColor, endColor], size: 32)
+            barGeometry.firstMaterial?.diffuse.contents = barImage
+        }
+
         let size = getSize()
-        bgGeometry.width = size.width
-        bgGeometry.height = size.height
-        bgGeometry.cornerRadius = 0.5 * size.height
+        barGeometry.width = size.width
+        barGeometry.height = size.height
+        barGeometry.cornerRadius = 0.5 * size.height
+
+        let progress: CGFloat = ((max - min) > 0) ? (value - min) / (max - min) : 0
+        let tx: Float = 0.5 - Float(progress)
+        barGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeTranslation(tx, 0, 0)
     }
 }

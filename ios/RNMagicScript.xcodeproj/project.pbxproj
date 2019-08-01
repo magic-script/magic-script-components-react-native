@@ -63,6 +63,7 @@
 		447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */; };
 		447C246022F2CF2700F9A8F6 /* UiSliderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C245F22F2CF2700F9A8F6 /* UiSliderNode.swift */; };
 		447C246222F2CF3600F9A8F6 /* UiProgressBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C246122F2CF3600F9A8F6 /* UiProgressBarNode.swift */; };
+		447F283422F3049C00858461 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447F283322F3049C00858461 /* UIImage+Extension.swift */; };
 		449AF45A22B247C40046938D /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44D22B247C40046938D /* AREventsManager.m */; };
 		449AF45C22B247C40046938D /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF44F22B247C40046938D /* ARComponentManager.m */; };
 		449AF45E22B247C40046938D /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 449AF45322B247C40046938D /* RCTARView.m */; };
@@ -188,6 +189,7 @@
 		447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleNode.swift; sourceTree = "<group>"; };
 		447C245F22F2CF2700F9A8F6 /* UiSliderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSliderNode.swift; sourceTree = "<group>"; };
 		447C246122F2CF3600F9A8F6 /* UiProgressBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiProgressBarNode.swift; sourceTree = "<group>"; };
+		447F283322F3049C00858461 /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		449AF44B22B247C40046938D /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
 		449AF44C22B247C40046938D /* ARComponentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARComponentManager.h; sourceTree = "<group>"; };
 		449AF44D22B247C40046938D /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
@@ -497,6 +499,7 @@
 			children = (
 				449AF49322B248090046938D /* Maths.swift */,
 				449AF49022B248090046938D /* SCNBBoxNode.swift */,
+				447F283322F3049C00858461 /* UIImage+Extension.swift */,
 				449AF49122B248090046938D /* SCNRectangle.swift */,
 				449AF49222B248090046938D /* SCNNode+Debug.swift */,
 				449AF49422B248090046938D /* SCNQuaternionExtension.swift */,
@@ -669,6 +672,7 @@
 				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
 				44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */,
+				447F283422F3049C00858461 /* UIImage+Extension.swift in Sources */,
 				44E73D0D22E85E2B00AE779D /* XrClientSession.swift in Sources */,
 				4447D49C22BC2BC40043CA89 /* GLTFExtension.swift in Sources */,
 				4447D48F22BC2BC40043CA89 /* GLTFGlTF.swift in Sources */,

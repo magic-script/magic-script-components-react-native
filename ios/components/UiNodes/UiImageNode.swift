@@ -25,7 +25,7 @@ import SceneKit
 
     @objc var image: UIImage? {
         get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
-        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updateLayout() }
+        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; setNeedsLayout() }
     }
 
     @objc var width: CGFloat = 0.5 {
@@ -36,11 +36,15 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
-    @objc var color: SCNVector4 = SCNVector4(1,1,1,0) {
-        didSet { setNeedsLayout() }
+    @objc var color: UIColor? {
+        didSet {
+            image = (color != nil) ? UIImage.image(from: [color!], size: 1) : nil
+            setNeedsLayout()
+        }
     }
 
     fileprivate var planeGeometry: SCNPlane!
+    fileprivate var colorImage: UIImage?
 
     @objc override func setupNode() {
         super.setupNode()
@@ -68,7 +72,7 @@ import SceneKit
             self.height = height
         }
 
-        if let color = Convert.toVector4(props["color"]) {
+        if let color = Convert.toColor(props["color"]) {
             self.color = color
         }
     }
@@ -81,7 +85,6 @@ import SceneKit
         guard let image = self.image else {
             planeGeometry.width = width
             planeGeometry.height = height
-            self.image = UIImage.from(color: UIColor.init(displayP3Red: CGFloat(color.x), green: CGFloat(color.y), blue: CGFloat(color.z), alpha: CGFloat(color.w)), width: width, height: height);
             return
         }
         if let _ = self.url {
@@ -107,18 +110,5 @@ extension UiImageNode {
             }
         }
         dataTask?.resume()
-    }
-}
-
-extension UIImage {
-    static func from(color: UIColor, width: CGFloat, height: CGFloat) -> UIImage {
-        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        context!.setFillColor(color.cgColor)
-        context!.fill(rect)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img!
     }
 }

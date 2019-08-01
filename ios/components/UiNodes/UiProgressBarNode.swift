@@ -18,17 +18,45 @@ import SceneKit
     @objc var height: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
+    @objc var min: CGFloat {
+        get { return _min }
+        set { if (newValue != _min && newValue < _max) { _min = newValue; setNeedsLayout(); } }
+    }
+    @objc var max: CGFloat {
+        get { return _max }
+        set { if (newValue != _max && _min < newValue) { _max = newValue; setNeedsLayout(); } }
+    }
+    @objc var value: CGFloat {
+        get { return _value }
+        set {
+            let clampedValue: CGFloat = Math.clamp(_value, _min, _max)
+            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
+        }
+    }
+    @objc var startColor: UIColor = UIColor.blue {
+        didSet {  }
+    }
+    @objc var endColor: UIColor = UIColor.gray {
+        didSet {  }
+    }
 
-    @objc var onProgressChanged: ((_ sender: UiNode, _ progress: CGFloat) -> (Void))?
+//    @objc var onProgressChanged: ((_ sender: UiNode, _ progress: CGFloat) -> (Void))?
 
-    fileprivate var progressNode: SCNNode!
+    fileprivate var _min: CGFloat = 0
+    fileprivate var _max: CGFloat = 0
+    fileprivate var _value: CGFloat = 0
+    fileprivate var bgGeometry: SCNPlane!
+    fileprivate var fgGeometry: SCNPlane!
 
     @objc override func setupNode() {
         super.setupNode()
 
-        assert(progressNode == nil, "Node must not be initialized!")
-        progressNode = SCNNode()
-        addChildNode(progressNode)
+        assert(bgGeometry == nil, "Node must not be initialized!")
+        bgGeometry = SCNPlane(width: width, height: height)
+        bgGeometry.cornerRadius = 0.5 * height
+        bgGeometry.firstMaterial?.diffuse.contents = UIColor.red
+        let bgNode = SCNNode(geometry: bgGeometry)
+        addChildNode(bgNode)
 
         setDebugMode(true)
     }
@@ -43,6 +71,26 @@ import SceneKit
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
         }
+
+        if let min = Convert.toCGFloat(props["min"]) {
+            self.min = min
+        }
+
+        if let max = Convert.toCGFloat(props["max"]) {
+            self.max = max
+        }
+
+        if let value = Convert.toCGFloat(props["value"]) {
+            self.value = value
+        }
+
+        if let startColor = Convert.toColor(props["startColor"]) {
+            self.startColor = startColor
+        }
+
+        if let endColor = Convert.toColor(props["endColor"]) {
+            self.endColor = endColor
+        }
     }
 
     @objc override func getSize() -> CGSize {
@@ -52,5 +100,9 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        let size = getSize()
+        bgGeometry.width = size.width
+        bgGeometry.height = size.height
+        bgGeometry.cornerRadius = 0.5 * size.height
     }
 }

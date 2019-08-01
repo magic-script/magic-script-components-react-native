@@ -25,7 +25,7 @@ import SceneKit
 
     @objc var image: UIImage? {
         get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
-        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; setNeedsLayout() }
+        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updateLayout() }
     }
 
     @objc var width: CGFloat = 0.5 {

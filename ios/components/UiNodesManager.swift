@@ -145,11 +145,7 @@ import SceneKit
     }
 
     @objc func updateLayout() {
-        guard Thread.isMainThread else {
-            DispatchQueue.main.async { [weak self] in self?.updateLayout() }
-            return
-        }
-
+        assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         updateLayoutFor(node: rootNode)
     }
 

@@ -30,6 +30,10 @@ void ARLog(NSString *format, ...) {
     return YES;
 }
 
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
+
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(initAR:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {

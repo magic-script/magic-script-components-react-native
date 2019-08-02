@@ -54,6 +54,7 @@
     // Register ARSession in MLXrClientSession
     [XrClientSession registerARSession:view.session];
     view.delegate = self;
+    view.playing = YES;
 
     // Add AR view as a child
     view.translatesAutoresizingMaskIntoConstraints = NO;

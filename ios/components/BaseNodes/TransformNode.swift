@@ -134,6 +134,7 @@ import SceneKit
         if layoutNeeded {
             layoutNeeded = false
             updateLayout()
+//            updatePivot()
         #if targetEnvironment(simulator)
             updateDebugLayout()
         #endif
@@ -141,6 +142,9 @@ import SceneKit
     }
 
     @objc func updateLayout() {
+    }
+
+    @objc func updatePivot() {
     }
 }
 

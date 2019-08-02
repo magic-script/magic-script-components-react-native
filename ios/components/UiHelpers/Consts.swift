@@ -119,4 +119,27 @@ import Foundation
             return nil
         }
     }
+
+    public var offset: CGPoint {
+        switch self {
+        case .topLeft:
+            return CGPoint(x: -0.5, y: 0.5)
+        case .topCenter:
+            return CGPoint(x: 0.0, y: 0.5)
+        case .topRight:
+            return CGPoint(x: 0.5, y: 0.5)
+        case .centerLeft:
+            return CGPoint(x: -0.5, y: 0.0)
+        case .centerCenter:
+            return CGPoint(x: 0.0, y: 0.0)
+        case .centerRight:
+            return CGPoint(x: 0.5, y: 0.0)
+        case .bottomLeft:
+            return CGPoint(x: -0.5, y: -0.5)
+        case .bottomCenter:
+            return CGPoint(x: 0.0, y: -0.5)
+        case .bottomRight:
+            return CGPoint(x: 0.5, y: -0.5)
+        }
+    }
 }

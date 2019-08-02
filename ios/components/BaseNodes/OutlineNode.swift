@@ -7,7 +7,6 @@
 //
 
 import SceneKit
-import SpriteKit
 
 @objc class OutlineNode: SCNNode {
 
@@ -16,8 +15,6 @@ import SpriteKit
     let cornerRadius: CGFloat
     let lineWidth: CGFloat
     let color: UIColor
-
-    fileprivate var outlineNode: SKShapeNode!
 
     @objc init(width: CGFloat, height: CGFloat, cornerRadius: CGFloat, lineWidth: CGFloat = 0.005, color: UIColor = UIColor.white) {
         self.width = width
@@ -59,24 +56,22 @@ import SpriteKit
         let outlineWidth = Measures.pixels(from: lineWidth)
         let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
-        let scene = SKScene(size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height))
-        scene.backgroundColor = UIColor.clear
-        if (scaleFactor != 1.0) {
-            scene.setScale(1.0 / scaleFactor)
-        }
 
         // Add outline node
-        let outlineRect = CGRect(origin: CGPoint.zero, size: scene.size).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
+        let outlineRect = CGRect(origin: CGPoint.zero, size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height)).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
         let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
-        let outlineNode = SKShapeNode(path: outlinePath.cgPath)
-        outlineNode.strokeColor = color
-        outlineNode.lineWidth = outlineWidth
-        outlineNode.glowWidth = outlineWidth
-        scene.addChild(outlineNode)
-
+        UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 1);
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(UIColor.clear.cgColor);
+        context?.fill(outlineRect)
+        context?.setStrokeColor(color.cgColor);
+        context?.addPath(outlinePath.cgPath);
+        context?.strokePath();
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
         let planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant
-        planeGeometry.firstMaterial?.diffuse.contents = scene
+        planeGeometry.firstMaterial?.diffuse.contents = image
         planeGeometry.firstMaterial?.isDoubleSided = false
         let node = SCNNode(geometry: planeGeometry)
         addChildNode(node)

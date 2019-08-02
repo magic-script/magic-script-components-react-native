@@ -54,7 +54,7 @@ import SceneKit
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
         planeGeometry.firstMaterial?.isDoubleSided = true
-        addChildNode(SCNNode(geometry: planeGeometry))
+        contentNode.addChildNode(SCNNode(geometry: planeGeometry))
     }
 
     @objc override func update(_ props: [String: Any]) {

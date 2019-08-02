@@ -47,7 +47,7 @@ import SceneKit
 
     @objc var onTap: ((_ sender: UiNode) -> (Void))?
 
-    fileprivate var contentNode: SCNNode!
+//    fileprivate var contentNode: SCNNode!
     fileprivate var outlineNode: OutlineNode!
     fileprivate var labelNode: LabelNode!
     fileprivate var reloadOutline: Bool = true
@@ -82,10 +82,6 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
-
-        assert(contentNode == nil, "Node must not be initialized!")
-        contentNode = SCNNode()
-        addChildNode(contentNode)
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()

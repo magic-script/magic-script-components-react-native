@@ -57,7 +57,7 @@ import SceneKit
         barGeometry.firstMaterial?.diffuse.wrapS = SCNWrapMode.clamp
         barGeometry.firstMaterial?.isDoubleSided = true
         let bgNode = SCNNode(geometry: barGeometry)
-        addChildNode(bgNode)
+        contentNode.addChildNode(bgNode)
 
         //        setDebugMode(true)
     }

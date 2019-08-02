@@ -23,8 +23,6 @@ import SpriteKit
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
 
-    fileprivate var outlineNode: SCNNode?
-
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
@@ -46,7 +44,7 @@ import SpriteKit
     @objc override func updatePivot() {
         let size = getSize()
         let offset = alignment.offset
-        anchorPosition = SCNVector3(offset.x * size.width, offset.y * size.height, 0)
+        contentNode.position = SCNVector3(offset.x * size.width, offset.y * size.height, 0)
     }
 
     // MARK: - Focus

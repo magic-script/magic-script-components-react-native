@@ -34,7 +34,6 @@ import SceneKit
 
     @objc var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
 
-    fileprivate var contentNode: SCNNode!
     fileprivate var labelNode: LabelNode!
 
     fileprivate var toggleNode: SCNNode!
@@ -59,7 +58,7 @@ import SceneKit
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .left
-        addChildNode(labelNode)
+        contentNode.addChildNode(labelNode)
 
         assert(toggleNode == nil, "Node must not be initialized!")
         let toggleSize = getToggleSize()
@@ -68,7 +67,7 @@ import SceneKit
         toggleGeometry.firstMaterial?.diffuse.contents = ImageAsset.toggleOff.image
         toggleGeometry.firstMaterial?.isDoubleSided = true
         toggleNode = SCNNode(geometry: toggleGeometry)
-        addChildNode(toggleNode)
+        contentNode.addChildNode(toggleNode)
 
 //        setDebugMode(true)
     }

@@ -36,7 +36,7 @@ import SceneKit
         planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
         planeGeometry.firstMaterial?.isDoubleSided = true
         spinnerNode = SCNNode(geometry: planeGeometry)
-        addChildNode(spinnerNode)
+        contentNode.addChildNode(spinnerNode)
         startAnimation()
     }
 

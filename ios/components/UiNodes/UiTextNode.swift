@@ -49,9 +49,9 @@ import SceneKit
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-        addChildNode(labelNode)
+        contentNode.addChildNode(labelNode)
 
-        setDebugMode(true)
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {

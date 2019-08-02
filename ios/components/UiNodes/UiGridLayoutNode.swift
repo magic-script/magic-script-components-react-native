@@ -27,6 +27,8 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
+    fileprivate var gridDesc: GridLayoutDescriptor?
+
     @objc override func setupNode() {
         super.setupNode()
 //        setDebugMode(true)
@@ -46,6 +48,9 @@ import SceneKit
 //        if let size = Convert.toCGSize(props["size"]) {
 //            self.size = size
 //        }
+        if let defaultItemAlignment = Convert.toAlignment(props["defaultItemAlignment"]) {
+            self.defaultItemAlignment = defaultItemAlignment
+        }
 
         if let skipInvisibleItems = Convert.toBool(props["skipInvisibleItems"]) {
             self.skipInvisibleItems = skipInvisibleItems
@@ -55,14 +60,14 @@ import SceneKit
     @objc override func addChild(_ child: TransformNode) {
         let proxyNode = SCNNode()
         proxyNode.name = child.name
-        addChildNode(proxyNode)
+        contentNode.addChildNode(proxyNode)
         proxyNode.addChildNode(child)
         setNeedsLayout()
     }
 
     @objc override func removeChild(_ child: TransformNode) {
         if let proxyNode = child.parent,
-            let parent = proxyNode.parent, parent == self {
+            let parent = proxyNode.parent, parent == contentNode {
             proxyNode.removeFromParentNode()
             child.removeFromParentNode()
             setNeedsLayout()
@@ -70,40 +75,53 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let filteredChildren: [SCNNode] = childNodes.filter { ($0.childNodes.first is TransformNode) }
-        let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
-        let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
-        guard !nodes.isEmpty else { return CGSize.zero }
-
-        var cellSizes: [CGSize] = []
-        nodes.forEach { (node) in
-            node.updateLayout()
-            cellSizes.append(node.getSize())
-        }
-
-        let itemsCount: Int = cellSizes.count
-        let rowsCount: Int = (columns > 0) ? ((itemsCount - 1) / columns) + 1 : 1
-        let columnsCount: Int = (columns > 0) ? columns : ((itemsCount - 1) / rowsCount) + 1
-
-        let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
-        let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
-
-        let totalWidth: CGFloat = columnsBounds.reduce(0) { (result, bounds) -> CGFloat in
-            return result + bounds.width
-        }
-
-        let totalHeight: CGFloat = rowsBounds.reduce(0) { (result, bounds) -> CGFloat in
-            return result + bounds.height
-        }
-
-        return CGSize(width: totalWidth, height: totalHeight)
+        gridDesc = calculateGridDescriptor()
+        return gridDesc?.size ?? CGSize.zero
     }
 
     @objc override func updateLayout() {
-        let filteredChildren: [SCNNode] = childNodes.filter { ($0.childNodes.first is TransformNode) }
+        // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
+        let _ = getSize()
+        guard let gridDesc = gridDesc else { return }
+
+        // TODO: include padding
+        let origin = CGPoint(x: -0.5 * gridDesc.size.width, y: 0.5 * gridDesc.size.height)
+        for i in 0..<gridDesc.children.count {
+            let pos: CGPoint = getLocalPositionForChild(at: i, desc: gridDesc)
+            gridDesc.children[i].position = SCNVector3(origin.x + pos.x, origin.y - pos.y, CGFloat(position.z))
+        }
+    }
+
+    fileprivate func getLocalPositionForChild(at index: Int, desc: GridLayoutDescriptor) -> CGPoint {
+        let colId: Int = index % desc.columns
+        let rowId: Int = index / desc.columns
+        let childNodeSize: CGSize = desc.cellSizes[index]
+        let columnBounds = desc.columnsBounds[colId]
+        let rowBounds = desc.rowsBounds[rowId]
+
+        let localCenter = CGPoint(x: columnBounds.x + 0.5 * columnBounds.width, y: rowBounds.y + 0.5 * rowBounds.height)
+        let offset: CGPoint = defaultItemAlignment.offset
+        let gridItemAlignmentOffset = CGPoint(
+            x: (columnBounds.width - childNodeSize.width) * offset.x,
+            y: (rowBounds.height - childNodeSize.height) * offset.y
+        )
+
+        // Ignore children nodes alignment
+        let node: TransformNode = desc.children[index].childNodes[0] as! TransformNode
+        let nodePos: SCNVector3 = node.contentNode.position
+        let itemInternalAlignmentOffset = CGPoint(x: CGFloat(-nodePos.x), y: CGFloat(-nodePos.y))
+
+        let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x)
+        let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y)
+
+        return CGPoint(x: localPositionX, y: localPositionY)
+    }
+
+    fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
+        let filteredChildren: [SCNNode] = contentNode.childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
         let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
-        guard !nodes.isEmpty else { return }
+        guard !nodes.isEmpty else { return nil }
 
         var cellSizes: [CGSize] = []
         nodes.forEach { (node) in
@@ -112,26 +130,16 @@ import SceneKit
         }
 
         let itemsCount: Int = cellSizes.count
-        let rowsCount: Int = (columns > 0) ? ((itemsCount - 1) / columns) + 1 : 1
+        let rowsCount: Int = (columns > 0) ? ((itemsCount - 1) / columns) + 1 : max(rows, 1)
         let columnsCount: Int = (columns > 0) ? columns : ((itemsCount - 1) / rowsCount) + 1
 
         let columnsBounds = getColumnsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
         let rowsBounds = getRowsBounds(for: cellSizes, columnsCount: columnsCount, rowsCount: rowsCount)
 
-        // TODO: include padding
-        // TODO: include item alignment
-        let minX: CGFloat = -0.5 * (columnsBounds.last!.x + columnsBounds.last!.width)
-        let maxY: CGFloat = 0.5 * (rowsBounds.last!.y + rowsBounds.last!.height)
-        for i in 0..<cellSizes.count {
-            let colId: Int = i % columnsCount
-            let rowId: Int = i / columnsCount
-            let colBound = columnsBounds[colId];
-            let rowBound = rowsBounds[rowId];
-//            let nodeSize = cellSizes[i]
-            let x: CGFloat = minX + colBound.x + 0.5 * colBound.width
-            let y: CGFloat = maxY - (rowBound.y + 0.5 * rowBound.height)
-            children[i].position = SCNVector3(x, y, CGFloat(position.z))
-        }
+        let totalWidth: CGFloat = columnsBounds.reduce(0) { $0 + $1.width }
+        let totalHeight: CGFloat = rowsBounds.reduce(0) { $0 + $1.height }
+        let size = CGSize(width: totalWidth, height: totalHeight)
+        return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, size: size)
     }
 }
 
@@ -171,5 +179,15 @@ extension UiGridLayoutNode {
         }
 
         return rowsBounds
+    }
+
+    fileprivate struct GridLayoutDescriptor {
+        let children: [SCNNode]
+        let cellSizes: [CGSize]
+        let columns: Int
+        let rows: Int
+        let columnsBounds: [(x: CGFloat, width: CGFloat)]
+        let rowsBounds: [(y: CGFloat, height: CGFloat)]
+        let size: CGSize
     }
 }

@@ -47,6 +47,7 @@ import SceneKit
     fileprivate var originNode: SCNNode?
     fileprivate var borderNode: OutlineNode?
 #endif
+    @objc fileprivate(set) var contentNode: SCNNode!
 
     fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
@@ -69,19 +70,26 @@ import SceneKit
     }
 
     @objc func setupNode() {
+        contentNode = SCNNode()
+        addChildNode(contentNode)
     }
 
     @objc func addChild(_ child: TransformNode) {
-        addChildNode(child)
+        contentNode.addChildNode(child)
+        setNeedsLayout()
     }
 
     @objc func removeChild(_ child: TransformNode) {
-        if let parent = child.parent, parent == self {
+        if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
+            setNeedsLayout()
         }
     }
 
     @objc func update(_ props: [String: Any]) {
+//        assert(childNodes.count == 1, "Each TransformNode must contain only one contentNode!")
+        assert(childNodes[0] == contentNode, "contentNode does not exist!")
+
         if let name = Convert.toString(props["id"]) {
             self.name = name
         }
@@ -121,7 +129,7 @@ import SceneKit
 
     @objc func getBounds() -> CGRect {
         let size = getSize()
-        let origin: CGPoint = CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y))
+        let origin: CGPoint = CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y))
         return CGRect(origin: origin, size: size)
     }
 
@@ -134,7 +142,7 @@ import SceneKit
         if layoutNeeded {
             layoutNeeded = false
             updateLayout()
-//            updatePivot()
+            updatePivot()
         #if targetEnvironment(simulator)
             updateDebugLayout()
         #endif
@@ -180,7 +188,7 @@ extension TransformNode {
         // border
         borderNode?.removeFromParentNode()
         borderNode = OutlineNode(contentSize: getSize(), cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
-        insertChildNode(borderNode!, at: 0)
+        contentNode.addChildNode(borderNode!)
     }
 #endif
 }

@@ -43,8 +43,8 @@ import SceneKit
     }
 
     fileprivate func cleanNode() {
-        while !childNodes.isEmpty {
-            childNodes.last?.removeFromParentNode()
+        while !contentNode.childNodes.isEmpty {
+            contentNode.childNodes.last?.removeFromParentNode()
         }
     }
 
@@ -57,7 +57,7 @@ import SceneKit
                 let sceneSource = GLTFSceneSource(url: modelURL, options: nil)
                 let scene = try sceneSource.scene()
 
-                addChildNode(scene.rootNode)
+                contentNode.addChildNode(scene.rootNode)
             } catch {
                 print("\(error.localizedDescription)")
                 return
@@ -66,7 +66,7 @@ import SceneKit
             if let refNode = SCNReferenceNode(url: modelURL) {
                 refNode.load()
                 if refNode.isLoaded {
-                    addChildNode(refNode)
+                    contentNode.addChildNode(refNode)
                 }
             }
         }

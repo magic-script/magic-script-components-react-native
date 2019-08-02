@@ -49,22 +49,25 @@ import SceneKit
     @objc func setupNode() {
         guard width > 0 && height > 0 && lineWidth > 0 else { return }
 
-        // Create SpriteKit scene
-        let maxSceneSize: CGFloat = 2048
+        // NODE: For small enough components (<1m) lines look good with maxCanvasSize = 128px
+        // of canvas size, but for bigger components it may require to increase the value.
+        // Do not exceeed the value above 2048px.
+        let maxCanvasSize: CGFloat = 128
         let widthInPixels = Measures.pixels(from: width)
         let heightInPixels = Measures.pixels(from: height)
-        let outlineWidth = Measures.pixels(from: lineWidth)
-        let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
+        let scaleFactor: CGFloat = min(min(maxCanvasSize / widthInPixels, maxCanvasSize / heightInPixels), 1)
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
+        let outlineWidth = ceil(Measures.pixels(from: lineWidth) * scaleFactor)
 
-        // Add outline node
+        // Draw outline in a graphics context
         let outlineRect = CGRect(origin: CGPoint.zero, size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height)).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
         let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
-        UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 1);
+        UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 0);
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor(UIColor.clear.cgColor);
         context?.fill(outlineRect)
         context?.setStrokeColor(color.cgColor);
+        context?.setLineWidth(outlineWidth)
         context?.addPath(outlinePath.cgPath);
         context?.strokePath();
         let image = UIGraphicsGetImageFromCurrentImageContext()

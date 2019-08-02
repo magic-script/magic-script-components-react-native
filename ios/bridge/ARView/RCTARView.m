@@ -49,7 +49,7 @@
     [view addGestureRecognizer:tapGestureRecognizer];
 
     // Resgister scene in nodes manager
-    [UiNodesManager.instance registerScene:view];
+    [UiNodesManager.instance registerScene:view.scene];
 
     // Register ARSession in MLXrClientSession
     [XrClientSession registerARSession:view.session];

@@ -26,6 +26,10 @@
     return [[UiImageNode alloc] initWithProps:json];
 }
 
++ (UiLineNode *)UiLineNode:(id)json {
+    return [[UiLineNode alloc] initWithProps:json];
+}
+
 + (UiModelNode *)UiModelNode:(id)json {
     return [[UiModelNode alloc] initWithProps:json];
 }

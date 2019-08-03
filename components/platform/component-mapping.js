@@ -20,10 +20,10 @@ export default {
         // 'scene': () => new ControllerBuilder(),
     },
     elements: {
+        // ui nodes
         'button': (componentManager) => new ButtonBuilder(componentManager),
         'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
         'image': (componentManager) => new ImageBuilder(componentManager),
-        'model': (componentManager) => new ModelBuilder(componentManager),
         'text': (componentManager) => new TextBuilder(componentManager),
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),
         'toggle': (componentManager) => new ToggleBuilder(componentManager),
@@ -31,5 +31,9 @@ export default {
         'slider': (componentManager) => new SliderBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'view': (componentManager) => new GroupBuilder(componentManager),
+
+        // render nodes
+        'line': (componentManager) => new GroupBuilder(componentManager),
+        'model': (componentManager) => new ModelBuilder(componentManager),
     }
 };

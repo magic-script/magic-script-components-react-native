@@ -58,6 +58,8 @@
 		4447D54322BCC3BB0043CA89 /* GLTFShaderModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */; };
 		4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461548422CA413100159F18 /* UiSpinnerNode.swift */; };
 		446A927922DDE5CA00B4C12D /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446A927822DDE5CA00B4C12D /* Consts.swift */; };
+		4471C4FA22F5A61C00C8C5EC /* UiLineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4471C4F922F5A61B00C8C5EC /* UiLineNode.swift */; };
+		4471C4FC22F5A68A00C8C5EC /* RenderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4471C4FB22F5A68A00C8C5EC /* RenderNode.swift */; };
 		447A017922B4494100C9C75F /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A017822B4494100C9C75F /* Convert.swift */; };
 		447A017C22B462EB00C9C75F /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 447A017B22B462EB00C9C75F /* RCTConvert+Components.m */; };
 		447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447C23EA22F05DD700F9A8F6 /* UiToggleNode.swift */; };
@@ -183,6 +185,8 @@
 		4447D54222BCC3BB0043CA89 /* GLTFShaderModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLTFShaderModifier.swift; sourceTree = "<group>"; };
 		4461548422CA413100159F18 /* UiSpinnerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiSpinnerNode.swift; sourceTree = "<group>"; };
 		446A927822DDE5CA00B4C12D /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
+		4471C4F922F5A61B00C8C5EC /* UiLineNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLineNode.swift; sourceTree = "<group>"; };
+		4471C4FB22F5A68A00C8C5EC /* RenderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderNode.swift; sourceTree = "<group>"; };
 		447A017822B4494100C9C75F /* Convert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		447A017A22B462D200C9C75F /* RCTConvert+Components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+Components.h"; sourceTree = "<group>"; };
 		447A017B22B462EB00C9C75F /* RCTConvert+Components.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
@@ -470,6 +474,7 @@
 			children = (
 				442463BD22DCBFC900FD4ABB /* LabelNode.swift */,
 				44318EB522CE28EA0060575D /* OutlineNode.swift */,
+				4471C4FB22F5A68A00C8C5EC /* RenderNode.swift */,
 				449AF48822B248090046938D /* TransformNode.swift */,
 				449AF48922B248090046938D /* UiNode.swift */,
 			);
@@ -483,6 +488,7 @@
 				449AF48B22B248090046938D /* UiGroupNode.swift */,
 				44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */,
 				449AF48D22B248090046938D /* UiImageNode.swift */,
+				4471C4F922F5A61B00C8C5EC /* UiLineNode.swift */,
 				44FA561B22B7A0EA00B42251 /* UIModelNode.swift */,
 				447C246122F2CF3600F9A8F6 /* UiProgressBarNode.swift */,
 				447C245F22F2CF2700F9A8F6 /* UiSliderNode.swift */,
@@ -684,6 +690,7 @@
 				4447D48922BC2BC40043CA89 /* GLTFSceneSource.swift in Sources */,
 				4447D4B022BC2BC40043CA89 /* GLTFFunctions.swift in Sources */,
 				4447D4AF22BC2BC40043CA89 /* GLTFMeshPrimitive.swift in Sources */,
+				4471C4FA22F5A61C00C8C5EC /* UiLineNode.swift in Sources */,
 				4447D49522BC2BC40043CA89 /* GLTFBufferView.swift in Sources */,
 				44318E6422CB44B60060575D /* ImageAssets.swift in Sources */,
 				449AF45C22B247C40046938D /* ARComponentManager.m in Sources */,
@@ -715,6 +722,7 @@
 				4447D49322BC2BC40043CA89 /* GLTFTextureInfo.swift in Sources */,
 				449AF49822B248090046938D /* TransformNode.swift in Sources */,
 				449AF45A22B247C40046938D /* AREventsManager.m in Sources */,
+				4471C4FC22F5A68A00C8C5EC /* RenderNode.swift in Sources */,
 				447C246022F2CF2700F9A8F6 /* UiSliderNode.swift in Sources */,
 				4447D4A722BC2BC40043CA89 /* GLTFMaterialPbrMetallicRoughness.swift in Sources */,
 				4447D48B22BC2BC40043CA89 /* GLTFErrors.swift in Sources */,

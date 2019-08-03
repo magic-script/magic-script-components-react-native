@@ -11,7 +11,16 @@ import SceneKit
 @objc class UiLineNode: RenderNode {
 
     @objc var points: [SCNVector3] = [] {
-        didSet { setNeedsLayout() }
+        didSet { linesGeometry = nil; setNeedsLayout() }
+    }
+
+    fileprivate var linesGeometry: SCNGeometry?
+    fileprivate var linesNode: SCNNode!
+
+    @objc override func setupNode() {
+        super.setupNode()
+        linesNode = SCNNode()
+        contentNode.addChildNode(linesNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -50,6 +59,33 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        
+        if linesGeometry == nil {
+            linesGeometry = generateLinesGeometry()
+            linesNode.geometry = linesGeometry
+        }
+    }
+
+    fileprivate func generateLinesGeometry() -> SCNGeometry? {
+        guard !points.isEmpty else { return nil }
+        let vertices: [SCNVector3] = points.map { SCNVector3(Float($0.x), Float($0.y), 0) }
+
+        let data = NSData(bytes: vertices, length: MemoryLayout<SCNVector3>.size * vertices.count) as Data
+        let vertexSource = SCNGeometrySource(data: data,
+                                             semantic: .vertex,
+                                             vectorCount: vertices.count,
+                                             usesFloatComponents: true,
+                                             componentsPerVector: 3,
+                                             bytesPerComponent: MemoryLayout<Float>.size,
+                                             dataOffset: 0,
+                                             dataStride: MemoryLayout<SCNVector3>.stride)
+
+        var indices: [Int16] = [0]
+        for i in 1..<vertices.count {
+            indices.append(Int16(i))
+            indices.append(Int16(i))
+        }
+        let indexData = NSData(bytes: indices, length: MemoryLayout<Int16>.size * indices.count) as Data
+        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count/2, bytesPerIndex: MemoryLayout<Int16>.size)
+        return SCNGeometry(sources: [vertexSource], elements: [element])
     }
 }

@@ -11,10 +11,9 @@ import SceneKit
 @objc class UiLineNode: RenderNode {
 
     @objc var points: [SCNVector3] = [] {
-        didSet { linesGeometry = nil; setNeedsLayout() }
+        didSet { linesNode.geometry = nil; setNeedsLayout() }
     }
 
-    fileprivate var linesGeometry: SCNGeometry?
     fileprivate var linesNode: SCNNode!
 
     @objc override func setupNode() {
@@ -59,10 +58,11 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        if linesGeometry == nil {
-            linesGeometry = generateLinesGeometry()
-            linesNode.geometry = linesGeometry
+        if linesNode.geometry == nil {
+            linesNode.geometry = generateLinesGeometry()
         }
+
+        linesNode.geometry?.firstMaterial?.diffuse.contents = self.color
     }
 
     fileprivate func generateLinesGeometry() -> SCNGeometry? {
@@ -86,6 +86,8 @@ import SceneKit
         }
         let indexData = NSData(bytes: indices, length: MemoryLayout<Int16>.size * indices.count) as Data
         let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count/2, bytesPerIndex: MemoryLayout<Int16>.size)
-        return SCNGeometry(sources: [vertexSource], elements: [element])
+        let linesGeometry = SCNGeometry(sources: [vertexSource], elements: [element])
+        linesGeometry.firstMaterial?.lightingModel = .constant
+        return linesGeometry
     }
 }

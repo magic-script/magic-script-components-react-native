@@ -120,7 +120,7 @@ import SceneKit
         }
 
         if nodesById.isEmpty != rootNode.childNodes.isEmpty {
-            print("[UiNodesManager] One nodes container (either nodes tree hierarchy (\(rootNode.childNodes.count)) or nodes list (\(nodesById.count)) is empty!")
+            print("[UiNodesManager] One nodes container (either nodes tree hierarchy (\(rootNode.childNodes.count)) or nodes list (\(nodesById.count))) is empty!")
             return true
         }
 

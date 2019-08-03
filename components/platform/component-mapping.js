@@ -4,6 +4,7 @@ import ButtonBuilder from './elements/builders/button-builder.js';
 import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import GroupBuilder from './elements/builders/group-builder.js';
 import ImageBuilder from './elements/builders/image-builder.js';
+import LineBuilder from './elements/builders/line-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
@@ -33,7 +34,7 @@ export default {
         'view': (componentManager) => new GroupBuilder(componentManager),
 
         // render nodes
-        'line': (componentManager) => new GroupBuilder(componentManager),
+        'line': (componentManager) => new LineBuilder(componentManager),
         'model': (componentManager) => new ModelBuilder(componentManager),
     }
 };

@@ -4,6 +4,7 @@ import ButtonBuilder from './elements/builders/button-builder.js';
 import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import GroupBuilder from './elements/builders/group-builder.js';
 import ImageBuilder from './elements/builders/image-builder.js';
+import LineBuilder from './elements/builders/line-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
@@ -20,10 +21,10 @@ export default {
         // 'scene': () => new ControllerBuilder(),
     },
     elements: {
+        // ui nodes
         'button': (componentManager) => new ButtonBuilder(componentManager),
         'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
         'image': (componentManager) => new ImageBuilder(componentManager),
-        'model': (componentManager) => new ModelBuilder(componentManager),
         'text': (componentManager) => new TextBuilder(componentManager),
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),
         'toggle': (componentManager) => new ToggleBuilder(componentManager),
@@ -31,5 +32,9 @@ export default {
         'slider': (componentManager) => new SliderBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'view': (componentManager) => new GroupBuilder(componentManager),
+
+        // render nodes
+        'line': (componentManager) => new LineBuilder(componentManager),
+        'model': (componentManager) => new ModelBuilder(componentManager),
     }
 };

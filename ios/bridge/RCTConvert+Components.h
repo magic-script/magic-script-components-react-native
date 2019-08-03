@@ -15,6 +15,7 @@
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
++ (UiLineNode *)UiLineNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
 + (UiSliderNode *)UiSliderNode:(id)json;

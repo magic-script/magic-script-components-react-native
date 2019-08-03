@@ -7,7 +7,6 @@
 //
 
 import SceneKit
-import SpriteKit
 
 @objc class UiNode: TransformNode {
 

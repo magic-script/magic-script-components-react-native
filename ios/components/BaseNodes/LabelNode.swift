@@ -22,7 +22,10 @@ class LabelNode: SCNNode {
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { reloadNeeded = true }
     }
-    @objc var textSize: CGFloat = LabelNode.defaultTextSizeInMeters {
+    @objc var textSize: CGFloat = 0 {
+        didSet { reloadNeeded = true }
+    }
+    @objc var defaultTextSize: CGFloat = LabelNode.defaultTextSizeInMeters {
         didSet { reloadNeeded = true }
     }
     @objc var boundsSize: CGSize = CGSize.zero {
@@ -35,9 +38,12 @@ class LabelNode: SCNNode {
     fileprivate var labelGeometry: SCNText!
     fileprivate var label: UILabel!
     fileprivate var labelNode: SCNNode!
-    fileprivate var borderNode: OutlineNode!
     fileprivate var reloadNeeded: Bool = false
     fileprivate let useGeometry: Bool = true
+#if targetEnvironment(simulator)
+    fileprivate var originNode: SCNNode?
+    fileprivate var borderNode: OutlineNode?
+#endif
 
     @objc override init() {
         super.init()
@@ -95,11 +101,14 @@ class LabelNode: SCNNode {
 
         updateLabelContents()
         updateLabelSize()
+#if targetEnvironment(simulator)
+        updateDebugLayout()
+#endif
     }
 
     fileprivate func updateLabelContents() {
         if useGeometry {
-            let scale = textSize / LabelNode.geometryFixedTextSizeInMeters
+            let scale = getTextSize() / LabelNode.geometryFixedTextSizeInMeters
             labelGeometry.string = text
             let size = getSize()
             let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
@@ -118,9 +127,13 @@ class LabelNode: SCNNode {
             label.textColor = textColor
             label.numberOfLines = wrap ? 0 : 1
             label.lineBreakMode = wrap ? .byWordWrapping : .byTruncatingTail
-            let fontSize: CGFloat = Measures.pixels(from: textSize)
+            let fontSize: CGFloat = Measures.pixels(from: getTextSize())
             label.font = label.font.withSize(fontSize)
         }
+    }
+
+    fileprivate func getTextSize() -> CGFloat {
+        return (textSize > 0) ? textSize : defaultTextSize
     }
 
     fileprivate func getFont() -> UIFont {
@@ -138,7 +151,7 @@ class LabelNode: SCNNode {
             return boundsSize
         }
 
-        let scale: CGFloat = useGeometry ? (textSize / LabelNode.geometryFixedTextSizeInMeters) : 1.0
+        let scale: CGFloat = useGeometry ? (getTextSize() / LabelNode.geometryFixedTextSizeInMeters) : 1.0
         let preferredSizeInPixels = text.size(withAttributes: [NSAttributedString.Key.font : getFont()])
         let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : (ceil(preferredSizeInPixels.width) * scale)
         let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : (ceil(preferredSizeInPixels.height) * scale)
@@ -160,11 +173,9 @@ class LabelNode: SCNNode {
         if widthInPixels < maxFrameSize && heightInPixels < maxFrameSize {
             scaleFactor = 1
             sizeInPixels = CGSize(width: ceil(widthInPixels), height: ceil(heightInPixels))
-//            print("sizeInPixels1: \(sizeInPixels)")
         } else {
             scaleFactor = min(min(maxFrameSize / widthInPixels, maxFrameSize / heightInPixels), 1)
             sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
-//            print("sizeInPixels2: \(sizeInPixels) - \(scaleFactor)")
         }
 
         label.frame = CGRect(x: 0, y: 0, width: sizeInPixels.width, height: sizeInPixels.height)
@@ -178,25 +189,58 @@ class LabelNode: SCNNode {
 
     fileprivate func updateTextNodePosition() {
         let size = getSize()
-        #if targetEnvironment(simulator)
-//        borderNode?.removeFromParentNode()
-//        borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
-//        addChildNode(borderNode)
-        #endif
 
         if boundsSize.width > 0 {
             labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
         } else {
 //            switch textAlignment {
 //            case .left:
-                labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
-                borderNode?.position = SCNVector3(0.5 * size.width, 0, 0)
+//                labelNode.position = SCNVector3(0, -0.5 * size.height, 0)
 //            case .center, .justify:
-//                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+                labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
 //            case .right:
 //                labelNode.position = SCNVector3(-size.width, -0.5 * size.height, 0)
 //                borderNode?.position = SCNVector3(-0.5 * size.width, 0, 0)
 //            }
         }
     }
+}
+
+
+// MARK: - Debug mode
+extension LabelNode {
+    @objc func setDebugMode(_ debug: Bool) {
+#if targetEnvironment(simulator)
+        guard debug else {
+            originNode?.removeFromParentNode()
+            borderNode?.removeFromParentNode()
+            return
+        }
+
+        // origin
+        if originNode == nil {
+            let sphere = SCNSphere(radius: 0.008)
+            sphere.segmentCount = 4
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.diffuse.contents = UIColor.white
+            originNode = SCNNode(geometry: sphere)
+        }
+        addChildNode(originNode!)
+
+        updateDebugLayout()
+#endif
+    }
+
+#if targetEnvironment(simulator)
+    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
+    @objc fileprivate func updateDebugLayout() {
+        guard isDebugMode else { return }
+
+        // border
+        let size = getSize()
+        borderNode?.removeFromParentNode()
+        borderNode = OutlineNode(contentSize: size, cornerRadius: 0, lineWidth: 0.0005, color: UIColor.white)
+        insertChildNode(borderNode!, at: 0)
+    }
+#endif
 }

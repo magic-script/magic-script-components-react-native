@@ -26,6 +26,14 @@ RCT_EXPORT_MODULE();
     _instance = self;
 }
 
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
+
 // Will be called when this module's first listener is added.
 - (void)startObserving {
     NSLog(@"[AREventsManager] startObserving");

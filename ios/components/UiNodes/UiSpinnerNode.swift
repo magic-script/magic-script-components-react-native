@@ -30,12 +30,13 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
+        assert(spinnerNode == nil, "Node must not be initialized!")
         planeGeometry = SCNPlane(width: UiSpinnerNode.defaultSize, height: UiSpinnerNode.defaultSize)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
         planeGeometry.firstMaterial?.isDoubleSided = true
         spinnerNode = SCNNode(geometry: planeGeometry)
-        addChildNode(spinnerNode)
+        contentNode.addChildNode(spinnerNode)
         startAnimation()
     }
 
@@ -51,7 +52,7 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let width: CGFloat = size.width > 0 ? size.width : UiSpinnerNode.defaultSize
         let height: CGFloat = size.height > 0 ? size.height : UiSpinnerNode.defaultSize
         return CGSize(width: width, height: height)

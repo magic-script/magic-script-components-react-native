@@ -36,20 +36,25 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
-    @objc var color: SCNVector4 = SCNVector4(1,1,1,0) {
-        didSet { setNeedsLayout() }
+    @objc var color: UIColor? {
+        didSet {
+            image = (color != nil) ? UIImage.image(from: [color!], size: 1) : nil
+            setNeedsLayout()
+        }
     }
 
     fileprivate var planeGeometry: SCNPlane!
+    fileprivate var colorImage: UIImage?
 
     @objc override func setupNode() {
         super.setupNode()
-        
+
+        assert(planeGeometry == nil, "Node must not be initialized!")
         planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
         planeGeometry.firstMaterial?.isDoubleSided = true
-        addChildNode(SCNNode(geometry: planeGeometry))
+        contentNode.addChildNode(SCNNode(geometry: planeGeometry))
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -67,12 +72,12 @@ import SceneKit
             self.height = height
         }
 
-        if let color = Convert.toVector4(props["color"]) {
+        if let color = Convert.toColor(props["color"]) {
             self.color = color
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         return CGSize(width: width, height: height)
     }
 
@@ -80,7 +85,6 @@ import SceneKit
         guard let image = self.image else {
             planeGeometry.width = width
             planeGeometry.height = height
-            self.image = UIImage.from(color: UIColor.init(displayP3Red: CGFloat(color.x), green: CGFloat(color.y), blue: CGFloat(color.z), alpha: CGFloat(color.w)), width: width, height: height);
             return
         }
         if let _ = self.url {
@@ -106,18 +110,5 @@ extension UiImageNode {
             }
         }
         dataTask?.resume()
-    }
-}
-
-extension UIImage {
-    static func from(color: UIColor, width: CGFloat, height: CGFloat) -> UIImage {
-        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        context!.setFillColor(color.cgColor)
-        context!.fill(rect)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img!
     }
 }

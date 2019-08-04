@@ -36,7 +36,6 @@ import SpriteKit
     fileprivate var sprite: SKScene!
     fileprivate var labelNode: SKLabelNode!
     fileprivate var underlineNode: SKShapeNode!
-    fileprivate var contentNode: SCNNode!
     fileprivate var outlineNode: OutlineNode?
     fileprivate var reloadNeeded: Bool = true
 
@@ -58,7 +57,7 @@ import SpriteKit
             let outlineWidth = sizeInMeters.width + ((sizeInMeters.width > sizeInMeters.height) ? 2 * radius : 2 * margin)
             let outlineHeight = sizeInMeters.height + ((sizeInMeters.height > sizeInMeters.width) ? 2 * radius : 2 * margin)
             outlineNode = OutlineNode(width: outlineWidth, height: outlineHeight, cornerRadius: radius)
-            insertChildNode(outlineNode!, at: 0)
+            contentNode.insertChildNode(outlineNode!, at: 0)
         }
 
         outlineNode?.isHidden = false
@@ -132,13 +131,13 @@ import SpriteKit
             plane.height = height
             plane.firstMaterial?.diffuse.contents = sprite
         } else {
-            contentNode?.removeFromParentNode()
+//            contentNode?.removeFromParentNode()
             let planeGeometry = SCNPlane(width: width, height: height)
             planeGeometry.firstMaterial?.lightingModel = .constant
             planeGeometry.firstMaterial?.diffuse.contents = sprite
             planeGeometry.firstMaterial?.isDoubleSided = true
-            contentNode = SCNNode(geometry: planeGeometry)
-            addChildNode(contentNode)
+//            contentNode = SCNNode(geometry: planeGeometry)
+//            addChildNode(contentNode)
         }
     }
 

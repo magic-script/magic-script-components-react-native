@@ -26,8 +26,20 @@
     return [[UiImageNode alloc] initWithProps:json];
 }
 
++ (UiLineNode *)UiLineNode:(id)json {
+    return [[UiLineNode alloc] initWithProps:json];
+}
+
 + (UiModelNode *)UiModelNode:(id)json {
     return [[UiModelNode alloc] initWithProps:json];
+}
+
++ (UiProgressBarNode *)UiProgressBarNode:(id)json {
+    return [[UiProgressBarNode alloc] initWithProps:json];
+}
+
++ (UiSliderNode *)UiSliderNode:(id)json {
+    return [[UiSliderNode alloc] initWithProps:json];
 }
 
 + (UiSpinnerNode *)UiSpinnerNode:(id)json {

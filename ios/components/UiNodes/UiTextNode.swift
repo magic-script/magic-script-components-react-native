@@ -46,10 +46,12 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
         alignment = Alignment.bottomLeft // default alignment of UiText
-        labelNode = LabelNode()
-        addChildNode(labelNode)
 
-//        setOriginVisible(true)
+        assert(labelNode == nil, "Node must not be initialized!")
+        labelNode = LabelNode()
+        contentNode.addChildNode(labelNode)
+
+//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -82,11 +84,16 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         return labelNode.getSize()
     }
 
     @objc override func updateLayout() {
         labelNode.reload()
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
     }
 }

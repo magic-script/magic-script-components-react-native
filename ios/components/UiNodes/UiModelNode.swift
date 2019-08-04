@@ -37,14 +37,14 @@ import SceneKit
         }
     }
 
-    @objc override func getSize() -> CGSize {
+    @objc override func _calculateSize() -> CGSize {
         let bbox = self.boundingBox
         return CGSize(width: CGFloat(bbox.max.x - bbox.min.x), height: CGFloat(bbox.max.y - bbox.min.y))
     }
 
     fileprivate func cleanNode() {
-        while !childNodes.isEmpty {
-            childNodes.last?.removeFromParentNode()
+        while !contentNode.childNodes.isEmpty {
+            contentNode.childNodes.last?.removeFromParentNode()
         }
     }
 
@@ -57,7 +57,7 @@ import SceneKit
                 let sceneSource = GLTFSceneSource(url: modelURL, options: nil)
                 let scene = try sceneSource.scene()
 
-                addChildNode(scene.rootNode)
+                contentNode.addChildNode(scene.rootNode)
             } catch {
                 print("\(error.localizedDescription)")
                 return
@@ -66,7 +66,7 @@ import SceneKit
             if let refNode = SCNReferenceNode(url: modelURL) {
                 refNode.load()
                 if refNode.isLoaded {
-                    addChildNode(refNode)
+                    contentNode.addChildNode(refNode)
                 }
             }
         }

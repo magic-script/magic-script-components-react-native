@@ -15,6 +15,7 @@ import AppKit.NSImage
 #endif
 
 public enum ImageAsset: String {
+    case progressBar = "progress_bar"
     case spinner = "spinner"
     case toggleOn = "toggle_on"
     case toggleOff = "toggle_off"

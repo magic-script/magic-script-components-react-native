@@ -54,6 +54,7 @@
     // Register ARSession in MLXrClientSession
     [XrClientSession registerARSession:view.session];
     view.delegate = self;
+    view.playing = YES;
 
     // Add AR view as a child
     view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -67,7 +68,7 @@
 
 - (SCNNode*) renderer:(id<SCNSceneRenderer>)renderer nodeForAnchor:(ARAnchor *)anchor {
     UiNodesManager *nodesManager = UiNodesManager.instance;
-    TransformNode* node = [nodesManager findNodeWithAnchorUuid:anchor.name];
+    TransformNode *node = [nodesManager findNodeWithAnchorUuid:anchor.name];
     return node;
 }
 

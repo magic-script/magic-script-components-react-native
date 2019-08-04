@@ -43,9 +43,15 @@ import SceneKit
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
 
+#if targetEnvironment(simulator)
     fileprivate var originNode: SCNNode?
+    fileprivate var borderNode: OutlineNode?
+#endif
+    @objc fileprivate(set) var contentNode: SCNNode!
+
+    fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
-    @objc func setNeedsLayout() { layoutNeeded = true }
+    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
     @objc var isLayoutNeeded: Bool { return layoutNeeded }
 
     @objc override init() {
@@ -60,24 +66,30 @@ import SceneKit
 
     @objc convenience init(props: [String: Any]) {
         self.init()
-        setupNode()
         update(props)
     }
 
     @objc func setupNode() {
+        contentNode = SCNNode()
+        addChildNode(contentNode)
     }
 
     @objc func addChild(_ child: TransformNode) {
-        addChildNode(child)
+        contentNode.addChildNode(child)
+        setNeedsLayout()
     }
 
     @objc func removeChild(_ child: TransformNode) {
-        if let parent = child.parent, parent == self {
+        if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
+            setNeedsLayout()
         }
     }
 
     @objc func update(_ props: [String: Any]) {
+//        assert(childNodes.count == 1, "Each TransformNode must contain only one contentNode!")
+        assert(childNodes[0] == contentNode, "contentNode does not exist!")
+
         if let name = Convert.toString(props["id"]) {
             self.name = name
         }
@@ -105,12 +117,19 @@ import SceneKit
     }
 
     @objc func getSize() -> CGSize {
+        if currentSize == nil {
+            currentSize = _calculateSize()
+        }
+        return currentSize!
+    }
+
+    func _calculateSize() -> CGSize {
         return CGSize.zero
     }
 
     @objc func getBounds() -> CGRect {
         let size = getSize()
-        let origin: CGPoint = CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y))
+        let origin: CGPoint = CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y))
         return CGRect(origin: origin, size: size)
     }
 
@@ -123,18 +142,31 @@ import SceneKit
         if layoutNeeded {
             layoutNeeded = false
             updateLayout()
+            updatePivot()
+        #if targetEnvironment(simulator)
+            updateDebugLayout()
+        #endif
         }
     }
 
     @objc func updateLayout() {
     }
 
-    @objc func setOriginVisible(_ visible: Bool) {
-        guard visible else {
+    @objc func updatePivot() {
+    }
+}
+
+// MARK: - Debug mode
+extension TransformNode {
+    @objc func setDebugMode(_ debug: Bool) {
+#if targetEnvironment(simulator)
+        guard debug else {
             originNode?.removeFromParentNode()
+            borderNode?.removeFromParentNode()
             return
         }
 
+        // origin
         if originNode == nil {
             let sphere = SCNSphere(radius: 0.01)
             sphere.segmentCount = 4
@@ -142,8 +174,21 @@ import SceneKit
             sphere.firstMaterial?.diffuse.contents = UIColor.yellow
             originNode = SCNNode(geometry: sphere)
         }
+        addChildNode(originNode!)
 
-        guard let originNode = originNode else { return }
-        addChildNode(originNode)
+        updateDebugLayout()
+#endif
     }
+
+#if targetEnvironment(simulator)
+    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
+    @objc fileprivate func updateDebugLayout() {
+        guard isDebugMode else { return }
+
+        // border
+        borderNode?.removeFromParentNode()
+        borderNode = OutlineNode(contentSize: getSize(), cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
+        contentNode.addChildNode(borderNode!)
+    }
+#endif
 }

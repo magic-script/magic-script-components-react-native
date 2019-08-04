@@ -7,11 +7,10 @@
 //
 
 import SceneKit
-import SpriteKit
 
 @objc class UiNode: TransformNode {
 
-    @objc var alignment: Alignment = Alignment.topLeft {
+    @objc var alignment: Alignment = Alignment.centerCenter {
         didSet { setNeedsLayout() }
     }
     //var activateResponse: FocusRequest
@@ -23,19 +22,28 @@ import SpriteKit
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
 
-    fileprivate var outlineNode: SCNNode?
-
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        if let alignment = Convert.toAlignment(props["alignment"]) {
+            self.alignment = alignment
+        }
     }
 
     @objc override func getBounds() -> CGRect {
         let size = getSize()
-        let origin: CGPoint = getOriginForSize(size)
+        let offset = alignment.offset
+        let origin: CGPoint = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
         return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
     }
 
     @objc override func updateLayout() {
+    }
+
+    @objc override func updatePivot() {
+        let size = getSize()
+        let offset = alignment.offset
+        contentNode.position = SCNVector3(offset.x * size.width, offset.y * size.height, 0)
     }
 
     // MARK: - Focus
@@ -56,31 +64,5 @@ import SpriteKit
 
     @objc func leaveFocus() {
         hasFocus = false
-    }
-}
-
-// MARK: - Helpers
-extension UiNode {
-    @objc fileprivate func getOriginForSize(_ size: CGSize) -> CGPoint {
-        switch (self.alignment) {
-        case .topLeft:
-            return CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
-        case .topCenter:
-            return CGPoint(x: 0, y: 0.5 * size.height)
-        case .topRight:
-            return CGPoint(x: 0.5 * size.width, y: 0.5 * size.height)
-        case .centerLeft:
-            return CGPoint(x: -0.5 * size.width, y: 0)
-        case .centerCenter:
-            return CGPoint(x: 0, y: 0)
-        case .centerRight:
-            return CGPoint(x: 0.5 * size.width, y: 0)
-        case .bottomLeft:
-            return CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
-        case .bottomCenter:
-            return CGPoint(x: 0, y: -0.5 * size.height)
-        case .bottomRight:
-            return CGPoint(x: 0.5 * size.width, y: -0.5 * size.height)
-        }
     }
 }

@@ -1,20 +1,22 @@
 import ReactNativeRenderer from './react-native-renderer.js';
+import { Log } from '../utils/logger';
 
 const ReactNativeMagicScript = {    
-    render: (element, container, callback) => {
-        console.log('[MSX] render.element: ', element);
+    render: (element, container, callback, debug = false) => {
+        Log.setEnabled(debug);
+        Log.debug('render.element: ', element);
         if (!container.__rootContainer) {
             container.__rootContainer = ReactNativeRenderer.createContainer(container);
         }
 
-        console.log('[MSX] render.container');
+        Log.debug('render.container');
         
         // Schedule changes on the roots
         try {
             ReactNativeRenderer.updateContainer(element, container.__rootContainer, null, callback);
-            console.log('[MSX] render.updateContainer');
+            Log.debug('render.updateContainer');
         } catch (error) {
-            console.log('[MSX] render.updateContainer.error ', error);
+            Log.debug('render.updateContainer.error ', error);
         }
 
         return container;

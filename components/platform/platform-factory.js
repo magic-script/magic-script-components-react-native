@@ -2,7 +2,8 @@
 
 import { Image, NativeEventEmitter, NativeModules, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';
-import generateId from '../lib/generateId';
+import generateId from '../utils/generateId';
+import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
@@ -34,7 +35,7 @@ export class PlatformFactory extends NativeFactory {
             if (events !== undefined) {
                 const onPressEvents = events.filter(item => item.name === eventName);
                 onPressEvents.forEach(item => {
-                    console.log(`[EVENTS] ${eventName} received: ${elementId}\nitem: `, item);
+                    // Log.debug(`[EVENTS] ${eventName} received: ${elementId}\nitem: `, item);
                     item.handler(sender);
                 });
             }
@@ -59,10 +60,10 @@ export class PlatformFactory extends NativeFactory {
         if (events === undefined) {
             events = [pair];
             this.eventsByElementId[elementId] = events;
-            console.log(`[EVENTS] "${elementId}" register first ${name} event (${this.eventsByElementId[elementId].length}).`);
+            // Log.debug(`[EVENTS] "${elementId}" register first ${name} event (${this.eventsByElementId[elementId].length}).`);
         } else {
             events.push(pair);
-            console.log(`[EVENTS] "${elementId}" register another ${name} event (${this.eventsByElementId[elementId].length}).`);
+            // Log.debug(`[EVENTS] "${elementId}" register another ${name} event (${this.eventsByElementId[elementId].length}).`);
         }
     }
 

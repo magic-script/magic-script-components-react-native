@@ -1,5 +1,6 @@
 import ReactReconciler from 'react-reconciler';
 import mxs from '../mxs';
+import { Log } from '../utils/logger';
 
 // Flow type definitions ------------------------------------------------------
 //  Type = string;
@@ -32,7 +33,7 @@ const UPDATE_SIGNAL = {};
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
 function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
-  console.log(`[MXS] createInstance ${type}`);
+  Log.debug(`createInstance ${type}`);
   // console.log(props);
   // console.log(rootContainerInstance);
   // console.log(hostContext);
@@ -49,7 +50,7 @@ function createInstance(type, props, rootContainerInstance, hostContext, interna
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
 function createTextInstance(text, rootContainerInstance, hostContext, internalInstanceHandle) {
-  console.log(`[MXS] createTextInstance ${text}`);
+  Log.debug(`createTextInstance ${text}`);
   return text;
 }
 
@@ -60,7 +61,7 @@ function createTextInstance(text, rootContainerInstance, hostContext, internalIn
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendInitialChild(parentInstance, child) {
-  console.log('[MXS] appendInitialChild');
+  Log.debug('appendInitialChild');
   // console.log(parentInstance);
   // console.log(child);
   mxs._nativeFactory.addChildElement(parentInstance, child);
@@ -76,7 +77,7 @@ function appendInitialChild(parentInstance, child) {
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
 function finalizeInitialChildren(parentInstance, type, props, rootContainerInstance, hostContext) {
-  console.log('[MXS] finalizeInitialChildren');
+  Log.debug('finalizeInitialChildren');
   return false;
 }
 
@@ -86,7 +87,7 @@ function finalizeInitialChildren(parentInstance, type, props, rootContainerInsta
 // Input parameters:
 //  rootContainerInstance: Container
 function getRootHostContext(rootContainerInstance) {
-  console.log('[MXS] getRootHostContext');
+  Log.debug('getRootHostContext');
 
   // React-360
   // return {};
@@ -103,7 +104,7 @@ function getRootHostContext(rootContainerInstance) {
 //  type: string,
 //  rootContainerInstance: Container
 function getChildHostContext(parentHostContext, type, rootContainerInstance) {
-  console.log('[MXS] getChildHostContext');
+  Log.debug('getChildHostContext');
   // React-360
   // return {};
 
@@ -117,7 +118,7 @@ function getChildHostContext(parentHostContext, type, rootContainerInstance) {
 // Input parameters:
 //  instance: Instance
 function getPublicInstance(instance) {
-  console.log('[MXS] getPublicInstance');
+  Log.debug('getPublicInstance');
   return instance;
 }
 
@@ -127,7 +128,7 @@ function getPublicInstance(instance) {
 // Input parameters:
 //  containerInfo: Container
 function prepareForCommit(containerInfo) {
-  console.log('[MXS] prepareForCommit');
+  Log.debug('prepareForCommit');
 }
 
 // Function: resetAfterCommit
@@ -136,7 +137,7 @@ function prepareForCommit(containerInfo) {
 // Input parameters:
 //  containerInfo: Container
 function resetAfterCommit(containerInfo) {
-  console.log('[MXS] resetAfterCommit');
+  Log.debug('resetAfterCommit');
   mxs._nativeFactory.resetAfterCommit(containerInfo);
 }
 
@@ -151,7 +152,7 @@ function resetAfterCommit(containerInfo) {
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
 function prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance, hostContext) {
-  console.log('[MXS] prepareUpdate');
+  Log.debug('prepareUpdate');
   return true;
 }
 
@@ -177,7 +178,7 @@ function shouldSetTextContent(type, props) {
   //  Always returning false simplifies the createInstance() implementation,
   //  But creates an additional child Fiber for raw text children.
   //  No additional native views are created though.
-  console.log('[MXS] shouldSetTextContent');
+  Log.debug('shouldSetTextContent');
   // console.log(type);
   // console.log(props);
 
@@ -191,7 +192,7 @@ function shouldSetTextContent(type, props) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendChild(parentInstance, child) {
-  console.log('[MXS] appendChild');
+  Log.debug('appendChild');
   // console.log(parentInstance);
   // console.log(child);
   mxs._nativeFactory.addChildElement(parentInstance, child);
@@ -204,7 +205,7 @@ function appendChild(parentInstance, child) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function appendChildToContainer(container, child) {
-  console.log('[MXS] appendChildToContainer');
+  Log.debug('appendChildToContainer');
   // console.log(container);
   // console.log(child);
   mxs._nativeFactory.appendChildToContainer(container, child);
@@ -218,7 +219,7 @@ function appendChildToContainer(container, child) {
 //  oldText: string,
 //  newText: string
 function commitTextUpdate(textInstance, oldText, newText) {
-  // console.log('[MXS] commitTextUpdate');
+  // Log.debug('commitTextUpdate');
   // console.log(textInstance);
   // console.log(oldText);
   // console.log(newText);
@@ -248,7 +249,7 @@ function commitMount(instance, type, newProps, internalInstanceHandle) {
 //  newProps: Props,
 //  internalInstanceHandle: Object
 function commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
-  console.log('[MXS] commitUpdate');
+  Log.debug('commitUpdate');
   // console.log(instance);
   // console.log(type);
   // console.log(updatePayload);
@@ -286,7 +287,7 @@ function insertInContainerBefore(container, child, beforeChild) {
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
 function removeChild(parentInstance, child) {
-  console.log('[MXS] removeChild');
+  Log.debug('removeChild');
   mxs._nativeFactory.removeChildElement(parentInstance, child);
 }
 
@@ -297,7 +298,7 @@ function removeChild(parentInstance, child) {
 //  parentInstance: Container,
 //  child: Instance | TextInstance
 function removeChildFromContainer(parentInstance, child) {
-  console.log('[MXS] removeChildFromContainer');
+  Log.debug('removeChildFromContainer');
   // console.log(parentInstance);
   // console.log(child);
   mxs._nativeFactory.removeChildFromContainer(parentInstance, child);
@@ -440,10 +441,7 @@ const HostConfig = {
 };
 
 function logNotImplemented(functionName) {
-  const message = `[MXS] ${functionName} has not been implemented yet`;
-
-  console.log(message);
-  // print(message);
+  Log.warn(`${functionName} has not been implemented yet`);
 }
 
 function throwNotImplemented(functionName) {

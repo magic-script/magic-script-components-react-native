@@ -57,28 +57,17 @@ import SceneKit
         let heightInPixels = Measures.pixels(from: height)
         let scaleFactor: CGFloat = min(min(maxCanvasSize / widthInPixels, maxCanvasSize / heightInPixels), 1)
         let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
-<<<<<<< HEAD
-
-        // Add outline node
-        let outlineRect = CGRect(origin: CGPoint.zero, size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height)).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
-        let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
-        UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 1);
-=======
         let outlineWidth = ceil(Measures.pixels(from: lineWidth) * scaleFactor)
 
         // Draw outline in a graphics context
         let outlineRect = CGRect(origin: CGPoint.zero, size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height)).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
         let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
         UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 0);
->>>>>>> origin/master
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor(UIColor.clear.cgColor);
         context?.fill(outlineRect)
         context?.setStrokeColor(color.cgColor);
-<<<<<<< HEAD
-=======
         context?.setLineWidth(outlineWidth)
->>>>>>> origin/master
         context?.addPath(outlinePath.cgPath);
         context?.strokePath();
         let image = UIGraphicsGetImageFromCurrentImageContext()

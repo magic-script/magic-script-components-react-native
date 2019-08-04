@@ -24,8 +24,7 @@ import SceneKit
     }
 
     @objc var image: UIImage? {
-        get { return planeGeometry.firstMaterial?.diffuse.contents as? UIImage }
-        set { planeGeometry.firstMaterial?.diffuse.contents = newValue; updateLayout() }
+        didSet { updateDisplay(); updateLayout() }
     }
 
     @objc var width: CGFloat = 0.5 {
@@ -36,14 +35,16 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
+    @objc var useFrame: Bool = false {
+        didSet { setFrame(visible: useFrame); setNeedsLayout() }
+    }
+
     @objc var color: UIColor? {
-        didSet {
-            image = (color != nil) ? UIImage.image(from: [color!], size: 1) : nil
-            setNeedsLayout()
-        }
+        didSet { updateDisplay(); setNeedsLayout() }
     }
 
     fileprivate var planeGeometry: SCNPlane!
+    fileprivate var frameNode: SCNNode?
     fileprivate var colorImage: UIImage?
 
     @objc override func setupNode() {
@@ -72,6 +73,10 @@ import SceneKit
             self.height = height
         }
 
+        if let useFrame = Convert.toBool(props["useFrame"]) {
+            self.useFrame = useFrame
+        }
+
         if let color = Convert.toColor(props["color"]) {
             self.color = color
         }
@@ -82,18 +87,59 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        guard let image = self.image else {
-            planeGeometry.width = width
-            planeGeometry.height = height
-            return
+        let size: CGSize = image?.size ?? CGSize(width: width, height: height)
+        let horizontalFactor: CGFloat = width / size.width
+        let verticalFactor: CGFloat = height / size.height
+        let factor = min(horizontalFactor, verticalFactor)
+        planeGeometry.width = factor * size.width
+        planeGeometry.height = factor * size.height
+
+        frameNode?.scale = SCNVector3(Float(planeGeometry.width), Float(planeGeometry.height), 1.0)
+    }
+
+    fileprivate func updateDisplay() {
+        planeGeometry.firstMaterial?.diffuse.contents = image ?? color
+        planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
+    }
+
+    fileprivate func setFrame(visible: Bool) {
+        if visible {
+            if frameNode == nil {
+                frameNode = SCNNode(geometry: generateFrameGeometry())
+                contentNode.addChildNode(frameNode!)
+            }
+        } else {
+            frameNode?.removeFromParentNode()
+            frameNode = nil
         }
-        if let _ = self.url {
-            let horizontalFactor: CGFloat = width / image.size.width
-            let verticalFactor: CGFloat = height / image.size.height
-            let factor = min(horizontalFactor, verticalFactor)
-            planeGeometry.width = factor * image.size.width
-            planeGeometry.height = factor * image.size.height
-        }
+    }
+
+    fileprivate func generateFrameGeometry() -> SCNGeometry? {
+        guard useFrame else { return nil }
+        let vertices: [SCNVector3] = [
+            SCNVector3(-0.5, -0.5, 0),
+            SCNVector3( 0.5, -0.5, 0),
+            SCNVector3( 0.5,  0.5, 0),
+            SCNVector3(-0.5,  0.5, 0)
+        ]
+
+        let data = NSData(bytes: vertices, length: MemoryLayout<SCNVector3>.size * vertices.count) as Data
+        let vertexSource = SCNGeometrySource(data: data,
+                                             semantic: .vertex,
+                                             vectorCount: vertices.count,
+                                             usesFloatComponents: true,
+                                             componentsPerVector: 3,
+                                             bytesPerComponent: MemoryLayout<Float>.size,
+                                             dataOffset: 0,
+                                             dataStride: MemoryLayout<SCNVector3>.stride)
+
+        let indices: [Int16] = [0, 1, 1, 2, 2, 3, 3, 0]
+        let indexData = NSData(bytes: indices, length: MemoryLayout<Int16>.size * indices.count) as Data
+        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count/2, bytesPerIndex: MemoryLayout<Int16>.size)
+        let frameGeometry = SCNGeometry(sources: [vertexSource], elements: [element])
+        frameGeometry.firstMaterial?.lightingModel = .constant
+        frameGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        return frameGeometry
     }
 }
 

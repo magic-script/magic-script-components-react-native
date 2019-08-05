@@ -11,8 +11,6 @@ import android.view.View
 import com.reactlibrary.utils.Utils
 import kotlin.math.min
 
-// TODO wrap_content (default size support based on text size)
-// https://stackoverflow.com/questions/12266899/onmeasure-custom-view-explanation
 class CustomButton @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
@@ -23,7 +21,7 @@ class CustomButton @JvmOverloads constructor(
 
     private var roundnessFactor = 1F // from 0 to 1 (fully rounded)
 
-    private val textBounds = Rect()
+    private val textPadding = Utils.metersToPx(0.01F, context)
 
     private val maxStrokeSize = Utils.metersToPx(0.005F, context).toFloat()
 
@@ -38,6 +36,33 @@ class CustomButton @JvmOverloads constructor(
         // maskFilter = BlurMaskFilter(8f, BlurMaskFilter.Blur.NORMAL)
     }
 
+    private val textBounds = Rect()
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+        textPaint.getTextBounds(text, 0, text.length, textBounds)
+        val defaultWidth = textBounds.width() + 2 * textPadding
+        val defaultHeight = textBounds.height() + 2 * textPadding
+
+        val width: Int = if (widthMode == MeasureSpec.EXACTLY) { // exact size
+            widthSize
+        } else { // WRAP_CONTENT
+            defaultWidth
+        }
+
+        val height: Int = if (heightMode == MeasureSpec.EXACTLY) { // exact size
+            heightSize
+        } else { // WRAP_CONTENT
+            defaultHeight
+        }
+
+        setMeasuredDimension(width, height)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val centerX = width / 2
@@ -47,10 +72,18 @@ class CustomButton @JvmOverloads constructor(
         val radius = height.toFloat() / 2 * roundnessFactor
         val strokeSize = min(height / 14F, maxStrokeSize)
         bgPaint.strokeWidth = strokeSize
-        canvas.drawRoundRect(0F + strokeSize / 2, 0F + strokeSize / 2, width.toFloat() - strokeSize, height.toFloat() - strokeSize, radius, radius, bgPaint)
+        canvas.drawRoundRect(
+                0F + strokeSize / 2,
+                0F + strokeSize / 2,
+                width.toFloat() - strokeSize,
+                height.toFloat() - strokeSize,
+                radius,
+                radius,
+                bgPaint
+        )
 
         // draw text
-        textPaint.getTextBounds(text, 0, text.length, textBounds)
+        // textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textX = centerX - textBounds.exactCenterX()
         val textY = centerY - textBounds.exactCenterY()
         canvas.drawText(text, textX, textY, textPaint)
@@ -58,7 +91,7 @@ class CustomButton @JvmOverloads constructor(
 
     fun setText(text: String) {
         this.text = text
-        invalidate()
+        requestLayout() // need to measure the view
     }
 
     fun setRoundnessFactor(factor: Float) {
@@ -68,7 +101,7 @@ class CustomButton @JvmOverloads constructor(
 
     fun setTextSize(sizePx: Float) {
         textPaint.textSize = sizePx
-        invalidate()
+        requestLayout() // need to measure the view
     }
 
     fun setTextColor(color: Int) {

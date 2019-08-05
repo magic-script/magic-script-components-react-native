@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Switch xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toggle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:checked="true"
-    android:switchPadding="6dp"
-    android:text="Toggle"
-    android:textColor="@color/text_color_default"
-    android:theme="@style/ToggleSwitchTheme"
-    android:trackTint="#303030" />
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:includeFontPadding="false"
+        android:text="Toggle"
+        android:textColor="@color/text_color_default"
+        android:textSize="20sp"
+        tools:ignore="RtlHardcoded" />
+
+    <ImageView
+        android:id="@+id/iv_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/toggle_off"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
+</LinearLayout>

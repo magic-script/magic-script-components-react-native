@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Switch
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import kotlinx.android.synthetic.main.toggle.view.*
 
 class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -24,10 +24,14 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
+    private var isOn = false
+
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.toggle, null) as Switch
-        view.setOnCheckedChangeListener { _, isChecked ->
-            toggleChangedListener?.invoke(isChecked)
+        val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
+        view.iv_toggle.setOnClickListener {
+            isOn = !isOn
+            refreshImage()
+            toggleChangedListener?.invoke(isOn)
         }
         return view
     }
@@ -41,17 +45,25 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         setTextColor(props)
     }
 
+    private fun refreshImage() {
+        if (isOn) {
+            view.iv_toggle.setImageResource(R.drawable.toggle_on)
+        } else {
+            view.iv_toggle.setImageResource(R.drawable.toggle_off)
+        }
+    }
+
     private fun setIsChecked(props: Bundle) {
         if (props.containsKey(PROP_CHECKED)) {
-            val isOn = props.getBoolean(PROP_CHECKED)
-            (view as Switch).isChecked = isOn
+            isOn = props.getBoolean(PROP_CHECKED)
+            refreshImage()
         }
     }
 
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            (view as Switch).text = text
+            view.tv_toggle.text = text
         }
     }
 
@@ -59,14 +71,14 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
-            (view as Switch).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            view.tv_toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
 
     private fun setTextColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
-            (view as Switch).setTextColor(color)
+            view.tv_toggle.setTextColor(color)
         }
     }
 

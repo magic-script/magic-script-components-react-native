@@ -99,8 +99,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         }
 
         if (properties.containsKey(PROP_HEIGHT)) {
-            val widthInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(widthInMeters, context)
+            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+            heightPx = Utils.metersToPx(heightInMeters, context)
         }
 
         val params = view.layoutParams

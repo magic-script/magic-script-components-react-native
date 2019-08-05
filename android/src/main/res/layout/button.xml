@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_rounded"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:text="Hello AR"
-    android:textAllCaps="false"
-    android:textColor="@color/text_color_default" />
+<com.reactlibrary.scene.nodes.views.CustomButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:clickable="true" />

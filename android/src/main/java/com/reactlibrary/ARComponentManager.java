@@ -183,7 +183,27 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createGridLayout(final ReadableMap props, final String nodeId) {
+    public void createProgressBarNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createLineNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -323,6 +343,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
                 }
             }
         });
+    }
+
+    @ReactMethod
+    public void updateLayout() {
+        // unused on Android
     }
 
     private void addNode(TransformNode node, String nodeId) {

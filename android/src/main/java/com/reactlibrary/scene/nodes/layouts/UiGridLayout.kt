@@ -1,11 +1,7 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
-import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
 import com.reactlibrary.scene.nodes.props.Alignment
@@ -13,7 +9,6 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
 
 class UiGridLayout(props: ReadableMap) : UiLayout(props) {
 
@@ -29,6 +24,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         // default values
         const val COLUMNS_DEFAULT = 1
         const val ROWS_DEFAULT = 0 // 0 means unspecified (will grow with content)
+    }
+
+    init {
+        layoutManager = FlexGridManager(this)
     }
 
     var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()
@@ -60,36 +59,6 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     var itemVerticalAlignment = Alignment.Vertical.CENTER
         private set
 
-    private var layoutManager: LayoutManager = FlexGridManager(this)
-
-    // we should re-draw the grid after adding / removing a child
-    private var shouldRedraw = false
-
-    private var handler = Handler(Looper.getMainLooper())
-
-    // child index, bounding
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
-
-    init {
-        layoutLoop()
-    }
-
-    override fun loadRenderable(): Boolean {
-
-        // for tests only
-        handler.postDelayed({
-            children.forEachIndexed { index, node ->
-                val childBounds = if (node is TransformNode) node.getBounding() else Bounding()
-                logMessage("grid child[$index] bounds= $childBounds")
-            }
-
-            val bounds = getBounding()
-            logMessage("grid bounds= $bounds")
-        }, 3000)
-
-        return false
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setColumns(props)
@@ -108,60 +77,17 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         )
     }
 
-    override fun addChildNode(child: Node) {
-        addChild(child)
-        shouldRedraw = true
-    }
-
-    /**
-     * Loop that requests re-drawing the grid if needed.
-     * It measures the children, because the nodes' view size is not known
-     * from the beginning, also a client may change the view size at any time: we need to
-     * re-draw the layout in such case.
-     */
-    private fun layoutLoop() {
-        handler.postDelayed({
-            measureChildren()
-            if (shouldRedraw) {
-                layoutManager.layoutChildren(children, childrenBounds)
-                shouldRedraw = false
-                logMessage("grid redraw")
-            }
-            layoutLoop()
-        }, 100)
-    }
-
-    /**
-     * Measures the bounds of children nodes; if any bound has changed
-     * it sets the [shouldRedraw] flag to true.
-     */
-    private fun measureChildren() {
-        for (i in 0 until children.size) {
-            val node = children[i]
-            val oldBounds = childrenBounds[i] ?: Bounding()
-            childrenBounds[i] = if (node is TransformNode) {
-                node.getBounding()
-            } else {
-                Utils.calculateBoundsOfNode(node)
-            }
-
-            if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
-                shouldRedraw = true
-            }
-        }
-    }
-
     private fun setColumns(props: Bundle) {
         if (props.containsKey(PROP_COLUMNS)) {
             columns = props.getDouble(PROP_COLUMNS).toInt()
-            shouldRedraw = true
+            requestLayout()
         }
     }
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
             rows = props.getDouble(PROP_ROWS).toInt()
-            shouldRedraw = true
+            requestLayout()
         }
     }
 
@@ -172,7 +98,7 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         }
         if (padding != null) {
             itemPadding = padding
-            shouldRedraw = true
+            requestLayout()
         }
     }
 

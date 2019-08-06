@@ -133,7 +133,8 @@ class LabelNode: SCNNode {
     }
 
     fileprivate func getTextSize() -> CGFloat {
-        return (textSize > 0) ? textSize : defaultTextSize
+        let platformScaleFactor: CGFloat = 0.8
+        return platformScaleFactor * ((textSize > 0) ? textSize : defaultTextSize)
     }
 
     fileprivate func getFont() -> UIFont {

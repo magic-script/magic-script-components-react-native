@@ -61,7 +61,7 @@ import SceneKit
 
         // Draw outline in a graphics context
         let outlineRect = CGRect(origin: CGPoint.zero, size: CGSize(width: sizeInPixels.width, height: sizeInPixels.height)).insetBy(dx: 2 * outlineWidth, dy: 2 * outlineWidth)
-        let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius))
+        let outlinePath = UIBezierPath(roundedRect: outlineRect, cornerRadius: Measures.pixels(from: cornerRadius) * scaleFactor)
         UIGraphicsBeginImageContextWithOptions(sizeInPixels, false, 0);
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor(UIColor.clear.cgColor);

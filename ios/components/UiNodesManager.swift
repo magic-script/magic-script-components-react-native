@@ -23,6 +23,8 @@ import SceneKit
 
     private override init() {
         super.init()
+
+        UIFont.loadAllCustomFonts()
     }
 
     @objc func registerScene(_ scene: SCNScene) {

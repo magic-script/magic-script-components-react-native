@@ -10,7 +10,7 @@ import SceneKit
 
 @objc class UiProgressBarNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
-    static fileprivate let defaultHeight: CGFloat = 0.02
+    static fileprivate let defaultHeight: CGFloat = 0.004
 
     @objc var width: CGFloat = 0 {
         didSet { setNeedsLayout() }
@@ -33,8 +33,8 @@ import SceneKit
             if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
         }
     }
-    @objc var startColor: UIColor = UIColor.blue {
-        didSet { if (startColor != oldValue) { barImage = nil; setNeedsLayout(); } }
+    @objc var beginColor: UIColor = UIColor.white {
+        didSet { if (beginColor != oldValue) { barImage = nil; setNeedsLayout(); } }
     }
     @objc var endColor: UIColor = UIColor.gray {
         didSet { if (endColor != oldValue) { barImage = nil; setNeedsLayout(); } }
@@ -85,12 +85,14 @@ import SceneKit
             self.value = value
         }
 
-        if let startColor = Convert.toColor(props["startColor"]) {
-            self.startColor = startColor
-        }
+        if let progressColor = props["progressColor"] as? [String: Any] {
+            if let beginColor = Convert.toColor(progressColor["beginColor"]) {
+                self.beginColor = beginColor
+            }
 
-        if let endColor = Convert.toColor(props["endColor"]) {
-            self.endColor = endColor
+            if let endColor = Convert.toColor(progressColor["endColor"]) {
+                self.endColor = endColor
+            }
         }
     }
 
@@ -102,7 +104,7 @@ import SceneKit
 
     @objc override func updateLayout() {
         if barImage == nil {
-            barImage = UIImage.image(from: [startColor, endColor], size: 32)
+            barImage = UIImage.image(from: [beginColor, endColor], size: 32)
             barGeometry.firstMaterial?.diffuse.contents = barImage
         }
 

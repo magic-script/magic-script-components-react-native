@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -15,6 +16,8 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     companion object {
         // properties
+        private const val PROP_WIDTH = "width"
+        private const val PROP_HEIGHT = "height"
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
@@ -49,6 +52,23 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         setTextSize(props)
         setTextColor(props)
         setRoundness(props)
+    }
+
+    override fun setViewSize() {
+        // default dimension
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+            widthPx = Utils.metersToPx(widthInMeters, context)
+        }
+
+        if (properties.containsKey(PROP_HEIGHT)) {
+            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+            heightPx = Utils.metersToPx(heightInMeters, context)
+        }
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     private fun setText(props: Bundle) {

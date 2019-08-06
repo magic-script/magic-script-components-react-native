@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
@@ -42,6 +43,11 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+        // TODO resize support (use the update flag instead of renderableRequested?)
+        // if (props.containsKey(PROP_BOUNDS_SIZE) && renderableRequested) { // it's an update
+        //      attachRenderable() //should re-attach view when its size has been changed
+        // }
+
         setText(props)
         setTextSize(props)
         setTextAlignment(props)
@@ -50,15 +56,19 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         setCharacterSpacing(props)
     }
 
-    override fun setSize(props: Bundle) {
-        // convert bounds to WIDTH and HEIGHT to be sized correctly by the parent method
-        if (props.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
+    override fun setViewSize() {
+        // default dimension
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
             val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
-            props.putDouble(PROP_WIDTH, bounds[0])
-            props.putDouble(PROP_HEIGHT, bounds[1])
+            widthPx = Utils.metersToPx(bounds[0].toFloat(), context)
+            heightPx = Utils.metersToPx(bounds[1].toFloat(), context)
         }
-        super.setSize(props)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {

@@ -9,6 +9,12 @@
 import SceneKit
 
 @objc class UiGroupNode: UiNode {
+
+    @objc override func setupNode() {
+        super.setupNode()
+        alignment = Alignment.centerCenter
+    }
+
     @objc override func _calculateSize() -> CGSize {
         return getBoundsCollection().size
     }

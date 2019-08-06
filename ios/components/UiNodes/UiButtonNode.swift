@@ -83,6 +83,7 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
+        alignment = Alignment.centerCenter
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .center
@@ -154,7 +155,7 @@ import SceneKit
             return
         }
 
-        labelNode.textSize = max(0, height - 2 * UiButtonNode.borderInset)
+        labelNode.textSize = max(0, 0.333 * height)
     }
 
     fileprivate func reloadOutlineNode() {

@@ -7,6 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		440B1B7422F95BD500A9F754 /* LominoUIApp-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6622F95BD400A9F754 /* LominoUIApp-Bold.ttf */; };
+		440B1B7522F95BD500A9F754 /* LominoUIApp-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6722F95BD400A9F754 /* LominoUIApp-Italic.ttf */; };
+		440B1B7622F95BD500A9F754 /* LominoUIApp-WideBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6822F95BD400A9F754 /* LominoUIApp-WideBoldItalic.ttf */; };
+		440B1B7722F95BD500A9F754 /* LominoUIApp-Wide.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6922F95BD400A9F754 /* LominoUIApp-Wide.ttf */; };
+		440B1B7822F95BD500A9F754 /* LominoUIApp-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6A22F95BD400A9F754 /* LominoUIApp-MediumItalic.ttf */; };
+		440B1B7922F95BD500A9F754 /* LominoUIApp-WideItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6B22F95BD400A9F754 /* LominoUIApp-WideItalic.ttf */; };
+		440B1B7A22F95BD500A9F754 /* LominoUIApp-WideBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6C22F95BD400A9F754 /* LominoUIApp-WideBold.ttf */; };
+		440B1B7B22F95BD500A9F754 /* LominoUIApp-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6D22F95BD400A9F754 /* LominoUIApp-BoldItalic.ttf */; };
+		440B1B7C22F95BD500A9F754 /* LominoUIApp-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6E22F95BD400A9F754 /* LominoUIApp-LightItalic.ttf */; };
+		440B1B7D22F95BD500A9F754 /* LominoUIApp-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6F22F95BD400A9F754 /* LominoUIApp-ExtraBoldItalic.ttf */; };
+		440B1B7E22F95BD500A9F754 /* LominoUIApp-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7022F95BD400A9F754 /* LominoUIApp-Light.ttf */; };
+		440B1B7F22F95BD500A9F754 /* LominoUIApp-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7122F95BD400A9F754 /* LominoUIApp-ExtraBold.ttf */; };
+		440B1B8022F95BD500A9F754 /* LominoUIApp-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */; };
+		440B1B8122F95BD500A9F754 /* LominoUIApp-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */; };
+		440B1B8222F95BED00A9F754 /* LominoUIApp-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6622F95BD400A9F754 /* LominoUIApp-Bold.ttf */; };
+		440B1B8322F95BED00A9F754 /* LominoUIApp-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6722F95BD400A9F754 /* LominoUIApp-Italic.ttf */; };
+		440B1B8422F95BED00A9F754 /* LominoUIApp-WideBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6822F95BD400A9F754 /* LominoUIApp-WideBoldItalic.ttf */; };
+		440B1B8522F95BED00A9F754 /* LominoUIApp-Wide.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6922F95BD400A9F754 /* LominoUIApp-Wide.ttf */; };
+		440B1B8622F95BED00A9F754 /* LominoUIApp-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6A22F95BD400A9F754 /* LominoUIApp-MediumItalic.ttf */; };
+		440B1B8722F95BED00A9F754 /* LominoUIApp-WideItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6B22F95BD400A9F754 /* LominoUIApp-WideItalic.ttf */; };
+		440B1B8822F95BED00A9F754 /* LominoUIApp-WideBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6C22F95BD400A9F754 /* LominoUIApp-WideBold.ttf */; };
+		440B1B8922F95BED00A9F754 /* LominoUIApp-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6D22F95BD400A9F754 /* LominoUIApp-BoldItalic.ttf */; };
+		440B1B8A22F95BED00A9F754 /* LominoUIApp-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6E22F95BD400A9F754 /* LominoUIApp-LightItalic.ttf */; };
+		440B1B8B22F95BED00A9F754 /* LominoUIApp-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B6F22F95BD400A9F754 /* LominoUIApp-ExtraBoldItalic.ttf */; };
+		440B1B8C22F95BED00A9F754 /* LominoUIApp-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7022F95BD400A9F754 /* LominoUIApp-Light.ttf */; };
+		440B1B8D22F95BED00A9F754 /* LominoUIApp-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7122F95BD400A9F754 /* LominoUIApp-ExtraBold.ttf */; };
+		440B1B8E22F95BED00A9F754 /* LominoUIApp-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */; };
+		440B1B8F22F95BED00A9F754 /* LominoUIApp-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */; };
+		440B1B9122F95C5C00A9F754 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440B1B9022F95C5C00A9F754 /* Font.swift */; };
 		44107CEE22E888070007CBF5 /* UiGridLayoutNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */; };
 		442463BE22DCBFCA00FD4ABB /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442463BD22DCBFC900FD4ABB /* LabelNode.swift */; };
 		44318E6422CB44B60060575D /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318E6322CB44B60060575D /* ImageAssets.swift */; };
@@ -117,6 +146,21 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		440B1B6622F95BD400A9F754 /* LominoUIApp-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Bold.ttf"; sourceTree = "<group>"; };
+		440B1B6722F95BD400A9F754 /* LominoUIApp-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Italic.ttf"; sourceTree = "<group>"; };
+		440B1B6822F95BD400A9F754 /* LominoUIApp-WideBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-WideBoldItalic.ttf"; sourceTree = "<group>"; };
+		440B1B6922F95BD400A9F754 /* LominoUIApp-Wide.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Wide.ttf"; sourceTree = "<group>"; };
+		440B1B6A22F95BD400A9F754 /* LominoUIApp-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-MediumItalic.ttf"; sourceTree = "<group>"; };
+		440B1B6B22F95BD400A9F754 /* LominoUIApp-WideItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-WideItalic.ttf"; sourceTree = "<group>"; };
+		440B1B6C22F95BD400A9F754 /* LominoUIApp-WideBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-WideBold.ttf"; sourceTree = "<group>"; };
+		440B1B6D22F95BD400A9F754 /* LominoUIApp-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-BoldItalic.ttf"; sourceTree = "<group>"; };
+		440B1B6E22F95BD400A9F754 /* LominoUIApp-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-LightItalic.ttf"; sourceTree = "<group>"; };
+		440B1B6F22F95BD400A9F754 /* LominoUIApp-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		440B1B7022F95BD400A9F754 /* LominoUIApp-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Light.ttf"; sourceTree = "<group>"; };
+		440B1B7122F95BD400A9F754 /* LominoUIApp-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-ExtraBold.ttf"; sourceTree = "<group>"; };
+		440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Medium.ttf"; sourceTree = "<group>"; };
+		440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Regular.ttf"; sourceTree = "<group>"; };
+		440B1B9022F95C5C00A9F754 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGridLayoutNode.swift; sourceTree = "<group>"; };
 		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
 		4426DDFC22E743F4002852CB /* localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localization.h; sourceTree = "<group>"; };
@@ -251,6 +295,27 @@
 				134814201AA4EA6300B7C361 /* libRNMagicScript.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		440B1B6522F95BD400A9F754 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				440B1B6622F95BD400A9F754 /* LominoUIApp-Bold.ttf */,
+				440B1B6D22F95BD400A9F754 /* LominoUIApp-BoldItalic.ttf */,
+				440B1B7122F95BD400A9F754 /* LominoUIApp-ExtraBold.ttf */,
+				440B1B6F22F95BD400A9F754 /* LominoUIApp-ExtraBoldItalic.ttf */,
+				440B1B6722F95BD400A9F754 /* LominoUIApp-Italic.ttf */,
+				440B1B7022F95BD400A9F754 /* LominoUIApp-Light.ttf */,
+				440B1B6E22F95BD400A9F754 /* LominoUIApp-LightItalic.ttf */,
+				440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */,
+				440B1B6A22F95BD400A9F754 /* LominoUIApp-MediumItalic.ttf */,
+				440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */,
+				440B1B6822F95BD400A9F754 /* LominoUIApp-WideBoldItalic.ttf */,
+				440B1B6922F95BD400A9F754 /* LominoUIApp-Wide.ttf */,
+				440B1B6B22F95BD400A9F754 /* LominoUIApp-WideItalic.ttf */,
+				440B1B6C22F95BD400A9F754 /* LominoUIApp-WideBold.ttf */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		442463AC22DC8AF200FD4ABB /* UiHelpers */ = {
@@ -426,8 +491,10 @@
 		4461548722CA422100159F18 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				440B1B6522F95BD400A9F754 /* fonts */,
 				44318E5F22CB424A0060575D /* Images.xcassets */,
 				44318E6322CB44B60060575D /* ImageAssets.swift */,
+				440B1B9022F95C5C00A9F754 /* Font.swift */,
 			);
 			path = resources;
 			sourceTree = "<group>";
@@ -626,6 +693,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				440B1B7C22F95BD500A9F754 /* LominoUIApp-LightItalic.ttf in Resources */,
+				440B1B7522F95BD500A9F754 /* LominoUIApp-Italic.ttf in Resources */,
+				440B1B7822F95BD500A9F754 /* LominoUIApp-MediumItalic.ttf in Resources */,
+				440B1B7E22F95BD500A9F754 /* LominoUIApp-Light.ttf in Resources */,
+				440B1B7F22F95BD500A9F754 /* LominoUIApp-ExtraBold.ttf in Resources */,
+				440B1B7622F95BD500A9F754 /* LominoUIApp-WideBoldItalic.ttf in Resources */,
+				440B1B7922F95BD500A9F754 /* LominoUIApp-WideItalic.ttf in Resources */,
+				440B1B7A22F95BD500A9F754 /* LominoUIApp-WideBold.ttf in Resources */,
+				440B1B7422F95BD500A9F754 /* LominoUIApp-Bold.ttf in Resources */,
+				440B1B7722F95BD500A9F754 /* LominoUIApp-Wide.ttf in Resources */,
+				440B1B7D22F95BD500A9F754 /* LominoUIApp-ExtraBoldItalic.ttf in Resources */,
+				440B1B8122F95BD500A9F754 /* LominoUIApp-Regular.ttf in Resources */,
+				440B1B8022F95BD500A9F754 /* LominoUIApp-Medium.ttf in Resources */,
+				440B1B7B22F95BD500A9F754 /* LominoUIApp-BoldItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +715,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				44318E9522CB4E9A0060575D /* Images.xcassets in Resources */,
+				440B1B8822F95BED00A9F754 /* LominoUIApp-WideBold.ttf in Resources */,
+				440B1B8422F95BED00A9F754 /* LominoUIApp-WideBoldItalic.ttf in Resources */,
+				440B1B8722F95BED00A9F754 /* LominoUIApp-WideItalic.ttf in Resources */,
+				440B1B8E22F95BED00A9F754 /* LominoUIApp-Medium.ttf in Resources */,
+				440B1B8F22F95BED00A9F754 /* LominoUIApp-Regular.ttf in Resources */,
+				440B1B8C22F95BED00A9F754 /* LominoUIApp-Light.ttf in Resources */,
+				440B1B8322F95BED00A9F754 /* LominoUIApp-Italic.ttf in Resources */,
+				440B1B8522F95BED00A9F754 /* LominoUIApp-Wide.ttf in Resources */,
+				440B1B8A22F95BED00A9F754 /* LominoUIApp-LightItalic.ttf in Resources */,
+				440B1B8622F95BED00A9F754 /* LominoUIApp-MediumItalic.ttf in Resources */,
+				440B1B8D22F95BED00A9F754 /* LominoUIApp-ExtraBold.ttf in Resources */,
+				440B1B8222F95BED00A9F754 /* LominoUIApp-Bold.ttf in Resources */,
+				440B1B8922F95BED00A9F754 /* LominoUIApp-BoldItalic.ttf in Resources */,
+				440B1B8B22F95BED00A9F754 /* LominoUIApp-ExtraBoldItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -662,6 +757,7 @@
 				44E73D0B22E85E2B00AE779D /* XrClientAnchorData.swift in Sources */,
 				4447D4A622BC2BC40043CA89 /* GLTFMaterialOcclusionTextureInfo.swift in Sources */,
 				4447D49B22BC2BC40043CA89 /* GLTFAccessor.swift in Sources */,
+				440B1B9122F95C5C00A9F754 /* Font.swift in Sources */,
 				447C23EB22F05DD700F9A8F6 /* UiToggleNode.swift in Sources */,
 				449AF4A522B248090046938D /* UiNodesManager.swift in Sources */,
 				446A927922DDE5CA00B4C12D /* Consts.swift in Sources */,

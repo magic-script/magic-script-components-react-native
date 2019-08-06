@@ -1,38 +1,80 @@
 package com.reactlibrary.scene.nodes.base
 
-import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.Node
+import com.reactlibrary.scene.nodes.layouts.LayoutManager
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(props: ReadableMap) : TransformNode(props) {
+abstract class UiLayout(props: ReadableMap)
+    : TransformNode(props) {
 
-    companion object {
-        const val PROP_WIDTH = "width"
-        const val PROP_HEIGHT = "height"
+    var layoutManager: LayoutManager? = null
 
-        private const val DEFAULT_WIDTH = 0.0
-        private const val DEFAULT_HEIGHT = 0.0
+    // we should re-draw the grid after adding / removing a child
+    private var shouldRedraw = false
+
+    // child index, bounding
+    private val childrenBounds = mutableMapOf<Int, Bounding>()
+
+    private var handler = Handler(Looper.getMainLooper())
+
+    init {
+        layoutLoop()
     }
 
-    // Zero or less means the dimensions fit to the content
-    var width: Double = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH) // in meters
-        private set
-
-    var height: Double = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT) // in meters
-        private set
-
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-        setSize(props)
+    fun requestLayout() {
+        shouldRedraw = true
     }
 
-    private fun setSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH)) {
-            this.width = props.getDouble(PROP_WIDTH)
-        }
+    override fun addChildNode(child: Node) {
+        addChild(child)
+        shouldRedraw = true
+    }
 
-        if (props.containsKey(PROP_HEIGHT)) {
-            this.height = props.getDouble(PROP_HEIGHT)
+    override fun loadRenderable(): Boolean {
+        return false
+    }
+
+    /**
+     * Loop that requests re-drawing the grid if needed.
+     * It measures the children, because the nodes' view size is not known
+     * from the beginning, also a client may change the view size at any time: we need to
+     * re-draw the layout in such case.
+     */
+    private fun layoutLoop() {
+        handler.postDelayed({
+            measureChildren()
+            if (shouldRedraw) {
+                layoutManager?.layoutChildren(children, childrenBounds)
+                shouldRedraw = false
+                logMessage("grid redraw")
+            }
+            layoutLoop()
+        }, 100)
+    }
+
+    /**
+     * Measures the bounds of children nodes; if any bound has changed
+     * it sets the [shouldRedraw] flag to true.
+     */
+    private fun measureChildren() {
+        for (i in 0 until children.size) {
+            val node = children[i]
+            val oldBounds = childrenBounds[i] ?: Bounding()
+            childrenBounds[i] = if (node is TransformNode) {
+                node.getBounding()
+            } else {
+                Utils.calculateBoundsOfNode(node)
+            }
+
+            if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+                shouldRedraw = true
+            }
         }
     }
 

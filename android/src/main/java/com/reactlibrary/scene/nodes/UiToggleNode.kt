@@ -23,11 +23,26 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
+
+        private const val DEFAULT_HEIGHT = 0.03359
     }
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
     private var isOn = false
+
+    init {
+        // set default properties values
+        if (!properties.containsKey(PROP_HEIGHT)) {
+            properties.putDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        }
+
+        if (!properties.containsKey(PROP_TEXT_SIZE)) {
+            val height = properties.getDouble(PROP_HEIGHT)
+            properties.putDouble(PROP_TEXT_SIZE, height)
+        }
+
+    }
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
@@ -49,17 +64,13 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
     }
 
     override fun setViewSize() {
-        val switchHeight = if (properties.containsKey(PROP_HEIGHT)) {
-            val height = properties.getDouble(PROP_HEIGHT).toFloat()
-            Utils.metersToPx(height, context)
-        } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        }
+        val heightMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightPx = Utils.metersToPx(heightMeters, context)
+        val widthPx = 2 * heightPx
 
-        view.iv_toggle.layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                switchHeight
-        )
+        val switchParams = LinearLayout.LayoutParams(widthPx, heightPx)
+        switchParams.leftMargin = widthPx
+        view.iv_toggle.layoutParams = switchParams
 
         view.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,

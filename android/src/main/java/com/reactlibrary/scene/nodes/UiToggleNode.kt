@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -16,6 +18,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     companion object {
         // properties
+        private const val PROP_HEIGHT = "height"
         private const val PROP_CHECKED = "on"
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
@@ -43,6 +46,25 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         setText(props)
         setTextSize(props)
         setTextColor(props)
+    }
+
+    override fun setViewSize() {
+        val switchHeight = if (properties.containsKey(PROP_HEIGHT)) {
+            val height = properties.getDouble(PROP_HEIGHT).toFloat()
+            Utils.metersToPx(height, context)
+        } else {
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        view.iv_toggle.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                switchHeight
+        )
+
+        view.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun refreshImage() {

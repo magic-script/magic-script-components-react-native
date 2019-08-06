@@ -1,9 +1,9 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
@@ -11,8 +11,10 @@ import android.widget.ImageView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.Utils
 
 // TODO fix: spinner animation is paused after disabling and enabling the screen
+// TODO or when inside a grid layout
 class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
     companion object {
@@ -38,14 +40,18 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
         return view
     }
 
-    override fun setSize(props: Bundle) {
-        // convert size to WIDTH and HEIGHT to be sized correctly by the parent method
-        if (props.containsKey(PROP_SIZE)) {
-            val size = properties.getDouble(PROP_SIZE)
-            props.putDouble(PROP_WIDTH, size)
-            props.putDouble(PROP_HEIGHT, size)
+    override fun setViewSize() {
+        // default dimension
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_SIZE)) {
+            val size = properties.getDouble(PROP_SIZE).toFloat()
+            widthPx = Utils.metersToPx(size, context)
+            heightPx = Utils.metersToPx(size, context)
         }
-        super.setSize(props)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
 }

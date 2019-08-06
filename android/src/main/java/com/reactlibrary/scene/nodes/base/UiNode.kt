@@ -17,8 +17,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     companion object {
         // properties
-        const val PROP_WIDTH = "width"
-        const val PROP_HEIGHT = "height"
         const val PROP_ENABLED = "enabled"
     }
 
@@ -28,7 +26,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
      * A view attached to the node
      */
     protected lateinit var view: View
-    private var replacingView = false
+    // private var replacingView = false
 
     override fun build() {
         initView()
@@ -37,12 +35,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-
-        if (replacingView) {
-            replacingView = false
-        } else {
-            setSize(props)
-        }
 
         setEnabled(props)
     }
@@ -62,6 +54,15 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     }
 
     protected abstract fun provideView(context: Context): View
+
+    protected open fun setViewSize() {
+        // default dimensions
+        val widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        val heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        // the size should be set before attaching view to the node
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
 
     /**
      * Should return desired horizontal alignment of the renderable
@@ -89,31 +90,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     }
 
     private fun attachView() {
-        // default dimensions
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        setViewSize()
 
-        if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            widthPx = Utils.metersToPx(widthInMeters, context)
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(heightInMeters, context)
-        }
-
-        val params = view.layoutParams
-        if (params != null) { // it's an update (view has been already attached)
-            params.width = widthPx
-            params.height = heightPx
-            view.layoutParams = params
-        } else {
-            // the size should be set before attaching view to the node
-            view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-        }
-
-        // TODO handle error exceptionally { }
         ViewRenderable
                 .builder()
                 .setView(context, view)
@@ -129,19 +107,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                     logMessage("error loading ViewRenderable: $throwable")
                     null
                 }
-    }
-
-    protected open fun setSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            // cannot update renderable before [renderableRequested],
-            // because Sceneform may be uninitialized yet
-            if (renderableRequested) {
-                replacingView = true
-                // in order to resize the view have to be rebuild
-                build()
-                attachView()
-            }
-        }
     }
 
     private fun setEnabled(props: Bundle) {

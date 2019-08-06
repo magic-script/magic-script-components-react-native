@@ -25,6 +25,8 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     companion object {
         // properties
+        private const val PROP_WIDTH = "width"
+        private const val PROP_HEIGHT = "height"
         private const val PROP_TEXT = "text"
         private const val PROP_HINT = "hint"
         private const val PROP_TEXT_SIZE = "textSize"
@@ -112,6 +114,23 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         setCharacterSpacing(props)
         setMultiline(props)
         setTextPadding(props)
+    }
+
+    override fun setViewSize() {
+        // default dimension
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+            widthPx = Utils.metersToPx(widthInMeters, context)
+        }
+
+        if (properties.containsKey(PROP_HEIGHT)) {
+            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+            heightPx = Utils.metersToPx(heightInMeters, context)
+        }
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {

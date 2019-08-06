@@ -44,12 +44,3 @@ extension Image {
         #endif
     }
 }
-
-extension Bundle {
-    static func resourcesBundle() -> Bundle? {
-        guard let resourcesBundleURL = Bundle.main.url(forResource: "RNMagicScriptResources", withExtension: "bundle") else { return nil }
-        return Bundle(url: resourcesBundleURL)
-    }
-}
-
-private final class BundleToken {}

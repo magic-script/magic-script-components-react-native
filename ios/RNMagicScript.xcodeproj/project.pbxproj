@@ -36,6 +36,7 @@
 		440B1B8E22F95BED00A9F754 /* LominoUIApp-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */; };
 		440B1B8F22F95BED00A9F754 /* LominoUIApp-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */; };
 		440B1B9122F95C5C00A9F754 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440B1B9022F95C5C00A9F754 /* Font.swift */; };
+		440B1B9322F971F100A9F754 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440B1B9222F971F100A9F754 /* Bundle.swift */; };
 		44107CEE22E888070007CBF5 /* UiGridLayoutNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */; };
 		442463BE22DCBFCA00FD4ABB /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442463BD22DCBFC900FD4ABB /* LabelNode.swift */; };
 		44318E6422CB44B60060575D /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44318E6322CB44B60060575D /* ImageAssets.swift */; };
@@ -161,6 +162,7 @@
 		440B1B7222F95BD400A9F754 /* LominoUIApp-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Medium.ttf"; sourceTree = "<group>"; };
 		440B1B7322F95BD400A9F754 /* LominoUIApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LominoUIApp-Regular.ttf"; sourceTree = "<group>"; };
 		440B1B9022F95C5C00A9F754 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
+		440B1B9222F971F100A9F754 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGridLayoutNode.swift; sourceTree = "<group>"; };
 		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
 		4426DDFC22E743F4002852CB /* localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localization.h; sourceTree = "<group>"; };
@@ -493,6 +495,7 @@
 			children = (
 				440B1B6522F95BD400A9F754 /* fonts */,
 				44318E5F22CB424A0060575D /* Images.xcassets */,
+				440B1B9222F971F100A9F754 /* Bundle.swift */,
 				44318E6322CB44B60060575D /* ImageAssets.swift */,
 				440B1B9022F95C5C00A9F754 /* Font.swift */,
 			);
@@ -747,6 +750,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4447D4A022BC2BC40043CA89 /* GLTFKHRMaterialsPbrSpecularGlossiness_GLTFKHRMaterialsPbrSpecularGlossiness.swift in Sources */,
+				440B1B9322F971F100A9F754 /* Bundle.swift in Sources */,
 				4447D4A222BC2BC40043CA89 /* GLTFMaterial.swift in Sources */,
 				4447D49722BC2BC40043CA89 /* GLTFGlTFProperty.swift in Sources */,
 				449AF4A022B248090046938D /* SCNNode+Debug.swift in Sources */,

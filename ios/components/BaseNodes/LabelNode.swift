@@ -63,7 +63,7 @@ class LabelNode: SCNNode {
     fileprivate func setupNode() {
         if useGeometry {
             labelGeometry = SCNText(string: "", extrusionDepth: 0)
-            labelGeometry.font = UIFont.systemFont(ofSize: LabelNode.geometryFixedTextSizeInMeters)
+            labelGeometry.font = UIFont.font(with: FontStyle.normal, weight: FontWeight.regular, size: LabelNode.geometryFixedTextSizeInMeters)
             labelGeometry.alignmentMode = CATextLayerAlignmentMode.left.rawValue
             labelGeometry.flatness = 0.5
             labelGeometry.firstMaterial?.lightingModel = .constant

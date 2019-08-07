@@ -26,10 +26,11 @@ import SceneKit
 // MARK: - Helpers
 extension UiGroupNode {
     @objc fileprivate func getBoundsCollection() -> CGRect {
-        guard !contentNode.childNodes.isEmpty else { return CGRect.zero }
-        var bounds: CGRect = (contentNode.childNodes[0] as! TransformNode).getBounds()
-        for i in 1..<contentNode.childNodes.count {
-            let b = (contentNode.childNodes[i] as! TransformNode).getBounds()
+        let nodes: [SCNNode] = contentNode.childNodes.filter { $0 is TransformNode }
+        guard !nodes.isEmpty else { return CGRect.zero }
+        var bounds: CGRect = (nodes[0] as! TransformNode).getBounds()
+        for i in 1..<nodes.count {
+            let b = (nodes[i] as! TransformNode).getBounds()
             bounds = bounds.union(b)
         }
 

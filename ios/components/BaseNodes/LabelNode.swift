@@ -116,7 +116,7 @@ class LabelNode: SCNNode {
             labelGeometry.firstMaterial?.diffuse.contents = textColor
             labelGeometry.isWrapped = wrap
             labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
-//            labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue
+            labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue
             labelNode?.removeFromParentNode()
             labelNode = SCNNode(geometry: labelGeometry)
             labelNode.scale = SCNVector3(scale, scale, scale)

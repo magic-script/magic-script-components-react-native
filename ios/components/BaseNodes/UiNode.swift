@@ -10,7 +10,7 @@ import SceneKit
 
 @objc class UiNode: TransformNode {
 
-    @objc var alignment: Alignment = Alignment.centerCenter {
+    @objc var alignment: Alignment = Alignment.topLeft {
         didSet { setNeedsLayout() }
     }
     //var activateResponse: FocusRequest

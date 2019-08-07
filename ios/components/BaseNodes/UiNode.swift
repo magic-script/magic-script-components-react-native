@@ -30,9 +30,9 @@ import SceneKit
         }
     }
 
-    @objc override func getBounds() -> CGRect {
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
-        let origin: CGPoint = CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y))
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let offset = alignment.boundsOffset
         let offsetOrigin = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
         return CGRect(origin: origin, size: size).offsetBy(dx: offsetOrigin.x, dy: offsetOrigin.y)

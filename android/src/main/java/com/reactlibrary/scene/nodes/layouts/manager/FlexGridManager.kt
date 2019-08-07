@@ -2,9 +2,9 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
-import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.logMessage
 
@@ -63,32 +63,32 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
         // calculating x position for a child
         val x = when (grid.itemHorizontalAlignment) {
-            Alignment.Horizontal.LEFT -> {
+            ViewRenderable.HorizontalAlignment.LEFT -> {
                 getColumnX(col) + nodeWidth / 2 + pivotOffsetX + grid.itemPadding.left
             }
 
-            Alignment.Horizontal.CENTER -> {
+            ViewRenderable.HorizontalAlignment.CENTER -> {
                 val paddingDiff = grid.itemPadding.left - grid.itemPadding.right
                 getColumnX(col) + columnWidth / 2 + pivotOffsetX + paddingDiff
             }
 
-            Alignment.Horizontal.RIGHT -> {
+            ViewRenderable.HorizontalAlignment.RIGHT -> {
                 getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffsetX - grid.itemPadding.right
             }
         }
 
         // calculating y position for a child
         val y = when (grid.itemVerticalAlignment) {
-            Alignment.Vertical.TOP -> {
+            ViewRenderable.VerticalAlignment.TOP -> {
                 getRowY(row) - nodeHeight / 2 + pivotOffsetY - grid.itemPadding.top
             }
 
-            Alignment.Vertical.CENTER -> {
+            ViewRenderable.VerticalAlignment.CENTER -> {
                 val paddingDiff = grid.itemPadding.top - grid.itemPadding.bottom
                 getRowY(row) - rowHeight / 2 + pivotOffsetY - paddingDiff
             }
 
-            Alignment.Vertical.BOTTOM -> {
+            ViewRenderable.VerticalAlignment.BOTTOM -> {
                 getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY + grid.itemPadding.bottom
             }
         }

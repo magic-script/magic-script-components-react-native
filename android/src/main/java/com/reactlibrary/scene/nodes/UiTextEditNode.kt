@@ -11,7 +11,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -40,6 +39,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         private const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         private const val DEFAULT_WIDTH = 0.4 // in meters
         private const val MULTILINE_BOX_HEIGHT = 0.12F // in meters
+        private const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -75,6 +75,10 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
         if (!properties.containsKey(PROP_MULTILINE)) {
             properties.putBoolean(PROP_MULTILINE, false)
+        }
+
+        if (!properties.containsKey(PROP_ALIGNMENT)) {
+            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         }
 
     }
@@ -131,14 +135,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
             heightPx = Utils.metersToPx(heightInMeters, context)
         }
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-    }
-
-    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
-        return ViewRenderable.HorizontalAlignment.LEFT
-    }
-
-    override fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
-        return ViewRenderable.VerticalAlignment.TOP
     }
 
     private fun setText(props: Bundle) {

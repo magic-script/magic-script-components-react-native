@@ -2,9 +2,9 @@ package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.FlexGridManager
-import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
@@ -53,10 +53,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
     var itemPadding = Padding(0F, 0F, 0F, 0F)
         private set
 
-    var itemHorizontalAlignment = Alignment.Horizontal.CENTER
+    var itemHorizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
         private set
 
-    var itemVerticalAlignment = Alignment.Vertical.CENTER
+    var itemVerticalAlignment = ViewRenderable.VerticalAlignment.CENTER
         private set
 
     override fun applyProperties(props: Bundle) {
@@ -111,10 +111,10 @@ class UiGridLayout(props: ReadableMap) : UiLayout(props) {
         if (alignment != null) {
             val alignmentArray = alignment.split("-")
             if (alignmentArray.size == 2) {
-                val horizontalAlign = alignmentArray[0]
-                val verticalAlign = alignmentArray[1]
-                itemHorizontalAlignment = Alignment.Horizontal.valueOf(horizontalAlign.toUpperCase())
-                itemVerticalAlignment = Alignment.Vertical.valueOf(verticalAlign.toUpperCase())
+                val verticalAlign = alignmentArray[0]
+                val horizontalAlign = alignmentArray[1]
+                itemVerticalAlignment = ViewRenderable.VerticalAlignment.valueOf(verticalAlign.toUpperCase())
+                itemHorizontalAlignment = ViewRenderable.HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
             }
         }
     }

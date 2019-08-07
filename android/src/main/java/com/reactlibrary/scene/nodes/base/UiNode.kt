@@ -17,6 +17,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     companion object {
         // properties
+        const val PROP_ALIGNMENT = "alignment"
         const val PROP_ENABLED = "enabled"
     }
 
@@ -26,7 +27,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
      * A view attached to the node
      */
     protected lateinit var view: View
-    // private var replacingView = false
+
+    private var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
+    private var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
 
     override fun build() {
         initView()
@@ -35,10 +38,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-
+        setAlignment(props)
         setEnabled(props)
     }
-
 
     /**
      * Attaches view to the Node (must be called after AR Core native code has been loaded)
@@ -55,6 +57,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected abstract fun provideView(context: Context): View
 
+    protected open fun onClick() {}
+
     protected open fun setViewSize() {
         // default dimensions
         val widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -63,22 +67,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         // the size should be set before attaching view to the node
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
-
-    /**
-     * Should return desired horizontal alignment of the renderable
-     */
-    protected open fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
-        return ViewRenderable.HorizontalAlignment.CENTER
-    }
-
-    /**
-     * Should return desired vertical alignment of the renderable
-     */
-    protected open fun getVerticalAlignment(): ViewRenderable.VerticalAlignment {
-        return ViewRenderable.VerticalAlignment.CENTER
-    }
-
-    protected open fun onClick() {}
 
     private fun initView() {
         this.view = provideView(context)
@@ -95,8 +83,8 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         ViewRenderable
                 .builder()
                 .setView(context, view)
-                .setHorizontalAlignment(getHorizontalAlignment())
-                .setVerticalAlignment(getVerticalAlignment())
+                .setHorizontalAlignment(horizontalAlignment)
+                .setVerticalAlignment(verticalAlignment)
                 .build()
                 .thenAccept {
                     this.renderable = it
@@ -107,6 +95,19 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                     logMessage("error loading ViewRenderable: $throwable")
                     null
                 }
+    }
+
+    private fun setAlignment(props: Bundle) {
+        val alignment = props.getString(PROP_ALIGNMENT)
+        if (alignment != null) {
+            val alignmentArray = alignment.split("-")
+            if (alignmentArray.size == 2) {
+                val verticalAlign = alignmentArray[0]
+                val horizontalAlign = alignmentArray[1]
+                verticalAlignment = ViewRenderable.VerticalAlignment.valueOf(verticalAlign.toUpperCase())
+                horizontalAlignment = ViewRenderable.HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
+            }
+        }
     }
 
     private fun setEnabled(props: Bundle) {

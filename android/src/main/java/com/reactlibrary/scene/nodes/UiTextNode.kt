@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
@@ -28,12 +27,17 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_CHARACTER_SPACING = "charSpacing"
 
         private const val DEFAULT_TEXT_SIZE = 0.025 // in meters
+        private const val DEFAULT_ALIGNMENT = "center-left" // view alignment (pivot)
     }
 
     init {
         // set default values of properties
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        }
+
+        if (!properties.containsKey(PROP_ALIGNMENT)) {
+            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         }
     }
 
@@ -69,10 +73,6 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         }
 
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-    }
-
-    override fun getHorizontalAlignment(): ViewRenderable.HorizontalAlignment {
-        return ViewRenderable.HorizontalAlignment.LEFT
     }
 
     private fun setText(properties: Bundle) {

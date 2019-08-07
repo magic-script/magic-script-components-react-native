@@ -32,9 +32,10 @@ import SceneKit
 
     @objc override func getBounds() -> CGRect {
         let size = getSize()
-        let offset = alignment.offset
-        let origin: CGPoint = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
-        return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
+        let origin: CGPoint = CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y))
+        let offset = alignment.boundsOffset
+        let offsetOrigin = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
+        return CGRect(origin: origin, size: size).offsetBy(dx: offsetOrigin.x, dy: offsetOrigin.y)
     }
 
     @objc override func updateLayout() {
@@ -42,8 +43,8 @@ import SceneKit
 
     @objc override func updatePivot() {
         let size = getSize()
-        let offset = alignment.offset
-        contentNode.position = SCNVector3(offset.x * size.width, offset.y * size.height, 0)
+        let shift = alignment.shiftDirection
+        contentNode.position = SCNVector3(shift.x * size.width, shift.y * size.height, 0)
     }
 
     // MARK: - Focus

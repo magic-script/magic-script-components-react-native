@@ -130,7 +130,7 @@ import SceneKit
     @objc func getBounds() -> CGRect {
         let size = getSize()
         let origin: CGPoint = CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y))
-        return CGRect(origin: origin, size: size)
+        return CGRect(origin: origin, size: size).offsetBy(dx: -0.5 * size.width, dy: -0.5 * size.height)
     }
 
     @objc func getEdgeInsets() -> UIEdgeInsets {

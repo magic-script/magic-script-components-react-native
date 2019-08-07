@@ -125,6 +125,9 @@ import SceneKit
         if let uuid = Convert.toString(props["anchorUuid"]) {
             self.anchorUuid = uuid;
         }
+        if let debug = Convert.toBool(props["debug"]) {
+            self.setDebugMode(debug)
+        }
     }
 
     @objc func getSize() -> CGSize {

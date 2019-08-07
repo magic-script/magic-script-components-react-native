@@ -10,7 +10,7 @@ import SceneKit
 
 @objc class UiNode: TransformNode {
 
-    @objc var alignment: Alignment = Alignment.centerCenter {
+    @objc var alignment: Alignment = Alignment.topLeft {
         didSet { setNeedsLayout() }
     }
     //var activateResponse: FocusRequest
@@ -30,11 +30,12 @@ import SceneKit
         }
     }
 
-    @objc override func getBounds() -> CGRect {
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
-        let offset = alignment.offset
-        let origin: CGPoint = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
-        return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
+        let offset = alignment.boundsOffset
+        let offsetOrigin = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
+        return CGRect(origin: origin, size: size).offsetBy(dx: offsetOrigin.x, dy: offsetOrigin.y)
     }
 
     @objc override func updateLayout() {
@@ -42,8 +43,8 @@ import SceneKit
 
     @objc override func updatePivot() {
         let size = getSize()
-        let offset = alignment.offset
-        contentNode.position = SCNVector3(offset.x * size.width, offset.y * size.height, 0)
+        let shift = alignment.shiftDirection
+        contentNode.position = SCNVector3(shift.x * size.width, shift.y * size.height, 0)
     }
 
     // MARK: - Focus

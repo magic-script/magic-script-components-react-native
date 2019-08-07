@@ -77,17 +77,28 @@ import SceneKit
     @objc func addChild(_ child: TransformNode) {
         contentNode.addChildNode(child)
         setNeedsLayout()
+        setNeedsLayoutForAllParents()
     }
 
     @objc func removeChild(_ child: TransformNode) {
         if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
             setNeedsLayout()
+            setNeedsLayoutForAllParents()
+        }
+    }
+
+    fileprivate func setNeedsLayoutForAllParents() {
+        var node: SCNNode? = parent
+        while node != nil {
+            if let transformNode = node as? TransformNode {
+                transformNode.setNeedsLayout()
+            }
+            node = node?.parent
         }
     }
 
     @objc func update(_ props: [String: Any]) {
-//        assert(childNodes.count == 1, "Each TransformNode must contain only one contentNode!")
         assert(childNodes[0] == contentNode, "contentNode does not exist!")
 
         if let name = Convert.toString(props["id"]) {
@@ -114,6 +125,9 @@ import SceneKit
         if let uuid = Convert.toString(props["anchorUuid"]) {
             self.anchorUuid = uuid;
         }
+        if let debug = Convert.toBool(props["debug"]) {
+            self.setDebugMode(debug)
+        }
     }
 
     @objc func getSize() -> CGSize {
@@ -127,10 +141,10 @@ import SceneKit
         return CGSize.zero
     }
 
-    @objc func getBounds() -> CGRect {
+    @objc func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
-        let origin: CGPoint = CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y))
-        return CGRect(origin: origin, size: size)
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y)) : CGPoint.zero
+        return CGRect(origin: origin, size: size).offsetBy(dx: -0.5 * size.width, dy: -0.5 * size.height)
     }
 
     @objc func getEdgeInsets() -> UIEdgeInsets {
@@ -187,8 +201,10 @@ extension TransformNode {
 
         // border
         borderNode?.removeFromParentNode()
-        borderNode = OutlineNode(contentSize: getSize(), cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
-        contentNode.addChildNode(borderNode!)
+        let bounds = getBounds()
+        borderNode = OutlineNode(contentSize: bounds.size, cornerRadius: 0, lineWidth: 0.001, color: UIColor.yellow)
+        borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
+        addChildNode(borderNode!)
     }
 #endif
 }

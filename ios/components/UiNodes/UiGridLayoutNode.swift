@@ -100,7 +100,7 @@ import SceneKit
         let rowBounds = desc.rowsBounds[rowId]
 
         let localCenter = CGPoint(x: columnBounds.x + 0.5 * columnBounds.width, y: rowBounds.y + 0.5 * rowBounds.height)
-        let offset: CGPoint = defaultItemAlignment.offset
+        let offset: CGPoint = defaultItemAlignment.shiftDirection
         let gridItemAlignmentOffset = CGPoint(
             x: (columnBounds.width - childNodeSize.width) * offset.x,
             y: (rowBounds.height - childNodeSize.height) * offset.y

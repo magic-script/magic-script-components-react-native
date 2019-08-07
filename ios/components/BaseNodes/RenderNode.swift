@@ -24,8 +24,8 @@ import SceneKit
 
 //    @objc override func getBounds() -> CGRect {
 //        let size = getSize()
-//        let offset = alignment.offset
-//        let origin: CGPoint = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
+//        let shift = alignment.shiftDirection
+//        let origin: CGPoint = CGPoint(x: shift.x * size.width, y: shift.y * size.height)
 //        return CGRect(origin: origin, size: size).offsetBy(dx: CGFloat(localPosition.x), dy: CGFloat(localPosition.y))
 //    }
 

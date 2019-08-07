@@ -50,6 +50,7 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
+        alignment = Alignment.centerCenter
         assert(planeGeometry == nil, "Node must not be initialized!")
         planeGeometry = SCNPlane(width: width, height: height)
         planeGeometry.firstMaterial?.lightingModel = .constant

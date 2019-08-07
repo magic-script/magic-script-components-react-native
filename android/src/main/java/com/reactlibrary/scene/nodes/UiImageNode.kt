@@ -13,6 +13,7 @@ import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import kotlinx.android.synthetic.main.image.view.*
 
 class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context) {
 
@@ -22,16 +23,18 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         private const val PROP_HEIGHT = "height"
         private const val PROP_FILE_PATH = "filePath"
         private const val PROP_COLOR = "color"
+        private const val PROP_FRAME = "useFrame"
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setImagePath(props)
         setColor(props)
+        setUseFrame(props)
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.image, null) as ImageView
+        return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
     override fun setViewSize() {
@@ -57,11 +60,11 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
             val androidPath = Utils.getImagePath(path, context)
             Glide.with(context)
                     .load(androidPath)
-                    .into(view as ImageView)
+                    .into(view.image_view)
 
             val color = PropertiesReader.readColor(props, PROP_COLOR)
             if (color != null) {
-                (view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+                (view.image_view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
             }
         }
     }
@@ -71,9 +74,22 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         if (color != null) {
             if (properties.containsKey(PROP_FILE_PATH)) {
                 // blend color with image
-                (view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+                (view.image_view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
             } else { // use color instead of image
-                (view as ImageView).setBackgroundColor(color)
+                (view.image_view as ImageView).setBackgroundColor(color)
+            }
+        }
+    }
+
+    private fun setUseFrame(props: Bundle) {
+        if (props.containsKey(PROP_FRAME)) {
+            val useFrame = props.getBoolean(PROP_FRAME)
+            if (useFrame) {
+                view.setPadding(1, 1, 1, 1)
+                view.setBackgroundResource(R.drawable.image_border)
+            } else {
+                view.setPadding(0, 0, 0, 0)
+                view.setBackgroundResource(0)
             }
         }
     }

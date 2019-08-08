@@ -52,7 +52,7 @@
     [UiNodesManager.instance registerScene:view.scene];
 
     // Register ARSession in MLXrClientSession
-    [XrClientSession registerARSession:view.session];
+    // [XrClientSession registerARSession:view.session]; // FIXME!
     view.delegate = self;
     view.playing = YES;
 

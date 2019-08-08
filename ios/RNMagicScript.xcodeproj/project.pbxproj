@@ -279,14 +279,6 @@
 		440B1B9222F971F100A9F754 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGridLayoutNode.swift; sourceTree = "<group>"; };
 		442463BD22DCBFC900FD4ABB /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
-		4426DDFC22E743F4002852CB /* localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localization.h; sourceTree = "<group>"; };
-		4426DDFD22E743F4002852CB /* anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = anchor.h; sourceTree = "<group>"; };
-		4426DDFE22E743F4002852CB /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
-		4426DDFF22E743F4002852CB /* frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = frame.h; sourceTree = "<group>"; };
-		4426DE0022E743F4002852CB /* session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = session.h; sourceTree = "<group>"; };
-		4426DE0122E743F4002852CB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
-		4426DE0222E743F4002852CB /* authentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authentication.h; sourceTree = "<group>"; };
-		4426DE0322E743F4002852CB /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		44318E5F22CB424A0060575D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44318E6322CB44B60060575D /* ImageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -447,53 +439,6 @@
 			path = UiHelpers;
 			sourceTree = "<group>";
 		};
-		4426DDF722E743F4002852CB /* MLXrRuntimeWrapper */ = {
-			isa = PBXGroup;
-			children = (
-				4426DDF822E743F4002852CB /* runtime */,
-				4426DE0322E743F4002852CB /* module.modulemap */,
-			);
-			path = MLXrRuntimeWrapper;
-			sourceTree = "<group>";
-		};
-		4426DDF822E743F4002852CB /* runtime */ = {
-			isa = PBXGroup;
-			children = (
-				4426DDF922E743F4002852CB /* include */,
-			);
-			path = runtime;
-			sourceTree = "<group>";
-		};
-		4426DDF922E743F4002852CB /* include */ = {
-			isa = PBXGroup;
-			children = (
-				4426DDFA22E743F4002852CB /* public */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		4426DDFA22E743F4002852CB /* public */ = {
-			isa = PBXGroup;
-			children = (
-				4426DDFB22E743F4002852CB /* mlxr */,
-			);
-			path = public;
-			sourceTree = "<group>";
-		};
-		4426DDFB22E743F4002852CB /* mlxr */ = {
-			isa = PBXGroup;
-			children = (
-				4426DDFC22E743F4002852CB /* localization.h */,
-				4426DDFD22E743F4002852CB /* anchor.h */,
-				4426DDFE22E743F4002852CB /* types.h */,
-				4426DDFF22E743F4002852CB /* frame.h */,
-				4426DE0022E743F4002852CB /* session.h */,
-				4426DE0122E743F4002852CB /* common.h */,
-				4426DE0222E743F4002852CB /* authentication.h */,
-			);
-			path = mlxr;
-			sourceTree = "<group>";
-		};
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,7 +451,6 @@
 			isa = PBXGroup;
 			children = (
 				BC813B8022ED7AA7004658D4 /* mlxr_ios_client_internal.framework */,
-				4426DDF722E743F4002852CB /* MLXrRuntimeWrapper */,
 				4447D45422BC2BC30043CA89 /* GLTF */,
 			);
 			path = libraries;
@@ -1288,7 +1232,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNMagicScript;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libraries/MLXrRuntimeWrapper";
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNMagicScript-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1316,7 +1260,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNMagicScript;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libraries/MLXrRuntimeWrapper";
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNMagicScript-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};

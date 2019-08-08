@@ -11,5 +11,5 @@ export {
   ARView,
   ARKitScript,
   ReactNativeMagicScript,
-  XrClientSession
+  XrClientSession,
 };

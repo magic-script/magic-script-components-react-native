@@ -310,6 +310,19 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void removeOnPressEventHandler(final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Node node = UiNodesManager.findNodeWithId(nodeId);
+                if (node instanceof UiNode) {
+                    ((UiNode) node).setClickListener(null);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void addOnTextChangedEventHandler(final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
@@ -333,13 +346,23 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void removeOnPressEventHandler(final String nodeId) {
+    public void addOnToggleChangedEventHandler(final String nodeId) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Node node = UiNodesManager.findNodeWithId(nodeId);
-                if (node instanceof UiNode) {
-                    ((UiNode) node).setClickListener(null);
+                final Node node = UiNodesManager.findNodeWithId(nodeId);
+                if (node instanceof UiToggleNode) {
+                    ((UiToggleNode) node).setToggleChangedListener(new Function1<Boolean, Unit>() {
+                        @Override
+                        public Unit invoke(Boolean isOn) {
+                            WritableMap params = Arguments.createMap();
+                            params.putString("nodeId", nodeId);
+                            params.putBoolean("on", isOn);
+
+                            sendEvent("onToggleChanged", params);
+                            return Unit.INSTANCE;
+                        }
+                    });
                 }
             }
         });

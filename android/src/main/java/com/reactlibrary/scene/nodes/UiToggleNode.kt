@@ -69,7 +69,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         val widthPx = 2 * heightPx
 
         val switchParams = LinearLayout.LayoutParams(widthPx, heightPx)
-        switchParams.leftMargin = widthPx
+        switchParams.leftMargin = (0.75 * widthPx).toInt()
         view.iv_toggle.layoutParams = switchParams
 
         view.layoutParams = ViewGroup.LayoutParams(

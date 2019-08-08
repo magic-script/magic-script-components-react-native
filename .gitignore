@@ -46,3 +46,6 @@ buck-out/
 
 # Yarn 
 yarn.lock
+
+# NPM
+package-lock.json

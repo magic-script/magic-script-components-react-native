@@ -19,6 +19,9 @@
   "dependencies": {
     "react-reconciler": "^0.20.4"
   },
+  "devDependencies": {
+    "react-native": ">=0.59.8"
+  },
   "peerDependencies": {
     "react-native": ">=0.59.8"
   }

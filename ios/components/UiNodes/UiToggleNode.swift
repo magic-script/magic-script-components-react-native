@@ -12,7 +12,6 @@ import SceneKit
 
     static fileprivate let defaultWidth: CGFloat = 0.07337
     static fileprivate let defaultHeight: CGFloat = 0.03359
-    static fileprivate let defaultTextMargin: CGFloat = 0.05
 
     @objc var text: String? {
         get { return labelNode.text }
@@ -68,8 +67,6 @@ import SceneKit
         toggleGeometry.firstMaterial?.isDoubleSided = true
         toggleNode = SCNNode(geometry: toggleGeometry)
         contentNode.addChildNode(toggleNode)
-
-//        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -99,7 +96,8 @@ import SceneKit
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
-        let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? UiToggleNode.defaultTextMargin : 0
+        let textToggleGap: CGFloat = 0.75 * toggleSize.width
+        let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? textToggleGap : 0
 
         let heightContent: CGFloat = max(toggleSize.height, labelSize.height)
         let widthContent: CGFloat = toggleSize.width + labelSize.width + textMargin
@@ -110,11 +108,12 @@ import SceneKit
         labelNode.reload()
 
         let size = getSize()
+        let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
         toggleGeometry.width = toggleSize.width
         toggleGeometry.height = toggleSize.height
 
-        let x1: Float = Float(-0.5 * size.width)
+        let x1: Float = Float(-0.5 * (size.width - labelSize.width))
         labelNode.position = SCNVector3(x1, 0, 0)
 
         let x2: Float = Float(0.5 * (size.width - toggleSize.width))
@@ -127,7 +126,8 @@ import SceneKit
     }
 
     fileprivate func getToggleSize() -> CGSize {
-        let toggleWidth: CGFloat = (height > 0) ? height : UiToggleNode.defaultHeight
-        return CGSize(width: toggleWidth, height:(UiToggleNode.defaultHeight / UiToggleNode.defaultWidth) * toggleWidth)
+        let toggleHeight: CGFloat = (height > 0) ? height : UiToggleNode.defaultHeight
+        let toggleWidth: CGFloat = (UiToggleNode.defaultWidth / UiToggleNode.defaultHeight) * toggleHeight
+        return CGSize(width: toggleWidth, height: toggleHeight)
     }
 }

@@ -10,9 +10,9 @@ import SceneKit
 
 @objc class UiGroupNode: UiNode {
 
-    @objc override func setupNode() {
-        super.setupNode()
-        alignment = Alignment.centerCenter
+    @objc override var alignment: Alignment {
+        get { return .centerCenter }
+        set { }
     }
 
     @objc override func _calculateSize() -> CGSize {
@@ -20,6 +20,12 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+    }
+
+    @objc override func updatePivot() {
+        // Do not update pivot for group node.
+        // Group node has it's own size/bounds (based on child nodes), but
+        // since it's a nodes' container, setting alignment does not make sense.
     }
 }
 

@@ -27,15 +27,15 @@ class Utils {
          * that can be accessed from android code.
          */
         fun getImagePath(imagePath: String, context: Context): Uri {
-            val path = parseNormalPath(imagePath)
+            val path = parseAbsolutePath(imagePath)
             if (path != null) {
                 return path
             }
 
-            // e.g. resources\DemoPicture1.jpg
+            // check if it's relative path (e.g. resources\DemoPicture1.jpg)
             return if (BuildConfig.DEBUG) {
                 Uri.parse(DEBUG_ASSETS_PATH + imagePath)
-            } else {
+            } else { // check if the file is stored in res/drawable
                 val packageName = context.packageName
                 val basePath = "android.resource://$packageName/drawable/"
                 // resources\DemoPicture1.jpg is copied to
@@ -50,22 +50,20 @@ class Utils {
          * Converts React project's file path (other than image) or standard path to path
          * that can be accessed from android code.
          *
-         * TODO currently debug path works only when device is connected to PC
+         * Currently [DEBUG_ASSETS_PATH] works only when device is connected to PC
          */
         fun getFilePath(filePath: String, context: Context): Uri {
-            val path = parseNormalPath(filePath)
+            val path = parseAbsolutePath(filePath)
             if (path != null) {
                 return path
             }
 
-            // e.g. resources\model.glb
+            // check if it's relative path (e.g. resources\model.glb)
             return if (BuildConfig.DEBUG) {
                 Uri.parse(DEBUG_ASSETS_PATH + filePath)
-            } else {
+            } else { // check if the file is stored in res/raw
                 val packageName = context.packageName
                 val basePath = "android.resource://$packageName/raw/"
-                // TODO check if resources\model.glb is copied to
-                // TODO res/raw with file name = "resources_model"
                 val fileName = filePath.toLowerCase().replace("/", "_")
                 Uri.parse(basePath + fileName)
             }
@@ -84,9 +82,10 @@ class Utils {
         }
 
         /**
-         * Converts path to Uri
+         * Converts an absolute path (URL or android filesystem path) to Uri
+         * @return Uri path or null if such file does not exist
          */
-        private fun parseNormalPath(path: String): Uri? {
+        private fun parseAbsolutePath(path: String): Uri? {
             // check if it's a remote path
             if (path.startsWith("http")) {
                 return Uri.parse(path)

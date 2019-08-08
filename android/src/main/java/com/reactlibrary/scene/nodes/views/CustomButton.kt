@@ -6,8 +6,10 @@ import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.Rect
 import android.support.v4.content.ContextCompat.getColor
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.view.View
+import com.reactlibrary.R
 import com.reactlibrary.utils.Utils
 import kotlin.math.min
 
@@ -26,6 +28,7 @@ class CustomButton @JvmOverloads constructor(
     private val maxStrokeSize = Utils.metersToPx(0.005F, context).toFloat()
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
+        typeface = ResourcesCompat.getFont(context, R.font.lomino_app_regular)
         color = getColor(context, android.R.color.white)
         textSize = 12F
     }
@@ -83,7 +86,6 @@ class CustomButton @JvmOverloads constructor(
         )
 
         // draw text
-        // textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textX = centerX - textBounds.exactCenterX()
         val textY = centerY - textBounds.exactCenterY()
         canvas.drawText(text, textX, textY, textPaint)

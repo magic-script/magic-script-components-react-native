@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="center"
+        android:fontFamily="@font/lomino_app_regular"
         android:gravity="left|top"
         android:importantForAutofill="no"
         android:inputType="text|textMultiLine"

@@ -15,7 +15,7 @@ import SceneKit
     }
     //var activateResponse: FocusRequest
     //var renderingLayer: RenderingLayer
-    //var enabled: Bool = true   // (check SCNNodeFocusBehavior)
+    var enabled: Bool = true   // (check SCNNodeFocusBehavior)
     //var eventPassThrough: Bool = true
     //var eventPassThroughChildren: Bool = true
     //var gravityWellEnabled: Bool = true
@@ -27,6 +27,10 @@ import SceneKit
 
         if let alignment = Convert.toAlignment(props["alignment"]) {
             self.alignment = alignment
+        }
+
+        if let enabled = Convert.toBool(props["enabled"]) {
+            self.enabled = enabled
         }
     }
 

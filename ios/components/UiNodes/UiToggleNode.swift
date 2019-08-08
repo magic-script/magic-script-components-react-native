@@ -40,7 +40,7 @@ import SceneKit
     fileprivate var toggleGeometry: SCNPlane!
 
     @objc override var canHaveFocus: Bool {
-        return true
+        return enabled
     }
 
     @objc override func enterFocus() {

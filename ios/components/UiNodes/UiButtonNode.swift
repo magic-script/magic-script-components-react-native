@@ -57,7 +57,7 @@ import SceneKit
     }
 
     @objc override var canHaveFocus: Bool {
-        return true
+        return enabled
     }
 
     @objc override func enterFocus() {
@@ -69,6 +69,7 @@ import SceneKit
     }
 
     @objc func simulateTap() {
+        assert(enabled, "Button must be enabled in order to tap it!")
         onTap?(self)
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")

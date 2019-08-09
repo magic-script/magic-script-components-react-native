@@ -2,10 +2,12 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
@@ -23,6 +25,8 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ROUNDNESS = "roundness"
     }
+
+    private var playingAnim = false
 
     init {
         // set default values of properties
@@ -44,6 +48,11 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.button, null)
+    }
+
+    override fun onViewClick() {
+        super.onViewClick()
+        animate()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -69,6 +78,20 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
             heightPx = Utils.metersToPx(heightInMeters, context)
         }
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
+
+    private fun animate() {
+        if (playingAnim) {
+            return
+        }
+        playingAnim = true
+        val originalPos = worldPosition
+        worldPosition = Vector3(originalPos.x, originalPos.y, originalPos.z - 0.05f)
+        Handler().postDelayed({
+            worldPosition = originalPos
+            playingAnim = false
+        }, 150)
     }
 
     private fun setText(props: Bundle) {

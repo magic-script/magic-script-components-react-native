@@ -85,7 +85,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
+            val size = Utils.metersToPx(sizeMeters, view.context) * Utils.FONT_SCALE_FACTOR
             (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }

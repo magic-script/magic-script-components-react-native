@@ -81,7 +81,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val textSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToPx(textSize, view.context).toFloat()
+            val size = Utils.metersToPx(textSize, view.context) * Utils.FONT_SCALE_FACTOR
             (view as CustomButton).setTextSize(size)
         }
     }

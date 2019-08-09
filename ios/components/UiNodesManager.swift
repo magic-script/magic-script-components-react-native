@@ -161,6 +161,10 @@ import SceneKit
         }
     }
 
+    fileprivate func getCamera() -> SCNCamera? {
+        return rootNode.parent?.childNodes.filter{ $0.camera != nil }.first?.camera
+    }
+
     @objc func textFieldShouldReturn() {
         focusedNode?.leaveFocus()
         onInputUnfocused?()

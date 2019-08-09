@@ -115,8 +115,6 @@
 		449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49622B248090046938D /* SCNVector3Extension.swift */; };
 		449AF4A522B248090046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49722B248090046938D /* UiNodesManager.swift */; };
 		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
-		7D4DF32122FCA9BF00407B0B /* React.xcodeproj in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */; };
-		7D4DF32222FCA9CB00407B0B /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4DF30022FCA7D700407B0B /* libReact.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -379,8 +377,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D4DF32222FCA9CB00407B0B /* libReact.a in Frameworks */,
-				7D4DF32122FCA9BF00407B0B /* React.xcodeproj in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

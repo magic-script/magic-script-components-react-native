@@ -22,7 +22,5 @@ class CustomArFragment : ArFragment() {
         // Hide the instructions
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
-
     }
-
 }

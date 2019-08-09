@@ -45,3 +45,11 @@
 - version management
 6. Misc
 - Should we open source an implementation of Lumin components for iOS/Android? Source code of Lumin components is not publicly available.
+7. GitFlow & Project issues synchronization
+- Create feature branches from master branch:
+    - feature/#ISSUE_description
+    - bugfix/#ISSUE_description
+- Create pull request and assign reviewer
+- Add image/video to the description of pull request if needed
+- Reviewer should leave at least a summary comment in addition to other code comments
+- Except the unusual situations, the pull request should be merged by the author of the Pull Request

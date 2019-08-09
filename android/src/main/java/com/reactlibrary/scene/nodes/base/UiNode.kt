@@ -57,7 +57,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     protected abstract fun provideView(context: Context): View
 
-    protected open fun onClick() {}
+    protected open fun onViewClick() {}
 
     protected open fun setViewSize() {
         // default dimensions
@@ -71,7 +71,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     private fun initView() {
         this.view = provideView(context)
         this.view.setOnClickListener {
-            onClick()
+            onViewClick()
             clickListener?.invoke()
         }
         // build calls applyProperties, so we need to initialize the view before

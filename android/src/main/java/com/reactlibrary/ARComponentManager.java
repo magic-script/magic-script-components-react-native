@@ -34,7 +34,7 @@ import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 /**
- * Android module that is responisble for "parsing" JS tags in order to generate AR Nodes
+ * Android module that is responsible for "parsing" JS tags in order to generate AR Nodes
  * Based on: https://facebook.github.io/react-native/docs/native-modules-android
  * <p>
  * Node creation methods are called from
@@ -42,7 +42,16 @@ import kotlin.jvm.functions.Function1;
  */
 public class ARComponentManager extends ReactContextBaseJavaModule {
 
-    private static final String LOG_TAG = "ARComponentManager";
+    // Supported events names
+    private static final String EVENT_CLICK = "onClick";
+    private static final String EVENT_PRESS = "onPress";
+    private static final String EVENT_TEXT_CHANGED = "onTextChanged";
+    private static final String EVENT_TOGGLE_CHANGED = "onToggleChanged";
+
+    // Supported events arguments
+    private static final String EVENT_ARG_NODE_ID = "nodeId";
+    private static final String EVENT_ARG_TEXT = "text";
+    private static final String EVENT_ARG_TOGGLE_ACTIVE = "on";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -293,14 +302,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
                         @Override
                         public Unit invoke() {
                             WritableMap pressParams = Arguments.createMap();
-                            pressParams.putString("nodeId", nodeId);
+                            pressParams.putString(EVENT_ARG_NODE_ID, nodeId);
 
                             // must use separate map
                             WritableMap clickParams = Arguments.createMap();
-                            clickParams.putString("nodeId", nodeId);
+                            clickParams.putString(EVENT_ARG_NODE_ID, nodeId);
 
-                            sendEvent("onPress", pressParams);
-                            sendEvent("onClick", clickParams);
+                            sendEvent(EVENT_PRESS, pressParams);
+                            sendEvent(EVENT_CLICK, clickParams);
                             return Unit.INSTANCE;
                         }
                     });
@@ -333,10 +342,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
                         @Override
                         public Unit invoke(String text) {
                             WritableMap params = Arguments.createMap();
-                            params.putString("nodeId", nodeId);
-                            params.putString("text", text);
+                            params.putString(EVENT_ARG_NODE_ID, nodeId);
+                            params.putString(EVENT_ARG_TEXT, text);
 
-                            sendEvent("onTextChanged", params);
+                            sendEvent(EVENT_TEXT_CHANGED, params);
                             return Unit.INSTANCE;
                         }
                     });
@@ -356,10 +365,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
                         @Override
                         public Unit invoke(Boolean isOn) {
                             WritableMap params = Arguments.createMap();
-                            params.putString("nodeId", nodeId);
-                            params.putBoolean("on", isOn);
+                            params.putString(EVENT_ARG_NODE_ID, nodeId);
+                            params.putBoolean(EVENT_ARG_TOGGLE_ACTIVE, isOn);
 
-                            sendEvent("onToggleChanged", params);
+                            sendEvent(EVENT_TOGGLE_CHANGED, params);
                             return Unit.INSTANCE;
                         }
                     });

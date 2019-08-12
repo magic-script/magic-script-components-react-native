@@ -125,6 +125,18 @@ export class PlatformFactory extends NativeFactory {
         });
     }
 
+    _diffProps(oldProps, newProps) {
+        let diffProps = {};
+        Object.keys(newProps).forEach((key, index) => {
+            const oldValue = oldProps[key];
+            const value = newProps[key];
+            if (!isEqual(oldValue, value)) {
+                diffProps[key] = value;
+            }
+        });
+        return diffProps;
+    }
+
     _createElement(name, container, ...args) {
         if (this.elementBuilders[name] === undefined) {
             const createBuilder = this._mapping.elements[name];
@@ -148,9 +160,10 @@ export class PlatformFactory extends NativeFactory {
         if (this._mapping.elements[name] !== undefined) {
             const oldProps = this._processCustomProps(name, args[1]);
             const newProps = this._processCustomProps(name, args[2]);
-            if (!isEqual(oldProps, newProps)) {
+            const diffProps = this._diffProps(oldProps, newProps);
+            if (Object.keys(diffProps).length > 0) {
                 const element = args[0];
-                this.componentManager.updateNode(element.id, newProps);
+                this.componentManager.updateNode(element.id, diffProps);
             }
         } else {
             throw new Error(`Unknown tag: ${name}`);

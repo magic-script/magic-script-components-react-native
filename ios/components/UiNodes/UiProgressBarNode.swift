@@ -34,32 +34,45 @@ import SceneKit
         }
     }
     @objc var beginColor: UIColor = UIColor.white {
-        didSet { if (beginColor != oldValue) { barImage = nil; setNeedsLayout(); } }
+        didSet { if (beginColor != oldValue) { progressImage = nil; setNeedsLayout(); } }
     }
-    @objc var endColor: UIColor = UIColor.gray {
-        didSet { if (endColor != oldValue) { barImage = nil; setNeedsLayout(); } }
+    @objc var endColor: UIColor = UIColor.white {
+        didSet { if (endColor != oldValue) { progressImage = nil; setNeedsLayout(); } }
     }
 
-//    @objc var onProgressChanged: ((_ sender: UiNode, _ progress: CGFloat) -> (Void))?
+    //    @objc var onProgressChanged: ((_ sender: UiNode, _ progress: CGFloat) -> (Void))?
 
     fileprivate var _min: CGFloat = 0
     fileprivate var _max: CGFloat = 1
     fileprivate var _value: CGFloat = 0
-    fileprivate var barGeometry: SCNPlane!
-    fileprivate var barImage: UIImage?
+    fileprivate var backgroundGeometry: SCNPlane!
+    fileprivate var progressGeometry: SCNPlane!
+    fileprivate var progressImage: UIImage?
+    fileprivate var progressNode: SCNNode!
 
     @objc override func setupNode() {
         super.setupNode()
 
-        assert(barGeometry == nil, "Node must not be initialized!")
-        barGeometry = SCNPlane(width: width, height: height)
-        barGeometry.firstMaterial?.lightingModel = .constant
-        barGeometry.firstMaterial?.diffuse.wrapS = SCNWrapMode.clamp
-        barGeometry.firstMaterial?.isDoubleSided = true
-        let bgNode = SCNNode(geometry: barGeometry)
-        contentNode.addChildNode(bgNode)
+        assert(backgroundGeometry == nil, "Node must not be initialized!")
+        backgroundGeometry = SCNPlane(width: width, height: height)
+        backgroundGeometry.firstMaterial?.lightingModel = .constant
+        backgroundGeometry.firstMaterial?.isDoubleSided = true
+        let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
+        backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
 
-//        setDebugMode(true)
+        assert(progressGeometry == nil, "Node must not be initialized!")
+        progressGeometry = SCNPlane(width: width, height: height)
+        progressGeometry.firstMaterial?.lightingModel = .constant
+        progressGeometry.firstMaterial?.isDoubleSided = true
+        progressGeometry.firstMaterial?.readsFromDepthBuffer = false
+
+        let bgNode = SCNNode(geometry: backgroundGeometry)
+        progressNode = SCNNode(geometry: progressGeometry)
+        progressNode.renderingOrder = 1
+        contentNode.addChildNode(bgNode)
+        contentNode.addChildNode(progressNode)
+        
+        //        setDebugMode(true)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -103,18 +116,24 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        if barImage == nil {
-            barImage = UIImage.image(from: [beginColor, endColor], size: 32)
-            barGeometry.firstMaterial?.diffuse.contents = barImage
-        }
-
         let size = getSize()
-        barGeometry.width = size.width
-        barGeometry.height = size.height
-        barGeometry.cornerRadius = 0.5 * size.height
+
+        backgroundGeometry.width = size.width
+        backgroundGeometry.height = size.height
+        backgroundGeometry.cornerRadius = 0.5 * size.height
 
         let progress: CGFloat = ((max - min) > 0) ? (value - min) / (max - min) : 0
-        let tx: Float = 0.5 - Float(progress)
-        barGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeTranslation(tx, 0, 0)
+
+        if progressImage == nil {
+            progressImage = UIImage.gradientImageWithBounds(bounds: CGRect(x: 0, y: 0, width: 32.0, height: 32.0), colors: [beginColor.cgColor, endColor.cgColor])
+            progressGeometry.firstMaterial?.diffuse.contents = progressImage
+        }
+
+        let progressWidth = size.width * progress
+        progressGeometry.width = progressWidth
+        progressGeometry.height = size.height
+        progressGeometry.cornerRadius = 0.5 * size.height
+        progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(progressWidth), 0.0, 0.0)
+        progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)
     }
 }

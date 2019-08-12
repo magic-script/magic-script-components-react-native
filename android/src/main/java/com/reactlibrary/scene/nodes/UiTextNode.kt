@@ -48,6 +48,10 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
+        if (props.containsKey(PROP_BOUNDS_SIZE)) {
+            setNeedsRebuild()
+        }
+
         setText(props)
         setTextSize(props)
         setTextAlignment(props)

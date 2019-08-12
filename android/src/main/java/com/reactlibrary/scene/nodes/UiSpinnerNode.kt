@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,14 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
         }
 
         return view
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_SIZE)) {
+            setNeedsRebuild()
+        }
     }
 
     override fun setViewSize() {

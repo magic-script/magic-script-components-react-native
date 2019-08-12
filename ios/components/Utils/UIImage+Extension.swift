@@ -27,4 +27,19 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return img
     }
+    
+    static func gradientImage(withSize size: CGSize, colors: [CGColor]) -> UIImage {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.type = .axial
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.frame = CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height)
+        gradientLayer.colors = colors
+        
+        UIGraphicsBeginImageContextWithOptions(gradientLayer.bounds.size, true, 0)
+        gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
 }

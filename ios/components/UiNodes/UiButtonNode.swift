@@ -28,7 +28,7 @@ import SceneKit
         set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
-        didSet { labelNode.textColor = textColor; reloadOutline = true }
+        didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
     @objc var iconColor: UIColor = UIColor.white
     @objc var textSize: CGFloat = 0 {

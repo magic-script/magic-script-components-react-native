@@ -130,11 +130,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         if (props.containsKey(PROP_BOUNDS_SIZE)) {
             val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
             val wrap = boundsData.getBoolean(PROP_WRAP)
-            if (wrap) {
-                (view as TextView).setSingleLine(false)
-            } else {
-                (view as TextView).setSingleLine()
-            }
+            (view as TextView).setSingleLine(!wrap)
         }
     }
 

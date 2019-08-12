@@ -125,7 +125,7 @@ import SceneKit
         let progress: CGFloat = ((max - min) > 0) ? (value - min) / (max - min) : 0
 
         if progressImage == nil {
-            progressImage = UIImage.gradientImageWithBounds(bounds: CGRect(x: 0, y: 0, width: 32.0, height: 32.0), colors: [beginColor.cgColor, endColor.cgColor])
+            progressImage = UIImage.gradientImage(withSize: CGSize(width: 32.0, height: 32.0), colors: [beginColor.cgColor, endColor.cgColor])
             progressGeometry.firstMaterial?.diffuse.contents = progressImage
         }
 

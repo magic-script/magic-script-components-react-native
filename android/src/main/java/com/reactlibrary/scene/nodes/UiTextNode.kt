@@ -21,6 +21,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         private const val PROP_TEXT = "text"
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_BOUNDS_SIZE = "boundsSize"
+        private const val PROP_WRAP = "wrap"
         private const val PROP_TEXT_ALIGNMENT = "textAlignment"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ALL_CAPS = "allCaps"
@@ -58,6 +59,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         setTextColor(props)
         setAllCaps(props)
         setCharacterSpacing(props)
+        setWrap(props)
     }
 
     override fun setViewSize() {
@@ -121,6 +123,14 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             (view as TextView).letterSpacing = spacing.toFloat()
+        }
+    }
+
+    private fun setWrap(props: Bundle) {
+        if (props.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
+            val wrap = boundsData.getBoolean(PROP_WRAP)
+            (view as TextView).setSingleLine(!wrap)
         }
     }
 

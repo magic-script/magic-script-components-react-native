@@ -64,6 +64,14 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
+     * Attaches renderable to the node (view or model)
+     * Must be called after the ARCore resources have been initialized
+     */
+    fun attachRenderable() {
+        renderableRequested = loadRenderable()
+    }
+
+    /**
      * Updates properties of the node
      * It should be called after [build]
      * @param props properties to change or new properties to apply
@@ -85,13 +93,6 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         setPosition(props)
         setLocalScale(props)
         setLocalRotation(props)
-    }
-
-    /**
-     * Should attach renderable to the node (view or model)
-     */
-    fun attachRenderable() {
-        renderableRequested = loadRenderable()
     }
 
     /** Should assign renderable to the node (if any)

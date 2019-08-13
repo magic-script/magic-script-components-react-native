@@ -57,6 +57,10 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
         setText(props)
         setTextSize(props)
         setTextColor(props)
@@ -98,6 +102,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         val text = props.getString(PROP_TEXT)
         if (text != null) {
             (view as CustomButton).setText(text)
+            setNeedsRebuild()
         }
     }
 
@@ -106,6 +111,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
             val textSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(textSize, view.context) * Utils.FONT_SCALE_FACTOR
             (view as CustomButton).setTextSize(size)
+            setNeedsRebuild()
         }
     }
 

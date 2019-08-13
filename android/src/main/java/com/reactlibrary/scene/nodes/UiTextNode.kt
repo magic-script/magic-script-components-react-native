@@ -48,10 +48,10 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        // TODO resize support (use the update flag instead of renderableRequested?)
-        // if (props.containsKey(PROP_BOUNDS_SIZE) && renderableRequested) { // it's an update
-        //      attachRenderable() //should re-attach view when its size has been changed
-        // }
+
+        if (props.containsKey(PROP_BOUNDS_SIZE)) {
+            setNeedsRebuild()
+        }
 
         setText(props)
         setTextSize(props)
@@ -81,6 +81,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
             (view as TextView).text = text
+            setNeedsRebuild()
         }
     }
 
@@ -89,6 +90,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(sizeMeters, view.context) * Utils.FONT_SCALE_FACTOR
             (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            setNeedsRebuild()
         }
     }
 
@@ -123,6 +125,7 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             (view as TextView).letterSpacing = spacing.toFloat()
+            setNeedsRebuild()
         }
     }
 

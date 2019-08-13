@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiGridLayoutNode: UiNode {
+@objc open class UiGridLayoutNode: UiNode {
 
     @objc var columns: Int = 0 {
         didSet { setNeedsLayout() }

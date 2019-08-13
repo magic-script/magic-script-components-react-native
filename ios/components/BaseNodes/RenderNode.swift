@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class RenderNode: TransformNode {
+@objc open class RenderNode: TransformNode {
 
     @objc var color: UIColor = UIColor.white {
         didSet { setNeedsLayout() }

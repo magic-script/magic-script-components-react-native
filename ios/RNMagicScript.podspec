@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.source_files  = "**/*.{h,m,swift}"
   s.requires_arc = true
 
-  s.dependency "React"
-  #s.dependency "others"
+  s.dependency 'React'
+  s.dependency 'GLTFSceneKit', '0.1.3'
 
 end
 

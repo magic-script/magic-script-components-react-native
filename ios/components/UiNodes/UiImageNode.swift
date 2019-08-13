@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiImageNode: UiNode {
+@objc open class UiImageNode: UiNode {
     fileprivate var dataTask: URLSessionDataTask?
     deinit {
         dataTask?.cancel()

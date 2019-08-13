@@ -9,7 +9,7 @@
 import SceneKit
 import SpriteKit
 
-@objc class UiTextEditNode: UiNode {
+@objc open class UiTextEditNode: UiNode {
 
     static fileprivate let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
 

@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class TransformNode: SCNNode {
+@objc open class TransformNode: SCNNode {
 
     // var name: String // native property
     // var parentedBoneName: String
@@ -59,12 +59,12 @@ import SceneKit
         setupNode()
     }
 
-    @objc required init?(coder aDecoder: NSCoder) {
+    @objc public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupNode()
     }
 
-    @objc convenience init(props: [String: Any]) {
+    @objc public convenience init(props: [String: Any]) {
         self.init()
         update(props)
     }

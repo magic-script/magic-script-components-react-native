@@ -6,6 +6,7 @@
 //  Copyright © 2019 Facebook. All rights reserved.
 //
 
+#import "RNMagicScript-Swift.h"
 #import "RCTConvert+Components.h"
 
 @implementation RCTConvert (AR)

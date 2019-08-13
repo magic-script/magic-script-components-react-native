@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiSpinnerNode: UiNode {
+@objc open class UiSpinnerNode: UiNode {
 
     static fileprivate let defaultSize: CGFloat = 0.07
 

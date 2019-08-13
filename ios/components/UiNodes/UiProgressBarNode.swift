@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiProgressBarNode: UiNode {
+@objc open class UiProgressBarNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
     static fileprivate let defaultHeight: CGFloat = 0.004
 

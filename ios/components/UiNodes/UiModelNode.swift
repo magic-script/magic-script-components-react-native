@@ -7,8 +7,9 @@
 //
 
 import SceneKit
+import GLTFSceneKit
 
-@objc class UiModelNode: TransformNode {
+@objc open class UiModelNode: TransformNode {
     fileprivate var downloadTask: URLSessionDownloadTask?
     fileprivate var dataTask: URLSessionDataTask?
     deinit {

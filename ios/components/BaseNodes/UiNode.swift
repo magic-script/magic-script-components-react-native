@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiNode: TransformNode {
+@objc open class UiNode: TransformNode {
 
     @objc var alignment: Alignment = Alignment.topLeft {
         didSet { setNeedsLayout() }

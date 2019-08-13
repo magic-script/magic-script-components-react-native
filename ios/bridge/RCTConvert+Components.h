@@ -7,10 +7,21 @@
 //
 
 #import <React/RCTConvert.h>
-#import "RNMagicScript-Swift.h"
+
+@class UiButtonNode;
+@class UiGridLayoutNode;
+@class UiGroupNode;
+@class UiImageNode;
+@class UiLineNode;
+@class UiModelNode;
+@class UiProgressBarNode;
+@class UiSliderNode;
+@class UiSpinnerNode;
+@class UiTextNode;
+@class UiTextEditNode;
+@class UiToggleNode;
 
 @interface RCTConvert (Components)
-
 + (UiButtonNode *)UiButtonNode:(id)json;
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;

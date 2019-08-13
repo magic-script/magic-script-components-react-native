@@ -9,9 +9,9 @@
 import Foundation
 import SceneKit
 
-@objc class UiNodesManager: NSObject {
-    @objc static let instance = UiNodesManager()
-    @objc let rootNode: TransformNode = TransformNode()
+@objc open class UiNodesManager: NSObject {
+    @objc public static let instance = UiNodesManager()
+    @objc public let rootNode: TransformNode = TransformNode()
     @objc let focusableNodeBitMask: Int = 8
 
     @objc var onInputFocused: ((_ textEdit: UiTextEditNode) -> (Void))?
@@ -27,11 +27,11 @@ import SceneKit
         UIFont.loadAllCustomFonts()
     }
 
-    @objc func registerScene(_ scene: SCNScene) {
+    @objc public func registerScene(_ scene: SCNScene) {
         scene.rootNode.addChildNode(rootNode)
     }
 
-    @objc func handleNodeTap(_ node: SCNNode?) {
+    @objc public func handleNodeTap(_ node: SCNNode?) {
         var componentNode: SCNNode? = node
         while componentNode != nil {
             if componentNode?.categoryBitMask == focusableNodeBitMask {
@@ -52,15 +52,15 @@ import SceneKit
         }
     }
     
-    @objc func findNodeWithId(_ nodeId: String) -> TransformNode? {
+    @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {
         return nodesById[nodeId]
     }
     
-    @objc func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
+    @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
         return nodeByAnchorUuid[nodeId]
     }
 
-    @objc func registerNode(_ node: TransformNode, nodeId: String) {
+    @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
         if (node.anchorUuid != "rootUuid") {
@@ -72,41 +72,41 @@ import SceneKit
         }
     }
 
-    @objc func unregisterNode(_ nodeId: String) {
+    @objc public func unregisterNode(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
         }
     }
 
-    @objc func addNode(_ nodeId: String, toParent parentId: String) {
+    @objc public func addNode(_ nodeId: String, toParent parentId: String) {
         if let node = nodesById[nodeId],
            let parentNode = nodesById[parentId] {
             parentNode.addChild(node)
         }
     }
 
-    @objc func addNodeToRoot(_ nodeId: String) {
+    @objc public func addNodeToRoot(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             rootNode.addChildNode(node)
         }
     }
 
-    @objc func removeNode(_ nodeId: String, fromParent parentId: String) {
+    @objc public func removeNode(_ nodeId: String, fromParent parentId: String) {
         if let node = nodesById[nodeId],
             let parentNode = nodesById[parentId] {
             parentNode.removeChild(node)
         }
     }
 
-    @objc func removeNodeFromRoot(_ nodeId: String) {
+    @objc public func removeNodeFromRoot(_ nodeId: String) {
         if let node = nodesById[nodeId],
             rootNode == node.parent {
             node.removeFromParentNode()
         }
     }
 
-    @objc func clear() {
+    @objc public func clear() {
         nodesById.forEach { (key: String, value: SCNNode) in
             value.removeFromParentNode()
         }
@@ -115,7 +115,7 @@ import SceneKit
     }
 
     @discardableResult
-    @objc func validateScene() -> Bool {
+    @objc public func validateScene() -> Bool {
         if nodesById.isEmpty && rootNode.childNodes.isEmpty {
             print("[UiNodesManager] Nodes tree hierarchy and nodes list are empty.")
             return true
@@ -140,13 +140,13 @@ import SceneKit
         return true
     }
 
-    @objc func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
+    @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
         return true
     }
 
-    @objc func updateLayout() {
+    @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         updateLayoutFor(node: rootNode)
     }

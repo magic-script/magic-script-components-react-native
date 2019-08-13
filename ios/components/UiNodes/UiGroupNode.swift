@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiGroupNode: UiNode {
+@objc open class UiGroupNode: UiNode {
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }

@@ -18,7 +18,7 @@ import SceneKit
 // Button text size is automatically set based on the button height
 // unless overridden with UiButton::setTextSize().
 
-@objc class UiButtonNode: UiNode {
+@objc open class UiButtonNode: UiNode {
     static fileprivate let defaultHeight: CGFloat = 0.02
     static fileprivate let defaultTextSize: CGFloat = 0.0167
     static fileprivate let borderInset: CGFloat = 0.01
@@ -45,7 +45,7 @@ import SceneKit
         didSet { reloadOutline = true; setNeedsLayout() }
     }
 
-    @objc var onTap: ((_ sender: UiNode) -> (Void))?
+    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
 
 //    fileprivate var contentNode: SCNNode!
     fileprivate var outlineNode: OutlineNode!

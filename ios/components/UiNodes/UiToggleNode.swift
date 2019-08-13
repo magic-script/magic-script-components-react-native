@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiToggleNode: UiNode {
+@objc open class UiToggleNode: UiNode {
 
     static fileprivate let defaultWidth: CGFloat = 0.07337
     static fileprivate let defaultHeight: CGFloat = 0.03359
@@ -31,7 +31,7 @@ import SceneKit
         didSet { toggleGeometry.firstMaterial?.diffuse.contents = on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image }
     }
 
-    @objc var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
+    @objc public var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
 
     fileprivate var labelNode: LabelNode!
 

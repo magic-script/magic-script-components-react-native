@@ -23,5 +23,6 @@
 + (UiTextNode *)UiTextNode:(id)json;
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
++ (UiVideoNode *)UiVideoNode:(id)json;
 
 @end

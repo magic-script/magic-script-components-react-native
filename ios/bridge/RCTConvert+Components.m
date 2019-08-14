@@ -58,5 +58,9 @@
     return [[UiToggleNode alloc] initWithProps:json];
 }
 
++ (UiVideoNode *)UiVideoNode:(id)json {
+    return [[UiVideoNode alloc] initWithProps:json];
+}
+
 @end
 

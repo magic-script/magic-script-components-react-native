@@ -31,8 +31,9 @@ The instruction assumes that you have the following tools installed and you have
 8. Replace the `index.js` file with the one from `ARDemo` project and replace the `ARDemo` name with your project name (here `AwesomeProject`): 
 `MagicScript.registerApp('AwesomeProject', <BrowserApp />, false)`
 
-9. In the `./android/build.gradle` file set `minSdkVersion` to 24
-10. Open `android/app/src/main/AndroidManifest.xml` file and add the following **between** the `<application>` tags:
+9. Delete `App.js` and `app.json` files since they are not required
+10. In the `./android/build.gradle` file set `minSdkVersion` to 24
+11. Open `android/app/src/main/AndroidManifest.xml` file and add the following **between** the `<application>` tags:
 
 	`<meta-data
     android:name="com.google.ar.core"
@@ -46,9 +47,9 @@ The instruction assumes that you have the following tools installed and you have
 	*This tag indicates that this application requires ARCore. This results in the application
 only being visible in the Google Play Store on devices that support ARCore)
 
-	You can compare your Manifest file with [this one](https://github.com/magic-script/magic-script-components-platform-android/blob/master/ARDemo/android/app/src/main/AndroidManifest.xml).
+	You can compare your AndroidManifest file with [this one](https://github.com/magic-script/magic-script-components-platform-android/blob/master/ARDemo/android/app/src/main/AndroidManifest.xml)
 
-11. Execute `react-native run-android` to run the project.
+12. Execute `react-native run-android` to run the project.
 
 ***If you want to run the most recent scenes from the ARDemo app that download content from the web,  you must additionally add dependency to `react-native-fs` and `axios` libraries:**
 

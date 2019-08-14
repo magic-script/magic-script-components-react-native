@@ -16,9 +16,17 @@ class Utils {
 
     companion object {
 
+        // Each text should be scaled down with this factor
+        // to be similar to the Lumin implementation
+        const val FONT_SCALE_FACTOR = 0.8f
+
         // By default, every 250dp for the view becomes 1 meter for the renderable
         // https://developers.google.com/ar/develop/java/sceneform/create-renderables
         private const val DP_TO_METER_RATIO = 250
+
+        // One dp is a virtual pixel unit that's roughly equal to one pixel on a medium-density screen
+        // 160dpi is the "baseline" density
+        private const val BASELINE_DENSITY = 160
 
         private const val DEBUG_ASSETS_PATH = "http://localhost:8081/assets/"
 
@@ -77,7 +85,8 @@ class Utils {
         fun metersToPx(meters: Float, context: Context): Int {
             val xdpi = context.resources.displayMetrics.xdpi
             val ydpi = context.resources.displayMetrics.ydpi
-            val densityAvgFactor = (xdpi + ydpi) / 320
+            val averageDensity = (xdpi + ydpi) / 2
+            val densityAvgFactor = averageDensity / BASELINE_DENSITY
             return (meters * DP_TO_METER_RATIO * densityAvgFactor).toInt()
         }
 

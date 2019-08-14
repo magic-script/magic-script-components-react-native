@@ -28,7 +28,7 @@ import SceneKit
         set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
-        didSet { labelNode.textColor = textColor; reloadOutline = true }
+        didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
     @objc var iconColor: UIColor = UIColor.white
     @objc var textSize: CGFloat = 0 {
@@ -132,7 +132,7 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
-        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * UiButtonNode.borderInset
+        let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + 2 * UiButtonNode.borderInset + labelSize.height 
         let contentHeight: CGFloat = (height > 0) ? height : labelSize.height + 2 * UiButtonNode.borderInset
         return CGSize(width: contentWidth, height: contentHeight)
     }

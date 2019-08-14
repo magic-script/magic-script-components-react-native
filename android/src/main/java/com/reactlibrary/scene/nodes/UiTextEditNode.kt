@@ -141,6 +141,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         val text = props.getString(PROP_TEXT)
         if (text != null) {
             setText(text)
+            setNeedsRebuild()
         }
     }
 
@@ -154,6 +155,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         val hint = props.getString(PROP_HINT)
         if (hint != null) {
             setHint(hint)
+            setNeedsRebuild()
         }
     }
 
@@ -166,8 +168,9 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
+            val size = Utils.metersToPx(sizeMeters, view.context) * Utils.FONT_SCALE_FACTOR
             view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            setNeedsRebuild()
         }
     }
 
@@ -199,6 +202,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
+            setNeedsRebuild()
         }
     }
 
@@ -206,7 +210,6 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         if (props.containsKey(PROP_MULTILINE)) {
             val isMultiline = props.getBoolean(PROP_MULTILINE)
             view.text_edit.setSingleLine(!isMultiline)
-            //  view.text_edit.setLines(5)
         }
     }
 

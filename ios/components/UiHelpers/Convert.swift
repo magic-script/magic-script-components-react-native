@@ -21,9 +21,15 @@ class Convert {
         return value as? Int
     }
 
+    static let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.decimalSeparator = "."
+        return numberFormatter
+    }()
+
     static func toCGFloat(_ value: Any?) -> CGFloat? {
         guard let value = value else { return nil }
-        let floatValue: Float? = NumberFormatter().number(from: "\(value)")?.floatValue
+        let floatValue: Float? = Convert.numberFormatter.number(from: "\(value)")?.floatValue
         return (floatValue != nil) ? CGFloat(floatValue!) : nil
     }
 

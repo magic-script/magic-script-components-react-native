@@ -26,15 +26,20 @@ class UiImageNode(props: ReadableMap, context: Context) : UiNode(props, context)
         private const val PROP_FRAME = "useFrame"
     }
 
+    override fun provideView(context: Context): View {
+        return LayoutInflater.from(context).inflate(R.layout.image, null)
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+
         setImagePath(props)
         setColor(props)
         setUseFrame(props)
-    }
-
-    override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
     override fun setViewSize() {

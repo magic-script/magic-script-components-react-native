@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
@@ -22,6 +23,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     }
 
     var clickListener: (() -> Unit)? = null
+
+    private var shouldRebuild = false
+    private var loadingView = false
 
     /**
      * A view attached to the node
@@ -55,9 +59,26 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         return Utils.calculateBoundsOfNode(this)
     }
 
+    override fun onUpdate(p0: FrameTime?) {
+        super.onUpdate(p0)
+        if (shouldRebuild && renderableRequested && !loadingView) {
+            build() // init a new view and apply all properties
+            attachView()
+            shouldRebuild = false
+            logMessage("node rebuild, hash:{${this.hashCode()}}")
+        }
+    }
+
+    /**
+     * Should be called when the size of the node may have changed
+     */
+    fun setNeedsRebuild() {
+        shouldRebuild = true
+    }
+
     protected abstract fun provideView(context: Context): View
 
-    protected open fun onClick() {}
+    protected open fun onViewClick() {}
 
     protected open fun setViewSize() {
         // default dimensions
@@ -71,7 +92,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     private fun initView() {
         this.view = provideView(context)
         this.view.setOnClickListener {
-            onClick()
+            onViewClick()
             clickListener?.invoke()
         }
         // build calls applyProperties, so we need to initialize the view before
@@ -80,6 +101,7 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     private fun attachView() {
         setViewSize()
 
+        loadingView = true
         ViewRenderable
                 .builder()
                 .setView(context, view)
@@ -88,10 +110,12 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
                 .build()
                 .thenAccept {
                     this.renderable = it
+                    loadingView = false
                     //renderable?.material?.setBoolean("doubleSided", false) does not work
                     logMessage("loaded ViewRenderable")
                 }
                 .exceptionally { throwable ->
+                    loadingView = false
                     logMessage("error loading ViewRenderable: $throwable")
                     null
                 }

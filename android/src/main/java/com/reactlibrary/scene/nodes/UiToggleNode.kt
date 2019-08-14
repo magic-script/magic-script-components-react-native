@@ -57,6 +57,10 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
+        if (props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+
         setIsChecked(props)
         setText(props)
         setTextSize(props)
@@ -69,7 +73,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         val widthPx = 2 * heightPx
 
         val switchParams = LinearLayout.LayoutParams(widthPx, heightPx)
-        switchParams.leftMargin = widthPx
+        switchParams.leftMargin = (0.75 * widthPx).toInt()
         view.iv_toggle.layoutParams = switchParams
 
         view.layoutParams = ViewGroup.LayoutParams(
@@ -97,6 +101,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
             view.tv_toggle.text = text
+            setNeedsRebuild()
         }
     }
 
@@ -105,6 +110,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
             view.tv_toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            setNeedsRebuild()
         }
     }
 

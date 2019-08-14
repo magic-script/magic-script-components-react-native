@@ -56,6 +56,5 @@ class PropertiesReader {
             }
             return null
         }
-
     }
 }

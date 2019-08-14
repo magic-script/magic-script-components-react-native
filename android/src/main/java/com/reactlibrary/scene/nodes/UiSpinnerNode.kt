@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,17 +41,26 @@ class UiSpinnerNode(props: ReadableMap, context: Context) : UiNode(props, contex
         return view
     }
 
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_SIZE)) {
+            setNeedsRebuild()
+        }
+    }
+
     override fun setViewSize() {
         // default dimension
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
         if (properties.containsKey(PROP_SIZE)) {
-            val size = properties.getDouble(PROP_SIZE).toFloat()
-            widthPx = Utils.metersToPx(size, context)
-            heightPx = Utils.metersToPx(size, context)
+            val sizeArray = properties.getSerializable(PROP_SIZE)
+            if (sizeArray is ArrayList<*> && (sizeArray as ArrayList<Double>).size == 2) {
+                widthPx = Utils.metersToPx(sizeArray[0].toFloat(), context)
+                heightPx = Utils.metersToPx(sizeArray[1].toFloat(), context)
+            }
         }
-
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 

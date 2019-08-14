@@ -23,5 +23,4 @@ class CustomArFragment : ArFragment() {
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
     }
-
 }

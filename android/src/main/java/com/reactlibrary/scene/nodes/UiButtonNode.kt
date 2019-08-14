@@ -24,6 +24,8 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT_SIZE = "textSize"
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ROUNDNESS = "roundness"
+
+        private const val DEFAULT_TEXT_SIZE = 0.0167
     }
 
     private var playingAnim = false
@@ -41,7 +43,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
                 val textSize = properties.getDouble(PROP_HEIGHT) / 3
                 properties.putDouble(PROP_TEXT_SIZE, textSize)
             } else {
-                properties.putDouble(PROP_TEXT_SIZE, 0.0167)
+                properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
             }
         }
     }

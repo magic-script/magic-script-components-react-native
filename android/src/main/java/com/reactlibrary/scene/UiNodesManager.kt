@@ -96,6 +96,9 @@ object UiNodesManager {
         return true
     }
 
+    /**
+     * Currently unused
+     */
     @JvmStatic
     @Synchronized
     fun unregisterNode(nodeId: String) {

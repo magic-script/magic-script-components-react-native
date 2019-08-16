@@ -12,9 +12,10 @@ import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
 /**
- * Base node that represents UI controls
+ * Base node that represents UI controls.
+ * It contains a native Android view attached as [renderable]
  */
-abstract class UiNode(props: ReadableMap, protected val context: Context) : TransformNode(props) {
+abstract class UiNode(props: ReadableMap, protected val context: Context) : TransformNode(props, true) {
 
     companion object {
         // properties
@@ -24,9 +25,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     var clickListener: (() -> Unit)? = null
 
-    private var shouldRebuild = false
-    private var loadingView = false
-
     /**
      * A view attached to the node
      */
@@ -34,6 +32,9 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
 
     private var horizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
     private var verticalAlignment = ViewRenderable.VerticalAlignment.CENTER
+
+    private var shouldRebuild = false
+    private var loadingView = false
 
     override fun build() {
         initView()
@@ -46,22 +47,17 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         setEnabled(props)
     }
 
-    /**
-     * Attaches view to the Node (must be called after AR Core native code has been loaded)
-     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
-     */
-    override fun loadRenderable(): Boolean {
+    override fun loadRenderable() {
         attachView()
-        return true
     }
 
     override fun getBounding(): Bounding {
         return Utils.calculateBoundsOfNode(this)
     }
 
-    override fun onUpdate(p0: FrameTime?) {
-        super.onUpdate(p0)
-        if (shouldRebuild && renderableRequested && !loadingView) {
+    override fun onUpdate(frameTime: FrameTime) {
+        super.onUpdate(frameTime)
+        if (shouldRebuild && !loadingView) {
             build() // init a new view and apply all properties
             attachView()
             shouldRebuild = false
@@ -70,10 +66,16 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
     }
 
     /**
-     * Should be called when the size of the node may have changed
+     * Should be called when the size of the node may have changed,
+     * so we need to rebuild the native view (renderable)
+     * (resizing the current view does not work - ARCore bug?)
      */
     fun setNeedsRebuild() {
-        shouldRebuild = true
+        // no rebuilding if the renderable has not been requested yet
+        // because ArCore may not be initialized yet
+        if (renderableRequested) {
+            shouldRebuild = true
+        }
     }
 
     protected abstract fun provideView(context: Context): View

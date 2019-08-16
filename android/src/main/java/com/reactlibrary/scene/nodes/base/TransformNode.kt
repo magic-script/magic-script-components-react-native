@@ -13,9 +13,11 @@ import com.reactlibrary.utils.logMessage
  * Base node.
  * It's characterised by [properties] bundle based on [props].
  * Some properties may be added or changed on [update] function.
+ *
  * @param props the initial properties of the node
+ * @param hasRenderable indicates whether the node contains a renderable (view, model, etc)
  */
-abstract class TransformNode(props: ReadableMap) : Node() {
+abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : Node() {
 
     companion object {
         // props
@@ -64,11 +66,13 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Attaches renderable to the node (view or model)
+     * Attaches a renderable (view, model) to the node
      * Must be called after the ARCore resources have been initialized
+     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
      */
     fun attachRenderable() {
-        renderableRequested = loadRenderable()
+        loadRenderable()
+        renderableRequested = true
     }
 
     /**
@@ -85,9 +89,8 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Applies props on the node.localRotation
-     * @param update if true it's called on [update],
-     * else it's called when initialized ([build])
+     * Applies the properties to the node
+     * @param props properties to apply
      */
     protected open fun applyProperties(props: Bundle) {
         setPosition(props)
@@ -95,10 +98,11 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         setLocalRotation(props)
     }
 
-    /** Should assign renderable to the node (if any)
-     *  @return true if renderable has been assigned to the node, false otherwise
+    /**
+     * If the node contains a renderable, it should be loaded
+     * and assigned in this method
      */
-    protected abstract fun loadRenderable(): Boolean
+    protected open fun loadRenderable() {}
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

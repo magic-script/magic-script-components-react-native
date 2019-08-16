@@ -14,7 +14,6 @@
         android:fontFamily="@font/lomino_app_regular"
         android:gravity="left"
         android:includeFontPadding="false"
-        android:text="Toggle"
         android:textColor="@color/text_color_default"
         android:textSize="20sp"
         tools:ignore="RtlHardcoded" />

@@ -10,7 +10,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
-class ModelNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
+class ModelNode(props: ReadableMap, private val context: Context) : TransformNode(props, true) {
 
     companion object {
         // properties
@@ -22,9 +22,8 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         setModelPath(props)
     }
 
-    override fun loadRenderable(): Boolean {
+    override fun loadRenderable() {
         loadModel()
-        return true
     }
 
     override fun getBounding(): Bounding {

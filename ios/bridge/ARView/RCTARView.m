@@ -7,6 +7,7 @@
 //
 
 #import "RCTARView.h"
+#import <React/RCTBridge.h>
 #import "RNMagicScript-Swift.h"
 
 @interface RCTARView() <UIGestureRecognizerDelegate, ARSCNViewDelegate>
@@ -16,14 +17,20 @@
 
 @end
 
-
 @implementation RCTARView
+
+static RCTARView* currentInstance;
++ (RCTARView*) current
+{ @synchronized(self) { return currentInstance; } }
++ (void) setCurrent:(RCTARView*)val
+{ @synchronized(self) { currentInstance = val; } }
 
 - (instancetype)init {
     if ((self = [super init])) {
         self.arView = [self createARView];
         [self resume];
     }
+    RCTARView.current = self;
 
     return self;
 }

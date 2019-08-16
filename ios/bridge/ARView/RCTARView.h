@@ -12,6 +12,9 @@
 
 @interface RCTARView : UIView
 
++ (RCTARView*) current;
++ (void) setCurrent:(RCTARView*)val;
+
 @property (nonatomic, strong) ARSCNView *arView;
 
 @property (nonatomic, assign) BOOL debug;

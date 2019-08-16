@@ -11,11 +11,11 @@ import com.reactlibrary.utils.logMessage
 
 /**
  * Base node.
- * It's characterised by [properties] bundle based on [props].
- * Some properties may be added or changed on [update] function.
+ * It's characterised by [properties] bundle based on passed [props].
+ * Properties can be added or changed using the [update] function.
  *
  * @param props the initial properties of the node
- * @param hasRenderable indicates whether the node contains a renderable (view, model, etc)
+ * @param hasRenderable indicates whether the node will have a renderable (view, model, etc)
  */
 abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : Node() {
 
@@ -27,8 +27,8 @@ abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : N
     }
 
     /**
-     * All node's properties
-     * Packed to Bundle to avoid "already consumed" bugs
+     * All node's properties (packed to Bundle to avoid "already consumed"
+     * exceptions when reading from [ReadableMap])
      */
     protected val properties = Arguments.toBundle(props) ?: Bundle()
 
@@ -42,8 +42,9 @@ abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : N
     }
 
     /**
-     * Return true if already tried to attach the renderable (view or model),
+     * Returns true if already started to load the renderable,
      * otherwise false
+     * (loading a renderable is an asynchronous operation)
      */
     var renderableRequested = false
         private set
@@ -53,8 +54,8 @@ abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : N
     }
 
     /**
-     * Returns 2D (x, y) bounding of the node - the minimum rectangle
-     * that include the node
+     * Returns 2D bounding of the node - the minimum rectangle
+     * that includes the node
      */
     abstract fun getBounding(): Bounding
 
@@ -76,8 +77,9 @@ abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : N
     }
 
     /**
-     * Updates properties of the node
-     * It should be called after [build]
+     * Updates properties of the node.
+     * Should be called after [build]
+     *
      * @param props properties to change or new properties to apply
      */
     fun update(props: ReadableMap) {

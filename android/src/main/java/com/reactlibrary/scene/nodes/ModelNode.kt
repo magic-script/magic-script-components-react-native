@@ -50,7 +50,6 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
                             context,
                             androidPathUri,
                             RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
-                            // .setScale(2.5f)
                             .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                             .build())
                     .setRegistryId(path)

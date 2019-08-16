@@ -9,8 +9,8 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.logMessage
 
 /**
- * Grid manager for a grid layout with flexible columns and rows width:
- * it means that columns and rows will grow to fit the node with padding.
+ * Grid layout's manager with flexible columns and rows size:
+ * column and row will grow to fit the bounding (+ padding) of a child.
  */
 class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
 
@@ -136,7 +136,6 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
         return itemBounds.top - itemBounds.bottom + grid.itemPadding.top + grid.itemPadding.bottom
     }
 
-    // TODO when all specified columns shoudl take precedence?
     private fun getColumnIndex(childIdx: Int): Int {
         return if (grid.rows != 0) {
             childIdx / grid.rows

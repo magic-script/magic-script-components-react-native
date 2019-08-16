@@ -25,6 +25,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         private const val PROP_TEXT_COLOR = "textColor"
         private const val PROP_ROUNDNESS = "roundness"
 
+        private const val DEFAULT_ROUNDNESS = 1.0
         private const val DEFAULT_TEXT_SIZE = 0.0167
     }
 
@@ -34,7 +35,7 @@ class UiButtonNode(props: ReadableMap, context: Context) : UiNode(props, context
         // set default values of properties
 
         if (!properties.containsKey(PROP_ROUNDNESS)) {
-            properties.putDouble(PROP_ROUNDNESS, 1.0)
+            properties.putDouble(PROP_ROUNDNESS, DEFAULT_ROUNDNESS)
         }
 
         if (!properties.containsKey(PROP_TEXT_SIZE)) {

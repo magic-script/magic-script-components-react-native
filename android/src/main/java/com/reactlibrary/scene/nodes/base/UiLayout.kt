@@ -11,7 +11,7 @@ import com.reactlibrary.utils.logMessage
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(props: ReadableMap)
-    : TransformNode(props) {
+    : TransformNode(props, false) {
 
     var layoutManager: LayoutManager? = null
 
@@ -34,10 +34,6 @@ abstract class UiLayout(props: ReadableMap)
     override fun addChildNode(child: Node) {
         addChild(child)
         shouldRedraw = true
-    }
-
-    override fun loadRenderable(): Boolean {
-        return false
     }
 
     /**

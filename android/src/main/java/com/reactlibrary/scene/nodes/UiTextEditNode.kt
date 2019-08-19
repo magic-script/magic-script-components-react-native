@@ -14,10 +14,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.setTextAndMoveCursor
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, context) {
@@ -85,6 +82,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
 
     override fun provideView(context: Context): View {
         val v = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        v.text_edit.typeface = FontProvider.provideFont(context)
 
         val multiline = properties.getBoolean(PROP_MULTILINE, false)
         if (multiline) {
@@ -241,6 +239,7 @@ class UiTextEditNode(props: ReadableMap, context: Context) : UiNode(props, conte
         val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
 
         val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
+        input.typeface = FontProvider.provideFont(context)
         val visibleText = generateVisibleText(text)
         if (isPassword()) {
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD

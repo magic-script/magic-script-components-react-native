@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 
@@ -43,7 +44,9 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.text, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
+        view.typeface = FontProvider.provideFont(context)
+        return view
     }
 
     override fun applyProperties(props: Bundle) {

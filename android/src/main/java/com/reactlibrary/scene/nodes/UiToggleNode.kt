@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.toggle.view.*
@@ -46,6 +47,7 @@ class UiToggleNode(props: ReadableMap, context: Context) : UiNode(props, context
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
+        view.tv_toggle.typeface = FontProvider.provideFont(context)
         view.iv_toggle.setOnClickListener {
             isOn = !isOn
             refreshImage()

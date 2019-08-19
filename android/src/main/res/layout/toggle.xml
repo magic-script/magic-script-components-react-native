@@ -11,7 +11,6 @@
         android:id="@+id/tv_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/lomino_app_regular"
         android:gravity="left"
         android:includeFontPadding="false"
         android:textColor="@color/text_color_default"

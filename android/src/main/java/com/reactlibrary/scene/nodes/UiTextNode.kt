@@ -80,8 +80,13 @@ class UiTextNode(props: ReadableMap, context: Context) : UiNode(props, context) 
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            (view as TextView).text = text
-            setNeedsRebuild()
+            val textView = view as TextView
+            // checking because of bug on the JS side (we get text update
+            // even when text is the same)
+            if (text != textView.text) {
+                textView.text = text
+                setNeedsRebuild()
+            }
         }
     }
 

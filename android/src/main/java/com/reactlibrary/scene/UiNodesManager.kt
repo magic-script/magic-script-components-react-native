@@ -21,7 +21,7 @@ object UiNodesManager {
         arReady = true
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
-            if (!node.renderableRequested) {
+            if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
             }
         }
@@ -49,7 +49,7 @@ object UiNodesManager {
         nodesById[nodeId] = node
         logMessage("register node: $node")
 
-        if (arReady && !node.renderableRequested) {
+        if (arReady && node.hasRenderable && !node.renderableRequested) {
             node.attachRenderable()
         }
     }
@@ -96,6 +96,9 @@ object UiNodesManager {
         return true
     }
 
+    /**
+     * Currently unused
+     */
     @JvmStatic
     @Synchronized
     fun unregisterNode(nodeId: String) {

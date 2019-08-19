@@ -5,7 +5,8 @@ import android.support.test.runner.AndroidJUnit4
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Bounding
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,11 +21,11 @@ class UtilsTest {
 
         val bounding = Utils.calculateBoundsOfNode(node)
 
-        Assert.assertNotNull(bounding)
-        Assert.assertEquals(node.localPosition.x, bounding.left)
-        Assert.assertEquals(node.localPosition.x, bounding.right)
-        Assert.assertEquals(node.localPosition.y, bounding.top)
-        Assert.assertEquals(node.localPosition.y, bounding.bottom)
+        assertNotNull(bounding)
+        assertEquals(node.localPosition.x, bounding.left)
+        assertEquals(node.localPosition.x, bounding.right)
+        assertEquals(node.localPosition.y, bounding.top)
+        assertEquals(node.localPosition.y, bounding.bottom)
     }
 
     @Test
@@ -33,17 +34,17 @@ class UtilsTest {
         val testNode1 = Node()
         val testNode2 = Node()
         val testNode3 = Node()
-        testNode1.localPosition = Vector3(1f,2f,3f)
+        testNode1.localPosition = Vector3(1f, 2f, 3f)
         testNode2.localPosition = Vector3(10f, 20f, 30f)
         testNode3.localPosition = Vector3(100f, 200f, 300f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode1, testNode2, testNode3))
 
-        Assert.assertNotNull(bounding)
-        Assert.assertEquals(1f, bounding.left)
-        Assert.assertEquals(100f, bounding.right)
-        Assert.assertEquals(2f, bounding.bottom)
-        Assert.assertEquals(200f, bounding.top)
+        assertNotNull(bounding)
+        assertEquals(1f, bounding.left)
+        assertEquals(100f, bounding.right)
+        assertEquals(2f, bounding.bottom)
+        assertEquals(200f, bounding.top)
     }
 
     @Test
@@ -51,7 +52,7 @@ class UtilsTest {
     fun shouldReturnEmptyBoundingWhenListOfNodesIsEmpty() {
         val bounding = Utils.calculateSumBounds(emptyList())
 
-        Assert.assertEquals(Bounding(0f, 0f, 0f, 0f), bounding)
+        assertEquals(Bounding(0f, 0f, 0f, 0f), bounding)
     }
 
     @Test
@@ -62,7 +63,7 @@ class UtilsTest {
 
         val bounding = Utils.calculateSumBounds(listOf(testNode))
 
-        Assert.assertEquals(Bounding(1f, 1f, 1f, 1f), bounding)
+        assertEquals(Bounding(1f, 1f, 1f, 1f), bounding)
     }
 
 }

@@ -1,14 +1,11 @@
 package com.reactlibrary;
 
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
-import com.facebook.react.uimanager.annotations.ReactProp;
 import com.google.ar.sceneform.Scene;
 import com.reactlibrary.scene.CustomArFragment;
 import com.reactlibrary.scene.UiNodesManager;
@@ -22,7 +19,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     private static final String REACT_CLASS = "RCTARView";
     private static WeakReference<AppCompatActivity> activityRef;
-    private static WeakReference<FrameLayout> containerRef = new WeakReference<>(null);
 
     static void initActivity(final AppCompatActivity activity) {
         activityRef = new WeakReference<>(activity);
@@ -30,14 +26,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     public static WeakReference<AppCompatActivity> getActivityRef() {
         return activityRef;
-    }
-
-    public static void addViewToContainer(View view) {
-        FrameLayout container = containerRef.get();
-        if (container != null) {
-            container.addView(view);
-            container.requestLayout();
-        }
     }
 
     @Override
@@ -49,8 +37,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     protected FrameLayout createViewInstance(final ThemedReactContext reactContext) {
         // view that contains AR fragment
         Log.d("ArViewManager", "createViewInstance");
-        FrameLayout mContainer = new DynamicContainer(reactContext);
-        containerRef = new WeakReference<>(mContainer);
+        FrameLayout mContainer = new FrameLayout(reactContext);
         CustomArFragment fragment = new CustomArFragment(); // new ArFragment();
         AppCompatActivity activity = activityRef.get();
         if (activity != null) {
@@ -67,12 +54,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     public boolean needsCustomLayoutForChildren() {
         // TODO check if this is required
         return true;
-    }
-
-    // for tests
-    @ReactProp(name = "text")
-    public void setText(FrameLayout view, @Nullable String text) {
-        // view.setText(text);
     }
 
 }

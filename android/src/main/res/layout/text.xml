@@ -7,6 +7,5 @@
     android:fontFamily="@font/lomino_app_regular"
     android:gravity="left"
     android:includeFontPadding="false"
-    android:text="Hello AR"
     android:textColor="@color/text_color_default"
     tools:ignore="RtlHardcoded" />

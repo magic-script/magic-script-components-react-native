@@ -11,11 +11,13 @@ import com.reactlibrary.utils.logMessage
 
 /**
  * Base node.
- * It's characterised by [properties] bundle based on [props].
- * Some properties may be added or changed on [update] function.
+ * It's characterised by [properties] bundle based on passed [props].
+ * Properties can be added or changed using the [update] function.
+ *
  * @param props the initial properties of the node
+ * @param hasRenderable indicates whether the node will have a renderable (view, model, etc)
  */
-abstract class TransformNode(props: ReadableMap) : Node() {
+abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : Node() {
 
     companion object {
         // props
@@ -25,8 +27,8 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * All node's properties
-     * Packed to Bundle to avoid "already consumed" bugs
+     * All node's properties (packed to Bundle to avoid "already consumed"
+     * exceptions when reading from [ReadableMap])
      */
     protected val properties = Arguments.toBundle(props) ?: Bundle()
 
@@ -40,8 +42,9 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Return true if already tried to attach the renderable (view or model),
+     * Returns true if already started to load the renderable,
      * otherwise false
+     * (loading a renderable is an asynchronous operation)
      */
     var renderableRequested = false
         private set
@@ -51,8 +54,8 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Returns 2D (x, y) bounding of the node - the minimum rectangle
-     * that include the node
+     * Returns 2D bounding of the node - the minimum rectangle
+     * that includes the node
      */
     abstract fun getBounding(): Bounding
 
@@ -64,16 +67,19 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Attaches renderable to the node (view or model)
+     * Attaches a renderable (view, model) to the node
      * Must be called after the ARCore resources have been initialized
+     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
      */
     fun attachRenderable() {
-        renderableRequested = loadRenderable()
+        loadRenderable()
+        renderableRequested = true
     }
 
     /**
-     * Updates properties of the node
-     * It should be called after [build]
+     * Updates properties of the node.
+     * Should be called after [build]
+     *
      * @param props properties to change or new properties to apply
      */
     fun update(props: ReadableMap) {
@@ -85,9 +91,8 @@ abstract class TransformNode(props: ReadableMap) : Node() {
     }
 
     /**
-     * Applies props on the node.localRotation
-     * @param update if true it's called on [update],
-     * else it's called when initialized ([build])
+     * Applies the properties to the node
+     * @param props properties to apply
      */
     protected open fun applyProperties(props: Bundle) {
         setPosition(props)
@@ -95,10 +100,11 @@ abstract class TransformNode(props: ReadableMap) : Node() {
         setLocalRotation(props)
     }
 
-    /** Should assign renderable to the node (if any)
-     *  @return true if renderable has been assigned to the node, false otherwise
+    /**
+     * If the node contains a renderable, it should be loaded
+     * and assigned in this method
      */
-    protected abstract fun loadRenderable(): Boolean
+    protected open fun loadRenderable() {}
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

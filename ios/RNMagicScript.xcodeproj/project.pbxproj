@@ -114,7 +114,7 @@
 		449AF4A322B248090046938D /* SCNMatrix4Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49522B248090046938D /* SCNMatrix4Extension.swift */; };
 		449AF4A422B248090046938D /* SCNVector3Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49622B248090046938D /* SCNVector3Extension.swift */; };
 		449AF4A522B248090046938D /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449AF49722B248090046938D /* UiNodesManager.swift */; };
-		44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UIModelNode.swift */; };
+		44FA561C22B7A0EA00B42251 /* UiModelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44FA561B22B7A0EA00B42251 /* UiModelNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,7 +361,7 @@
 		449AF49522B248090046938D /* SCNMatrix4Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNMatrix4Extension.swift; sourceTree = "<group>"; };
 		449AF49622B248090046938D /* SCNVector3Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNVector3Extension.swift; sourceTree = "<group>"; };
 		449AF49722B248090046938D /* UiNodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodesManager.swift; sourceTree = "<group>"; };
-		44FA561B22B7A0EA00B42251 /* UIModelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModelNode.swift; sourceTree = "<group>"; };
+		44FA561B22B7A0EA00B42251 /* UiModelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiModelNode.swift; sourceTree = "<group>"; };
 		7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -603,7 +603,7 @@
 				44107CED22E888070007CBF5 /* UiGridLayoutNode.swift */,
 				449AF48D22B248090046938D /* UiImageNode.swift */,
 				4471C4F922F5A61B00C8C5EC /* UiLineNode.swift */,
-				44FA561B22B7A0EA00B42251 /* UIModelNode.swift */,
+				44FA561B22B7A0EA00B42251 /* UiModelNode.swift */,
 				447C246122F2CF3600F9A8F6 /* UiProgressBarNode.swift */,
 				447C245F22F2CF2700F9A8F6 /* UiSliderNode.swift */,
 				4461548422CA413100159F18 /* UiSpinnerNode.swift */,
@@ -950,7 +950,7 @@
 				4447D49A22BC2BC40043CA89 /* GLTFExtras.swift in Sources */,
 				4461548522CA413100159F18 /* UiSpinnerNode.swift in Sources */,
 				449AF49C22B248090046938D /* UiImageNode.swift in Sources */,
-				44FA561C22B7A0EA00B42251 /* UIModelNode.swift in Sources */,
+				44FA561C22B7A0EA00B42251 /* UiModelNode.swift in Sources */,
 				447F283422F3049C00858461 /* UIImage+Extension.swift in Sources */,
 				4447D49C22BC2BC40043CA89 /* GLTFExtension.swift in Sources */,
 				4447D48F22BC2BC40043CA89 /* GLTFGlTF.swift in Sources */,

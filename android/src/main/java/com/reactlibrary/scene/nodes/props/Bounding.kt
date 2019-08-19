@@ -13,7 +13,7 @@ data class Bounding(
 ) {
     companion object {
 
-        private const val eps = 1e-5 //epsilon
+        private const val eps = 1e-5 // epsilon
 
         /**
          * Compares 2 bounds and returns true if they are the same

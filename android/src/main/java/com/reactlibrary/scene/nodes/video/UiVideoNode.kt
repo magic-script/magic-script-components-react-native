@@ -13,7 +13,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
-class UiVideoNode(props: ReadableMap, private val context: Context) : TransformNode(props) {
+class UiVideoNode(props: ReadableMap, private val context: Context) : TransformNode(props, hasRenderable = true) {
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
@@ -26,9 +26,8 @@ class UiVideoNode(props: ReadableMap, private val context: Context) : TransformN
         if(renderableRequested) loadModel()
     }
 
-    override fun loadRenderable(): Boolean {
+    override fun loadRenderable() {
         loadModel()
-        return true
     }
 
     override fun getBounding(): Bounding {

@@ -4,8 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -25,6 +27,8 @@ import com.reactlibrary.scene.nodes.UiToggleNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
+import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
+import com.reactlibrary.scene.nodes.video.UiVideoNode;
 
 import java.util.Collections;
 import java.util.Map;
@@ -40,7 +44,7 @@ import kotlin.jvm.functions.Function1;
  * Node creation methods are called from
  * react-native-magic-script/components/platform/platform-factory.js
  */
-public class ARComponentManager extends ReactContextBaseJavaModule {
+public class ARComponentManager extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     // Supported events names
     private static final String EVENT_CLICK = "onClick";
@@ -62,6 +66,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         super(reactContext);
         // here activity is null yet (so we use initAR method)
         this.context = reactContext;
+        context.addLifecycleEventListener(this);
     }
 
     @Override
@@ -167,6 +172,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 addNode(new ModelNode(props, context), nodeId);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createVideoNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                addNode(new UiVideoNode(props, context), nodeId);
             }
         });
     }
@@ -391,4 +406,19 @@ public class ARComponentManager extends ReactContextBaseJavaModule {
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
+    @Override
+    public void onHostResume() {
+
+    }
+
+    @Override
+    public void onHostPause() {
+
+    }
+
+    @Override
+    public void onHostDestroy() {
+        Log.d("ARComponentManager", "onHostDestroy");
+        MediaPlayerPool.INSTANCE.destroy();
+    }
 }

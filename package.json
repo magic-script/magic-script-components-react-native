@@ -5,6 +5,7 @@
   "description": "Magic Script Components package for React Native.",
   "main": "index.js",
   "scripts": {
+    "postinstall": "./scripts/postinstall.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

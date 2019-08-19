@@ -20,6 +20,7 @@
 @class UiTextNode;
 @class UiTextEditNode;
 @class UiToggleNode;
+@class UiVideoNode;
 
 @interface RCTConvert (Components)
 + (UiButtonNode *)UiButtonNode:(id)json;

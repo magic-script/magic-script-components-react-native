@@ -7,6 +7,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -56,8 +57,13 @@ abstract class TransformNode(props: ReadableMap, val hasRenderable: Boolean) : N
     /**
      * Returns 2D bounding of the node - the minimum rectangle
      * that includes the node
+     *
+     * The default implementation calculates bounds based
+     * on attached renderable (collision shape)
      */
-    abstract fun getBounding(): Bounding
+    open fun getBounding(): Bounding {
+        return Utils.calculateBoundsOfNode(this)
+    }
 
     /**
      * Builds the node by calling [applyProperties] with all initial properties

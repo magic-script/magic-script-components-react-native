@@ -51,10 +51,6 @@ abstract class UiNode(props: ReadableMap, protected val context: Context) : Tran
         attachView()
     }
 
-    override fun getBounding(): Bounding {
-        return Utils.calculateBoundsOfNode(this)
-    }
-
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
         if (shouldRebuild && !loadingView) {

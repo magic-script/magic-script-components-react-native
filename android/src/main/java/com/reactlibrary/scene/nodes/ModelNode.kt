@@ -26,10 +26,6 @@ class ModelNode(props: ReadableMap, private val context: Context) : TransformNod
         loadModel()
     }
 
-    override fun getBounding(): Bounding {
-        return Utils.calculateBoundsOfNode(this)
-    }
-
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
             // cannot update the ModelRenderable before [renderableRequested],

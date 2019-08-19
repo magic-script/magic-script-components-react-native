@@ -180,7 +180,8 @@ export class PlatformFactory extends NativeFactory {
 
     addChildElement(parent, child) {
         if (typeof child === 'string' || typeof child === 'number') {
-            this.componentManager.updateNode(parent.id, { text: child.toString() });
+            // Do nothing here. If child is a text or number then it should be included to parent
+            // as a text property (see 4th line in _processCustomProps function).
         } else {
             this.componentManager.addChildNode(child.id, parent.id);
         }

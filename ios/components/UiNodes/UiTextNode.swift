@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiTextNode: UiNode {
+@objc open class UiTextNode: UiNode {
     @objc var text: String? {
         get { return labelNode.text }
         set { labelNode.text = newValue; setNeedsLayout() }

@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class OutlineNode: SCNNode {
+@objc open class OutlineNode: SCNNode {
 
     let width: CGFloat
     let height: CGFloat
@@ -36,7 +36,7 @@ import SceneKit
         setupNode()
     }
 
-    @objc required init?(coder aDecoder: NSCoder) {
+    @objc public required init?(coder aDecoder: NSCoder) {
         self.width = 0
         self.height = 0
         self.cornerRadius = 0

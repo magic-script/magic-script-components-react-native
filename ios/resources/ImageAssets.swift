@@ -8,10 +8,10 @@
 
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit.UIImage
-//typealias Image = UIImage
+typealias Image = UIImage
 #elseif os(OSX)
 import AppKit.NSImage
-//typealias Image = NSImage
+typealias Image = NSImage
 #endif
 
 public enum ImageAsset: String {

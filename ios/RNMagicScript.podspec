@@ -11,10 +11,13 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "11.0"
   s.source       = { :git => "git@github.com:magic-script/react-native-magic-script.git", :tag => "master" }
   s.source_files  = "**/*.{h,m,swift}"
+  s.resource_bundles = {
+    'RNMagicScriptResources' => ['**/*.{ttf,xcassets}']
+  }
   s.requires_arc = true
 
-  s.dependency "React"
-  #s.dependency "others"
+  s.dependency 'React'
+  s.dependency 'GLTFSceneKit'
 
 end
 

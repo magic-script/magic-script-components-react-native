@@ -8,7 +8,7 @@
 
 import SceneKit
 
-@objc class UiLineNode: RenderNode {
+@objc open class UiLineNode: RenderNode {
 
     @objc var points: [SCNVector3] = [] {
         didSet { linesNode.geometry = nil; setNeedsLayout() }

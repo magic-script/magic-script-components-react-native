@@ -73,7 +73,7 @@ RCT_EXPORT_MODULE();
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onToggleChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
+            [self sendEventWithName:@"onToggleChanged" body:@{ @"nodeId": sender.name, @"On": @(value) }];
         });
     }
 }

@@ -4,7 +4,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 ------|-----------|----------|-------------|-----|---------|---------|
  1 | View | UiNode | :thumbsup: | :thumbsup: | :thumbsup: |
  2 | Text | UiText | :thumbsup: | :thumbsup: | :thumbsup: |
- 3 | TextEdit | UiTextEdit | :thumbsup: | 2 D | 2 H |
+ 3 | TextEdit | UiTextEdit | :thumbsup: | 2 D | 4H |
  4 | Button | UiButton | :thumbsup: | :thumbsup: | :thumbsup: |
  5 | Image | UiImage | :thumbsup: | :thumbsup: | :thumbsup: |
  6 | ScrollBar | UiScrollBar | :thumbsup: | 2 D | 2 D |
@@ -14,16 +14,16 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 10 | Model | ModelNode | :thumbsup: | :thumbsup: | :thumbsup: |
 11 | Spinner | UiLoadingSpinner | :thumbsup: | :thumbsup:| :thumbsup: |
 12 | Slider | UiSlider | :thumbsup: | 2 D | 2 D |
-13 | ProgressBar | UiProgressBar | :thumbsup: | 1 D | 1.5 D |
-14 | GridLayout | UiGridLayout | :thumbsup: | :thumbsup: | 2.5 D |
+13 | ProgressBar | UiProgressBar | :thumbsup: | 1 D | :thumbsup: |
+14 | GridLayout | UiGridLayout | :thumbsup: | :thumbsup: | :thumbsup: |
 15 | LinearLayout | UiLinearLayout | :thumbsup: | 1 D | 2 D |
 16 | RectLayout | UiRectLayout | :thumbsup: | 1 D | 1 D |
 17 | DropdownList | UiDropDownList | :thumbsup: | 2 D | 2 D |
 18 | DropdownListItem | DropDownListItem | :thumbsup: | 3 D | 2.5 D |
-19 | Toggle | UiToggle | :thumbsup: | :thumbsup: | 1 D |
+19 | Toggle | UiToggle | :thumbsup: | :thumbsup: | :thumbsup: |
 20 | ToggleGroup | UiToggleGroup | :thumbsup: | ? | ? |
 21 | Panel | UiPanel | :thumbsup: | ? | ? |
-22 | Video | VideoNode | :thumbsup: | ? | ? |
+22 | Video | VideoNode | :thumbsup: | ? | 2H |
 23 | Audio | AudioNode | :thumbsup: | 1 D | 2 D |
 24 | Dialog | UiDialog | :thumbsup: | ?? | ? |
 25 | Tab | UiTab | :thumbsup: | ? | ? |
@@ -34,4 +34,4 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 30 | DatePicker | UiDatePicker | :thumbsup: | 2 D | 2.5 D |
 31 | PortalIcon | UiPortalIcon | :thumbsup: | ?? |
 32 | CircleConfirmation | UiCircleConfirmation | :thumbsup: | ?? |
-33 | Line | LineNode | :thumbsup: | :thumbsup: | ? |
+33 | Line | LineNode | :thumbsup: | :thumbsup: | 4H |

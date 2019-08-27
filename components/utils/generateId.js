@@ -54,12 +54,6 @@ function toDigits(str, n) {
 
 let random = Math.floor(Math.random() * 60 * 60 * 60 * 60);
 
-// export default function() {
-//   const firstEightDigits = Math.random().toString(36).substr(2, 8);
-//   const secondEightDigits = Math.random().toString(36).substr(2, 8);
-//   return `${firstEightDigits}${secondEightDigits}`;
-// }
-
 export default function(idfv) {
   random++;
   const time = toSex(Math.floor(Date.now() / 1000));

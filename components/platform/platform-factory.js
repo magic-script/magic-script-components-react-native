@@ -7,10 +7,6 @@ import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-class mockComponentManager {
-    clearScene() { }
-}
-
 class mockEventManager {
     addListener(a, b) { }
 }
@@ -21,7 +17,7 @@ export class PlatformFactory extends NativeFactory {
 
         // { type, builder }
         this.elementBuilders = {};
-        this.componentManager = new mockComponentManager();//NativeModules.ARComponentManager;
+        this.componentManager = new NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
     }
@@ -29,7 +25,7 @@ export class PlatformFactory extends NativeFactory {
     setupEventsManager() {
         this.eventsByElementId = {};
 
-        this.eventsManager = new mockEventManager();//NativeEventEmitter(NativeModules.AREventsManager);
+        this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent('onPress');
         this.startListeningEvent('onClick');
         this.startListeningEvent('onTextChanged');
@@ -107,7 +103,7 @@ export class PlatformFactory extends NativeFactory {
         if (this._mapping.elements[name] === undefined) {
             throw new Error(`Unknown tag: ${name}`);
         }
-        
+
         return this._createElement(name, container, ...args)
     }
 

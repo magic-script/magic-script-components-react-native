@@ -7,13 +7,21 @@ import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
+class mockComponentManager {
+    clearScene() { }
+}
+
+class mockEventManager {
+    addListener(a, b) { }
+}
+
 export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
         super(componentMapping);
 
         // { type, builder }
         this.elementBuilders = {};
-        this.componentManager = NativeModules.ARComponentManager;
+        this.componentManager = new mockComponentManager();//NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
     }
@@ -21,7 +29,7 @@ export class PlatformFactory extends NativeFactory {
     setupEventsManager() {
         this.eventsByElementId = {};
 
-        this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
+        this.eventsManager = new mockEventManager();//NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent('onPress');
         this.startListeningEvent('onClick');
         this.startListeningEvent('onTextChanged');
@@ -96,12 +104,11 @@ export class PlatformFactory extends NativeFactory {
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.createElement expects "name" to be string');
         }
-
-        if (this._mapping.elements[name] !== undefined) {
-            return this._createElement(name, container, ...args)
-        } else {
+        if (this._mapping.elements[name] === undefined) {
             throw new Error(`Unknown tag: ${name}`);
         }
+        
+        return this._createElement(name, container, ...args)
     }
 
     _processColor = (color) => {
@@ -165,7 +172,7 @@ export class PlatformFactory extends NativeFactory {
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.updateElement expects "name" to be string');
         }
-        
+
         if (this._mapping.elements[name] !== undefined) {
             const oldProps = this._processCustomProps(name, args[1]);
             const newProps = this._processCustomProps(name, args[2]);

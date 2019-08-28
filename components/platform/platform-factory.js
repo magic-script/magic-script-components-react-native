@@ -7,17 +7,13 @@ import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-class mockEventManager {
-    addListener(a, b) { }
-}
-
 export class PlatformFactory extends NativeFactory {
     constructor(componentMapping) {
         super(componentMapping);
 
         // { type, builder }
         this.elementBuilders = {};
-        this.componentManager = new NativeModules.ARComponentManager;
+        this.componentManager = NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
     }

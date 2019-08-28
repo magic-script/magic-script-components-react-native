@@ -3,11 +3,9 @@ import { PlatformFactory } from './platform-factory';
 
 jest.mock('NativeModules', () => {
   return {
-    ARComponentManager: jest.fn().mockImplementation(() => {
-      return {
-        clearScene: jest.fn()
-      }
-    }),
+    ARComponentManager: {
+      clearScene: jest.fn()
+    },
     AREventsManager: jest.fn().mockImplementation(() => {
       return {}
     }),

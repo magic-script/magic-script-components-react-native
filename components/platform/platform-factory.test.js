@@ -1,8 +1,16 @@
 import nativeComponentMapping from './component-mapping.js';
 import { PlatformFactory } from './platform-factory';
 
-var nativeFactory = new PlatformFactory(nativeComponentMapping)
+var platformFactory = new PlatformFactory(nativeComponentMapping)
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(3).toBe(3);
+test('name of created element must be string', () => {
+  expect(() => {
+    platformFactory.createElement(1, 2, 3)
+  }).toThrowError('string');
+});
+
+test('only known elements can be created', () => {
+  expect(() => {
+    platformFactory.createElement("unknown element", 2, 3)
+  }).toThrowError('Unknown');
 });

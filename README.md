@@ -9,7 +9,7 @@
 
 `$ react-native link react-native-magic-script`
 
-### Complete steps to add the library and run on Android
+### Building a sample app for Android
 
 The instruction assumes that you have the following tools installed and you have set environment variables properly:
 - npm
@@ -24,16 +24,37 @@ The instruction assumes that you have the following tools installed and you have
 2. Go to the project directory
 3. Add react native magic script library to the project:
 	 `yarn add https://github.com/magic-script/react-native-magic-script.git`
-4. Execute `react-native link` in order to link the library,
-5. In the main project directory add `proxy` folder from https://github.com/magic-script/magic-script-calendar/tree/master/proxy
-6. Create `src` folder and add `app.js` file to the `src` folder from https://github.com/magic-script/magic-script-components
-7. In order to run sample scenes from our demo app, you need to copy the `src` folder from https://github.com/magic-script/magic-script-components-catalog
-8. Override the `index.js` file with the one from the `Catalog` project and replace the `Catalog` name with your project name like:
-`MagicScript.registerApp('AwesomeProject', <BrowserApp />, false)`
+4. ~~Execute `react-native link` in order to link the library~~ (not required since React 0.60),
+5. In the main project directory add `proxy` folder from [https://github.com/magic-script/magic-script-components-catalog](https://github.com/magic-script/magic-script-components-catalog/tree/master/)
+6. Create `src_mobile` folder and put inside `app.js` file with a sample AR scene:
+	```
+	import React from 'react';
 
-9. Delete `App.js` and `app.json` files since they are not required
-10. In the `./android/build.gradle` file set `minSdkVersion` to 24
-11. Open `android/app/src/main/AndroidManifest.xml` file and add the following **between** the `<application>` tags:
+	class MyApp extends React.Component {
+	  render() {
+	    return (
+	      <view>
+	          <text localPosition={[0, 0, 0]} alignment={'center-center'}>Welcome in AR!</text>
+	      </view>
+	    );
+	  }
+	}
+	export default MyApp
+	
+	```
+
+7. Replace `index.js` file with the following content:
+	```
+	import React from 'react';
+	import { MagicScript } from './proxy';
+	import MyApp from './src_mobile/app';
+
+	MagicScript.registerApp('AwesomeProject', <MyApp />, false);
+	```
+
+8. Delete `App.js` and `app.json` files since they are not required
+9. In the `./android/build.gradle` file set `minSdkVersion` to 24
+10. Open `android/app/src/main/AndroidManifest.xml` file and add the following **between** the `<application>` tags:
 
 	`<meta-data
     android:name="com.google.ar.core"
@@ -49,7 +70,7 @@ only being visible in the Google Play Store on devices that support ARCore)
 
 	You can compare your AndroidManifest file with [this one](https://github.com/magic-script/magic-script-components-catalog/blob/master/android/app/src/main/AndroidManifest.xml)
 
-12. Execute `react-native run-android` to run the project.
+11. Execute `react-native run-android` to run the project.
 
 ***If you want to run the most recent scenes from the Catalog app that download content from the web, you must additionally add dependency to `react-native-fs` and `axios` libraries:**
 

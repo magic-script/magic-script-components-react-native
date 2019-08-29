@@ -14,7 +14,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 10 | Model | ModelNode | :thumbsup: | :thumbsup: | :thumbsup: |
 11 | Spinner | UiLoadingSpinner | :thumbsup: | :thumbsup:| :thumbsup: |
 12 | Slider | UiSlider | :thumbsup: | 2 D | 2 D |
-13 | ProgressBar | UiProgressBar | :thumbsup: | 1 D | :thumbsup: |
+13 | ProgressBar | UiProgressBar | :thumbsup: | :thumbsup: | :thumbsup: |
 14 | GridLayout | UiGridLayout | :thumbsup: | :thumbsup: | :thumbsup: |
 15 | LinearLayout | UiLinearLayout | :thumbsup: | 1 D | 2 D |
 16 | RectLayout | UiRectLayout | :thumbsup: | 1 D | 1 D |

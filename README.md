@@ -9,7 +9,8 @@
 
 `$ react-native link react-native-magic-script`
 
-### Building a sample app for Android
+
+### Guide for Android
 
 The instruction assumes that you have the following tools installed and you have set environment variables properly:
 - npm
@@ -85,7 +86,6 @@ Then, being in the project directory, execute:
 
 ### Manual installation
 
-
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
@@ -93,20 +93,6 @@ Then, being in the project directory, execute:
 3. In XCode, in the project navigator, select your project. Add `libRNMagicScript.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNMagicScriptPackage;` to the imports at the top of the file
-  - Add `new RNMagicScriptPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-magic-script'
-  	project(':react-native-magic-script').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-magic-script/android')
-  	```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-magic-script')
-  	```
 
 #### Windows
 [Read it! :D](https://github.com/ReactWindows/react-native)

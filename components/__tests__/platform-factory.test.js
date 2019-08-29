@@ -1,5 +1,5 @@
-import nativeComponentMapping from './component-mapping.js';
-import { PlatformFactory } from './platform-factory';
+import nativeComponentMapping from "platform/component-mapping.js";
+import { PlatformFactory } from "platform/platform-factory.js";
 
 jest.mock('NativeModules', () => {
   return {

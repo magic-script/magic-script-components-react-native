@@ -2,12 +2,12 @@
 ## Tested properties
 
 **Inherited:**
-- ~~localPosition~~
-- ~~alignment~~
-- ~~localScale~~
+- localPosition
+- alignment
+- localScale
 - ~~localRotation~~
 - ~~enabled~~
 - ~~onClick~~
 
 **Custom:**
-- ~~size~~
+- height

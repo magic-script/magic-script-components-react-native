@@ -130,6 +130,7 @@ export class PlatformFactory extends NativeFactory {
             ...(properties.textColor ? { textColor: this._processColor(properties.textColor) } : {}),
             ...(properties.modelPath ? { modelPath: this._processAssetSource(properties.modelPath) } : {}),
             ...(properties.filePath ? { filePath: this._processAssetSource(properties.filePath) } : {}),
+            ...(properties.videoPath ? { videoPath: this._processAssetSource(properties.videoPath) } : {}),
         });
     }
 

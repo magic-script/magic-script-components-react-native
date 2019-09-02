@@ -3,13 +3,13 @@
 ## Tested properties
 
 **Inherited:**
-- ~~localPosition~~
-- ~~alignment~~
+- localPosition
+- alignment
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~
 - ~~onClick~~
 
 **Custom:**
-- ~~videoPath~~
-- ~~isLooping~~
+- videoPath
+- isLooping

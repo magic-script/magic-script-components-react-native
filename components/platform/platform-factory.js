@@ -112,10 +112,10 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _processAssetSource(path) {
+        
         if (typeof path === 'number') {
             return Image.resolveAssetSource(path);
         }
-
         return path;
     }
 

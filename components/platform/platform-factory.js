@@ -16,6 +16,11 @@ export class PlatformFactory extends NativeFactory {
         this.componentManager = NativeModules.ARComponentManager;
         this.componentManager.clearScene();
         this.setupEventsManager();
+
+        for (const name in this._mapping.elements) {
+            const createBuilder = this._mapping.elements[name]
+            this.elementBuilders[name] = createBuilder(this.componentManager);
+        }
     }
 
     setupEventsManager() {
@@ -79,16 +84,15 @@ export class PlatformFactory extends NativeFactory {
         for (const pair of eventHandlers) {
             const eventName = pair.name;//UiNodeEvents[pair.name];
 
-            if (eventName !== undefined) {
-                if (typeof pair.handler === 'function') {
-                    this.registerEvent(elementId, pair.name, pair.handler);
-                    // element[eventName](pair.handler);
-                } else {
-                    throw new TypeError(`The event handler for ${pair.name} is not a function`);
-                }
-            } else {
+            if (eventName === undefined) {
                 throw new TypeError(`Event ${pair.name} is not recognized event`);
             }
+            if (typeof pair.handler !== 'function') {
+                throw new TypeError(`The event handler for ${pair.name} is not a function`);
+            }
+
+            this.registerEvent(elementId, pair.name, pair.handler);
+            // element[eventName](pair.handler);
         }
     }
 
@@ -103,19 +107,19 @@ export class PlatformFactory extends NativeFactory {
         return this._createElement(name, container, ...args)
     }
 
-    _processColor = (color) => {
+    _processColor(color) {
         return Array.isArray(color) ? color : processColor(color);
     }
 
-    _processAssetSource = (path) => {
+    _processAssetSource(path) {
         if (typeof path === 'number') {
             return Image.resolveAssetSource(path);
         }
-        
+
         return path;
     }
 
-    _processCustomProps = (name, props) => {
+    _processCustomProps(name, props) {
         const properties = omit(props, 'children');
         const child = props.children;
         if (typeof child === 'string' || typeof child === 'number') {
@@ -146,11 +150,6 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _createElement(name, container, ...args) {
-        if (this.elementBuilders[name] === undefined) {
-            const createBuilder = this._mapping.elements[name];
-            this.elementBuilders[name] = createBuilder(this.componentManager);
-        }
-
         const props = this._processCustomProps(name, args[0]);
         const id = props.id || generateId();
 
@@ -164,17 +163,16 @@ export class PlatformFactory extends NativeFactory {
         if (typeof name !== 'string') {
             throw new Error('PlatformFactory.updateElement expects "name" to be string');
         }
-
-        if (this._mapping.elements[name] !== undefined) {
-            const oldProps = this._processCustomProps(name, args[1]);
-            const newProps = this._processCustomProps(name, args[2]);
-            const diffProps = this._diffProps(oldProps, newProps);
-            if (Object.keys(diffProps).length > 0) {
-                const element = args[0];
-                this.componentManager.updateNode(element.id, diffProps);
-            }
-        } else {
+        if (this._mapping.elements[name] === undefined) {
             throw new Error(`Unknown tag: ${name}`);
+        }
+
+        const oldProps = this._processCustomProps(name, args[1]);
+        const newProps = this._processCustomProps(name, args[2]);
+        const diffProps = this._diffProps(oldProps, newProps);
+        if (Object.keys(diffProps).length > 0) {
+            const element = args[0];
+            this.componentManager.updateNode(element.id, diffProps);
         }
     }
 

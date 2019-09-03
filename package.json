@@ -29,6 +29,15 @@
     "react-native": ">=0.59.8"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "clearMocks": true,
+    "collectCoverage": false,
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "components/platform/platform-factory.js"
+    ],
+    "modulePaths": [
+      "components/utils"
+    ]
   }
 }

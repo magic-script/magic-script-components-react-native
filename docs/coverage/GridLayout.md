@@ -10,7 +10,5 @@
 **Custom:**
 - columns
 - rows
-- ~~itemPadding~~
 - defaultItemPadding
-- itemAlignment
 - defaultItemAlignment

@@ -27,6 +27,7 @@ export default {
         'button': (componentManager) => new ButtonBuilder(componentManager),
         'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
         'image': (componentManager) => new ImageBuilder(componentManager),
+        'linearLayout': (componentManager) => new LinearLayoutBuilder(componentManager),
         'listView': (componentManager) => new ListViewBuilder(componentManager),
         'text': (componentManager) => new TextBuilder(componentManager),
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),

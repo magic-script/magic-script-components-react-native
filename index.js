@@ -20,7 +20,7 @@ export {
     Image,
     // Light,
     Line,
-    // LinearLayout,
+    LinearLayout,
     ListView,
     // ListViewItem,
     Model,

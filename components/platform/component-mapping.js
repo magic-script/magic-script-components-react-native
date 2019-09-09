@@ -5,6 +5,7 @@ import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import GroupBuilder from './elements/builders/group-builder.js';
 import ImageBuilder from './elements/builders/image-builder.js';
 import LineBuilder from './elements/builders/line-builder.js';
+import LinearLayoutBuilder from './elements/builders/line-builder.js';
 import ListViewBuilder from './elements/builders/list-view-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';

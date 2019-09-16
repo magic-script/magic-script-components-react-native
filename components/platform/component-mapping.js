@@ -5,6 +5,7 @@ import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
 import GroupBuilder from './elements/builders/group-builder.js';
 import ImageBuilder from './elements/builders/image-builder.js';
 import LineBuilder from './elements/builders/line-builder.js';
+import LinearLayoutBuilder from './elements/builders/linear-layout-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
@@ -26,6 +27,7 @@ export default {
         'button': (componentManager) => new ButtonBuilder(componentManager),
         'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
         'image': (componentManager) => new ImageBuilder(componentManager),
+        'linearLayout': (componentManager) => new LinearLayoutBuilder(componentManager),
         'text': (componentManager) => new TextBuilder(componentManager),
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),
         'toggle': (componentManager) => new ToggleBuilder(componentManager),

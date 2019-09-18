@@ -1,0 +1,34 @@
+material {
+    "name" : "View",
+    "defines" : [
+        "baseColor"
+    ],
+    "parameters" : [
+        {
+           "type" : "samplerExternal",
+           "name" : "viewTexture"
+        }
+    ],
+    "requires" : [
+        "position",
+        "uv0"
+    ],
+    "shadingModel" : "unlit",
+    "blending" : "transparent",
+    "doubleSided" : false
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+
+        vec2 uv = getUV0();
+
+        if (!gl_FrontFacing) {
+          uv.x = 1.0 - uv.x;
+        }
+
+        material.baseColor = texture(materialParams_viewTexture, uv);
+        material.baseColor.rgb = inverseTonemapSRGB(material.baseColor.rgb);
+    }
+}

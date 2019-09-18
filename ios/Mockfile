@@ -1,0 +1,13 @@
+sourceryCommand: null
+RNMagicScriptTests:
+  sources:
+    include:
+    - ./RNMagicScript
+  output: ./RNMagicScriptTests/sources/misc/Mock.generated.swift
+  targets:
+  - RNMagicScriptTests
+  testable:
+  - RNMagicScriptHostApplication
+  import:
+  - UIKit
+  - SceneKit

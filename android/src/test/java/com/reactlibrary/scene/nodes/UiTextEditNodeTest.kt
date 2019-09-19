@@ -17,14 +17,27 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.View
+import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.reactlibrary.scene.nodes.UiTextEditNode
+import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.utils.Utils
+import kotlinx.android.synthetic.main.text_edit.view.*
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyInt
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -38,10 +51,15 @@ import org.robolectric.annotation.Config
 class UiTextEditNodeTest {
 
     private lateinit var context: Context
+    private lateinit var containerSpy: View
+    private lateinit var textViewSpy: TextView
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.containerSpy = spy(View(context))
+        this.textViewSpy = spy(TextView(context))
+        whenever(containerSpy.text_edit).thenReturn(textViewSpy)
     }
 
     @Test
@@ -62,5 +80,103 @@ class UiTextEditNodeTest {
         assertEquals(UiTextEditNode.DEFAULT_ALIGNMENT, alignment)
     }
 
+    @Test
+    fun shouldApplyTextWhenTextPropertyPresent() {
+        val text = "xyz"
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT, text)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).text = text
+    }
+
+    @Test
+    fun shouldApplyHintWhenHintPropertyPresent() {
+        val hint = "hint text"
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_HINT, hint)
+        val node = createNodeWithViewSpy(props)
+        val hintColor = context.getColor(R.color.text_color_hint)
+
+        node.build()
+
+        verify(textViewSpy).text = hint
+        verify(textViewSpy).setTextColor(hintColor)
+    }
+
+    @Test
+    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+        val textSize = 0.15
+        val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_SIZE, textSize)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeInPixels)
+    }
+
+    @Test
+    fun shouldApplyTextAlignmentWhenAlignmentPropertyPresent() {
+        val textAlignment = "center"
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_ALIGNMENT, textAlignment)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        val gravity = textViewSpy.gravity
+        assertTrue(gravity and Gravity.HORIZONTAL_GRAVITY_MASK == Gravity.CENTER_HORIZONTAL)
+    }
+
+    @Test
+    fun shouldApplyTextColorWhenColorPropertyPresent() {
+        val textColor = JavaOnlyArray.of(0.5, 1.0, 1.0, 1.0)
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_COLOR, textColor)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setTextColor(0xFF7FFFFF.toInt())
+    }
+
+    @Test
+    fun shouldApplyCharacterSpacingWhenSpacingPropertyPresent() {
+        val spacing = 0.3 // 'EM' units
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTER_SPACING, spacing)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).letterSpacing = spacing.toFloat()
+    }
+
+    @Test
+    fun shouldApplyMultilineWhenMultilinePropertyIsTrue() {
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_MULTILINE, true)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setSingleLine(false)
+    }
+
+    @Test
+    fun shouldApplyTextPaddingWhenPaddingPropertyPresent() {
+        val padding = JavaOnlyArray.of(2.0, 3.0, 2.0, 3.0)
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_PADDING, padding)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
+    }
+
+    private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {
+        return object : UiTextEditNode(props, context) {
+            override fun provideView(context: Context): View {
+                return containerSpy
+            }
+        }
+    }
 
 }

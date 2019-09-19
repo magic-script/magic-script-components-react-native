@@ -17,12 +17,16 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
@@ -42,10 +46,12 @@ import org.robolectric.annotation.Config
 class UiTextNodeTest {
 
     private lateinit var context: Context
+    private lateinit var viewSpy: TextView
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.viewSpy = spy(TextView(context))
     }
 
     @Test
@@ -67,52 +73,91 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldSetTextWhenTextPropertyPresent() {
+    fun shouldApplyTextWhenTextPropertyPresent() {
         val text = "ABC"
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT, text)
-        val view = TextView(context)
-        val node = createTextNode(props, view)
+        val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        assertEquals(text, view.text)
+        verify(viewSpy).setText(text)
     }
 
     @Test
-    fun shouldSetTextSizeWhenTextSizePropertyPresent() {
+    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
         val textSize = 0.15F
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize)
-        val view = TextView(context)
-        val node = createTextNode(props, view)
+        val node = createNodeWithViewSpy(props)
         val textSizeInPixels = Utils.metersToFontPx(textSize, context).toFloat()
 
         node.build()
 
-        assertEquals(textSizeInPixels, view.textSize)
+        verify(viewSpy).setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPixels)
     }
 
     @Test
-    fun shouldBeSingleLineWhenWrapPropertyIsFalse() {
+    fun shouldApplySingleLineWhenWrapPropertyIsFalse() {
         val boundsData = JavaOnlyMap.of(
                 UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.0),
                 UiTextNode.PROP_WRAP, false
         )
         val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
-        val view = TextView(context)
-        val node = createTextNode(props, view)
+        val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        assertEquals(1, view.maxLines) // height must not be set explicitly
+        verify(viewSpy).setSingleLine(true)
     }
 
-    private fun createTextNode(props: ReadableMap, viewMock: View): UiTextNode {
+    @Test
+    fun shouldApplyTextAlignmentWhenAlignmentPropertyPresent() {
+        val textAlignment = "right"
+        val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_ALIGNMENT, textAlignment)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).gravity = Gravity.RIGHT
+    }
+
+    @Test
+    fun shouldApplyTextColorWhenColorPropertyPresent() {
+        val textColor = JavaOnlyArray.of(0.0, 0.0, 0.0, 0.0)
+        val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_COLOR, textColor)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).setTextColor(0)
+    }
+
+    @Test
+    fun shouldApplyCapitalLettersWhenAllCapsPropertyIsTrue() {
+        val props = JavaOnlyMap.of(UiTextNode.PROP_ALL_CAPS, true)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).isAllCaps = true
+    }
+
+    @Test
+    fun shouldApplyCharacterSpacingWhenSpacingPropertyPresent() {
+        val spacing = 0.1 // 'EM' units
+        val props = JavaOnlyMap.of(UiTextNode.PROP_CHARACTER_SPACING, spacing)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).letterSpacing = spacing.toFloat()
+    }
+
+    private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
         return object : UiTextNode(props, context) {
             override fun provideView(context: Context): View {
-                return viewMock
+                return viewSpy
             }
         }
     }
-
 
 }

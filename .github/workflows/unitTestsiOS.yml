@@ -1,0 +1,34 @@
+name: Unit tests iOS
+on:
+  push:
+    paths:
+      - 'ios/*'
+jobs:
+  test:
+    name: Test
+    runs-on: macOS-latest
+    strategy:
+        matrix:
+          destination: ['platform=iOS Simulator,OS=12.2,name=iPhone X']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Prepare env
+        run: |
+          pwd
+          cd ios
+          ls -la
+          pod install
+          instruments -s devices
+          xcode-select -p
+      - name: Build and test
+        run: |
+          pwd
+          ls -la
+          cd ios
+          xcodebuild clean test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
+        env:
+         destination: ${{ matrix.destination }}
+      - name: Code Coverage
+        run: |
+          echo "Total coverage (based on lines): `find . -name \*.xccovreport -exec xcrun xccov view {} \; | grep '.app' | head -1 | perl -pe 's/.+?(\d+\.\d+%).+/\1/'`"

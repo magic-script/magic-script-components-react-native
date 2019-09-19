@@ -100,15 +100,15 @@ class ViewController: UIViewController {
 
     fileprivate func setupTests() {
 
-        //        let spinner1 = UiSpinnerNode()
-        //        spinner1.height = 0.6
-        //        spinner1.layoutIfNeeded()
-        //        spinner1.position = SCNVector3(0, 0.4, 0)
-        //        rootNode.addChildNode(spinner1)
+        let spinner1 = UiSpinnerNode()
+        spinner1.height = 0.6
+        spinner1.layoutIfNeeded()
+        spinner1.position = SCNVector3(0, 0.4, 0)
+        rootNode.addChildNode(spinner1)
 
         spinner2 = UiSpinnerNode()
         spinner2.determinate = true
-        spinner2.value = 0.999999
+        spinner2.value = 0.0
         spinner2.height = 0.6
         spinner2.layoutIfNeeded()
         spinner2.position = SCNVector3(0, -0.4, 0)

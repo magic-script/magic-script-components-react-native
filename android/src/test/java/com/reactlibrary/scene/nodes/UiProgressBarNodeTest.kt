@@ -17,15 +17,20 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.view.View
 import androidx.test.core.app.ApplicationProvider
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.reactlibrary.scene.nodes.UiProgressBarNode
+import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.scene.nodes.views.CustomProgressBar
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyInt
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -33,14 +38,15 @@ import org.robolectric.annotation.Config
  * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class UiProgressBarNodeTest {
 
     private lateinit var context: Context
+    private lateinit var viewSpy: CustomProgressBar
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.viewSpy = spy(CustomProgressBar(context))
     }
 
     @Test
@@ -59,6 +65,64 @@ class UiProgressBarNodeTest {
         val height = node.getProperty(UiProgressBarNode.PROP_HEIGHT)
 
         assertEquals(UiProgressBarNode.DEFAULT_HEIGHT, height)
+    }
+
+    @Test
+    fun shouldApplyValueWhenValuePropertyPresent() {
+        val value = 0.2
+        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_VALUE, value)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).value = value.toFloat()
+    }
+
+    @Test
+    fun shouldApplyMinValueWhenMinPropertyPresent() {
+        val minValue = 10.0
+        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MIN, minValue)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).min = minValue.toFloat()
+    }
+
+    @Test
+    fun shouldApplyMaxValueWhenMaxPropertyPresent() {
+        val maxValue = 1000.0
+        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MAX, maxValue)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).max = maxValue.toFloat()
+    }
+
+    @Test
+    fun shouldApplyProgressColorWhenColoPropertyPresent() {
+        val beginColor = JavaOnlyArray.of(0.5, 0.5, 0.5, 0.5)
+        val endColor = JavaOnlyArray.of(0.8, 0.8, 0.8, 0.8)
+        val progressColor = JavaOnlyMap.of(
+                UiProgressBarNode.PROP_PROGRESS_COLOR_BEGIN, beginColor,
+                UiProgressBarNode.PROP_PROGRESS_COLOR_END, endColor
+        )
+        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_PROGRESS_COLOR, progressColor)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).beginColor = anyInt()
+        verify(viewSpy).endColor = anyInt()
+    }
+
+    private fun createNodeWithViewSpy(props: ReadableMap): UiProgressBarNode {
+        return object : UiProgressBarNode(props, context) {
+            override fun provideView(context: Context): View {
+                return viewSpy
+            }
+        }
     }
 
 }

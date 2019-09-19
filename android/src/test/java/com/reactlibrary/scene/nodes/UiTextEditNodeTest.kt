@@ -39,7 +39,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -47,7 +46,6 @@ import org.robolectric.annotation.Config
  * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class UiTextEditNodeTest {
 
     private lateinit var context: Context

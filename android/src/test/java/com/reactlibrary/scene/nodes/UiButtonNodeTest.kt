@@ -31,7 +31,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 
 /**
@@ -40,7 +39,6 @@ import org.robolectric.annotation.Config
  * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class UiButtonNodeTest {
 
     private lateinit var context: Context

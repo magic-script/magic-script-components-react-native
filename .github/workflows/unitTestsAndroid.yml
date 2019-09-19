@@ -16,16 +16,12 @@ jobs:
         node-version: '12.x'
     - name: Prepare env
       run: |
-        pwd
         cd android
-        ls -la
         chmod u+x gradlew
         mkdir node_modules
         cd node_modules 
         yarn add react-native
     - name: Build and test
       run: |
-        pwd
         cd android
-        ls -la
         ./gradlew testDebug

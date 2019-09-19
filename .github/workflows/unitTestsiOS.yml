@@ -17,14 +17,9 @@ jobs:
         run: |
           pwd
           cd ios
-          ls -la
           pod install
-          instruments -s devices
-          xcode-select -p
       - name: Build and test
         run: |
-          pwd
-          ls -la
           cd ios
           xcodebuild clean test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
         env:

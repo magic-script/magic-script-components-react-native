@@ -103,7 +103,7 @@ class ViewController: UIViewController {
         let spinner1 = UiSpinnerNode()
         spinner1.height = 0.6
         spinner1.layoutIfNeeded()
-        spinner1.position = SCNVector3(0, 0.4, 0)
+        spinner1.position = SCNVector3(0, -0.4, 0)
         rootNode.addChildNode(spinner1)
 
         spinner2 = UiSpinnerNode()

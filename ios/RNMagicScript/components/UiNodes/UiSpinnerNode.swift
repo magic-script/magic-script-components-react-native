@@ -98,8 +98,9 @@ import SceneKit
 
 
         if planeGeometry != nil {
-            planeGeometry.width = spinnerSize.width
-            planeGeometry.height = spinnerSize.height
+            let scaleX: CGFloat = spinnerSize.width
+            let scaleY: CGFloat = spinnerSize.height
+            spinnerNode.scale = SCNVector3(scaleX, scaleY, 1)
         }
     }
 
@@ -116,12 +117,18 @@ import SceneKit
             spinnerNode = SCNNode(geometry: circleGeometry)
             contentNode.addChildNode(spinnerNode)
         } else {
-            planeGeometry = SCNPlane(width: UiSpinnerNode.defaultSize, height: UiSpinnerNode.defaultSize)
+            let width: CGFloat = 196.0 / 256.0
+            let height: CGFloat = 92.0 / 256.0
+            let y: CGFloat = 88.0 / 256.0
+            planeGeometry = SCNPlane(width: width, height: height)
             planeGeometry.firstMaterial?.lightingModel = .constant
             planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
             planeGeometry.firstMaterial?.isDoubleSided = true
+            planeGeometry.firstMaterial?.writesToDepthBuffer = false
+            planeGeometry.firstMaterial?.transparencyMode = .singleLayer
 
             spinnerNode = SCNNode(geometry: planeGeometry)
+            spinnerNode.pivot.position = SCNVector3(0, -y, 0)
             contentNode.addChildNode(spinnerNode)
             startAnimation()
         }

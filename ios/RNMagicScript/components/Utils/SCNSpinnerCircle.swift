@@ -48,6 +48,7 @@ class SCNSpinnerCircle : SCNGeometry {
             material.isDoubleSided = true
             material.diffuse.contents = UIColor.clear
             material.diffuse.mappingChannel = index
+            material.transparencyMode = .singleLayer
         }
     }
 

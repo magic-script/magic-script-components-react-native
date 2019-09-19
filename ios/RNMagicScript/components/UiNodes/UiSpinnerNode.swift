@@ -83,25 +83,15 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        let spinnerSize = getSize()
-
         if circleGeometry == nil && planeGeometry == nil {
             reloadGeometry()
         }
 
-        if circleGeometry != nil {
-            let scaleX: CGFloat = spinnerSize.width
-            let scaleY: CGFloat = spinnerSize.height
-            spinnerNode.scale = SCNVector3(scaleX, scaleY, 1)
-            circleGeometry.progress = Float(value)
-        }
-
-
-        if planeGeometry != nil {
-            let scaleX: CGFloat = spinnerSize.width
-            let scaleY: CGFloat = spinnerSize.height
-            spinnerNode.scale = SCNVector3(scaleX, scaleY, 1)
-        }
+        let spinnerSize = getSize()
+        let scaleX: CGFloat = spinnerSize.width
+        let scaleY: CGFloat = spinnerSize.height
+        spinnerNode?.scale = SCNVector3(scaleX, scaleY, 1)
+        circleGeometry?.progress = Float(value)
     }
 
     fileprivate func reloadGeometry() {

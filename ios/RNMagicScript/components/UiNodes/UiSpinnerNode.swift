@@ -50,12 +50,6 @@ import SceneKit
         stopAnimation()
     }
 
-    @objc override func setupNode() {
-        super.setupNode()
-
-        assert(spinnerNode == nil, "Node must not be initialized!")
-    }
-
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 

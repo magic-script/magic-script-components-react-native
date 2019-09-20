@@ -1,0 +1,30 @@
+name: Unit tests Android
+on:
+  push:
+    paths:
+      - 'android/*'
+  pull_request:
+    paths:
+      - 'android/*'
+jobs:
+  test:
+    name: Test
+    runs-on: macOS-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Node configuration
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Prepare env
+      run: |
+        cd android
+        chmod u+x gradlew
+        mkdir node_modules
+        cd node_modules 
+        yarn add react-native
+    - name: Build and test
+      run: |
+        cd android
+        ./gradlew testDebug

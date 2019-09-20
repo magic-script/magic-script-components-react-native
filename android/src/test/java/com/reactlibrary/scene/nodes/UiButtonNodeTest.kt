@@ -77,7 +77,7 @@ class UiButtonNodeTest {
 
         node.build()
 
-        verify(viewSpy).setText(text)
+        verify(viewSpy).text = text
     }
 
     @Test
@@ -111,7 +111,7 @@ class UiButtonNodeTest {
 
         node.build()
 
-        verify(viewSpy).setRoundnessFactor(roundness.toFloat())
+        verify(viewSpy).roundnessFactor = roundness.toFloat()
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {

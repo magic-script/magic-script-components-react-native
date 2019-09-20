@@ -36,9 +36,18 @@ class CustomButton @JvmOverloads constructor(
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
 
-    private var text = "Button"
+    var text = ""
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout() // need to measure the view
+        }
 
-    private var roundnessFactor = 1F // from 0 to 1 (fully rounded)
+    var roundnessFactor = 1F // from 0 to 1 (fully rounded)
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private var textPaddingHorizontal = 0
 
@@ -111,19 +120,8 @@ class CustomButton @JvmOverloads constructor(
         canvas.drawText(text, textX, textY, textPaint)
     }
 
-    fun setText(text: String) {
-        this.text = text
-        invalidate()
-        requestLayout() // need to measure the view
-    }
-
-    fun setRoundnessFactor(factor: Float) {
-        roundnessFactor = factor
-        invalidate()
-    }
-
-    fun setTextSize(sizePx: Float) {
-        textPaint.textSize = sizePx
+    fun setTextSize(textSizePx: Float) {
+        textPaint.textSize = textSizePx
         invalidate()
         requestLayout() // need to measure the view
     }
@@ -139,6 +137,5 @@ class CustomButton @JvmOverloads constructor(
         invalidate()
         requestLayout() // need to measure the view
     }
-
 
 }

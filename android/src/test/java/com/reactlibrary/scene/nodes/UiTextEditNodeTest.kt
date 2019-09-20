@@ -20,6 +20,7 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
@@ -49,13 +50,13 @@ import org.robolectric.RobolectricTestRunner
 class UiTextEditNodeTest {
 
     private lateinit var context: Context
-    private lateinit var containerSpy: View
+    private lateinit var containerSpy: LinearLayout
     private lateinit var textViewSpy: TextView
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
-        this.containerSpy = spy(View(context))
+        this.containerSpy = spy(LinearLayout(context))
         this.textViewSpy = spy(TextView(context))
         whenever(containerSpy.text_edit).thenReturn(textViewSpy)
     }

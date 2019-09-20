@@ -17,8 +17,21 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.util.TypedValue
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import com.reactlibrary.R
+import com.reactlibrary.utils.Utils
+import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -34,10 +47,18 @@ import org.robolectric.RobolectricTestRunner
 class UiToggleNodeTest {
 
     private lateinit var context: Context
+    private lateinit var containerSpy: LinearLayout
+    private lateinit var textViewSpy: TextView
+    private lateinit var switchSpy: ImageView
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.containerSpy = spy(LinearLayout(context))
+        this.textViewSpy = spy(TextView(context))
+        this.switchSpy = spy(ImageView(context))
+        whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
+        whenever(containerSpy.iv_toggle).thenReturn(switchSpy)
     }
 
     @Test
@@ -58,6 +79,58 @@ class UiToggleNodeTest {
         val textSize = node.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
         assertEquals(height, textSize)
+    }
+
+    @Test
+    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+        val textSize = 0.2
+        val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
+        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_SIZE, textSize)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeInPixels)
+    }
+
+    @Test
+    fun shouldApplyTextWhenTextPropertyPresent() {
+        val text = "QWERTY"
+        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT, text)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).text = text
+    }
+
+    @Test
+    fun shouldApplyTextColorWhenColorPropertyPresent() {
+        val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
+        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_COLOR, textColor)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(textViewSpy).setTextColor(0xFFFFFFFF.toInt())
+    }
+
+    @Test
+    fun shouldCheckTheSwitchWhenCheckPropertyIsTrue() {
+        val props = JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(switchSpy).setImageResource(R.drawable.toggle_on)
+    }
+
+    private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
+        return object : UiToggleNode(props, context) {
+            override fun provideView(context: Context): View {
+                return containerSpy
+            }
+        }
     }
 
 }

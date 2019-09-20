@@ -32,7 +32,7 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.toggle.view.*
 
-class UiToggleNode(initProps: ReadableMap, context: Context) :
+open class UiToggleNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = true) {
 
     companion object {
@@ -147,7 +147,7 @@ class UiToggleNode(initProps: ReadableMap, context: Context) :
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToPx(sizeMeters, view.context).toFloat()
+            val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
             view.tv_toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
             setNeedsRebuild()
         }

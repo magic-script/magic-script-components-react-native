@@ -31,15 +31,15 @@ class Utils {
 
         // Each text should be scaled down with this factor
         // to match Lumin's implementation
-        private const val FONT_SCALE_FACTOR = 0.8f
+        const val FONT_SCALE_FACTOR = 0.8f
 
         // By default, every 250dp for the view becomes 1 meter for the renderable
         // https://developers.google.com/ar/develop/java/sceneform/create-renderables
-        private const val DP_TO_METER_RATIO = 250
+        const val DP_TO_METER_RATIO = 250
 
         // One dp is a virtual pixel unit that's roughly equal to one pixel on a medium-density screen
         // 160dpi is the "baseline" density
-        private const val BASELINE_DENSITY = 160
+        const val BASELINE_DENSITY = 160F
 
         /**
          *  Converts ARCore's meters to pixels

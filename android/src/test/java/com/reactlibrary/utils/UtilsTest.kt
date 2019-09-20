@@ -16,17 +16,56 @@
 
 package com.reactlibrary.utils
 
+import android.content.Context
+import android.util.DisplayMetrics
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.scene.nodes.props.Bounding
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.RETURNS_DEEP_STUBS
+import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class UtilsTest {
+
+    @Test
+    fun shouldReturnCorrectNumberOfPixels() {
+        val meters = 0.5F
+        val screenDensity = 2 * Utils.BASELINE_DENSITY
+        val expectedPixels = Utils.DP_TO_METER_RATIO
+        val context = mock(Context::class.java, RETURNS_DEEP_STUBS)
+        val displayMetrics = DisplayMetrics().apply {
+            xdpi = screenDensity
+            ydpi = screenDensity
+        }
+        whenever(context.resources.displayMetrics).thenReturn(displayMetrics)
+
+        val pixels = Utils.metersToPx(meters, context)
+
+        assertEquals(expectedPixels, pixels)
+    }
+
+    @Test
+    fun shouldReturnCorrectNumberOfPixelsForFont() {
+        val meters = 0.5F
+        val screenDensity = 2 * Utils.BASELINE_DENSITY
+        val expectedPixels = (Utils.DP_TO_METER_RATIO * Utils.FONT_SCALE_FACTOR).toInt()
+        val context = mock(Context::class.java, RETURNS_DEEP_STUBS)
+        val displayMetrics = DisplayMetrics().apply {
+            xdpi = screenDensity
+            ydpi = screenDensity
+        }
+        whenever(context.resources.displayMetrics).thenReturn(displayMetrics)
+
+        val pixels = Utils.metersToFontPx(meters, context)
+
+        assertEquals(expectedPixels, pixels)
+    }
 
     @Test
     fun shouldReturnBasicBoundingWhenCollisionShapeIsNotBox() {

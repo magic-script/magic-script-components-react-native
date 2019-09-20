@@ -12,6 +12,9 @@
 		44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
 		44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226126232F9173006E2FBA /* MathsExtensionSpec.swift */; };
+		442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
+		442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
+		4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */; };
 		44AFAAA2232B949D005AC8EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44AFAAA1232B949D005AC8EF /* Images.xcassets */; };
 		44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB02232B968C005AC8EF /* ViewController.swift */; };
 		44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB03232B968C005AC8EF /* AppDelegate.swift */; };
@@ -310,6 +313,8 @@
 		44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
 		44226126232F9173006E2FBA /* MathsExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathsExtensionSpec.swift; sourceTree = "<group>"; };
+		442261352334059A006E2FBA /* SCNSpinnerCircle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircle.swift; sourceTree = "<group>"; };
+		44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircleSpec.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44AFAAA1232B949D005AC8EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -707,6 +712,7 @@
 				44AFAC19232B9BCF005AC8EF /* ModelDownloader.swift */,
 				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
 				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
+				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -766,10 +772,10 @@
 			isa = PBXGroup;
 			children = (
 				44F09306232D985A0081FF14 /* BaseNodes */,
-				44F0930B232D985A0081FF14 /* UiNodes */,
 				44F09315232D985A0081FF14 /* Enums */,
-				44F09316232D985A0081FF14 /* Utils */,
 				44F09318232D985A0081FF14 /* UiHelpers */,
+				44F0930B232D985A0081FF14 /* UiNodes */,
+				44F09316232D985A0081FF14 /* Utils */,
 			);
 			path = specs;
 			sourceTree = "<group>";
@@ -819,6 +825,7 @@
 				44F09334232D990B0081FF14 /* Extensions */,
 				44F09317232D985A0081FF14 /* ModelDownloaderSpec.swift */,
 				44F0933F232DA5530081FF14 /* SCNRectangleSpec.swift */,
+				44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */,
 				C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */,
 			);
 			path = Utils;
@@ -1316,6 +1323,7 @@
 			files = (
 				44AFAD19232BCAE3005AC8EF /* UiGroupNode.swift in Sources */,
 				44AFAD2E232BCAE3005AC8EF /* Bundle.swift in Sources */,
+				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
@@ -1371,6 +1379,7 @@
 				44F09328232D985A0081FF14 /* UiModelNodeSpec.swift in Sources */,
 				44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */,
 				44F09330232D985A0081FF14 /* toArray.swift in Sources */,
+				4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */,
 				C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
 				C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */,
@@ -1428,6 +1437,7 @@
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
 				44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */,
 				44AFAC3E232B9BCF005AC8EF /* UiModelNode.swift in Sources */,
+				442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAC53232B9BCF005AC8EF /* URLSession+Extension.swift in Sources */,
 				44AFAC61232B9BCF005AC8EF /* RCTARView.m in Sources */,
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,

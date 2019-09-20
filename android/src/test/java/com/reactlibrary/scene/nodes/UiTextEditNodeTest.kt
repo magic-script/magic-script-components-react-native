@@ -21,6 +21,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
@@ -51,13 +52,16 @@ class UiTextEditNodeTest {
 
     private lateinit var context: Context
     private lateinit var containerSpy: LinearLayout
+    private lateinit var scrollViewSpy: ScrollView
     private lateinit var textViewSpy: TextView
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.containerSpy = spy(LinearLayout(context))
+        this.scrollViewSpy = spy(ScrollView(context))
         this.textViewSpy = spy(TextView(context))
+        whenever(containerSpy.sv_text_edit).thenReturn(scrollViewSpy)
         whenever(containerSpy.text_edit).thenReturn(textViewSpy)
     }
 

@@ -78,7 +78,7 @@ class UiTextNodeTest {
 
         node.build()
 
-        verify(viewSpy).setText(text)
+        assertEquals(text, viewSpy.text)
     }
 
     @Test
@@ -96,8 +96,22 @@ class UiTextNodeTest {
     @Test
     fun shouldApplySingleLineWhenWrapPropertyIsFalse() {
         val boundsData = JavaOnlyMap.of(
-                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.0),
+                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.5, 0.0),
                 UiTextNode.PROP_WRAP, false
+        )
+        val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).setSingleLine(true)
+    }
+
+    @Test
+    fun shouldApplySingleLineWhenWidthIsDynamic() {
+        val boundsData = JavaOnlyMap.of(
+                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.2),
+                UiTextNode.PROP_WRAP, true // wrap has no effect when size is 0 (dynamic)
         )
         val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
         val node = createNodeWithViewSpy(props)

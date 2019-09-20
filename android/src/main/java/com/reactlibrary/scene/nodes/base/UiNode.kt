@@ -50,9 +50,15 @@ abstract class UiNode(
     private var shouldRebuild = false
     private var loadingView = false
 
+    /**
+     * Initializes the view instance and builds the node by calling [applyProperties]
+     * with all initial properties
+     */
     override fun build() {
         initView()
-        super.build()
+        addChild(contentNode)
+        applyProperties(properties)
+        setViewSize()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -118,7 +124,6 @@ abstract class UiNode(
     }
 
     private fun attachView() {
-        setViewSize()
         loadingView = true
         val builder = ViewRenderable
                 .builder()

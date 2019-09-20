@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - 'android/*'
+  pull_request:
+    paths:
+      - 'android/*'
 jobs:
   test:
     name: Test

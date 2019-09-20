@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - 'ios/*'
+  pull_request:
+    paths:
+      - 'ios/*'
 jobs:
   test:
     name: Test

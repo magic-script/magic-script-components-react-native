@@ -132,6 +132,26 @@ class Convert {
         return Alignment(rawValue: alignment)
     }
 
+    static func toFontStyle(_ value: Any?) -> FontStyle? {
+        guard let fontStyle = value as? String else { return nil }
+        return FontStyle(rawValue: fontStyle)
+    }
+
+    static func toFontWeight(_ value: Any?) -> FontWeight? {
+        guard let fontWeight = value as? String else { return nil }
+        return FontWeight(rawValue: fontWeight)
+    }
+
+    static func toScrollBarVisibility(_ value: Any?) -> ScrollBarVisibility? {
+        guard let scrollBarVisibility = value as? String else { return nil }
+        return ScrollBarVisibility(rawValue: scrollBarVisibility)
+    }
+
+    static func toTextEntryMode(_ value: Any?) -> TextEntryMode? {
+        guard let textEntryMode = value as? String else { return nil }
+        return TextEntryMode(rawValue: textEntryMode)
+    }
+
     static func toFileURL(_ value: Any?) -> URL? {
         let path: String?
         if let dict = value as? [String: Any] {

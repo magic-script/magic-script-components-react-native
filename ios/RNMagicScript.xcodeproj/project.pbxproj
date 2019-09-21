@@ -124,6 +124,10 @@
 		44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
 		44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */; };
 		44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */; };
+		44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
+		44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
+		44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
+		44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -396,6 +400,8 @@
 		44AFAC36232B9BCF005AC8EF /* RCTARView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARView.h; sourceTree = "<group>"; };
 		44AFAC37232B9BCF005AC8EF /* RNMagicScript-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNMagicScript-Bridging-Header.h"; sourceTree = "<group>"; };
 		44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extension.swift"; sourceTree = "<group>"; };
+		44D8FE672336B1A0007FD766 /* TextEntryMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryMode.swift; sourceTree = "<group>"; };
+		44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibility.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -699,6 +705,8 @@
 				44AFAC13232B9BCF005AC8EF /* FontStyle.swift */,
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
+				44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */,
+				44D8FE672336B1A0007FD766 /* TextEntryMode.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1327,6 +1335,7 @@
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
+				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */,
 				44AFAD10232BCAE3005AC8EF /* UiNode.swift in Sources */,
 				44AFAD30232BCAE3005AC8EF /* ModelDownloader.swift in Sources */,
@@ -1340,6 +1349,7 @@
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */,
+				44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44AFAD2B232BCAE3005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44AFAD29232BCAE3005AC8EF /* URLSession+Extension.swift in Sources */,
@@ -1442,6 +1452,7 @@
 				44AFAC61232B9BCF005AC8EF /* RCTARView.m in Sources */,
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
+				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,
 				44AFAC3A232B9BCF005AC8EF /* TransformNode.swift in Sources */,
 				44AFAC4C232B9BCF005AC8EF /* HorizontalTextAlignment.swift in Sources */,
@@ -1451,6 +1462,7 @@
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,
 				44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
+				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				44AFAC44232B9BCF005AC8EF /* UiVideoNode.swift in Sources */,
 				44AFAC5B232B9BCF005AC8EF /* UiNodesManager.swift in Sources */,

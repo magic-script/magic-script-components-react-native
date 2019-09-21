@@ -33,9 +33,13 @@ import SpriteKit
         get { return labelNode.textSize }
         set { labelNode.textSize = newValue; setNeedsLayout() }
     }
-    @objc var textAlignment: HorizontalTextAlignment {
-        get { return labelNode.textAlignment }
-        set { labelNode.textAlignment = newValue; setNeedsLayout() }
+    @objc var style: FontStyle {
+        get { return labelNode.style }
+        set { labelNode.style = newStyle; setNeedsLayout() }
+    }
+    @objc var weight: FontWeight {
+       get { return labelNode.weight }
+       set { labelNode.weight = newStyle; setNeedsLayout() }
     }
     @objc var charLimit: Int {
         get { return labelNode.charLimit }
@@ -49,10 +53,18 @@ import SpriteKit
         get { return labelNode.lineSpacing }
         set { labelNode.lineSpacing = newValue; setNeedsLayout() }
     }
+    @objc var allCaps: Bool {
+        get { return labelNode.allCaps }
+        set { labelNode.allCaps = newValue; setNeedsLayout() }
+    }
+    @objc var textAlignment: HorizontalTextAlignment {
+        get { return labelNode.textAlignment }
+        set { labelNode.textAlignment = newValue; setNeedsLayout() }
+    }
     // @objc var cursorEdgeScrollMode: CursorEdgeScrollMode
     @objc var textPadding: UIEdgeInsets {
-        get { return labelNode.textPadding }
-        set { labelNode.textPadding = newValue; setNeedsLayout() }
+        // Defaults to half the text size unless explicitly set.
+        didSet { setNeedsLayout() }
     }
     @objc var hint: String? {
         get { return hintNode.text }
@@ -77,14 +89,8 @@ import SpriteKit
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto
     @objc var scrollSpeed: CGFloat = 1.0
     @objc var scrollValue: CGFloat = 0.0
-    @objc var style: FontStyle = FontStyle.normal
-    @objc var weight: FontWeight = FontWeight.regular
     @objc var fontSize: CGFloat = 0.02
     @objc var tracking: Int = 50 // not supported by Lumin yet
-    @objc var allCaps: Bool {
-        get { return labelNode.allCaps }
-        set { labelNode.allCaps = newValue; setNeedsLayout() }
-    }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onTextChanged: ((_ sender: UiNode, _ text: String) -> (Void))?
@@ -95,7 +101,7 @@ import SpriteKit
     fileprivate var reloadOutline: Bool
 
     @objc override var canHaveFocus: Bool {
-        return true
+        return enabled
     }
 
     @objc override func enterFocus() {

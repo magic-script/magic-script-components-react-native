@@ -19,8 +19,11 @@ import ARKit
 import AVKit
 
 @objc open class UiVideoNode: RenderNode {
-    static let defaultWidth: CGFloat = 512.0
-    static let defaultHeight: CGFloat = 512.0
+    static let defaultDimension: CGFloat = 512.0
+    static let minimumVolume: CGFloat = 0.0
+    static let maximumVolume: CGFloat = 1.0
+    static let minimumDimension: CGFloat = 1.0
+    static let maximumDimension: CGFloat = 2048.0
 
     @objc var alignment: Alignment = .centerCenter {
         didSet { setNeedsLayout() }
@@ -28,17 +31,29 @@ import AVKit
 
     @objc var looping: Bool = true
 
-    @objc var width: CGFloat = UiVideoNode.defaultWidth {
-        didSet {
-            videoScene?.size.width = width
-            setNeedsLayout()
+    fileprivate var _width: CGFloat = UiVideoNode.defaultDimension
+    @objc var width: CGFloat {
+        get { return _width }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, UiVideoNode.minimumDimension, UiVideoNode.maximumDimension)
+            if clampedValue != _width {
+                _width = clampedValue
+                videoScene?.size.width = clampedValue
+                setNeedsLayout()
+            }
         }
     }
 
-    @objc var height: CGFloat = UiVideoNode.defaultHeight {
-        didSet {
-            videoScene?.size.height = height
-            setNeedsLayout()
+    fileprivate var _height: CGFloat = UiVideoNode.defaultDimension
+    @objc var height: CGFloat {
+        get { return _height }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, UiVideoNode.minimumDimension, UiVideoNode.maximumDimension)
+            if clampedValue != _height {
+                _height = clampedValue
+                videoScene?.size.height = clampedValue
+                setNeedsLayout()
+            }
         }
     }
 
@@ -69,9 +84,15 @@ import AVKit
         didSet { setNeedsLayout() }
     }
 
-    @objc var volume: Float = 0.5 {
-        didSet {
-            videoPlayer?.volume = volume
+    fileprivate var _volume: CGFloat = 0.5
+    @objc var volume: CGFloat {
+        get { return _volume }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, UiVideoNode.minimumVolume, UiVideoNode.maximumVolume)
+            if clampedValue != _volume {
+                _volume = clampedValue
+                videoPlayer?.volume = Float(_volume)
+            }
         }
     }
 
@@ -154,19 +175,19 @@ import AVKit
         }
 
         if let width = Convert.toCGFloat(props["width"]) {
-            self.width = Math.clamp(width, 1.0, 2048)
+            self.width = width
         }
 
         if let height = Convert.toCGFloat(props["height"]) {
-            self.height = Math.clamp(height, 1.0, 2048)
+            self.height = height
         }
 
         if let action = Convert.toVideoAction(props["action"]) {
             self.action = action
         }
 
-        if let volume = Convert.toFloat(props["volume"]) {
-            self.volume = Math.clamp(volume, 0.0, 1.0)
+        if let volume = Convert.toCGFloat(props["volume"]) {
+            self.volume = volume
         }
 
         if let looping = Convert.toBool(props["looping"]) {

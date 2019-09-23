@@ -18,6 +18,5 @@
     android:id="@+id/spinner"
     android:layout_width="100dp"
     android:layout_height="100dp"
-    android:adjustViewBounds="true"
-    android:src="@drawable/spinner" />
+    android:adjustViewBounds="true" />
 

@@ -147,4 +147,14 @@ class Convert {
 
         return nil
     }
+
+    static func toVideoAction(_ value: Any?) -> VideoAction? {
+        guard let action = value as? String else { return nil }
+        return VideoAction(rawValue: action)
+    }
+
+    static func toVideoViewMode(_ value: Any?) -> VideoViewMode? {
+        guard let viewMode = value as? String else { return nil }
+        return VideoViewMode(rawValue: viewMode)
+    }
 }

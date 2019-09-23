@@ -11,3 +11,4 @@ RNMagicScriptTests:
   import:
   - UIKit
   - SceneKit
+  - AVKit

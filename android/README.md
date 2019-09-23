@@ -5,7 +5,7 @@
 ### Set up
 In order to run tests you need to setup dependency to react-native library:
 
-1. Create `node_modules` folder inside inside this directory.
+1. Create `node_modules` folder inside this directory.
 2. Go to `node_modules` and execute `npm install react-native`
 
 ### Running

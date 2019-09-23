@@ -82,7 +82,6 @@
 		44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC2F232B9BCF005AC8EF /* AREventsManager.m */; };
 		44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC30232B9BCF005AC8EF /* RCTConvert+Components.m */; };
 		44AFAC60232B9BCF005AC8EF /* ARComponentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC31232B9BCF005AC8EF /* ARComponentManager.m */; };
-		44AFAC61232B9BCF005AC8EF /* RCTARView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC33232B9BCF005AC8EF /* RCTARView.m */; };
 		44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */; };
 		44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */; };
 		44AFAD0D232BCAE3005AC8EF /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC00232B9BCE005AC8EF /* LabelNode.swift */; };
@@ -128,6 +127,8 @@
 		44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
 		44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
 		44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
+		44D8FE8023391261007FD766 /* RCTARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE7F23391261007FD766 /* RCTARView.swift */; };
+		44D8FE812339194B007FD766 /* RCTARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE7F23391261007FD766 /* RCTARView.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -394,14 +395,13 @@
 		44AFAC2F232B9BCF005AC8EF /* AREventsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AREventsManager.m; sourceTree = "<group>"; };
 		44AFAC30232B9BCF005AC8EF /* RCTConvert+Components.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+Components.m"; sourceTree = "<group>"; };
 		44AFAC31232B9BCF005AC8EF /* ARComponentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARComponentManager.m; sourceTree = "<group>"; };
-		44AFAC33232B9BCF005AC8EF /* RCTARView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARView.m; sourceTree = "<group>"; };
 		44AFAC34232B9BCF005AC8EF /* RCTARViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARViewManager.h; sourceTree = "<group>"; };
 		44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
-		44AFAC36232B9BCF005AC8EF /* RCTARView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTARView.h; sourceTree = "<group>"; };
 		44AFAC37232B9BCF005AC8EF /* RNMagicScript-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNMagicScript-Bridging-Header.h"; sourceTree = "<group>"; };
 		44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extension.swift"; sourceTree = "<group>"; };
 		44D8FE672336B1A0007FD766 /* TextEntryMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryMode.swift; sourceTree = "<group>"; };
 		44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibility.swift; sourceTree = "<group>"; };
+		44D8FE7F23391261007FD766 /* RCTARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARView.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -768,10 +768,9 @@
 		44AFAC32232B9BCF005AC8EF /* ARView */ = {
 			isa = PBXGroup;
 			children = (
-				44AFAC33232B9BCF005AC8EF /* RCTARView.m */,
+				44D8FE7F23391261007FD766 /* RCTARView.swift */,
 				44AFAC34232B9BCF005AC8EF /* RCTARViewManager.h */,
 				44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */,
-				44AFAC36232B9BCF005AC8EF /* RCTARView.h */,
 			);
 			path = ARView;
 			sourceTree = "<group>";
@@ -1334,6 +1333,7 @@
 				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
+				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
 				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */,
@@ -1438,6 +1438,7 @@
 				44AFAC57232B9BCF005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				44AFAC4D232B9BCF005AC8EF /* SCNRectangle.swift in Sources */,
 				44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */,
+				44D8FE8023391261007FD766 /* RCTARView.swift in Sources */,
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
 				44AFAC56232B9BCF005AC8EF /* FileManager+Extension.swift in Sources */,
@@ -1449,7 +1450,6 @@
 				44AFAC3E232B9BCF005AC8EF /* UiModelNode.swift in Sources */,
 				442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAC53232B9BCF005AC8EF /* URLSession+Extension.swift in Sources */,
-				44AFAC61232B9BCF005AC8EF /* RCTARView.m in Sources */,
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,

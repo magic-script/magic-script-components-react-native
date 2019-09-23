@@ -20,76 +20,46 @@ import SceneKit
 
 class ViewController: UIViewController {
 
-    fileprivate var sceneView: ARSCNView!
+    fileprivate var arView: RCTARView!
+    fileprivate var lastTime: TimeInterval = 0
 
     override var shouldAutorotate: Bool { return true }
     override var prefersStatusBarHidden: Bool { return true }
 
-    fileprivate var scene: SCNScene {
-        return sceneView.scene
-    }
-
     fileprivate var rootNode: SCNNode {
-        return scene.rootNode
+        return arView.scene.rootNode
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupScene()
+        setupARView()
         setupTests()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        resetConfiguration()
+        arView.reset()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        sceneView.session.pause()
+        arView.pause()
     }
 
-    fileprivate func resetConfiguration() {
-        let configuration = ARWorldTrackingConfiguration()
-        let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
-        sceneView.session.run(configuration, options: options)
-    }
-
-    fileprivate func setupScene() {
-
-        // create AR scene view
-        sceneView = ARSCNView(frame: view.bounds)
-        sceneView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
-        sceneView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(sceneView)
+    fileprivate func setupARView() {
+        arView = RCTARView()
+        arView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
+        arView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(arView)
         NSLayoutConstraint.activate([
-            sceneView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            sceneView.topAnchor.constraint(equalTo: view.topAnchor),
-            sceneView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            sceneView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            arView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            arView.topAnchor.constraint(equalTo: view.topAnchor),
+            arView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             ])
 
-        sceneView.delegate = self
-
-        // configure lighting
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.automaticallyUpdatesLighting = true
-        sceneView.rendersContinuously = true
-
-        sceneView.debugOptions = [.showFeaturePoints]
-        sceneView.showsStatistics = true
-        #if targetEnvironment(simulator)
-        // Allow for basic orbit gestures if we're running in the simulator
-        sceneView.allowsCameraControl = true
-        sceneView.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
-        sceneView.defaultCameraController.maximumVerticalAngle = 45.0
-        sceneView.defaultCameraController.inertiaEnabled = true
-        sceneView.defaultCameraController.translateInCameraSpaceBy(x: 0, y: 0, z: 1.5)
-        #endif
-
-        // Resgister scene in nodes manager
-        UiNodesManager.instance.registerScene(sceneView.scene)
+        arView.delegate = self
     }
 
     fileprivate var spinner2: UiSpinnerNode!
@@ -98,15 +68,21 @@ class ViewController: UIViewController {
     fileprivate func setupTests() {
 
         let textEdit = UiTextEditNode()
+        textEdit.alignment = .topCenter
+        textEdit.width = 0.4
         textEdit.height = 0.6
+        textEdit.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        textEdit.textSize = 0.04
+        textEdit.multiline = true
+        textEdit.hint = "Enter text..."
+        textEdit.hintColor = UIColor.gray
+        textEdit.position = SCNVector3(0, 0.4, 0)
+        textEdit.setDebugMode(true)
         textEdit.layoutIfNeeded()
-        textEdit.position = SCNVector3(0, -0.4, 0)
 
         UiNodesManager.instance.registerNode(textEdit, nodeId: "text_edit")
         UiNodesManager.instance.addNodeToRoot("text_edit")
     }
-
-    fileprivate var lastTime: TimeInterval = 0
 }
 
 extension ViewController: ARSCNViewDelegate {
@@ -114,6 +90,5 @@ extension ViewController: ARSCNViewDelegate {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
-
     }
 }

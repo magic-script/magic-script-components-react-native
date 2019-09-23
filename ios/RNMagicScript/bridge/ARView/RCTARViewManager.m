@@ -15,7 +15,7 @@
 //
 
 #import "RCTARViewManager.h"
-#import "RCTARView.h"
+#import "RNMagicScript-Swift.h"
 
 @implementation RCTARViewManager
 

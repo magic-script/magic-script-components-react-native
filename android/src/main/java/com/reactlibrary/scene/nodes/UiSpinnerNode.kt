@@ -27,6 +27,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.scene.nodes.views.CustomSpinner
 import com.reactlibrary.utils.Utils
 
 class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context, useContentNodeAlignment = true) {
@@ -34,11 +35,21 @@ class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps
     companion object {
         // properties
         private const val PROP_HEIGHT = "height"
-        private const val PROP_VALUE = "value"
+        private const val PROP_DETERMINATE = "determinate" // if true we can set value
+        private const val PROP_VALUE = "value" // progress
+
+        private const val DEFAULT_SIZE = 0.07
+        private const val INDETERMINATE_VALUE = 0.25F // 45 degrees
     }
 
     private val rotationSpeed = 360f // angle per second
     private var currentAngle = 0f
+
+    init {
+        if (!properties.containsKey(PROP_HEIGHT)) {
+            properties.putDouble(PROP_HEIGHT, DEFAULT_SIZE)
+        }
+    }
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.spinner, null)
@@ -46,9 +57,11 @@ class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
-        // View animation is buggy, so we rotate the Node
-        currentAngle -= rotationSpeed * frameTime.deltaSeconds
-        contentNode.localRotation = Quaternion.axisAngle(Vector3(0f, 0f, 1f), currentAngle)
+        if (!properties.getBoolean(PROP_DETERMINATE)) {
+            // View animation is buggy, so we rotate the Node
+            currentAngle -= rotationSpeed * frameTime.deltaSeconds
+            contentNode.localRotation = Quaternion.axisAngle(Vector3(0f, 0f, 1f), currentAngle)
+        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -57,6 +70,9 @@ class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps
         if (props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
+
+        setDeterminate(props)
+        setValue(props)
     }
 
     override fun setAlignment(props: Bundle) {
@@ -64,17 +80,28 @@ class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps
     }
 
     override fun setViewSize() {
-        // default dimension
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val height = properties.getDouble(PROP_HEIGHT).toFloat()
-            widthPx = Utils.metersToPx(height, context)
-            heightPx = Utils.metersToPx(height, context)
-        }
+        val height = properties.getDouble(PROP_HEIGHT).toFloat()
+        val widthPx = Utils.metersToPx(height, context)
+        val heightPx = Utils.metersToPx(height, context)
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
+    private fun setDeterminate(props: Bundle) {
+        if (props.containsKey(PROP_DETERMINATE)) {
+            if (!props.getBoolean(PROP_DETERMINATE)) {
+                (view as CustomSpinner).value = INDETERMINATE_VALUE
+            }
+        }
+    }
+
+    private fun setValue(props: Bundle) {
+        if (!properties.getBoolean(PROP_DETERMINATE)) {
+            return
+        }
+
+        if (props.containsKey(PROP_VALUE)) {
+            (view as CustomSpinner).value = props.getDouble(PROP_VALUE).toFloat()
+        }
+    }
 
 }

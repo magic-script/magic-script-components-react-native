@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "react-native-magic-script",
+  "name": "magic-script-components-react-native",
   "version": "0.1.0",
   "description": "Magic Script Components package for React Native.",
   "main": "index.js",

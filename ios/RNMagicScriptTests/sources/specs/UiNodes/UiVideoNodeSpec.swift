@@ -190,7 +190,7 @@ class UiVideoNodeSpec: QuickSpec {
                 }
             }
 
-            context("when receive 'player reached end' notificationś") {
+            context("when receive 'player reached end' notification") {
                 context("when in looping mode") {
                     it("should rewind to the beginning") {
                         let videoPlayerMock = AVPlayerProtocolMock()

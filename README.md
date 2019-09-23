@@ -24,9 +24,9 @@ The instruction assumes that you have the following tools installed and you have
 `react-native init AwesomeProject --version 0.60.5`
 2. Go to the project directory
 3. Add react native magic script library to the project:
-	 `yarn add https://github.com/magic-script/react-native-magic-script.git`
+	 `yarn add https://github.com/magic-script/magic-script-components-react-native`
 4. ~~Execute `react-native link` in order to link the library~~ (not required since React 0.60),
-5. In the main project directory add `proxy` folder from [https://github.com/magic-script/magic-script-components-catalog](https://github.com/magic-script/magic-script-components-catalog/tree/master/)
+5. In the main project directory add `proxy_mobile` folder from [https://github.com/magic-script/magic-script-components-catalog](https://github.com/magic-script/magic-script-components-catalog/tree/master/)
 6. Replace App.js content with the following:
 	```
 	import React from 'react';
@@ -47,7 +47,7 @@ The instruction assumes that you have the following tools installed and you have
 7. Replace `index.js` content with the following:
 	```
 	import React from 'react';
-	import { MagicScript } from './proxy';
+	import { MagicScript } from './proxy_mobile';
 	import MyApp from './App';
 
 	MagicScript.registerApp('AwesomeProject', <MyApp />, false);

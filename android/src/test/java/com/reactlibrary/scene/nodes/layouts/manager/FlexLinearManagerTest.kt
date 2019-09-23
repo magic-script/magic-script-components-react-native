@@ -74,7 +74,6 @@ class FlexLinearManagerTest {
         )
 
         val result = calculateOffset(bounds, layoutData)
-        System.err.println(result)
         assertArrayEquals(arrayOf(16F,4F,0F), result)
     }
 

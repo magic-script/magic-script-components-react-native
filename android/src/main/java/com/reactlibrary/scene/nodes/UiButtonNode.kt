@@ -146,7 +146,7 @@ open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initP
     private fun setText(props: Bundle) {
         val text = props.getString(PROP_TEXT)
         if (text != null) {
-            (view as CustomButton).setText(text)
+            (view as CustomButton).text = text
             // rebuild only if size can be changed
             if (canResizeOnContentChange()) {
                 setNeedsRebuild()
@@ -177,7 +177,7 @@ open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initP
     private fun setRoundness(props: Bundle) {
         if (props.containsKey(PROP_ROUNDNESS)) {
             val roundness = props.getDouble(PROP_ROUNDNESS).toFloat()
-            (view as CustomButton).setRoundnessFactor(roundness)
+            (view as CustomButton).roundnessFactor = roundness
         }
     }
 

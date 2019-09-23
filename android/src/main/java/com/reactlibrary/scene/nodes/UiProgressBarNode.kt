@@ -28,7 +28,7 @@ import com.reactlibrary.scene.nodes.views.CustomProgressBar
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 
-class UiProgressBarNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiProgressBarNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
 
     companion object {
         // properties

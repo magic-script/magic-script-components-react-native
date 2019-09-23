@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes
+package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
+import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.reactlibrary.scene.nodes.video.UiVideoNode
-import org.junit.Assert.assertEquals
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -32,21 +34,50 @@ import org.robolectric.RobolectricTestRunner
  * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
-class UiVideoNodeTest {
+class CustomProgressBarTest {
 
     private lateinit var context: Context
+    private lateinit var progressBar: CustomProgressBar
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.progressBar = spy(CustomProgressBar(context))
     }
 
     @Test
-    fun shouldHaveDefaultVolume() {
-        val node = UiVideoNode(JavaOnlyMap(), context)
+    fun shouldRedrawAfterSettingValue() {
+        progressBar.value = 99F
 
-        val volume = node.getProperty(UiVideoNode.PROP_VOLUME)
-
-        assertEquals(UiVideoNode.DEFAULT_VOLUME, volume)
+        verify(progressBar).invalidate()
     }
+
+    @Test
+    fun shouldRedrawAfterSettingMinValue() {
+        progressBar.min = 0F
+
+        verify(progressBar).invalidate()
+    }
+
+    @Test
+    fun shouldRedrawAfterSettingMaxValue() {
+        progressBar.max = 100F
+
+        verify(progressBar).invalidate()
+    }
+
+    @Test
+    fun shouldRedrawAfterSettingBeginColor() {
+        progressBar.beginColor = Color.RED
+
+        verify(progressBar).invalidate()
+    }
+
+    @Test
+    fun shouldRedrawAfterSettingEndColor() {
+        progressBar.endColor = Color.RED
+
+        verify(progressBar).invalidate()
+    }
+
 }

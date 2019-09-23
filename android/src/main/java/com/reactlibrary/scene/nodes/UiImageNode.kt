@@ -31,7 +31,7 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.image.view.*
 
-class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
 
     companion object {
         // properties

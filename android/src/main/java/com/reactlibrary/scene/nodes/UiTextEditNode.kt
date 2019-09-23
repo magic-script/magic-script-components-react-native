@@ -39,7 +39,7 @@ import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.text_edit.view.*
 
-class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
 
     companion object {
         // properties
@@ -225,7 +225,7 @@ class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProp
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
             this.textColor = color
-            if (view.text_edit.text.toString() != hint) {
+            if (hint.isEmpty() || view.text_edit.text.toString() != hint) {
                 view.text_edit.setTextColor(color)
             }
         }

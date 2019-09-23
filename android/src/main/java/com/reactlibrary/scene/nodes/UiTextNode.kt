@@ -73,7 +73,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         super.applyProperties(props)
 
         if (props.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
+            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
             val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
             width = bounds[0].toFloat()
             height = bounds[1].toFloat()
@@ -95,7 +95,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
         if (width == WRAP_CONTENT_DIMENSION) {
-            (view as TextView).setSingleLine()
+            (view as TextView).setSingleLine(true)
         } else {
             widthPx = Utils.metersToPx(width, context)
         }

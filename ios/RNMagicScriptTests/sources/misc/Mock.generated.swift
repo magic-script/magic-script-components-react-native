@@ -11,8 +11,209 @@ import XCTest
 #endif
 import UIKit
 import SceneKit
+import AVKit
 @testable import RNMagicScriptHostApplication
 
+
+// MARK: - AVPlayerProtocol
+open class AVPlayerProtocolMock: AVPlayerProtocol, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    public var currentItem: AVPlayerItem? {
+		get {	invocations.append(.p_currentItem_get); return __p_currentItem ?? optionalGivenGetterValue(.p_currentItem_get, "AVPlayerProtocolMock - stub value for currentItem was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_currentItem = newValue }
+	}
+	private var __p_currentItem: (AVPlayerItem)?
+
+    public var volume: Float {
+		get {	invocations.append(.p_volume_get); return __p_volume ?? givenGetterValue(.p_volume_get, "AVPlayerProtocolMock - stub value for volume was not defined") }
+		set {	invocations.append(.p_volume_set(.value(newValue))); __p_volume = newValue }
+	}
+	private var __p_volume: (Float)?
+
+
+
+
+
+    open func play() {
+        addInvocation(.m_play)
+		let perform = methodPerformValue(.m_play) as? () -> Void
+		perform?()
+    }
+
+    open func pause() {
+        addInvocation(.m_pause)
+		let perform = methodPerformValue(.m_pause) as? () -> Void
+		perform?()
+    }
+
+    open func seek(to time: CMTime) {
+        addInvocation(.m_seek__to_time(Parameter<CMTime>.value(`time`)))
+		let perform = methodPerformValue(.m_seek__to_time(Parameter<CMTime>.value(`time`))) as? (CMTime) -> Void
+		perform?(`time`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_play
+        case m_pause
+        case m_seek__to_time(Parameter<CMTime>)
+        case p_currentItem_get
+        case p_volume_get
+		case p_volume_set(Parameter<Float>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_play, .m_play):
+                return true 
+            case (.m_pause, .m_pause):
+                return true 
+            case (.m_seek__to_time(let lhsTime), .m_seek__to_time(let rhsTime)):
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
+            case (.p_currentItem_get,.p_currentItem_get): return true
+            case (.p_volume_get,.p_volume_get): return true
+			case (.p_volume_set(let left),.p_volume_set(let right)): return Parameter<Float>.compare(lhs: left, rhs: right, with: matcher)
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .m_play: return 0
+            case .m_pause: return 0
+            case let .m_seek__to_time(p0): return p0.intValue
+            case .p_currentItem_get: return 0
+            case .p_volume_get: return 0
+			case .p_volume_set(let newValue): return newValue.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func currentItem(getter defaultValue: AVPlayerItem?...) -> PropertyStub {
+            return Given(method: .p_currentItem_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func volume(getter defaultValue: Float...) -> PropertyStub {
+            return Given(method: .p_volume_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func play() -> Verify { return Verify(method: .m_play)}
+        public static func pause() -> Verify { return Verify(method: .m_pause)}
+        public static func seek(to time: Parameter<CMTime>) -> Verify { return Verify(method: .m_seek__to_time(`time`))}
+        public static var currentItem: Verify { return Verify(method: .p_currentItem_get) }
+        public static var volume: Verify { return Verify(method: .p_volume_get) }
+		public static func volume(set newValue: Parameter<Float>) -> Verify { return Verify(method: .p_volume_set(newValue)) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func play(perform: @escaping () -> Void) -> Perform {
+            return Perform(method: .m_play, performs: perform)
+        }
+        public static func pause(perform: @escaping () -> Void) -> Perform {
+            return Perform(method: .m_pause, performs: perform)
+        }
+        public static func seek(to time: Parameter<CMTime>, perform: @escaping (CMTime) -> Void) -> Perform {
+            return Perform(method: .m_seek__to_time(`time`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
 
 // MARK: - Downloading
 open class DownloadingMock: Downloading, Mock {

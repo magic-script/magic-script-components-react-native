@@ -31,7 +31,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 
 /**
@@ -40,14 +39,15 @@ import org.robolectric.annotation.Config
  * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class UiButtonNodeTest {
 
     private lateinit var context: Context
+    private lateinit var viewSpy: CustomButton
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.viewSpy = spy(CustomButton(context))
     }
 
     @Test
@@ -70,58 +70,54 @@ class UiButtonNodeTest {
 
 
     @Test
-    fun shouldSetTextWhenTextPropertyPresent() {
+    fun shouldApplyTextWhenTextPropertyPresent() {
         val text = "ABC"
         val props = JavaOnlyMap.of(UiButtonNode.PROP_TEXT, text)
-        val view = spy(CustomButton(context))
-        val node = createButtonNode(props, view)
+        val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(view).setText(text)
+        verify(viewSpy).text = text
     }
 
     @Test
-    fun shouldSetTextSizeWhenTextSizePropertyPresent() {
+    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
         val textSize = 0.05F
         val props = JavaOnlyMap.of(UiButtonNode.PROP_TEXT_SIZE, textSize)
-        val view = spy(CustomButton(context))
-        val node = createButtonNode(props, view)
+        val node = createNodeWithViewSpy(props)
         val textSizeInPixels = Utils.metersToFontPx(textSize, context).toFloat()
 
         node.build()
 
-        verify(view).setTextSize(textSizeInPixels)
+        verify(viewSpy).setTextSize(textSizeInPixels)
     }
 
     @Test
-    fun shouldSetTextColorWhenColorPropertyPresent() {
+    fun shouldApplyTextColorWhenColorPropertyPresent() {
         val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
         val props = JavaOnlyMap.of(UiButtonNode.PROP_TEXT_COLOR, textColor)
-        val view = spy(CustomButton(context))
-        val node = createButtonNode(props, view)
+        val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(view).setTextColor(0xFFFFFFFF.toInt())
+        verify(viewSpy).setTextColor(0xFFFFFFFF.toInt())
     }
 
     @Test
-    fun shouldSetRoundnessWhenRoundnessPropertyPresent() {
+    fun shouldApplyRoundnessWhenRoundnessPropertyPresent() {
         val roundness = 0.2
         val props = JavaOnlyMap.of(UiButtonNode.PROP_ROUNDNESS, roundness)
-        val view = spy(CustomButton(context))
-        val node = createButtonNode(props, view)
+        val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(view).setRoundnessFactor(roundness.toFloat())
+        verify(viewSpy).roundnessFactor = roundness.toFloat()
     }
 
-    private fun createButtonNode(props: ReadableMap, viewMock: View): UiButtonNode {
+    private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
         return object : UiButtonNode(props, context) {
             override fun provideView(context: Context): View {
-                return viewMock
+                return viewSpy
             }
         }
     }

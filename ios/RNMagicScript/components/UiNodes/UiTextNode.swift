@@ -34,12 +34,12 @@ import SceneKit
         set { labelNode.textSize = newValue; setNeedsLayout() }
     }
     @objc var style: FontStyle {
-        get { return labelNode.style }
-        set { labelNode.style = newStyle; setNeedsLayout() }
+        get { return labelNode.fontStyle }
+        set { labelNode.fontStyle = newValue; setNeedsLayout() }
     }
     @objc var weight: FontWeight {
-       get { return labelNode.weight }
-       set { labelNode.weight = newStyle; setNeedsLayout() }
+       get { return labelNode.fontWeight }
+       set { labelNode.fontWeight = newValue; setNeedsLayout() }
     }
     @objc var charSpacing: CGFloat {
         get { return labelNode.charSpacing }
@@ -57,15 +57,13 @@ import SceneKit
         get { return labelNode.textAlignment }
         set { labelNode.textAlignment = newValue; setNeedsLayout() }
     }
-    // @objc var style: UIFont.TextStyle // TODO: property to defined
-    // @objc var weight: UIFont.Weight // TODO: property to defined
     @objc var boundsSize: CGSize {
         get { return labelNode.boundsSize }
         set { labelNode.boundsSize = newValue; setNeedsLayout() }
     }
     @objc var wrap: Bool {
-        get { return labelNode.wrap }
-        set { labelNode.wrap = newValue; setNeedsLayout() }
+        get { return labelNode.multiline }
+        set { labelNode.multiline = newValue; setNeedsLayout() }
     }
 
     fileprivate var labelNode: LabelNode!

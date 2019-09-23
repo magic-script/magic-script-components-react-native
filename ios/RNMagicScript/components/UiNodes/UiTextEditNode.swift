@@ -19,7 +19,7 @@ import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
 
-    static fileprivate let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
+    static let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
 
     @objc var text: String? {
         get { return labelNode.text }
@@ -31,40 +31,41 @@ import SpriteKit
     }
     @objc var textSize: CGFloat {
         get { return labelNode.textSize }
-        set { labelNode.textSize = newValue; setNeedsLayout() }
+        set { labelNode.textSize = newValue; hintNode.textSize = newValue; setNeedsLayout() }
     }
     @objc var style: FontStyle {
-        get { return labelNode.style }
-        set { labelNode.style = newStyle; setNeedsLayout() }
+        get { return labelNode.fontStyle }
+        set { labelNode.fontStyle = newValue; hintNode.fontStyle = newValue; setNeedsLayout() }
     }
     @objc var weight: FontWeight {
-       get { return labelNode.weight }
-       set { labelNode.weight = newStyle; setNeedsLayout() }
+       get { return labelNode.fontWeight }
+        set { labelNode.fontWeight = newValue; hintNode.fontWeight = newValue; setNeedsLayout() }
     }
     @objc var charLimit: Int {
         get { return labelNode.charLimit }
-        set { labelNode.charLimit = newValue; setNeedsLayout() }
+        set { labelNode.charLimit = newValue; hintNode.charLimit = newValue; setNeedsLayout() }
     }
     @objc var charSpacing: CGFloat {
         get { return labelNode.charSpacing }
-        set { labelNode.charSpacing = newValue; setNeedsLayout() }
+        set { labelNode.charSpacing = newValue; hintNode.charSpacing = newValue; setNeedsLayout() }
     }
     @objc var lineSpacing: CGFloat {
         get { return labelNode.lineSpacing }
-        set { labelNode.lineSpacing = newValue; setNeedsLayout() }
+        set { labelNode.lineSpacing = newValue; hintNode.lineSpacing = newValue; setNeedsLayout() }
     }
     @objc var allCaps: Bool {
         get { return labelNode.allCaps }
-        set { labelNode.allCaps = newValue; setNeedsLayout() }
+        set { labelNode.allCaps = newValue; hintNode.allCaps = newValue; setNeedsLayout() }
     }
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
-        set { labelNode.textAlignment = newValue; setNeedsLayout() }
+        set { labelNode.textAlignment = newValue; hintNode.textAlignment = newValue; setNeedsLayout() }
     }
     // @objc var cursorEdgeScrollMode: CursorEdgeScrollMode
     @objc var textPadding: UIEdgeInsets {
         // Defaults to half the text size unless explicitly set.
-        didSet { setNeedsLayout() }
+        get { return labelNode.textPadding }
+        set { labelNode.textPadding = newValue; hintNode.textPadding = newValue; setNeedsLayout() }
     }
     @objc var hint: String? {
         get { return hintNode.text }
@@ -75,12 +76,11 @@ import SpriteKit
         set { hintNode.textColor = newValue; setNeedsLayout() }
     }
     @objc var multiline: Bool {
-        get { return labelNode.wrap }
-        set { labelNode.wrap = newValue; setNeedsLayout() }
+        get { return labelNode.multiline }
+        set { labelNode.multiline = newValue; hintNode.multiline = newValue; setNeedsLayout() }
     }
-    @objc var password: Bool {
-        get { return labelNode.password }
-        set { labelNode.password = newValue; setNeedsLayout() }
+    @objc var password: Bool = false {
+        didSet { setNeedsLayout() }
     }
     @objc var scrolling: Bool = true {
         didSet { setNeedsLayout() }
@@ -91,6 +91,14 @@ import SpriteKit
     @objc var scrollValue: CGFloat = 0.0
     @objc var fontSize: CGFloat = 0.02
     @objc var tracking: Int = 50 // not supported by Lumin yet
+    @objc var width: CGFloat {
+        get { return labelNode.boundsSize.width }
+        set { labelNode.boundsSize = CGSize(width: newValue, height: height); setNeedsLayout() }
+    }
+    @objc var height: CGFloat {
+        get { return labelNode.boundsSize.height }
+        set { labelNode.boundsSize = CGSize(width: width, height: newValue); setNeedsLayout() }
+    }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onTextChanged: ((_ sender: UiNode, _ text: String) -> (Void))?
@@ -98,7 +106,7 @@ import SpriteKit
     fileprivate var labelNode: LabelNode!
     fileprivate var hintNode: LabelNode!
     fileprivate var outlineNode: SCNNode!
-    fileprivate var reloadOutline: Bool
+    fileprivate var reloadOutline: Bool = false
 
     @objc override var canHaveFocus: Bool {
         return enabled
@@ -122,6 +130,13 @@ import SpriteKit
 
     @objc override func setupNode() {
         super.setupNode()
+
+        assert(labelNode == nil, "Node must not be initialized!")
+        labelNode = LabelNode()
+        contentNode.addChildNode(labelNode)
+
+        hintNode = LabelNode()
+        contentNode.addChildNode(hintNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -218,8 +233,24 @@ import SpriteKit
         }
     }
 
+    @objc override func _calculateSize() -> CGSize {
+        let localWidth: CGFloat = (width > 0) ? width : UiTextEditNode.defaultSize.width
+        let localHeight: CGFloat = (height > 0) ? height : UiTextEditNode.defaultSize.height
+        return CGSize(width: localWidth, height: localHeight)
+    }
+
     @objc override func updateLayout() {
-        labelNode.reload()
+        let hasText: Bool = (text?.count ?? 0 > 0)
+        if hasText {
+            labelNode.isHidden = false
+            hintNode.isHidden = true
+            labelNode.reload()
+        } else {
+            labelNode.isHidden = true
+            hintNode.isHidden = false
+            hintNode.reload()
+        }
+
         if hasFocus && reloadOutline {
             reloadOutline = false
             reloadOutlineNode()
@@ -229,6 +260,7 @@ import SpriteKit
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
         labelNode.setDebugMode(debug)
+        hintNode.setDebugMode(debug)
     }
 
     fileprivate func reloadOutlineNode() {
@@ -236,7 +268,8 @@ import SpriteKit
 
         outlineNode?.removeFromParentNode()
 
-        let radius: CGFloat = 0.5
+        let roundness: CGFloat = 0.5
+        let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
         let thickness: CGFloat = 0.05 * min(size.width, size.height)
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)

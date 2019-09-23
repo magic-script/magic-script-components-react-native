@@ -94,9 +94,12 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        if (width != WRAP_CONTENT_DIMENSION) {
+        if (width == WRAP_CONTENT_DIMENSION) {
+            (view as TextView).setSingleLine()
+        } else {
             widthPx = Utils.metersToPx(width, context)
         }
+
         if (height != WRAP_CONTENT_DIMENSION) {
             heightPx = Utils.metersToPx(height, context)
         }
@@ -169,6 +172,9 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
     }
 
     private fun setWrap(props: Bundle) {
+        if (width == WRAP_CONTENT_DIMENSION) {
+            return
+        }
         if (props.containsKey(PROP_BOUNDS_SIZE)) {
             val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
             val wrap = boundsData.getBoolean(PROP_WRAP)

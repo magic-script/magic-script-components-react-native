@@ -20,7 +20,6 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -89,21 +88,6 @@ class UiTextNodeTest {
         node.build()
 
         assertEquals(textSizeInPixels, view.textSize)
-    }
-
-    @Test
-    fun shouldBeSingleLineWhenWrapPropertyIsFalse() {
-        val boundsData = JavaOnlyMap.of(
-                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.0),
-                UiTextNode.PROP_WRAP, false
-        )
-        val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
-        val view = TextView(context)
-        val node = createTextNode(props, view)
-
-        node.build()
-
-        assertEquals(1, view.maxLines) // height must not be set explicitly
     }
 
     private fun createTextNode(props: ReadableMap, viewMock: View): UiTextNode {

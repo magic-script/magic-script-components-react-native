@@ -30,16 +30,17 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSpinner
 import com.reactlibrary.utils.Utils
 
-class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context, useContentNodeAlignment = true) {
+open class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context, useContentNodeAlignment = true) {
 
     companion object {
         // properties
-        private const val PROP_HEIGHT = "height"
-        private const val PROP_DETERMINATE = "determinate" // if true we can set value
-        private const val PROP_VALUE = "value" // progress
+        const val PROP_HEIGHT = "height"
+        const val PROP_DETERMINATE = "determinate" // if true we can set progress
+        const val PROP_VALUE = "value" // progress
 
-        private const val DEFAULT_SIZE = 0.07
-        private const val INDETERMINATE_VALUE = 0.25F // 45 degrees
+        const val DEFAULT_HEIGHT = 0.07
+        const val DEFAULT_DETERMINATE = false
+        const val INDETERMINATE_VALUE = 0.25F // 45 degrees
     }
 
     private val rotationSpeed = 360f // angle per second
@@ -47,7 +48,10 @@ class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps
 
     init {
         if (!properties.containsKey(PROP_HEIGHT)) {
-            properties.putDouble(PROP_HEIGHT, DEFAULT_SIZE)
+            properties.putDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        }
+        if (!properties.containsKey(PROP_DETERMINATE)) {
+            properties.putBoolean(PROP_DETERMINATE, DEFAULT_DETERMINATE)
         }
     }
 

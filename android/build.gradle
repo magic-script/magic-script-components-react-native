@@ -66,9 +66,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            testCoverageEnabled = true
-        }
+        // we should not use debug (libraries use always release)
         release {
             testCoverageEnabled = true
         }

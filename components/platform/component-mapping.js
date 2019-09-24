@@ -8,6 +8,7 @@ import LineBuilder from './elements/builders/line-builder.js';
 import LinearLayoutBuilder from './elements/builders/linear-layout-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
+import ScrollBarBuilder from './elements/builders/scroll-bar-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
 import TextBuilder from './elements/builders/text-builder.js';
@@ -32,6 +33,7 @@ export default {
         'textEdit': (componentManager) => new TextEditBuilder(componentManager),
         'toggle': (componentManager) => new ToggleBuilder(componentManager),
         'progressBar': (componentManager) => new ProgressBarBuilder(componentManager),
+        'scrollBar': (componentManager) => new ScrollBarBuilder(componentManager),
         'slider': (componentManager) => new SliderBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'view': (componentManager) => new GroupBuilder(componentManager),

@@ -17,10 +17,13 @@
 import UIKit
 import ARKit
 import SceneKit
+import GrowingTextView
 
 class RCTARView: UIView {
 
     fileprivate(set) var arView: ARSCNView!
+    fileprivate var inputResponder: UITextField?
+    fileprivate var input: InputDataProviding?
 
     var scene: SCNScene {
         return arView.scene
@@ -113,7 +116,63 @@ class RCTARView: UIView {
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
 
+        UiNodesManager.instance.onInputFocused = { [weak self] input in
+            self?.presentInput(input)
+        }
+
+        UiNodesManager.instance.onInputUnfocused = { [weak self] in
+            self?.dismissInput()
+        }
+
         return view
+    }
+
+    fileprivate func presentInput(_ input: InputDataProviding) {
+        self.input = input
+        let result = createInput(input)
+        inputResponder = UITextField()
+        inputResponder!.inputAccessoryView = result.accessoryView
+        inputResponder!.isHidden = true
+        addSubview(inputResponder!)
+        inputResponder!.becomeFirstResponder()
+        result.textView.becomeFirstResponder()
+    }
+
+    fileprivate func dismissInput() {
+        inputResponder!.inputAccessoryView = nil
+        inputResponder?.becomeFirstResponder()
+        inputResponder?.removeFromSuperview()
+        inputResponder = nil
+        input = nil
+    }
+
+    fileprivate func createInput(_ input: InputDataProviding) -> (accessoryView: UIView, textView: GrowingTextView) {
+        let accessoryView = UIView()
+        accessoryView.backgroundColor = UIColor.red
+        accessoryView.translatesAutoresizingMaskIntoConstraints = false
+
+        let textView = GrowingTextView()
+        textView.delegate = self
+        textView.layer.cornerRadius = 4.0
+        textView.maxLength = 2000
+        textView.maxHeight = 70
+        textView.trimWhiteSpaceWhenEndEditing = true
+        textView.placeholder = "placeholder"
+        textView.placeholderColor = UIColor(white: 0.8, alpha: 1.0)
+        textView.font = UIFont.systemFont(ofSize: 15)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        accessoryView.addSubview(textView)
+
+        let topConstraint = textView.topAnchor.constraint(equalTo: accessoryView.topAnchor, constant: 8)
+        topConstraint.priority = UILayoutPriority(999)
+        NSLayoutConstraint.activate([
+            textView.leadingAnchor.constraint(equalTo: accessoryView.leadingAnchor, constant: 8),
+            textView.trailingAnchor.constraint(equalTo: accessoryView.trailingAnchor, constant: -8),
+            topConstraint,
+            textView.bottomAnchor.constraint(equalTo: accessoryView.bottomAnchor, constant: -8),
+        ])
+
+        return (accessoryView: accessoryView, textView: textView)
     }
 
     func pause() {
@@ -143,5 +202,19 @@ extension RCTARView {
         ]
         let node = arView.hitTest(tapPoint, options: options).first?.node
         UiNodesManager.instance.handleNodeTap(node)
+    }
+
+    @objc fileprivate func doneButtonAction(_ sender: UIBarButtonItem) {
+
+    }
+}
+
+extension RCTARView: GrowingTextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.text = input?.value as? String
+    }
+
+    func textViewDidChange(_ textView: UITextView) {
+        input?.value = textView.text
     }
 }

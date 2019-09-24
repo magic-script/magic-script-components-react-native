@@ -269,11 +269,57 @@ import SpriteKit
         outlineNode?.removeFromParentNode()
 
         let roundness: CGFloat = 0.5
-        let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
-        let thickness: CGFloat = 0.05 * min(size.width, size.height)
+        let minSize: CGFloat = min(size.width, size.height)
+        let outlineOffset: CGFloat = 0.3 * minSize
+        let radius: CGFloat = 0.5 * minSize * roundness
+        let thickness: CGFloat = 0.05 * minSize
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
-        outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
+        outlineNode = NodesFactory.createOutlineNode(width: size.width + outlineOffset, height: size.height + outlineOffset, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)
     }
 }
 
+extension UiTextEditNode: InputDataProviding {
+    var value: Any? {
+        get { return text }
+        set {
+            if let newText = newValue as? String {
+                text = newText
+                layoutIfNeeded()
+            }
+        }
+    }
+    var keyboardType: UIKeyboardType? {
+        switch textEntry {
+        case .email:
+            return UIKeyboardType.emailAddress
+        case .none:
+            return nil
+        case .normal:
+            return UIKeyboardType.default
+        case .numeric:
+            return UIKeyboardType.numberPad
+        case .url:
+            return UIKeyboardType.URL
+        }
+    }
+    var textContentType: UITextContentType? {
+        if password {
+            return UITextContentType.password
+        }
+
+        switch textEntry {
+        case .email:
+            return UITextContentType.emailAddress
+        case .none:
+            return nil
+        case .normal:
+            return nil
+        case .numeric:
+            return nil
+        case .url:
+            return UITextContentType.URL
+        }
+
+    }
+}

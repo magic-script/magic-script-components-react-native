@@ -4,7 +4,7 @@ target 'RNMagicScriptHostApplication' do
   use_frameworks!
 
   pod 'GLTFSceneKit'
-  pod 'NextGrowingTextView'
+  pod 'GrowingTextView', '0.7.1'
 
   target 'RNMagicScriptTests' do
     inherit! :search_paths

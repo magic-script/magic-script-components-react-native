@@ -19,19 +19,18 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
-import com.reactlibrary.scene.nodes.views.CustomProgressBar
+import com.reactlibrary.scene.nodes.views.CustomSpinner
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyInt
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -39,39 +38,52 @@ import org.robolectric.RobolectricTestRunner
  * does not require native React's resources.
  */
 @RunWith(RobolectricTestRunner::class)
-class UiProgressBarNodeTest {
+class UiSpinnerNodeTest {
 
     private lateinit var context: Context
-    private lateinit var viewSpy: CustomProgressBar
+    private lateinit var viewSpy: CustomSpinner
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
-        this.viewSpy = spy(CustomProgressBar(context))
-    }
-
-    @Test
-    fun shouldHaveDefaultWidth() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context)
-
-        val width = node.getProperty(UiProgressBarNode.PROP_WIDTH)
-
-        assertEquals(UiProgressBarNode.DEFAULT_WIDTH, width)
+        this.viewSpy = spy(CustomSpinner(context))
     }
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context)
+        val node = UiSpinnerNode(JavaOnlyMap(), context)
 
-        val height = node.getProperty(UiProgressBarNode.PROP_HEIGHT)
+        val height = node.getProperty(UiSpinnerNode.PROP_HEIGHT)
 
-        assertEquals(UiProgressBarNode.DEFAULT_HEIGHT, height)
+        assertEquals(UiSpinnerNode.DEFAULT_HEIGHT, height)
     }
 
     @Test
-    fun shouldApplyValueWhenValuePropertyPresent() {
-        val value = 0.2
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_VALUE, value)
+    fun shouldHaveDefaultDeterminateFlag() {
+        val node = UiSpinnerNode(JavaOnlyMap(), context)
+
+        val isDeterminate = node.getProperty(UiSpinnerNode.PROP_DETERMINATE)
+
+        assertEquals(UiSpinnerNode.DEFAULT_DETERMINATE, isDeterminate)
+    }
+
+
+    @Test
+    fun shouldApplyDefaultIndeterminateAngleWhenNoProperties() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(viewSpy).value = UiSpinnerNode.INDETERMINATE_VALUE
+    }
+
+    @Test
+    fun shouldApplyDesiredProgressWhenDeterminate() {
+        val value = 0.3
+        val props = JavaOnlyMap.of(
+                UiSpinnerNode.PROP_VALUE, value,
+                UiSpinnerNode.PROP_DETERMINATE, true
+        )
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -80,47 +92,22 @@ class UiProgressBarNodeTest {
     }
 
     @Test
-    fun shouldApplyMinValueWhenMinPropertyPresent() {
-        val minValue = 10.0
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MIN, minValue)
-        val node = createNodeWithViewSpy(props)
-
-        node.build()
-
-        verify(viewSpy).min = minValue.toFloat()
-    }
-
-    @Test
-    fun shouldApplyMaxValueWhenMaxPropertyPresent() {
-        val maxValue = 1000.0
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MAX, maxValue)
-        val node = createNodeWithViewSpy(props)
-
-        node.build()
-
-        verify(viewSpy).max = maxValue.toFloat()
-    }
-
-    @Test
-    fun shouldApplyProgressColorWhenColoPropertyPresent() {
-        val beginColor = JavaOnlyArray.of(0.5, 0.5, 0.5, 0.5)
-        val endColor = JavaOnlyArray.of(0.8, 0.8, 0.8, 0.8)
-        val progressColor = JavaOnlyMap.of(
-                UiProgressBarNode.PROP_PROGRESS_COLOR_BEGIN, beginColor,
-                UiProgressBarNode.PROP_PROGRESS_COLOR_END, endColor
+    fun shouldNotApplyDesiredProgressWhenNotDeterminate() {
+        val value = 0.6
+        val props = JavaOnlyMap.of(
+                UiSpinnerNode.PROP_VALUE, value,
+                UiSpinnerNode.PROP_DETERMINATE, false
         )
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_PROGRESS_COLOR, progressColor)
         val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(viewSpy).beginColor = anyInt()
-        verify(viewSpy).endColor = anyInt()
+        verify(viewSpy, never()).value = value.toFloat()
     }
 
     @Test
     fun shouldNotChangeHardcodedAlignment() {
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-right")
+        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-left")
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -129,8 +116,8 @@ class UiProgressBarNodeTest {
         assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
     }
 
-    private fun createNodeWithViewSpy(props: ReadableMap): UiProgressBarNode {
-        return object : UiProgressBarNode(props, context) {
+    private fun createNodeWithViewSpy(props: ReadableMap): UiSpinnerNode {
+        return object : UiSpinnerNode(props, context) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

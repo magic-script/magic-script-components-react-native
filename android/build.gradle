@@ -66,9 +66,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            testCoverageEnabled = true
-        }
+        // we should not use debug (libraries use always release)
         release {
             testCoverageEnabled = true
         }
@@ -132,7 +130,7 @@ dependencies {
 
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testReleaseUnitTest', 'createReleaseCoverageReport']) {
 
     reports {
         xml.enabled = true
@@ -140,14 +138,14 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     }
 
     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
-    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-    def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def tree = fileTree(dir: "${buildDir}/intermediates/classes/release", excludes: fileFilter)
+    def kotlinTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/release", excludes: fileFilter)
     def mainSrc = "${project.projectDir}/src/main/java"
 
     sourceDirectories.from = files([mainSrc])
-    classDirectories.from = files([debugTree], [kotlinDebugTree])
+    classDirectories.from = files([tree], [kotlinTree])
     executionData.from = fileTree(dir: "$buildDir", includes: [
-            "jacoco/testDebugUnitTest.exec",
+            "jacoco/testReleaseUnitTest.exec",
             "outputs/code-coverage/connected/*coverage.ec"
     ])
 }

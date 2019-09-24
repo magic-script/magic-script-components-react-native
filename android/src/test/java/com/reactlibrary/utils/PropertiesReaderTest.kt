@@ -40,7 +40,7 @@ class PropertiesReaderTest {
     }
 
     @Test
-    fun `should return uri equivalent if provided url string`() {
+    fun `should return Uri equivalent if provided URL string`() {
         val path = "http://sample.com/file.mp4"
         val bundle = Bundle()
         val prop = "PROP_NAME"
@@ -50,6 +50,35 @@ class PropertiesReaderTest {
         val uri = PropertiesReader.readFilePath(bundle, prop, context)
 
         assertEquals(expected, uri)
+    }
+
+    @Test
+    fun `should return Uri equivalent for URL path inside bundle`() {
+        val path = "http://localhost/sample-image.jpg"
+        val pathBundle = Bundle()
+        pathBundle.putString("uri", path)
+        val propsBundle = Bundle()
+        val prop = "imagePath"
+        propsBundle.putBundle(prop, pathBundle)
+        val expected = Uri.parse(path)
+
+        val uri = PropertiesReader.readImagePath(propsBundle, prop, context)
+
+        assertTrue(expected == uri)
+    }
+
+    @Test
+    fun `should return android resource Uri for non URL path inside bundle`() {
+        val path = "resources_video1.mp4"
+        val pathBundle = Bundle()
+        pathBundle.putString("uri", path)
+        val propsBundle = Bundle()
+        val prop = "videoPath"
+        propsBundle.putBundle(prop, pathBundle)
+
+        val uri = PropertiesReader.readFilePath(propsBundle, prop, context)
+
+        assertTrue(uri.toString().startsWith("android.resource"))
     }
 
     @Test

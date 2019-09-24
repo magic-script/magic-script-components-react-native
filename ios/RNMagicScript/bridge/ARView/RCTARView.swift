@@ -12,24 +12,24 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import UIKit
 import ARKit
 import SceneKit
 import GrowingTextView
 
-class RCTARView: UIView {
+@objc public class RCTARView: UIView {
 
     fileprivate(set) var arView: ARSCNView!
     fileprivate var inputResponder: UITextField?
     fileprivate var input: InputDataProviding?
 
-    var scene: SCNScene {
+    public var scene: SCNScene {
         return arView.scene
     }
 
-    var debug: Bool {
+    @objc public var debug: Bool {
         get { return arView.showsStatistics }
         set {
             arView.showsStatistics = newValue
@@ -37,13 +37,13 @@ class RCTARView: UIView {
         }
     }
 
-    var rendersContinuously: Bool {
+    @objc public var rendersContinuously: Bool {
         get { return arView.rendersContinuously }
         set { arView.rendersContinuously = newValue }
     }
 
     fileprivate var _configuration: ARWorldTrackingConfiguration?
-    var configuration: ARWorldTrackingConfiguration? {
+    fileprivate var configuration: ARWorldTrackingConfiguration? {
         guard ARWorldTrackingConfiguration.isSupported else { return nil }
 
         guard let _ = _configuration else  {
@@ -66,18 +66,18 @@ class RCTARView: UIView {
         return _configuration
     }
 
-    weak var delegate: ARSCNViewDelegate? {
+    public weak var delegate: ARSCNViewDelegate? {
         get { return arView.delegate }
         set { arView.delegate = newValue }
     }
 
-    init() {
+    public init() {
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         resume()
     }
 
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -139,7 +139,7 @@ class RCTARView: UIView {
     }
 
     fileprivate func dismissInput() {
-        inputResponder!.inputAccessoryView = nil
+        inputResponder?.inputAccessoryView = nil
         inputResponder?.becomeFirstResponder()
         inputResponder?.removeFromSuperview()
         inputResponder = nil
@@ -175,17 +175,17 @@ class RCTARView: UIView {
         return (accessoryView: accessoryView, textView: textView)
     }
 
-    func pause() {
+    public func pause() {
         arView.session.pause()
     }
 
-    func resume() {
+    public func resume() {
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [])
         }
     }
 
-    func reset() {
+    public func reset() {
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
@@ -210,11 +210,11 @@ extension RCTARView {
 }
 
 extension RCTARView: GrowingTextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
+    public func textViewDidBeginEditing(_ textView: UITextView) {
         textView.text = input?.value as? String
     }
 
-    func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         input?.value = textView.text
     }
 }

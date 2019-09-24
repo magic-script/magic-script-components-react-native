@@ -33,14 +33,6 @@ import SpriteKit
         get { return labelNode.textSize }
         set { labelNode.textSize = newValue; hintNode.textSize = newValue; setNeedsLayout() }
     }
-    @objc var style: FontStyle {
-        get { return labelNode.fontStyle }
-        set { labelNode.fontStyle = newValue; hintNode.fontStyle = newValue; setNeedsLayout() }
-    }
-    @objc var weight: FontWeight {
-       get { return labelNode.fontWeight }
-        set { labelNode.fontWeight = newValue; hintNode.fontWeight = newValue; setNeedsLayout() }
-    }
     @objc var charLimit: Int {
         get { return labelNode.charLimit }
         set { labelNode.charLimit = newValue; hintNode.charLimit = newValue; setNeedsLayout() }
@@ -52,10 +44,6 @@ import SpriteKit
     @objc var lineSpacing: CGFloat {
         get { return labelNode.lineSpacing }
         set { labelNode.lineSpacing = newValue; hintNode.lineSpacing = newValue; setNeedsLayout() }
-    }
-    @objc var allCaps: Bool {
-        get { return labelNode.allCaps }
-        set { labelNode.allCaps = newValue; hintNode.allCaps = newValue; setNeedsLayout() }
     }
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
@@ -89,8 +77,20 @@ import SpriteKit
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto
     @objc var scrollSpeed: CGFloat = 1.0
     @objc var scrollValue: CGFloat = 0.0
+    @objc var style: FontStyle {
+        get { return labelNode.fontStyle }
+        set { labelNode.fontStyle = newValue; hintNode.fontStyle = newValue; setNeedsLayout() }
+    }
+    @objc var weight: FontWeight {
+       get { return labelNode.fontWeight }
+        set { labelNode.fontWeight = newValue; hintNode.fontWeight = newValue; setNeedsLayout() }
+    }
     @objc var fontSize: CGFloat = 0.02
     @objc var tracking: Int = 50 // not supported by Lumin yet
+    @objc var allCaps: Bool {
+        get { return labelNode.allCaps }
+        set { labelNode.allCaps = newValue; hintNode.allCaps = newValue; setNeedsLayout() }
+    }
     @objc var width: CGFloat {
         get { return labelNode.boundsSize.width }
         set { labelNode.boundsSize = CGSize(width: newValue, height: height); setNeedsLayout() }
@@ -230,6 +230,14 @@ import SpriteKit
             if let allCaps = Convert.toBool(fontParams["allCaps"]) {
                 self.allCaps = allCaps
             }
+        }
+
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
         }
     }
 

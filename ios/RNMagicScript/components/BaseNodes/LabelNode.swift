@@ -153,7 +153,7 @@ class LabelNode: SCNNode {
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
         if boundsSize.width > 0 && multiline {
             let constraintSize = CGSize(width: boundsSize.width, height: .greatestFiniteMagnitude)
-            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [], attributes: attributes, context: nil)
             return boundingBox.size
         } else {
             return text.size(withAttributes: attributes)

@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -27,50 +26,22 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class CustomProgressBarTest {
+class CustomSpinnerTest {
 
     private lateinit var context: Context
-    private lateinit var progressBar: CustomProgressBar
+    private lateinit var spinner: CustomSpinner
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
-        this.progressBar = spy(CustomProgressBar(context))
+        this.spinner = spy(CustomSpinner(context))
     }
 
     @Test
     fun shouldRedrawAfterSettingValue() {
-        progressBar.value = 99F
+        spinner.value = 0.45F
 
-        verify(progressBar).invalidate()
-    }
-
-    @Test
-    fun shouldRedrawAfterSettingMinValue() {
-        progressBar.min = 0F
-
-        verify(progressBar).invalidate()
-    }
-
-    @Test
-    fun shouldRedrawAfterSettingMaxValue() {
-        progressBar.max = 100F
-
-        verify(progressBar).invalidate()
-    }
-
-    @Test
-    fun shouldRedrawAfterSettingBeginColor() {
-        progressBar.beginColor = Color.RED
-
-        verify(progressBar).invalidate()
-    }
-
-    @Test
-    fun shouldRedrawAfterSettingEndColor() {
-        progressBar.endColor = Color.RED
-
-        verify(progressBar).invalidate()
+        verify(spinner).invalidate()
     }
 
 }

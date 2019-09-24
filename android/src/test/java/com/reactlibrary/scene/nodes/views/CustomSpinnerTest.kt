@@ -14,43 +14,34 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.utils
+package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.net.Uri
-import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
-import com.reactlibrary.BuildConfig
-import org.junit.Assert.assertTrue
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class PropertiesReaderDebugTest {
+class CustomSpinnerTest {
 
     private lateinit var context: Context
+    private lateinit var spinner: CustomSpinner
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext<Context>()
+        this.context = ApplicationProvider.getApplicationContext()
+        this.spinner = spy(CustomSpinner(context))
     }
 
     @Test
-    fun `should return uri equivalent for path inside bundle if debug mode`() {
-        assertTrue(BuildConfig.DEBUG)
-        val path = "http://localhost/sample-image.jpg"
-        val pathBundle = Bundle()
-        pathBundle.putString("uri", path)
-        val propsBundle = Bundle()
-        val prop = "imagePath"
-        propsBundle.putBundle(prop, pathBundle)
-        val expected = Uri.parse(path)
+    fun shouldRedrawAfterSettingValue() {
+        spinner.value = 0.45F
 
-        val uri = PropertiesReader.readImagePath(propsBundle, prop, context)
-
-        assertTrue(expected == uri)
+        verify(spinner).invalidate()
     }
 
 }

@@ -36,7 +36,7 @@ class CustomSpinner @JvmOverloads constructor(
     }
 
     /**
-     * Progress(from 0 to 1)
+     * Progress (from 0 to 1)
      */
     var value: Float = 0F
         set(value) {

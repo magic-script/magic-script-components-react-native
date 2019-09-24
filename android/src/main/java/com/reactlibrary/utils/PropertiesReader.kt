@@ -22,7 +22,6 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.BuildConfig
 import com.reactlibrary.scene.nodes.props.Padding
 
 /**
@@ -103,7 +102,8 @@ class PropertiesReader {
          * data for a given [propertyName]
          */
         fun readPadding(props: Bundle, propertyName: String): Padding? {
-            val paddingData = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
+            val paddingData = props.getSerializable(propertyName) as? ArrayList<Double>
+                    ?: return null
             if (paddingData.size == 4) {
                 val top: Float = paddingData[0].toFloat()
                 val right: Float = paddingData[1].toFloat()
@@ -129,7 +129,7 @@ class PropertiesReader {
             if (pathBundle != null) {
                 val fileUri = pathBundle.getString(FILE_URI_PROPERTY)
                 if (fileUri != null) {
-                    if (BuildConfig.DEBUG) { // fileUri is a localhost URL
+                    if (fileUri.startsWith("http")) { // fileUri is a localhost URL
                         return Uri.parse(fileUri)
                     } else {
                         // here fileUri is in format: 'resources_demopicture1'

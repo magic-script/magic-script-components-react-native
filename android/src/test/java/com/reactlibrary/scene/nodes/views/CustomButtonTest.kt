@@ -19,7 +19,6 @@ package com.reactlibrary.scene.nodes.views
 import android.content.Context
 import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
@@ -27,12 +26,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-
-/**
- * To represent node's properties map in tests we use [JavaOnlyMap] which
- * does not require native React's resources.
- * [JavaOnlyMap] was not available in the initial versions of React
- */
 @RunWith(RobolectricTestRunner::class)
 class CustomButtonTest {
 

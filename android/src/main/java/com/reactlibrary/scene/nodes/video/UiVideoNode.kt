@@ -103,8 +103,14 @@ class UiVideoNode(initProps: ReadableMap, private val context: Context)
             readyToPlay = false
             val player = MediaPlayerPool.createMediaPlayer()
             this.mediaPlayer = player
+            val path = videoUri.toString()
             try {
-                player.setDataSource(context, videoUri)
+                if (path.startsWith("http")) {
+                    player.setDataSource(path) // load from URL
+                } else {
+                    // load the video from a local directory, e.g. from res/raw
+                    player.setDataSource(context, videoUri)
+                }
                 player.setSurface(texture.surface)
                 player.setOnPreparedListener(this)
                 player.isLooping = properties.getBoolean(PROP_LOOPING)
@@ -112,7 +118,7 @@ class UiVideoNode(initProps: ReadableMap, private val context: Context)
                 player.setVolume(volume, volume)
                 player.prepareAsync() // load video asynchronously
             } catch (exception: Exception) {
-                logMessage("video player exception: $exception")
+                logMessage("video player exception: $exception", warn = true)
             }
 
             ModelRenderable.builder()

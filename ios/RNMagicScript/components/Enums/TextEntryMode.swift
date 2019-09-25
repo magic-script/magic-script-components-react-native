@@ -18,7 +18,7 @@ import Foundation
 
 @objc public enum TextEntryMode: Int {
     case email
-    case none
+    case none // Virtual Keyboard does not display
     case normal
     case numeric
     case url

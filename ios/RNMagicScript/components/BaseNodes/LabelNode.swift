@@ -47,7 +47,10 @@ class LabelNode: SCNNode {
     }
     // Sets the line spacing to adjust the distance between lines of text;
     // e.g., use 1 for single-spaced text, 2 for double-spaced text. Default is 1.0.
-    @objc var lineSpacing: CGFloat = 1.0{
+    @objc var lineSpacing: CGFloat = 1.0 {
+        didSet { reloadNeeded = true }
+    }
+    @objc var multiline: Bool = false {
         didSet { reloadNeeded = true }
     }
     @objc var text: String? {
@@ -65,9 +68,7 @@ class LabelNode: SCNNode {
     @objc var textSize: CGFloat = 0 {
         didSet { reloadNeeded = true }
     }
-    @objc var multiline: Bool = false {
-        didSet { reloadNeeded = true }
-    }
+    @objc var tracking: Int = 50 // not supported by Lumin yet
 
     fileprivate var labelGeometry: SCNText!
     fileprivate var labelNode: SCNNode!
@@ -112,11 +113,12 @@ class LabelNode: SCNNode {
 
     fileprivate func updateLabelContents() {
         let scale = getTextSize() / LabelNode.geometryFixedTextSizeInMeters
-        labelGeometry.string = text
+        labelGeometry.string = allCaps ? text?.uppercased() : text
         let size = getSize()
         let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
         labelGeometry.containerFrame = rect
         labelGeometry.firstMaterial?.diffuse.contents = textColor
+        labelGeometry.font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
         labelGeometry.isWrapped = multiline
         labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
         labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue

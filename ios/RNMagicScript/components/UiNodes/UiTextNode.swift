@@ -41,6 +41,10 @@ import SceneKit
        get { return labelNode.fontWeight }
        set { labelNode.fontWeight = newValue; setNeedsLayout() }
     }
+    @objc var tracking: Int {
+        get { return labelNode.tracking }
+        set { labelNode.tracking = newValue; setNeedsLayout() }
+    }
     @objc var charSpacing: CGFloat {
         get { return labelNode.charSpacing }
         set { labelNode.charSpacing = newValue; setNeedsLayout() }

@@ -70,12 +70,12 @@ import SpriteKit
     @objc var password: Bool = false {
         didSet { setNeedsLayout() }
     }
-    @objc var scrolling: Bool = true {
+    @objc var scrolling: Bool = false {
         didSet { setNeedsLayout() }
     }
     @objc var textEntry: TextEntryMode = .normal
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto
-    @objc var scrollSpeed: CGFloat = 1.0
+    @objc var scrollSpeed: CGFloat = 0.5
     @objc var scrollValue: CGFloat = 0.0
     @objc var style: FontStyle {
         get { return labelNode.fontStyle }
@@ -85,8 +85,10 @@ import SpriteKit
        get { return labelNode.fontWeight }
         set { labelNode.fontWeight = newValue; hintNode.fontWeight = newValue; setNeedsLayout() }
     }
-    @objc var fontSize: CGFloat = 0.02
-    @objc var tracking: Int = 50 // not supported by Lumin yet
+    @objc var tracking: Int {
+        get { return labelNode.tracking }
+        set { labelNode.tracking = newValue; setNeedsLayout() }
+    }
     @objc var allCaps: Bool {
         get { return labelNode.allCaps }
         set { labelNode.allCaps = newValue; hintNode.allCaps = newValue; setNeedsLayout() }
@@ -133,9 +135,20 @@ import SpriteKit
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
+
+        let defaultCharSpacing: CGFloat = 0.005
+        let defaultTextSize: CGFloat = 0.02
+        let defaultTextPadding = UIEdgeInsets(top: 0.03, left: 0.03, bottom: 0.03, right: 0.03)
+        labelNode.charSpacing = defaultCharSpacing
+        labelNode.textPadding = defaultTextPadding
+        labelNode.textSize = defaultTextSize
         contentNode.addChildNode(labelNode)
 
         hintNode = LabelNode()
+        hintNode.charSpacing = defaultCharSpacing
+        hintNode.textColor = UIColor(white: 0.75, alpha: 0.5)
+        hintNode.textPadding = defaultTextPadding
+        hintNode.textSize = defaultTextSize
         contentNode.addChildNode(hintNode)
     }
 
@@ -220,7 +233,8 @@ import SpriteKit
             }
 
             if let fontSize = Convert.toCGFloat(fontParams["fontSize"]) {
-                self.fontSize = fontSize
+                // fontSize is the same as textSize
+                self.textSize = fontSize
             }
 
             if let tracking = Convert.toInt(fontParams["tracking"]) {
@@ -328,6 +342,5 @@ extension UiTextEditNode: InputDataProviding {
         case .url:
             return UITextContentType.URL
         }
-
     }
 }

@@ -126,6 +126,16 @@ class UiTextNodeSpec: QuickSpec {
                     expect(labelNode.fontWeight).to(equal(referenceFontWeight))
                 }
 
+                it("should update 'fontSize' prop") {
+                    let refrerenceFontSize: CGFloat = 0.27
+                    node.update(["fontParams": ["fontSize" : refrerenceFontSize]])
+                    expect(node.textSize).to(beCloseTo(refrerenceFontSize))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.textSize).to(beCloseTo(refrerenceFontSize))
+                }
+
                 it("should update 'tracking' prop") {
                     let refrerenceTracking: Int = 90
                     node.update(["fontParams": ["tracking" : refrerenceTracking]])

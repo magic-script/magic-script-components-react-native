@@ -22,7 +22,10 @@ import SpriteKit
     static let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
 
     @objc var text: String? {
-        get { return labelNode.text }
+        get {
+            guard let value = labelNode.text, password else { return labelNode.text }
+            return String(Array<Character>(repeating: "•", count: value.count))
+        }
         set { labelNode.text = newValue; setNeedsLayout() }
     }
     @objc var textColor: UIColor {
@@ -142,7 +145,7 @@ import SpriteKit
 
         let defaultCharSpacing: CGFloat = 0.005
         let defaultTextSize: CGFloat = 0.02
-        let defaultTextPadding = UIEdgeInsets(top: 0.03, left: 0.03, bottom: 0.03, right: 0.03)
+        let defaultTextPadding = UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)
         labelNode.charSpacing = defaultCharSpacing
         labelNode.textPadding = defaultTextPadding
         labelNode.textSize = defaultTextSize

@@ -133,6 +133,7 @@
 		44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE87233A0E93007FD766 /* InputDataProviding.swift */; };
 		44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */; };
 		44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */; };
+		44D8FE95233B9A2E007FD766 /* UiTextEditNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -416,6 +417,7 @@
 		44D8FE87233A0E93007FD766 /* InputDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDataProviding.swift; sourceTree = "<group>"; };
 		44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibilitySpec.swift; sourceTree = "<group>"; };
 		44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryModeSpec.swift; sourceTree = "<group>"; };
+		44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTextEditNodeSpec.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -831,6 +833,7 @@
 				44F09312232D985A0081FF14 /* UiProgressBarNodeSpec.swift */,
 				44F0930C232D985A0081FF14 /* UiSpinnerNodeSpec.swift */,
 				44F09313232D985A0081FF14 /* UiTextNodeSpec.swift */,
+				44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */,
 				44F0930E232D985A0081FF14 /* UiToggleNodeSpec.swift */,
 				C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */,
 				C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */,
@@ -1412,6 +1415,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44F0933E232D9FDE0081FF14 /* AlignmentSpec.swift in Sources */,
+				44D8FE95233B9A2E007FD766 /* UiTextEditNodeSpec.swift in Sources */,
 				44F0933A232D9E2E0081FF14 /* FontStyleSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44F09323232D985A0081FF14 /* RenderNodeSpec.swift in Sources */,

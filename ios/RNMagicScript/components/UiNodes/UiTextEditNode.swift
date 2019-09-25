@@ -33,9 +33,13 @@ import SpriteKit
         get { return labelNode.textSize }
         set { labelNode.textSize = newValue; hintNode.textSize = newValue; setNeedsLayout() }
     }
-    @objc var charLimit: Int {
-        get { return labelNode.charLimit }
-        set { labelNode.charLimit = newValue; hintNode.charLimit = newValue; setNeedsLayout() }
+    @objc var charLimit: Int = 0 {
+        didSet {
+            guard charLimit > 0 else { return }
+            if let string = text, string.count > charLimit {
+                text = String(string.prefix(charLimit))
+            }
+        }
     }
     @objc var charSpacing: CGFloat {
         get { return labelNode.charSpacing }

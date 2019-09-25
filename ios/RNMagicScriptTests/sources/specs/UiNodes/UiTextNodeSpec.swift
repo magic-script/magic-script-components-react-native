@@ -30,15 +30,21 @@ class UiTextNodeSpec: QuickSpec {
                 node = UiTextNode(props: [:])
                 node.layoutIfNeeded()
             }
-
+            
             context("initial properties") {
                 it("should have set default values") {
+                    expect(node.alignment).to(equal(Alignment.bottomLeft))
                     expect(node.text).to(beNil())
-                    expect(node.textAlignment).to(equal(HorizontalTextAlignment.left))
                     let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.textSize).to(beCloseTo(0.0))
-                    expect(node.alignment).to(equal(Alignment.bottomLeft))
+                    expect(node.charSpacing).to(beCloseTo(0))
+                    expect(node.lineSpacing).to(beCloseTo(1))
+                    expect(node.style).to(equal(FontStyle.normal))
+                    expect(node.weight).to(equal(FontWeight.regular))
+                    expect(node.tracking).to(equal(50))
+                    expect(node.allCaps).to(beFalse())
+                    expect(node.textAlignment).to(equal(HorizontalTextAlignment.left))
                     expect(node.boundsSize).to(beCloseTo(CGSize.zero))
                     expect(node.wrap).to(beFalse())
                 }
@@ -80,6 +86,66 @@ class UiTextNodeSpec: QuickSpec {
                     expect(labelNode.textSize).to(beCloseTo(referenceTextSize))
                 }
 
+                it("should update 'charSpacing' prop") {
+                    let refrerenceCharSpacing: CGFloat = 2.3
+                    node.update(["charSpacing" : refrerenceCharSpacing])
+                    expect(node.charSpacing).to(beCloseTo(refrerenceCharSpacing))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.charSpacing).to(beCloseTo(refrerenceCharSpacing))
+                }
+
+                it("should update 'lineSpacing' prop") {
+                    let refrerenceLineSpacing: CGFloat = 1.7
+                    node.update(["lineSpacing" : refrerenceLineSpacing])
+                    expect(node.lineSpacing).to(beCloseTo(refrerenceLineSpacing))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.lineSpacing).to(beCloseTo(refrerenceLineSpacing))
+                }
+
+                it("should update 'style' prop") {
+                    let referenceFontStyle = FontStyle.italic
+                    node.update(["fontParams": ["style" : referenceFontStyle.rawValue]])
+                    expect(node.style).to(equal(referenceFontStyle))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.fontStyle).to(equal(referenceFontStyle))
+                }
+
+                it("should update 'weight' prop") {
+                    let referenceFontWeight = FontWeight.bold
+                    node.update(["fontParams": ["weight" : referenceFontWeight.rawValue]])
+                    expect(node.weight).to(equal(referenceFontWeight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.fontWeight).to(equal(referenceFontWeight))
+                }
+
+                it("should update 'tracking' prop") {
+                    let refrerenceTracking: Int = 90
+                    node.update(["fontParams": ["tracking" : refrerenceTracking]])
+                    expect(node.tracking).to(equal(refrerenceTracking))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.tracking).to(equal(refrerenceTracking))
+                }
+
+                it("should update 'allCaps' prop") {
+                    let refrerenceAllCaps = true
+                    node.update(["fontParams": ["allCaps" : refrerenceAllCaps]])
+                    expect(node.allCaps).to(equal(refrerenceAllCaps))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.allCaps).to(equal(refrerenceAllCaps))
+                }
+
                 it("should update 'textAlignment' prop") {
                     let referenceTextAlignment = HorizontalTextAlignment.center
                     node.update(["textAlignment" : "center"])
@@ -92,7 +158,7 @@ class UiTextNodeSpec: QuickSpec {
 
                 it("should update 'boundsSize' prop") {
                     let referenceBoundsSize = CGSize(width: 2.5, height: 2.5)
-                    node.update(["boundsSize" : [ "boundsSize": [2.5, 2.5]]])
+                    node.update(["boundsSize" : ["boundsSize": [2.5, 2.5]]])
                     expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
@@ -101,7 +167,7 @@ class UiTextNodeSpec: QuickSpec {
                 }
 
                 it("should update 'boundsSize' prop") {
-                    node.update(["boundsSize" : [ "wrap": true]])
+                    node.update(["boundsSize" : ["wrap": true]])
                     expect(node.isLayoutNeeded).to(beTrue())
 
                     let labelNode = node.contentNode.childNodes.first as! LabelNode

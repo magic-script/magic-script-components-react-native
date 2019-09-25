@@ -27,9 +27,6 @@ class LabelNode: SCNNode {
     @objc var boundsSize: CGSize = CGSize.zero {
         didSet { reloadNeeded = true }
     }
-    @objc var charLimit: Int = 0 {
-        didSet { reloadNeeded = true }
-    }
     // Sets the additional character spacing that is applied between characters.
     // Note a spacing of 0 is the default spacing. Any other value is the additional distance between
     // characters as a multiplier of the glyph height.

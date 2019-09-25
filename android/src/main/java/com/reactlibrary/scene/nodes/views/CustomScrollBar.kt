@@ -20,10 +20,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat.getColor
 import android.util.AttributeSet
 import android.view.View
 import com.reactlibrary.R
+import com.reactlibrary.utils.logMessage
 
 class CustomScrollBar @JvmOverloads constructor(
         context: Context,
@@ -31,34 +33,33 @@ class CustomScrollBar @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    // init {
-    //     this.setOnScrollChangeListener(::scrollCallback)
-    // }
-
     var thumbPosition = 0F
         set(value) {
-            field = value
+            field = value.coerceIn(0F, 1F)
             invalidate()
         }
 
     var thumbSize = 0F
         set(value) {
-            field = value
+            field = value.coerceIn(0F, 1F)
             invalidate()
         }
 
-    // fun scrollCallback(v: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-    //     throw Exception("Hi There!")
-    //     // thumbPosition = 1F//width.toFloat() / scrollX.toFloat() 
-    //     // super.refreshImage()
-    // }
+    var position = 0F
 
-    // fun clickCallback(v: View) {
-    //     throw Exception("Hi There!")
-    //     thumbPosition += 0.1F
-    //     // super.refreshImage()
-    // }
-    
+    fun onTouchCallback(event: MotionEvent) {
+        val action = event.getActionMasked()
+        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE){
+            return
+        }
+
+        val width = this.width.toFloat()
+        val height = this.height.toFloat()
+        val length = (width * thumbSize).coerceAtLeast(height)
+
+        thumbPosition = (event.getX() - length / 2 ) / (width - length)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawBackground(canvas)
@@ -94,17 +95,14 @@ class CustomScrollBar @JvmOverloads constructor(
         val width = this.width.toFloat()
         val height = this.height.toFloat()
 
-        thumbSize = thumbSize.coerceIn(0F,1F)
-        thumbPosition = thumbPosition.coerceIn(0F,1F)
-
         val radius = height / 2
         val length = (width * thumbSize).coerceAtLeast(height)
-        val offset = (width - length) * (1F - thumbPosition)
+        val offset = (width - length) * thumbPosition
 
         canvas.drawRoundRect(
-                offset,
+                position + offset,
                 0F,
-                offset + length,
+                position + offset + length,
                 height,
                 radius,
                 radius,

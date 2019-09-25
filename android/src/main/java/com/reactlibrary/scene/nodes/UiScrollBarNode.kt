@@ -18,7 +18,7 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
-import android.view.DragEvent
+import android.view.MotionEvent
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -46,16 +46,14 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         
         const val DEFAULT_WIDTH = 0.03359 * 8
         const val DEFAULT_HEIGHT = 0.03359
-        const val DEFAULT_THUMB_POSITION = 1.0
+        const val DEFAULT_THUMB_POSITION = 0.0
         const val DEFAULT_THUMB_SIZE = 0.33
     }
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
-    private var thumbPosition = 0F
-
+    // set default properties values
     init {
-        // set default properties values
         if (!properties.containsKey(PROP_WIDTH)) {
             properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)
         }
@@ -71,42 +69,20 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         if (!properties.containsKey(PROP_THUMB_SIZE)) {
             properties.putDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
         }
-
-        // clickListener = {
-        //     throw Exception("Hi There!")
-        // }
     }
 
-    fun scrollCallback(v: View, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-        throw Exception("Hi There!")
-    }
-
-    fun onDragCallback(v: View, event: DragEvent): Boolean {
-        throw Exception("Hi There!")
-    }
-
+    // fun onTouchCallback(v: View, event: MotionEvent): Boolean {
+        // throw Exception("Hi There!")
+    // }
+    
     override fun provideView(context: Context): View {
         val view = CustomScrollBar(context)
-        view.setOnScrollChangeListener(::scrollCallback)
-        // view.setOnDragListener{v: View, event: DragEvent -> throw Exception("Hi There!")}
+        view.setOnTouchListener{ _: View, event: MotionEvent ->
+            view.onTouchCallback(event)
+            true
+        }
         return view
     }
-
-    // override fun provideView(context: Context): View {
-    //     val view = CustomScrollBar(context)
-    //     //LayoutInflater.from(context).inflate(R.layout.scroll_bar, null)
-    //     // val id = view.generateViewId()
-    //     // view.setId(id)
-    //     // view.setOnScrollChangeListener( ::scrollCallback )
-    //     // val tog = view.findViewById<CustomScrollBar>(id)
-    //     view.setOnClickListener{
-    //         throw Exception("Hi There!")
-    //     }
-    //     //(  (view as CustomScrollBar)::clickCallback)
-    //     // throw Exception("Hi There!")
-    //     return view
-    // }
-
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -142,20 +118,4 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
             (view as CustomScrollBar).thumbSize = value
         }
     }
-
-    // private fun refreshImage() {
-    //     if (isOn) {
-    //         view.iv_toggle.setImageResource(R.drawable.toggle_on)
-    //     } else {
-    //         view.iv_toggle.setImageResource(R.drawable.toggle_off)
-    //     }
-    // }
-
-    // private fun setIsChecked(props: Bundle) {
-    //     if (props.containsKey(PROP_CHECKED)) {
-    //         isOn = props.getBoolean(PROP_CHECKED)
-    //         refreshImage()
-    //     }
-    // }
-
 }

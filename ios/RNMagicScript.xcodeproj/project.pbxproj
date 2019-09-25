@@ -131,6 +131,8 @@
 		44D8FE812339194B007FD766 /* RCTARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE7F23391261007FD766 /* RCTARView.swift */; };
 		44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE87233A0E93007FD766 /* InputDataProviding.swift */; };
 		44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE87233A0E93007FD766 /* InputDataProviding.swift */; };
+		44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */; };
+		44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -412,6 +414,8 @@
 		44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibility.swift; sourceTree = "<group>"; };
 		44D8FE7F23391261007FD766 /* RCTARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARView.swift; sourceTree = "<group>"; };
 		44D8FE87233A0E93007FD766 /* InputDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputDataProviding.swift; sourceTree = "<group>"; };
+		44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibilitySpec.swift; sourceTree = "<group>"; };
+		44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryModeSpec.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -841,6 +845,8 @@
 				44F09339232D9E2E0081FF14 /* FontStyleSpec.swift */,
 				44F0933B232D9E3B0081FF14 /* FontWeightSpec.swift */,
 				44F09337232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift */,
+				44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */,
+				44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1430,8 +1436,10 @@
 				44F0932F232D985A0081FF14 /* beCloseTo.swift in Sources */,
 				44F09324232D985A0081FF14 /* UiSpinnerNodeSpec.swift in Sources */,
 				44F09325232D985A0081FF14 /* UiLineNodeSpec.swift in Sources */,
+				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
 				44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */,
+				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,

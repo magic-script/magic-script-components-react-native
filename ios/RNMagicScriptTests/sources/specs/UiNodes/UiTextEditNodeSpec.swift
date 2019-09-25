@@ -23,8 +23,6 @@ class UiTextEditNodeSpec: QuickSpec {
     override func spec() {
         describe("UiTextEditNode") {
             var node: UiTextEditNode!
-            let shortReferenceText: String = "Info text"
-            let veryLongReferenceText: String = "Very very very very very very very very very very very very long Info text to be set in UiTextNode."
 
             beforeEach {
                 node = UiTextEditNode(props: [:])
@@ -62,11 +60,12 @@ class UiTextEditNodeSpec: QuickSpec {
 
             context("update properties") {
                 it("should update 'text' prop") {
-                    node.update(["text" : shortReferenceText])
-                    expect(node.text).to(equal(shortReferenceText))
+                    let referenceText: String = "Info text"
+                    node.update(["text" : referenceText])
+                    expect(node.text).to(equal(referenceText))
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.text).to(equal(shortReferenceText))
+                    let labelNode = node.contentNode.childNodes[0] as! LabelNode
+                    expect(labelNode.text).to(equal(referenceText))
                 }
 
                 it("should update 'textColor' prop") {
@@ -100,6 +99,10 @@ class UiTextEditNodeSpec: QuickSpec {
 
                     let labelNode = node.contentNode.childNodes.first as! LabelNode
                     expect(labelNode.text).to(equal(referenceLimitedText))
+
+                    node.update(["text": referenceText, "charLimit" : 0])
+                    expect(node.text).to(equal(referenceText))
+                    expect(labelNode.text).to(equal(referenceText))
                 }
 
                 it("should update 'charSpacing' prop") {
@@ -142,13 +145,25 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(labelNode.textPadding).to(beCloseTo(referenceTextPadding))
                 }
 
-//                it("should update 'hint' prop") {
-//                    expect
-//                }
-//
-//                it("should update 'hintColor' prop") {
-//                    expect
-//                }
+                it("should update 'hint' prop") {
+                    let referenceHint = "Placeholder"
+                    node.update(["hint" : referenceHint])
+                    expect(node.hint).to(equal(referenceHint))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+                    expect(hintNode.text).to(equal(referenceHint))
+                }
+
+                it("should update 'hintColor' prop") {
+                    let referenceHintColor = UIColor.green
+                    node.update(["hintColor" : referenceHintColor.toArrayOfFloat])
+                    expect(node.hintColor).to(beCloseTo(referenceHintColor))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+                    expect(hintNode.textColor).to(beCloseTo(referenceHintColor))
+                }
 
                 it("should update 'multiline' prop") {
                     let referenceMultiline = true
@@ -279,127 +294,135 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
             }
 
-//            context("when initialized") {
-//                it("should contain child label node") {
-//                    let childNodes = node.contentNode.childNodes
-//                    expect(childNodes.count).to(equal(1)) // LabelNode
-//                    let labelNode = childNodes.first as! LabelNode
-//                    expect(labelNode.boundsSize).to(beCloseTo(CGSize.zero))
-//                }
-//            }
-//
-//            context("when wrap enabled") {
-//                let referenceBoundsSize = CGSize(width: 0.005, height: 0.0025)
-//                let shortTextRefereneceSizeForBounds = CGSize(width: 0.005, height: 0.0025)
-//                let veryLongTextRefereneceSizeForBounds = CGSize(width: 0.005, height: 0.0025)
-//
-//                it("shouldn't change bounds when text length increases") {
-//                    node.update(["boundsSize" : ["boundsSize": referenceBoundsSize.toArrayOfFloat, "wrap": true]])
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                    expect(node.isLayoutNeeded).to(beTrue())
-//
-//                    node.textSize = 0.015
-//                    node.text = shortReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(shortTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//
-//                    node.text = veryLongReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(veryLongTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                }
-//
-//                it("shouldn't change bounds when text length decreases") {
-//                    node.update(["boundsSize" : ["boundsSize": referenceBoundsSize.toArrayOfFloat, "wrap": true]])
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                    expect(node.isLayoutNeeded).to(beTrue())
-//
-//                    node.textSize = 0.015
-//                    node.text = veryLongReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(veryLongTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//
-//                    node.text = shortReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(shortTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                }
-//            }
-//
-//            context("when wrap disabled") {
-//                let referenceBoundsSize = CGSize.zero
-//                let shortTextRefereneceSizeForBounds = CGSize(width: 0.042, height: 0.0144)
-//                let veryLongTextRefereneceSizeForBounds = CGSize(width: 0.4932, height: 0.0144)
-//
-//                it("should change bounds when text length increases") {
-//                    node.update(["boundsSize" : ["wrap": false]])
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                    expect(node.isLayoutNeeded).to(beTrue())
-//
-//                    node.textSize = 0.015
-//                    node.text = shortReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(shortTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//
-//                    node.text = veryLongReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(veryLongTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                }
-//
-//                it("should change bounds when text length decrease") {
-//                    node.update(["boundsSize" : ["wrap": false]])
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                    expect(node.isLayoutNeeded).to(beTrue())
-//
-//                    node.textSize = 0.015
-//                    node.text = veryLongReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(veryLongTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//
-//                    node.text = shortReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(shortTextRefereneceSizeForBounds))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                }
-//            }
-//
-//            context("when boundsSize.height not set") {
-//                let referenceBoundsSize = CGSize(width: 0.1, height: 0)
-//                let refereneceBoundsSizeWhenWrapDisabled = CGSize(width: 0.1, height: 0.0144)
-//                let refereneceBoundsSizeWhenWrapEnabled = CGSize(width: 0.1, height: 0.072)
-//
-//                it("should change bounds when wrap changes") {
-//                    node.update(["boundsSize" : ["boundsSize": referenceBoundsSize.toArrayOfFloat, "wrap": false]])
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                    expect(node.isLayoutNeeded).to(beTrue())
-//
-//                    node.textSize = 0.015
-//                    node.text = veryLongReferenceText
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(refereneceBoundsSizeWhenWrapDisabled))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//
-//                    node.wrap = true
-//                    node.updateLayout()
-//
-//                    expect(node.getSize()).to(beCloseTo(refereneceBoundsSizeWhenWrapEnabled))
-//                    expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
-//                }
-//            }
+            context("text-placeholder") {
+                it("should display either text or placeholder") {
+                    let emptyText = ""
+                    let labelNode = node.contentNode.childNodes[0] as! LabelNode
+                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+
+                    node.update(["text" : emptyText])
+                    node.layoutIfNeeded()
+                    expect(labelNode.isHidden).to(beTrue())
+                    expect(hintNode.isHidden).to(beFalse())
+
+                    let referenceText = "Some text"
+                    node.update(["text" : referenceText])
+                    node.layoutIfNeeded()
+                    expect(labelNode.isHidden).to(beFalse())
+                    expect(hintNode.isHidden).to(beTrue())
+                }
+            }
+
+            context("when initialized") {
+                it("should contain two child label nodes") {
+                    let childNodes = node.contentNode.childNodes
+                    expect(childNodes.count).to(equal(2)) // LabelNode (text and hint)
+                    let textNode = childNodes[0] as! LabelNode
+                    let hintNode = childNodes[1] as! LabelNode
+                    expect(textNode.boundsSize).to(beCloseTo(CGSize.zero))
+                    expect(hintNode.boundsSize).to(beCloseTo(CGSize.zero))
+                }
+            }
+
+            context("focus") {
+                it("should be focusable") {
+                    expect(node.canHaveFocus).to(beTrue())
+
+                    node.enabled = false
+                    expect(node.canHaveFocus).to(beFalse())
+                }
+
+                it("should has focus") {
+                    node.enterFocus()
+                    expect(node.hasFocus).to(beTrue())
+                }
+
+                it("should not display outline if focused and has no size") {
+                    expect(node.contentNode.childNodes.count).to(equal(2))
+                    node.enterFocus()
+                    expect(node.contentNode.childNodes.count).to(equal(2))
+                }
+
+                it("should have outline when focused") {
+                    node.update(["width": 0.8, "height": 0.2])
+                    let childNodesBefore = node.contentNode.childNodes
+                    expect(childNodesBefore.count).to(equal(2))
+
+                    node.enterFocus()
+                    node.layoutIfNeeded()
+                    let childNodesAfter1 = node.contentNode.childNodes
+                    expect(childNodesAfter1.count).to(equal(3))
+                    let outlineNode1 = childNodesAfter1[2]
+                    expect(outlineNode1.isHidden).to(beFalse())
+                }
+
+                it("should hide outline when unfocused") {
+                    node.update(["width": 0.8, "height": 0.2])
+                    node.enterFocus()
+                    node.leaveFocus()
+                    let childNodes = node.contentNode.childNodes
+                    expect(childNodes.count).to(equal(3))
+                    let outlineNode = childNodes[2]
+                    expect(outlineNode.isHidden).to(beTrue())
+                }
+            }
+
+            context("InputDataProviding") {
+                it("should get/set value") {
+                    let referenceValue = "Edited value"
+                    node.value = referenceValue
+                    expect(node.value as? String).to(equal(referenceValue))
+                    expect(node.text).to(equal(referenceValue))
+
+                    let referenceBoolTypeValue = true
+                    node.value = referenceBoolTypeValue
+                    expect(node.text).to(equal(referenceValue))
+                }
+
+                it("keyboardType") {
+                    let keyboardTypeByTextEntry: [TextEntryMode : UIKeyboardType?] = [
+                        TextEntryMode.email: UIKeyboardType.emailAddress,
+                        TextEntryMode.none: nil,
+                        TextEntryMode.normal: UIKeyboardType.default,
+                        TextEntryMode.numeric: UIKeyboardType.numberPad,
+                        TextEntryMode.url: UIKeyboardType.URL
+                    ]
+
+                    keyboardTypeByTextEntry.forEach { (arg0) in
+                        let (key, value) = arg0
+                        node.textEntry = key
+                        if key == .none {
+                            expect(node.keyboardType).to(beNil())
+                        } else {
+                            expect(node.keyboardType).to(equal(value))
+                        }
+                    }
+                }
+
+                it("textContentType") {
+
+                    expect(node.textContentType).to(beNil())
+
+                    node.password = true
+                    expect(node.textContentType).to(equal(UITextContentType.password))
+
+                    node.password = false
+                    node.textEntry = TextEntryMode.email
+                    expect(node.textContentType).to(equal(UITextContentType.emailAddress))
+
+                    node.textEntry = TextEntryMode.url
+                    expect(node.textContentType).to(equal(UITextContentType.URL))
+
+                    node.textEntry = TextEntryMode.none
+                    expect(node.textContentType).to(beNil())
+
+                    node.textEntry = TextEntryMode.normal
+                    expect(node.textContentType).to(beNil())
+
+                    node.textEntry = TextEntryMode.numeric
+                    expect(node.textContentType).to(beNil())
+                }
+            }
         }
     }
 }

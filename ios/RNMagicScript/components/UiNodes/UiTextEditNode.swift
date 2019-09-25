@@ -18,15 +18,12 @@ import SceneKit
 import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
-
-    static let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
-
     @objc var text: String? {
         get {
             guard let value = labelNode.text, password else { return labelNode.text }
             return String(Array<Character>(repeating: "•", count: value.count))
         }
-        set { labelNode.text = newValue; setNeedsLayout() }
+        set { updateText(newValue) }
     }
     @objc var textColor: UIColor {
         get { return labelNode.textColor }
@@ -37,12 +34,7 @@ import SpriteKit
         set { labelNode.textSize = newValue; hintNode.textSize = newValue; setNeedsLayout() }
     }
     @objc var charLimit: Int = 0 {
-        didSet {
-            guard charLimit > 0 else { return }
-            if let string = text, string.count > charLimit {
-                text = String(string.prefix(charLimit))
-            }
-        }
+        didSet { updateText(labelNode.text) }
     }
     @objc var charSpacing: CGFloat {
         get { return labelNode.charSpacing }
@@ -82,8 +74,16 @@ import SpriteKit
     }
     @objc var textEntry: TextEntryMode = .normal
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto
-    @objc var scrollSpeed: CGFloat = 0.5
-    @objc var scrollValue: CGFloat = 0.0
+    fileprivate var _scrollSpeed: CGFloat = 0.5
+    @objc var scrollSpeed: CGFloat {
+        get { return _scrollSpeed }
+        set { _scrollSpeed = max(0.0, newValue) }
+    }
+    fileprivate var _scrollValue: CGFloat = 0.0
+    @objc var scrollValue: CGFloat {
+        get { return _scrollValue }
+        set { _scrollValue = max(0.0, min(newValue, 1.0)) }
+    }
     @objc var style: FontStyle {
         get { return labelNode.fontStyle }
         set { labelNode.fontStyle = newValue; hintNode.fontStyle = newValue; setNeedsLayout() }
@@ -102,11 +102,11 @@ import SpriteKit
     }
     @objc var width: CGFloat {
         get { return labelNode.boundsSize.width }
-        set { labelNode.boundsSize = CGSize(width: newValue, height: height); setNeedsLayout() }
+        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true; setNeedsLayout() }
     }
     @objc var height: CGFloat {
         get { return labelNode.boundsSize.height }
-        set { labelNode.boundsSize = CGSize(width: width, height: newValue); setNeedsLayout() }
+        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true; setNeedsLayout() }
     }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
@@ -162,6 +162,11 @@ import SpriteKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
+        // 'charLimit' prop must be updated prior to 'text' prop
+        if let charLimit = Convert.toInt(props["charLimit"]) {
+            self.charLimit = charLimit
+        }
+
         if let text = Convert.toString(props["text"]) {
             self.text = text
         }
@@ -176,10 +181,6 @@ import SpriteKit
 
         if let textAlignment = Convert.toHorizontalTextAlignment(props["textAlignment"]) {
             self.textAlignment = textAlignment
-        }
-
-        if let charLimit = Convert.toInt(props["charLimit"]) {
-            self.charLimit = charLimit
         }
 
         if let charSpacing = Convert.toCGFloat(props["charSpacing"]) {
@@ -263,9 +264,7 @@ import SpriteKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let localWidth: CGFloat = (width > 0) ? width : UiTextEditNode.defaultSize.width
-        let localHeight: CGFloat = (height > 0) ? height : UiTextEditNode.defaultSize.height
-        return CGSize(width: localWidth, height: localHeight)
+        return CGSize(width: width, height: height)
     }
 
     @objc override func updateLayout() {
@@ -290,6 +289,17 @@ import SpriteKit
         super.setDebugMode(debug)
         labelNode.setDebugMode(debug)
         hintNode.setDebugMode(debug)
+    }
+
+    fileprivate func updateText(_ text: String?) {
+        guard let string = text, string.count > charLimit, charLimit > 0 else {
+            labelNode.text = text
+            setNeedsLayout()
+            return
+        }
+
+        labelNode.text = String(string.prefix(charLimit))
+        setNeedsLayout()
     }
 
     fileprivate func reloadOutlineNode() {

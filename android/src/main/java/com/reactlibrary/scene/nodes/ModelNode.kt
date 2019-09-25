@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.assets.RenderableSource
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
@@ -31,6 +32,10 @@ class ModelNode(initProps: ReadableMap, private val context: Context)
     companion object {
         // properties
         const val PROP_MODEL_PATH = "modelPath"
+        // initial resource scale applied when loading model (cannot be updated)
+        const val PROP_IMPORT_SCALE = "importScale"
+
+        const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
     override fun applyProperties(props: Bundle) {
@@ -50,6 +55,13 @@ class ModelNode(initProps: ReadableMap, private val context: Context)
             if (renderableRequested) {
                 loadModel()
             }
+        }
+    }
+
+    override fun setLocalScale(props: Bundle) {
+        val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
+        if (localScale != null) {
+            applyNodeScale(localScale)
         }
     }
 
@@ -76,6 +88,12 @@ class ModelNode(initProps: ReadableMap, private val context: Context)
                         null
                     }
         }
+        applyNodeScale(localScale)
+    }
+
+    private fun applyNodeScale(scale: Vector3) {
+        val importScale = properties.getDouble(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE).toFloat()
+        localScale = Vector3(scale.x * importScale, scale.y * importScale, scale.z * importScale)
     }
 
 }

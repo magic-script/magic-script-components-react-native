@@ -28,7 +28,7 @@ import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.logMessage
 
-class UiVideoNode(initProps: ReadableMap, private val context: Context)
+class VideoNode(initProps: ReadableMap, private val context: Context)
     : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true), MediaPlayer.OnPreparedListener {
 
     companion object {

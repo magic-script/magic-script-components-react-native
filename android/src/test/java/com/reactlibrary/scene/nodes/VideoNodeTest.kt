@@ -19,7 +19,7 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.reactlibrary.scene.nodes.video.UiVideoNode
+import com.reactlibrary.scene.nodes.video.VideoNode
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +31,7 @@ import org.robolectric.RobolectricTestRunner
  * does not require native React's resources.
  */
 @RunWith(RobolectricTestRunner::class)
-class UiVideoNodeTest {
+class VideoNodeTest {
 
     private lateinit var context: Context
 
@@ -42,10 +42,10 @@ class UiVideoNodeTest {
 
     @Test
     fun shouldHaveDefaultVolume() {
-        val node = UiVideoNode(JavaOnlyMap(), context)
+        val node = VideoNode(JavaOnlyMap(), context)
 
-        val volume = node.getProperty(UiVideoNode.PROP_VOLUME)
+        val volume = node.getProperty(VideoNode.PROP_VOLUME)
 
-        assertEquals(UiVideoNode.DEFAULT_VOLUME, volume)
+        assertEquals(VideoNode.DEFAULT_VOLUME, volume)
     }
 }

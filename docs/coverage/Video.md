@@ -4,12 +4,17 @@
 
 **Inherited:**
 - localPosition
-- alignment
+- anchorPosition
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~
 - ~~onClick~~
 
 **Custom:**
+- size
+- width
+- height
 - videoPath
-- isLooping
+- looping
+- volume
+- action

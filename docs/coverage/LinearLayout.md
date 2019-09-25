@@ -1,4 +1,4 @@
-# Functional test coverage for GridLayout
+# Functional test coverage for LinearLayout
 ## Tested properties
 
 **Inherited:**

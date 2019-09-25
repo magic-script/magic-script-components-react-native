@@ -101,14 +101,15 @@ class CustomButton @JvmOverloads constructor(
         val centerY = height / 2
 
         // draw background
-        val radius = height.toFloat() / 2 * roundnessFactor
         val strokeSize = borderWidthFactor * min(width, height)
+        val radius = (height.toFloat() - strokeSize) / 2 * roundnessFactor
+
         bgPaint.strokeWidth = strokeSize
         canvas.drawRoundRect(
-                0F + strokeSize / 2,
-                0F + strokeSize / 2,
-                width.toFloat() - strokeSize,
-                height.toFloat() - strokeSize,
+                strokeSize / 2,
+                strokeSize / 2,
+                width.toFloat() - strokeSize / 2,
+                height.toFloat() - strokeSize / 2,
                 radius,
                 radius,
                 bgPaint

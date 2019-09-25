@@ -53,10 +53,13 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_CHARACTER_SPACING = "charSpacing"
         const val PROP_PASSWORD = "password"
         const val PROP_MULTILINE = "multiline"
-        const val PROP_TEXT_PADDING = "padding"
+        const val PROP_TEXT_PADDING = "textPadding"
+        const val PROP_SCROLLING = "scrolling"
 
-        const val DEFAULT_TEXT_SIZE = 0.035 // in meters
+        const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
+        const val DEFAULT_SCROLLING = false // scrolling disabled
+        val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -88,6 +91,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
         }
 
+        if (!properties.containsKey(PROP_TEXT_PADDING)) {
+            properties.putSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
+        }
+
         if (!properties.containsKey(PROP_ALIGNMENT)) {
             properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         }
@@ -106,6 +113,12 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
                 showInputDialog(activity)
             }
         }
+
+        // override touch event to disable scroll if needed
+        container.sv_text_edit.setOnTouchListener { _, _ ->
+            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
+        }
+
         return container
     }
 
@@ -142,7 +155,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun showBorder() {
-        view.background = context.getDrawable(R.drawable.text_edit_outline)
+        view.background = context.getDrawable(R.drawable.text_edit_background_active)
 
         // add some padding because of rounded corners
         val multiline = properties.getBoolean(PROP_MULTILINE)
@@ -161,7 +174,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun hideBorder() {
-        view.background = null
+        view.setBackgroundResource(R.color.text_edit_background)
         view.setPadding(0, 0, 0, 0)
     }
 

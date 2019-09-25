@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <dimen name="textedit_border_padding_horiz">4dp</dimen>
-    <dimen name="textedit_border_padding_horiz_big">8dp</dimen>
+    <dimen name="textedit_border_padding_horiz">3dp</dimen>
+    <dimen name="textedit_border_padding_horiz_big">4dp</dimen>
     <dimen name="textedit_border_padding_vertical">2dp</dimen>
-    <dimen name="textedit_border_padding_vertical_big">8dp</dimen>
+    <dimen name="textedit_border_padding_vertical_big">3dp</dimen>
 </resources>

@@ -277,7 +277,7 @@ abstract class TransformNode(
         }
     }
 
-    private fun setLocalScale(props: Bundle) {
+    protected open fun setLocalScale(props: Bundle) {
         val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
         if (localScale != null) {
             this.localScale = localScale

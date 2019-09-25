@@ -111,8 +111,12 @@ class LabelNode: SCNNode {
 #endif
     }
 
+    fileprivate func getTextScale() -> CGFloat {
+        return getTextSize() / LabelNode.geometryFixedTextSizeInMeters
+    }
+
     fileprivate func updateLabelContents() {
-        let scale = getTextSize() / LabelNode.geometryFixedTextSizeInMeters
+        let scale = getTextScale()
         labelGeometry.string = allCaps ? text?.uppercased() : text
         let size = getSize()
         let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
@@ -145,21 +149,24 @@ class LabelNode: SCNNode {
             return boundsSize
         }
 
-        let scale: CGFloat = (getTextSize() / LabelNode.geometryFixedTextSizeInMeters)
         let preferredSizeInPixels = getPreferredSizeInPixels(text, attributes: [NSAttributedString.Key.font : getFont()])
-        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : (ceil(preferredSizeInPixels.width) * scale)
-        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : (ceil(preferredSizeInPixels.height) * scale)
+        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : preferredSizeInPixels.width
+        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : preferredSizeInPixels.height
         return CGSize(width: width, height: height)
     }
 
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
+        let scale = getTextScale()
+        let size: CGSize
         if boundsSize.width > 0 && multiline {
-            let constraintSize = CGSize(width: boundsSize.width, height: .greatestFiniteMagnitude)
-            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [], attributes: attributes, context: nil)
-            return boundingBox.size
+            let constraintSize = CGSize(width: boundsSize.width / scale, height: .infinity)
+            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesFontLeading, .usesLineFragmentOrigin], attributes: attributes, context: nil)
+            size = boundingBox.size
         } else {
-            return text.size(withAttributes: attributes)
+            size = text.size(withAttributes: attributes)
         }
+
+        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale)
     }
 
     fileprivate func updateTextNodePosition() {

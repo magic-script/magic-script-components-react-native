@@ -105,7 +105,7 @@ class UiTextNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
 
                     let labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.wrap).to(beTrue())
+                    expect(labelNode.multiline).to(beTrue())
                 }
             }
 
@@ -207,9 +207,9 @@ class UiTextNodeSpec: QuickSpec {
             }
 
             context("when boundsSize.height not set") {
-                let referenceBoundsSize = CGSize(width: 0.01, height: 0)
-                let refereneceBoundsSizeWhenWrapDisabled = CGSize(width: 0.01, height: 0.0144)
-                let refereneceBoundsSizeWhenWrapEnabled = CGSize(width: 0.01, height: 1.146)
+                let referenceBoundsSize = CGSize(width: 0.1, height: 0)
+                let refereneceBoundsSizeWhenWrapDisabled = CGSize(width: 0.1, height: 0.0144)
+                let refereneceBoundsSizeWhenWrapEnabled = CGSize(width: 0.1, height: 0.072)
 
                 it("should change bounds when wrap changes") {
                     node.update(["boundsSize" : ["boundsSize": referenceBoundsSize.toArrayOfFloat, "wrap": false]])
@@ -219,14 +219,12 @@ class UiTextNodeSpec: QuickSpec {
                     node.textSize = 0.015
                     node.text = veryLongReferenceText
                     node.updateLayout()
-                    print("node.getSize(): \(node.getSize())")
 
                     expect(node.getSize()).to(beCloseTo(refereneceBoundsSizeWhenWrapDisabled))
                     expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))
 
                     node.wrap = true
                     node.updateLayout()
-                    print("node.getSize(): \(node.getSize())")
 
                     expect(node.getSize()).to(beCloseTo(refereneceBoundsSizeWhenWrapEnabled))
                     expect(node.boundsSize).to(beCloseTo(referenceBoundsSize))

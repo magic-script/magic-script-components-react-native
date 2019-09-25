@@ -21,7 +21,7 @@ import Nimble
 class ScrollBarVisibilitySpec: QuickSpec {
     override func spec() {
         describe("FontWeight") {
-            let objectByRawValue: [String: FontWeight] = [
+            let objectByRawValue: [String: ScrollBarVisibility] = [
                 "always" : ScrollBarVisibility.always,
                 "auto" : ScrollBarVisibility.auto,
                 "off" : ScrollBarVisibility.off,

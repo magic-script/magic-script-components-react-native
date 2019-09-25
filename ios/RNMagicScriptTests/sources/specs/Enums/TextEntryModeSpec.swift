@@ -21,7 +21,7 @@ import Nimble
 class TextEntryModeSpec: QuickSpec {
     override func spec() {
         describe("TextEntryMode") {
-            let objectByRawValue: [String: FontWeight] = [
+            let objectByRawValue: [String: TextEntryMode] = [
                 "email" : TextEntryMode.email,
                 "none" : TextEntryMode.none,
                 "normal" : TextEntryMode.normal,

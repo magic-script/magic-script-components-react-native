@@ -67,21 +67,36 @@ class ViewController: UIViewController {
 
     fileprivate func setupTests() {
 
-        let textEdit = UiTextEditNode()
-        textEdit.alignment = .topCenter
-        textEdit.width = 0.4
-        textEdit.height = 0.6
-        textEdit.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        textEdit.textSize = 0.04
-        textEdit.multiline = true
-        textEdit.hint = "Enter text..."
-        textEdit.hintColor = UIColor.gray
-        textEdit.position = SCNVector3(0, 0.4, 0)
-        textEdit.setDebugMode(true)
-        textEdit.layoutIfNeeded()
+//        let textEdit = UiTextEditNode()
+//        textEdit.alignment = .topCenter
+//        textEdit.width = 0.4
+//        textEdit.height = 0.6
+//        textEdit.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+//        textEdit.textSize = 0.04
+//        textEdit.multiline = true
+//        textEdit.hint = "Enter text..."
+//        textEdit.hintColor = UIColor.gray
+//        textEdit.position = SCNVector3(0, 0.4, 0)
+//        textEdit.setDebugMode(true)
+//        textEdit.layoutIfNeeded()
+//
+//        UiNodesManager.instance.registerNode(textEdit, nodeId: "text_edit")
+//        UiNodesManager.instance.addNodeToRoot("text_edit")
 
-        UiNodesManager.instance.registerNode(textEdit, nodeId: "text_edit")
-        UiNodesManager.instance.addNodeToRoot("text_edit")
+
+        let text = UiTextNode()
+        text.boundsSize = CGSize(width: 0.1, height: 0)
+        text.wrap = true
+        text.textSize = 0.015
+        text.text = "Very very very very very very very very very very very very long Info text to be set in UiTextNode."
+//        text.position = SCNVector3(0, 0.4, 0)
+//        text.localScale = SCNVector3(10, 10, 10)
+        text.setDebugMode(true)
+        text.layoutIfNeeded()
+        UiNodesManager.instance.registerNode(text, nodeId: "text")
+        UiNodesManager.instance.addNodeToRoot("text")
+        print("text.boundsSize: \(text.boundsSize)")
+        print("text.getSize(): \(text.getSize())")
     }
 }
 

@@ -119,6 +119,11 @@ import AVKit
     var videoPlayer: AVPlayerProtocol?
     var videoNode: SKVideoNode?
 
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: videoPlayer?.currentItem)
+        videoItemStatusObserver?.invalidate()
+    }
+
     @objc override func setupNode() {
         super.setupNode()
         setupInitialState()
@@ -152,6 +157,7 @@ import AVKit
     func cleanupVideoPlayer() {
         guard let videoPlayer = videoPlayer else { return }
         videoPlayer.pause()
+        videoItemStatusObserver?.invalidate()
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: videoPlayer.currentItem)
     }
 

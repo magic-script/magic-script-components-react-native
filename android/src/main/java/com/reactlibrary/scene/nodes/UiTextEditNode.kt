@@ -51,6 +51,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_CHARACTER_SPACING = "charSpacing"
+        const val PROP_LINE_SPACING = "lineSpacing" // spacing multiplier
         const val PROP_PASSWORD = "password"
         const val PROP_MULTILINE = "multiline"
         const val PROP_TEXT_PADDING = "textPadding"
@@ -133,6 +134,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         setTextAlignment(props)
         setTextColor(props)
         setCharacterSpacing(props)
+        setLineSpacing(props)
         setMultiline(props)
         setTextPadding(props)
     }
@@ -248,6 +250,14 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
+            setNeedsRebuild()
+        }
+    }
+
+    private fun setLineSpacing(props: Bundle) {
+        if (props.containsKey(PROP_LINE_SPACING)) {
+            val spacingMultiplier = props.getDouble(PROP_LINE_SPACING).toFloat()
+            view.text_edit.setLineSpacing(0F, spacingMultiplier)
             setNeedsRebuild()
         }
     }

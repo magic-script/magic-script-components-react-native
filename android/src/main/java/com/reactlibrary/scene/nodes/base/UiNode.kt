@@ -116,10 +116,10 @@ abstract class UiNode(
 
     private fun initView() {
         this.view = provideView(context)
-        this.view.setOnClickListener {
-            onViewClick()
-            clickListener?.invoke()
-        }
+        // this.view.setOnClickListener {
+        //     onViewClick()
+        //     clickListener?.invoke()
+        // }
         // build calls applyProperties, so we need to initialize the view before
     }
 

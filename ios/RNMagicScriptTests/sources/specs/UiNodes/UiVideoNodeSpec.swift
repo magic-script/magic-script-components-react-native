@@ -159,10 +159,10 @@ class UiVideoNodeSpec: QuickSpec {
 
             context("when asked for size") {
                 it("should calculate it") {
-                    node = UiVideoNode(props: ["width": 800.0, "height": 600.0])
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 800.0, height: 600.0)))
-                    node.update(["width": 1280.0, "height": 720.0])
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1280.0, height: 720.0)))
+                    node = UiVideoNode(props: ["size": [0.75, 0.45]])
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.45)))
+                    node = UiVideoNode(props: ["size": [1.25, 0.15]])
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1.25, height: 0.15)))
                 }
             }
 

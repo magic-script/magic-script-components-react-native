@@ -73,6 +73,7 @@ import AVKit
 
     @objc var videoPath: URL? = nil {
         didSet {
+            cleanupVideoPlayer()
             setupVideoPlayer()
             setupVideoNode()
             setupVideoScene()
@@ -114,8 +115,14 @@ import AVKit
     var planeNode: SCNNode!
     var videoScene: SKScene?
     var videoItem: AVPlayerItem?
+    fileprivate var videoItemStatusObserver: NSKeyValueObservation?
     var videoPlayer: AVPlayerProtocol?
     var videoNode: SKVideoNode?
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: videoPlayer?.currentItem)
+        videoItemStatusObserver?.invalidate()
+    }
 
     @objc override func setupNode() {
         super.setupNode()
@@ -147,9 +154,21 @@ import AVKit
         videoNode?.yScale = -1
     }
 
+    func cleanupVideoPlayer() {
+        guard let videoPlayer = videoPlayer else { return }
+        videoPlayer.pause()
+        videoItemStatusObserver?.invalidate()
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: videoPlayer.currentItem)
+    }
+
     func setupVideoPlayer() {
         guard let videoURL = self.videoPath else { return }
         videoItem = AVPlayerItem(url: videoURL)
+        self.videoItemStatusObserver = videoItem?.observe(\.status, options:  [.new, .old], changeHandler: { [weak self] (playerItem, change) in
+            if playerItem.status == .readyToPlay {
+                self?.videoPlayer?.volume = Float(self?._volume ?? 0.0)
+            }
+        })
         videoPlayer = AVPlayer(playerItem: videoItem)
 
         NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying),
@@ -204,6 +223,6 @@ import AVKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return CGSize(width: width, height: height)
+        return size
     }
 }

@@ -1,11 +1,5 @@
 name: Unit tests Android
-on:
-  push:
-    paths:
-      - 'android/*'
-  pull_request:
-    paths:
-      - 'android/*'
+on: [push]
 jobs:
   test:
     name: Test
@@ -27,4 +21,8 @@ jobs:
     - name: Build and test
       run: |
         cd android
-        ./gradlew testDebug
+        ./gradlew jacocoTestReport
+    - uses: actions/upload-artifact@master
+      with:
+        name: code-coverage-artifact
+        path: android/build/reports/jacoco/jacocoTestReport/html

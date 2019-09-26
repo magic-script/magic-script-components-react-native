@@ -102,11 +102,23 @@ import SpriteKit
     }
     @objc var width: CGFloat {
         get { return labelNode.boundsSize.width }
-        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true; setNeedsLayout() }
+        set {
+            let size = CGSize(width: newValue, height: height)
+            labelNode.boundsSize = size
+            hintNode.boundsSize = size
+            reloadOutline = true
+            setNeedsLayout()
+        }
     }
     @objc var height: CGFloat {
         get { return labelNode.boundsSize.height }
-        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true; setNeedsLayout() }
+        set {
+            let size = CGSize(width: width, height: newValue)
+            labelNode.boundsSize = size
+            hintNode.boundsSize = size
+            reloadOutline = true
+            setNeedsLayout()
+        }
     }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?

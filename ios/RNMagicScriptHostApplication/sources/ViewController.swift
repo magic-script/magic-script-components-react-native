@@ -67,21 +67,40 @@ class ViewController: UIViewController {
 
     fileprivate func setupTests() {
 
-//        let textEdit = UiTextEditNode()
-//        textEdit.alignment = .topCenter
-//        textEdit.width = 0.4
-//        textEdit.height = 0.6
-//        textEdit.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-//        textEdit.textSize = 0.04
-//        textEdit.multiline = true
-//        textEdit.hint = "Enter text..."
-//        textEdit.hintColor = UIColor.gray
-//        textEdit.position = SCNVector3(0, 0.4, 0)
-//        textEdit.setDebugMode(true)
-//        textEdit.layoutIfNeeded()
-//
-//        UiNodesManager.instance.registerNode(textEdit, nodeId: "text_edit")
-//        UiNodesManager.instance.addNodeToRoot("text_edit")
+        let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        createTextEdit([
+            "debug": true,
+            "alignment": "top-center",
+            "width": 0.4,
+            "height": 0.08,
+            "text": "",
+            "textSize": 0.04,
+            "textPadding": [0.01, 0.01, 0.01, 0.01],
+            "hint": "Password",
+            "hintColor": [0.9,0.9,0.9,0.75],
+            "localPosition": [0, 0.6, 0]
+        ], nodeId: "text_edit1")
+
+        createTextEdit([
+            "debug": true,
+            "alignment": "top-center",
+            "width": 0.4,
+            "height": 0.6,
+            "text": loremIpsum,
+            "textSize": 0.04,
+            "textPadding": [0.01, 0.01, 0.01, 0.01],
+            "multiline": true,
+            "localPosition": [0, 0.4, 0]
+        ], nodeId: "text_edit2")
+
+
+    }
+
+    fileprivate func createTextEdit(_ props: [String: Any], nodeId: String) {
+        let textEdit = UiTextEditNode(props: props)
+        textEdit.layoutIfNeeded()
+        UiNodesManager.instance.registerNode(textEdit, nodeId: nodeId)
+        UiNodesManager.instance.addNodeToRoot(nodeId)
     }
 }
 

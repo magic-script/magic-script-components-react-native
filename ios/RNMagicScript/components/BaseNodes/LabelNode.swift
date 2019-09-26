@@ -154,21 +154,22 @@ class LabelNode: SCNNode {
 
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
         let scale = getTextScale()
+        let padding: CGSize = CGSize(width: textPadding.left + textPadding.right, height: textPadding.top + textPadding.bottom)
         let size: CGSize
         if boundsSize.width > 0 && multiline {
-            let constraintSize = CGSize(width: boundsSize.width / scale, height: .infinity)
+            let constraintSize = CGSize(width: (boundsSize.width - padding.width) / scale, height: .infinity)
             let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesFontLeading, .usesLineFragmentOrigin], attributes: attributes, context: nil)
             size = boundingBox.size
         } else {
             size = text.size(withAttributes: attributes)
         }
 
-        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale)
+        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale) + padding
     }
 
     fileprivate func updateTextNodePosition() {
         let size = getSize()
-        labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+        labelNode.position = SCNVector3(-0.5 * size.width + textPadding.left, -0.5 * size.height - textPadding.top, 0)
     }
 }
 

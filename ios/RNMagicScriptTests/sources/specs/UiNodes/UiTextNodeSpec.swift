@@ -50,6 +50,12 @@ class UiTextNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should not update 'anchorPosition' prop") {
                     let referenceAnchorPosition = SCNVector3(0.1, 0.2, 0.3)

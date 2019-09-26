@@ -58,6 +58,12 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should update 'text' prop") {
                     let referenceText: String = "Info text"

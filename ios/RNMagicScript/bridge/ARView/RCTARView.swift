@@ -198,14 +198,12 @@ extension RCTARView {
         let options: [SCNHitTestOption : Any] = [
             SCNHitTestOption.boundingBoxOnly: true,
             SCNHitTestOption.ignoreHiddenNodes: true,
-            //SCNHitTestOption.categoryBitMask: UiNodesManager.instance.focusableNodeBitMask
+            // For some reason, the categoryBitMask test option does not work
+            // (nodes with given categoryBitMask are ignored).
+            // SCNHitTestOption.categoryBitMask: UiNodesManager.instance.focusableNodeBitMask
         ]
         let node = arView.hitTest(tapPoint, options: options).first?.node
         UiNodesManager.instance.handleNodeTap(node)
-    }
-
-    @objc fileprivate func doneButtonAction(_ sender: UIBarButtonItem) {
-
     }
 }
 

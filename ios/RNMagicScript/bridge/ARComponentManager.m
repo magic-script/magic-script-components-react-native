@@ -204,7 +204,7 @@ RCT_EXPORT_METHOD(addOnToggleChangedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
-    ARLog(@"addOnToggleChangedEventHandler: %@", nodeId);
+    ARLog(@"addOnVideoPreparedEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiVideoNode class]]) {
         UiVideoNode *video = (UiVideoNode *)node;

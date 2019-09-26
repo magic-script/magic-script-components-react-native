@@ -18,6 +18,9 @@ package com.reactlibrary.utils
 
 import android.content.Context
 import android.graphics.Typeface
+import com.reactlibrary.font.FontStyle
+import com.reactlibrary.font.FontWeight
+import com.reactlibrary.font.external.LominoFont
 
 /**
  * Typeface returned from this provider should be used by every
@@ -28,30 +31,64 @@ class FontProvider {
     companion object {
 
         private const val FONTS_DIR = "fonts"
-        private const val LOMINO_FONT_NAME = "LominoUIApp-Regular.ttf"
+        private const val DEFAULT_FONT_FAMILY = "sans-serif"
+        private val externalFont = LominoFont()
+        private val DEFAULT_WEIGHT = FontWeight.REGULAR
+        private val DEFAULT_STYLE = FontStyle.NORMAL
 
-        // reusing the same instance
-        private var font: Typeface = Typeface.DEFAULT
+        // external fonts cache <font filename, typeface>
+        private val typefacesCache = hashMapOf<String, Typeface?>()
 
-        private var initialized = false
+        fun provideFont(context: Context, weight: String = "", style: String = ""): Typeface {
+            val fontWeight = FontWeight.fromName(weight)
+                    ?: DEFAULT_WEIGHT
+            val fontStyle = FontStyle.fromName(style)
+                    ?: DEFAULT_STYLE
+            val fontName = externalFont.getFileName(fontWeight, fontStyle)
 
-        fun provideFont(context: Context): Typeface {
-            if (!initialized) {
+            if (typefacesCache.containsKey(fontName)) { // already tried to load
+                val typeface = typefacesCache[fontName]
+                return typeface ?: getDefault(fontWeight, fontStyle)
+            } else { // need to load
                 val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
                 if (fontsCatalogExists) {
-                    val fontExists = context.assets.list(FONTS_DIR)?.contains(LOMINO_FONT_NAME)
-                            ?: false
-
+                    val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
                     if (fontExists) {
-                        val fontPath = "$FONTS_DIR/$LOMINO_FONT_NAME"
-                        font = Typeface.createFromAsset(context.assets, fontPath)
-                        logMessage("Lomino font exists")
+                        val fontPath = "$FONTS_DIR/$fontName"
+                        val typeface = Typeface.createFromAsset(context.assets, fontPath)
+                        typefacesCache[fontName] = typeface
+                        logMessage("External font loaded: $fontName")
+                        return typeface
                     }
                 }
-                initialized = true
             }
-            return font
+            return getDefault(fontWeight, fontStyle)
         }
+
+        // returns default android Typeface
+        private fun getDefault(fontWeight: FontWeight, fontStyle: FontStyle): Typeface {
+            val androidStyle: Int = when (fontWeight) {
+                FontWeight.EXTRA_LIGHT,
+                FontWeight.LIGHT,
+                FontWeight.REGULAR,
+                FontWeight.MEDIUM ->
+                    if (fontStyle == FontStyle.NORMAL) {
+                        Typeface.NORMAL
+                    } else {
+                        Typeface.ITALIC
+                    }
+                FontWeight.BOLD,
+                FontWeight.EXTRA_BOLD ->
+                    if (fontStyle == FontStyle.NORMAL) {
+                        Typeface.BOLD
+                    } else {
+                        Typeface.BOLD_ITALIC
+                    }
+
+            }
+            return Typeface.create(DEFAULT_FONT_FAMILY, androidStyle)
+        }
+
     }
 
 }

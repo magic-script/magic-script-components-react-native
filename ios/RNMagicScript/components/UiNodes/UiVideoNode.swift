@@ -25,6 +25,8 @@ import AVKit
     static let minimumDimension: CGFloat = 1.0
     static let maximumDimension: CGFloat = 2048.0
 
+    @objc public var onVideoPrepared: ((_ sender: UiVideoNode, _ videoPath: String) -> (Void))?
+
     @objc var alignment: Alignment = .centerCenter {
         didSet { setNeedsLayout() }
     }
@@ -166,7 +168,9 @@ import AVKit
         videoItem = AVPlayerItem(url: videoURL)
         self.videoItemStatusObserver = videoItem?.observe(\.status, options:  [.new, .old], changeHandler: { [weak self] (playerItem, change) in
             if playerItem.status == .readyToPlay {
-                self?.videoPlayer?.volume = Float(self?._volume ?? 0.0)
+                guard let strongSelf = self else { return }
+                strongSelf.videoPlayer?.volume = Float(strongSelf._volume)
+                strongSelf.onVideoPrepared?(strongSelf, strongSelf.videoPath?.absoluteString ?? "")
             }
         })
         videoPlayer = AVPlayer(playerItem: videoItem)

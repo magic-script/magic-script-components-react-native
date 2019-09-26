@@ -56,9 +56,11 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-             @"onPress", @"onClick",
+             @"onPress",
+             @"onClick",
              @"onTextChanged",
-             @"onToggleChanged"
+             @"onToggleChanged",
+             @"onVideoPrepared"
              ];
 }
 
@@ -82,6 +84,14 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onToggleChanged" body:@{ @"nodeId": sender.name, @"On": @(value) }];
+        });
+    }
+}
+
+- (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onVideoPrepared" body:@{ @"nodeId": sender.name, @"videoURL": videoURL }];
         });
     }
 }

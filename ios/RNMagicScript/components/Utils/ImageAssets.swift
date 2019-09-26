@@ -23,9 +23,7 @@ typealias Image = NSImage
 #endif
 
 public enum ImageAsset: String {
-    case progressBar = "progress_bar"
     case spinner = "spinner"
-    case spinner1 = "spinner1"
     case spinnerProgressBegin = "spinner_begin"
     case spinnerProgressEnd = "spinner_end"
     case toggleOn = "toggle_on"

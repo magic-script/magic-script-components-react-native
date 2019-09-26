@@ -82,21 +82,6 @@ class ViewController: UIViewController {
 //
 //        UiNodesManager.instance.registerNode(textEdit, nodeId: "text_edit")
 //        UiNodesManager.instance.addNodeToRoot("text_edit")
-
-
-        let text = UiTextNode()
-        text.boundsSize = CGSize(width: 0.1, height: 0)
-        text.wrap = true
-        text.textSize = 0.015
-        text.text = "Very very very very very very very very very very very very long Info text to be set in UiTextNode."
-//        text.position = SCNVector3(0, 0.4, 0)
-//        text.localScale = SCNVector3(10, 10, 10)
-        text.setDebugMode(true)
-        text.layoutIfNeeded()
-        UiNodesManager.instance.registerNode(text, nodeId: "text")
-        UiNodesManager.instance.addNodeToRoot("text")
-        print("text.boundsSize: \(text.boundsSize)")
-        print("text.getSize(): \(text.getSize())")
     }
 }
 

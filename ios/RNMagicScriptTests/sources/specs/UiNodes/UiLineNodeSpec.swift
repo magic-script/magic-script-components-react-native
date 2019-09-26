@@ -42,6 +42,17 @@ class UiLineNodeSpec: QuickSpec {
                     expect(node.points.count).to(equal(3))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
+
+                it("should clear 'points' if wrong data") {
+                    let referencePoints = [["a", "b", "c"], ["d", "e", "f"], ["g", "h", "i"]]
+                    node.update(["points" : referencePoints])
+                    expect(node.points.count).to(equal(0))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    node.layoutIfNeeded()
+                    let lineNode = node.contentNode.childNodes[0]
+                    expect(lineNode.geometry).to(beNil())
+                }
             }
 
             context("when asked for size") {

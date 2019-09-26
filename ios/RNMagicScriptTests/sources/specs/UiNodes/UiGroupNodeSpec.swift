@@ -54,17 +54,17 @@ class UiGroupNodeSpec: QuickSpec {
                     referenceNode2.position = SCNVector3(0.5, 0.5, 0.0)
                     referenceNode2.layoutIfNeeded()
                     
-                    node.contentNode.addChildNode(referenceNode1)
-                    node.contentNode.addChildNode(referenceNode2)
+                    node.addChild(referenceNode1)
+                    node.addChild(referenceNode2)
                     node.layoutIfNeeded()
                     
                     expect(node.getSize()).to(beCloseTo(CGSize(width: 1.5, height: 1.5)))
                 }
+            }
                 
-                context("when no child nodes") {
-                    it("should return zero") {
-                        expect(node.getSize()).to(beCloseTo(CGSize.zero))
-                    }
+            context("when no child nodes") {
+                it("should return zero size") {
+                    expect(node.getSize()).to(beCloseTo(CGSize.zero))
                 }
             }
         }

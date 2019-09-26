@@ -48,6 +48,12 @@ class UiToggleNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should not update 'alignment' prop") {
                     let referenceAlignment = Alignment.bottomRight
@@ -90,12 +96,38 @@ class UiToggleNodeSpec: QuickSpec {
                     node.update(["height" : referenceHeight])
                     expect(node.height).to(beCloseTo(referenceHeight))
                     expect(node.isLayoutNeeded).to(beTrue())
+                    node.layoutIfNeeded()
+                    expect(node.getSize().height).to(beCloseTo(referenceHeight))
                 }
 
                 it("should update 'on' prop") {
                     node.update(["on" : true])
                     expect(node.on).to(beTrue())
                     expect(node.isLayoutNeeded).to(beFalse())
+                }
+            }
+
+            context("focus") {
+                it("should be focusable") {
+                    expect(node.canHaveFocus).to(beTrue())
+
+                    node.enabled = false
+                    expect(node.canHaveFocus).to(beFalse())
+                }
+
+                it("should leave focus immediately") {
+                    node.enterFocus()
+                    expect(node.hasFocus).to(beFalse())
+                }
+
+                it("should switch value on focus") {
+                    node.on = false
+
+                    node.enterFocus()
+                    expect(node.on).to(beTrue())
+
+                    node.enterFocus()
+                    expect(node.on).to(beFalse())
                 }
             }
         }

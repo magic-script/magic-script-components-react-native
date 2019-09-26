@@ -12,28 +12,38 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
-#import "RCTARViewManager.h"
-#import "RNMagicScript-Swift.h"
+import Foundation
 
-@implementation RCTARViewManager
+@objc public enum ScrollBarVisibility: Int {
+    case always
+    case auto
+    case off
 
-RCT_EXPORT_MODULE()
+    public typealias RawValue = String
 
-- (UIView *)view {
-    return [RCTARView new];
+    public var rawValue: RawValue {
+        switch self {
+        case .always:
+            return "always"
+        case .auto:
+            return "auto"
+        case .off:
+            return "off"
+        }
+    }
+
+    public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "always":
+            self = .always
+        case "auto":
+            self = .auto
+        case "off":
+            self = .off
+        default:
+            return nil
+        }
+    }
 }
-
-+ (BOOL)requiresMainQueueSetup {
-    return YES;
-}
-
-- (dispatch_queue_t)methodQueue {
-    return dispatch_get_main_queue();
-}
-
-RCT_EXPORT_VIEW_PROPERTY(debug, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(rendersContinuously, BOOL)
-
-@end

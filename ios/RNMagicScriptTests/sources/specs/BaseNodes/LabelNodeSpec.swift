@@ -37,7 +37,7 @@ class LabelNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.defaultTextSize).to(beCloseTo(0.015)) // defined as defaultTextSizeInMeters: CGFloat = 0.015
                     expect(node.boundsSize).to(beCloseTo(CGSize.zero))
-                    expect(node.wrap).to(beFalse())
+                    expect(node.multiline).to(beFalse())
                 }
             }
 

@@ -33,10 +33,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.FontProvider
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.setTextAndMoveCursor
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
@@ -56,6 +53,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_MULTILINE = "multiline"
         const val PROP_TEXT_PADDING = "textPadding"
         const val PROP_SCROLLING = "scrolling"
+        const val PROP_FONT_PARAMS = "fontParams"
 
         const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
@@ -103,7 +101,12 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     override fun provideView(context: Context): View {
         val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
-        container.text_edit.typeface = FontProvider.provideFont(context)
+
+        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        if (fontParams?.weight == null || fontParams.style == null) {
+            container.text_edit.typeface = FontProvider.provideFont(context)
+        }
+
         container.text_edit.setOnClickListener {
             val activity = ArViewManager.getActivityRef().get()
             if (activity != null) {
@@ -137,6 +140,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         setLineSpacing(props)
         setMultiline(props)
         setTextPadding(props)
+        setFontParams(props)
     }
 
     override fun setViewSize() {
@@ -282,6 +286,17 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
     }
 
+    private fun setFontParams(props: Bundle) {
+        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS)
+
+        if (fontParams?.weight != null && fontParams.style != null) {
+            view.text_edit.typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
+        }
+        if (fontParams?.allCaps != null) {
+            view.text_edit.isAllCaps = fontParams.allCaps
+        }
+    }
+
     private fun startCursorAnimation() {
         cursorAnimationRunnable.run()
     }
@@ -299,7 +314,9 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
 
         val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
-        input.typeface = FontProvider.provideFont(context)
+        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        input.typeface = FontProvider.provideFont(context, fontParams?.weight, fontParams?.style)
+        
         val visibleText = generateVisibleText(text)
         if (isPassword()) {
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD

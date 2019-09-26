@@ -39,11 +39,9 @@ class FontProvider {
         // external fonts cache <font filename, typeface>
         private val typefacesCache = hashMapOf<String, Typeface?>()
 
-        fun provideFont(context: Context, weight: String = "", style: String = ""): Typeface {
-            val fontWeight = FontWeight.fromName(weight)
-                    ?: DEFAULT_WEIGHT
-            val fontStyle = FontStyle.fromName(style)
-                    ?: DEFAULT_STYLE
+        fun provideFont(context: Context, weight: FontWeight? = null, style: FontStyle? = null): Typeface {
+            val fontWeight = weight ?: DEFAULT_WEIGHT
+            val fontStyle = style ?: DEFAULT_STYLE
             val fontName = externalFont.getFileName(fontWeight, fontStyle)
 
             if (typefacesCache.containsKey(fontName)) { // already tried to load

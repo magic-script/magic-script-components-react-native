@@ -27,6 +27,7 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.utils.FontParamsReader
 import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
@@ -41,8 +42,8 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         const val PROP_WRAP = "wrap"
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
-        const val PROP_ALL_CAPS = "allCaps"
         const val PROP_CHARACTER_SPACING = "charSpacing"
+        const val PROP_FONT_PARAMS = "fontParams"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         const val DEFAULT_ALIGNMENT = "center-left" // view alignment (pivot)
@@ -65,7 +66,10 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
-        view.typeface = FontProvider.provideFont(context)
+        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        if (fontParams?.weight == null || fontParams.style == null) {
+            view.typeface = FontProvider.provideFont(context)
+        }
         return view
     }
 
@@ -84,9 +88,9 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         setTextSize(props)
         setTextAlignment(props)
         setTextColor(props)
-        setAllCaps(props)
         setCharacterSpacing(props)
         setWrap(props)
+        setFontParams(props)
     }
 
     override fun setViewSize() {
@@ -154,12 +158,6 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         }
     }
 
-    private fun setAllCaps(props: Bundle) {
-        if (props.containsKey(PROP_ALL_CAPS)) {
-            (view as TextView).isAllCaps = props.getBoolean(PROP_ALL_CAPS)
-        }
-    }
-
     private fun setCharacterSpacing(props: Bundle) {
         if (props.containsKey(PROP_CHARACTER_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTER_SPACING)
@@ -182,5 +180,15 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         }
     }
 
+    private fun setFontParams(props: Bundle) {
+        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS)
+
+        if (fontParams?.weight != null && fontParams.style != null) {
+            (view as TextView).typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
+        }
+        if (fontParams?.allCaps != null) {
+            (view as TextView).isAllCaps = fontParams.allCaps
+        }
+    }
 
 }

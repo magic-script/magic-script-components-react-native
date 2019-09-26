@@ -27,6 +27,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
+import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 
@@ -75,6 +76,8 @@ open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initP
     override fun provideView(context: Context): View {
         val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
         val button = LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
+        button.setTypeface(FontProvider.provideFont(context))
+
         // padding is added when button width or height is "wrap content"
         val textHeightPx = Utils.metersToFontPx(textSize, context)
         val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()

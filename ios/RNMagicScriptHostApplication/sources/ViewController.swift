@@ -92,8 +92,6 @@ class ViewController: UIViewController {
             "multiline": true,
             "localPosition": [0, 0.4, 0]
         ], nodeId: "text_edit2")
-
-
     }
 
     fileprivate func createTextEdit(_ props: [String: Any], nodeId: String) {

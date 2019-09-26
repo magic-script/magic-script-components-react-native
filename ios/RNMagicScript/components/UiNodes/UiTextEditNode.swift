@@ -165,7 +165,7 @@ import SpriteKit
 
         hintNode = LabelNode()
         hintNode.charSpacing = defaultCharSpacing
-        hintNode.textColor = UIColor(white: 0.75, alpha: 0.5)
+        hintNode.textColor = UIColor(white: 0.75, alpha: 0.75)
         hintNode.textPadding = defaultTextPadding
         hintNode.textSize = defaultTextSize
         contentNode.addChildNode(hintNode)
@@ -319,11 +319,9 @@ import SpriteKit
 
         outlineNode?.removeFromParentNode()
 
-        let roundness: CGFloat = 0.5
-        let minSize: CGFloat = min(size.width, size.height)
-        let outlineOffset: CGFloat = 0.3 * minSize
-        let radius: CGFloat = 0.5 * minSize * roundness
-        let thickness: CGFloat = 0.05 * minSize
+        let outlineOffset: CGFloat = 0.024 * 0
+        let radius: CGFloat = 0.02
+        let thickness: CGFloat = 0.004
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width + outlineOffset, height: size.height + outlineOffset, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)

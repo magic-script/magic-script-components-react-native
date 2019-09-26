@@ -41,7 +41,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textAlignment).to(equal(HorizontalTextAlignment.left))
                     expect(node.textPadding).to(beCloseTo(UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)))
                     expect(node.hint).to(beNil())
-                    expect(node.hintColor).to(beCloseTo(UIColor(white: 0.75, alpha: 0.5)))
+                    expect(node.hintColor).to(beCloseTo(UIColor(white: 0.75, alpha: 0.75)))
                     expect(node.multiline).to(beFalse())
                     expect(node.password).to(beFalse())
                     expect(node.scrolling).to(beFalse())

@@ -115,9 +115,8 @@ class LabelNode: SCNNode {
     fileprivate func updateLabelContents() {
         let scale = getTextScale()
         labelGeometry.string = allCaps ? text?.uppercased() : text
-        let size = getSize()
-        let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
-        labelGeometry.containerFrame = rect
+        let size = (getSize() - getPaddingSize()) / scale
+        labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
         labelGeometry.firstMaterial?.diffuse.contents = textColor
         labelGeometry.font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
         labelGeometry.isWrapped = multiline
@@ -152,9 +151,13 @@ class LabelNode: SCNNode {
         return CGSize(width: width, height: height)
     }
 
+    fileprivate func getPaddingSize() -> CGSize {
+        return CGSize(width: textPadding.left + textPadding.right, height: textPadding.top + textPadding.bottom)
+    }
+
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
         let scale = getTextScale()
-        let padding: CGSize = CGSize(width: textPadding.left + textPadding.right, height: textPadding.top + textPadding.bottom)
+        let padding: CGSize = getPaddingSize()
         let size: CGSize
         if boundsSize.width > 0 && multiline {
             let constraintSize = CGSize(width: (boundsSize.width - padding.width) / scale, height: .infinity)
@@ -168,8 +171,8 @@ class LabelNode: SCNNode {
     }
 
     fileprivate func updateTextNodePosition() {
-        let size = getSize()
-        labelNode.position = SCNVector3(-0.5 * size.width + textPadding.left, -0.5 * size.height - textPadding.top, 0)
+        let offset = -0.5 * getSize() + CGSize(width: textPadding.left, height: textPadding.top)
+        labelNode.position = SCNVector3(offset.width, offset.height, 0)
     }
 }
 

@@ -16,6 +16,7 @@
 
 import CoreGraphics
 
+// MARK: - Addition
 func + (left: CGSize, right: CGSize) -> CGSize {
     return CGSize(width: left.width + right.width, height: left.height + right.height)
 }
@@ -24,10 +25,53 @@ func += ( left: inout CGSize, right: CGSize) {
     left = left + right
 }
 
+// MARK: - Subtraction
 func - (left: CGSize, right: CGSize) -> CGSize {
     return CGSize(width: left.width - right.width, height: left.height - right.height)
 }
 
-func -= ( left: inout CGSize, right: CGSize) {
+func -= (left: inout CGSize, right: CGSize) {
     left = left - right
+}
+
+// MARK: - Division
+func / (left: CGSize, right: CGSize) -> CGSize {
+    return CGSize(width: left.width / right.width, height: left.height / right.height)
+}
+
+func /= (left: inout CGSize, right: CGSize) {
+    left = left / right
+}
+
+func / (left: CGSize, right: CGFloat) -> CGSize {
+    return CGSize(width: left.width / right, height: left.height / right)
+}
+
+func / (left: CGFloat, right: CGSize) -> CGSize {
+    return CGSize(width: left / right.width, height: left / right.height)
+}
+
+func /= (left: inout CGSize, right: CGFloat) {
+    left = left / right
+}
+
+// MARK: - Multiplication
+func * (left: CGSize, right: CGSize) -> CGSize {
+    return CGSize(width: left.width * right.width, height: left.height * right.height)
+}
+
+func *= (left: inout CGSize, right: CGSize) {
+    left = left * right
+}
+
+func * (left: CGSize, right: CGFloat) -> CGSize {
+    return CGSize(width: left.width * right, height: left.height * right)
+}
+
+func * (left: CGFloat, right: CGSize) -> CGSize {
+    return CGSize(width: left * right.width, height: left * right.height)
+}
+
+func *= (left: inout CGSize, right: CGFloat) {
+    left = left * right
 }

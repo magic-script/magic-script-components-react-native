@@ -31,6 +31,7 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent('onClick');
         this.startListeningEvent('onTextChanged');
         this.startListeningEvent('onToggleChanged');
+        this.startListeningEvent('onVideoPrepared');
     }
 
     startListeningEvent(eventName) {
@@ -58,6 +59,8 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnTextChangedEventHandler(elementId);
         } else if (name === 'onToggleChanged') {
             this.componentManager.addOnToggleChangedEventHandler(elementId);
+        } else if (name === 'onVideoPrepared') {
+            this.componentManager.addOnVideoPreparedEventHandler(elementId);
         }
 
         const pair = { name, handler };

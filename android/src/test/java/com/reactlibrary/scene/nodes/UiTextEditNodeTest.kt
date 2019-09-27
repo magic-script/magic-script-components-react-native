@@ -142,9 +142,9 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyCharacterSpacingWhenSpacingPropertyPresent() {
+    fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
         val spacing = 0.3 // 'EM' units
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTER_SPACING, spacing)
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
 
         node.build()

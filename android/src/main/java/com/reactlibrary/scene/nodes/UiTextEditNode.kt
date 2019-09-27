@@ -21,6 +21,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputFilter
 import android.text.InputType
 import android.util.TypedValue
 import android.view.Gravity
@@ -47,7 +48,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
-        const val PROP_CHARACTER_SPACING = "charSpacing"
+        const val PROP_CHARACTERS_SPACING = "charSpacing"
+        const val PROP_CHARACTERS_LIMIT = "charLimit"
         const val PROP_LINE_SPACING = "lineSpacing" // spacing multiplier
         const val PROP_PASSWORD = "password"
         const val PROP_MULTILINE = "multiline"
@@ -136,7 +138,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         setTextSize(props)
         setTextAlignment(props)
         setTextColor(props)
-        setCharacterSpacing(props)
+        setCharactersSpacing(props)
         setLineSpacing(props)
         setMultiline(props)
         setTextPadding(props)
@@ -250,9 +252,9 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
     }
 
-    private fun setCharacterSpacing(props: Bundle) {
-        if (props.containsKey(PROP_CHARACTER_SPACING)) {
-            val spacing = props.getDouble(PROP_CHARACTER_SPACING)
+    private fun setCharactersSpacing(props: Bundle) {
+        if (props.containsKey(PROP_CHARACTERS_SPACING)) {
+            val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
             setNeedsRebuild()
         }
@@ -316,7 +318,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
         input.typeface = FontProvider.provideFont(context, fontParams?.weight, fontParams?.style)
-        
+
         val visibleText = generateVisibleText(text)
         if (isPassword()) {
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
@@ -325,6 +327,11 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             input.inputType = input.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
         }
         input.setTextAndMoveCursor(visibleText)
+        if (properties.containsKey(PROP_CHARACTERS_LIMIT)) {
+            val charLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
+            val lengthFilter = InputFilter.LengthFilter(charLimit)
+            input.filters = arrayOf(lengthFilter)
+        }
         builder.setView(nativeEditText)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->

@@ -42,7 +42,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         const val PROP_WRAP = "wrap"
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
-        const val PROP_CHARACTER_SPACING = "charSpacing"
+        const val PROP_CHARACTERS_SPACING = "charSpacing"
         const val PROP_FONT_PARAMS = "fontParams"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
@@ -88,7 +88,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         setTextSize(props)
         setTextAlignment(props)
         setTextColor(props)
-        setCharacterSpacing(props)
+        setCharactersSpacing(props)
         setWrap(props)
         setFontParams(props)
     }
@@ -158,9 +158,9 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         }
     }
 
-    private fun setCharacterSpacing(props: Bundle) {
-        if (props.containsKey(PROP_CHARACTER_SPACING)) {
-            val spacing = props.getDouble(PROP_CHARACTER_SPACING)
+    private fun setCharactersSpacing(props: Bundle) {
+        if (props.containsKey(PROP_CHARACTERS_SPACING)) {
+            val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
             (view as TextView).letterSpacing = spacing.toFloat()
             // rebuild only if size can be changed
             if (canResizeOnContentChange()) {

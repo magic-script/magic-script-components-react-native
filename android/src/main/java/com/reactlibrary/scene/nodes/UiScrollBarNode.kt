@@ -26,13 +26,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
 import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.putDefaulDouble
+import com.reactlibrary.utils.putDefaulString
 import com.reactlibrary.utils.Utils
-import kotlinx.android.synthetic.main.scroll_bar.*
 
 class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = true) {
@@ -43,32 +43,21 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         const val PROP_HEIGHT = "height"
         const val PROP_THUMB_POSITION = "thumbPosition"
         const val PROP_THUMB_SIZE = "thumbSize"
-        
-        const val DEFAULT_WIDTH = 0.03359 * 8
-        const val DEFAULT_HEIGHT = 0.03359
-        const val DEFAULT_THUMB_POSITION = 0.0
-        const val DEFAULT_THUMB_SIZE = 0.33
+        const val PROP_ORIENTATION = "orientation"
+
+        const val ORIENTATION_VERTICAL = "vertical"
+        const val ORIENTATION_HORIZONTAL = "horizontal"
     }
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
-    // set default properties values
     init {
-        if (!properties.containsKey(PROP_WIDTH)) {
-            properties.putDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        }
-
-        if (!properties.containsKey(PROP_HEIGHT)) {
-            properties.putDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        }
-
-        if (!properties.containsKey(PROP_THUMB_POSITION)) {
-            properties.putDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION)
-        }
-
-        if (!properties.containsKey(PROP_THUMB_SIZE)) {
-            properties.putDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
-        }
+        // set default properties values
+        properties.putDefaulDouble(PROP_WIDTH, 0.03359 * 8)
+        properties.putDefaulDouble(PROP_HEIGHT, 0.03359 * 8)
+        properties.putDefaulDouble(PROP_THUMB_POSITION, 0.0)
+        properties.putDefaulDouble(PROP_THUMB_SIZE, 0.0)
+        properties.putDefaulString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
     // fun onTouchCallback(v: View, event: MotionEvent): Boolean {
@@ -93,13 +82,14 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
 
         setThumbPosition(props)
         setThumbSize(props)
+        setOrientation(props)
     }
 
     override fun setViewSize() {
-        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
         val widthPx = Utils.metersToPx(widthInMeters, context)
 
-        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
         val heightPx = Utils.metersToPx(heightInMeters, context)
 
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
@@ -116,6 +106,15 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         if (props.containsKey(PROP_THUMB_SIZE)) {
             val value = props.getDouble(PROP_THUMB_SIZE).toFloat()
             (view as CustomScrollBar).thumbSize = value
+        }
+    }
+
+    private fun setOrientation(props: Bundle) {
+        if (props.containsKey(PROP_ORIENTATION)) {
+            val valueString = props.getString(PROP_ORIENTATION)
+            val value = if ( valueString==ORIENTATION_VERTICAL ){ true } 
+                else { false }
+            (view as CustomScrollBar).isVertical = value
         }
     }
 }

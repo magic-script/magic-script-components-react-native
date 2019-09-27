@@ -33,9 +33,6 @@
   "jest": {
     "preset": "react-native",
     "clearMocks": true,
-    "collectCoverageFrom": [
-      "components/platform/platform-factory.js"
-    ],
     "modulePaths": [
       "components/utils"
     ]

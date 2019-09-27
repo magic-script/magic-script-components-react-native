@@ -24,3 +24,12 @@ jobs:
       - name: Code Coverage
         run: |
           echo "Total coverage (based on lines): `find . -name \*.xccovreport -exec xcrun xccov view {} \; | grep '.app' | head -1 | perl -pe 's/.+?(\d+\.\d+%).+/\1/'`"
+      - name: Report generation
+        run: |
+          gem install slather
+          cd ios
+          slather coverage --html --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
+      - uses: actions/upload-artifact@master
+        with:
+          name: code-coverage-artifact-ios
+          path: ios/html

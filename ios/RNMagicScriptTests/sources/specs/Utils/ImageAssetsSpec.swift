@@ -28,6 +28,7 @@ class ImageAssetsSpec: QuickSpec {
                         .spinner,
                         .spinnerProgressBegin,
                         .spinnerProgressEnd,
+                        .textEditBackground,
                         .toggleOn,
                         .toggleOff
                     ]

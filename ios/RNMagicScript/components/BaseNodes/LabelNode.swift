@@ -67,6 +67,11 @@ class LabelNode: SCNNode {
     }
     @objc var tracking: Int = 50 // not supported by Lumin yet
 
+    @objc var readsFromDepthBuffer: Bool {
+        get { return labelGeometry.firstMaterial?.readsFromDepthBuffer ?? false }
+        set { labelGeometry.firstMaterial?.readsFromDepthBuffer = newValue }
+    }
+
     fileprivate var labelGeometry: SCNText!
     fileprivate var labelNode: SCNNode!
     fileprivate var reloadNeeded: Bool = false

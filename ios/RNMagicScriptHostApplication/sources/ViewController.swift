@@ -69,9 +69,9 @@ class ViewController: UIViewController {
 
         let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         createTextEdit([
-            "debug": true,
+//            "debug": true,
             "alignment": "top-center",
-            "charLimit": 5,
+            "charLimit": 15,
             "width": 0.4,
             "height": 0.08,
             "text": "",
@@ -80,13 +80,12 @@ class ViewController: UIViewController {
             "hint": "Password",
             "hintColor": [0.9,0.9,0.9,0.75],
             "localPosition": [0, 0.6, 0],
-//            "password": true
+            "password": true
         ], nodeId: "text_edit1")
 
         createTextEdit([
-            "debug": true,
+//            "debug": true,
             "alignment": "top-center",
-            "charLimit": 5,
             "width": 0.4,
             "height": 0.6,
             "text": loremIpsum,

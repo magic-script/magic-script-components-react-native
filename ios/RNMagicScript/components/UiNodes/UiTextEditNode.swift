@@ -101,6 +101,7 @@ import SpriteKit
     @objc var width: CGFloat {
         get { return labelNode.boundsSize.width }
         set {
+            (backgroundNode.geometry as? SCNPlane)?.width = newValue
             let size = CGSize(width: newValue, height: height)
             labelNode.boundsSize = size
             hintNode.boundsSize = size
@@ -111,6 +112,7 @@ import SpriteKit
     @objc var height: CGFloat {
         get { return labelNode.boundsSize.height }
         set {
+            (backgroundNode.geometry as? SCNPlane)?.height = newValue
             let size = CGSize(width: width, height: newValue)
             labelNode.boundsSize = size
             hintNode.boundsSize = size
@@ -124,6 +126,7 @@ import SpriteKit
 
     fileprivate var labelNode: LabelNode!
     fileprivate var hintNode: LabelNode!
+    fileprivate var backgroundNode: SCNNode!
     fileprivate var outlineNode: SCNNode!
     fileprivate var reloadOutline: Bool = false
 
@@ -150,9 +153,12 @@ import SpriteKit
     @objc override func setupNode() {
         super.setupNode()
 
+        backgroundNode = NodesFactory.createPlaneNode(width: 0, height: 0, image: ImageAsset.textEditBackground.image)
+        contentNode.addChildNode(backgroundNode)
+
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-
+        labelNode.renderingOrder = 1
         let defaultCharSpacing: CGFloat = 0.005
         let defaultTextSize: CGFloat = 0.02
         let defaultTextPadding = UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)
@@ -162,6 +168,7 @@ import SpriteKit
         contentNode.addChildNode(labelNode)
 
         hintNode = LabelNode()
+        hintNode.renderingOrder = 1
         hintNode.charSpacing = defaultCharSpacing
         hintNode.textColor = UIColor(white: 0.75, alpha: 0.75)
         hintNode.textPadding = defaultTextPadding
@@ -283,10 +290,12 @@ import SpriteKit
             labelNode.isHidden = false
             hintNode.isHidden = true
             labelNode.reload()
+            labelNode.readsFromDepthBuffer = false
         } else {
             labelNode.isHidden = true
             hintNode.isHidden = false
             hintNode.reload()
+            hintNode.readsFromDepthBuffer = false
         }
 
         if hasFocus && reloadOutline {

@@ -22,6 +22,7 @@ import android.text.InputFilter
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.reactlibrary.R
 import com.reactlibrary.utils.setTextAndMoveCursor
@@ -43,6 +44,9 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
         if (multiline) {
             editText.inputType = editText.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
         }
+
+        editText.imeOptions = EditorInfo.IME_ACTION_DONE
+
         setView(nativeEditText)
         setPositiveButton(android.R.string.ok) { _, _ ->
             onSubmitListener?.invoke(editText.text.toString())
@@ -57,6 +61,15 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
         }
         // show keyboard
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onSubmitListener?.invoke(editText.text.toString())
+                dialog.dismiss()
+                true
+            } else false
+        }
+
         return dialog
     }
 

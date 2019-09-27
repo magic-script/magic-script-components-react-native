@@ -71,24 +71,27 @@ class ViewController: UIViewController {
         createTextEdit([
             "debug": true,
             "alignment": "top-center",
+            "charLimit": 5,
             "width": 0.4,
             "height": 0.08,
             "text": "",
             "textSize": 0.04,
-            "textPadding": [0.01, 0.01, 0.01, 0.01],
+            "textPadding": [0.02, 0.02, 0.02, 0.02],
             "hint": "Password",
             "hintColor": [0.9,0.9,0.9,0.75],
-            "localPosition": [0, 0.6, 0]
+            "localPosition": [0, 0.6, 0],
+//            "password": true
         ], nodeId: "text_edit1")
 
         createTextEdit([
             "debug": true,
             "alignment": "top-center",
+            "charLimit": 5,
             "width": 0.4,
             "height": 0.6,
             "text": loremIpsum,
             "textSize": 0.04,
-            "textPadding": [0.01, 0.01, 0.01, 0.01],
+            "textPadding": [0.02, 0.02, 0.02, 0.02],
             "multiline": true,
             "localPosition": [0, 0.4, 0]
         ], nodeId: "text_edit2")

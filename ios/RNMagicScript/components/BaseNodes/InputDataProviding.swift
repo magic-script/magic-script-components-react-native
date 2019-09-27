@@ -18,6 +18,10 @@ import UIKit
 
 protocol InputDataProviding {
     var value: Any? { get set }
+    var placeholder: String? { get }
+    var charLimit: Int { get }
+    var multiline: Bool { get }
+    var password: Bool { get }
     var keyboardType: UIKeyboardType? { get }
     var textContentType: UITextContentType? { get }
 }

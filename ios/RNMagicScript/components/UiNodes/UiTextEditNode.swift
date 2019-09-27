@@ -18,11 +18,9 @@ import SceneKit
 import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
+    fileprivate var _text: String?
     @objc var text: String? {
-        get {
-            guard let value = labelNode.text, password else { return labelNode.text }
-            return String(Array<Character>(repeating: "•", count: value.count))
-        }
+        get { return _text }
         set { updateText(newValue) }
     }
     @objc var textColor: UIColor {
@@ -67,7 +65,7 @@ import SpriteKit
         set { labelNode.multiline = newValue; hintNode.multiline = newValue; setNeedsLayout() }
     }
     @objc var password: Bool = false {
-        didSet { setNeedsLayout() }
+        didSet { updateText(_text); setNeedsLayout() }
     }
     @objc var scrolling: Bool = false {
         didSet { setNeedsLayout() }
@@ -304,13 +302,17 @@ import SpriteKit
     }
 
     fileprivate func updateText(_ text: String?) {
-        guard let string = text, string.count > charLimit, charLimit > 0 else {
-            labelNode.text = text
-            setNeedsLayout()
-            return
+        if let string = text, string.count > charLimit, charLimit > 0 {
+            _text = String(string.prefix(charLimit))
+        } else {
+            _text = text
         }
 
-        labelNode.text = String(string.prefix(charLimit))
+        if let value = _text, password {
+            labelNode.text = String(Array<Character>(repeating: "•", count: value.count))
+        } else {
+            labelNode.text = _text
+        }
         setNeedsLayout()
     }
 
@@ -319,11 +321,10 @@ import SpriteKit
 
         outlineNode?.removeFromParentNode()
 
-        let outlineOffset: CGFloat = 0.024 * 0
         let radius: CGFloat = 0.02
         let thickness: CGFloat = 0.004
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
-        outlineNode = NodesFactory.createOutlineNode(width: size.width + outlineOffset, height: size.height + outlineOffset, cornerRadius: radius, thickness: thickness)
+        outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)
     }
 }
@@ -338,6 +339,10 @@ extension UiTextEditNode: InputDataProviding {
             }
         }
     }
+    var placeholder: String? { return hint }
+    // var charLimit: Int { get }
+    // var multiline: Bool { get }
+    // var password: Bool { get }
     var keyboardType: UIKeyboardType? {
         switch textEntry {
         case .email:

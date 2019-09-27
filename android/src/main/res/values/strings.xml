@@ -16,5 +16,5 @@
   -->
 
 <resources>
-    <string name="input_dialog_title">Input</string>
+    <string name="input_dialog_title_default">Input</string>
 </resources>

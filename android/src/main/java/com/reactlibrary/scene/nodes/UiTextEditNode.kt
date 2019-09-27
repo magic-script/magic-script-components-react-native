@@ -310,7 +310,12 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private fun showInputDialog(context: Context) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(R.string.input_dialog_title)
+        val title = if (hint.isNotEmpty()) {
+            hint
+        } else {
+            context.getString(R.string.input_dialog_title_default)
+        }
+        builder.setTitle(title)
         val multiline = properties.getBoolean(PROP_MULTILINE)
         val resId = if (multiline) R.layout.edit_text_2d_multiline else R.layout.edit_text_2d
         val nativeEditText = LayoutInflater.from(context).inflate(resId, null)

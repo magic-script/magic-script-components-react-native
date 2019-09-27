@@ -24,5 +24,5 @@ jobs:
         ./gradlew jacocoTestReport
     - uses: actions/upload-artifact@master
       with:
-        name: code-coverage-artifact
+        name: code-coverage-artifact-android
         path: android/build/reports/jacoco/jacocoTestReport/html

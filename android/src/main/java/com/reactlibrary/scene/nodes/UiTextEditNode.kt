@@ -16,25 +16,24 @@
 
 package com.reactlibrary.scene.nodes
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.InputFilter
-import android.text.InputType
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.widget.EditText
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.scene.nodes.views.InputDialogBuilder
+import com.reactlibrary.utils.FontParamsReader
+import com.reactlibrary.utils.FontProvider
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
@@ -309,57 +308,35 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun showInputDialog(context: Context) {
-        val builder = AlertDialog.Builder(context)
-        val title = if (hint.isNotEmpty()) {
-            hint
-        } else {
-            context.getString(R.string.input_dialog_title_default)
-        }
-        builder.setTitle(title)
         val multiline = properties.getBoolean(PROP_MULTILINE)
-        val resId = if (multiline) R.layout.edit_text_2d_multiline else R.layout.edit_text_2d
-        val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
+        val builder = InputDialogBuilder(context, multiline, isPassword())
 
-        val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
-        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        input.typeface = FontProvider.provideFont(context, fontParams?.weight, fontParams?.style)
+        val title = if (hint.isNotEmpty()) hint else context.getString(R.string.input_title_default)
+        builder.setTitle(title)
 
-        val visibleText = generateVisibleText(text)
-        if (isPassword()) {
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        }
-        if (multiline) {
-            input.inputType = input.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-        }
-        input.setTextAndMoveCursor(visibleText)
+        val inputText = generateVisibleText(text)
+        builder.setInputText(inputText)
+
         if (properties.containsKey(PROP_CHARACTERS_LIMIT)) {
-            val charLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
-            val lengthFilter = InputFilter.LengthFilter(charLimit)
-            input.filters = arrayOf(lengthFilter)
+            val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
+            builder.setMaxCharacters(charsLimit)
         }
-        builder.setView(nativeEditText)
 
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            val txt = input.text.toString()
-            if (txt != text) {
-                setText(txt)
-                textChangedListener?.invoke(txt)
+        builder.setOnSubmitListener { input ->
+            if (input != text) {
+                setText(input)
+                textChangedListener?.invoke(input)
             }
         }
-        builder.setNegativeButton(android.R.string.cancel, null)
 
-        val dialog = builder.create()
-        // show keyboard
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-        dialog.setOnDismissListener {
+        builder.setOnCloseListener {
             stopCursorAnimation()
             hideBorder()
             view.text_edit_underline.visibility = View.VISIBLE
         }
-        dialog.show()
-    }
 
+        builder.show()
+    }
 
     private fun generateVisibleText(input: String): String {
         return if (isPassword()) {

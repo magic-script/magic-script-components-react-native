@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -55,7 +56,11 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_TEXT_PADDING = "textPadding"
         const val PROP_SCROLLING = "scrolling"
         const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_TEXT_ENTRY_MODE = "textEntry"
 
+        const val ENTRY_MODE_NORMAL = "normal"
+        const val ENTRY_MODE_EMAIL = "email"
+        const val ENTRY_MODE_NUMERIC = "numeric"
         const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
         const val DEFAULT_SCROLLING = false // scrolling disabled
@@ -320,6 +325,18 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         if (properties.containsKey(PROP_CHARACTERS_LIMIT)) {
             val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
             builder.setMaxCharacters(charsLimit)
+        }
+
+        when (properties.getString(PROP_TEXT_ENTRY_MODE)) {
+            ENTRY_MODE_EMAIL -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.EMAIL)
+            }
+            ENTRY_MODE_NUMERIC -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.NUMERIC)
+            }
+            ENTRY_MODE_NORMAL -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.NORMAL)
+            }
         }
 
         builder.setOnSubmitListener { input ->

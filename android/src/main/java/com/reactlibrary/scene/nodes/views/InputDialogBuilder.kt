@@ -78,6 +78,21 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
         return this
     }
 
+    fun setEntryMode(mode: EntryMode) {
+        val inputType = when (mode) {
+            EntryMode.EMAIL -> {
+                InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            }
+            EntryMode.NUMERIC -> {
+                InputType.TYPE_CLASS_NUMBER
+            }
+            EntryMode.NORMAL -> {
+                InputType.TYPE_CLASS_TEXT
+            }
+        }
+        editText.inputType = editText.inputType or inputType
+    }
+
     fun setMaxCharacters(maxChars: Int): AlertDialog.Builder {
         val lengthFilter = InputFilter.LengthFilter(maxChars)
         editText.filters = arrayOf(lengthFilter)
@@ -93,4 +108,6 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
         this.onCloseListener = callback
         return this
     }
+
+    enum class EntryMode { NORMAL, EMAIL, NUMERIC }
 }

@@ -61,8 +61,8 @@ android {
                     events "passed", "skipped", "failed", "standardOut", "standardError"
                 }
             }
-            includeAndroidResources = true
         }
+        unitTests.includeAndroidResources = true
     }
 
     buildTypes {

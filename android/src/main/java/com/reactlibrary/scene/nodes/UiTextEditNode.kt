@@ -20,7 +20,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.InputType
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -112,6 +111,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         if (fontParams?.weight == null || fontParams.style == null) {
             container.text_edit.typeface = FontProvider.provideFont(context)
         }
+
+        container.text_edit.setSingleLine() // single line by default
 
         container.text_edit.setOnClickListener {
             val activity = ArViewManager.getActivityRef().get()

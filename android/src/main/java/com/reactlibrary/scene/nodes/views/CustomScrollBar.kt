@@ -21,8 +21,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.RectF
-import android.view.MotionEvent
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
@@ -52,26 +52,26 @@ class CustomScrollBar @JvmOverloads constructor(
     private var touchOffset = 0F
 
     fun touchCallback(event: MotionEvent) {
-        val action = event.getActionMasked()
-        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE){
+        val action = event.actionMasked
+        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
             return
         }
 
         val (begin, end) = thumbBounds()
         val thumbLength = end - begin
         val touchPos = getTouchPos(event)
-        
-        if (action == MotionEvent.ACTION_DOWN){
+
+        if (action == MotionEvent.ACTION_DOWN) {
             touchOffset = 0F
             val onThumb = inRange(touchPos, begin, end)
-            if (onThumb){
+            if (onThumb) {
                 val middle = begin + thumbLength / 2
                 touchOffset = touchPos - middle
             }
         }
-        
+
         val thumbTravel = length() - thumbLength
-        thumbPosition = (touchPos - touchOffset - thumbLength / 2 ) / thumbTravel
+        thumbPosition = (touchPos - touchOffset - thumbLength / 2) / thumbTravel
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -80,20 +80,20 @@ class CustomScrollBar @JvmOverloads constructor(
         drawThumb(canvas)
     }
 
-    private fun drawBackground(canvas: Canvas){
+    private fun drawBackground(canvas: Canvas) {
         val bgPaint = Paint(ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = getColor(context, R.color.scroll_bar_background)
         }
 
         val bgWidth = width() * backgroundSizeRatio
-        val padding = (width() - bgWidth) / 2 
+        val padding = (width() - bgWidth) / 2
         val bbox = makeBbox(0F, length(), padding, bgWidth + padding)
         val radius = bgWidth / 2
         canvas.drawRoundRect(bbox, radius, radius, bgPaint)
     }
 
-    private fun drawThumb(canvas: Canvas){
+    private fun drawThumb(canvas: Canvas) {
         val thumbPaint = Paint(ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = getColor(context, R.color.scroll_bar_thumb)
@@ -105,14 +105,14 @@ class CustomScrollBar @JvmOverloads constructor(
         canvas.drawRoundRect(bbox, radius, radius, thumbPaint)
     }
 
-    private fun thumbBounds(): Pair<Float, Float>{
+    private fun thumbBounds(): Pair<Float, Float> {
         val thumbLength = (length() * thumbSize).coerceAtLeast(width())
         val offset = (length() - thumbLength) * thumbPosition
         return Pair(offset, offset + thumbLength)
     }
 
     private fun length(): Float {
-        return if (isVertical){
+        return if (isVertical) {
             this.height.toFloat()
         } else {
             this.width.toFloat()
@@ -120,7 +120,7 @@ class CustomScrollBar @JvmOverloads constructor(
     }
 
     private fun width(): Float {
-        return if (isVertical){
+        return if (isVertical) {
             this.width.toFloat()
         } else {
             this.height.toFloat()
@@ -128,25 +128,25 @@ class CustomScrollBar @JvmOverloads constructor(
     }
 
     private fun getTouchPos(event: MotionEvent): Float {
-        return if (isVertical){
+        return if (isVertical) {
             event.getY()
         } else {
             event.getX()
         }
     }
 
-    private fun makeBbox(lBegin: Float, lEnd: Float, wBegin: Float, wEnd: Float ): RectF {
-        return if (isVertical){
+    private fun makeBbox(lBegin: Float, lEnd: Float, wBegin: Float, wEnd: Float): RectF {
+        return if (isVertical) {
             RectF(wBegin, lBegin, wEnd, lEnd)
         } else {
             RectF(lBegin, wBegin, lEnd, wEnd)
         }
-    } 
+    }
 
-    private fun inRange(pos: Float, begin: Float, end: Float): Boolean{
+    private fun inRange(pos: Float, begin: Float, end: Float): Boolean {
         // Following line breaks Kotlin syntax highlight 
         // in Visual Studio Code, so it's placed at the 
         // end of file :)
-        return (pos >= begin) && (pos <=end) 
+        return (pos >= begin) && (pos <= end)
     }
 }

@@ -24,9 +24,9 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaulDouble
 import com.reactlibrary.utils.putDefaulString
-import com.reactlibrary.utils.Utils
 
 class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = true) {
@@ -56,7 +56,7 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
 
     override fun provideView(context: Context): View {
         val view = CustomScrollBar(context)
-        view.setOnTouchListener{ _: View, event: MotionEvent ->
+        view.setOnTouchListener { _: View, event: MotionEvent ->
             view.touchCallback(event)
             scrollChangeListener?.invoke(view.thumbPosition)
             true
@@ -103,8 +103,7 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
     private fun setOrientation(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
             val valueString = props.getString(PROP_ORIENTATION)
-            val value = if ( valueString==ORIENTATION_VERTICAL ){ true } 
-                else { false }
+            val value = valueString != ORIENTATION_HORIZONTAL
             (view as CustomScrollBar).isVertical = value
         }
     }

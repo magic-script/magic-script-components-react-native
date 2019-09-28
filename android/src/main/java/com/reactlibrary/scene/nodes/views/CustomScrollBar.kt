@@ -71,7 +71,9 @@ class CustomScrollBar @JvmOverloads constructor(
         }
 
         val thumbTravel = length() - thumbLength
-        thumbPosition = (touchPos - touchOffset - thumbLength / 2) / thumbTravel
+        if (thumbTravel > 0) {
+            thumbPosition = (touchPos - touchOffset - thumbLength / 2) / thumbTravel
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

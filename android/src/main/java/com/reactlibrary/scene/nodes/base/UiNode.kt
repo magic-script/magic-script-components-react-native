@@ -120,7 +120,7 @@ abstract class UiNode(
             onViewClick()
             clickListener?.invoke()
         }
-        build calls applyProperties, so we need to initialize the view before
+        // build calls applyProperties, so we need to initialize the view before
     }
 
     private fun attachView() {

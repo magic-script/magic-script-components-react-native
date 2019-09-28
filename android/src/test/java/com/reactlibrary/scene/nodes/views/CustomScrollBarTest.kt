@@ -18,15 +18,14 @@ package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
-import android.graphics.Color
+import android.view.MotionEvent
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +34,6 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class CustomScrollBarTest {
 
-    private var mockCanvas: Canvas = mock()
     private lateinit var context: Context
     private lateinit var scrollBar: CustomScrollBar
 
@@ -46,20 +44,32 @@ class CustomScrollBarTest {
     }
 
     @Test
-    fun shouldRedrawAfterSettingValue() {
-
+    fun onDrawShouldCallDrawRoundRect() {
         val onDraw = scrollBar.javaClass.getDeclaredMethod("onDraw", Canvas::class.java)
+        val canvas: Canvas = mock()
         onDraw.isAccessible = true
-        val result = onDraw.invoke(scrollBar, mockCanvas)
-        // verify(saveAccountInteractor).save(account)
-        // System.err.println(result)
+        onDraw.invoke(scrollBar, canvas)
+        verify(canvas, times(2)).drawRoundRect(any(), any(), any(), any())
+    }
 
+    @Test
+    fun touchCallbackShouldSetThumbPosition() {
+        val event: MotionEvent = mock()
+        whenever(event.getActionMasked()).thenReturn(MotionEvent.ACTION_DOWN)
+        scrollBar.touchCallback(event)
+        verify(scrollBar).thumbPosition = any()
+    }
 
-        // scrollBar.value = 99F
+    @Test
+    fun shouldRedrawAfterSettingThumbPosition() {
+        scrollBar.thumbPosition = 99F
+        verify(scrollBar).invalidate()
+    }
 
-        // @NonNull RectF rect, float rx, float ry, @NonNull Paint paint
-
-        verify(mockCanvas, times(2)).drawRoundRect(any<RectF>(), any<Float>(), any<Float>(), any<Paint>())
+    @Test
+    fun shouldRedrawAfterSettingThumbSize() {
+        scrollBar.thumbSize = 99F
+        verify(scrollBar).invalidate()
     }
 
 }

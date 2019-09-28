@@ -49,9 +49,9 @@ class CustomScrollBar @JvmOverloads constructor(
 
     var isVertical = true
 
-    var touchOffset = 0F
+    private var touchOffset = 0F
 
-    fun onTouchCallback(event: MotionEvent) {
+    fun touchCallback(event: MotionEvent) {
         val action = event.getActionMasked()
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE){
             return

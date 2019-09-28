@@ -19,17 +19,11 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
-import com.reactlibrary.utils.FontProvider
-import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.putDefaulDouble
 import com.reactlibrary.utils.putDefaulString
 import com.reactlibrary.utils.Utils
@@ -67,7 +61,7 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
     override fun provideView(context: Context): View {
         val view = CustomScrollBar(context)
         view.setOnTouchListener{ _: View, event: MotionEvent ->
-            view.onTouchCallback(event)
+            view.touchCallback(event)
             true
         }
         return view

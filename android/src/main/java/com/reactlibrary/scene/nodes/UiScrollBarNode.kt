@@ -43,25 +43,22 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         const val ORIENTATION_HORIZONTAL = "horizontal"
     }
 
-    var toggleChangedListener: ((on: Boolean) -> Unit)? = null
+    var scrollChangeListener: ((on: Float) -> Unit)? = null
 
     init {
         // set default properties values
-        properties.putDefaulDouble(PROP_WIDTH, 0.03359 * 8)
-        properties.putDefaulDouble(PROP_HEIGHT, 0.03359 * 8)
+        properties.putDefaulDouble(PROP_WIDTH, 0.04)
+        properties.putDefaulDouble(PROP_HEIGHT, 1.2)
         properties.putDefaulDouble(PROP_THUMB_POSITION, 0.0)
         properties.putDefaulDouble(PROP_THUMB_SIZE, 0.0)
         properties.putDefaulString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
-    // fun onTouchCallback(v: View, event: MotionEvent): Boolean {
-        // throw Exception("Hi There!")
-    // }
-    
     override fun provideView(context: Context): View {
         val view = CustomScrollBar(context)
         view.setOnTouchListener{ _: View, event: MotionEvent ->
             view.touchCallback(event)
+            scrollChangeListener?.invoke(view.thumbPosition)
             true
         }
         return view

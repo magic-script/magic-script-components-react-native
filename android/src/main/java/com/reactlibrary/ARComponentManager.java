@@ -47,7 +47,7 @@ import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
-import com.reactlibrary.scene.nodes.video.UiVideoNode;
+import com.reactlibrary.scene.nodes.video.VideoNode;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -145,7 +145,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiVideoNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new VideoNode(props, context), nodeId));
     }
 
     @ReactMethod

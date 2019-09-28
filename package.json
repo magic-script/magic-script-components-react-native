@@ -22,20 +22,17 @@
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^3.2.0",
-    "react-native": ">=0.59.8",
+    "react-native": "0.60.5",
     "babel-jest": "^24.9.0",
     "jest": "^24.9.0",
     "react-test-renderer": "16.8.6"
   },
   "peerDependencies": {
-    "react-native": ">=0.59.8"
+    "react-native": "0.60.5"
   },
   "jest": {
     "preset": "react-native",
     "clearMocks": true,
-    "collectCoverageFrom": [
-      "components/platform/platform-factory.js"
-    ],
     "modulePaths": [
       "components/utils"
     ]

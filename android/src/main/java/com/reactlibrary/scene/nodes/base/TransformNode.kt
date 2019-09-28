@@ -67,7 +67,7 @@ abstract class TransformNode(
     val contentNode = Node()
 
     /**
-     * Alignment used to position a Renderable or children nodes
+     * Alignment used to position a Renderable or [contentNode]
      */
     var horizontalAlignment: Alignment.HorizontalAlignment = Alignment.HorizontalAlignment.CENTER
         private set
@@ -76,8 +76,7 @@ abstract class TransformNode(
         private set
 
     /**
-     * Returns true if already started loading the renderable,
-     * otherwise false
+     * Returns true if already started loading the renderable, otherwise false
      * (loading a renderable is an asynchronous operation)
      */
     var renderableRequested = false
@@ -179,22 +178,25 @@ abstract class TransformNode(
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
-        if (useContentNodeAlignment) {
-            timeSinceLastAlignment += frameTime.deltaSeconds
-            if (timeSinceLastAlignment >= ALIGNMENT_INTERVAL) {
-                timeSinceLastAlignment = 0F
-                val currentBounding = getBounding()
-                if (!Bounding.equalInexact(currentBounding, bounding)) {
-                    // Refreshing alignment from a loop, because:
-                    // - we don't know node size at beginning,
-                    // - node size may have changed,
-                    // - immediately after attaching a renderable the collision shape
-                    // of a node returns wrong size (default) as it's probably calculated
-                    // asynchronously
-                    applyAlignment()
-                }
-                bounding = currentBounding
+
+        if (!useContentNodeAlignment) {
+            return
+        }
+
+        timeSinceLastAlignment += frameTime.deltaSeconds
+        if (timeSinceLastAlignment >= ALIGNMENT_INTERVAL) {
+            timeSinceLastAlignment = 0F
+            val currentBounding = getBounding()
+            if (!Bounding.equalInexact(currentBounding, bounding)) {
+                // Refreshing alignment from a loop, because:
+                // - we don't know node size at beginning,
+                // - node size may have changed,
+                // - immediately after attaching a renderable the collision shape
+                // of a node returns wrong size (default) as it's probably calculated
+                // asynchronously
+                applyAlignment()
             }
+            bounding = currentBounding
         }
     }
 
@@ -275,7 +277,7 @@ abstract class TransformNode(
         }
     }
 
-    private fun setLocalScale(props: Bundle) {
+    protected open fun setLocalScale(props: Bundle) {
         val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
         if (localScale != null) {
             this.localScale = localScale

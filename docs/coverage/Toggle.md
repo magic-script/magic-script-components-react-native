@@ -3,7 +3,6 @@
 
 **Inherited:**
 - localPosition
-- alignment
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~

@@ -12,24 +12,38 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
-#import <UIKit/UIKit.h>
-#import <SceneKit/SceneKit.h>
-#import <ARKit/ARKit.h>
+import Foundation
 
-@interface RCTARView : UIView
+@objc public enum ScrollBarVisibility: Int {
+    case always
+    case auto
+    case off
 
-+ (RCTARView*) current;
-+ (void) setCurrent:(RCTARView*)val;
+    public typealias RawValue = String
 
-@property (nonatomic, strong) ARSCNView *arView;
+    public var rawValue: RawValue {
+        switch self {
+        case .always:
+            return "always"
+        case .auto:
+            return "auto"
+        case .off:
+            return "off"
+        }
+    }
 
-@property (nonatomic, assign) BOOL debug;
-@property (nonatomic, assign) BOOL rendersContinuously;
-
-- (void)pause;
-- (void)resume;
-- (void)reset;
-
-@end
+    public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "always":
+            self = .always
+        case "auto":
+            self = .auto
+        case "off":
+            self = .off
+        default:
+            return nil
+        }
+    }
+}

@@ -19,6 +19,7 @@
 #import <SceneKit/SceneKit.h>
 
 @class UiNode;
+@class UiVideoNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -26,5 +27,6 @@
 - (void)onPressEventReceived:(UiNode *)sender;
 - (void)onClickEventReceived:(UiNode *)sender;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
+- (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
 
 @end

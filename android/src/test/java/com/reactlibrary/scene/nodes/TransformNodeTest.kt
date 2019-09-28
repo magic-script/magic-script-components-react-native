@@ -32,7 +32,6 @@ import org.robolectric.RobolectricTestRunner
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
  * does not require native React's resources.
- * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {

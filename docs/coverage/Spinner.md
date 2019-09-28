@@ -3,7 +3,6 @@
 
 **Inherited:**
 - localPosition
-- alignment
 - localScale
 - ~~localRotation~~
 - ~~enabled~~
@@ -11,3 +10,5 @@
 
 **Custom:**
 - height
+- determinate
+- value

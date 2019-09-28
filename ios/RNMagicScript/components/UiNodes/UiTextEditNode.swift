@@ -18,40 +18,107 @@ import SceneKit
 import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
-
-    static fileprivate let defaultSize: CGSize = CGSize(width: 0.05, height: 0.02)
-
     @objc var text: String? {
-        didSet { labelNode.text = text }
+        get {
+            guard let value = labelNode.text, password else { return labelNode.text }
+            return String(Array<Character>(repeating: "•", count: value.count))
+        }
+        set { updateText(newValue) }
     }
-    @objc var textColor: UIColor = UIColor.white {
-        didSet { labelNode.fontColor = textColor }
+    @objc var textColor: UIColor {
+        get { return labelNode.textColor }
+        set { labelNode.textColor = newValue }
     }
-    @objc var textSize: CGFloat = 0.02 {
-        didSet { reloadNeeded = true }
+    @objc var textSize: CGFloat {
+        get { return labelNode.textSize }
+        set { labelNode.textSize = newValue; hintNode.textSize = newValue; setNeedsLayout() }
     }
-//    @objc var textAlignment: HorizontalTextAlignment {
-//        get { return labelNode.textAlignment }
-//        set { labelNode.textAlignment = newValue }
-//    }
-    @objc var width: CGFloat = 0 {
-        didSet { reloadNeeded = true }
+    @objc var charLimit: Int = 0 {
+        didSet { updateText(labelNode.text) }
     }
-    @objc var height: CGFloat = 0 {
-        didSet { reloadNeeded = true }
+    @objc var charSpacing: CGFloat {
+        get { return labelNode.charSpacing }
+        set { labelNode.charSpacing = newValue; hintNode.charSpacing = newValue; setNeedsLayout() }
+    }
+    @objc var lineSpacing: CGFloat {
+        get { return labelNode.lineSpacing }
+        set { labelNode.lineSpacing = newValue; hintNode.lineSpacing = newValue; setNeedsLayout() }
+    }
+    @objc var textAlignment: HorizontalTextAlignment {
+        get { return labelNode.textAlignment }
+        set { labelNode.textAlignment = newValue; hintNode.textAlignment = newValue; setNeedsLayout() }
+    }
+    // @objc var cursorEdgeScrollMode: CursorEdgeScrollMode
+    @objc var textPadding: UIEdgeInsets {
+        // Defaults to half the text size unless explicitly set.
+        get { return labelNode.textPadding }
+        set { labelNode.textPadding = newValue; hintNode.textPadding = newValue; setNeedsLayout() }
+    }
+    @objc var hint: String? {
+        get { return hintNode.text }
+        set { hintNode.text = newValue; setNeedsLayout() }
+    }
+    @objc var hintColor: UIColor {
+        get { return hintNode.textColor }
+        set { hintNode.textColor = newValue; setNeedsLayout() }
+    }
+    @objc var multiline: Bool {
+        get { return labelNode.multiline }
+        set { labelNode.multiline = newValue; hintNode.multiline = newValue; setNeedsLayout() }
+    }
+    @objc var password: Bool = false {
+        didSet { setNeedsLayout() }
+    }
+    @objc var scrolling: Bool = false {
+        didSet { setNeedsLayout() }
+    }
+    @objc var textEntry: TextEntryMode = .normal
+    @objc var scrollBarVisibility: ScrollBarVisibility = .auto
+    fileprivate var _scrollSpeed: CGFloat = 0.5
+    @objc var scrollSpeed: CGFloat {
+        get { return _scrollSpeed }
+        set { _scrollSpeed = max(0.0, newValue) }
+    }
+    fileprivate var _scrollValue: CGFloat = 0.0
+    @objc var scrollValue: CGFloat {
+        get { return _scrollValue }
+        set { _scrollValue = max(0.0, min(newValue, 1.0)) }
+    }
+    @objc var style: FontStyle {
+        get { return labelNode.fontStyle }
+        set { labelNode.fontStyle = newValue; hintNode.fontStyle = newValue; setNeedsLayout() }
+    }
+    @objc var weight: FontWeight {
+       get { return labelNode.fontWeight }
+        set { labelNode.fontWeight = newValue; hintNode.fontWeight = newValue; setNeedsLayout() }
+    }
+    @objc var tracking: Int {
+        get { return labelNode.tracking }
+        set { labelNode.tracking = newValue; setNeedsLayout() }
+    }
+    @objc var allCaps: Bool {
+        get { return labelNode.allCaps }
+        set { labelNode.allCaps = newValue; hintNode.allCaps = newValue; setNeedsLayout() }
+    }
+    @objc var width: CGFloat {
+        get { return labelNode.boundsSize.width }
+        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true; setNeedsLayout() }
+    }
+    @objc var height: CGFloat {
+        get { return labelNode.boundsSize.height }
+        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true; setNeedsLayout() }
     }
 
-    fileprivate var sprite: SKScene!
-    fileprivate var labelNode: SKLabelNode!
-    fileprivate var underlineNode: SKShapeNode!
-    fileprivate var outlineNode: SCNNode?
-    fileprivate var reloadNeeded: Bool = true
+    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
+    @objc public var onTextChanged: ((_ sender: UiNode, _ text: String) -> (Void))?
 
-    deinit {
-    }
+    fileprivate var labelNode: LabelNode!
+    fileprivate var hintNode: LabelNode!
+    fileprivate var outlineNode: SCNNode!
+    fileprivate var reloadOutline: Bool = false
 
     @objc override var canHaveFocus: Bool {
-        return true
+        return enabled
     }
 
     @objc override func enterFocus() {
@@ -59,13 +126,7 @@ import SpriteKit
         guard hasFocus else { return }
 
         if outlineNode == nil {
-            let sizeInMeters = getPrefferedSize()
-            let margin: CGFloat = 0.003
-            let radius: CGFloat = 0.5 * min(sizeInMeters.width, sizeInMeters.height) + margin
-            let outlineWidth = sizeInMeters.width + ((sizeInMeters.width > sizeInMeters.height) ? 2 * radius : 2 * margin)
-            let outlineHeight = sizeInMeters.height + ((sizeInMeters.height > sizeInMeters.width) ? 2 * radius : 2 * margin)
-            outlineNode = NodesFactory.createOutlineNode(width: outlineWidth, height: outlineHeight, cornerRadius: radius)
-            contentNode.insertChildNode(outlineNode!, at: 0)
+            reloadOutlineNode()
         }
 
         outlineNode?.isHidden = false
@@ -78,79 +139,33 @@ import SpriteKit
 
     @objc override func setupNode() {
         super.setupNode()
-        reload()
-    }
 
-    fileprivate func createSpriteScene(size: CGSize, scale: CGFloat) -> SKScene {
-        // Create SpriteKit scene
-        let scene = SKScene(size: size)
-        scene.backgroundColor = UIColor.clear
-        scene.setScale(scale)
+        assert(labelNode == nil, "Node must not be initialized!")
+        labelNode = LabelNode()
 
-        // Add underline node
-        let lineWidth: CGFloat = 5
-        let underlineY: CGFloat = scene.size.height - lineWidth
-        let linePath = UIBezierPath()
-        linePath.move(to: CGPoint(x: 0, y: 0))
-        linePath.addLine(to: CGPoint(x: scene.size.width, y: 0))
-        underlineNode = SKShapeNode(path: linePath.cgPath)
-        underlineNode.position = CGPoint(x: 0, y: underlineY)
-        underlineNode.strokeColor = UIColor.white
-        underlineNode.lineWidth = lineWidth
-        scene.addChild(underlineNode)
+        let defaultCharSpacing: CGFloat = 0.005
+        let defaultTextSize: CGFloat = 0.02
+        let defaultTextPadding = UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)
+        labelNode.charSpacing = defaultCharSpacing
+        labelNode.textPadding = defaultTextPadding
+        labelNode.textSize = defaultTextSize
+        contentNode.addChildNode(labelNode)
 
-        // Add label node
-        let topMargin: CGFloat = 2 * lineWidth
-        let bottomMargin: CGFloat = topMargin + 3 * lineWidth
-        let labelBottom: CGFloat = underlineY - bottomMargin
-        labelNode = SKLabelNode(text: text)
-        labelNode.fontColor = textColor
-        labelNode.fontSize = min(0.5 * Measures.pixels(from: textSize), scene.size.height - (topMargin + bottomMargin))
-        labelNode.horizontalAlignmentMode = .left
-        labelNode.position = CGPoint(x: 0, y: labelBottom)
-        labelNode.preferredMaxLayoutWidth = scene.size.width
-        labelNode.yScale = -1
-        scene.addChild(labelNode)
-
-        return scene
-    }
-
-    fileprivate func getPrefferedSize() -> CGSize {
-        let width: CGFloat = (self.width > 0) ? self.width : UiTextEditNode.defaultSize.width
-        let height: CGFloat = (self.height > 0) ? self.height : UiTextEditNode.defaultSize.height
-        return CGSize(width: width, height: height)
-    }
-
-    @objc func reload() {
-        guard reloadNeeded else { return }
-        reloadNeeded = false
-
-        let sizeInMeters = getPrefferedSize()
-
-        let maxSceneSize: CGFloat = 2048
-        let widthInPixels = Measures.pixels(from: sizeInMeters.width)
-        let heightInPixels = Measures.pixels(from: sizeInMeters.height)
-        let scaleFactor: CGFloat = min(min(maxSceneSize / widthInPixels, maxSceneSize / heightInPixels), 1)
-        let sizeInPixels = CGSize(width: ceil(scaleFactor * widthInPixels), height: ceil(scaleFactor * heightInPixels))
-        sprite = createSpriteScene(size: sizeInPixels, scale: 1.0 / scaleFactor)
-
-        if let plane = contentNode?.geometry as? SCNPlane {
-            plane.width = width
-            plane.height = height
-            plane.firstMaterial?.diffuse.contents = sprite
-        } else {
-//            contentNode?.removeFromParentNode()
-            let planeGeometry = SCNPlane(width: width, height: height)
-            planeGeometry.firstMaterial?.lightingModel = .constant
-            planeGeometry.firstMaterial?.diffuse.contents = sprite
-            planeGeometry.firstMaterial?.isDoubleSided = true
-//            contentNode = SCNNode(geometry: planeGeometry)
-//            addChildNode(contentNode)
-        }
+        hintNode = LabelNode()
+        hintNode.charSpacing = defaultCharSpacing
+        hintNode.textColor = UIColor(white: 0.75, alpha: 0.5)
+        hintNode.textPadding = defaultTextPadding
+        hintNode.textSize = defaultTextSize
+        contentNode.addChildNode(hintNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        // 'charLimit' prop must be updated prior to 'text' prop
+        if let charLimit = Convert.toInt(props["charLimit"]) {
+            self.charLimit = charLimit
+        }
 
         if let text = Convert.toString(props["text"]) {
             self.text = text
@@ -164,6 +179,81 @@ import SpriteKit
             self.textSize = textSize
         }
 
+        if let textAlignment = Convert.toHorizontalTextAlignment(props["textAlignment"]) {
+            self.textAlignment = textAlignment
+        }
+
+        if let charSpacing = Convert.toCGFloat(props["charSpacing"]) {
+            self.charSpacing = charSpacing
+        }
+
+        if let lineSpacing = Convert.toCGFloat(props["lineSpacing"]) {
+            self.lineSpacing = lineSpacing
+        }
+
+        if let textPadding = Convert.toPadding(props["textPadding"]) {
+            self.textPadding = textPadding
+        }
+
+        if let hint = Convert.toString(props["hint"]) {
+            self.hint = hint
+        }
+
+        if let hintColor = Convert.toColor(props["hintColor"]) {
+            self.hintColor = hintColor
+        }
+
+        if let multiline = Convert.toBool(props["multiline"]) {
+            self.multiline = multiline
+        }
+
+        if let password = Convert.toBool(props["password"]) {
+            self.password = password
+        }
+
+        if let scrolling = Convert.toBool(props["scrolling"]) {
+            self.scrolling = scrolling
+        }
+
+        if let textEntry = Convert.toTextEntryMode(props["textEntry"]) {
+            self.textEntry = textEntry
+        }
+
+        if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {
+            self.scrollBarVisibility = scrollBarVisibility
+        }
+
+        if let scrollSpeed = Convert.toCGFloat(props["scrollSpeed"]) {
+            self.scrollSpeed = scrollSpeed
+        }
+
+        if let scrollValue = Convert.toCGFloat(props["scrollValue"]) {
+            self.scrollValue = scrollValue
+        }
+
+        if let fontParams = props["fontParams"] as? [String: Any] {
+            if let style = Convert.toFontStyle(fontParams["style"]) {
+                self.style = style
+            }
+
+            if let weight = Convert.toFontWeight(fontParams["weight"]) {
+                self.weight = weight
+            }
+
+            if let fontSize = Convert.toCGFloat(fontParams["fontSize"]) {
+                // fontSize is the same as textSize
+                self.textSize = fontSize
+            }
+
+            if let tracking = Convert.toInt(fontParams["tracking"]) {
+                self.tracking = tracking
+            }
+
+            if let allCaps = Convert.toBool(fontParams["allCaps"]) {
+                self.allCaps = allCaps
+            }
+        }
+
         if let width = Convert.toCGFloat(props["width"]) {
             self.width = width
         }
@@ -171,8 +261,103 @@ import SpriteKit
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
         }
+    }
 
-        reload()
+    @objc override func _calculateSize() -> CGSize {
+        return CGSize(width: width, height: height)
+    }
+
+    @objc override func updateLayout() {
+        let hasText: Bool = (text?.count ?? 0 > 0)
+        if hasText {
+            labelNode.isHidden = false
+            hintNode.isHidden = true
+            labelNode.reload()
+        } else {
+            labelNode.isHidden = true
+            hintNode.isHidden = false
+            hintNode.reload()
+        }
+
+        if hasFocus && reloadOutline {
+            reloadOutline = false
+            reloadOutlineNode()
+        }
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
+        hintNode.setDebugMode(debug)
+    }
+
+    fileprivate func updateText(_ text: String?) {
+        guard let string = text, string.count > charLimit, charLimit > 0 else {
+            labelNode.text = text
+            setNeedsLayout()
+            return
+        }
+
+        labelNode.text = String(string.prefix(charLimit))
+        setNeedsLayout()
+    }
+
+    fileprivate func reloadOutlineNode() {
+        let size = getSize()
+
+        outlineNode?.removeFromParentNode()
+
+        let roundness: CGFloat = 0.5
+        let minSize: CGFloat = min(size.width, size.height)
+        let outlineOffset: CGFloat = 0.3 * minSize
+        let radius: CGFloat = 0.5 * minSize * roundness
+        let thickness: CGFloat = 0.05 * minSize
+        guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
+        outlineNode = NodesFactory.createOutlineNode(width: size.width + outlineOffset, height: size.height + outlineOffset, cornerRadius: radius, thickness: thickness)
+        contentNode.addChildNode(outlineNode)
     }
 }
 
+extension UiTextEditNode: InputDataProviding {
+    var value: Any? {
+        get { return text }
+        set {
+            if let newText = newValue as? String {
+                text = newText
+                layoutIfNeeded()
+            }
+        }
+    }
+    var keyboardType: UIKeyboardType? {
+        switch textEntry {
+        case .email:
+            return UIKeyboardType.emailAddress
+        case .none:
+            return nil
+        case .normal:
+            return UIKeyboardType.default
+        case .numeric:
+            return UIKeyboardType.numberPad
+        case .url:
+            return UIKeyboardType.URL
+        }
+    }
+    var textContentType: UITextContentType? {
+        if password {
+            return UITextContentType.password
+        }
+
+        switch textEntry {
+        case .email:
+            return UITextContentType.emailAddress
+        case .none:
+            return nil
+        case .normal:
+            return nil
+        case .numeric:
+            return nil
+        case .url:
+            return UITextContentType.URL
+        }
+    }
+}

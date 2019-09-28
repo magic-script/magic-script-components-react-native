@@ -130,7 +130,7 @@ abstract class UiNode(
                 .setSource(context, R.raw.android_view) // using custom material to disable back side
                 .setView(context, view)
 
-        if (useContentNodeAlignment) { // use default renderable alignment
+        if (useContentNodeAlignment) {
             builder.setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
             builder.setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
         } else {

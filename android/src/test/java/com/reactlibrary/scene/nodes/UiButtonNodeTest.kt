@@ -24,6 +24,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
@@ -32,11 +34,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
  * does not require native React's resources.
- * [JavaOnlyMap] was not available in the initial versions of React
  */
 @RunWith(RobolectricTestRunner::class)
 class UiButtonNodeTest {
@@ -112,6 +112,17 @@ class UiButtonNodeTest {
         node.build()
 
         verify(viewSpy).roundnessFactor = roundness.toFloat()
+    }
+
+    @Test
+    fun shouldNotChangeHardcodedAlignment() {
+        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "bottom-right")
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
+        assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {

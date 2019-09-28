@@ -203,4 +203,16 @@ RCT_EXPORT_METHOD(addOnToggleChangedEventHandler:(NSString *)nodeId) {
     }
 }
 
+RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnVideoPreparedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiVideoNode class]]) {
+        UiVideoNode *video = (UiVideoNode *)node;
+        video.onVideoPrepared = ^(UiVideoNode *sender, NSString *videoURL) {
+            ARLog(@"video onPrepared");
+            [[AREventsManager instance] onVideoPreparedEventReceived:sender videoURL: videoURL];
+        };
+    }
+}
+
 @end

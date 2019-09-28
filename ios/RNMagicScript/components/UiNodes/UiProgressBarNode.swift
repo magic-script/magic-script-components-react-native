@@ -72,7 +72,6 @@ import SceneKit
         let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
         backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
 
-        assert(progressGeometry == nil, "Node must not be initialized!")
         progressGeometry = SCNPlane(width: width, height: height)
         progressGeometry.firstMaterial?.lightingModel = .constant
         progressGeometry.firstMaterial?.isDoubleSided = true
@@ -133,7 +132,7 @@ import SceneKit
         backgroundGeometry.cornerRadius = 0.5 * size.height
 
         let delta = max - min
-        let progress: CGFloat = delta > 0 ? (value - min) / delta : 0
+        let progress: CGFloat = (delta > 0.0001) ? (value - min) / delta : 0
 
         if progressImage == nil {
             progressImage = UIImage.gradientImage(withSize: CGSize(width: 32.0, height: 32.0), colors: [beginColor.cgColor, endColor.cgColor])

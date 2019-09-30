@@ -68,6 +68,9 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
         const val DEFAULT_SCROLLING = false // scrolling disabled
+        const val SCROLLBAR_VISIBILITY_ALWAYS = "always"
+        const val SCROLLBAR_VISIBILITY_AUTO = "auto"
+        const val SCROLLBAR_VISIBILITY_OFF = "off"
         val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
 
         private const val CURSOR_BLINK_INTERVAL = 400L // in ms
@@ -104,6 +107,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
         if (!properties.containsKey(PROP_ALIGNMENT)) {
             properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        }
+
+        if (!properties.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
+            properties.putString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
         }
     }
 
@@ -310,8 +317,19 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private fun setScrollBarVisibility(props: Bundle) {
         if (props.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
-            val visible = props.getBoolean(PROP_SCROLLBAR_VISIBILITY)
-            view.sv_text_edit.isVerticalScrollBarEnabled = visible
+            when (props.getString(PROP_SCROLLBAR_VISIBILITY)) {
+                SCROLLBAR_VISIBILITY_AUTO -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = true
+                    view.sv_text_edit.isScrollbarFadingEnabled = true
+                }
+                SCROLLBAR_VISIBILITY_ALWAYS -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = true
+                    view.sv_text_edit.isScrollbarFadingEnabled = false
+                }
+                SCROLLBAR_VISIBILITY_OFF -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = false
+                }
+            }
         }
     }
 

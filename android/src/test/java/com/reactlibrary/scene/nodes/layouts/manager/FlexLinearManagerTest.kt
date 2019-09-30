@@ -58,26 +58,13 @@ class FlexLinearManagerTest {
     }
 
     @Test
-    fun `should correctly position node`() {
+    fun `should position child node`() {
 
         val children: List<Node> = listOf(Node())
         val bound = Bounding(0F, 0F, 1F, 1F)
         val bounds: Map<Int, Bounding> = mapOf(0 to bound, 1 to bound)
 
         linearManager.layoutChildren(children, bounds)
-
-        // val position0 = children.get(0).localPosition
-
         assertNotEquals(Vector3(0F, 0F, 0F), children.get(0).localPosition)
-        // assertNotEquals(Vector3(0F, 0F, 0F), position1)
-
-        // System.err.println(position.x.toString() + " " + position.y.toString())
-
-        // val captor0 = argumentCaptor<Vector3>()
-        // val captor1 = argumentCaptor<Vector3>()
-
-        // verify(children.get(0)).localPosition != Vector3(0F, 0F, 0F)
-        // verify(children.get(1)).localPosition != Vector3(0F, 0F, 0F)
-
     }
 }

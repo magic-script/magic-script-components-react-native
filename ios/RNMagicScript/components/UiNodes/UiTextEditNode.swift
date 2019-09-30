@@ -18,11 +18,9 @@ import SceneKit
 import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
+    fileprivate var _text: String?
     @objc var text: String? {
-        get {
-            guard let value = labelNode.text, password else { return labelNode.text }
-            return String(Array<Character>(repeating: "•", count: value.count))
-        }
+        get { return _text }
         set { updateText(newValue) }
     }
     @objc var textColor: UIColor {
@@ -67,7 +65,7 @@ import SpriteKit
         set { labelNode.multiline = newValue; hintNode.multiline = newValue; setNeedsLayout() }
     }
     @objc var password: Bool = false {
-        didSet { setNeedsLayout() }
+        didSet { updateText(_text); setNeedsLayout() }
     }
     @objc var scrolling: Bool = false {
         didSet { setNeedsLayout() }
@@ -102,11 +100,25 @@ import SpriteKit
     }
     @objc var width: CGFloat {
         get { return labelNode.boundsSize.width }
-        set { labelNode.boundsSize = CGSize(width: newValue, height: height); reloadOutline = true; setNeedsLayout() }
+        set {
+            (backgroundNode.geometry as? SCNPlane)?.width = newValue
+            let size = CGSize(width: newValue, height: height)
+            labelNode.boundsSize = size
+            hintNode.boundsSize = size
+            reloadOutline = true
+            setNeedsLayout()
+        }
     }
     @objc var height: CGFloat {
         get { return labelNode.boundsSize.height }
-        set { labelNode.boundsSize = CGSize(width: width, height: newValue); reloadOutline = true; setNeedsLayout() }
+        set {
+            (backgroundNode.geometry as? SCNPlane)?.height = newValue
+            let size = CGSize(width: width, height: newValue)
+            labelNode.boundsSize = size
+            hintNode.boundsSize = size
+            reloadOutline = true
+            setNeedsLayout()
+        }
     }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
@@ -114,6 +126,7 @@ import SpriteKit
 
     fileprivate var labelNode: LabelNode!
     fileprivate var hintNode: LabelNode!
+    fileprivate var backgroundNode: SCNNode!
     fileprivate var outlineNode: SCNNode!
     fileprivate var reloadOutline: Bool = false
 
@@ -140,9 +153,12 @@ import SpriteKit
     @objc override func setupNode() {
         super.setupNode()
 
+        backgroundNode = NodesFactory.createPlaneNode(width: 0, height: 0, image: ImageAsset.textEditBackground.image)
+        contentNode.addChildNode(backgroundNode)
+
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-
+        labelNode.renderingOrder = 1
         let defaultCharSpacing: CGFloat = 0.005
         let defaultTextSize: CGFloat = 0.02
         let defaultTextPadding = UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)
@@ -152,8 +168,9 @@ import SpriteKit
         contentNode.addChildNode(labelNode)
 
         hintNode = LabelNode()
+        hintNode.renderingOrder = 1
         hintNode.charSpacing = defaultCharSpacing
-        hintNode.textColor = UIColor(white: 0.75, alpha: 0.5)
+        hintNode.textColor = UIColor(white: 0.75, alpha: 0.75)
         hintNode.textPadding = defaultTextPadding
         hintNode.textSize = defaultTextSize
         contentNode.addChildNode(hintNode)
@@ -273,10 +290,12 @@ import SpriteKit
             labelNode.isHidden = false
             hintNode.isHidden = true
             labelNode.reload()
+            labelNode.readsFromDepthBuffer = false
         } else {
             labelNode.isHidden = true
             hintNode.isHidden = false
             hintNode.reload()
+            hintNode.readsFromDepthBuffer = false
         }
 
         if hasFocus && reloadOutline {
@@ -292,13 +311,17 @@ import SpriteKit
     }
 
     fileprivate func updateText(_ text: String?) {
-        guard let string = text, string.count > charLimit, charLimit > 0 else {
-            labelNode.text = text
-            setNeedsLayout()
-            return
+        if let string = text, string.count > charLimit, charLimit > 0 {
+            _text = String(string.prefix(charLimit))
+        } else {
+            _text = text
         }
 
-        labelNode.text = String(string.prefix(charLimit))
+        if let value = _text, password {
+            labelNode.text = String(Array<Character>(repeating: "•", count: value.count))
+        } else {
+            labelNode.text = _text
+        }
         setNeedsLayout()
     }
 
@@ -307,13 +330,10 @@ import SpriteKit
 
         outlineNode?.removeFromParentNode()
 
-        let roundness: CGFloat = 0.5
-        let minSize: CGFloat = min(size.width, size.height)
-        let outlineOffset: CGFloat = 0.3 * minSize
-        let radius: CGFloat = 0.5 * minSize * roundness
-        let thickness: CGFloat = 0.05 * minSize
+        let radius: CGFloat = 0.02
+        let thickness: CGFloat = 0.004
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
-        outlineNode = NodesFactory.createOutlineNode(width: size.width + outlineOffset, height: size.height + outlineOffset, cornerRadius: radius, thickness: thickness)
+        outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)
     }
 }
@@ -328,6 +348,10 @@ extension UiTextEditNode: InputDataProviding {
             }
         }
     }
+    var placeholder: String? { return hint }
+    // var charLimit: Int { get }
+    // var multiline: Bool { get }
+    // var password: Bool { get }
     var keyboardType: UIKeyboardType? {
         switch textEntry {
         case .email:

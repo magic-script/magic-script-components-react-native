@@ -67,6 +67,11 @@ class LabelNode: SCNNode {
     }
     @objc var tracking: Int = 50 // not supported by Lumin yet
 
+    @objc var readsFromDepthBuffer: Bool {
+        get { return labelGeometry.firstMaterial?.readsFromDepthBuffer ?? false }
+        set { labelGeometry.firstMaterial?.readsFromDepthBuffer = newValue }
+    }
+
     fileprivate var labelGeometry: SCNText!
     fileprivate var labelNode: SCNNode!
     fileprivate var reloadNeeded: Bool = false
@@ -115,9 +120,8 @@ class LabelNode: SCNNode {
     fileprivate func updateLabelContents() {
         let scale = getTextScale()
         labelGeometry.string = allCaps ? text?.uppercased() : text
-        let size = getSize()
-        let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
-        labelGeometry.containerFrame = rect
+        let size = (getSize() - getPaddingSize()) / scale
+        labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
         labelGeometry.firstMaterial?.diffuse.contents = textColor
         labelGeometry.font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
         labelGeometry.isWrapped = multiline
@@ -152,23 +156,28 @@ class LabelNode: SCNNode {
         return CGSize(width: width, height: height)
     }
 
+    fileprivate func getPaddingSize() -> CGSize {
+        return CGSize(width: textPadding.left + textPadding.right, height: textPadding.top + textPadding.bottom)
+    }
+
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
         let scale = getTextScale()
+        let padding: CGSize = getPaddingSize()
         let size: CGSize
         if boundsSize.width > 0 && multiline {
-            let constraintSize = CGSize(width: boundsSize.width / scale, height: .infinity)
+            let constraintSize = CGSize(width: (boundsSize.width - padding.width) / scale, height: .infinity)
             let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesFontLeading, .usesLineFragmentOrigin], attributes: attributes, context: nil)
             size = boundingBox.size
         } else {
             size = text.size(withAttributes: attributes)
         }
 
-        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale)
+        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale) + padding
     }
 
     fileprivate func updateTextNodePosition() {
-        let size = getSize()
-        labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+        let offset = -0.5 * getSize() + CGSize(width: textPadding.left, height: textPadding.top)
+        labelNode.position = SCNVector3(offset.width, offset.height, 0)
     }
 }
 

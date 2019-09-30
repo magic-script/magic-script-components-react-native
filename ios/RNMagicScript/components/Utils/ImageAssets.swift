@@ -26,6 +26,7 @@ public enum ImageAsset: String {
     case spinner = "spinner"
     case spinnerProgressBegin = "spinner_begin"
     case spinnerProgressEnd = "spinner_end"
+    case textEditBackground = "text_edit_background"
     case toggleOn = "toggle_on"
     case toggleOff = "toggle_off"
 

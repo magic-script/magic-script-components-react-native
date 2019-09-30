@@ -41,7 +41,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textAlignment).to(equal(HorizontalTextAlignment.left))
                     expect(node.textPadding).to(beCloseTo(UIEdgeInsets(top: 0.003, left: 0.003, bottom: 0.003, right: 0.003)))
                     expect(node.hint).to(beNil())
-                    expect(node.hintColor).to(beCloseTo(UIColor(white: 0.75, alpha: 0.5)))
+                    expect(node.hintColor).to(beCloseTo(UIColor(white: 0.75, alpha: 0.75)))
                     expect(node.multiline).to(beFalse())
                     expect(node.password).to(beFalse())
                     expect(node.scrolling).to(beFalse())
@@ -70,7 +70,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     node.update(["text" : referenceText])
                     expect(node.text).to(equal(referenceText))
 
-                    let labelNode = node.contentNode.childNodes[0] as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.text).to(equal(referenceText))
                 }
 
@@ -80,7 +80,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.isLayoutNeeded).to(beFalse())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.textColor).to(beCloseTo(referenceTextColor))
                 }
 
@@ -90,7 +90,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(referenceTextSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.textSize).to(beCloseTo(referenceTextSize))
                 }
 
@@ -103,7 +103,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.text).to(equal(referenceLimitedText))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.text).to(equal(referenceLimitedText))
 
                     node.update(["text": referenceText, "charLimit" : 0])
@@ -117,7 +117,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.charSpacing).to(beCloseTo(refrerenceCharSpacing))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.charSpacing).to(beCloseTo(refrerenceCharSpacing))
                 }
 
@@ -127,7 +127,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.lineSpacing).to(beCloseTo(refrerenceLineSpacing))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.lineSpacing).to(beCloseTo(refrerenceLineSpacing))
                 }
 
@@ -137,7 +137,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textAlignment).to(equal(referenceTextAlignment))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.textAlignment).to(equal(referenceTextAlignment))
                 }
 
@@ -147,7 +147,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textPadding).to(beCloseTo(referenceTextPadding))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.textPadding).to(beCloseTo(referenceTextPadding))
                 }
 
@@ -157,7 +157,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.hint).to(equal(referenceHint))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+                    let hintNode = self.getHintNode(node)!
                     expect(hintNode.text).to(equal(referenceHint))
                 }
 
@@ -167,7 +167,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.hintColor).to(beCloseTo(referenceHintColor))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+                    let hintNode = self.getHintNode(node)!
                     expect(hintNode.textColor).to(beCloseTo(referenceHintColor))
                 }
 
@@ -177,7 +177,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.multiline).to(equal(referenceMultiline))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.multiline).to(equal(referenceMultiline))
                 }
 
@@ -188,7 +188,8 @@ class UiTextEditNodeSpec: QuickSpec {
                     node.update(["password" : true])
                     expect(node.isLayoutNeeded).to(beTrue())
                     expect(node.password).to(beTrue())
-                    expect(node.text).to(equal(referencePasswordValueHidden))
+                    expect(node.text).to(equal(referencePasswordValue))
+                    expect(self.getLabelNode(node)!.text).to(equal(referencePasswordValueHidden))
                 }
 
                 it("should update 'scrolling' prop") {
@@ -235,7 +236,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.style).to(equal(referenceFontStyle))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.fontStyle).to(equal(referenceFontStyle))
                 }
 
@@ -245,7 +246,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.weight).to(equal(referenceFontWeight))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.fontWeight).to(equal(referenceFontWeight))
                 }
 
@@ -255,7 +256,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(refrerenceFontSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.textSize).to(beCloseTo(refrerenceFontSize))
                 }
 
@@ -265,7 +266,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.tracking).to(equal(refrerenceTracking))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.tracking).to(equal(refrerenceTracking))
                 }
 
@@ -275,7 +276,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.allCaps).to(equal(refrerenceAllCaps))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
                     expect(labelNode.allCaps).to(equal(refrerenceAllCaps))
                 }
 
@@ -303,8 +304,8 @@ class UiTextEditNodeSpec: QuickSpec {
             context("text-placeholder") {
                 it("should display either text or placeholder") {
                     let emptyText = ""
-                    let labelNode = node.contentNode.childNodes[0] as! LabelNode
-                    let hintNode = node.contentNode.childNodes[1] as! LabelNode
+                    let labelNode = self.getLabelNode(node)!
+                    let hintNode = self.getHintNode(node)!
 
                     node.update(["text" : emptyText])
                     node.layoutIfNeeded()
@@ -320,11 +321,21 @@ class UiTextEditNodeSpec: QuickSpec {
             }
 
             context("when initialized") {
-                it("should contain two child label nodes") {
+                it("should contain three child nodes") {
                     let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(2)) // LabelNode (text and hint)
-                    let textNode = childNodes[0] as! LabelNode
-                    let hintNode = childNodes[1] as! LabelNode
+                    expect(childNodes.count).to(equal(3))
+                    expect(childNodes[0]).notTo(beNil()) // background node
+                    expect(childNodes[1] is LabelNode).to(beTrue()) // text node
+                    expect(childNodes[2] is LabelNode).to(beTrue()) // hint node
+                }
+
+                it("should contain three zero-sized nodes") {
+                    let childNodes = node.contentNode.childNodes
+                    let backgroundNode = childNodes[0]
+                    let textNode = childNodes[1] as! LabelNode
+                    let hintNode = childNodes[2] as! LabelNode
+                    let plane = backgroundNode.geometry as! SCNPlane
+                    expect(CGSize(width: plane.width, height: plane.height)).to(beCloseTo(CGSize.zero))
                     expect(textNode.boundsSize).to(beCloseTo(CGSize.zero))
                     expect(hintNode.boundsSize).to(beCloseTo(CGSize.zero))
                 }
@@ -344,22 +355,22 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
 
                 it("should not display outline if focused and has no size") {
-                    expect(node.contentNode.childNodes.count).to(equal(2))
+                    expect(node.contentNode.childNodes.count).to(equal(3))
                     node.enterFocus()
-                    expect(node.contentNode.childNodes.count).to(equal(2))
+                    expect(node.contentNode.childNodes.count).to(equal(3))
                 }
 
                 it("should have outline when focused") {
                     node.update(["width": 0.8, "height": 0.2])
                     let childNodesBefore = node.contentNode.childNodes
-                    expect(childNodesBefore.count).to(equal(2))
+                    expect(childNodesBefore.count).to(equal(3))
 
                     node.enterFocus()
                     node.layoutIfNeeded()
-                    let childNodesAfter1 = node.contentNode.childNodes
-                    expect(childNodesAfter1.count).to(equal(3))
-                    let outlineNode1 = childNodesAfter1[2]
-                    expect(outlineNode1.isHidden).to(beFalse())
+                    let childNodesAfter = node.contentNode.childNodes
+                    expect(childNodesAfter.count).to(equal(4))
+                    let outlineNode = childNodesAfter[3]
+                    expect(outlineNode.isHidden).to(beFalse())
                 }
 
                 it("should hide outline when unfocused") {
@@ -367,8 +378,8 @@ class UiTextEditNodeSpec: QuickSpec {
                     node.enterFocus()
                     node.leaveFocus()
                     let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(3))
-                    let outlineNode = childNodes[2]
+                    expect(childNodes.count).to(equal(4))
+                    let outlineNode = childNodes[3]
                     expect(outlineNode.isHidden).to(beTrue())
                 }
             }
@@ -383,6 +394,12 @@ class UiTextEditNodeSpec: QuickSpec {
                     let referenceBoolTypeValue = true
                     node.value = referenceBoolTypeValue
                     expect(node.text).to(equal(referenceValue))
+                }
+
+                it("should get/set placeholder") {
+                    let referencePlaceholder = "Password"
+                    node.hint = referencePlaceholder
+                    expect(node.placeholder).to(equal(referencePlaceholder))
                 }
 
                 it("keyboardType") {
@@ -406,7 +423,6 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
 
                 it("textContentType") {
-
                     expect(node.textContentType).to(beNil())
 
                     node.password = true
@@ -430,5 +446,17 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
             }
         }
+    }
+
+    fileprivate func getBackgroundNode(_ parent: UiTextEditNode) -> SCNNode? {
+        return parent.contentNode.childNodes.first
+    }
+
+    fileprivate func getLabelNode(_ parent: UiTextEditNode) -> LabelNode? {
+        return parent.contentNode.childNodes[1] as? LabelNode
+    }
+
+    fileprivate func getHintNode(_ parent: UiTextEditNode) -> LabelNode? {
+        return parent.contentNode.childNodes[2] as? LabelNode
     }
 }

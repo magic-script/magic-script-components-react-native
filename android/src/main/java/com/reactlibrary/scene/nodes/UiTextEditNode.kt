@@ -45,6 +45,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_HEIGHT = "height"
         const val PROP_TEXT = "text"
         const val PROP_HINT = "hint"
+        const val PROP_HINT_COLOR = "hintColor"
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
@@ -70,7 +71,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val SCROLLBAR_VISIBILITY_OFF = "off"
         val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
 
-        private const val CURSOR_BLINK_INTERVAL = 400L // in ms
+        const val CURSOR_BLINK_INTERVAL = 400L // in ms
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -80,6 +81,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     private var hint = ""
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
+    private var hintColor = context.getColor(R.color.text_color_hint)
     private var textGravityVertical: Int = Gravity.CENTER_VERTICAL
     private var textGravityHorizontal: Int = Gravity.LEFT
 
@@ -136,6 +138,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
         setText(props)
         setHint(props)
+        setHintColor(props)
         setTextSize(props)
         setTextAlignment(props)
         setTextColor(props)
@@ -210,10 +213,20 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
     }
 
+    private fun setHintColor(props: Bundle) {
+        val color = PropertiesReader.readColor(props, PROP_HINT_COLOR)
+        if (color != null) {
+            this.hintColor = color
+            if (isHintDisplayed()) {
+                view.text_edit.setTextColor(color)
+            }
+        }
+    }
+
     private fun setHint(hint: String) {
         this.hint = hint
         view.text_edit.text = hint
-        view.text_edit.setTextColor(context.getColor(R.color.text_color_hint))
+        view.text_edit.setTextColor(hintColor)
     }
 
     private fun setTextSize(props: Bundle) {
@@ -248,7 +261,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
             this.textColor = color
-            if (hint.isEmpty() || view.text_edit.text.toString() != hint) {
+            if (!isHintDisplayed()) {
                 view.text_edit.setTextColor(color)
             }
         }
@@ -395,6 +408,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private fun isPassword(): Boolean {
         return properties.getBoolean(PROP_PASSWORD, false)
+    }
+
+    private fun isHintDisplayed(): Boolean {
+        return hint.isNotEmpty() && view.text_edit.text.toString() == hint
     }
 
 }

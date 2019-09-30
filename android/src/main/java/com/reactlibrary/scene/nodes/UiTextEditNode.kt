@@ -60,6 +60,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_SCROLLING = "scrolling"
         const val PROP_FONT_PARAMS = "fontParams"
         const val PROP_TEXT_ENTRY_MODE = "textEntry"
+        const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 
         const val ENTRY_MODE_NORMAL = "normal"
         const val ENTRY_MODE_EMAIL = "email"
@@ -150,6 +151,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         setMultiline(props)
         setTextPadding(props)
         setFontParams(props)
+        setScrollBarVisibility(props)
     }
 
     override fun setViewSize() {
@@ -303,6 +305,13 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
         if (fontParams?.allCaps != null) {
             view.text_edit.isAllCaps = fontParams.allCaps
+        }
+    }
+
+    private fun setScrollBarVisibility(props: Bundle) {
+        if (props.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
+            val visible = props.getBoolean(PROP_SCROLLBAR_VISIBILITY)
+            view.sv_text_edit.isVerticalScrollBarEnabled = visible
         }
     }
 

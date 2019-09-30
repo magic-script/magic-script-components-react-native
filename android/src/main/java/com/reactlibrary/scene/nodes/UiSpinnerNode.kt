@@ -29,6 +29,8 @@ import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSpinner
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultBoolean
+import com.reactlibrary.utils.putDefaultDouble
 
 open class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context, useContentNodeAlignment = true) {
 
@@ -47,12 +49,8 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(init
     private var currentAngle = 0f
 
     init {
-        if (!properties.containsKey(PROP_HEIGHT)) {
-            properties.putDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        }
-        if (!properties.containsKey(PROP_DETERMINATE)) {
-            properties.putBoolean(PROP_DETERMINATE, DEFAULT_DETERMINATE)
-        }
+        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefaultBoolean(PROP_DETERMINATE, DEFAULT_DETERMINATE)
     }
 
     override fun provideView(context: Context): View {

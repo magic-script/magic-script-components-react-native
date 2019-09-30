@@ -30,6 +30,7 @@ import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultDouble
 
 open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
 
@@ -55,10 +56,7 @@ open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initP
 
     init {
         // set default values of properties
-
-        if (!properties.containsKey(PROP_ROUNDNESS)) {
-            properties.putDouble(PROP_ROUNDNESS, DEFAULT_ROUNDNESS)
-        }
+        properties.putDefaultDouble(PROP_ROUNDNESS, DEFAULT_ROUNDNESS)
 
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             // calculate text size based on button height

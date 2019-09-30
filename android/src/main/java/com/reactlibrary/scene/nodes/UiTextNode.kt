@@ -27,10 +27,7 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.FontParamsReader
-import com.reactlibrary.utils.FontProvider
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.*
 
 open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
 
@@ -55,13 +52,8 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
 
     init {
         // set default values of properties
-        if (!properties.containsKey(PROP_TEXT_SIZE)) {
-            properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        }
-
-        if (!properties.containsKey(PROP_ALIGNMENT)) {
-            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        }
+        properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
     }
 
     override fun provideView(context: Context): View {

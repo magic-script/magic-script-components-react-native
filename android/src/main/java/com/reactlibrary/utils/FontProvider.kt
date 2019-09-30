@@ -36,36 +36,50 @@ class FontProvider {
         private val DEFAULT_WEIGHT = FontWeight.REGULAR
         private val DEFAULT_STYLE = FontStyle.NORMAL
 
-        // external fonts cache <font filename, typeface>
-        private val typefacesCache = hashMapOf<String, Typeface?>()
+        // fonts cache
+        private val typefacesCache = hashMapOf<String, FontState>()
 
+        /**
+         * Returns a typeface for a given [weight] and [style].
+         * If external font files are present in assets, this function returns
+         * a proper typeface based on these files, else it returns a default typeface.
+         */
         fun provideFont(context: Context, weight: FontWeight? = null, style: FontStyle? = null): Typeface {
             val fontWeight = weight ?: DEFAULT_WEIGHT
             val fontStyle = style ?: DEFAULT_STYLE
             val fontName = externalFont.getFileName(fontWeight, fontStyle)
 
-            if (typefacesCache.containsKey(fontName)) { // already tried to load
-                val typeface = typefacesCache[fontName]
-                return typeface ?: getDefault(fontWeight, fontStyle)
-            } else { // need to load
-                val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
-                if (fontsCatalogExists) {
-                    val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
-                    if (fontExists) {
-                        val fontPath = "$FONTS_DIR/$fontName"
-                        val typeface = Typeface.createFromAsset(context.assets, fontPath)
-                        typefacesCache[fontName] = typeface
-                        logMessage("External font loaded: $fontName")
-                        return typeface
+            val fontState = typefacesCache[fontName]
+            when {
+                fontState == null -> { // need to load
+                    val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
+                    if (!fontsCatalogExists) {
+                        typefacesCache[fontName] = FontState(true, null)
+                        return getDefault(fontWeight, fontStyle)
                     }
+
+                    val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
+                    if (!fontExists) {
+                        typefacesCache[fontName] = FontState(true, null)
+                        return getDefault(fontWeight, fontStyle)
+                    }
+
+                    val fontPath = "$FONTS_DIR/$fontName"
+                    val typeface = Typeface.createFromAsset(context.assets, fontPath)
+                    typefacesCache[fontName] = FontState(false, typeface)
+                    logMessage("External font loaded: $fontName")
+                    return typeface
+
                 }
+                fontState.loadError -> // already tried to load this font, but it's absent
+                    return getDefault(fontWeight, fontStyle)
+                else -> return fontState.typeface!!
             }
-            return getDefault(fontWeight, fontStyle)
         }
 
         // returns default android Typeface
         private fun getDefault(fontWeight: FontWeight, fontStyle: FontStyle): Typeface {
-            val androidStyle: Int = when (fontWeight) {
+            val fontStyleId: Int = when (fontWeight) {
                 FontWeight.EXTRA_LIGHT,
                 FontWeight.LIGHT,
                 FontWeight.REGULAR,
@@ -84,9 +98,19 @@ class FontProvider {
                     }
 
             }
-            return Typeface.create(DEFAULT_FONT_FAMILY, androidStyle)
+
+            val name: String = DEFAULT_FONT_FAMILY + fontStyleId
+            val fontState = typefacesCache[name]
+            if (fontState == null) {
+                val typeface = Typeface.create(DEFAULT_FONT_FAMILY, fontStyleId)
+                typefacesCache[name] = FontState(false, typeface)
+                return typeface
+            } else {
+                return fontState.typeface!!
+            }
         }
 
     }
 
+    private class FontState(val loadError: Boolean, val typeface: Typeface?)
 }

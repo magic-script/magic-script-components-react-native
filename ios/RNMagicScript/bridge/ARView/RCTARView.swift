@@ -139,9 +139,13 @@ import SceneKit
     }
 
     fileprivate func dismissInput() {
+        // NOTE: This line generates the following warning:
+        // First responder warning: '<GrowingTextView...>' rejected resignFirstResponder
+        // when being removed from hierarchy.
         inputResponder?.inputAccessoryView?.resignFirstResponder()
-        inputResponder?.resignFirstResponder()
+
         inputResponder?.inputAccessoryView = nil
+        inputResponder?.resignFirstResponder()
     }
 
     public func pause() {

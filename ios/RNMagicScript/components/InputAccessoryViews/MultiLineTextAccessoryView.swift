@@ -26,6 +26,7 @@ class MultiLineTextAccessoryView: UIView {
     var onFinishEditing: (() -> (Void))?
 
     fileprivate var textView: GrowingTextView!
+    fileprivate weak var heightConstraint: NSLayoutConstraint?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,7 +41,6 @@ class MultiLineTextAccessoryView: UIView {
     fileprivate func setupView() {
         backgroundColor = UIColor.white
         translatesAutoresizingMaskIntoConstraints = false
-        removeConstraints(constraints)
 
         textView = GrowingTextView()
         textView.backgroundColor = backgroundColor
@@ -87,18 +87,23 @@ class MultiLineTextAccessoryView: UIView {
         textView.returnKeyType = .done
     }
 
-    fileprivate var heightConstraint: NSLayoutConstraint?
-    override open func layoutSubviews() {
-        super.layoutSubviews()
+    fileprivate func disableHeightConstraint() {
+        guard let parent = superview, heightConstraint == nil else { return }
 
-        for constraint in constraints {
-            if (constraint.firstAttribute == .height) {
-                if (constraint.relation == .equal) {
-                    heightConstraint = constraint
-                    break
-                }
+        for constraint in parent.constraints {
+            if (constraint.firstAttribute == .height &&
+                constraint.relation == .equal &&
+                constraint.firstItem === self) {
+                heightConstraint = constraint
+                heightConstraint?.isActive = false
+                break
             }
         }
+    }
+
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        disableHeightConstraint()
     }
 }
 
@@ -140,11 +145,5 @@ extension MultiLineTextAccessoryView: GrowingTextViewDelegate {
 
     public func textViewDidChange(_ textView: UITextView) {
         input?.value = textView.text
-    }
-
-    public func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
-        heightConstraint?.constant = height
-        setNeedsUpdateConstraints()
-        layoutIfNeeded()
     }
 }

@@ -37,13 +37,13 @@ fun EditText.setTextAndMoveCursor(text: String) {
     this.append(text)
 }
 
-fun Bundle.putDefaulDouble(name: String, value: Double){
+fun Bundle.putDefaultDouble(name: String, value: Double){
     if (!containsKey(name)) {
         putDouble(name, value)
     }
 }
 
-fun Bundle.putDefaulString(name: String, value: String){
+fun Bundle.putDefaultString(name: String, value: String){
     if (!containsKey(name)) {
         putString(name, value)
     }

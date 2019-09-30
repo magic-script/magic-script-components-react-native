@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.Canvas
 import android.view.MotionEvent
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.*
@@ -39,19 +38,10 @@ class CustomScrollBarTest {
     }
 
     @Test
-    fun onDrawShouldCallDrawRoundRect() {
-        val onDraw = scrollBar.javaClass.getDeclaredMethod("onDraw", Canvas::class.java)
-        val canvas: Canvas = mock()
-        onDraw.isAccessible = true
-        onDraw.invoke(scrollBar, canvas)
-        verify(canvas, times(2)).drawRoundRect(any(), any(), any(), any())
-    }
-
-    @Test
     fun touchCallbackShouldSetThumbPosition() {
         val event: MotionEvent = mock()
         whenever(event.getActionMasked()).thenReturn(MotionEvent.ACTION_DOWN)
-        scrollBar.touchCallback(event)
+        scrollBar.onTouchEvent(event)
         verify(scrollBar).thumbPosition = any()
     }
 

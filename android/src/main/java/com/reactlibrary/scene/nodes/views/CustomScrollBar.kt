@@ -51,10 +51,12 @@ class CustomScrollBar @JvmOverloads constructor(
 
     private var touchOffset = 0F
 
-    fun touchCallback(event: MotionEvent) {
+    var onScrollChangeListener: ((on: Float) -> Unit)? = null
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
-            return
+            return true
         }
 
         val (begin, end) = thumbBounds()
@@ -71,11 +73,13 @@ class CustomScrollBar @JvmOverloads constructor(
         }
 
         val thumbTravel = length() - thumbLength
-        if (thumbTravel > 0F) {
-            thumbPosition = (touchPos - touchOffset - thumbLength / 2) / thumbTravel
+        thumbPosition = if (thumbTravel > 0F) {
+            (touchPos - touchOffset - thumbLength / 2) / thumbTravel
         } else {
-            thumbPosition = 0F
+            0F
         }
+        onScrollChangeListener?.invoke(thumbPosition)
+        return true
     }
 
     override fun onDraw(canvas: Canvas) {

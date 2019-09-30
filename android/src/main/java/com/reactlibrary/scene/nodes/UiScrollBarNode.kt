@@ -25,11 +25,11 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.putDefaulDouble
-import com.reactlibrary.utils.putDefaulString
+import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefaultString
 
 class UiScrollBarNode(initProps: ReadableMap, context: Context) :
-        UiNode(initProps, context, useContentNodeAlignment = true) {
+        UiNode(initProps, context, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -43,25 +43,21 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         const val ORIENTATION_HORIZONTAL = "horizontal"
     }
 
-    var scrollChangeListener: ((on: Float) -> Unit)? = null
-
     init {
         // set default properties values
-        properties.putDefaulDouble(PROP_WIDTH, 0.04)
-        properties.putDefaulDouble(PROP_HEIGHT, 1.2)
-        properties.putDefaulDouble(PROP_THUMB_POSITION, 0.0)
-        properties.putDefaulDouble(PROP_THUMB_SIZE, 0.0)
-        properties.putDefaulString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
+        properties.putDefaultDouble(PROP_WIDTH, 0.04)
+        properties.putDefaultDouble(PROP_HEIGHT, 1.2)
+        properties.putDefaultDouble(PROP_THUMB_POSITION, 0.0)
+        properties.putDefaultDouble(PROP_THUMB_SIZE, 0.0)
+        properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
+    }
+
+    fun setOnScrollChangeListener(listener:((on: Float) -> Unit)){
+        (view as CustomScrollBar).onScrollChangeListener = listener
     }
 
     override fun provideView(context: Context): View {
-        val view = CustomScrollBar(context)
-        view.setOnTouchListener { _: View, event: MotionEvent ->
-            view.touchCallback(event)
-            scrollChangeListener?.invoke(view.thumbPosition)
-            true
-        }
-        return view
+        return CustomScrollBar(context)
     }
 
     override fun applyProperties(props: Bundle) {

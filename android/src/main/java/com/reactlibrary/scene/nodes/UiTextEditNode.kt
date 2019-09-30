@@ -17,9 +17,13 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -64,6 +68,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
         const val DEFAULT_SCROLLING = false // scrolling disabled
         val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
+
+        private const val CURSOR_BLINK_INTERVAL = 400L // in ms
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -78,14 +84,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
-            if (cursorVisible) {
-                view.text_edit.text = generateVisibleText(text)
-            } else {
-                val textWithCursor = generateVisibleText(text) + "|"
-                view.text_edit.text = textWithCursor
-            }
+            val visibleText = generateVisibleText(text)
+            view.text_edit.text = generateTextWithCursor(visibleText, cursorVisible)
             cursorVisible = !cursorVisible
-            mainHandler.postDelayed(this, 400)
+            mainHandler.postDelayed(this, CURSOR_BLINK_INTERVAL)
         }
     }
 
@@ -362,6 +364,20 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         } else {
             input
         }
+    }
+
+    private fun generateTextWithCursor(input: String, cursorEnabled: Boolean): Spannable {
+        // preserving space (transparent color) for cursor (in case of center or right alignment)
+        val cursorColor = if (cursorEnabled) textColor else Color.TRANSPARENT
+        val textWithCursor = "$input|"
+        val spannableString = SpannableString(textWithCursor)
+        spannableString.setSpan(
+                ForegroundColorSpan(cursorColor),
+                textWithCursor.length - 1,
+                textWithCursor.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return spannableString
     }
 
     private fun isPassword(): Boolean {

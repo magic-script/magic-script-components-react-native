@@ -30,14 +30,22 @@ class LabelNodeSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
+                    expect(node.allCaps).to(beFalse())
+                    expect(node.boundsSize).to(beCloseTo(CGSize.zero))
+                    expect(node.charSpacing).to(beCloseTo(0))
+                    expect(node.defaultTextSize).to(beCloseTo(0.015)) // defined as defaultTextSizeInMeters: CGFloat = 0.015
+                    expect(node.fontStyle).to(equal(FontStyle.normal))
+                    expect(node.fontWeight).to(equal(FontWeight.regular))
+                    expect(node.lineSpacing).to(equal(1.0))
+                    expect(node.multiline).to(beFalse())
                     expect(node.text).to(beNil())
                     expect(node.textAlignment).to(equal(HorizontalTextAlignment.left))
                     let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
+                    expect(node.textPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.textSize).to(beCloseTo(0.0))
-                    expect(node.defaultTextSize).to(beCloseTo(0.015)) // defined as defaultTextSizeInMeters: CGFloat = 0.015
-                    expect(node.boundsSize).to(beCloseTo(CGSize.zero))
-                    expect(node.wrap).to(beFalse())
+                    expect(node.tracking).to(equal(50))
+                    expect(node.readsFromDepthBuffer).to(beTrue())
                 }
             }
 
@@ -82,6 +90,18 @@ class LabelNodeSpec: QuickSpec {
                     expect(childNodeAfterUpdate).toNot(equal(childNodeBeforeUpdate))
                     expect(childNodeAfterUpdate.scale).to(beCloseTo(childNodeBeforeUpdate.scale))
                     expect(childNodeAfterUpdate.position).to(beCloseTo(childNodeBeforeUpdate.position))
+                }
+            }
+
+            context("when allCaps set") {
+                it("should contains all uppercase letters") {
+                    let referenceText = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                    node.allCaps = true
+                    node.text = referenceText
+                    node.reload()
+                    let textGeometry = node.childNodes.first?.geometry as! SCNText
+                    let textString = textGeometry.string as! String
+                    expect(textString).to(equal(referenceText.uppercased()))
                 }
             }
         }

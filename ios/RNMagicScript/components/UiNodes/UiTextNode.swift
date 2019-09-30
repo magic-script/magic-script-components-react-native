@@ -33,25 +33,42 @@ import SceneKit
         get { return labelNode.textSize }
         set { labelNode.textSize = newValue; setNeedsLayout() }
     }
-
-    // @objc var allCaps: Bool = false // TODO: property to defined
-    // @objc var charSpacing: CGFloat = 0 // TODO: property to defined
-    // @objc var lineSpacing: CGFloat = 1// TODO: property to defined
     @objc var textAlignment: HorizontalTextAlignment {
         get { return labelNode.textAlignment }
         set { labelNode.textAlignment = newValue; setNeedsLayout() }
     }
-    // @objc var style: UIFont.TextStyle // TODO: property to defined
-    // @objc var weight: UIFont.Weight // TODO: property to defined
+    @objc var charSpacing: CGFloat {
+        get { return labelNode.charSpacing }
+        set { labelNode.charSpacing = newValue; setNeedsLayout() }
+    }
+    @objc var lineSpacing: CGFloat {
+        get { return labelNode.lineSpacing }
+        set { labelNode.lineSpacing = newValue; setNeedsLayout() }
+    }
     @objc var boundsSize: CGSize {
         get { return labelNode.boundsSize }
         set { labelNode.boundsSize = newValue; setNeedsLayout() }
     }
     @objc var wrap: Bool {
-        get { return labelNode.wrap }
-        set { labelNode.wrap = newValue; setNeedsLayout() }
+        get { return labelNode.multiline }
+        set { labelNode.multiline = newValue; setNeedsLayout() }
     }
-    // @objc var font: FontParams // use UIFont instead
+    @objc var style: FontStyle {
+        get { return labelNode.fontStyle }
+        set { labelNode.fontStyle = newValue; setNeedsLayout() }
+    }
+    @objc var weight: FontWeight {
+        get { return labelNode.fontWeight }
+        set { labelNode.fontWeight = newValue; setNeedsLayout() }
+    }
+    @objc var tracking: Int {
+        get { return labelNode.tracking }
+        set { labelNode.tracking = newValue; setNeedsLayout() }
+    }
+    @objc var allCaps: Bool {
+        get { return labelNode.allCaps }
+        set { labelNode.allCaps = newValue; setNeedsLayout() }
+    }
 
     fileprivate var labelNode: LabelNode!
 
@@ -83,6 +100,14 @@ import SceneKit
             self.textAlignment = textAlignment
         }
 
+        if let charSpacing = Convert.toCGFloat(props["charSpacing"]) {
+            self.charSpacing = charSpacing
+        }
+
+        if let lineSpacing = Convert.toCGFloat(props["lineSpacing"]) {
+            self.lineSpacing = lineSpacing
+        }
+
         if let boundsSizeProps = props["boundsSize"] as? [String: Any] {
             if let boundsSize = Convert.toCGSize(boundsSizeProps["boundsSize"]) {
                 self.boundsSize = boundsSize
@@ -90,6 +115,29 @@ import SceneKit
 
             if let wrap = Convert.toBool(boundsSizeProps["wrap"]) {
                 self.wrap = wrap
+            }
+        }
+
+        if let fontParams = props["fontParams"] as? [String: Any] {
+            if let style = Convert.toFontStyle(fontParams["style"]) {
+                self.style = style
+            }
+
+            if let weight = Convert.toFontWeight(fontParams["weight"]) {
+                self.weight = weight
+            }
+
+            if let fontSize = Convert.toCGFloat(fontParams["fontSize"]) {
+                // fontSize is the same as textSize
+                self.textSize = fontSize
+            }
+
+            if let tracking = Convert.toInt(fontParams["tracking"]) {
+                self.tracking = tracking
+            }
+
+            if let allCaps = Convert.toBool(fontParams["allCaps"]) {
+                self.allCaps = allCaps
             }
         }
     }

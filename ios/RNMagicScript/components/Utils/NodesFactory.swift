@@ -18,6 +18,18 @@ import SceneKit
 
 @objc open class NodesFactory: NSObject {
 
+    @objc static func createPlaneNode(size: CGSize, color: UIColor? = UIColor.white, image: UIImage? = nil) -> SCNNode {
+        let geometry = SCNPlane(width: size.width, height: size.height)
+        geometry.firstMaterial?.lightingModel = .constant
+        geometry.firstMaterial?.diffuse.contents = image ?? color
+        geometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
+        return SCNNode(geometry: geometry)
+    }
+
+    @objc static func createPlaneNode(width: CGFloat, height: CGFloat, color: UIColor? = UIColor.white, image: UIImage? = nil) -> SCNNode {
+        return NodesFactory.createPlaneNode(size: CGSize(width: width, height: height), color: color, image: image)
+    }
+
     @objc static func createOutlineNode(size: CGSize, cornerRadius: CGFloat, thickness: CGFloat = 0, color: UIColor = UIColor.white) -> SCNNode {
         let geometry = SCNRectangle(size: size, thickness: thickness, radius: cornerRadius)
         geometry.firstMaterial?.diffuse.contents = color

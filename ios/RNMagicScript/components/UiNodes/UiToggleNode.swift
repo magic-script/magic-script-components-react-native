@@ -70,7 +70,6 @@ import SceneKit
         labelNode.textAlignment = .left
         contentNode.addChildNode(labelNode)
 
-        assert(toggleNode == nil, "Node must not be initialized!")
         let toggleSize = getToggleSize()
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant

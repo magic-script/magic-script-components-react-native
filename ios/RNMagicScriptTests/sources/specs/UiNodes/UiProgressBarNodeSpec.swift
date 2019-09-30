@@ -44,6 +44,12 @@ class UiProgressBarNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should not update 'alignment' prop") {
                     let referenceAlignment = Alignment.bottomRight
@@ -160,6 +166,32 @@ class UiProgressBarNodeSpec: QuickSpec {
                     it("should return default") {
                         expect(node.getSize()).to(beCloseTo(CGSize(width: 0.5, height: 0.004)))
                     }
+                }
+            }
+
+            context("update progress bar") {
+                it("should update progress bar to given length") {
+                    let referenceWidth: CGFloat = 13.0
+                    let referenceValue: CGFloat = 0.61
+                    node.width = referenceWidth
+                    node.value = referenceValue
+                    node.layoutIfNeeded()
+
+                    let size = node.getSize()
+                    expect(size.width).to(beCloseTo(referenceWidth))
+                    let progressBarNode: SCNNode = node.contentNode.childNodes[1]
+                    let plane: SCNPlane = progressBarNode.geometry as! SCNPlane
+                    expect(plane.width).to(beCloseTo(referenceWidth * referenceValue))
+                }
+
+                it("should be of length 0 if 'min' equals to 'max'") {
+                    node.min = 0.29999999
+                    node.max = 0.30000001
+                    node.layoutIfNeeded()
+
+                    let progressBarNode: SCNNode = node.contentNode.childNodes[1]
+                    let plane: SCNPlane = progressBarNode.geometry as! SCNPlane
+                    expect(plane.width).to(beCloseTo(0))
                 }
             }
         }

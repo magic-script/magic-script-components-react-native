@@ -21,6 +21,35 @@ class LabelNode: SCNNode {
     static fileprivate let defaultTextSizeInMeters: CGFloat = 0.015
     static fileprivate let geometryFixedTextSizeInMeters: CGFloat = 20.0
 
+    @objc var allCaps: Bool = false {
+        didSet { reloadNeeded = true }
+    }
+    @objc var boundsSize: CGSize = CGSize.zero {
+        didSet { reloadNeeded = true }
+    }
+    // Sets the additional character spacing that is applied between characters.
+    // Note a spacing of 0 is the default spacing. Any other value is the additional distance between
+    // characters as a multiplier of the glyph height.
+    @objc var charSpacing: CGFloat = 0.0 {
+        didSet { reloadNeeded = true }
+    }
+    @objc var defaultTextSize: CGFloat = LabelNode.defaultTextSizeInMeters {
+        didSet { reloadNeeded = true }
+    }
+    @objc var fontStyle: FontStyle = .normal {
+        didSet { reloadNeeded = true }
+    }
+    @objc var fontWeight: FontWeight = .regular {
+       didSet { reloadNeeded = true }
+    }
+    // Sets the line spacing to adjust the distance between lines of text;
+    // e.g., use 1 for single-spaced text, 2 for double-spaced text. Default is 1.0.
+    @objc var lineSpacing: CGFloat = 1.0 {
+        didSet { reloadNeeded = true }
+    }
+    @objc var multiline: Bool = false {
+        didSet { reloadNeeded = true }
+    }
     @objc var text: String? {
         didSet { reloadNeeded = true }
     }
@@ -30,17 +59,17 @@ class LabelNode: SCNNode {
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { reloadNeeded = true }
     }
+    @objc var textPadding: UIEdgeInsets = UIEdgeInsets.zero {
+        didSet { reloadNeeded = true }
+    }
     @objc var textSize: CGFloat = 0 {
         didSet { reloadNeeded = true }
     }
-    @objc var defaultTextSize: CGFloat = LabelNode.defaultTextSizeInMeters {
-        didSet { reloadNeeded = true }
-    }
-    @objc var boundsSize: CGSize = CGSize.zero {
-        didSet { reloadNeeded = true }
-    }
-    @objc var wrap: Bool = false {
-        didSet { reloadNeeded = true }
+    @objc var tracking: Int = 50 // not supported by Lumin yet
+
+    @objc var readsFromDepthBuffer: Bool {
+        get { return labelGeometry.firstMaterial?.readsFromDepthBuffer ?? false }
+        set { labelGeometry.firstMaterial?.readsFromDepthBuffer = newValue }
     }
 
     fileprivate var labelGeometry: SCNText!
@@ -59,10 +88,6 @@ class LabelNode: SCNNode {
     @objc required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupNode()
-    }
-
-    deinit {
-        labelNode.geometry?.firstMaterial?.diffuse.contents = nil
     }
 
     fileprivate func setupNode() {
@@ -88,14 +113,18 @@ class LabelNode: SCNNode {
 #endif
     }
 
+    fileprivate func getTextScale() -> CGFloat {
+        return getTextSize() / LabelNode.geometryFixedTextSizeInMeters
+    }
+
     fileprivate func updateLabelContents() {
-        let scale = getTextSize() / LabelNode.geometryFixedTextSizeInMeters
-        labelGeometry.string = text
-        let size = getSize()
-        let rect = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width / scale, height: size.height / scale))
-        labelGeometry.containerFrame = rect
+        let scale = getTextScale()
+        labelGeometry.string = allCaps ? text?.uppercased() : text
+        let size = (getSize() - getPaddingSize()) / scale
+        labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
         labelGeometry.firstMaterial?.diffuse.contents = textColor
-        labelGeometry.isWrapped = wrap
+        labelGeometry.font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
+        labelGeometry.isWrapped = multiline
         labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
         labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue
         labelNode?.removeFromParentNode()
@@ -121,26 +150,34 @@ class LabelNode: SCNNode {
             return boundsSize
         }
 
-        let scale: CGFloat = (getTextSize() / LabelNode.geometryFixedTextSizeInMeters)
         let preferredSizeInPixels = getPreferredSizeInPixels(text, attributes: [NSAttributedString.Key.font : getFont()])
-        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : (ceil(preferredSizeInPixels.width) * scale)
-        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : (ceil(preferredSizeInPixels.height) * scale)
+        let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : preferredSizeInPixels.width
+        let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : preferredSizeInPixels.height
         return CGSize(width: width, height: height)
     }
 
+    fileprivate func getPaddingSize() -> CGSize {
+        return CGSize(width: textPadding.left + textPadding.right, height: textPadding.top + textPadding.bottom)
+    }
+
     fileprivate func getPreferredSizeInPixels(_ text: String, attributes: [NSAttributedString.Key : Any]? = nil) -> CGSize {
-        if boundsSize.width > 0 && wrap {
-            let constraintSize = CGSize(width: boundsSize.width, height: .greatestFiniteMagnitude)
-            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
-            return boundingBox.size
+        let scale = getTextScale()
+        let padding: CGSize = getPaddingSize()
+        let size: CGSize
+        if boundsSize.width > 0 && multiline {
+            let constraintSize = CGSize(width: (boundsSize.width - padding.width) / scale, height: .infinity)
+            let boundingBox: CGRect = text.boundingRect(with: constraintSize, options: [.usesFontLeading, .usesLineFragmentOrigin], attributes: attributes, context: nil)
+            size = boundingBox.size
         } else {
-            return text.size(withAttributes: attributes)
+            size = text.size(withAttributes: attributes)
         }
+
+        return CGSize(width: ceil(size.width) * scale, height: ceil(size.height) * scale) + padding
     }
 
     fileprivate func updateTextNodePosition() {
-        let size = getSize()
-        labelNode.position = SCNVector3(-0.5 * size.width, -0.5 * size.height, 0)
+        let offset = -0.5 * getSize() + CGSize(width: textPadding.left, height: textPadding.top)
+        labelNode.position = SCNVector3(offset.width, offset.height, 0)
     }
 }
 

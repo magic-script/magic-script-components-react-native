@@ -20,79 +20,46 @@ import SceneKit
 
 class ViewController: UIViewController {
 
-    fileprivate var sceneView: ARSCNView!
+    fileprivate var arView: RCTARView!
+    fileprivate var lastTime: TimeInterval = 0
 
     override var shouldAutorotate: Bool { return true }
     override var prefersStatusBarHidden: Bool { return true }
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return (UIDevice.current.userInterfaceIdiom == .phone) ? .allButUpsideDown : .all
-    }
-
-    fileprivate var scene: SCNScene {
-        return sceneView.scene
-    }
 
     fileprivate var rootNode: SCNNode {
-        return sceneView.scene.rootNode
+        return arView.scene.rootNode
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupScene()
+        setupARView()
         setupTests()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        resetConfiguration()
+        arView.reset()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        sceneView.session.pause()
+        arView.pause()
     }
 
-    fileprivate func resetConfiguration() {
-        let configuration = ARWorldTrackingConfiguration()
-        let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
-        sceneView.session.run(configuration, options: options)
-    }
-
-    fileprivate func setupScene() {
-
-        // create AR scene view
-        sceneView = ARSCNView(frame: view.bounds)
-        sceneView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
-        sceneView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(sceneView)
+    fileprivate func setupARView() {
+        arView = RCTARView()
+        arView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
+        arView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(arView)
         NSLayoutConstraint.activate([
-            sceneView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            sceneView.topAnchor.constraint(equalTo: view.topAnchor),
-            sceneView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            sceneView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            arView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            arView.topAnchor.constraint(equalTo: view.topAnchor),
+            arView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             ])
 
-        sceneView.delegate = self
-
-        // configure lighting
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.automaticallyUpdatesLighting = true
-        sceneView.rendersContinuously = true
-
-        sceneView.debugOptions = [.showFeaturePoints]
-        sceneView.showsStatistics = true
-        #if targetEnvironment(simulator)
-        // Allow for basic orbit gestures if we're running in the simulator
-        sceneView.allowsCameraControl = true
-        sceneView.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
-        sceneView.defaultCameraController.maximumVerticalAngle = 45.0
-        sceneView.defaultCameraController.inertiaEnabled = true
-        sceneView.defaultCameraController.translateInCameraSpaceBy(x: 0, y: 0, z: 1.5)
-        #endif
-
-        // Resgister scene in nodes manager
-        UiNodesManager.instance.registerScene(sceneView.scene)
+        arView.delegate = self
     }
 
     fileprivate var spinner2: UiSpinnerNode!
@@ -100,42 +67,41 @@ class ViewController: UIViewController {
 
     fileprivate func setupTests() {
 
-        let spinner1 = UiSpinnerNode()
-        spinner1.height = 0.6
-        spinner1.layoutIfNeeded()
-        spinner1.position = SCNVector3(0, -0.4, 0)
-        rootNode.addChildNode(spinner1)
+        let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        createTextEdit([
+//            "debug": true,
+            "alignment": "top-center",
+            "charLimit": 15,
+            "width": 0.4,
+            "height": 0.08,
+            "text": "",
+            "textSize": 0.04,
+            "textPadding": [0.02, 0.02, 0.02, 0.02],
+            "hint": "Password",
+            "hintColor": [0.9,0.9,0.9,0.75],
+            "localPosition": [0, 0.6, 0],
+            "password": true
+        ], nodeId: "text_edit1")
 
-        spinner2 = UiSpinnerNode()
-        spinner2.determinate = true
-        spinner2.value = 0.0
-        spinner2.height = 0.6
-        spinner2.layoutIfNeeded()
-        spinner2.position = SCNVector3(0, -0.4, 0)
-        rootNode.addChildNode(spinner2)
-
-        text = UiTextNode()
-        text.text = ""
-        text.alignment = .centerCenter
-        text.textSize = 0.08
-        text.position = SCNVector3(0, -0.4, 0)
-        rootNode.addChildNode(text)
-
-        // Uncomment to check if resources load properly.
-        //        let toggle = UiToggleNode()
-        //        toggle.height = 0.1
-        //        toggle.layoutIfNeeded()
-        //        rootNode.addChildNode(toggle)
-
-        // Uncomment to preview 3d models.
-        //        let model = UiModelNode()
-        //        model.url = Bundle.main.url(forResource: "box", withExtension: "glb", subdirectory: nil)
-        //        model.url = Bundle.main.url(forResource: "hedra_06", withExtension: "gltf", subdirectory: nil)
-        //        model.url = Bundle.main.url(forResource: "hedra", withExtension: "obj", subdirectory: nil)
-        //        rootNode.addChildNode(model);
+        createTextEdit([
+//            "debug": true,
+            "alignment": "top-center",
+            "width": 0.4,
+            "height": 0.6,
+            "text": loremIpsum,
+            "textSize": 0.04,
+            "textPadding": [0.02, 0.02, 0.02, 0.02],
+            "multiline": true,
+            "localPosition": [0, 0.4, 0]
+        ], nodeId: "text_edit2")
     }
 
-    fileprivate var lastTime: TimeInterval = 0
+    fileprivate func createTextEdit(_ props: [String: Any], nodeId: String) {
+        let textEdit = UiTextEditNode(props: props)
+        textEdit.layoutIfNeeded()
+        UiNodesManager.instance.registerNode(textEdit, nodeId: nodeId)
+        UiNodesManager.instance.addNodeToRoot(nodeId)
+    }
 }
 
 extension ViewController: ARSCNViewDelegate {
@@ -143,15 +109,5 @@ extension ViewController: ARSCNViewDelegate {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
-
-        var value = spinner2.value
-        value += CGFloat(deltaTime) * 0.1
-        if value > 1.0 {
-            value = 0.0
-        }
-        text.text = String(format: "%.2f", value)
-        text.layoutIfNeeded()
-        spinner2.value = value
-        spinner2.layoutIfNeeded()
     }
 }

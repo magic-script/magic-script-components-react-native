@@ -12,28 +12,16 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
-#import "RCTARViewManager.h"
-#import "RNMagicScript-Swift.h"
+import UIKit
 
-@implementation RCTARViewManager
-
-RCT_EXPORT_MODULE()
-
-- (UIView *)view {
-    return [RCTARView new];
+protocol InputDataProviding {
+    var value: Any? { get set }
+    var placeholder: String? { get }
+    var charLimit: Int { get }
+    var multiline: Bool { get }
+    var password: Bool { get }
+    var keyboardType: UIKeyboardType? { get }
+    var textContentType: UITextContentType? { get }
 }
-
-+ (BOOL)requiresMainQueueSetup {
-    return YES;
-}
-
-- (dispatch_queue_t)methodQueue {
-    return dispatch_get_main_queue();
-}
-
-RCT_EXPORT_VIEW_PROPERTY(debug, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(rendersContinuously, BOOL)
-
-@end

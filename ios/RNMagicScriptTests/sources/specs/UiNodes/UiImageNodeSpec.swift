@@ -40,6 +40,12 @@ class UiImageNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should update 'filePath' prop") {
                     let referenceFilePath = "file://file_path"
@@ -56,9 +62,9 @@ class UiImageNodeSpec: QuickSpec {
                 }
 
                 it("should update 'height' prop") {
-                    let referenceHeight = 2.75
-                    node.update(["width" : referenceHeight])
-                    expect(node.width).to(beCloseTo(referenceHeight))
+                    let referenceHeight = 3.85
+                    node.update(["height" : referenceHeight])
+                    expect(node.height).to(beCloseTo(referenceHeight))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 

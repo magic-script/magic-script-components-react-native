@@ -34,10 +34,7 @@ import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.InputDialogBuilder
-import com.reactlibrary.utils.FontParamsReader
-import com.reactlibrary.utils.FontProvider
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
@@ -97,21 +94,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     init {
         // set default values of properties
-        if (!properties.containsKey(PROP_TEXT_SIZE)) {
-            properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        }
-
-        if (!properties.containsKey(PROP_TEXT_PADDING)) {
-            properties.putSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
-        }
-
-        if (!properties.containsKey(PROP_ALIGNMENT)) {
-            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        }
-
-        if (!properties.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
-            properties.putString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
-        }
+        properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        properties.putDefaultSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
+        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefaultString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
     }
 
     override fun provideView(context: Context): View {

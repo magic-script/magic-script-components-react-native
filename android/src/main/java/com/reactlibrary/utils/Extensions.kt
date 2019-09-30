@@ -16,8 +16,10 @@
 
 package com.reactlibrary.utils
 
+import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import java.io.Serializable
 
 /**
  * ==========Extension methods============
@@ -34,4 +36,28 @@ fun Any.logMessage(message: String, warn: Boolean = false) {
 fun EditText.setTextAndMoveCursor(text: String) {
     this.setText("")
     this.append(text)
+}
+
+fun Bundle.putDefaultDouble(key: String, value: Double) {
+    if (!containsKey(key)) {
+        putDouble(key, value)
+    }
+}
+
+fun Bundle.putDefaultString(key: String, value: String) {
+    if (!containsKey(key)) {
+        putString(key, value)
+    }
+}
+
+fun Bundle.putDefaultBoolean(key: String, value: Boolean) {
+    if (!containsKey(key)) {
+        putBoolean(key, value)
+    }
+}
+
+fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
+    if (!containsKey(key)) {
+        putSerializable(key, value)
+    }
 }

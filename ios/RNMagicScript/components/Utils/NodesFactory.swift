@@ -32,11 +32,26 @@ import SceneKit
 
     @objc static func createOutlineNode(size: CGSize, cornerRadius: CGFloat, thickness: CGFloat = 0, color: UIColor = UIColor.white) -> SCNNode {
         let geometry = SCNRectangle(size: size, thickness: thickness, radius: cornerRadius)
+        geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.diffuse.contents = color
         return SCNNode(geometry: geometry)
     }
 
     @objc static func createOutlineNode(width: CGFloat, height: CGFloat, cornerRadius: CGFloat, thickness: CGFloat = 0, color: UIColor = UIColor.white) -> SCNNode {
         return NodesFactory.createOutlineNode(size: CGSize(width: width, height: height), cornerRadius: cornerRadius, thickness: thickness, color: color)
+    }
+
+    @objc static func createLinesNode(vertices: [SCNVector3], color: UIColor? = UIColor.white) -> SCNNode {
+        var indices: [Int16] = []
+        for i in 1..<vertices.count {
+            indices.append(Int16(i - 1))
+            indices.append(Int16(i))
+        }
+        let source = SCNGeometrySource(vertices: vertices)
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        let geometry = SCNGeometry(sources: [source], elements: [element])
+        geometry.firstMaterial?.lightingModel = .constant
+        geometry.firstMaterial?.diffuse.contents = color
+        return SCNNode(geometry: geometry)
     }
 }

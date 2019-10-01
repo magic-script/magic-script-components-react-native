@@ -84,6 +84,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     private var hintColor = context.getColor(R.color.text_color_hint)
     private var textGravityVertical: Int = Gravity.CENTER_VERTICAL
     private var textGravityHorizontal: Int = Gravity.LEFT
+    private var isSelected = false
 
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
@@ -116,6 +117,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         container.text_edit.setOnClickListener {
             val activity = ArViewManager.getActivityRef().get()
             if (activity != null) {
+                isSelected = true
                 startCursorAnimation()
                 showBorder()
                 view.text_edit_underline.visibility = View.INVISIBLE
@@ -169,7 +171,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun showBorder() {
-        view.background = context.getDrawable(R.drawable.text_edit_background_active)
+        adjustBackground()
 
         // add some padding because of rounded corners
         val multiline = properties.getBoolean(PROP_MULTILINE)
@@ -188,7 +190,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun hideBorder() {
-        view.setBackgroundResource(R.color.text_edit_background)
+        adjustBackground()
         view.setPadding(0, 0, 0, 0)
     }
 
@@ -290,6 +292,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             view.text_edit.setSingleLine(!isMultiline)
             textGravityVertical = if (isMultiline) Gravity.TOP else Gravity.CENTER_VERTICAL
             view.text_edit.gravity = textGravityVertical or textGravityHorizontal
+            adjustBackground()
         }
     }
 
@@ -377,12 +380,23 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
 
         builder.setOnCloseListener {
+            isSelected = false
             stopCursorAnimation()
             hideBorder()
             view.text_edit_underline.visibility = View.VISIBLE
         }
 
         builder.show()
+    }
+
+    private fun adjustBackground() {
+        if (isSelected) {
+            view.background = context.getDrawable(R.drawable.text_edit_background_active)
+        } else if (properties.getBoolean(PROP_MULTILINE)) {
+            view.background = context.getDrawable(R.drawable.text_edit_background)
+        } else {
+            view.setBackgroundResource(0) // no background
+        }
     }
 
     private fun generateVisibleText(input: String): String {

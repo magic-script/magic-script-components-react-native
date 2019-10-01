@@ -43,7 +43,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         const val PROP_FONT_PARAMS = "fontParams"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
-        const val DEFAULT_ALIGNMENT = "center-left" // view alignment (pivot)
+        const val DEFAULT_ALIGNMENT = "bottom-left" // view alignment (pivot)
         const val WRAP_CONTENT_DIMENSION = 0F // 0 width or height means "wrap content"
     }
 

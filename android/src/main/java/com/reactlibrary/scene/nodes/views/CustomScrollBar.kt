@@ -56,7 +56,7 @@ class CustomScrollBar @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
-            return true
+            return false
         }
 
         val (begin, end) = thumbBounds()

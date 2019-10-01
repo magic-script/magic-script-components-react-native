@@ -106,7 +106,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
 
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null || fontParams.style == null) {
+        if (fontParams?.weight == null && fontParams?.style == null) {
+            // setting a default typeface
             container.text_edit.typeface = FontProvider.provideFont(context)
         }
 
@@ -304,12 +305,12 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS)
+        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
 
-        if (fontParams?.weight != null && fontParams.style != null) {
+        if (fontParams.weight != null || fontParams.style != null) {
             view.text_edit.typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
         }
-        if (fontParams?.allCaps != null) {
+        if (fontParams.allCaps != null) {
             view.text_edit.isAllCaps = fontParams.allCaps
         }
     }

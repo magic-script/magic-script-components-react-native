@@ -31,13 +31,11 @@ class FontProvider {
     companion object {
 
         private const val FONTS_DIR = "fonts"
-        private const val DEFAULT_FONT_FAMILY = "sans-serif"
         private val externalFont = LominoFont()
         private val DEFAULT_WEIGHT = FontWeight.REGULAR
         private val DEFAULT_STYLE = FontStyle.NORMAL
 
-        // fonts cache
-        private val typefacesCache = hashMapOf<String, FontState>()
+        private val fontsCache = hashMapOf<String, FontState>()
 
         /**
          * Returns a typeface for a given [weight] and [style].
@@ -48,65 +46,33 @@ class FontProvider {
             val fontWeight = weight ?: DEFAULT_WEIGHT
             val fontStyle = style ?: DEFAULT_STYLE
             val fontName = externalFont.getFileName(fontWeight, fontStyle)
-
-            val fontState = typefacesCache[fontName]
+            val fontState = fontsCache[fontName]
             when {
                 fontState == null -> { // need to load
                     val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
                     if (!fontsCatalogExists) {
-                        typefacesCache[fontName] = FontState(true, null)
-                        return getDefault(fontWeight, fontStyle)
+                        fontsCache[fontName] = FontState(true, null)
+                        return DefaultFontProvider.provideFont(fontWeight, fontStyle)
                     }
 
                     val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
                     if (!fontExists) {
-                        typefacesCache[fontName] = FontState(true, null)
-                        return getDefault(fontWeight, fontStyle)
+                        fontsCache[fontName] = FontState(true, null)
+                        return DefaultFontProvider.provideFont(fontWeight, fontStyle)
                     }
 
                     val fontPath = "$FONTS_DIR/$fontName"
                     val typeface = Typeface.createFromAsset(context.assets, fontPath)
-                    typefacesCache[fontName] = FontState(false, typeface)
+                    fontsCache[fontName] = FontState(false, typeface)
                     logMessage("External font loaded: $fontName")
                     return typeface
 
                 }
+
                 fontState.loadError -> // already tried to load this font, but it's absent
-                    return getDefault(fontWeight, fontStyle)
+                    return DefaultFontProvider.provideFont(fontWeight, fontStyle)
+
                 else -> return fontState.typeface!!
-            }
-        }
-
-        // returns default android Typeface
-        private fun getDefault(fontWeight: FontWeight, fontStyle: FontStyle): Typeface {
-            val fontStyleId: Int = when (fontWeight) {
-                FontWeight.EXTRA_LIGHT,
-                FontWeight.LIGHT,
-                FontWeight.REGULAR,
-                FontWeight.MEDIUM ->
-                    if (fontStyle == FontStyle.NORMAL) {
-                        Typeface.NORMAL
-                    } else {
-                        Typeface.ITALIC
-                    }
-                FontWeight.BOLD,
-                FontWeight.EXTRA_BOLD ->
-                    if (fontStyle == FontStyle.NORMAL) {
-                        Typeface.BOLD
-                    } else {
-                        Typeface.BOLD_ITALIC
-                    }
-
-            }
-
-            val name: String = DEFAULT_FONT_FAMILY + fontStyleId
-            val fontState = typefacesCache[name]
-            if (fontState == null) {
-                val typeface = Typeface.create(DEFAULT_FONT_FAMILY, fontStyleId)
-                typefacesCache[name] = FontState(false, typeface)
-                return typeface
-            } else {
-                return fontState.typeface!!
             }
         }
 

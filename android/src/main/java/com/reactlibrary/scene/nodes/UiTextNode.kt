@@ -59,7 +59,8 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null || fontParams.style == null) {
+        if (fontParams?.weight == null && fontParams?.style == null) {
+            // setting a default typeface
             view.typeface = FontProvider.provideFont(context)
         }
         return view
@@ -173,12 +174,12 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS)
+        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
 
-        if (fontParams?.weight != null && fontParams.style != null) {
+        if (fontParams.weight != null || fontParams.style != null) {
             (view as TextView).typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
         }
-        if (fontParams?.allCaps != null) {
+        if (fontParams.allCaps != null) {
             (view as TextView).isAllCaps = fontParams.allCaps
         }
     }

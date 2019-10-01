@@ -9,6 +9,7 @@ import LinearLayoutBuilder from './elements/builders/linear-layout-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
 import ScrollBarBuilder from './elements/builders/scroll-bar-builder.js';
+import ScrollViewBuilder from './elements/builders/scroll-view-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
 import TextBuilder from './elements/builders/text-builder.js';
@@ -34,6 +35,7 @@ export default {
         'toggle': (componentManager) => new ToggleBuilder(componentManager),
         'progressBar': (componentManager) => new ProgressBarBuilder(componentManager),
         'scrollBar': (componentManager) => new ScrollBarBuilder(componentManager),
+        'scrollView': (componentManager) => new ScrollViewBuilder(componentManager),
         'slider': (componentManager) => new SliderBuilder(componentManager),
         'spinner': (componentManager) => new SpinnerBuilder(componentManager),
         'view': (componentManager) => new GroupBuilder(componentManager),

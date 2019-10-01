@@ -38,6 +38,7 @@ import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
+import com.reactlibrary.scene.nodes.UiScrollViewNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
@@ -151,6 +152,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createScrollBarNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiScrollBarNode(props, context), nodeId));
+    }
+
+    @ReactMethod
+    public void createScrollViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiScrollViewNode(props, context), nodeId));
     }
 
     @ReactMethod

@@ -52,7 +52,7 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
-    fun setOnScrollChangeListener(listener:((on: Float) -> Unit)){
+    fun setOnScrollChangeListener(listener:(on: Float) -> Unit){
         (view as CustomScrollBar).onScrollChangeListener = listener
     }
 

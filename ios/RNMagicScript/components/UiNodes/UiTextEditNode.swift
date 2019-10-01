@@ -161,6 +161,7 @@ import SpriteKit
         contentNode.addChildNode(backgroundNode)
 
         lineNode = NodesFactory.createLinesNode(vertices: [SCNVector3(x: 0, y: 0, z: 0), SCNVector3(x: 1, y: 0, z: 0)], color: .white)
+        lineNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         contentNode.addChildNode(lineNode)
 
         assert(labelNode == nil, "Node must not be initialized!")
@@ -292,10 +293,9 @@ import SpriteKit
     }
 
     @objc override func updateLayout() {
-        backgroundNode.isHidden = !multiline
-        // Use depth buffer only if background node is hidden
-        let shouldReadFromDepthBuffer: Bool = backgroundNode.isHidden
-        lineNode.geometry?.firstMaterial?.readsFromDepthBuffer = shouldReadFromDepthBuffer
+        // Set opacity in order to show or hide background image. Setting .isHidden to true
+        // causes that the area of text edit is not fully clickable.
+        backgroundNode.opacity = multiline ? 1.0 : 0.01
 
         if updateLine {
             updateLine = false
@@ -308,12 +308,12 @@ import SpriteKit
             labelNode.isHidden = false
             hintNode.isHidden = true
             labelNode.reload()
-            labelNode.readsFromDepthBuffer = shouldReadFromDepthBuffer
+            labelNode.readsFromDepthBuffer = false
         } else {
             labelNode.isHidden = true
             hintNode.isHidden = false
             hintNode.reload()
-            hintNode.readsFromDepthBuffer = shouldReadFromDepthBuffer
+            hintNode.readsFromDepthBuffer = false
         }
 
         if hasFocus && reloadOutline {

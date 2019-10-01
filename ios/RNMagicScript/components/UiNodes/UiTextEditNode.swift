@@ -58,7 +58,7 @@ import SpriteKit
     }
     @objc var hintColor: UIColor {
         get { return hintNode.textColor }
-        set { hintNode.textColor = newValue; setNeedsLayout() }
+        set { hintNode.textColor = newValue }
     }
     @objc var multiline: Bool {
         get { return labelNode.multiline }

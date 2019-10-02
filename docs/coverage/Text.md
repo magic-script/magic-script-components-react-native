@@ -6,7 +6,7 @@
 - alignment
 - localScale
 - ~~localRotation~~
-- enabled
+- ~~enabled~~
 - ~~onClick~~
 
 **Custom:**
@@ -15,5 +15,5 @@
 - boundsSize
 - textAlignment
 - textColor
-- allCaps
 - ~~charSpacing~~
+- ~~fontParams (weight, style, allCaps)~~

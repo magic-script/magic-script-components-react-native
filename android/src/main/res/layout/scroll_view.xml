@@ -22,26 +22,21 @@
     android:id="@+id/scroll_view">
 
     <com.reactlibrary.scene.nodes.views.CustomScrollBar
-        android:id="@+id/h_bar"
-        android:layout_width="240dp"
-        android:layout_height="16dp"
-        android:orientation="horizontal" />
+        android:id="@+id/v_bar"
+        android:layout_width="14dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="14dp"
+        />
 
     <com.reactlibrary.scene.nodes.views.CustomScrollBar
         android:id="@+id/v_bar"
-        android:layout_width="16dp"
-        android:layout_height="240dp" 
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="14dp"
         />
 
-    <!-- <com.reactlibrary.scene.nodes.views.CustomScrollBar
-        android:id="@+id/iv_toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_marginLeft="16dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/toggle_off"
-        tools:ignore="ContentDescription,RtlHardcoded" /> -->
-
 </com.reactlibrary.scene.nodes.views.CustomScrollView>
-<!-- </LinearLayout> -->

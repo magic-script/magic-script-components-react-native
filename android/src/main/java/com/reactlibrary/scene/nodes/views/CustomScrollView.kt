@@ -24,14 +24,20 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
+import com.reactlibrary.utils.logMessage
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : ViewGroup(context, attrs, defStyleAttr) {
+) : RelativeLayout(context, attrs, defStyleAttr) {
+
+    // override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int){
+    //     logMessage(p1.toString() + " " + p2.toString() + " " + p3.toString() + " " + p4.toString())
+    // }
 
     // private val backgroundSizeRatio = 0.66F
 

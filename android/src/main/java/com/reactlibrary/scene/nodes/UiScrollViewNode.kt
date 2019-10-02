@@ -26,10 +26,12 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
+import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 import kotlinx.android.synthetic.main.scroll_view.view.*
+import com.reactlibrary.utils.logMessage
 
 class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = false) {
@@ -40,6 +42,8 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         const val PROP_HEIGHT = "height"
     }
 
+    private lateinit var hBar: CustomScrollBar
+
     init {
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, 1.0)
@@ -48,7 +52,16 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
-        // return View(context, null, 0)
+        // val view = CustomScrollView(context)
+        // hBar = CustomScrollBar(context)
+
+        // hBar.layoutParams = ViewGroup.LayoutParams(100, 200)
+
+        // logMessage(hBar.width.toString())
+
+        // view.addView(hBar, 100, 100)
+
+        // return view
     }
 
     override fun applyProperties(props: Bundle) {

@@ -66,6 +66,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
         const val DEFAULT_SCROLLING = false // scrolling disabled
+        const val DEFAULT_CHARACTERS_LIMIT = 0.0 // indefinite
         const val SCROLLBAR_VISIBILITY_ALWAYS = "always"
         const val SCROLLBAR_VISIBILITY_AUTO = "auto"
         const val SCROLLBAR_VISIBILITY_OFF = "off"
@@ -333,9 +334,9 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         builder.setTitle(title)
         builder.setInputText(text)
 
-        if (properties.containsKey(PROP_CHARACTERS_LIMIT)) {
-            val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
-            builder.setMaxCharacters(charsLimit)
+        val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT, DEFAULT_CHARACTERS_LIMIT)
+        if (charsLimit > DEFAULT_CHARACTERS_LIMIT) {
+            builder.setMaxCharacters(charsLimit.toInt())
         }
 
         when (properties.getString(PROP_TEXT_ENTRY_MODE)) {

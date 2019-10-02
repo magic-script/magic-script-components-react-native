@@ -25,7 +25,7 @@
 - multiline
 - textPadding
 - scrolling
-- fontParams
+- fontParams (weight, style)
 - textEntry (normal, email, numeric)
 - ~~scrollBarVisibility~~
 - onTextChanged

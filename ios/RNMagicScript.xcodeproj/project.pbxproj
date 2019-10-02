@@ -15,6 +15,7 @@
 		442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
 		442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
 		4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */; };
+		442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -341,6 +342,7 @@
 		44226126232F9173006E2FBA /* MathsExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathsExtensionSpec.swift; sourceTree = "<group>"; };
 		442261352334059A006E2FBA /* SCNSpinnerCircle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircle.swift; sourceTree = "<group>"; };
 		44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircleSpec.swift; sourceTree = "<group>"; };
+		442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactorySpec.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
@@ -512,6 +514,14 @@
 				134814201AA4EA6300B7C361 /* libRNMagicScript.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		442AED4F2344B99C000B83AE /* InputAccessoryViews */ = {
+			isa = PBXGroup;
+			children = (
+				442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */,
+			);
+			path = InputAccessoryViews;
 			sourceTree = "<group>";
 		};
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
@@ -830,6 +840,7 @@
 			children = (
 				44F09306232D985A0081FF14 /* BaseNodes */,
 				44F09315232D985A0081FF14 /* Enums */,
+				442AED4F2344B99C000B83AE /* InputAccessoryViews */,
 				44F09318232D985A0081FF14 /* UiHelpers */,
 				44F0930B232D985A0081FF14 /* UiNodes */,
 				44F09316232D985A0081FF14 /* Utils */,
@@ -1480,6 +1491,7 @@
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
+				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,
 				44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */,

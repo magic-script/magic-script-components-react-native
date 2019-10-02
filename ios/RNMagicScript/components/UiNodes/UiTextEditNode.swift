@@ -161,7 +161,9 @@ import SpriteKit
         contentNode.addChildNode(backgroundNode)
 
         lineNode = NodesFactory.createLinesNode(vertices: [SCNVector3(x: 0, y: 0, z: 0), SCNVector3(x: 1, y: 0, z: 0)], color: .white)
+        lineNode.renderingOrder = 1
         lineNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        lineNode.scale = SCNVector3(x: 0, y: 1, z: 1)
         contentNode.addChildNode(lineNode)
 
         assert(labelNode == nil, "Node must not be initialized!")
@@ -360,9 +362,10 @@ extension UiTextEditNode: InputDataProviding {
     var value: Any? {
         get { return text }
         set {
-            if let newText = newValue as? String {
+            if let newText = newValue as? String, newText != text {
                 text = newText
                 layoutIfNeeded()
+                onTextChanged?(self, newText)
             }
         }
     }

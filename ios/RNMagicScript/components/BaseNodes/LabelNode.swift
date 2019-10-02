@@ -75,6 +75,7 @@ class LabelNode: SCNNode {
     fileprivate var labelGeometry: SCNText!
     fileprivate var labelNode: SCNNode!
     fileprivate var reloadNeeded: Bool = false
+    fileprivate var cachedAttributes: [NSAttributedString.Key : Any] = [:]
 #if targetEnvironment(simulator)
     fileprivate var originNode: SCNNode?
     fileprivate var borderNode: SCNNode?
@@ -115,10 +116,13 @@ class LabelNode: SCNNode {
         return getTextSize() / LabelNode.geometryFixedTextSizeInMeters
     }
 
-    fileprivate func getString(_ font: UIFont, scale: CGFloat) -> Any? {
+    fileprivate func getString(_ attributes: [NSAttributedString.Key: Any]) -> Any? {
         guard let text = text else { return nil }
-
         let string: String = allCaps ? text.uppercased() : text
+        return NSAttributedString(string: string, attributes: attributes)
+    }
+
+    fileprivate func createStringAttributes(font: UIFont, scale: CGFloat) -> [NSAttributedString.Key: Any] {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment.nsTextAlignment
         paragraphStyle.lineBreakMode = multiline ? .byWordWrapping : .byClipping
@@ -130,15 +134,16 @@ class LabelNode: SCNNode {
             NSAttributedString.Key.paragraphStyle: paragraphStyle,
         ]
 
-        return NSAttributedString(string: string, attributes: attributes)
+        return attributes
     }
 
     fileprivate func updateLabelContents() {
         let scale = getTextScale()
-        let size = (getSize() - getPaddingSize()) / scale
         let font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
+        cachedAttributes = createStringAttributes(font: font, scale: scale)
+        let size = (getSize() - getPaddingSize()) / scale
         labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
-        labelGeometry.string = getString(font, scale: scale)
+        labelGeometry.string = getString(cachedAttributes)
         labelGeometry.firstMaterial?.diffuse.contents = textColor
         labelNode.scale = SCNVector3(scale, scale, scale)
 
@@ -161,7 +166,7 @@ class LabelNode: SCNNode {
             return boundsSize
         }
 
-        let preferredSizeInPixels = getPreferredSizeInPixels(text, attributes: [NSAttributedString.Key.font : getFont()])
+        let preferredSizeInPixels = getPreferredSizeInPixels(text, attributes: cachedAttributes)
         let width: CGFloat = (boundsSize.width > 0) ? boundsSize.width : preferredSizeInPixels.width
         let height: CGFloat = (boundsSize.height > 0) ? boundsSize.height : preferredSizeInPixels.height
         return CGSize(width: width, height: height)
@@ -191,7 +196,6 @@ class LabelNode: SCNNode {
         labelNode.position = SCNVector3(offset.width, offset.height, 0)
     }
 }
-
 
 // MARK: - Debug mode
 extension LabelNode {

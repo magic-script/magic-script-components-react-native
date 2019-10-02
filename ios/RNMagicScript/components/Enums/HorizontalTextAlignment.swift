@@ -54,19 +54,6 @@ import UIKit
         }
     }
 
-    public var textLayerAlignmentMode: CATextLayerAlignmentMode {
-        switch self {
-        case .center:
-            return CATextLayerAlignmentMode.center
-        case .justify:
-            return CATextLayerAlignmentMode.justified
-        case .left:
-            return CATextLayerAlignmentMode.left
-        case .right:
-            return CATextLayerAlignmentMode.right
-        }
-    }
-
     public var nsTextAlignment: NSTextAlignment {
         switch self {
         case .center:

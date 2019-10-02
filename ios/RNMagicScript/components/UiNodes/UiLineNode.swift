@@ -77,24 +77,14 @@ import SceneKit
         guard points.count >= 2 else { return nil }
         let vertices: [SCNVector3] = points.map { SCNVector3(Float($0.x), Float($0.y), 0) }
 
-        let data = NSData(bytes: vertices, length: MemoryLayout<SCNVector3>.size * vertices.count) as Data
-        let vertexSource = SCNGeometrySource(data: data,
-                                             semantic: .vertex,
-                                             vectorCount: vertices.count,
-                                             usesFloatComponents: true,
-                                             componentsPerVector: 3,
-                                             bytesPerComponent: MemoryLayout<Float>.size,
-                                             dataOffset: 0,
-                                             dataStride: MemoryLayout<SCNVector3>.stride)
-
         var indices: [Int16] = []
         for i in 1..<vertices.count {
             indices.append(Int16(i - 1))
             indices.append(Int16(i))
         }
-        let indexData = NSData(bytes: indices, length: MemoryLayout<Int16>.size * indices.count) as Data
-        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count/2, bytesPerIndex: MemoryLayout<Int16>.size)
-        let linesGeometry = SCNGeometry(sources: [vertexSource], elements: [element])
+        let source = SCNGeometrySource(vertices: vertices)
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        let linesGeometry = SCNGeometry(sources: [source], elements: [element])
         linesGeometry.firstMaterial?.lightingModel = .constant
         return linesGeometry
     }

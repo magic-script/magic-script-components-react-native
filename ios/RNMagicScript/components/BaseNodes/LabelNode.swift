@@ -92,8 +92,6 @@ class LabelNode: SCNNode {
 
     fileprivate func setupNode() {
         labelGeometry = SCNText(string: "", extrusionDepth: 0)
-        labelGeometry.font = UIFont.font(with: .normal, weight: .regular, size: LabelNode.geometryFixedTextSizeInMeters)
-        labelGeometry.alignmentMode = CATextLayerAlignmentMode.left.rawValue
         labelGeometry.flatness = 0.5
         labelGeometry.firstMaterial?.lightingModel = .constant
         labelGeometry.firstMaterial?.diffuse.contents = UIColor.white
@@ -117,20 +115,33 @@ class LabelNode: SCNNode {
         return getTextSize() / LabelNode.geometryFixedTextSizeInMeters
     }
 
+    fileprivate func getString(_ font: UIFont, scale: CGFloat) -> Any? {
+        guard let text = text else { return nil }
+
+        let string: String = allCaps ? text.uppercased() : text
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = textAlignment.nsTextAlignment
+        paragraphStyle.lineBreakMode = multiline ? .byWordWrapping : .byClipping
+        paragraphStyle.lineHeightMultiple = lineSpacing
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.kern: charSpacing * textSize / scale,
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.paragraphStyle: paragraphStyle,
+        ]
+
+        return NSAttributedString(string: string, attributes: attributes)
+    }
+
     fileprivate func updateLabelContents() {
         let scale = getTextScale()
-        labelGeometry.string = allCaps ? text?.uppercased() : text
         let size = (getSize() - getPaddingSize()) / scale
+        let font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
         labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
+        labelGeometry.string = getString(font, scale: scale)
         labelGeometry.firstMaterial?.diffuse.contents = textColor
-        labelGeometry.font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
-        labelGeometry.isWrapped = multiline
-        labelGeometry.alignmentMode = textAlignment.textLayerAlignmentMode.rawValue
-        labelGeometry.truncationMode = CATextLayerTruncationMode.end.rawValue
-        labelNode?.removeFromParentNode()
-        labelNode = SCNNode(geometry: labelGeometry)
         labelNode.scale = SCNVector3(scale, scale, scale)
-        addChildNode(labelNode)
+
         updateTextNodePosition()
     }
 

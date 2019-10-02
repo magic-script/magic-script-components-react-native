@@ -22,9 +22,22 @@ extension UIFont {
         let name: String = UIFont.fontName(from: style, weight: weight)
         guard let font = UIFont(name: name, size: size) else {
             // return system font in case Lomino font not installed
-            return UIFont.systemFont(ofSize: 20.0, weight: .regular)
+            let systemFont = UIFont.systemFont(ofSize: size, weight: .regular)
+            if style == .italic {
+                return systemFont.with(traits: .traitItalic)
+            }
+
+            return systemFont
         }
         return font
+    }
+
+    public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
+      guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
+        return self
+      }
+
+      return UIFont(descriptor: descriptor, size: 0)
     }
 
     static fileprivate func fontName(from style: FontStyle, weight: FontWeight) -> String {

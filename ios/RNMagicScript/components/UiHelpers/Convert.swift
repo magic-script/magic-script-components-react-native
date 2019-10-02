@@ -103,6 +103,7 @@ class Convert {
         )
     }
 
+    // The padding order is: top, right, bottom, left.
     static func toPadding(_ value: Any?) -> UIEdgeInsets? {
         guard let padding = value as? [Any] else { return nil }
         guard padding.count == 4 else { return nil }

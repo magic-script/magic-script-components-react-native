@@ -80,7 +80,7 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void)onTextChangedEventReceived:(UiNode *)sender value:(NSString *)text {
+- (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onTextChanged" body:@{ @"nodeId": sender.name, @"text": text }];

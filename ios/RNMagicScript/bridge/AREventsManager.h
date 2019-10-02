@@ -26,7 +26,7 @@
 + (instancetype)instance;
 - (void)onPressEventReceived:(UiNode *)sender;
 - (void)onClickEventReceived:(UiNode *)sender;
-- (void)onTextChangedEventReceived:(UiNode *)sender value:(NSString *)text;
+- (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
 

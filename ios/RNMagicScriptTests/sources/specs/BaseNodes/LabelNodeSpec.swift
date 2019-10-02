@@ -66,7 +66,7 @@ class LabelNodeSpec: QuickSpec {
                 context("when text provided") {
                     it("should calculate it") {
                         node.text = "Label text"
-                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.051, height: 0.0144)))
+                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.0318, height: 0.0084)))
                     }
                 }
 
@@ -79,7 +79,7 @@ class LabelNodeSpec: QuickSpec {
             }
 
             context("when reloads") {
-                it("should recreate childe node") {
+                it("should not recreate child node") {
                     node.text = "Label text"
                     node.boundsSize = CGSize(width: 0.514, height: 0.14)
                     node.reload()
@@ -87,9 +87,7 @@ class LabelNodeSpec: QuickSpec {
                     node.text = "New Label text"
                     node.reload()
                     let childNodeAfterUpdate = node.childNodes.first!
-                    expect(childNodeAfterUpdate).toNot(equal(childNodeBeforeUpdate))
-                    expect(childNodeAfterUpdate.scale).to(beCloseTo(childNodeBeforeUpdate.scale))
-                    expect(childNodeAfterUpdate.position).to(beCloseTo(childNodeBeforeUpdate.position))
+                    expect(childNodeAfterUpdate).to(equal(childNodeBeforeUpdate))
                 }
             }
 
@@ -100,7 +98,7 @@ class LabelNodeSpec: QuickSpec {
                     node.text = referenceText
                     node.reload()
                     let textGeometry = node.childNodes.first?.geometry as! SCNText
-                    let textString = textGeometry.string as! String
+                    let textString = (textGeometry.string as! NSAttributedString).string
                     expect(textString).to(equal(referenceText.uppercased()))
                 }
             }

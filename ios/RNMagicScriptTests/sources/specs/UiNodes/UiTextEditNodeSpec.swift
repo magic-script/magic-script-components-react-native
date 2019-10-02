@@ -26,7 +26,6 @@ class UiTextEditNodeSpec: QuickSpec {
 
             beforeEach {
                 node = UiTextEditNode(props: [:])
-                node.layoutIfNeeded()
             }
 
             context("initial properties") {
@@ -165,7 +164,7 @@ class UiTextEditNodeSpec: QuickSpec {
                     let referenceHintColor = UIColor.green
                     node.update(["hintColor" : referenceHintColor.toArrayOfFloat])
                     expect(node.hintColor).to(beCloseTo(referenceHintColor))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
 
                     let hintNode = self.getHintNode(node)!
                     expect(hintNode.textColor).to(beCloseTo(referenceHintColor))
@@ -323,19 +322,23 @@ class UiTextEditNodeSpec: QuickSpec {
             context("when initialized") {
                 it("should contain three child nodes") {
                     let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(3))
+                    expect(childNodes.count).to(equal(4))
                     expect(childNodes[0]).notTo(beNil()) // background node
-                    expect(childNodes[1] is LabelNode).to(beTrue()) // text node
-                    expect(childNodes[2] is LabelNode).to(beTrue()) // hint node
+                    expect(childNodes[0].geometry as? SCNPlane).notTo(beNil())
+                    expect(childNodes[1]).notTo(beNil()) // line node
+                    expect(childNodes[2] is LabelNode).to(beTrue()) // text node
+                    expect(childNodes[3] is LabelNode).to(beTrue()) // hint node
                 }
 
-                it("should contain three zero-sized nodes") {
+                it("should contain four zero-sized nodes") {
                     let childNodes = node.contentNode.childNodes
                     let backgroundNode = childNodes[0]
-                    let textNode = childNodes[1] as! LabelNode
-                    let hintNode = childNodes[2] as! LabelNode
+                    let lineNode = childNodes[1]
+                    let textNode = childNodes[2] as! LabelNode
+                    let hintNode = childNodes[3] as! LabelNode
                     let plane = backgroundNode.geometry as! SCNPlane
                     expect(CGSize(width: plane.width, height: plane.height)).to(beCloseTo(CGSize.zero))
+                    expect(lineNode.scale.x).to(beCloseTo(0))
                     expect(textNode.boundsSize).to(beCloseTo(CGSize.zero))
                     expect(hintNode.boundsSize).to(beCloseTo(CGSize.zero))
                 }
@@ -355,21 +358,21 @@ class UiTextEditNodeSpec: QuickSpec {
                 }
 
                 it("should not display outline if focused and has no size") {
-                    expect(node.contentNode.childNodes.count).to(equal(3))
+                    expect(node.contentNode.childNodes.count).to(equal(4))
                     node.enterFocus()
-                    expect(node.contentNode.childNodes.count).to(equal(3))
+                    expect(node.contentNode.childNodes.count).to(equal(4))
                 }
 
                 it("should have outline when focused") {
                     node.update(["width": 0.8, "height": 0.2])
                     let childNodesBefore = node.contentNode.childNodes
-                    expect(childNodesBefore.count).to(equal(3))
+                    expect(childNodesBefore.count).to(equal(4))
 
                     node.enterFocus()
                     node.layoutIfNeeded()
                     let childNodesAfter = node.contentNode.childNodes
-                    expect(childNodesAfter.count).to(equal(4))
-                    let outlineNode = childNodesAfter[3]
+                    expect(childNodesAfter.count).to(equal(5))
+                    let outlineNode = childNodesAfter[4]
                     expect(outlineNode.isHidden).to(beFalse())
                 }
 
@@ -378,8 +381,8 @@ class UiTextEditNodeSpec: QuickSpec {
                     node.enterFocus()
                     node.leaveFocus()
                     let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(4))
-                    let outlineNode = childNodes[3]
+                    expect(childNodes.count).to(equal(5))
+                    let outlineNode = childNodes[4]
                     expect(outlineNode.isHidden).to(beTrue())
                 }
             }
@@ -452,11 +455,15 @@ class UiTextEditNodeSpec: QuickSpec {
         return parent.contentNode.childNodes.first
     }
 
+    fileprivate func getBottomLineNode(_ parent: UiTextEditNode) -> SCNNode? {
+        return parent.contentNode.childNodes[1]
+    }
+
     fileprivate func getLabelNode(_ parent: UiTextEditNode) -> LabelNode? {
-        return parent.contentNode.childNodes[1] as? LabelNode
+        return parent.contentNode.childNodes[2] as? LabelNode
     }
 
     fileprivate func getHintNode(_ parent: UiTextEditNode) -> LabelNode? {
-        return parent.contentNode.childNodes[2] as? LabelNode
+        return parent.contentNode.childNodes[3] as? LabelNode
     }
 }

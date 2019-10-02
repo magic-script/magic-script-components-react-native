@@ -28,6 +28,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.utils.FontParamsReader
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -144,7 +145,8 @@ class UiTextNodeTest {
 
     @Test
     fun shouldApplyCapitalLettersWhenAllCapsPropertyIsTrue() {
-        val props = JavaOnlyMap.of(UiTextNode.PROP_ALL_CAPS, true)
+        val allCapsProp = JavaOnlyMap.of(FontParamsReader.PROP_ALL_CAPS, true)
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_FONT_PARAMS, allCapsProp)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -153,9 +155,9 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyCharacterSpacingWhenSpacingPropertyPresent() {
+    fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
         val spacing = 0.1 // 'EM' units
-        val props = JavaOnlyMap.of(UiTextNode.PROP_CHARACTER_SPACING, spacing)
+        val props = JavaOnlyMap.of(UiTextNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
 
         node.build()

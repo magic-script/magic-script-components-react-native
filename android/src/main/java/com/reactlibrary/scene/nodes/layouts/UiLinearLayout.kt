@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- package com.reactlibrary.scene.nodes.layouts
+
+package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
@@ -25,6 +25,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultString
 
 class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
@@ -48,9 +49,7 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
         // set default values of properties
 
         // alignment of the layout itself (pivot)
-        if (!properties.containsKey(PROP_ALIGNMENT)) {
-            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        }
+        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
     }
 
     var orientation = properties.getString(PROP_ORIENTATION, ORIENTATION_DEFAULT)

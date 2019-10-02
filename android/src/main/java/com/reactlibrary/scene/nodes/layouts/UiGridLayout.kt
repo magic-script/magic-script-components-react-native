@@ -25,6 +25,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultString
 
 class UiGridLayout(initProps: ReadableMap) : UiLayout(initProps) {
 
@@ -47,9 +48,7 @@ class UiGridLayout(initProps: ReadableMap) : UiLayout(initProps) {
         // set default values of properties
 
         // alignment of the grid itself (pivot)
-        if (!properties.containsKey(PROP_ALIGNMENT)) {
-            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        }
+        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
     }
 
     var columns: Int = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble()).toInt()

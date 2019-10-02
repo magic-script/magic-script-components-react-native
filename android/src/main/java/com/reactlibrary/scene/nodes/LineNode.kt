@@ -26,7 +26,7 @@ import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ShapeFactory
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.*
 
 // Node that represents a chain of lines
 class LineNode(initProps: ReadableMap, private val context: Context) :
@@ -37,7 +37,7 @@ class LineNode(initProps: ReadableMap, private val context: Context) :
         const val PROP_POINTS = "points"
         const val PROP_COLOR = "color"
 
-        private const val LINE_THICKNESS = 0.002f // in meters
+        private const val LINE_THICKNESS = 0.006f // in meters
     }
 
     override fun applyProperties(props: Bundle) {
@@ -69,6 +69,7 @@ class LineNode(initProps: ReadableMap, private val context: Context) :
         val color = if (androidColor != null) Color(androidColor) else Color(1f, 1f, 1f)
 
         var idx = 0
+        logMessage(points.size.toString())
         while (idx + 1 < points.size) {
             val start = points[idx]
             val end = points[idx + 1]

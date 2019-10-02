@@ -26,6 +26,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
+import com.reactlibrary.utils.logMessage
 
 class CustomScrollBar @JvmOverloads constructor(
         context: Context,
@@ -52,6 +53,10 @@ class CustomScrollBar @JvmOverloads constructor(
     private var touchOffset = 0F
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
+
+    init {
+        logMessage("dupa2")
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
@@ -86,6 +91,8 @@ class CustomScrollBar @JvmOverloads constructor(
         super.onDraw(canvas)
         drawBackground(canvas)
         drawThumb(canvas)
+        logMessage(width.toString() + " " + height.toString())
+        logMessage("dupa1")
     }
 
     private fun drawBackground(canvas: Canvas) {

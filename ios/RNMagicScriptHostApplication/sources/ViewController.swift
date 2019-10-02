@@ -88,10 +88,13 @@ class ViewController: UIViewController {
             "alignment": "top-center",
             "width": 0.4,
             "height": 0.6,
+            "hint": "Put some text...",
             "text": loremIpsum,
             "textSize": 0.04,
             "textPadding": [0.02, 0.02, 0.02, 0.02],
             "multiline": true,
+            "charSpacing": 0.1,
+            "lineSpacing": 2.0,
             "localPosition": [0, 0.4, 0]
         ], nodeId: "text_edit2")
     }

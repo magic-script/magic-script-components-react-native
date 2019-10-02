@@ -58,7 +58,7 @@ import SpriteKit
     }
     @objc var hintColor: UIColor {
         get { return hintNode.textColor }
-        set { hintNode.textColor = newValue; setNeedsLayout() }
+        set { hintNode.textColor = newValue }
     }
     @objc var multiline: Bool {
         get { return labelNode.multiline }
@@ -106,6 +106,7 @@ import SpriteKit
             labelNode.boundsSize = size
             hintNode.boundsSize = size
             reloadOutline = true
+            updateLine = true
             setNeedsLayout()
         }
     }
@@ -117,6 +118,7 @@ import SpriteKit
             labelNode.boundsSize = size
             hintNode.boundsSize = size
             reloadOutline = true
+            updateLine = true
             setNeedsLayout()
         }
     }
@@ -127,8 +129,10 @@ import SpriteKit
     fileprivate var labelNode: LabelNode!
     fileprivate var hintNode: LabelNode!
     fileprivate var backgroundNode: SCNNode!
+    fileprivate var lineNode: SCNNode!
     fileprivate var outlineNode: SCNNode!
     fileprivate var reloadOutline: Bool = false
+    fileprivate var updateLine: Bool = true
 
     @objc override var canHaveFocus: Bool {
         return enabled
@@ -155,6 +159,10 @@ import SpriteKit
 
         backgroundNode = NodesFactory.createPlaneNode(width: 0, height: 0, image: ImageAsset.textEditBackground.image)
         contentNode.addChildNode(backgroundNode)
+
+        lineNode = NodesFactory.createLinesNode(vertices: [SCNVector3(x: 0, y: 0, z: 0), SCNVector3(x: 1, y: 0, z: 0)], color: .white)
+        lineNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        contentNode.addChildNode(lineNode)
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
@@ -285,6 +293,16 @@ import SpriteKit
     }
 
     @objc override func updateLayout() {
+        // Set opacity in order to show or hide background image. Setting .isHidden to true
+        // causes that the area of text edit is not fully clickable.
+        backgroundNode.opacity = multiline ? 1.0 : 0.01
+
+        if updateLine {
+            updateLine = false
+            lineNode.scale = SCNVector3(x: Float(width), y: 1, z: 1)
+            lineNode.position = SCNVector3(x: -0.5 * Float(width), y: -0.5 * Float(height), z: 0)
+        }
+
         let hasText: Bool = (text?.count ?? 0 > 0)
         if hasText {
             labelNode.isHidden = false

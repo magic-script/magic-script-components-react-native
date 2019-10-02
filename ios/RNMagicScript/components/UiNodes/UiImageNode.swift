@@ -131,21 +131,10 @@ import SceneKit
             SCNVector3( 0.5,  0.5, 0),
             SCNVector3(-0.5,  0.5, 0)
         ]
-
-        let data = NSData(bytes: vertices, length: MemoryLayout<SCNVector3>.size * vertices.count) as Data
-        let vertexSource = SCNGeometrySource(data: data,
-                                             semantic: .vertex,
-                                             vectorCount: vertices.count,
-                                             usesFloatComponents: true,
-                                             componentsPerVector: 3,
-                                             bytesPerComponent: MemoryLayout<Float>.size,
-                                             dataOffset: 0,
-                                             dataStride: MemoryLayout<SCNVector3>.stride)
-
         let indices: [Int16] = [0, 1, 1, 2, 2, 3, 3, 0]
-        let indexData = NSData(bytes: indices, length: MemoryLayout<Int16>.size * indices.count) as Data
-        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count/2, bytesPerIndex: MemoryLayout<Int16>.size)
-        let frameGeometry = SCNGeometry(sources: [vertexSource], elements: [element])
+        let source = SCNGeometrySource(vertices: vertices)
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        let frameGeometry = SCNGeometry(sources: [source], elements: [element])
         frameGeometry.firstMaterial?.lightingModel = .constant
         frameGeometry.firstMaterial?.diffuse.contents = UIColor.white
         return frameGeometry

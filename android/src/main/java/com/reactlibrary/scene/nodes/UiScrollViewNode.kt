@@ -51,7 +51,8 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
+        view.h_bar.isVertical = false
         // val view = CustomScrollView(context)
         // hBar = CustomScrollBar(context)
 
@@ -61,7 +62,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
         // view.addView(hBar, 100, 100)
 
-        // return view
+        return view
     }
 
     override fun applyProperties(props: Bundle) {

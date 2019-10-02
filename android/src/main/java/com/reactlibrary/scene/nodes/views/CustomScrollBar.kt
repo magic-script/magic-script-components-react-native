@@ -55,7 +55,6 @@ class CustomScrollBar @JvmOverloads constructor(
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
     init {
-        logMessage("dupa2")
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -92,7 +91,6 @@ class CustomScrollBar @JvmOverloads constructor(
         drawBackground(canvas)
         drawThumb(canvas)
         logMessage(width.toString() + " " + height.toString())
-        logMessage("dupa1")
     }
 
     private fun drawBackground(canvas: Canvas) {

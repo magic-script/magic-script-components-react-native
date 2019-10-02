@@ -31,7 +31,7 @@
         />
 
     <com.reactlibrary.scene.nodes.views.CustomScrollBar
-        android:id="@+id/v_bar"
+        android:id="@+id/h_bar"
         android:layout_width="match_parent"
         android:layout_height="14dp"
         android:layout_alignParentLeft="true"

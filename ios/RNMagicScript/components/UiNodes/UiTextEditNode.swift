@@ -360,9 +360,10 @@ extension UiTextEditNode: InputDataProviding {
     var value: Any? {
         get { return text }
         set {
-            if let newText = newValue as? String {
+            if let newText = newValue as? String, newText != text {
                 text = newText
                 layoutIfNeeded()
+                onTextChanged?(self, newText)
             }
         }
     }

@@ -88,8 +88,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
-            val visibleText = generateVisibleText(text)
-            view.text_edit.text = generateTextWithCursor(visibleText, cursorVisible)
+            refreshVisibleText()
             cursorVisible = !cursorVisible
             mainHandler.postDelayed(this, CURSOR_BLINK_INTERVAL)
         }
@@ -197,22 +196,16 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     private fun setText(props: Bundle) {
         val text = props.getString(PROP_TEXT)
         if (text != null) {
-            setText(text)
-            setNeedsRebuild()
+            this.text = text
+            refreshVisibleText()
         }
-    }
-
-    private fun setText(txt: String) {
-        view.text_edit.text = generateVisibleText(txt)
-        view.text_edit.setTextColor(textColor) // clear hint color
-        this.text = txt
     }
 
     private fun setHint(props: Bundle) {
         val hint = props.getString(PROP_HINT)
         if (hint != null) {
-            setHint(hint)
-            setNeedsRebuild()
+            this.hint = hint
+            refreshVisibleText()
         }
     }
 
@@ -220,16 +213,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val color = PropertiesReader.readColor(props, PROP_HINT_COLOR)
         if (color != null) {
             this.hintColor = color
-            if (isHintDisplayed()) {
-                view.text_edit.setTextColor(color)
-            }
+            refreshVisibleText()
         }
-    }
-
-    private fun setHint(hint: String) {
-        this.hint = hint
-        view.text_edit.text = hint
-        view.text_edit.setTextColor(hintColor)
     }
 
     private fun setTextSize(props: Bundle) {
@@ -237,7 +222,6 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
             view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            setNeedsRebuild()
         }
     }
 
@@ -264,9 +248,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
             this.textColor = color
-            if (!isHintDisplayed()) {
-                view.text_edit.setTextColor(color)
-            }
+            refreshVisibleText()
         }
     }
 
@@ -274,7 +256,6 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         if (props.containsKey(PROP_CHARACTERS_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
-            setNeedsRebuild()
         }
     }
 
@@ -282,7 +263,6 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         if (props.containsKey(PROP_LINE_SPACING)) {
             val spacingMultiplier = props.getDouble(PROP_LINE_SPACING).toFloat()
             view.text_edit.setLineSpacing(0F, spacingMultiplier)
-            setNeedsRebuild()
         }
     }
 
@@ -342,7 +322,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private fun stopCursorAnimation() {
         mainHandler.removeCallbacks(cursorAnimationRunnable)
-        view.text_edit.text = generateVisibleText(text) // remove cursor if present
+        cursorVisible = false
     }
 
     private fun showInputDialog(context: Context) {
@@ -351,9 +331,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
         val title = if (hint.isNotEmpty()) hint else context.getString(R.string.input_title_default)
         builder.setTitle(title)
-
-        val inputText = generateVisibleText(text)
-        builder.setInputText(inputText)
+        builder.setInputText(text)
 
         if (properties.containsKey(PROP_CHARACTERS_LIMIT)) {
             val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT).toInt()
@@ -374,7 +352,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
         builder.setOnSubmitListener { input ->
             if (input != text) {
-                setText(input)
+                text = input
                 textChangedListener?.invoke(input)
             }
         }
@@ -382,6 +360,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         builder.setOnCloseListener {
             isSelected = false
             stopCursorAnimation()
+            refreshVisibleText()
             hideBorder()
             view.text_edit_underline.visibility = View.VISIBLE
         }
@@ -399,34 +378,43 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
     }
 
-    private fun generateVisibleText(input: String): String {
-        return if (isPassword()) {
-            "*".repeat(input.length)
-        } else {
-            input
+    private fun refreshVisibleText() {
+        if (isSelected) {
+            // preserve space (transparent color) for cursor (in case of center or right alignment)
+            val cursorColor = if (cursorVisible) textColor else Color.TRANSPARENT
+            val textWithCursor = getMaskedText() + "|"
+            val spannable = SpannableString(textWithCursor)
+            spannable.setSpan(
+                    ForegroundColorSpan(cursorColor),
+                    textWithCursor.length - 1,
+                    textWithCursor.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            view.text_edit.text = spannable
+            view.text_edit.setTextColor(textColor) // clear hint color
+            return
         }
+
+        if (text.isEmpty()) { // display hint
+            view.text_edit.text = hint
+            view.text_edit.setTextColor(hintColor)
+            return
+        }
+
+        view.text_edit.text = getMaskedText()
+        view.text_edit.setTextColor(textColor) // clear hint color
     }
 
-    private fun generateTextWithCursor(input: String, cursorEnabled: Boolean): Spannable {
-        // preserving space (transparent color) for cursor (in case of center or right alignment)
-        val cursorColor = if (cursorEnabled) textColor else Color.TRANSPARENT
-        val textWithCursor = "$input|"
-        val spannableString = SpannableString(textWithCursor)
-        spannableString.setSpan(
-                ForegroundColorSpan(cursorColor),
-                textWithCursor.length - 1,
-                textWithCursor.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return spannableString
+    private fun getMaskedText(): String {
+        return if (isPassword()) {
+            "*".repeat(text.length)
+        } else {
+            text
+        }
     }
 
     private fun isPassword(): Boolean {
         return properties.getBoolean(PROP_PASSWORD, false)
-    }
-
-    private fun isHintDisplayed(): Boolean {
-        return hint.isNotEmpty() && view.text_edit.text.toString() == hint
     }
 
 }

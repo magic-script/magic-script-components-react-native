@@ -122,7 +122,7 @@ class LabelNode: SCNNode {
         return NSAttributedString(string: string, attributes: attributes)
     }
 
-    fileprivate func getStringAttributes(font: UIFont, scale: CGFloat) -> [NSAttributedString.Key: Any] {
+    fileprivate func createStringAttributes(font: UIFont, scale: CGFloat) -> [NSAttributedString.Key: Any] {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment.nsTextAlignment
         paragraphStyle.lineBreakMode = multiline ? .byWordWrapping : .byClipping
@@ -140,7 +140,7 @@ class LabelNode: SCNNode {
     fileprivate func updateLabelContents() {
         let scale = getTextScale()
         let font = UIFont.font(with: fontStyle, weight: fontWeight, size: LabelNode.geometryFixedTextSizeInMeters)
-        cachedAttributes = getStringAttributes(font: font, scale: scale)
+        cachedAttributes = createStringAttributes(font: font, scale: scale)
         let size = (getSize() - getPaddingSize()) / scale
         labelGeometry.containerFrame = CGRect(origin: CGPoint.zero, size: size)
         labelGeometry.string = getString(cachedAttributes)

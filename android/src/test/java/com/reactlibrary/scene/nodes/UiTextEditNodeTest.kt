@@ -68,6 +68,7 @@ class UiTextEditNodeTest {
     @Test
     fun shouldHaveDefaultTextSize() {
         val node = UiTextEditNode(JavaOnlyMap(), context)
+        node.build()
 
         val textSize = node.getProperty(UiTextEditNode.PROP_TEXT_SIZE)
 
@@ -77,10 +78,31 @@ class UiTextEditNodeTest {
     @Test
     fun shouldHaveDefaultAlignment() {
         val node = UiTextEditNode(JavaOnlyMap(), context)
+        node.build()
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
 
         assertEquals(UiTextEditNode.DEFAULT_ALIGNMENT, alignment)
+    }
+
+    @Test
+    fun shouldHaveDefaultTextPadding() {
+        val node = UiTextEditNode(JavaOnlyMap(), context)
+        node.build()
+
+        val textPadding = node.getProperty(UiTextEditNode.PROP_TEXT_PADDING)
+
+        assertEquals(UiTextEditNode.DEFAULT_TEXT_PADDING, textPadding)
+    }
+
+    @Test
+    fun shouldHaveDefaultCharactersSpacing() {
+        val node = UiTextEditNode(JavaOnlyMap(), context)
+        node.build()
+
+        val charSpacing = node.getProperty(UiTextEditNode.PROP_CHARACTERS_SPACING)
+
+        assertEquals(UiTextEditNode.DEFAULT_CHARACTERS_SPACING, charSpacing)
     }
 
     @Test

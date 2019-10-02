@@ -117,6 +117,10 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         container.text_edit.setSingleLine() // single line by default
 
         container.text_edit.setOnClickListener {
+            // disabling parent view is not sufficient
+            if (!properties.getBoolean(PROP_ENABLED)) {
+                return@setOnClickListener
+            }
             val activity = ArViewManager.getActivityRef().get()
             if (activity != null) {
                 isSelected = true

@@ -25,6 +25,7 @@ import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.R
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultBoolean
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -49,6 +50,11 @@ abstract class UiNode(
 
     private var shouldRebuild = false
     private var loadingView = false
+
+    init {
+        // set default values of properties
+        properties.putDefaultBoolean(PROP_ENABLED, true)
+    }
 
     /**
      * Initializes the view instance and builds the node by calling [applyProperties]

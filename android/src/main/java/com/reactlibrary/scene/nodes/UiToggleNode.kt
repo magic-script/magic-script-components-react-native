@@ -63,6 +63,10 @@ open class UiToggleNode(initProps: ReadableMap, context: Context) :
         val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
         view.tv_toggle.typeface = FontProvider.provideFont(context)
         view.iv_toggle.setOnClickListener {
+            // disabling parent view is not sufficient
+            if (!properties.getBoolean(PROP_ENABLED)) {
+                return@setOnClickListener
+            }
             isOn = !isOn
             refreshImage()
             toggleChangedListener?.invoke(isOn)

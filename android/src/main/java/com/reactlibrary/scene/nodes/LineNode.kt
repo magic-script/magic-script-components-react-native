@@ -57,6 +57,10 @@ class LineNode(initProps: ReadableMap, private val context: Context) :
         drawLines()
     }
 
+    override fun setAlignment(props: Bundle) {
+        // according to Lumin we cannot change alignment for line
+    }
+
     private fun drawLines() {
         // clear the old line segments in case of update
         for (i in contentNode.children.size - 1 downTo 0) {

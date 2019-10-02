@@ -44,12 +44,12 @@ class HorizontalTextAlignmentSpec: QuickSpec {
                 }
             }
 
-            context("CATextLayerAlignmentMode") {
-                it("should return proper CATextLayerAlignmentMode") {
-                    expect(HorizontalTextAlignment.center.textLayerAlignmentMode).to(equal(CATextLayerAlignmentMode.center))
-                    expect(HorizontalTextAlignment.justify.textLayerAlignmentMode).to(equal(CATextLayerAlignmentMode.justified))
-                    expect(HorizontalTextAlignment.left.textLayerAlignmentMode).to(equal(CATextLayerAlignmentMode.left))
-                    expect(HorizontalTextAlignment.right.textLayerAlignmentMode).to(equal(CATextLayerAlignmentMode.right))
+            context("NSTextAlignment") {
+                it("should return proper NSTextAlignment") {
+                    expect(HorizontalTextAlignment.center.nsTextAlignment).to(equal(NSTextAlignment.center))
+                    expect(HorizontalTextAlignment.justify.nsTextAlignment).to(equal(NSTextAlignment.justified))
+                    expect(HorizontalTextAlignment.left.nsTextAlignment).to(equal(NSTextAlignment.left))
+                    expect(HorizontalTextAlignment.right.nsTextAlignment).to(equal(NSTextAlignment.right))
                 }
             }
 

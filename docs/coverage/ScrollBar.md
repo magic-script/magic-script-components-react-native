@@ -1,4 +1,4 @@
-# Functional test coverage for Button
+# Functional test coverage for ScrollBar
 ## Tested properties
 
 **Inherited**

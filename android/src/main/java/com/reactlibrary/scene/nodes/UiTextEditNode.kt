@@ -66,6 +66,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
         const val DEFAULT_SCROLLING = false // scrolling disabled
+        const val DEFAULT_CHARACTERS_SPACING = 0.00499
         const val DEFAULT_CHARACTERS_LIMIT = 0.0 // indefinite
         const val SCROLLBAR_VISIBILITY_ALWAYS = "always"
         const val SCROLLBAR_VISIBILITY_AUTO = "auto"
@@ -101,6 +102,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         properties.putDefaultSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
         properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         properties.putDefaultString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
+        properties.putDefaultDouble(PROP_CHARACTERS_SPACING, DEFAULT_CHARACTERS_SPACING)
     }
 
     override fun provideView(context: Context): View {

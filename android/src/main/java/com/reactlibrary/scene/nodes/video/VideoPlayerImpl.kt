@@ -20,11 +20,12 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.Surface
-import com.reactlibrary.utils.logMessage
 
 class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = MediaPlayerPool.createMediaPlayer()
+    private var onLoadedListener: (() -> Unit)? = null
+    private var ready = false
 
     override var volume: Float = 1.0F
         set(value) {
@@ -38,41 +39,55 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
             mediaPlayer.isLooping = value
         }
 
+    override val isPlaying: Boolean
+        @Throws(IllegalStateException::class)
+        get() = mediaPlayer.isPlaying
+
+
+    override val isReady: Boolean
+        get() = ready
+
     override fun onPrepared(mp: MediaPlayer?) {
         mediaPlayer.seekTo(0) // to show first video frame instead of black texture
-        // TODO listener callback
+        ready = true
+        onLoadedListener?.invoke()
     }
 
+    @Throws(Exception::class)
     override fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit) {
+        ready = false
+        mediaPlayer.reset()
         val path = uri.toString()
-        try {
-            if (path.startsWith("http")) {
-                mediaPlayer.setDataSource(path) // load from URL
-            } else {
-                // load the video from a local directory, e.g. from res/raw
-                mediaPlayer.setDataSource(context, uri)
-            }
-            mediaPlayer.setSurface(surface)
-            mediaPlayer.setOnPreparedListener(this)
-            mediaPlayer.prepareAsync() // loading the video asynchronously
-        } catch (exception: Exception) {
-            logMessage("video player exception: $exception", warn = true)
+        if (path.startsWith("http")) {
+            mediaPlayer.setDataSource(path) // load from URL
+        } else {
+            // load the video from a local directory, e.g. from res/raw
+            mediaPlayer.setDataSource(context, uri)
         }
+        this.onLoadedListener = onLoadedListener
+        mediaPlayer.setSurface(surface)
+        mediaPlayer.setOnPreparedListener(this)
+        mediaPlayer.prepareAsync() // loading the video asynchronously
     }
 
+    @Throws(IllegalStateException::class)
     override fun start() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mediaPlayer.start()
     }
 
+    @Throws(IllegalStateException::class)
     override fun pause() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mediaPlayer.pause()
     }
 
+    @Throws(IllegalStateException::class)
     override fun stop() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mediaPlayer.pause()
+        mediaPlayer.seekTo(0)
     }
 
     override fun release() {
         mediaPlayer.release()
     }
+
 }

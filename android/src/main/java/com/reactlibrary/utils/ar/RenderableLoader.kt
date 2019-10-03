@@ -14,27 +14,10 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes.video
+package com.reactlibrary.utils.ar
 
-import android.net.Uri
-import android.view.Surface
+import com.google.ar.sceneform.rendering.Renderable
 
-interface VideoPlayer {
-    var volume: Float
-
-    var looping: Boolean
-
-    val isPlaying: Boolean
-
-    val isReady: Boolean
-
-    fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit)
-
-    fun start()
-
-    fun pause()
-
-    fun stop()
-
-    fun release()
+interface RenderableLoader {
+    fun loadRenderable(onLoadedListener: (renderable: Renderable) -> Unit)
 }

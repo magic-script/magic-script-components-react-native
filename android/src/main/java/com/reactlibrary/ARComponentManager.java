@@ -48,6 +48,9 @@ import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
+import com.reactlibrary.scene.nodes.video.VideoPlayer;
+import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
+import com.reactlibrary.utils.ar.VideoRenderableLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -145,7 +148,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new VideoNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            VideoPlayer videoPlayer = new VideoPlayerImpl(context);
+            VideoRenderableLoader videoRenderableLoader = new VideoRenderableLoader(context);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader), nodeId);
+        });
     }
 
     @ReactMethod

@@ -22,6 +22,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -52,7 +53,7 @@ class UiButtonNodeTest {
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiButtonNode(JavaOnlyMap(), context)
+        val node = UiButtonNode(JavaOnlyMap(), context, mock())
 
         val textSize = node.getProperty(UiButtonNode.PROP_TEXT_SIZE)
 
@@ -61,7 +62,7 @@ class UiButtonNodeTest {
 
     @Test
     fun shouldHaveDefaultRoundness() {
-        val node = UiButtonNode(JavaOnlyMap(), context)
+        val node = UiButtonNode(JavaOnlyMap(), context, mock())
 
         val roundness = node.getProperty(UiButtonNode.PROP_ROUNDNESS)
 
@@ -126,7 +127,7 @@ class UiButtonNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context) {
+        return object : UiButtonNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

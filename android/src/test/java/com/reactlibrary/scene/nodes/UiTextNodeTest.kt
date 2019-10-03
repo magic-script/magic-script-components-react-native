@@ -25,6 +25,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -54,7 +55,7 @@ class UiTextNodeTest {
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiTextNode(JavaOnlyMap(), context)
+        val node = UiTextNode(JavaOnlyMap(), context, mock())
 
         val textSize = node.getProperty(UiTextNode.PROP_TEXT_SIZE)
 
@@ -63,7 +64,7 @@ class UiTextNodeTest {
 
     @Test
     fun shouldHaveDefaultAlignment() {
-        val node = UiTextNode(JavaOnlyMap(), context)
+        val node = UiTextNode(JavaOnlyMap(), context, mock())
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
 
@@ -166,7 +167,7 @@ class UiTextNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
-        return object : UiTextNode(props, context) {
+        return object : UiTextNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

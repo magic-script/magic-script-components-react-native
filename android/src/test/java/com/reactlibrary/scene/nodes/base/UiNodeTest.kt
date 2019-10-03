@@ -21,8 +21,6 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.reactlibrary.scene.nodes.views.CustomButton
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -45,7 +43,7 @@ class UiNodeTest {
 
     @Test
     fun shouldBeEnabledByDefault() {
-        val node = object : UiNode(JavaOnlyMap(), context) {
+        val node = object : UiNode(JavaOnlyMap(), context, mock()) {
             override fun provideView(context: Context): View {
                 return mock()
             }

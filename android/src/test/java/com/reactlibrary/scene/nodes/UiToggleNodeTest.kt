@@ -26,6 +26,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -62,7 +63,7 @@ class UiToggleNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiToggleNode(JavaOnlyMap(), context)
+        val node = UiToggleNode(JavaOnlyMap(), context, mock())
 
         val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
 
@@ -73,7 +74,7 @@ class UiToggleNodeTest {
     fun defaultTextSizeShouldBeEqualToHeight() {
         val height: Double = 0.1
         val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
-        val node = UiToggleNode(props, context)
+        val node = UiToggleNode(props, context, mock())
 
         val textSize = node.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
@@ -125,7 +126,7 @@ class UiToggleNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context) {
+        return object : UiToggleNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

@@ -258,7 +258,7 @@ import SpriteKit
             self.scrollValue = scrollValue
         }
 
-        if let fontParams = props["fontParams"] as? [String: Any] {
+        if let fontParams = props["fontParameters"] as? [String: Any] {
             if let style = Convert.toFontStyle(fontParams["style"]) {
                 self.style = style
             }

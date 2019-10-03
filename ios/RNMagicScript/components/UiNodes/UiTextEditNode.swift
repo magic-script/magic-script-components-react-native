@@ -373,6 +373,17 @@ extension UiTextEditNode: InputDataProviding {
     // var charLimit: Int { get }
     // var multiline: Bool { get }
     // var password: Bool { get }
+    var autocapitalizationType: UITextAutocapitalizationType? {
+        if allCaps {
+            return UITextAutocapitalizationType.allCharacters
+        }
+
+        if textEntry == .email {
+            return UITextAutocapitalizationType.none
+        }
+
+        return nil
+    }
     var keyboardType: UIKeyboardType? {
         switch textEntry {
         case .email:

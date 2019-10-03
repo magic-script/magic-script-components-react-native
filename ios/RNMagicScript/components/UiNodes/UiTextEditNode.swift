@@ -258,7 +258,7 @@ import SpriteKit
             self.scrollValue = scrollValue
         }
 
-        if let fontParams = props["fontParams"] as? [String: Any] {
+        if let fontParams = props["fontParameters"] as? [String: Any] {
             if let style = Convert.toFontStyle(fontParams["style"]) {
                 self.style = style
             }
@@ -373,6 +373,17 @@ extension UiTextEditNode: InputDataProviding {
     // var charLimit: Int { get }
     // var multiline: Bool { get }
     // var password: Bool { get }
+    var autocapitalizationType: UITextAutocapitalizationType? {
+        if allCaps {
+            return UITextAutocapitalizationType.allCharacters
+        }
+
+        if textEntry == .email {
+            return UITextAutocapitalizationType.none
+        }
+
+        return nil
+    }
     var keyboardType: UIKeyboardType? {
         switch textEntry {
         case .email:

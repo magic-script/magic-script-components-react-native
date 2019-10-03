@@ -39,77 +39,91 @@ class CustomScrollView @JvmOverloads constructor(
     var contentWidth = 0F
         set(value) {
             field = value
-            this.h_bar.thumbSize = width() / value
+            this.h_bar.thumbSize = viewWidth / contentWidth
         }
 
     var contentHeight = 0F
+        set(value) {
+            field = value
+            this.v_bar.thumbSize = viewHeight / contentHeight
+        }
 
-    // fun initScrollBars(){
-    //     this.h_bar.isVertical = false
-    // }
+    var viewWidth = 0F
+        set(value) {
+            field = value
+            this.h_bar.thumbSize = viewWidth / contentWidth
+        }
 
-    // override fun onDraw(canvas: Canvas) {
-    //     super.onDraw(canvas)
-    //     logMessage("view")
-    // }
+    var viewHeight = 0F
+        set(value) {
+            field = value
+            this.v_bar.thumbSize = viewHeight / contentHeight
+        }
 
-    // override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int){
-    //     logMessage(p1.toString() + " " + p2.toString() + " " + p3.toString() + " " + p4.toString())
-    // }
+    var offsetX = 0F
+        set(value) {
+            val maxOffset = (contentWidth - viewWidth).coerceAtLeast(0F)
+            field = value.coerceIn(0F, maxOffset)
+            this.h_bar.thumbPosition = if ( maxOffset > 0F) {
+                offsetX / maxOffset
+            } else {
+                0F
+            }
+        }
 
-    // private val backgroundSizeRatio = 0.66F
+    var offsetY = 0F
+        set(value) {
+            val maxOffset = (contentHeight - viewHeight).coerceAtLeast(0F)
+            field = value.coerceIn(0F, maxOffset)
+            this.v_bar.thumbPosition = if ( maxOffset > 0F) {
+                offsetY / maxOffset
+            } else {
+                0F
+            }
+        }
 
-    // var isVertical = true
-
-    // private var touchOffset = 0F
+    var previousTouchX = 0F
+    var previousTouchY = 0F
 
     // var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
-    // override fun onTouchEvent(event: MotionEvent): Boolean {
-    //     val action = event.actionMasked
-    //     if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
-    //         return false
-    //     }
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val action = event.actionMasked
+        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
+            return false
+        }
 
-    //     val (begin, end) = thumbBounds()
-    //     val thumbLength = end - begin
-    //     val touchPos = getTouchPos(event)
+        val x = event.getX()
+        val y = event.getY()
 
-    //     if (action == MotionEvent.ACTION_DOWN) {
-    //         touchOffset = 0F
-    //         val onThumb = inRange(touchPos, begin, end)
-    //         if (onThumb) {
-    //             val middle = begin + thumbLength / 2
-    //             touchOffset = touchPos - middle
-    //         }
-    //     }
+        if (action == MotionEvent.ACTION_MOVE) {
+            offsetX = offsetX + previousTouchX - x
+            offsetY = offsetY + previousTouchY - y
+        }
 
-    //     val thumbTravel = length() - thumbLength
-    //     thumbPosition = if (thumbTravel > 0F) {
-    //         (touchPos - touchOffset - thumbLength / 2) / thumbTravel
-    //     } else {
-    //         0F
-    //     }
-    //     onScrollChangeListener?.invoke(thumbPosition)
-    //     return true
-    // }
+        previousTouchX = x
+        previousTouchY = y
+
+        // onScrollChangeListener?.invoke(thumbPosition)
+        return true
+    }
 
     // private fun updateBarThumbSize(bar: CustomScrollBar, viewSize: Float, childSize: Float){
     //     bar.thumbSize = 
     // }
 
-    override fun setLayoutParams(params: ViewGroup.LayoutParams ){
-        super.setLayoutParams(params)
-        // this.h_bar.isVertical = false
-        this.h_bar.thumbSize = width() / contentWidth
-        this.v_bar.thumbSize = width() / contentHeight
-    }
+    // override fun setLayoutParams(params: ViewGroup.LayoutParams ){
+    //     super.setLayoutParams(params)
+    //     // this.h_bar.isVertical = false
+    //     this.h_bar.thumbSize = width() / contentWidth
+    //     this.v_bar.thumbSize = width() / contentHeight
+    // }
 
-    private fun height(): Float {
-        return this.layoutParams.height.toFloat()
-    }
+    // private fun height(): Float {
+    //     return this.layoutParams.height.toFloat()
+    // }
 
-    private fun width(): Float {
-        return this.layoutParams?.width?.toFloat() ?: 0F
-    }
+    // private fun width(): Float {
+    //     return this.layoutParams?.width?.toFloat() ?: 0F
+    // }
 }

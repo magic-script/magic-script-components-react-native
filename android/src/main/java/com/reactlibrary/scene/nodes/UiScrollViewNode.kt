@@ -55,7 +55,8 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
         val scrollView = view as CustomScrollView
         // scrollView.initScrollBars()
-        scrollView.contentWidth = 10F
+        scrollView.contentWidth = 2000F
+        scrollView.contentHeight = 1000F
 
         return view
     }
@@ -76,5 +77,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         val heightPx = Utils.metersToPx(heightInMeters, context)
 
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        (view as CustomScrollView).viewWidth = widthPx.toFloat()
+        (view as CustomScrollView).viewHeight = heightPx.toFloat()
     }
 }

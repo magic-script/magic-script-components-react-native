@@ -56,17 +56,11 @@ class CustomScrollBar @JvmOverloads constructor(
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
     init {
-
         val orientationStr = attrs?.getAttributeValue(null, "orientation")
-
-
-        // val ta = context.obtainStyledAttributes(attrs, R.styleable.CustomScrollBar)
-        // val orientationStr = ta.getString(R.styleable.CustomScrollBar_orientation)
         logMessage(orientationStr + " ")
         if (orientationStr == "horizontal"){
             isVertical = false
         }
-        // ta.recycle()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -102,7 +96,6 @@ class CustomScrollBar @JvmOverloads constructor(
         super.onDraw(canvas)
         drawBackground(canvas)
         drawThumb(canvas)
-        logMessage("bar")
     }
 
     private fun drawBackground(canvas: Canvas) {

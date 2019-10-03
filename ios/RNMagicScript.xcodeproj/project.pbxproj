@@ -177,6 +177,7 @@
 		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */; };
 		C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */; };
+		C4B4B66B234618390029E59C /* UiSliderNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */; };
 		C4C04ACE2334E85100C2725C /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */; };
 		C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */; };
 		C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417A23338D20008D5124 /* VideoAction.swift */; };
@@ -472,6 +473,7 @@
 		8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.release.xcconfig"; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
+		C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSliderNodeSpec.swift; sourceTree = "<group>"; };
 		C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		C4D5417A23338D20008D5124 /* VideoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAction.swift; sourceTree = "<group>"; };
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
@@ -882,6 +884,7 @@
 				44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */,
 				44F0930E232D985A0081FF14 /* UiToggleNodeSpec.swift */,
 				C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */,
+				C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -1498,6 +1501,7 @@
 				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
 				44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */,
+				C4B4B66B234618390029E59C /* UiSliderNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,

@@ -52,15 +52,10 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
-        view.h_bar.isVertical = false
-        // val view = CustomScrollView(context)
-        // hBar = CustomScrollBar(context)
 
-        // hBar.layoutParams = ViewGroup.LayoutParams(100, 200)
-
-        // logMessage(hBar.width.toString())
-
-        // view.addView(hBar, 100, 100)
+        val scrollView = view as CustomScrollView
+        // scrollView.initScrollBars()
+        scrollView.contentWidth = 10F
 
         return view
     }

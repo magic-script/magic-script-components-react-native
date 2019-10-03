@@ -37,6 +37,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="14dp"
+        orientation="horizontal"
         />
 
 </com.reactlibrary.scene.nodes.views.CustomScrollView>

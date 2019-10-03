@@ -28,12 +28,30 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
 import com.reactlibrary.utils.logMessage
+import kotlinx.android.synthetic.main.scroll_view.view.*
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
+
+    var contentWidth = 0F
+        set(value) {
+            field = value
+            this.h_bar.thumbSize = width() / value
+        }
+
+    var contentHeight = 0F
+
+    // fun initScrollBars(){
+    //     this.h_bar.isVertical = false
+    // }
+
+    // override fun onDraw(canvas: Canvas) {
+    //     super.onDraw(canvas)
+    //     logMessage("view")
+    // }
 
     // override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int){
     //     logMessage(p1.toString() + " " + p2.toString() + " " + p3.toString() + " " + p4.toString())
@@ -76,5 +94,22 @@ class CustomScrollView @JvmOverloads constructor(
     //     return true
     // }
 
-    
+    // private fun updateBarThumbSize(bar: CustomScrollBar, viewSize: Float, childSize: Float){
+    //     bar.thumbSize = 
+    // }
+
+    override fun setLayoutParams(params: ViewGroup.LayoutParams ){
+        super.setLayoutParams(params)
+        // this.h_bar.isVertical = false
+        this.h_bar.thumbSize = width() / contentWidth
+        this.v_bar.thumbSize = width() / contentHeight
+    }
+
+    private fun height(): Float {
+        return this.layoutParams.height.toFloat()
+    }
+
+    private fun width(): Float {
+        return this.layoutParams?.width?.toFloat() ?: 0F
+    }
 }

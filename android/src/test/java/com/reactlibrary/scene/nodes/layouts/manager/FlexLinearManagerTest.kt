@@ -53,18 +53,20 @@ class FlexLinearManagerTest {
     @Test
     fun `should work for empty children list`() {
         val children: List<Node> = emptyList()
+
         linearManager.layoutChildren(children, mapOf())
+
         assertTrue(children.isEmpty())
     }
 
     @Test
     fun `should position child node`() {
-
         val children: List<Node> = listOf(Node())
         val bound = Bounding(0F, 0F, 1F, 1F)
         val bounds: Map<Int, Bounding> = mapOf(0 to bound, 1 to bound)
 
         linearManager.layoutChildren(children, bounds)
+
         assertNotEquals(Vector3(0F, 0F, 0F), children.get(0).localPosition)
     }
 }

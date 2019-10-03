@@ -26,13 +26,15 @@ import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSpinner
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultBoolean
 import com.reactlibrary.utils.putDefaultDouble
 
-open class UiSpinnerNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context, useContentNodeAlignment = true) {
+open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
         // properties

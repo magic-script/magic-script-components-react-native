@@ -139,6 +139,7 @@ abstract class TransformNode(
         applyProperties(properties)
     }
 
+
     /**
      * Attaches a renderable (view, model) to the node
      * Must be called after the ARCore resources have been initialized

@@ -30,6 +30,10 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
+import com.reactlibrary.ar.ModelRenderableLoader;
+import com.reactlibrary.ar.ModelRenderableLoaderImpl;
+import com.reactlibrary.ar.VideoRenderableLoader;
+import com.reactlibrary.ar.VideoRenderableLoaderImpl;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -50,7 +54,6 @@ import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
-import com.reactlibrary.utils.ar.VideoRenderableLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,10 +89,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
 
+    private ModelRenderableLoader modelRenderableLoader;
+    private VideoRenderableLoader videoRenderableLoader;
+
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
         // here activity is null yet (so we use initAR method)
         this.context = reactContext;
+        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
+        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
         context.addLifecycleEventListener(this);
     }
 
@@ -143,14 +151,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ModelNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            VideoRenderableLoader videoRenderableLoader = new VideoRenderableLoader(context);
             addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader), nodeId);
         });
     }

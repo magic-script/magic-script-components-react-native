@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.FontProvider
@@ -32,7 +33,8 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 
-open class UiButtonNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiButtonNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

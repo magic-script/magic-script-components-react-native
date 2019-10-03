@@ -18,18 +18,18 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 
-class UiScrollBarNode(initProps: ReadableMap, context: Context) :
-        UiNode(initProps, context, useContentNodeAlignment = false) {
+class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+        UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -52,7 +52,7 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
-    fun setOnScrollChangeListener(listener:((on: Float) -> Unit)){
+    fun setOnScrollChangeListener(listener: ((on: Float) -> Unit)) {
         (view as CustomScrollBar).onScrollChangeListener = listener
     }
 

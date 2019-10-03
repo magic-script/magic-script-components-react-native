@@ -14,28 +14,32 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.utils.ar
+package com.reactlibrary.ar
 
 import android.content.Context
+import android.net.Uri
+import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
-import com.reactlibrary.R
 import com.reactlibrary.utils.logMessage
 
-class VideoRenderableLoader(private val context: Context) : RenderableLoader {
-    override fun loadRenderable(onLoadedListener: (renderable: Renderable) -> Unit) {
+class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableLoader {
+    override fun loadRenderable(modelUri: Uri, onLoadedListener: (renderable: Renderable) -> Unit) {
         ModelRenderable.builder()
-                .setSource(context, R.raw.chroma_key_video)
+                .setSource(context, RenderableSource.builder().setSource(
+                        context,
+                        modelUri,
+                        RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
+                        .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+                        .build())
+                .setRegistryId(modelUri)
                 .build()
                 .thenAccept { renderable ->
-                    renderable.material.setBoolean("disableChromaKey", true)
-                    // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
-                    renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
-                    onLoadedListener(renderable)
+                    renderable.isShadowCaster = false
                 }
                 .exceptionally { throwable ->
-                    logMessage("error loading video renderable: $throwable")
+                    logMessage("error loading ModelRenderable: $throwable")
                     null
                 }
     }

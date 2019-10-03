@@ -19,14 +19,14 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.ModelRenderable
+import com.reactlibrary.ar.ModelRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.logMessage
 
-class ModelNode(initProps: ReadableMap, private val context: Context)
+class ModelNode(initProps: ReadableMap,
+                private val context: Context,
+                private val modelRenderableLoader: ModelRenderableLoader)
     : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
@@ -38,9 +38,14 @@ class ModelNode(initProps: ReadableMap, private val context: Context)
         const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
+    // localScale without importScale correction
+    private var scale = localScale
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+
         setModelPath(props)
+        setImportScale(props)
     }
 
     override fun loadRenderable() {
@@ -58,40 +63,30 @@ class ModelNode(initProps: ReadableMap, private val context: Context)
         }
     }
 
+    private fun setImportScale(props: Bundle) {
+        if (props.containsKey(PROP_IMPORT_SCALE)) {
+            adjustLocalScale()
+        }
+    }
+
     override fun setLocalScale(props: Bundle) {
         val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
         if (localScale != null) {
-            applyNodeScale(localScale)
+            this.scale = localScale
+            adjustLocalScale()
         }
     }
 
     private fun loadModel() {
         val modelUri = PropertiesReader.readFilePath(properties, PROP_MODEL_PATH, context)
         if (modelUri != null) {
-            ModelRenderable.builder()
-                    .setSource(context, RenderableSource.builder().setSource(
-                            context,
-                            modelUri,
-                            RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
-                            .setRecenterMode(RenderableSource.RecenterMode.CENTER)
-                            .build())
-                    .setRegistryId(modelUri)
-                    .build()
-                    .thenAccept { renderable ->
-                        renderable.isShadowReceiver = false
-                        renderable.isShadowCaster = false
-                        contentNode.renderable = renderable
-                        logMessage("loaded ModelRenderable")
-                    }
-                    .exceptionally { throwable ->
-                        logMessage("error loading ModelRenderable: $throwable")
-                        null
-                    }
+            modelRenderableLoader.loadRenderable(modelUri, onLoadedListener = { renderable ->
+                contentNode.renderable = renderable
+            })
         }
-        applyNodeScale(localScale)
     }
 
-    private fun applyNodeScale(scale: Vector3) {
+    private fun adjustLocalScale() {
         val importScale = properties.getDouble(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE).toFloat()
         localScale = Vector3(scale.x * importScale, scale.y * importScale, scale.z * importScale)
     }

@@ -26,12 +26,14 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.image.view.*
 
-open class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

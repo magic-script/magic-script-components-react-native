@@ -27,7 +27,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.scene.nodes.video.VideoPlayer
-import com.reactlibrary.utils.ar.VideoRenderableLoader
+import com.reactlibrary.ar.VideoRenderableLoader
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

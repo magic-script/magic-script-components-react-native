@@ -26,10 +26,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.*
 
-open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiTextNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

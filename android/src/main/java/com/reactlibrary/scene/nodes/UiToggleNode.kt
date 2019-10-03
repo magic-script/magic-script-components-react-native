@@ -26,6 +26,7 @@ import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
@@ -33,8 +34,8 @@ import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
-open class UiToggleNode(initProps: ReadableMap, context: Context) :
-        UiNode(initProps, context, useContentNodeAlignment = true) {
+open class UiToggleNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+        UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
         // properties

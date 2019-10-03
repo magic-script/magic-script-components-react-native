@@ -14,10 +14,11 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.utils.ar
+package com.reactlibrary.ar
 
 import com.google.ar.sceneform.rendering.Renderable
 
-interface RenderableLoader {
-    fun loadRenderable(onLoadedListener: (renderable: Renderable) -> Unit)
+sealed class RenderableResult {
+    data class Success(val renderable: Renderable) : RenderableResult()
+    data class Error(val error: Throwable) : RenderableResult()
 }

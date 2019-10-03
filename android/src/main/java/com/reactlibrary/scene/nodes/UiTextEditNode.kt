@@ -32,12 +32,14 @@ import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.InputDialogBuilder
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
-open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiTextEditNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

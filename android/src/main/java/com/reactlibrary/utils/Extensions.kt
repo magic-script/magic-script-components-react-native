@@ -16,6 +16,8 @@
 
 package com.reactlibrary.utils
 
+import com.reactlibrary.scene.nodes.props.Bounding
+import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -32,19 +34,74 @@ fun Any.logMessage(message: String, warn: Boolean = false) {
     }
 }
 
+/**
+ * android.widget.EditText
+ */
 fun EditText.setTextAndMoveCursor(text: String) {
     this.setText("")
     this.append(text)
 }
 
-fun Bundle.putDefaultDouble(name: String, value: Double){
+/**
+ * android.graphics.PointF
+ */
+operator fun PointF.plus(other: PointF): PointF {
+    return PointF(x + other.x, y + other.y)
+}
+
+operator fun PointF.minus(other: PointF): PointF {
+    return PointF(x - other.x, y - other.y)
+}
+
+operator fun PointF.times(other: PointF): PointF {
+    return PointF(x * other.x, y * other.y)
+}
+
+operator fun PointF.div(other: PointF): PointF {
+    return PointF(if (other.x != 0F) {
+        x / other.x
+    } else {
+        0F
+    }, if (other.y != 0F) {
+        y / other.y
+    } else {
+        0F
+    })
+}
+
+operator fun PointF.div(other: Float): PointF {
+    return div(PointF(other,other))
+}
+
+// operator fun PointF.plusAssign(other: PointF) {
+//     x += other.x
+//     y += other.y
+// }
+
+fun PointF.coerceIn(min: Float, max: Float): PointF {
+    return PointF(x.coerceIn(min, max), y.coerceIn(min, max))
+}
+
+/**
+ * android.os.Bundle
+ */
+fun Bundle.putDefaultDouble(name: String, value: Double) {
     if (!containsKey(name)) {
         putDouble(name, value)
     }
 }
 
-fun Bundle.putDefaultString(name: String, value: String){
+fun Bundle.putDefaultString(name: String, value: String) {
     if (!containsKey(name)) {
         putString(name, value)
     }
 }
+
+/**
+ * com.reactlibrary.scene.nodes.props.Bounding
+ */
+ fun Bounding.getSize(): PointF {
+     val width = right - left
+     val height = top - bottom
+     return PointF(width, height)
+ }

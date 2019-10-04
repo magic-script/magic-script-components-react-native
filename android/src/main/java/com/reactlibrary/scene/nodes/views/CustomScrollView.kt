@@ -17,18 +17,13 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Paint.ANTI_ALIAS_FLAG
-import android.graphics.RectF
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
-import androidx.core.content.ContextCompat.getColor
-import com.reactlibrary.R
-import com.reactlibrary.utils.logMessage
 import kotlinx.android.synthetic.main.scroll_view.view.*
+import com.reactlibrary.utils.*
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
@@ -36,56 +31,56 @@ class CustomScrollView @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
 
-    var contentWidth = 0F
+    var contentSize = PointF()
         set(value) {
             field = value
-            this.h_bar.thumbSize = viewWidth / contentWidth
+            this.h_bar.thumbSize = viewWidth / field.x
+            this.v_bar.thumbSize = viewHeight / field.y
         }
 
-    var contentHeight = 0F
-        set(value) {
-            field = value
-            this.v_bar.thumbSize = viewHeight / contentHeight
-        }
-
+    // remove??
     var viewWidth = 0F
         set(value) {
             field = value
-            this.h_bar.thumbSize = viewWidth / contentWidth
+            this.h_bar.thumbSize = viewWidth / contentSize.x
         }
 
     var viewHeight = 0F
         set(value) {
             field = value
-            this.v_bar.thumbSize = viewHeight / contentHeight
+            this.v_bar.thumbSize = viewHeight / contentSize.y
         }
 
-    var offsetX = 0F
+    var viewPosition = PointF()
         set(value) {
-            val maxOffset = (contentWidth - viewWidth).coerceAtLeast(0F)
-            field = value.coerceIn(0F, maxOffset)
-            this.h_bar.thumbPosition = if ( maxOffset > 0F) {
-                offsetX / maxOffset
-            } else {
-                0F
-            }
+            field = value.coerceIn(0F, 1F)
         }
 
-    var offsetY = 0F
-        set(value) {
-            val maxOffset = (contentHeight - viewHeight).coerceAtLeast(0F)
-            field = value.coerceIn(0F, maxOffset)
-            this.v_bar.thumbPosition = if ( maxOffset > 0F) {
-                offsetY / maxOffset
-            } else {
-                0F
+    private var previousTouch = PointF()
+
+    var onScrollChangeListener: ((on: PointF) -> Unit)? = null
+
+    init {
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // logMessage("onLayout")
+                h_bar.onScrollChangeListener = { pos: Float -> Unit
+                    // logMessage("h_bar.onScrollChangeListener")
+                    viewPosition = PointF(pos, viewPosition.y)
+                    onScrollChangeListener?.invoke(viewPosition)
+                }
+                v_bar.onScrollChangeListener = { pos: Float -> Unit
+                    // logMessage("h_bar.onScrollChangeListener")
+                    viewPosition = PointF(viewPosition.x, pos)
+                    onScrollChangeListener?.invoke(viewPosition)
+                }
+                viewTreeObserver.removeOnGlobalLayoutListener(this);
             }
-        }
+        })
+    }
 
-    var previousTouchX = 0F
-    var previousTouchY = 0F
-
-    // var onScrollChangeListener: ((on: Float) -> Unit)? = null
+    fun onGlobalLayout() {
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
@@ -93,37 +88,17 @@ class CustomScrollView @JvmOverloads constructor(
             return false
         }
 
-        val x = event.getX()
-        val y = event.getY()
-
+        val touch = PointF(event.getX(), event.getY())
         if (action == MotionEvent.ACTION_MOVE) {
-            offsetX = offsetX + previousTouchX - x
-            offsetY = offsetY + previousTouchY - y
+            val movePx = touch - previousTouch
+            val move = movePx / contentSize
+            viewPosition = viewPosition + move
         }
+        previousTouch = touch
 
-        previousTouchX = x
-        previousTouchY = y
-
-        // onScrollChangeListener?.invoke(thumbPosition)
+        this.h_bar.thumbPosition = viewPosition.x
+        this.v_bar.thumbPosition = viewPosition.y
+        onScrollChangeListener?.invoke(viewPosition)
         return true
     }
-
-    // private fun updateBarThumbSize(bar: CustomScrollBar, viewSize: Float, childSize: Float){
-    //     bar.thumbSize = 
-    // }
-
-    // override fun setLayoutParams(params: ViewGroup.LayoutParams ){
-    //     super.setLayoutParams(params)
-    //     // this.h_bar.isVertical = false
-    //     this.h_bar.thumbSize = width() / contentWidth
-    //     this.v_bar.thumbSize = width() / contentHeight
-    // }
-
-    // private fun height(): Float {
-    //     return this.layoutParams.height.toFloat()
-    // }
-
-    // private fun width(): Float {
-    //     return this.layoutParams?.width?.toFloat() ?: 0F
-    // }
 }

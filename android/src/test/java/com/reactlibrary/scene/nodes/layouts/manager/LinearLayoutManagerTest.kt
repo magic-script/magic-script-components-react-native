@@ -18,11 +18,9 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.ViewRenderable
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import org.junit.Assert.assertNotEquals
@@ -33,21 +31,18 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class FlexLinearManagerTest {
+class LinearLayoutManagerTest {
 
     private lateinit var linearLayout: UiLinearLayout
-    private lateinit var linearManager: FlexLinearManager
+    private lateinit var linearManager: LinearLayoutManager
 
     @Before
     fun setUp() {
         this.linearLayout = mock()
-        this.linearManager = spy(FlexLinearManager(linearLayout))
-        val left = ViewRenderable.HorizontalAlignment.LEFT
-        val bottom = ViewRenderable.VerticalAlignment.TOP
-        whenever(linearLayout.itemHorizontalAlignment).thenReturn(left)
-        whenever(linearLayout.itemVerticalAlignment).thenReturn(bottom)
-        whenever(linearLayout.itemPadding).thenReturn(Padding(1F, 1F, 1F, 1F))
-
+        this.linearManager = LinearLayoutManagerImpl()
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
+        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+        linearManager.itemPadding = Padding(1F, 1F, 1F, 1F)
     }
 
     @Test

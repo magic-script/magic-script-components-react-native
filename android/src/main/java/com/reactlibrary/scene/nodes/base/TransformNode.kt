@@ -317,19 +317,14 @@ abstract class TransformNode(
     }
 
     protected open fun setAlignment(props: Bundle) {
-        val alignment = props.getString(PROP_ALIGNMENT)
+        val alignment = PropertiesReader.readAlignment(props, PROP_ALIGNMENT)
         if (alignment != null) {
-            val alignmentArray = alignment.split("-")
-            if (alignmentArray.size == 2) {
-                val verticalAlign = alignmentArray[0]
-                val horizontalAlign = alignmentArray[1]
-                verticalAlignment = Alignment.VerticalAlignment.valueOf(verticalAlign.toUpperCase())
-                horizontalAlignment = Alignment.HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
-                if (useContentNodeAlignment) {
-                    applyAlignment()
-                } else if (hasRenderable && renderableRequested) {
-                    applyAlignment()
-                }
+            verticalAlignment = alignment.vertical
+            horizontalAlignment = alignment.horizontal
+            if (useContentNodeAlignment) {
+                applyAlignment()
+            } else if (hasRenderable && renderableRequested) {
+                applyAlignment()
             }
         }
     }

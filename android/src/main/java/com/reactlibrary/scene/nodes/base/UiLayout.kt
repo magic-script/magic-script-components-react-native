@@ -23,37 +23,39 @@ import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(initProps: ReadableMap)
+abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
     : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true) {
 
     companion object {
         private const val MEASURE_INTERVAL = 100L // in milliseconds
     }
 
-    var layoutManager: LayoutManager? = null
-
     // we should re-draw the grid after adding / removing a child
-    private var shouldRedraw = false
+    private var redrawRequested = false
 
     // child index, bounding
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     private var handler = Handler(Looper.getMainLooper())
+    private var loopStarted = false
 
-    init {
-        layoutLoop()
-    }
-
-    fun requestLayout() {
-        shouldRedraw = true
+    override fun build() {
+        super.build()
+        if (!loopStarted) {
+            loopStarted = true
+            layoutLoop()
+        }
     }
 
     override fun addContent(child: Node) {
         contentNode.addChild(child)
-        shouldRedraw = true
+        redrawRequested = true
+    }
+
+    protected fun requestLayout() {
+        redrawRequested = true
     }
 
     /**
@@ -63,21 +65,21 @@ abstract class UiLayout(initProps: ReadableMap)
      * re-draw the layout in such case.
      */
     private fun layoutLoop() {
+        measureChildren()
+        if (redrawRequested) {
+            layoutManager.layoutChildren(contentNode.children, childrenBounds)
+            // applyAlignment()
+            redrawRequested = false
+        }
+
         handler.postDelayed({
-            measureChildren()
-            if (shouldRedraw) {
-                layoutManager?.layoutChildren(contentNode.children, childrenBounds)
-                // applyAlignment()
-                shouldRedraw = false
-                logMessage("grid redraw")
-            }
             layoutLoop()
         }, MEASURE_INTERVAL)
     }
 
     /**
      * Measures the bounds of children nodes; if any bound has changed
-     * it sets the [shouldRedraw] flag to true.
+     * it sets the [redrawRequested] flag to true.
      */
     private fun measureChildren() {
         for (i in 0 until contentNode.children.size) {
@@ -90,7 +92,7 @@ abstract class UiLayout(initProps: ReadableMap)
             }
 
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
-                shouldRedraw = true
+                redrawRequested = true
             }
         }
     }

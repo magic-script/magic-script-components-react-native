@@ -54,6 +54,10 @@ import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
+import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
@@ -196,12 +200,18 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiGridLayout(props), nodeId));
+        mainHandler.post(() -> {
+            GridLayoutManager layoutManager = new GridLayoutManagerImpl();
+            addNode(new UiGridLayout(props, layoutManager), nodeId);
+        });
     }
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
+        mainHandler.post(() -> {
+            LinearLayoutManager layoutManager = new LinearLayoutManagerImpl();
+            addNode(new UiLinearLayout(props, layoutManager), nodeId);
+        });
     }
 
     @ReactMethod

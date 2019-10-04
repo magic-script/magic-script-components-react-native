@@ -18,16 +18,41 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.ViewRenderable
-import com.reactlibrary.scene.nodes.layouts.LayoutManager
-import com.reactlibrary.scene.nodes.layouts.UiGridLayout
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.props.Padding
 
 /**
  * Grid layout's manager with flexible columns and rows size:
  * column and row will grow to fit the bounding (+ padding) of a child.
  */
-class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
+class GridLayoutManagerImpl : GridLayoutManager {
+
+    override var columns: Int = 1
+        set(value) {
+            if (value == 0 && rows == 0) {
+                field = 1 // can't be 0 along with rows
+            } else {
+                field = value
+            }
+
+        }
+
+    override var rows: Int = 0
+        set(value) {
+            if (value == 0 && columns == 0) {
+                field = 1 // can't be 0 along with columns
+            } else {
+                field = value
+            }
+        }
+
+    // default padding for each item [top, right, bottom, left]
+    override var itemPadding = Padding(0F, 0F, 0F, 0F)
+
+    override var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+
+    override var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
 
     // <column index, column width> pairs
     private val columnsWidthMap = mutableMapOf<Int, Float>()
@@ -43,7 +68,7 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
             val col = getColumnIndex(i)
             val row = getRowIndex(i)
             val bounds = childrenBounds[i]!!
-            
+
             val width = calculateColumnWidth(bounds)
             if (width > columnsWidthMap[col] ?: 0.0F) {
                 columnsWidthMap[col] = width
@@ -77,34 +102,34 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
         val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
 
         // calculating x position for a child
-        val x = when (grid.itemHorizontalAlignment) {
-            ViewRenderable.HorizontalAlignment.LEFT -> {
-                getColumnX(col) + nodeWidth / 2 + pivotOffsetX + grid.itemPadding.left
+        val x = when (itemHorizontalAlignment) {
+            Alignment.HorizontalAlignment.LEFT -> {
+                getColumnX(col) + nodeWidth / 2 + pivotOffsetX + itemPadding.left
             }
 
-            ViewRenderable.HorizontalAlignment.CENTER -> {
-                val paddingDiff = grid.itemPadding.left - grid.itemPadding.right
+            Alignment.HorizontalAlignment.CENTER -> {
+                val paddingDiff = itemPadding.left - itemPadding.right
                 getColumnX(col) + columnWidth / 2 + pivotOffsetX + paddingDiff
             }
 
-            ViewRenderable.HorizontalAlignment.RIGHT -> {
-                getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffsetX - grid.itemPadding.right
+            Alignment.HorizontalAlignment.RIGHT -> {
+                getColumnX(col) + columnWidth - nodeWidth / 2 + pivotOffsetX - itemPadding.right
             }
         }
 
         // calculating y position for a child
-        val y = when (grid.itemVerticalAlignment) {
-            ViewRenderable.VerticalAlignment.TOP -> {
-                getRowY(row) - nodeHeight / 2 + pivotOffsetY - grid.itemPadding.top
+        val y = when (itemVerticalAlignment) {
+            Alignment.VerticalAlignment.TOP -> {
+                getRowY(row) - nodeHeight / 2 + pivotOffsetY - itemPadding.top
             }
 
-            ViewRenderable.VerticalAlignment.CENTER -> {
-                val paddingDiff = grid.itemPadding.top - grid.itemPadding.bottom
+            Alignment.VerticalAlignment.CENTER -> {
+                val paddingDiff = itemPadding.top - itemPadding.bottom
                 getRowY(row) - rowHeight / 2 + pivotOffsetY - paddingDiff
             }
 
-            ViewRenderable.VerticalAlignment.BOTTOM -> {
-                getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY + grid.itemPadding.bottom
+            Alignment.VerticalAlignment.BOTTOM -> {
+                getRowY(row) - rowHeight + nodeHeight / 2 + pivotOffsetY + itemPadding.bottom
             }
         }
 
@@ -130,26 +155,26 @@ class FlexGridManager(private val grid: UiGridLayout) : LayoutManager {
     }
 
     private fun calculateColumnWidth(itemBounds: Bounding): Float {
-        return itemBounds.right - itemBounds.left + grid.itemPadding.left + grid.itemPadding.right
+        return itemBounds.right - itemBounds.left + itemPadding.left + itemPadding.right
     }
 
     private fun calculateRowHeight(itemBounds: Bounding): Float {
-        return itemBounds.top - itemBounds.bottom + grid.itemPadding.top + grid.itemPadding.bottom
+        return itemBounds.top - itemBounds.bottom + itemPadding.top + itemPadding.bottom
     }
 
     private fun getColumnIndex(childIdx: Int): Int {
-        return if (grid.rows != 0) {
-            childIdx / grid.rows
+        return if (rows != 0) {
+            childIdx / rows
         } else {
-            childIdx % grid.columns
+            childIdx % columns
         }
     }
 
     private fun getRowIndex(childIdx: Int): Int {
-        return if (grid.rows != 0) {
-            childIdx % grid.rows
+        return if (rows != 0) {
+            childIdx % rows
         } else {
-            childIdx / grid.columns
+            childIdx / columns
         }
     }
 

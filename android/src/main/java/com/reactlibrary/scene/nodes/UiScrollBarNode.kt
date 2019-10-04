@@ -28,7 +28,7 @@ import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 
-class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
         UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {

@@ -20,10 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import com.reactlibrary.ar.CubeRenderableBuilder
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
@@ -60,17 +57,31 @@ class LineNodeTest {
     }
 
     @Test
-    fun shouldBuildOneLineSegmentWhenTwoPointsProvidedAndRendelableAttached() {
+    fun shouldBuildTwoLineSegmentsWhenThreePointsProvided() {
         val point1 = JavaOnlyArray.of(1.0, 2.0, 0.0)
         val point2 = JavaOnlyArray.of(3.0, 4.0, 1.0)
-        val points = JavaOnlyArray.of(point1, point2)
+        val point3 = JavaOnlyArray.of(4.0, 2.0, 1.5)
+        val points = JavaOnlyArray.of(point1, point2, point3)
         val props = JavaOnlyMap.of(LineNode.PROP_POINTS, points)
         val node = LineNode(props, context, cubeRenderableBuilder)
         node.build()
 
         node.attachRenderable()
 
-        verify(cubeRenderableBuilder, times(1)).buildRenderable(any(), any(), any(), any())
+        verify(cubeRenderableBuilder, times(2)).buildRenderable(any(), any(), any(), any())
+    }
+
+    @Test
+    fun shouldNotBuildCubeWhenOnlyOnePointProvided() {
+        val point = JavaOnlyArray.of(1.0, 2.0, 0.0)
+        val points = JavaOnlyArray.of(point)
+        val props = JavaOnlyMap.of(LineNode.PROP_POINTS, points)
+        val node = LineNode(props, context, cubeRenderableBuilder)
+        node.build()
+
+        node.attachRenderable()
+
+        verify(cubeRenderableBuilder, never()).buildRenderable(any(), any(), any(), any())
     }
 
 }

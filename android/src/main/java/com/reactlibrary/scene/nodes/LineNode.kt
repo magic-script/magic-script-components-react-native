@@ -23,13 +23,15 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
-import com.google.ar.sceneform.rendering.MaterialFactory
-import com.google.ar.sceneform.rendering.ShapeFactory
+import com.reactlibrary.ar.CubeRenderableBuilder
+import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
 
 // Node that represents a chain of lines
-class LineNode(initProps: ReadableMap, private val context: Context) :
+class LineNode(initProps: ReadableMap,
+               private val context: Context,
+               private val cubeRenderableBuilder: CubeRenderableBuilder) :
         TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = false) {
 
     companion object {
@@ -86,22 +88,15 @@ class LineNode(initProps: ReadableMap, private val context: Context) :
         val diff = Vector3.subtract(start, end)
         val direction = diff.normalized()
         val rotation = Quaternion.lookRotation(direction, Vector3.up())
-
-        MaterialFactory
-                .makeOpaqueWithColor(context, color)
-                .thenAccept { material ->
-                    val lineSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, diff.length())
-                    val renderable = ShapeFactory.makeCube(lineSize, Vector3.zero(), material)
-                    renderable.isShadowReceiver = false
-                    renderable.isShadowCaster = false
-
-                    contentNode.addChild(lineSegment)
-                    lineSegment.renderable = renderable
-                    lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
-                    lineSegment.localRotation = rotation
-                }
-
+        val lineSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, diff.length())
+        cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
+            if (result is RenderableResult.Success) {
+                contentNode.addChild(lineSegment)
+                lineSegment.renderable = result.renderable
+                lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
+                lineSegment.localRotation = rotation
+            }
+        }
     }
-
 
 }

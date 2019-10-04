@@ -20,7 +20,10 @@ import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.ar.ViewRenderableLoader
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -35,24 +38,33 @@ import org.robolectric.RobolectricTestRunner
 class UiNodeTest {
 
     private lateinit var context: Context
+    private lateinit var viewRenderableLoader: ViewRenderableLoader
+    private lateinit var node: UiNode
 
     @Before
     fun setUp() {
-        this.context = ApplicationProvider.getApplicationContext()
-    }
-
-    @Test
-    fun shouldBeEnabledByDefault() {
-        val node = object : UiNode(JavaOnlyMap(), context, mock()) {
+        context = ApplicationProvider.getApplicationContext()
+        viewRenderableLoader = mock()
+        node = object : UiNode(JavaOnlyMap(), context, viewRenderableLoader) {
             override fun provideView(context: Context): View {
                 return mock()
             }
         }
+        node.build()
+    }
 
+    @Test
+    fun shouldBeEnabledByDefault() {
         val enabledProp = node.getProperty(UiNode.PROP_ENABLED)
 
         assertEquals(true, enabledProp)
     }
 
+    @Test
+    fun shouldLoadRenderableWhenAttachRequested() {
+        node.attachRenderable()
+
+        verify(viewRenderableLoader).loadRenderable(any(), any())
+    }
 
 }

@@ -30,6 +30,8 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
+import com.reactlibrary.ar.CubeRenderableBuilder;
+import com.reactlibrary.ar.CubeRenderableBuilderImpl;
 import com.reactlibrary.ar.ModelRenderableLoader;
 import com.reactlibrary.ar.ModelRenderableLoaderImpl;
 import com.reactlibrary.ar.VideoRenderableLoader;
@@ -91,17 +93,18 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
 
+    private ViewRenderableLoader viewRenderableLoader;
     private ModelRenderableLoader modelRenderableLoader;
     private VideoRenderableLoader videoRenderableLoader;
-    private ViewRenderableLoader viewRenderableLoader;
+    private CubeRenderableBuilder cubeRenderableBuilder;
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
-        // here activity is null yet (so we use initAR method)
         this.context = reactContext;
+        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
-        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
+        this.cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
         context.addLifecycleEventListener(this);
     }
 
@@ -188,7 +191,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new LineNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new LineNode(props, context, cubeRenderableBuilder), nodeId));
     }
 
     @ReactMethod

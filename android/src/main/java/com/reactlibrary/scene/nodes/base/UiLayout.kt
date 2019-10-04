@@ -33,7 +33,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     // we should re-draw the grid after adding / removing a child
-    private var redrawRequested = false
+    var redrawRequested = false
+        private set
 
     // child index, bounding
     private val childrenBounds = mutableMapOf<Int, Bounding>()

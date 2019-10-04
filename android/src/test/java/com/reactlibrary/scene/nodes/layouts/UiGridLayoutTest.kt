@@ -18,10 +18,13 @@ package com.reactlibrary.scene.nodes
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager
+import com.reactlibrary.scene.nodes.props.Alignment
+import junit.framework.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,30 +45,48 @@ class UiGridLayoutTest {
     }
 
     @Test
-    fun shouldLayoutWhenChildrenAdded() {
-        val props = JavaOnlyMap.of(UiGridLayout.PROP_ROWS, 5)
-        val node = UiGridLayout(props, gridLayoutManager)
+    fun shouldApplyDefaultNumberOfColumns() {
+        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
         node.build()
 
-        verify(gridLayoutManager).layoutChildren(any(), any())
+        verify(gridLayoutManager).columns = UiGridLayout.COLUMNS_DEFAULT
+        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+        assertFalse(node.redrawRequested) // redrew already happened
     }
 
     @Test
-    fun shouldLayoutWhenProvidedColumns() {
-        val props = JavaOnlyMap.of(UiGridLayout.PROP_COLUMNS, 2)
-        val node = UiGridLayout(props, gridLayoutManager)
+    fun shouldApplyDefaultNumberOfRows() {
+        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
         node.build()
 
-        verify(gridLayoutManager).layoutChildren(any(), any())
+        verify(gridLayoutManager).rows = UiGridLayout.ROWS_DEFAULT
+        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+        assertFalse(node.redrawRequested)  // redrew already happened
     }
 
     @Test
-    fun shouldLayoutWhenProvidedRows() {
-        val props = JavaOnlyMap.of(UiGridLayout.PROP_ROWS, 5)
+    fun shouldApplyItemAlignmentWhenItemAlignmentPropertyPresent() {
+        val props = JavaOnlyMap.of(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = UiGridLayout(props, gridLayoutManager)
         node.build()
 
-        verify(gridLayoutManager).layoutChildren(any(), any())
+        verify(gridLayoutManager).itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
+        verify(gridLayoutManager).itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
+        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+        assertFalse(node.redrawRequested) // redrew already happened on build
     }
+
+    @Test
+    fun shouldUpdateNumberOfColumnsWhenColumnsPropertyUpdated() {
+        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
+        node.build()
+
+        val columns = 3
+        val props = JavaOnlyMap.of(UiGridLayout.PROP_COLUMNS, columns.toDouble())
+        node.update(props)
+
+        verify(gridLayoutManager).columns = columns
+    }
+
 
 }

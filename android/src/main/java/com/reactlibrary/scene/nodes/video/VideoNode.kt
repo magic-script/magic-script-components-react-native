@@ -21,9 +21,10 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
+import com.reactlibrary.ar.RenderableResult
+import com.reactlibrary.ar.VideoRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.ar.VideoRenderableLoader
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultDouble
 
@@ -96,10 +97,12 @@ class VideoNode(initProps: ReadableMap,
                 logMessage("video load exception: $exception", warn = true)
             }
 
-            videoRenderableLoader.loadRenderable(onLoadedListener = { renderable ->
-                renderable.material.setExternalTexture("videoTexture", texture)
-                contentNode.renderable = renderable
-            })
+            videoRenderableLoader.loadRenderable { result ->
+                if (result is RenderableResult.Success) {
+                    result.renderable.material.setExternalTexture("videoTexture", texture)
+                    contentNode.renderable = result.renderable
+                }
+            }
         }
     }
 

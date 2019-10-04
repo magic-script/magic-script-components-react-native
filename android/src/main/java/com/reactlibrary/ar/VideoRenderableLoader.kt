@@ -16,8 +16,6 @@
 
 package com.reactlibrary.ar
 
-import com.google.ar.sceneform.rendering.Renderable
-
 interface VideoRenderableLoader {
-    fun loadRenderable(onLoadedListener: (renderable: Renderable) -> Unit)
+    fun loadRenderable(resultCallback: ((result: RenderableResult) -> Unit))
 }

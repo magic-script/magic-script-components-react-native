@@ -20,11 +20,11 @@ import android.content.Context
 import android.net.Uri
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.utils.logMessage
 
 class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableLoader {
-    override fun loadRenderable(modelUri: Uri, onLoadedListener: (renderable: Renderable) -> Unit) {
+
+    override fun loadRenderable(modelUri: Uri, resultCallback: (result: RenderableResult) -> Unit) {
         ModelRenderable.builder()
                 .setSource(context, RenderableSource.builder().setSource(
                         context,
@@ -37,10 +37,13 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
                 .thenAccept { renderable ->
                     renderable.isShadowReceiver = false
                     renderable.isShadowCaster = false
+                    resultCallback(RenderableResult.Success(renderable))
                 }
                 .exceptionally { throwable ->
                     logMessage("error loading ModelRenderable: $throwable")
+                    resultCallback(RenderableResult.Error(throwable))
                     null
                 }
+
     }
 }

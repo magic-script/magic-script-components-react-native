@@ -17,8 +17,7 @@
 package com.reactlibrary.ar
 
 import android.net.Uri
-import com.google.ar.sceneform.rendering.Renderable
 
 interface ModelRenderableLoader {
-    fun loadRenderable(modelUri: Uri, onLoadedListener: (renderable: Renderable) -> Unit)
+    fun loadRenderable(modelUri: Uri, resultCallback: ((result: RenderableResult) -> Unit))
 }

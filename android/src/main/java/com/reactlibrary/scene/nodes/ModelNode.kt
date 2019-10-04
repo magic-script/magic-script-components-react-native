@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.ar.ModelRenderableLoader
+import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
 
@@ -80,9 +81,11 @@ class ModelNode(initProps: ReadableMap,
     private fun loadModel() {
         val modelUri = PropertiesReader.readFilePath(properties, PROP_MODEL_PATH, context)
         if (modelUri != null) {
-            modelRenderableLoader.loadRenderable(modelUri, onLoadedListener = { renderable ->
-                contentNode.renderable = renderable
-            })
+            modelRenderableLoader.loadRenderable(modelUri) { result ->
+                if (result is RenderableResult.Success) {
+                    contentNode.renderable = result.renderable
+                }
+            }
         }
     }
 

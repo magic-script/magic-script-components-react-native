@@ -16,29 +16,24 @@
 
 package com.reactlibrary.scene.nodes
 
-import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.base.TransformNode
+import android.content.Context
 import android.graphics.PointF
-import com.google.ar.sceneform.math.Vector3
+import android.graphics.Rect
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import com.google.ar.sceneform.Node
-import com.reactlibrary.R
 import android.view.LayoutInflater
-import android.content.Context
-import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.scene.nodes.views.CustomScrollBar
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.*
-import com.reactlibrary.utils.putDefaultDouble
-import com.reactlibrary.utils.putDefaultString
-import kotlinx.android.synthetic.main.scroll_view.view.*
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.scene.nodes.base.TransformNode
 
 class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = false) {
@@ -106,10 +101,10 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     override fun setViewSize() {
         val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
+        val widthPx = metersToPx(widthInMeters)
 
         val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
+        val heightPx = metersToPx(heightInMeters)
 
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
@@ -120,17 +115,32 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         val childSize = Utils.calculateBoundsOfNode(child).size()
 
         val padding = (childSize - viewSize) / 2F
-        val travel = (childSize - viewSize).coerceAtLeast(0F)
-        val childPosition = padding - travel * viewPosition
-
-        // logMessage("pos " + childPosition.toString())
-        // logMessage("viewSize " + viewSize.toString())
-        // logMessage("childSize " + childSize.toString())
-        // logMessage("padding " + padding.toString())
-        // logMessage("travel " + travel.toString())
-        // logMessage("childPosition " + childPosition.toString())
-        // logMessage("viewPosition " + viewPosition.toString())
+        val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
+        val travel = possibleTravel * viewPosition
+        val childPosition = padding - travel
 
         child.localPosition = Vector3(childPosition.x, -childPosition.y, 0F)  
+        if (child is TransformNode){
+            val clipArea = calculateClipArea(viewSize, travel)
+            (child as TransformNode).setClipBounds(clipArea)
+        }
+    }
+
+    private fun calculateClipArea(viewSize: PointF, travel: PointF): Rect {
+
+        val width = metersToPx(viewSize.x)
+        val height = metersToPx(viewSize.y)
+        val offsetX = metersToPx(travel.x)
+        val offsetY = metersToPx(travel.y)
+
+        logMessage(Rect(offsetX, height+offsetY, width+offsetX, offsetY).toString())
+        logMessage("travel " + travel.toString())
+        logMessage("viewSize " + viewSize.toString())
+
+        return Rect(offsetX, height+offsetY, width+offsetX, offsetY)
+    }
+
+    private fun metersToPx( meters: Float ): Int {
+        return Utils.metersToPx(meters, context)
     }
 }

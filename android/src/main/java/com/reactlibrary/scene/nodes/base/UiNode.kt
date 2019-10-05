@@ -16,6 +16,7 @@
 
 package com.reactlibrary.scene.nodes.base
 
+import android.graphics.Rect
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -152,6 +153,10 @@ abstract class UiNode(
                     logMessage("error loading ViewRenderable: $throwable")
                     null
                 }
+    }
+
+    override fun setClipBounds(clipBounds: Rect) {
+        view.setClipBounds(clipBounds)
     }
 
     private fun setEnabled(props: Bundle) {

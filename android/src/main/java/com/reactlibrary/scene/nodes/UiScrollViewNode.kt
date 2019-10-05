@@ -16,6 +16,7 @@
 
 package com.reactlibrary.scene.nodes
 
+import com.reactlibrary.scene.nodes.props.Bounding
 import android.graphics.PointF
 import com.google.ar.sceneform.math.Vector3
 import android.os.Handler
@@ -50,37 +51,45 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     private lateinit var child: Node
 
+    private var looperHandler = Handler(Looper.getMainLooper())
+
+    private var childBounds = Bounding()
+
     init {
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, 1.0)
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
+        layoutLoop()
     }
     
     override fun addContent(child: Node) {
         super.addContent(child)
         this.child = child
-        logMessage("addContent")
         layoutLoop()
     }
 
-    private var handler = Handler(Looper.getMainLooper())
+    
     private fun layoutLoop() {
-        handler.postDelayed({
-            positionChild(PointF())
-            // layoutLoop()
-        }, 1000L)
-    }
+        looperHandler.postDelayed({
 
-    private fun onScrollChangeListener(position: PointF) {
-        positionChild(position)
+            val newBounds = Utils.calculateBoundsOfNode(child)
+            if (!Bounding.equalInexact(newBounds, childBounds)) {
+                childBounds = newBounds
+                val scrollView = (view as CustomScrollView)
+                scrollView.contentSize = childBounds.getSize()
+                update(scrollView.viewPosition())
+            }
+
+            layoutLoop()
+        }, 100L)
     }
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
         val scrollView = view as CustomScrollView
-        scrollView.onScrollChangeListener = ::onScrollChangeListener
-        scrollView.contentSize = PointF(2000F, 1000F)
-
+        scrollView.onScrollChangeListener = { position: PointF ->
+            update(position)
+        }
         return view
     }
 
@@ -100,18 +109,12 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         val heightPx = Utils.metersToPx(heightInMeters, context)
 
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-        (view as CustomScrollView).viewWidth = widthPx.toFloat()
-        (view as CustomScrollView).viewHeight = heightPx.toFloat()
     }
 
-    private fun positionChild(viewPosition: PointF){
+    private fun update(viewPosition: PointF){
 
-        val viewBounds = getBounding()
-        val childBounds = if (child is TransformNode) {
-            (child as TransformNode).getBounding()
-        } else {
-            Utils.calculateBoundsOfNode(child)
-        }
+        val viewBounds = Utils.calculateBoundsOfNode(this)
+        val childBounds = Utils.calculateBoundsOfNode(child)
 
         val viewSize = viewBounds.getSize()
         val childSize = childBounds.getSize()
@@ -119,7 +122,9 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         val travel = viewSize - childSize
         val childPosition = padding + travel * viewPosition
 
-        logMessage("pos " + childPosition.toString())
+        // logMessage("pos " + childPosition.toString())
+        // logMessage("viewBounds " + viewBounds.toString())
+        // logMessage("childBounds " + viewBounds.toString())
 
         child.localPosition = Vector3(childPosition.x, -childPosition.y, 0F)  
     }

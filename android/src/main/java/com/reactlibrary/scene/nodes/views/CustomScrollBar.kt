@@ -55,16 +55,13 @@ class CustomScrollBar @JvmOverloads constructor(
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
         set(value){
             field = value
-            logMessage("onScrollChangeListener set")
         }
 
     init {
         val orientationStr = attrs?.getAttributeValue(null, "orientation")
-        logMessage(orientationStr + " ")
         if (orientationStr == "horizontal"){
             isVertical = false
         }
-        logMessage("init")
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -92,7 +89,6 @@ class CustomScrollBar @JvmOverloads constructor(
         } else {
             0F
         }
-        logMessage(" should call " + (onScrollChangeListener == null).toString())
         onScrollChangeListener?.invoke(thumbPosition)
         return true
     }

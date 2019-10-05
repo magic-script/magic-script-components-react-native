@@ -16,11 +16,13 @@
 
 package com.reactlibrary.utils
 
-import com.reactlibrary.scene.nodes.props.Bounding
 import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.EditText
+import com.reactlibrary.scene.nodes.props.Bounding
 
 /**
  * ==========Extension methods============
@@ -105,3 +107,34 @@ fun Bundle.putDefaultString(name: String, value: String) {
      val height = top - bottom
      return PointF(width, height)
  }
+
+/**
+ * android.view.View
+ */
+ inline fun View.onLayoutListener(crossinline f: () -> Unit)  {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            f()
+        }
+    })
+}
+
+ inline fun View.onPreDrawListener(crossinline f: () -> Unit)  {
+    viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            viewTreeObserver.removeOnPreDrawListener(this)
+            f()
+            return true
+        }
+    })
+}
+
+ inline fun View.onDrawListener(crossinline f: () -> Unit)  {
+    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
+        override fun onDraw() {
+            // viewTreeObserver.removeOnDrawListener(this)
+            f()
+        }
+    })
+}

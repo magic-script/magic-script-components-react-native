@@ -16,6 +16,7 @@
 
 package com.reactlibrary.scene.nodes.views
 
+import com.google.ar.sceneform.Node
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
@@ -34,52 +35,27 @@ class CustomScrollView @JvmOverloads constructor(
     var contentSize = PointF()
         set(value) {
             field = value
-            this.h_bar.thumbSize = viewWidth / field.x
-            this.v_bar.thumbSize = viewHeight / field.y
+            update()
         }
-
-    // remove??
-    var viewWidth = 0F
-        set(value) {
-            field = value
-            this.h_bar.thumbSize = viewWidth / contentSize.x
-        }
-
-    var viewHeight = 0F
-        set(value) {
-            field = value
-            this.v_bar.thumbSize = viewHeight / contentSize.y
-        }
-
-    var viewPosition = PointF()
-        set(value) {
-            field = value.coerceIn(0F, 1F)
-        }
-
-    private var previousTouch = PointF()
 
     var onScrollChangeListener: ((on: PointF) -> Unit)? = null
 
-    init {
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                // logMessage("onLayout")
-                h_bar.onScrollChangeListener = { pos: Float -> Unit
-                    // logMessage("h_bar.onScrollChangeListener")
-                    viewPosition = PointF(pos, viewPosition.y)
-                    onScrollChangeListener?.invoke(viewPosition)
-                }
-                v_bar.onScrollChangeListener = { pos: Float -> Unit
-                    // logMessage("h_bar.onScrollChangeListener")
-                    viewPosition = PointF(viewPosition.x, pos)
-                    onScrollChangeListener?.invoke(viewPosition)
-                }
-                viewTreeObserver.removeOnGlobalLayoutListener(this);
-            }
-        })
-    }
+    private var previousTouch = PointF()
 
-    fun onGlobalLayout() {
+    init {
+        // We can be sure nested scrollBars are 
+        // initialized only after layout is completed. 
+        this.onPreDrawListener{
+                h_bar.onScrollChangeListener = { pos: Float ->
+                    val viewPosition = PointF(pos, v_bar.thumbPosition)
+                    onScrollChangeListener?.invoke(viewPosition)
+                }
+                v_bar.onScrollChangeListener = { pos: Float ->
+                    val viewPosition = PointF(h_bar.thumbPosition, pos)
+                    onScrollChangeListener?.invoke(viewPosition)
+                }
+                update()
+            }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -92,13 +68,21 @@ class CustomScrollView @JvmOverloads constructor(
         if (action == MotionEvent.ACTION_MOVE) {
             val movePx = touch - previousTouch
             val move = movePx / contentSize
-            viewPosition = viewPosition + move
+            h_bar.thumbPosition += move.x
+            v_bar.thumbPosition += move.y
         }
         previousTouch = touch
 
-        this.h_bar.thumbPosition = viewPosition.x
-        this.v_bar.thumbPosition = viewPosition.y
-        onScrollChangeListener?.invoke(viewPosition)
+        onScrollChangeListener?.invoke(viewPosition())
         return true
+    }
+
+    fun viewPosition(): PointF {
+        return PointF(h_bar.thumbPosition, v_bar.thumbPosition)
+    }
+
+    private fun update() {
+        this.h_bar.thumbSize = width.toFloat() / contentSize.x
+        this.v_bar.thumbSize = height.toFloat() / contentSize.y
     }
 }

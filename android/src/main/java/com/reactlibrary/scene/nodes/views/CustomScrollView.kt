@@ -68,8 +68,10 @@ class CustomScrollView @JvmOverloads constructor(
         if (action == MotionEvent.ACTION_MOVE) {
             val movePx = touch - previousTouch
             val move = movePx / contentSize
-            h_bar.thumbPosition += move.x
-            v_bar.thumbPosition += move.y
+            // logMessage("move " + move.toString())
+            // logMessage("contentSize " + contentSize.toString())
+            h_bar.thumbPosition -= move.x
+            v_bar.thumbPosition -= move.y
         }
         previousTouch = touch
 

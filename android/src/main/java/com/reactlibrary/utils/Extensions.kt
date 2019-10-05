@@ -84,6 +84,10 @@ fun PointF.coerceIn(min: Float, max: Float): PointF {
     return PointF(x.coerceIn(min, max), y.coerceIn(min, max))
 }
 
+fun PointF.coerceAtLeast(min: Float): PointF {
+    return PointF(x.coerceAtLeast(min), y.coerceAtLeast(min))
+}
+
 /**
  * android.os.Bundle
  */
@@ -102,7 +106,7 @@ fun Bundle.putDefaultString(name: String, value: String) {
 /**
  * com.reactlibrary.scene.nodes.props.Bounding
  */
- fun Bounding.getSize(): PointF {
+ fun Bounding.size(): PointF {
      val width = right - left
      val height = top - bottom
      return PointF(width, height)

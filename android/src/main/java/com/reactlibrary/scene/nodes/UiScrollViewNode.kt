@@ -67,16 +67,19 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         this.child = child
         layoutLoop()
     }
-
     
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
             val newBounds = Utils.calculateBoundsOfNode(child)
             if (!Bounding.equalInexact(newBounds, childBounds)) {
-                childBounds = newBounds
                 val scrollView = (view as CustomScrollView)
-                scrollView.contentSize = childBounds.getSize()
+                childBounds = newBounds
+                // logMessage("new childBounds " + childBounds.toString())
+                val childSize = childBounds.size()
+                scrollView.contentSize = PointF(
+                    Utils.metersToPx(childSize.x, context).toFloat(),
+                    Utils.metersToPx(childSize.y, context).toFloat())
                 update(scrollView.viewPosition())
             }
 
@@ -113,18 +116,20 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     private fun update(viewPosition: PointF){
 
-        val viewBounds = Utils.calculateBoundsOfNode(this)
-        val childBounds = Utils.calculateBoundsOfNode(child)
+        val viewSize = Utils.calculateBoundsOfNode(this).size()
+        val childSize = Utils.calculateBoundsOfNode(child).size()
 
-        val viewSize = viewBounds.getSize()
-        val childSize = childBounds.getSize()
         val padding = (childSize - viewSize) / 2F
-        val travel = viewSize - childSize
-        val childPosition = padding + travel * viewPosition
+        val travel = (childSize - viewSize).coerceAtLeast(0F)
+        val childPosition = padding - travel * viewPosition
 
         // logMessage("pos " + childPosition.toString())
-        // logMessage("viewBounds " + viewBounds.toString())
-        // logMessage("childBounds " + viewBounds.toString())
+        // logMessage("viewSize " + viewSize.toString())
+        // logMessage("childSize " + childSize.toString())
+        // logMessage("padding " + padding.toString())
+        // logMessage("travel " + travel.toString())
+        // logMessage("childPosition " + childPosition.toString())
+        // logMessage("viewPosition " + viewPosition.toString())
 
         child.localPosition = Vector3(childPosition.x, -childPosition.y, 0F)  
     }

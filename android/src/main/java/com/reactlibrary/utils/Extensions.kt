@@ -56,6 +56,10 @@ operator fun PointF.minus(other: PointF): PointF {
     return PointF(x - other.x, y - other.y)
 }
 
+operator fun PointF.minus(other: Float): PointF {
+    return PointF(x - other, y - other)
+}
+
 operator fun PointF.times(other: PointF): PointF {
     return PointF(x * other.x, y * other.y)
 }
@@ -125,21 +129,12 @@ inline fun View.onLayoutListener(crossinline f: () -> Unit) {
     })
 }
 
-inline fun View.onPreDrawListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-        override fun onPreDraw(): Boolean {
-            viewTreeObserver.removeOnPreDrawListener(this)
-            f()
-            return true
-        }
-    })
-}
-
-inline fun View.onDrawListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
-        override fun onDraw() {
-            // viewTreeObserver.removeOnDrawListener(this)
-            f()
-        }
-    })
-}
+// inline fun View.onPreDrawListener(crossinline f: () -> Unit) {
+//     viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+//         override fun onPreDraw(): Boolean {
+//             viewTreeObserver.removeOnPreDrawListener(this)
+//             f()
+//             return true
+//         }
+//     })
+// }

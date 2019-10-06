@@ -45,7 +45,7 @@ class CustomScrollView @JvmOverloads constructor(
     init {
         // We can be sure nested scrollBars are 
         // initialized only after layout is completed. 
-        this.onPreDrawListener{
+        this.onLayoutListener{
                 h_bar.onScrollChangeListener = { pos: Float ->
                     val viewPosition = PointF(pos, v_bar.thumbPosition)
                     onScrollChangeListener?.invoke(viewPosition)
@@ -71,7 +71,7 @@ class CustomScrollView @JvmOverloads constructor(
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
             // logMessage("move " + move.toString())
-            logMessage("contentSize " + contentSize.toString())
+            // logMessage("contentSize " + contentSize.toString())
             h_bar.thumbPosition -= move.x
             v_bar.thumbPosition -= move.y
         }

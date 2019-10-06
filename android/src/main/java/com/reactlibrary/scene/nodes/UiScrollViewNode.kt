@@ -26,6 +26,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
@@ -34,6 +35,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.*
+import kotlinx.android.synthetic.main.scroll_view.view.*
 
 class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         UiNode(initProps, context, useContentNodeAlignment = false) {
@@ -42,6 +44,8 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         // properties
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+
+        const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
     }
 
     private lateinit var child: Node
@@ -106,16 +110,27 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
         val heightPx = metersToPx(heightInMeters)
 
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
+
+        // Overriding scrollbars dimensions from layout xml
+        // because we want to set view dimensions in one place and
+        // for consistency use meters instead of pixels.
+        val scrollView = view as CustomScrollView
+        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH)
+        scrollView.h_bar.layoutParams.width = widthPx - scrollBarWidthPx
+        scrollView.h_bar.layoutParams.height = scrollBarWidthPx
+        scrollView.v_bar.layoutParams.width = scrollBarWidthPx
+        scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
     private fun update(viewPosition: PointF) {
 
         val childBounds = calculateAbsoluteBoundsOfNode(child)
-        val viewSize = calculateAbsoluteBoundsOfNode(this).size()
+        val viewSizeRaw = calculateAbsoluteBoundsOfNode(this).size()
+        val viewSize = viewSizeRaw - DEFAULT_SCROLLBAR_WIDTH
         val childSize = childBounds.size()
 
-        val zero = PointF(viewSize.x / -2F, viewSize.y / 2F)
+        val zero = PointF(viewSizeRaw.x / -2F, viewSizeRaw.y / 2F)
         val pivot = PointF(childBounds.left, childBounds.top)
 
         // logMessage("localPosition " + child.localPosition.toString())
@@ -154,9 +169,9 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
             Utils.calculateBoundsOfNode(node)
         }
         return Bounding(
-                bounds.left - child.localPosition.x,
-                bounds.bottom - child.localPosition.y,
-                bounds.right - child.localPosition.x,
-                bounds.top - child.localPosition.y)
+            bounds.left - child.localPosition.x,
+            bounds.bottom - child.localPosition.y,
+            bounds.right - child.localPosition.x,
+            bounds.top - child.localPosition.y)
     }
 }

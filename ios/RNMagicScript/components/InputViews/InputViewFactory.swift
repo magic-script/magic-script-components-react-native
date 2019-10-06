@@ -12,24 +12,16 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import UIKit
 
-
-protocol InputDataProviding {
-    var value: Any? { get set }
-    var placeholder: String? { get }
-    var charLimit: Int { get }
-    var multiline: Bool { get }
-    var password: Bool { get }
-    var autocapitalizationType: UITextAutocapitalizationType? { get }
-    var keyboardType: UIKeyboardType? { get }
-    var textContentType: UITextContentType? { get }
-}
-
-protocol SliderDataProviding {
-    var value: CGFloat { get set }
-    var min: CGFloat { get set }
-    var max: CGFloat { get set }
+class InputViewFactory {
+    static func createView(for input: SliderDataProviding, onValueChanged: ((Float) -> (Void))?) -> SliderInputView {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
+        let sliderInputView = SliderInputView(frame: rect)
+        sliderInputView.input = input
+        sliderInputView.onValueChanged = onValueChanged
+        return sliderInputView
+    }
 }

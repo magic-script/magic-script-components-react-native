@@ -116,6 +116,9 @@ import SceneKit
         UiNodesManager.instance.onInputFocused = { [weak self] input in
             self?.presentInput(input)
         }
+        UiNodesManager.instance.onSliderFocused = { [weak self] slider in
+            self?.presentInput(slider)
+        }
         UiNodesManager.instance.onInputUnfocused = { [weak self] in
             self?.dismissInput()
         }
@@ -138,12 +141,31 @@ import SceneKit
         inputAccessoryView.becomeFirstResponder()
     }
 
+    fileprivate func presentInput(_ slider: SliderDataProviding) {
+        if (inputResponder == nil) {
+            inputResponder = UITextField()
+            inputResponder!.isHidden = true
+            addSubview(inputResponder!)
+        }
+
+        let inputAccessoryView = InputAccessoryViewFactory.createView(for: slider, onFinish: {
+            UiNodesManager.instance.handleNodeTap(nil)
+        })
+
+        inputResponder!.inputView = InputViewFactory.createView(for: slider, onValueChanged: { value in
+            inputAccessoryView.updateCurrentValue(CGFloat(value))
+        })
+        inputResponder!.inputAccessoryView = inputAccessoryView
+        inputResponder!.becomeFirstResponder()
+    }
+
     fileprivate func dismissInput() {
         // NOTE: This line generates the following warning:
         // First responder warning: '<GrowingTextView...>' rejected resignFirstResponder
         // when being removed from hierarchy.
         inputResponder?.inputAccessoryView?.resignFirstResponder()
 
+        inputResponder?.inputView = nil
         inputResponder?.inputAccessoryView = nil
         inputResponder?.resignFirstResponder()
     }

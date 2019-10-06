@@ -161,12 +161,13 @@ import SceneKit
 
             outlineNode?.removeFromParentNode()
 
-            let radius: CGFloat = 0.5 * Swift.min(size.width, size.height)
+            let radius: CGFloat = 0.85 * Swift.min(size.width, size.height)
             let thickness: CGFloat = 0.1 * Swift.min(size.width, size.height)
             guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
-            outlineNode = NodesFactory.createOutlineNode(width: size.width + 0.075, height: size.height + 0.075, cornerRadius: radius, thickness: thickness, color: .red)
+            outlineNode = NodesFactory.createOutlineNode(width: size.width + 0.075, height: size.height + 0.075, cornerRadius: radius, thickness: thickness, color: .white)
             contentNode.addChildNode(outlineNode)
         }
     }
 }
 
+extension UiSliderNode: SliderDataProviding { }

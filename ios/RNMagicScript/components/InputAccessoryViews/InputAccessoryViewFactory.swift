@@ -31,4 +31,12 @@ class InputAccessoryViewFactory {
             return singleLineView
         }
     }
+
+    static func createView(for input: SliderDataProviding, onFinish: (() -> Void)?) -> SliderAccessoryView {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+        let sliderAccessoryView = SliderAccessoryView(frame: rect)
+        sliderAccessoryView.input = input
+        sliderAccessoryView.onFinish = onFinish
+        return sliderAccessoryView
+    }
 }

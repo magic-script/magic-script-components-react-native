@@ -23,6 +23,7 @@ import SceneKit
     @objc let focusableNodeBitMask: Int = 8
 
     var onInputFocused: ((_ input: InputDataProviding) -> (Void))?
+    var onSliderFocused: ((_ input: SliderDataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
 
     fileprivate var nodesById: [String: TransformNode]
@@ -58,6 +59,9 @@ import SceneKit
         focusedNode?.enterFocus()
         if let input = focusedNode as? InputDataProviding {
             onInputFocused?(input)
+        }
+        if let input = focusedNode as? SliderDataProviding {
+            onSliderFocused?(input)
         }
     }
     

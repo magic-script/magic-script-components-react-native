@@ -16,6 +16,8 @@
 
 package com.reactlibrary.scene.nodes.base
 
+import android.graphics.RectF
+import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
@@ -91,6 +93,15 @@ abstract class UiLayout(initProps: ReadableMap)
 
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 shouldRedraw = true
+            }
+        }
+    }
+
+    override fun setClipBounds(clipBounds: RectF) {
+        for (i in 0 until contentNode.children.size) {
+            val node = contentNode.children[i]
+            if (node is TransformNode) {
+                node.setClipBounds(clipBounds)
             }
         }
     }

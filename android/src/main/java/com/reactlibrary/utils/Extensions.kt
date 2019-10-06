@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.reactlibrary.scene.nodes.props.Bounding
+import kotlin.math.abs
 
 /**
  * ==========Extension methods============
@@ -72,13 +73,8 @@ operator fun PointF.div(other: PointF): PointF {
 }
 
 operator fun PointF.div(other: Float): PointF {
-    return div(PointF(other,other))
+    return div(PointF(other, other))
 }
-
-// operator fun PointF.plusAssign(other: PointF) {
-//     x += other.x
-//     y += other.y
-// }
 
 fun PointF.coerceIn(min: Float, max: Float): PointF {
     return PointF(x.coerceIn(min, max), y.coerceIn(min, max))
@@ -86,6 +82,11 @@ fun PointF.coerceIn(min: Float, max: Float): PointF {
 
 fun PointF.coerceAtLeast(min: Float): PointF {
     return PointF(x.coerceAtLeast(min), y.coerceAtLeast(min))
+}
+
+fun PointF.equalInexact(other: PointF): Boolean {
+    val eps = 1e-5 // epsilon
+    return abs(x - other.x) < eps && abs(y - other.y) < eps
 }
 
 /**
@@ -106,16 +107,16 @@ fun Bundle.putDefaultString(name: String, value: String) {
 /**
  * com.reactlibrary.scene.nodes.props.Bounding
  */
- fun Bounding.size(): PointF {
-     val width = right - left
-     val height = top - bottom
-     return PointF(width, height)
- }
+fun Bounding.size(): PointF {
+    val width = right - left
+    val height = top - bottom
+    return PointF(width, height)
+}
 
 /**
  * android.view.View
  */
- inline fun View.onLayoutListener(crossinline f: () -> Unit)  {
+inline fun View.onLayoutListener(crossinline f: () -> Unit) {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -124,7 +125,7 @@ fun Bundle.putDefaultString(name: String, value: String) {
     })
 }
 
- inline fun View.onPreDrawListener(crossinline f: () -> Unit)  {
+inline fun View.onPreDrawListener(crossinline f: () -> Unit) {
     viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
             viewTreeObserver.removeOnPreDrawListener(this)
@@ -134,7 +135,7 @@ fun Bundle.putDefaultString(name: String, value: String) {
     })
 }
 
- inline fun View.onDrawListener(crossinline f: () -> Unit)  {
+inline fun View.onDrawListener(crossinline f: () -> Unit) {
     viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
         override fun onDraw() {
             // viewTreeObserver.removeOnDrawListener(this)

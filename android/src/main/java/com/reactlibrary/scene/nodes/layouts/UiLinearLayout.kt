@@ -24,7 +24,7 @@ import com.reactlibrary.scene.nodes.layouts.manager.FlexLinearManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.*
 
 class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
@@ -75,6 +75,7 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
+        // logMessage("childBounds " + childBounds.toString())
         return Bounding(
                 childBounds.left + contentNode.localPosition.x - itemPadding.left,
                 childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,

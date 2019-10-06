@@ -19,7 +19,7 @@ package com.reactlibrary.scene.nodes
 import com.reactlibrary.scene.nodes.base.TransformNode
 import android.content.Context
 import android.graphics.PointF
-import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -56,25 +56,25 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
         layoutLoop()
     }
-    
+
     override fun addContent(child: Node) {
         super.addContent(child)
         this.child = child
         layoutLoop()
     }
-    
+
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
-            val newBounds = Utils.calculateBoundsOfNode(child)
-            if (!Bounding.equalInexact(newBounds, childBounds)) {
+            val newBounds = calculateAbsoluteBoundsOfNode(child)
+            if (!Bounding.equalInexact(childBounds, newBounds)) {
                 val scrollView = (view as CustomScrollView)
                 childBounds = newBounds
-                // logMessage("new childBounds " + childBounds.toString())
+                logMessage("new childBounds " + childBounds.toString())
                 val childSize = childBounds.size()
                 scrollView.contentSize = PointF(
-                    Utils.metersToPx(childSize.x, context).toFloat(),
-                    Utils.metersToPx(childSize.y, context).toFloat())
+                        Utils.metersToPx(childSize.x, context).toFloat(),
+                        Utils.metersToPx(childSize.y, context).toFloat())
                 update(scrollView.viewPosition())
             }
 
@@ -109,38 +109,54 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
-    private fun update(viewPosition: PointF){
+    private fun update(viewPosition: PointF) {
 
-        val viewSize = Utils.calculateBoundsOfNode(this).size()
-        val childSize = Utils.calculateBoundsOfNode(child).size()
+        val childBounds = calculateAbsoluteBoundsOfNode(child)
+        val viewSize = calculateAbsoluteBoundsOfNode(this).size()
+        val childSize = childBounds.size()
 
-        val padding = (childSize - viewSize) / 2F
+        val zero = PointF(viewSize.x / -2F, viewSize.y / 2F)
+        val pivot = PointF(childBounds.left, childBounds.top)
+
+        // logMessage("localPosition " + child.localPosition.toString())
+        // logMessage("childBounds " + childBounds.toString())
+        // logMessage("pivot " + pivot.toString())
+
         val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
         val travel = possibleTravel * viewPosition
-        val childPosition = padding - travel
+        val childPosition = zero - pivot - travel
 
-        child.localPosition = Vector3(childPosition.x, -childPosition.y, 0F)  
-        if (child is TransformNode){
+        // logMessage("contentSize " + metersToPx(childSize.x).toString())
+
+        child.localPosition = Vector3(childPosition.x, childPosition.y, 0F)
+        if (child is TransformNode) {
             val clipArea = calculateClipArea(viewSize, travel)
             (child as TransformNode).setClipBounds(clipArea)
         }
     }
 
-    private fun calculateClipArea(viewSize: PointF, travel: PointF): Rect {
-
-        val width = metersToPx(viewSize.x)
-        val height = metersToPx(viewSize.y)
-        val offsetX = metersToPx(travel.x)
-        val offsetY = metersToPx(travel.y)
-
-        logMessage(Rect(offsetX, height+offsetY, width+offsetX, offsetY).toString())
-        logMessage("travel " + travel.toString())
-        logMessage("viewSize " + viewSize.toString())
-
-        return Rect(offsetX, height+offsetY, width+offsetX, offsetY)
+    private fun calculateClipArea(viewSize: PointF, travel: PointF): RectF {
+        return RectF(
+            travel.x, 
+            viewSize.y + travel.y, 
+            viewSize.x + travel.x, 
+            travel.y)
     }
 
-    private fun metersToPx( meters: Float ): Int {
+    private fun metersToPx(meters: Float): Int {
         return Utils.metersToPx(meters, context)
+    }
+
+    private fun calculateAbsoluteBoundsOfNode(node: Node): Bounding {
+        val bounds = if (node is TransformNode) {
+            node.getBounding()
+        } else {
+            Utils.calculateBoundsOfNode(node)
+        }
+        return Bounding(
+                bounds.left - child.localPosition.x,
+                bounds.bottom - child.localPosition.y,
+                bounds.right - child.localPosition.x,
+                bounds.top - child.localPosition.y)
     }
 }

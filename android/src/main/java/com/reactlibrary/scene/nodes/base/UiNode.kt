@@ -16,8 +16,9 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.Rect
+import android.graphics.RectF
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.R
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 
 /**
@@ -155,8 +157,14 @@ abstract class UiNode(
                 }
     }
 
-    override fun setClipBounds(clipBounds: Rect) {
-        view.setClipBounds(clipBounds)
+    override fun setClipBounds(clipBounds: RectF) {
+        val clipBoundsPx = Rect(
+            Utils.metersToPx(clipBounds.left, context),
+            Utils.metersToPx(clipBounds.top, context),
+            Utils.metersToPx(clipBounds.right, context),
+            Utils.metersToPx(clipBounds.bottom, context)
+        )
+        view.setClipBounds(clipBoundsPx)
     }
 
     private fun setEnabled(props: Bundle) {

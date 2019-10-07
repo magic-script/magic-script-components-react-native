@@ -27,6 +27,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -94,16 +95,20 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyHintWhenHintPropertyPresent() {
+    fun shouldApplyHintWhenHintPropertyPresentAndTextIsEmpty() {
         val hint = "hint text"
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_HINT, hint)
+        val props = JavaOnlyMap.of(
+                UiTextEditNode.PROP_HINT, hint,
+                UiTextEditNode.PROP_TEXT, ""
+
+        )
         val node = createNodeWithViewSpy(props)
         val hintColor = context.getColor(R.color.text_color_hint)
 
         node.build()
 
-        verify(textViewSpy).text = hint
-        verify(textViewSpy).setTextColor(hintColor)
+        verify(textViewSpy, atLeastOnce()).text = hint
+        verify(textViewSpy, atLeastOnce()).setTextColor(hintColor)
     }
 
     @Test
@@ -131,9 +136,13 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresent() {
+    fun shouldApplyTextColorWhenColorPropertyPresentAndTextNotEmpty() {
+        val text = "some text"
         val textColor = JavaOnlyArray.of(0.5, 1.0, 1.0, 1.0)
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_COLOR, textColor)
+        val props = JavaOnlyMap.of(
+                UiTextEditNode.PROP_TEXT_COLOR, textColor,
+                UiTextEditNode.PROP_TEXT, text
+        )
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -142,9 +151,9 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyCharacterSpacingWhenSpacingPropertyPresent() {
+    fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
         val spacing = 0.3 // 'EM' units
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTER_SPACING, spacing)
+        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
 
         node.build()

@@ -30,6 +30,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap, context: Context) :
@@ -53,14 +54,9 @@ open class UiToggleNode(initProps: ReadableMap, context: Context) :
 
     init {
         // set default properties values
-        if (!properties.containsKey(PROP_HEIGHT)) {
-            properties.putDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        }
-
-        if (!properties.containsKey(PROP_TEXT_SIZE)) {
-            val height = properties.getDouble(PROP_HEIGHT)
-            properties.putDouble(PROP_TEXT_SIZE, height)
-        }
+        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefaultDouble(PROP_TEXT_SIZE, height)
     }
 
     override fun provideView(context: Context): View {

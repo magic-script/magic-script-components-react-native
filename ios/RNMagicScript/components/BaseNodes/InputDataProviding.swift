@@ -22,6 +22,7 @@ protocol InputDataProviding {
     var charLimit: Int { get }
     var multiline: Bool { get }
     var password: Bool { get }
+    var autocapitalizationType: UITextAutocapitalizationType? { get }
     var keyboardType: UIKeyboardType? { get }
     var textContentType: UITextContentType? { get }
 }

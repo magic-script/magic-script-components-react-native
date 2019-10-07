@@ -246,8 +246,8 @@ class UiTextNodeSpec: QuickSpec {
 
             context("when wrap disabled") {
                 let referenceBoundsSize = CGSize.zero
-                let shortTextRefereneceSizeForBounds = CGSize(width: 0.042, height: 0.0144)
-                let veryLongTextRefereneceSizeForBounds = CGSize(width: 0.4932, height: 0.0144)
+                let shortTextRefereneceSizeForBounds = CGSize(width: 0.0426, height: 0.0144)
+                let veryLongTextRefereneceSizeForBounds = CGSize(width: 0.4986, height: 0.0144)
 
                 it("should change bounds when text length increases") {
                     node.update(["boundsSize" : ["wrap": false]])

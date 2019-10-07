@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.reactlibrary.scene.nodes.props.Bounding
 import kotlin.math.abs
+import java.io.Serializable
 
 /**
  * ==========Extension methods============
@@ -109,6 +110,27 @@ fun Bundle.putDefaultDouble(name: String, value: Double) {
 fun Bundle.putDefaultString(name: String, value: String) {
     if (!containsKey(name)) {
         putString(name, value)
+fun Bundle.putDefaultDouble(key: String, value: Double) {
+    if (!containsKey(key)) {
+        putDouble(key, value)
+    }
+}
+
+fun Bundle.putDefaultString(key: String, value: String) {
+    if (!containsKey(key)) {
+        putString(key, value)
+    }
+}
+
+fun Bundle.putDefaultBoolean(key: String, value: Boolean) {
+    if (!containsKey(key)) {
+        putBoolean(key, value)
+    }
+}
+
+fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
+    if (!containsKey(key)) {
+        putSerializable(key, value)
     }
 }
 

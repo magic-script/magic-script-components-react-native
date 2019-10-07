@@ -175,7 +175,6 @@ RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = ^(UiNode *sender) {
-            ARLog(@"button onTap");
             [[AREventsManager instance] onPressEventReceived:sender];
             [[AREventsManager instance] onClickEventReceived:sender];
         };
@@ -188,6 +187,18 @@ RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = nil;
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTextChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTextChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTextEditNode class]]) {
+        UiTextEditNode *textEdit = (UiTextEditNode *)node;
+        textEdit.onTextChanged = ^(UiNode *sender, NSString *text) {
+            ARLog(@"textEdit changed: %@", text);
+            [[AREventsManager instance] onTextChangedEventReceived:sender text:text];
+        };
     }
 }
 

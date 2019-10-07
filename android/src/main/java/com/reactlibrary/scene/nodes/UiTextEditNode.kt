@@ -16,27 +16,25 @@
 
 package com.reactlibrary.scene.nodes
 
-import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.widget.EditText
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.FontProvider
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.setTextAndMoveCursor
+import com.reactlibrary.scene.nodes.views.InputDialogBuilder
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
 open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
@@ -47,16 +45,35 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_HEIGHT = "height"
         const val PROP_TEXT = "text"
         const val PROP_HINT = "hint"
+        const val PROP_HINT_COLOR = "hintColor"
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
-        const val PROP_CHARACTER_SPACING = "charSpacing"
+        const val PROP_CHARACTERS_SPACING = "charSpacing"
+        const val PROP_CHARACTERS_LIMIT = "charLimit"
+        const val PROP_LINE_SPACING = "lineSpacing" // spacing multiplier
         const val PROP_PASSWORD = "password"
         const val PROP_MULTILINE = "multiline"
-        const val PROP_TEXT_PADDING = "padding"
+        const val PROP_TEXT_PADDING = "textPadding"
+        const val PROP_SCROLLING = "scrolling"
+        const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_TEXT_ENTRY_MODE = "textEntry"
+        const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 
-        const val DEFAULT_TEXT_SIZE = 0.035 // in meters
+        const val ENTRY_MODE_NORMAL = "normal"
+        const val ENTRY_MODE_EMAIL = "email"
+        const val ENTRY_MODE_NUMERIC = "numeric"
+        const val DEFAULT_TEXT_SIZE = 0.0298 // in meters
         const val DEFAULT_ALIGNMENT = "top-left" // view alignment (pivot)
+        const val DEFAULT_SCROLLING = false // scrolling disabled
+        const val DEFAULT_CHARACTERS_SPACING = 0.00499
+        const val DEFAULT_CHARACTERS_LIMIT = 0.0 // indefinite
+        const val SCROLLBAR_VISIBILITY_ALWAYS = "always"
+        const val SCROLLBAR_VISIBILITY_AUTO = "auto"
+        const val SCROLLBAR_VISIBILITY_OFF = "off"
+        val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
+
+        const val CURSOR_BLINK_INTERVAL = 400L // in ms
     }
 
     var textChangedListener: ((text: String) -> Unit)? = null
@@ -66,39 +83,43 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     private var hint = ""
     private val mainHandler = Handler(Looper.getMainLooper())
     private var textColor = context.getColor(R.color.text_color_default)
+    private var hintColor = context.getColor(R.color.text_color_hint)
     private var textGravityVertical: Int = Gravity.CENTER_VERTICAL
     private var textGravityHorizontal: Int = Gravity.LEFT
+    private var isSelected = false
 
     private val cursorAnimationRunnable = object : Runnable {
         override fun run() {
-            if (cursorVisible) {
-                view.text_edit.text = generateVisibleText(text)
-            } else {
-                val textWithCursor = generateVisibleText(text) + "|"
-                view.text_edit.text = textWithCursor
-            }
+            refreshVisibleText()
             cursorVisible = !cursorVisible
-            mainHandler.postDelayed(this, 400)
+            mainHandler.postDelayed(this, CURSOR_BLINK_INTERVAL)
         }
     }
 
     init {
         // set default values of properties
-        if (!properties.containsKey(PROP_TEXT_SIZE)) {
-            properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        }
-
-        if (!properties.containsKey(PROP_ALIGNMENT)) {
-            properties.putString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        }
+        properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        properties.putDefaultSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
+        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefaultString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
+        properties.putDefaultDouble(PROP_CHARACTERS_SPACING, DEFAULT_CHARACTERS_SPACING)
     }
 
     override fun provideView(context: Context): View {
         val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
-        container.text_edit.typeface = FontProvider.provideFont(context)
+
+        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        if (fontParams?.weight == null && fontParams?.style == null) {
+            // setting a default typeface
+            container.text_edit.typeface = FontProvider.provideFont(context)
+        }
+
+        container.text_edit.setSingleLine() // single line by default
+
         container.text_edit.setOnClickListener {
             val activity = ArViewManager.getActivityRef().get()
             if (activity != null) {
+                isSelected = true
                 startCursorAnimation()
                 showBorder()
                 view.text_edit_underline.visibility = View.INVISIBLE
@@ -106,6 +127,12 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
                 showInputDialog(activity)
             }
         }
+
+        // override touch event to disable scroll if needed
+        container.sv_text_edit.setOnTouchListener { _, _ ->
+            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
+        }
+
         return container
     }
 
@@ -116,12 +143,16 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
         setText(props)
         setHint(props)
+        setHintColor(props)
         setTextSize(props)
         setTextAlignment(props)
         setTextColor(props)
-        setCharacterSpacing(props)
+        setCharactersSpacing(props)
+        setLineSpacing(props)
         setMultiline(props)
         setTextPadding(props)
+        setFontParams(props)
+        setScrollBarVisibility(props)
     }
 
     override fun setViewSize() {
@@ -142,7 +173,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun showBorder() {
-        view.background = context.getDrawable(R.drawable.text_edit_outline)
+        adjustBackground()
 
         // add some padding because of rounded corners
         val multiline = properties.getBoolean(PROP_MULTILINE)
@@ -161,36 +192,32 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     private fun hideBorder() {
-        view.background = null
+        adjustBackground()
         view.setPadding(0, 0, 0, 0)
     }
 
     private fun setText(props: Bundle) {
         val text = props.getString(PROP_TEXT)
         if (text != null) {
-            setText(text)
-            setNeedsRebuild()
+            this.text = text
+            refreshVisibleText()
         }
-    }
-
-    private fun setText(txt: String) {
-        view.text_edit.text = generateVisibleText(txt)
-        view.text_edit.setTextColor(textColor) // clear hint color
-        this.text = txt
     }
 
     private fun setHint(props: Bundle) {
         val hint = props.getString(PROP_HINT)
         if (hint != null) {
-            setHint(hint)
-            setNeedsRebuild()
+            this.hint = hint
+            refreshVisibleText()
         }
     }
 
-    private fun setHint(hint: String) {
-        this.hint = hint
-        view.text_edit.text = hint
-        view.text_edit.setTextColor(context.getColor(R.color.text_color_hint))
+    private fun setHintColor(props: Bundle) {
+        val color = PropertiesReader.readColor(props, PROP_HINT_COLOR)
+        if (color != null) {
+            this.hintColor = color
+            refreshVisibleText()
+        }
     }
 
     private fun setTextSize(props: Bundle) {
@@ -198,7 +225,6 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
             view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            setNeedsRebuild()
         }
     }
 
@@ -225,17 +251,21 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
             this.textColor = color
-            if (hint.isEmpty() || view.text_edit.text.toString() != hint) {
-                view.text_edit.setTextColor(color)
-            }
+            refreshVisibleText()
         }
     }
 
-    private fun setCharacterSpacing(props: Bundle) {
-        if (props.containsKey(PROP_CHARACTER_SPACING)) {
-            val spacing = props.getDouble(PROP_CHARACTER_SPACING)
+    private fun setCharactersSpacing(props: Bundle) {
+        if (props.containsKey(PROP_CHARACTERS_SPACING)) {
+            val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
             view.text_edit.letterSpacing = spacing.toFloat()
-            setNeedsRebuild()
+        }
+    }
+
+    private fun setLineSpacing(props: Bundle) {
+        if (props.containsKey(PROP_LINE_SPACING)) {
+            val spacingMultiplier = props.getDouble(PROP_LINE_SPACING).toFloat()
+            view.text_edit.setLineSpacing(0F, spacingMultiplier)
         }
     }
 
@@ -245,6 +275,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
             view.text_edit.setSingleLine(!isMultiline)
             textGravityVertical = if (isMultiline) Gravity.TOP else Gravity.CENTER_VERTICAL
             view.text_edit.gravity = textGravityVertical or textGravityHorizontal
+            adjustBackground()
         }
     }
 
@@ -259,61 +290,129 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
     }
 
+    private fun setFontParams(props: Bundle) {
+        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
+
+        if (fontParams.weight != null || fontParams.style != null) {
+            view.text_edit.typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
+        }
+        if (fontParams.allCaps != null) {
+            view.text_edit.isAllCaps = fontParams.allCaps
+        }
+    }
+
+    private fun setScrollBarVisibility(props: Bundle) {
+        if (props.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
+            when (props.getString(PROP_SCROLLBAR_VISIBILITY)) {
+                SCROLLBAR_VISIBILITY_AUTO -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = true
+                    view.sv_text_edit.isScrollbarFadingEnabled = true
+                }
+                SCROLLBAR_VISIBILITY_ALWAYS -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = true
+                    view.sv_text_edit.isScrollbarFadingEnabled = false
+                }
+                SCROLLBAR_VISIBILITY_OFF -> {
+                    view.sv_text_edit.isVerticalScrollBarEnabled = false
+                }
+            }
+        }
+    }
+
     private fun startCursorAnimation() {
         cursorAnimationRunnable.run()
     }
 
     private fun stopCursorAnimation() {
         mainHandler.removeCallbacks(cursorAnimationRunnable)
-        view.text_edit.text = generateVisibleText(text) // remove cursor if present
+        cursorVisible = false
     }
 
     private fun showInputDialog(context: Context) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(R.string.input_dialog_title)
         val multiline = properties.getBoolean(PROP_MULTILINE)
-        val resId = if (multiline) R.layout.edit_text_2d_multiline else R.layout.edit_text_2d
-        val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
+        val builder = InputDialogBuilder(context, multiline, isPassword())
 
-        val input = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
-        input.typeface = FontProvider.provideFont(context)
-        val visibleText = generateVisibleText(text)
-        if (isPassword()) {
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        }
-        if (multiline) {
-            input.inputType = input.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-        }
-        input.setTextAndMoveCursor(visibleText)
-        builder.setView(nativeEditText)
+        val title = if (hint.isNotEmpty()) hint else context.getString(R.string.input_title_default)
+        builder.setTitle(title)
+        builder.setInputText(text)
 
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            val txt = input.text.toString()
-            if (txt != text) {
-                setText(txt)
-                textChangedListener?.invoke(txt)
+        val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT, DEFAULT_CHARACTERS_LIMIT)
+        if (charsLimit > DEFAULT_CHARACTERS_LIMIT) {
+            builder.setMaxCharacters(charsLimit.toInt())
+        }
+
+        when (properties.getString(PROP_TEXT_ENTRY_MODE)) {
+            ENTRY_MODE_EMAIL -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.EMAIL)
+            }
+            ENTRY_MODE_NUMERIC -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.NUMERIC)
+            }
+            ENTRY_MODE_NORMAL -> {
+                builder.setEntryMode(InputDialogBuilder.EntryMode.NORMAL)
             }
         }
-        builder.setNegativeButton(android.R.string.cancel, null)
 
-        val dialog = builder.create()
-        // show keyboard
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        builder.setOnSubmitListener { input ->
+            if (input != text) {
+                text = input
+                textChangedListener?.invoke(input)
+            }
+        }
 
-        dialog.setOnDismissListener {
+        builder.setOnCloseListener {
+            isSelected = false
             stopCursorAnimation()
+            refreshVisibleText()
             hideBorder()
             view.text_edit_underline.visibility = View.VISIBLE
         }
-        dialog.show()
+
+        builder.show()
     }
 
-
-    private fun generateVisibleText(input: String): String {
-        return if (isPassword()) {
-            "*".repeat(input.length)
+    private fun adjustBackground() {
+        if (isSelected) {
+            view.background = context.getDrawable(R.drawable.text_edit_background_active)
+        } else if (properties.getBoolean(PROP_MULTILINE)) {
+            view.background = context.getDrawable(R.drawable.text_edit_background)
         } else {
-            input
+            view.setBackgroundResource(0) // no background
+        }
+    }
+
+    private fun refreshVisibleText() {
+        if (isSelected) {
+            // preserve space (transparent color) for cursor (in case of center or right alignment)
+            val cursorColor = if (cursorVisible) textColor else Color.TRANSPARENT
+            val textWithCursor = getMaskedText() + "|"
+            val spannable = SpannableString(textWithCursor)
+            spannable.setSpan(
+                    ForegroundColorSpan(cursorColor),
+                    textWithCursor.length - 1,
+                    textWithCursor.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            view.text_edit.text = spannable
+            view.text_edit.setTextColor(textColor) // clear hint color
+            return
+        }
+
+        if (text.isEmpty()) { // display hint
+            view.text_edit.text = hint
+            view.text_edit.setTextColor(hintColor)
+            return
+        }
+
+        view.text_edit.text = getMaskedText()
+        view.text_edit.setTextColor(textColor) // clear hint color
+    }
+
+    private fun getMaskedText(): String {
+        return if (isPassword()) {
+            "*".repeat(text.length)
+        } else {
+            text
         }
     }
 

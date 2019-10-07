@@ -16,6 +16,7 @@
 
 import Foundation
 import QuartzCore
+import UIKit
 
 @objc public enum HorizontalTextAlignment: Int {
     case center
@@ -53,16 +54,16 @@ import QuartzCore
         }
     }
 
-    public var textLayerAlignmentMode: CATextLayerAlignmentMode {
+    public var nsTextAlignment: NSTextAlignment {
         switch self {
         case .center:
-            return CATextLayerAlignmentMode.center
+            return NSTextAlignment.center
         case .justify:
-            return CATextLayerAlignmentMode.justified
+            return NSTextAlignment.justified
         case .left:
-            return CATextLayerAlignmentMode.left
+            return NSTextAlignment.left
         case .right:
-            return CATextLayerAlignmentMode.right
+            return NSTextAlignment.right
         }
     }
 }

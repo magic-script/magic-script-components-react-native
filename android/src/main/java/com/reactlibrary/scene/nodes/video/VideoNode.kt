@@ -27,6 +27,7 @@ import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultDouble
 
 class VideoNode(initProps: ReadableMap, private val context: Context)
     : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true), MediaPlayer.OnPreparedListener {
@@ -58,9 +59,7 @@ class VideoNode(initProps: ReadableMap, private val context: Context)
 
     init {
         // set default values of properties
-        if (!properties.containsKey(PROP_VOLUME)) {
-            properties.putDouble(PROP_VOLUME, DEFAULT_VOLUME)
-        }
+        properties.putDefaultDouble(PROP_VOLUME, DEFAULT_VOLUME)
     }
 
     override fun applyProperties(props: Bundle) {

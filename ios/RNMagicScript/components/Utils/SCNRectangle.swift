@@ -21,7 +21,6 @@ class SCNRectangle : SCNGeometry {
     convenience init(rect: CGRect, thickness: CGFloat, radius: CGFloat = 0) {
         let geom = SCNRectangle.createGeometry(rect: rect, thickness: thickness, radius: radius)
         self.init(sources: [geom.source], elements: [geom.element])
-        firstMaterial?.lightingModel = .constant
     }
 
     convenience init(size: CGSize, thickness: CGFloat, radius: CGFloat = 0) {

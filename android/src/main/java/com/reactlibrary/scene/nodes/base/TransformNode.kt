@@ -30,6 +30,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultSerializable
 
 /**
  * Base node.
@@ -96,10 +97,8 @@ abstract class TransformNode(
 
     init {
         // Set default properties if not present
-        if (!properties.containsKey(PROP_LOCAL_POSITION)) {
-            val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
-            properties.putSerializable(PROP_LOCAL_POSITION, position)
-        }
+        val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
+        properties.putDefaultSerializable(PROP_LOCAL_POSITION, position)
         logMessage("initial properties = ${this.properties}")
     }
 

@@ -21,10 +21,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
-import com.reactlibrary.utils.FontProvider
 import kotlin.math.min
 
 class CustomButton @JvmOverloads constructor(
@@ -56,7 +56,6 @@ class CustomButton @JvmOverloads constructor(
     // private val maxStrokeSize = Utils.metersToPx(0.005F, context).toFloat()
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
-        typeface = FontProvider.provideFont(context)
         color = getColor(context, android.R.color.white)
         textSize = 12F
     }
@@ -137,6 +136,10 @@ class CustomButton @JvmOverloads constructor(
         textPaddingVertical = paddingVerticalPx
         invalidate()
         requestLayout() // need to measure the view
+    }
+
+    fun setTypeface(typeface: Typeface) {
+        textPaint.typeface = typeface
     }
 
 }

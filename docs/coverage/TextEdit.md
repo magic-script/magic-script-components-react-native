@@ -6,7 +6,7 @@
 - ~~alignment~~
 - ~~localScale~~
 - ~~localRotation~~
-- ~~enabled~~
+- enabled
 - ~~onClick~~
 
 **Custom:**
@@ -14,11 +14,18 @@
 - height
 - text
 - hint
-- ~~textSize~~
-- ~~textAlignment~~
-- ~~textColor~~
-- ~~charSpacing~~
+- hintColor
+- textSize
+- textAlignment
+- textColor
+- charSpacing
+- charLimit
+- lineSpacing
 - password
 - multiline
-- ~~padding~~
+- textPadding
+- scrolling
+- fontParams (weight, style)
+- textEntry (normal, email, numeric)
+- ~~scrollBarVisibility~~
 - onTextChanged

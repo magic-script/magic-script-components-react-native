@@ -70,13 +70,16 @@ class SingleLineTextAccessoryView: UIView {
     fileprivate func prepareAccessoryView() {
         guard let input = input else { return }
 
+        if let autocapitalizationType = input.autocapitalizationType {
+            textField.autocapitalizationType = autocapitalizationType
+        }
         textField.autocorrectionType = .no
         textField.isSecureTextEntry = input.password
         if let keyboardType = input.keyboardType {
             textField.keyboardType = keyboardType
         }
         textField.placeholder = input.placeholder
-        textField.returnKeyType = .done
+        textField.returnKeyType = .default
     }
 }
 

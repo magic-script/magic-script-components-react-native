@@ -77,6 +77,9 @@ class MultiLineTextAccessoryView: UIView {
     fileprivate func prepareAccessoryView() {
         guard let input = input else { return }
 
+        if let autocapitalizationType = input.autocapitalizationType {
+            textView.autocapitalizationType = autocapitalizationType
+        }
         textView.autocorrectionType = .no
         textView.isSecureTextEntry = input.password
         if let keyboardType = input.keyboardType {
@@ -84,7 +87,7 @@ class MultiLineTextAccessoryView: UIView {
         }
         textView.maxLength = input.charLimit
         textView.placeholder = input.placeholder
-        textView.returnKeyType = .done
+        textView.returnKeyType = .default
     }
 
     fileprivate func disableHeightConstraint() {

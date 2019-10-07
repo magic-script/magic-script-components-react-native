@@ -48,6 +48,10 @@ fun EditText.setTextAndMoveCursor(text: String) {
 /**
  * android.graphics.PointF
  */
+operator fun PointF.unaryMinus(): PointF {
+    return PointF(-x, -y)
+}
+
 operator fun PointF.plus(other: PointF): PointF {
     return PointF(x + other.x, y + other.y)
 }

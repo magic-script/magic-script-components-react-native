@@ -58,7 +58,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, 1.0)
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
-        layoutLoop()
+        // layoutLoop()
     }
 
     override fun addContent(child: Node) {
@@ -125,51 +125,96 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
 
     private fun update(viewPosition: PointF) {
 
+        // Non-transform Nodes aren't currently supported.
+        if (child !is TransformNode){
+            return
+        }
+
         val childBounds = calculateAbsoluteBoundsOfNode(child)
-        val viewSizeRaw = calculateAbsoluteBoundsOfNode(this).size()
-        val viewSize = viewSizeRaw - DEFAULT_SCROLLBAR_WIDTH
+        val viewBounds = calculateAbsoluteBoundsOfNode(this)
+        val alignTopLeft = PointF(
+            viewBounds.left - childBounds.left,
+            viewBounds.top - childBounds.top)
+
         val childSize = childBounds.size()
-
-        val zero = PointF(viewSizeRaw.x / -2F, viewSizeRaw.y / 2F)
-        val pivot = PointF(childBounds.left, childBounds.top)
-
-        // logMessage("localPosition " + child.localPosition.toString())
-        // logMessage("childBounds " + childBounds.toString())
-        // logMessage("pivot " + pivot.toString())
-
+        val viewSize = viewBounds.size() - DEFAULT_SCROLLBAR_WIDTH
         val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
         val travel = PointF(
-            possibleTravel.x * viewPosition.x,
-            -possibleTravel.y * viewPosition.y)
+            -possibleTravel.x * viewPosition.x,
+            possibleTravel.y * viewPosition.y)
+
+        val childPosition = alignTopLeft + travel
+        child.localPosition = Vector3(
+            childPosition.x, 
+            childPosition.y, 
+            child.localPosition.z)
+
+        val clipArea = RectF(
+            viewBounds.left, 
+            viewBounds.top,
+            viewBounds.right - DEFAULT_SCROLLBAR_WIDTH, 
+            viewBounds.bottom + DEFAULT_SCROLLBAR_WIDTH)
+        (child as TransformNode).setClipBounds(clipArea, -childPosition)
+
+        // logMessage(" ")
+        // logMessage("viewBounds  " + viewBounds.toString())
+        // logMessage("childBounds " + childBounds.toString())
+        // logMessage("localPositi " + child.localPosition.toString())
+
+        
+
+
+
+
+
+
+        // val childBounds = calculateAbsoluteBoundsOfNode(child)
+        // val viewSizeRaw = calculateAbsoluteBoundsOfNode(this).size()
+        // val viewSize = viewSizeRaw - DEFAULT_SCROLLBAR_WIDTH
+        // val childSize = childBounds.size()
+
+        // val zero = PointF(viewSizeRaw.x / -2F, viewSizeRaw.y / 2F)
+        // val pivot = PointF(childBounds.left, childBounds.top)
+
+        // // logMessage("localPosition " + child.localPosition.toString())
+        // // logMessage("childBounds " + childBounds.toString())
+        // // logMessage("pivot " + pivot.toString())
+
+        // val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
+        // val travel = PointF(
+        //     possibleTravel.x * viewPosition.x,
+        //     -possibleTravel.y * viewPosition.y)
         // val travel = PointF(
         //     possibleTravel.x * viewPosition.x,
         //     possibleTravel.y * (1F-viewPosition.y))
         // val travel = possibleTravel * viewPosition
             // possibleTravel.x * viewPosition.x,
             // possibleTravel.y * (1F-viewPosition.y))
-        val childPosition = zero - pivot - travel
+        // val childPosition = zero - pivot - travel
 
         // logMessage("contentSize " + metersToPx(childSize.x).toString())
 
-        child.localPosition = Vector3(childPosition.x, childPosition.y, 0F)
+        // child.localPosition = Vector3(childPosition.x, childPosition.y, 0F)
+        // child.localPosition = Vector3()
 
 
-        if (child is TransformNode) {
-            val viewTravel = PointF(
-                possibleTravel.x * viewPosition.x,
-                possibleTravel.y * (1F-viewPosition.y))
-            val clipArea = calculateClipArea(viewSize, viewTravel)
-            (child as TransformNode).setClipBounds(clipArea)
-        }
+        // if (child is TransformNode) {
+        //     val viewTravel = PointF(
+        //         possibleTravel.x * viewPosition.x,
+        //         possibleTravel.y * (1F-viewPosition.y))
+        //     val clipArea = calculateClipArea(viewSize, viewTravel)
+        //     (child as TransformNode).setClipBounds(clipArea)
+        // }
     }
 
-    private fun calculateClipArea(viewSize: PointF, travel: PointF): RectF {
-        return RectF(
-            0F, 
-            viewSize.y, 
-            viewSize.x, 
-            0F)
-    }
+    // private fun calculateClipArea(viewSize: PointF, travel: PointF): RectF {
+    //     val viewBounds = calculateAbsoluteBoundsOfNode(this)
+    //     return RectF(
+    //         viewBounds.left, 
+    //         viewBounds.top,
+    //         viewBounds.right - DEFAULT_SCROLLBAR_WIDTH, 
+    //         viewBounds.bottom + DEFAULT_SCROLLBAR_WIDTH)
+    // }
 
     private fun metersToPx(meters: Float): Int {
         return Utils.metersToPx(meters, context)
@@ -181,10 +226,20 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         } else {
             Utils.calculateBoundsOfNode(node)
         }
+        // logMessage("child bounds " + bounds.toString())
+        // logMessage("child position " + node.localPosition.toString())
         return Bounding(
-            bounds.left - child.localPosition.x,
-            bounds.bottom - child.localPosition.y,
-            bounds.right - child.localPosition.x,
-            bounds.top - child.localPosition.y)
+            bounds.left - node.localPosition.x,
+            bounds.bottom - node.localPosition.y,
+            bounds.right - node.localPosition.x,
+            bounds.top - node.localPosition.y)
+    }
+
+    private fun calculateBoundsOfNode(node: Node): Bounding {
+        return if (node is TransformNode) {
+            node.getBounding()
+        } else {
+            Utils.calculateBoundsOfNode(node)
+        }
     }
 }

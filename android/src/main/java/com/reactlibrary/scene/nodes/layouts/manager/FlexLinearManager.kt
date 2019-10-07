@@ -119,6 +119,8 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
             val y = offset + nodeHeight / 2 + pivotOffsetY - paddingDiffY
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
+            // node.localPosition = Vector3(1F,1F,0F)
+            // logMessage("new localposition " + node.localPosition.toString())
         } else {
 
             // calculating x position for a child
@@ -142,6 +144,8 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
             }
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
+            // node.localPosition = Vector3(1F,1F,0F)
+            // logMessage("new localposition " + node.localPosition.toString())
         }
     }
 

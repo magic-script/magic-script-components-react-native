@@ -75,7 +75,8 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        // logMessage("childBounds " + childBounds.toString())
+        // logMessage("linear child bounds " + childBounds.toString())
+        // logMessage("linear child localPosition " + contentNode.localPosition.toString())
         return Bounding(
                 childBounds.left + contentNode.localPosition.x - itemPadding.left,
                 childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,

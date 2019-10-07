@@ -34,9 +34,21 @@ import SceneKit
         get { return _min }
         set { if (newValue != _min && newValue < _max) { _min = newValue; setNeedsLayout(); } }
     }
+    @objc var minLabel: String = "min" {
+        didSet {
+            minLabelNode.text = minLabel
+            minLabelNode.reload()
+        }
+    }
     @objc var max: CGFloat {
         get { return _max }
         set { if (newValue != _max && _min < newValue) { _max = newValue; setNeedsLayout(); } }
+    }
+    @objc var maxLabel: String = "max" {
+        didSet {
+            maxLabelNode.text = maxLabel
+            maxLabelNode.reload()
+        }
     }
     @objc var value: CGFloat {
         get { return _value }
@@ -70,6 +82,8 @@ import SceneKit
     fileprivate var progressGeometry: SCNPlane!
     fileprivate var foregroundImage: UIImage?
     fileprivate var progressNode: SCNNode!
+    fileprivate var minLabelNode: LabelNode!
+    fileprivate var maxLabelNode: LabelNode!
     fileprivate var outlineNode: SCNNode!
 
     @objc override func setupNode() {
@@ -87,12 +101,26 @@ import SceneKit
         progressGeometry.firstMaterial?.isDoubleSided = true
         progressGeometry.firstMaterial?.readsFromDepthBuffer = false
 
+        minLabelNode = LabelNode()
+        minLabelNode.defaultTextSize = 0.0167
+        minLabelNode.textSize = 0.065
+        minLabelNode.textColor = .white
+        minLabelNode.textAlignment = .center
+
+        maxLabelNode = LabelNode()
+        maxLabelNode.defaultTextSize = 0.0167
+        maxLabelNode.textSize = 0.065
+        maxLabelNode.textColor = .white
+        maxLabelNode.textAlignment = .center
 
         let bgNode = SCNNode(geometry: backgroundGeometry)
         progressNode = SCNNode(geometry: progressGeometry)
+
         progressNode.renderingOrder = 1
+        contentNode.addChildNode(minLabelNode)
         contentNode.addChildNode(bgNode)
         contentNode.addChildNode(progressNode)
+        contentNode.addChildNode(maxLabelNode)
 
     }
 
@@ -111,8 +139,16 @@ import SceneKit
             self.min = min
         }
 
+        if let minLabel = Convert.toString(props["minLabel"]) {
+            self.minLabel = minLabel
+        }
+
         if let max = Convert.toCGFloat(props["max"]) {
             self.max = max
+        }
+
+        if let maxLabel = Convert.toString(props["maxLabel"]) {
+            self.maxLabel = maxLabel
         }
 
         if let value = Convert.toCGFloat(props["value"]) {
@@ -153,6 +189,15 @@ import SceneKit
         progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)
 
         reloadOutlineNode()
+
+        let backgroundGeometryFactor = backgroundGeometry.width / 2
+        let minLabelWidthFactor = minLabelNode.getSize().width / 2
+        let maxLabelWidthFactor = maxLabelNode.getSize().width / 2
+        let magicFactor: CGFloat = 0.01
+        minLabelNode.position = SCNVector3(-backgroundGeometryFactor - minLabelWidthFactor - magicFactor, 0.0, 0.0)
+        maxLabelNode.position = SCNVector3(backgroundGeometryFactor + maxLabelWidthFactor + magicFactor, 0.0, 0.0)
+        minLabelNode.reload()
+        maxLabelNode.reload()
     }
 
     fileprivate func reloadOutlineNode() {
@@ -161,11 +206,15 @@ import SceneKit
 
             outlineNode?.removeFromParentNode()
 
+            let minLabelWidthFactor = minLabelNode.getSize().width
+            let maxLabelWidthFactor = maxLabelNode.getSize().width
+
             let radius: CGFloat = 0.85 * Swift.min(size.width, size.height)
             let thickness: CGFloat = 0.1 * Swift.min(size.width, size.height)
             guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
-            outlineNode = NodesFactory.createOutlineNode(width: size.width + 0.075, height: size.height + 0.075, cornerRadius: radius, thickness: thickness, color: .white)
+            outlineNode = NodesFactory.createOutlineNode(width: size.width + minLabelWidthFactor + maxLabelWidthFactor + 0.02 + 0.075, height: size.height + 0.075, cornerRadius: radius, thickness: thickness, color: .white)
             contentNode.addChildNode(outlineNode)
+            outlineNode.position = SCNVector3((maxLabelWidthFactor-minLabelWidthFactor) / 2, 0.0, 0.0)
         }
     }
 }

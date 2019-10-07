@@ -157,40 +157,13 @@ abstract class UiNode(
                 }
     }
 
-    override fun setClipBounds(clipBounds: RectF, translation: PointF) {
+    override fun setClipBounds(clipBounds: RectF) {
         val pivot = getBounding().size() / 2F
-        // val bounds = Bounding(
-        //     bounds.left - node.localPosition.x,
-        //     bounds.bottom - node.localPosition.y,
-        //     bounds.right - node.localPosition.x,
-        //     bounds.top - node.localPosition.y)
-
-        // val pivot = bounds.size() / 2F
-        // val clipBoundsPx = Rect(
-        //     Utils.metersToPx(clipBounds.left + bounds.left + pivot.x, context),
-        //     Utils.metersToPx(clipBounds.top + bounds.top - pivot.y, context),
-        //     Utils.metersToPx(clipBounds.right + bounds.left + pivot.x, context),
-        //     Utils.metersToPx(clipBounds.bottom + bounds.top - pivot.y, context)
-        // )
-
-        val clipBoundsLocal = RectF(
-            clipBounds.left + translation.x + pivot.x,
-            -(clipBounds.top + translation.y - pivot.y),
-            clipBounds.right + translation.x + pivot.x,
-            -(clipBounds.bottom + translation.y - pivot.y))
-
         val clipBoundsPx = Rect(
-            Utils.metersToPx(clipBounds.left + translation.x + pivot.x, context),
-            -Utils.metersToPx(clipBounds.top + translation.y - pivot.y, context),
-            Utils.metersToPx(clipBounds.right + translation.x + pivot.x, context),
-            -Utils.metersToPx(clipBounds.bottom + translation.y - pivot.y, context))
-        
-        // logMessage(" ")
-        logMessage("clipBounds " + clipBounds.toString())
-        // // logMessage("bounds " + bounds.toString())
-        logMessage("translation " + translation.toString())
-        logMessage("localPosition " + localPosition.toString())
-        logMessage("clipBoundsLocal " + clipBoundsLocal.toString())
+            Utils.metersToPx(clipBounds.left + pivot.x, context),
+            -Utils.metersToPx(clipBounds.top - pivot.y, context),
+            Utils.metersToPx(clipBounds.right + pivot.x, context),
+            -Utils.metersToPx(clipBounds.bottom - pivot.y, context))
         view.setClipBounds(clipBoundsPx)
     }
 
@@ -199,5 +172,4 @@ abstract class UiNode(
             view.isEnabled = props.getBoolean(PROP_ENABLED)
         }
     }
-
 }

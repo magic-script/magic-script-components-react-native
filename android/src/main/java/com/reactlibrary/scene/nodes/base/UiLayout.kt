@@ -98,47 +98,24 @@ abstract class UiLayout(initProps: ReadableMap)
         }
     }
 
-    override fun setClipBounds(clipBounds: RectF, translation: PointF) {
+    override fun setClipBounds(clipBounds: RectF) {
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]
-            logMessage("contentNode.localPosition " + contentNode.localPosition.toString())
-            val contentTranslation = PointF(
-                translation.x - contentNode.localPosition.x,
-                translation.y - contentNode.localPosition.y)
+            val contentClip = RectF(
+                clipBounds.left - contentNode.localPosition.x,
+                clipBounds.top - contentNode.localPosition.y,
+                clipBounds.right - contentNode.localPosition.x,
+                clipBounds.bottom - contentNode.localPosition.y)
 
             if (child is TransformNode) {
-
-                // val bounds = child.getBounding()
-                // val clip = RectF(
-                //     clipBounds.left - bounds.left,
-                //     clipBounds.top - bounds.top,
-                //     clipBounds.right - bounds.left,
-                //     clipBounds.bottom - bounds.top
-                // )
-                // val clip = RectF(
-                //     clipBounds.left - node.localPosition.x,
-                //     -(clipBounds.bottom - node.localPosition.y),
-                //     clipBounds.right - node.localPosition.x,
-                //     -(clipBounds.top - node.localPosition.y)
-                // )
-                // val clip = RectF(
-                //     clipBounds.left - bounds.left,
-                //     clipBounds.top - bounds.bottom,
-                //     clipBounds.right - bounds.left,
-                //     clipBounds.bottom - bounds.bottom
-                // )
-                logMessage("child.localPosition " + child.localPosition.toString())
-                val childTranslation = PointF(
-                    contentTranslation.x - child.localPosition.x,
-                    contentTranslation.y - child.localPosition.y)
-                // logMessage("clip in " + clipBounds.toString())
-                // logMessage("localPosition " + node.localPosition.toString())
-                // logMessage("bounds " + bounds.toString())
-                // logMessage("clip " + clip.toString())
-                child.setClipBounds(clipBounds, childTranslation)
+                val childClip = RectF(
+                    contentClip.left - child.localPosition.x,
+                    contentClip.top - child.localPosition.y,
+                    contentClip.right - child.localPosition.x,
+                    contentClip.bottom - child.localPosition.y)
+                child.setClipBounds(childClip)
             }
         }
-        logMessage(" ")
     }
 
 }

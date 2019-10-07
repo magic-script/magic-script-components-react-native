@@ -58,7 +58,6 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, 1.0)
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
-        // layoutLoop()
     }
 
     override fun addContent(child: Node) {
@@ -74,7 +73,6 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
             if (!Bounding.equalInexact(childBounds, newBounds)) {
                 val scrollView = (view as CustomScrollView)
                 childBounds = newBounds
-                logMessage("new childBounds " + childBounds.toString())
                 val childSize = childBounds.size()
                 scrollView.contentSize = PointF(
                         Utils.metersToPx(childSize.x, context).toFloat(),
@@ -150,74 +148,11 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
             child.localPosition.z)
 
         val clipArea = RectF(
-            viewBounds.left, 
-            viewBounds.top,
-            viewBounds.right - DEFAULT_SCROLLBAR_WIDTH, 
-            viewBounds.bottom + DEFAULT_SCROLLBAR_WIDTH)
-        (child as TransformNode).setClipBounds(clipArea, -childPosition)
-
-        // logMessage(" ")
-        // logMessage("viewBounds  " + viewBounds.toString())
-        // logMessage("childBounds " + childBounds.toString())
-        // logMessage("localPositi " + child.localPosition.toString())
-
-        
-
-
-
-
-
-
-        // val childBounds = calculateAbsoluteBoundsOfNode(child)
-        // val viewSizeRaw = calculateAbsoluteBoundsOfNode(this).size()
-        // val viewSize = viewSizeRaw - DEFAULT_SCROLLBAR_WIDTH
-        // val childSize = childBounds.size()
-
-        // val zero = PointF(viewSizeRaw.x / -2F, viewSizeRaw.y / 2F)
-        // val pivot = PointF(childBounds.left, childBounds.top)
-
-        // // logMessage("localPosition " + child.localPosition.toString())
-        // // logMessage("childBounds " + childBounds.toString())
-        // // logMessage("pivot " + pivot.toString())
-
-        // val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
-        // val travel = PointF(
-        //     possibleTravel.x * viewPosition.x,
-        //     -possibleTravel.y * viewPosition.y)
-        // val travel = PointF(
-        //     possibleTravel.x * viewPosition.x,
-        //     possibleTravel.y * (1F-viewPosition.y))
-        // val travel = possibleTravel * viewPosition
-            // possibleTravel.x * viewPosition.x,
-            // possibleTravel.y * (1F-viewPosition.y))
-        // val childPosition = zero - pivot - travel
-
-        // logMessage("contentSize " + metersToPx(childSize.x).toString())
-
-        // child.localPosition = Vector3(childPosition.x, childPosition.y, 0F)
-        // child.localPosition = Vector3()
-
-
-        // if (child is TransformNode) {
-        //     val viewTravel = PointF(
-        //         possibleTravel.x * viewPosition.x,
-        //         possibleTravel.y * (1F-viewPosition.y))
-        //     val clipArea = calculateClipArea(viewSize, viewTravel)
-        //     (child as TransformNode).setClipBounds(clipArea)
-        // }
-    }
-
-    // private fun calculateClipArea(viewSize: PointF, travel: PointF): RectF {
-    //     val viewBounds = calculateAbsoluteBoundsOfNode(this)
-    //     return RectF(
-    //         viewBounds.left, 
-    //         viewBounds.top,
-    //         viewBounds.right - DEFAULT_SCROLLBAR_WIDTH, 
-    //         viewBounds.bottom + DEFAULT_SCROLLBAR_WIDTH)
-    // }
-
-    private fun metersToPx(meters: Float): Int {
-        return Utils.metersToPx(meters, context)
+            viewBounds.left - childPosition.x, 
+            viewBounds.top - childPosition.y,
+            viewBounds.right - childPosition.x - DEFAULT_SCROLLBAR_WIDTH, 
+            viewBounds.bottom - childPosition.y + DEFAULT_SCROLLBAR_WIDTH)
+        (child as TransformNode).setClipBounds(clipArea)
     }
 
     private fun calculateAbsoluteBoundsOfNode(node: Node): Bounding {
@@ -226,8 +161,6 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         } else {
             Utils.calculateBoundsOfNode(node)
         }
-        // logMessage("child bounds " + bounds.toString())
-        // logMessage("child position " + node.localPosition.toString())
         return Bounding(
             bounds.left - node.localPosition.x,
             bounds.bottom - node.localPosition.y,
@@ -235,11 +168,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
             bounds.top - node.localPosition.y)
     }
 
-    private fun calculateBoundsOfNode(node: Node): Bounding {
-        return if (node is TransformNode) {
-            node.getBounding()
-        } else {
-            Utils.calculateBoundsOfNode(node)
-        }
+    private fun metersToPx(meters: Float): Int {
+        return Utils.metersToPx(meters, context)
     }
 }

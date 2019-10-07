@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.PointF
 import android.graphics.RectF
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments

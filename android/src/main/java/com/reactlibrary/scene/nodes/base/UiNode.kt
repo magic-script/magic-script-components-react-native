@@ -16,10 +16,9 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.PointF
-import android.graphics.RectF
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,10 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.R
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.div
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.size
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -160,11 +162,11 @@ abstract class UiNode(
     override fun setClipBounds(clipBounds: RectF) {
         val pivot = getBounding().size() / 2F
         val clipBoundsPx = Rect(
-            Utils.metersToPx(clipBounds.left + pivot.x, context),
-            -Utils.metersToPx(clipBounds.top - pivot.y, context),
-            Utils.metersToPx(clipBounds.right + pivot.x, context),
-            -Utils.metersToPx(clipBounds.bottom - pivot.y, context))
-        view.setClipBounds(clipBoundsPx)
+                Utils.metersToPx(clipBounds.left + pivot.x, context),
+                -Utils.metersToPx(clipBounds.top - pivot.y, context),
+                Utils.metersToPx(clipBounds.right + pivot.x, context),
+                -Utils.metersToPx(clipBounds.bottom - pivot.y, context))
+        view.clipBounds = clipBoundsPx
     }
 
     private fun setEnabled(props: Bundle) {

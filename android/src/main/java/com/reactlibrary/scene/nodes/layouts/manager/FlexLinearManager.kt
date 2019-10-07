@@ -22,7 +22,6 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.*
 
 /**
  * Linear layout's manager with flexible columns or rows size:
@@ -119,8 +118,6 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
             val y = offset + nodeHeight / 2 + pivotOffsetY - paddingDiffY
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
-            // node.localPosition = Vector3(1F,1F,0F)
-            // logMessage("new localposition " + node.localPosition.toString())
         } else {
 
             // calculating x position for a child
@@ -144,8 +141,6 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
             }
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
-            // node.localPosition = Vector3(1F,1F,0F)
-            // logMessage("new localposition " + node.localPosition.toString())
         }
     }
 

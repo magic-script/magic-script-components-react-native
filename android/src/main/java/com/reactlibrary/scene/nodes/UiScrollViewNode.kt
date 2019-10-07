@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes
 
-import com.reactlibrary.scene.nodes.base.TransformNode
 import android.content.Context
 import android.graphics.PointF
 import android.graphics.RectF
@@ -25,12 +24,12 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
+import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
@@ -124,34 +123,34 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
     private fun update(viewPosition: PointF) {
 
         // Non-transform Nodes aren't currently supported.
-        if (child !is TransformNode){
+        if (child !is TransformNode) {
             return
         }
 
         val childBounds = calculateAbsoluteBoundsOfNode(child)
         val viewBounds = calculateAbsoluteBoundsOfNode(this)
         val alignTopLeft = PointF(
-            viewBounds.left - childBounds.left,
-            viewBounds.top - childBounds.top)
+                viewBounds.left - childBounds.left,
+                viewBounds.top - childBounds.top)
 
         val childSize = childBounds.size()
         val viewSize = viewBounds.size() - DEFAULT_SCROLLBAR_WIDTH
         val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
         val travel = PointF(
-            -possibleTravel.x * viewPosition.x,
-            possibleTravel.y * viewPosition.y)
+                -possibleTravel.x * viewPosition.x,
+                possibleTravel.y * viewPosition.y)
 
         val childPosition = alignTopLeft + travel
         child.localPosition = Vector3(
-            childPosition.x, 
-            childPosition.y, 
-            child.localPosition.z)
+                childPosition.x,
+                childPosition.y,
+                child.localPosition.z)
 
         val clipArea = RectF(
-            viewBounds.left - childPosition.x, 
-            viewBounds.top - childPosition.y,
-            viewBounds.right - childPosition.x - DEFAULT_SCROLLBAR_WIDTH, 
-            viewBounds.bottom - childPosition.y + DEFAULT_SCROLLBAR_WIDTH)
+                viewBounds.left - childPosition.x,
+                viewBounds.top - childPosition.y,
+                viewBounds.right - childPosition.x - DEFAULT_SCROLLBAR_WIDTH,
+                viewBounds.bottom - childPosition.y + DEFAULT_SCROLLBAR_WIDTH)
         (child as TransformNode).setClipBounds(clipArea)
     }
 
@@ -162,10 +161,10 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
             Utils.calculateBoundsOfNode(node)
         }
         return Bounding(
-            bounds.left - node.localPosition.x,
-            bounds.bottom - node.localPosition.y,
-            bounds.right - node.localPosition.x,
-            bounds.top - node.localPosition.y)
+                bounds.left - node.localPosition.x,
+                bounds.bottom - node.localPosition.y,
+                bounds.right - node.localPosition.x,
+                bounds.top - node.localPosition.y)
     }
 
     private fun metersToPx(meters: Float): Int {

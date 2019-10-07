@@ -16,9 +16,7 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.PointF
 import android.graphics.RectF
-import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
@@ -102,17 +100,17 @@ abstract class UiLayout(initProps: ReadableMap)
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]
             val contentClip = RectF(
-                clipBounds.left - contentNode.localPosition.x,
-                clipBounds.top - contentNode.localPosition.y,
-                clipBounds.right - contentNode.localPosition.x,
-                clipBounds.bottom - contentNode.localPosition.y)
+                    clipBounds.left - contentNode.localPosition.x,
+                    clipBounds.top - contentNode.localPosition.y,
+                    clipBounds.right - contentNode.localPosition.x,
+                    clipBounds.bottom - contentNode.localPosition.y)
 
             if (child is TransformNode) {
                 val childClip = RectF(
-                    contentClip.left - child.localPosition.x,
-                    contentClip.top - child.localPosition.y,
-                    contentClip.right - child.localPosition.x,
-                    contentClip.bottom - child.localPosition.y)
+                        contentClip.left - child.localPosition.x,
+                        contentClip.top - child.localPosition.y,
+                        contentClip.right - child.localPosition.x,
+                        contentClip.bottom - child.localPosition.y)
                 child.setClipBounds(childClip)
             }
         }

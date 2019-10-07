@@ -16,15 +16,15 @@
 
 package com.reactlibrary.scene.nodes.views
 
-import com.google.ar.sceneform.Node
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
+import com.reactlibrary.utils.div
+import com.reactlibrary.utils.minus
+import com.reactlibrary.utils.onLayoutListener
 import kotlinx.android.synthetic.main.scroll_view.view.*
-import com.reactlibrary.utils.*
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
@@ -45,17 +45,17 @@ class CustomScrollView @JvmOverloads constructor(
     init {
         // We can be sure nested scrollBars are 
         // initialized only after layout is completed. 
-        this.onLayoutListener{
-                h_bar.onScrollChangeListener = { pos: Float ->
-                    val viewPosition = PointF(pos, v_bar.thumbPosition)
-                    onScrollChangeListener?.invoke(viewPosition)
-                }
-                v_bar.onScrollChangeListener = { pos: Float ->
-                    val viewPosition = PointF(h_bar.thumbPosition, pos)
-                    onScrollChangeListener?.invoke(viewPosition)
-                }
-                update()
+        this.onLayoutListener {
+            h_bar.onScrollChangeListener = { pos: Float ->
+                val viewPosition = PointF(pos, v_bar.thumbPosition)
+                onScrollChangeListener?.invoke(viewPosition)
             }
+            v_bar.onScrollChangeListener = { pos: Float ->
+                val viewPosition = PointF(h_bar.thumbPosition, pos)
+                onScrollChangeListener?.invoke(viewPosition)
+            }
+            update()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -70,8 +70,6 @@ class CustomScrollView @JvmOverloads constructor(
             val viewSize = PointF(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
-            // logMessage("move " + move.toString())
-            // logMessage("contentSize " + contentSize.toString())
             h_bar.thumbPosition -= move.x
             v_bar.thumbPosition -= move.y
         }

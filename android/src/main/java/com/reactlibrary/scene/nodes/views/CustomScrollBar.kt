@@ -26,7 +26,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
-import com.reactlibrary.utils.logMessage
 
 class CustomScrollBar @JvmOverloads constructor(
         context: Context,

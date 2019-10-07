@@ -44,11 +44,12 @@ extension SystemIcon {
     }
 
     fileprivate static var missingImage: UIImage = {
-        return UIImage.image(from: [UIColor.systemPink], size: 16)!
+        let systemPink = UIColor(red: 1.0, green: 0.17647, blue: 0.3333, alpha: 1.0)
+        return UIImage.image(from: [systemPink], size: 16)!
     }()
 
     fileprivate static var bundle: Bundle = {
-        // First check if icon exists in the main bundle.
+        // First, check if icon exists in the main bundle.
         // If so, that means the lumin system icons have been installed.
         let mainBundle = Bundle.main
         if let randomIconImage = UIImage(named: "Actions", in: mainBundle, compatibleWith: UIScreen.main.traitCollection) {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		272FE9888C2A3646A0ED2AF1 /* Pods_RNMagicScriptTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */; };
+		441EA5A22347797A00EDD033 /* SystemIcon+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */; };
+		441EA5A32347797A00EDD033 /* SystemIcon+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
 		44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
@@ -16,6 +18,8 @@
 		442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
 		4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */; };
 		442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */; };
+		442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
+		442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -336,6 +340,7 @@
 		1A61E7861901EBA64142B714 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.debug.xcconfig"; sourceTree = "<group>"; };
 		35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB5B657C16E1BE134F81C5A /* Pods-RNMagicScriptTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.debug.xcconfig"; sourceTree = "<group>"; };
+		441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemIcon+Names.swift"; sourceTree = "<group>"; };
 		44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtensionSpec.swift; sourceTree = "<group>"; };
 		44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
@@ -343,6 +348,7 @@
 		442261352334059A006E2FBA /* SCNSpinnerCircle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircle.swift; sourceTree = "<group>"; };
 		44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpinnerCircleSpec.swift; sourceTree = "<group>"; };
 		442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactorySpec.swift; sourceTree = "<group>"; };
+		442AED5623461BDF000B83AE /* SystemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIcon.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
@@ -763,6 +769,8 @@
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
 				44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */,
+				442AED5623461BDF000B83AE /* SystemIcon.swift */,
+				441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */,
 				44D8FE672336B1A0007FD766 /* TextEntryMode.swift */,
 				C4D5417A23338D20008D5124 /* VideoAction.swift */,
 				C4D5417D23338E05008D5124 /* VideoViewMode.swift */,
@@ -1417,6 +1425,7 @@
 				44AFAD18232BCAE3005AC8EF /* UiGridLayoutNode.swift in Sources */,
 				44A59E8C233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */,
 				44AFAD2A232BCAE3005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
+				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
@@ -1441,6 +1450,7 @@
 				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */,
+				441EA5A32347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
 				44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				44AFAD17232BCAE3005AC8EF /* UiButtonNode.swift in Sources */,
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
@@ -1520,7 +1530,9 @@
 				44AFAC51232B9BCF005AC8EF /* Maths+Extension.swift in Sources */,
 				44AFAC40232B9BCF005AC8EF /* UiImageNode.swift in Sources */,
 				44AFAC3D232B9BCF005AC8EF /* UiTextNode.swift in Sources */,
+				441EA5A22347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
 				44AFAC4B232B9BCF005AC8EF /* Alignment.swift in Sources */,
+				442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAC57232B9BCF005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				44AFAC4D232B9BCF005AC8EF /* SCNRectangle.swift in Sources */,
 				44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */,

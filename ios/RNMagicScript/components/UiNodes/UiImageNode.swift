@@ -17,10 +17,7 @@
 import SceneKit
 
 @objc open class UiImageNode: UiNode {
-    fileprivate var dataTask: URLSessionDataTask?
-    deinit {
-        dataTask?.cancel()
-    }
+    static let defaultSize: CGFloat = 0.2
 
     @objc var url: URL? {
         didSet {
@@ -30,41 +27,44 @@ import SceneKit
             }
         }
     }
-
+    @objc var icon: SystemIcon? {
+        didSet { image = icon?.image }
+    }
     @objc var image: UIImage? {
         didSet { updateDisplay(); updateLayout() }
     }
-
-    @objc var width: CGFloat = 0.5 {
+    @objc var width: CGFloat = 0.0 {
         didSet { setNeedsLayout() }
     }
-
-    @objc var height: CGFloat = 0.5 {
+    @objc var height: CGFloat = 0.0 {
         didSet { setNeedsLayout() }
     }
-
     @objc var useFrame: Bool = false {
         didSet { setFrame(visible: useFrame); setNeedsLayout() }
     }
-
     @objc var color: UIColor? {
         didSet { updateDisplay(); setNeedsLayout() }
     }
 
     fileprivate var planeGeometry: SCNPlane!
+    fileprivate var imageNode: SCNNode!
     fileprivate var frameNode: SCNNode?
-    fileprivate var colorImage: UIImage?
+    fileprivate var dataTask: URLSessionDataTask?
+    deinit {
+        dataTask?.cancel()
+    }
 
     @objc override func setupNode() {
         super.setupNode()
 
         alignment = Alignment.centerCenter
         assert(planeGeometry == nil, "Node must not be initialized!")
-        planeGeometry = SCNPlane(width: width, height: height)
+        planeGeometry = SCNPlane(width: 1.0, height: 1.0)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
         planeGeometry.firstMaterial?.isDoubleSided = true
-        contentNode.addChildNode(SCNNode(geometry: planeGeometry))
+        imageNode = SCNNode(geometry: planeGeometry)
+        contentNode.addChildNode(imageNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -72,6 +72,8 @@ import SceneKit
 
         if let url = Convert.toFileURL(props["filePath"]) {
             self.url = url
+        } else if let icon = Convert.toSystemIcon(props["icon"]) {
+            self.icon = icon
         }
 
         if let width = Convert.toCGFloat(props["width"]) {
@@ -92,29 +94,44 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return CGSize(width: width, height: height)
+        let imageSize: CGSize
+        if let image = image {
+            imageSize = image.size
+        } else {
+            let w: CGFloat = (width > 0) ? width : UiImageNode.defaultSize
+            let h: CGFloat = (height > 0) ? height : UiImageNode.defaultSize
+            imageSize = CGSize(width: w, height: h)
+        }
+
+        let horizontalFactor: CGFloat = width / imageSize.width
+        let verticalFactor: CGFloat = height / imageSize.height
+        let factor: CGFloat
+        if horizontalFactor > 0 && verticalFactor > 0 {
+            factor = min(horizontalFactor, verticalFactor)
+        } else {
+            factor = max(horizontalFactor, verticalFactor)
+        }
+        return CGSize(width:factor * imageSize.width, height: factor * imageSize.height)
     }
 
     @objc override func updateLayout() {
-        let size: CGSize = image?.size ?? CGSize(width: width, height: height)
-        let horizontalFactor: CGFloat = width / size.width
-        let verticalFactor: CGFloat = height / size.height
-        let factor = min(horizontalFactor, verticalFactor)
-        planeGeometry.width = factor * size.width
-        planeGeometry.height = factor * size.height
-
-        frameNode?.scale = SCNVector3(Float(planeGeometry.width), Float(planeGeometry.height), 1.0)
+        let size = getSize()
+        let scale = SCNVector3(Float(size.width), Float(size.height), 1.0)
+        imageNode.scale = scale
+        frameNode?.scale = scale
     }
 
     fileprivate func updateDisplay() {
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
+        planeGeometry.firstMaterial?.isDoubleSided = false
     }
 
     fileprivate func setFrame(visible: Bool) {
         if visible {
             if frameNode == nil {
                 frameNode = SCNNode(geometry: generateFrameGeometry())
+                frameNode?.renderingOrder = 1
                 contentNode.addChildNode(frameNode!)
             }
         } else {
@@ -137,6 +154,8 @@ import SceneKit
         let frameGeometry = SCNGeometry(sources: [source], elements: [element])
         frameGeometry.firstMaterial?.lightingModel = .constant
         frameGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        frameGeometry.firstMaterial?.isDoubleSided = false
+        frameGeometry.firstMaterial?.readsFromDepthBuffer = false
         return frameGeometry
     }
 }

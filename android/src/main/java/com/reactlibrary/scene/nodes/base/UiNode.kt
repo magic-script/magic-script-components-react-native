@@ -160,9 +160,9 @@ abstract class UiNode(
     override fun setClipBounds(clipBounds: RectF) {
         val clipBoundsPx = Rect(
             Utils.metersToPx(clipBounds.left, context),
-            Utils.metersToPx(clipBounds.top, context),
+            -Utils.metersToPx(clipBounds.top, context),
             Utils.metersToPx(clipBounds.right, context),
-            Utils.metersToPx(clipBounds.bottom, context)
+            -Utils.metersToPx(clipBounds.bottom, context)
         )
         view.setClipBounds(clipBoundsPx)
     }

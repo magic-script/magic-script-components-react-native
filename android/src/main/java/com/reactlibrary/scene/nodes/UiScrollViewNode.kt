@@ -138,24 +138,37 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context) :
         // logMessage("pivot " + pivot.toString())
 
         val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
-        val travel = possibleTravel * viewPosition
+        val travel = PointF(
+            possibleTravel.x * viewPosition.x,
+            -possibleTravel.y * viewPosition.y)
+        // val travel = PointF(
+        //     possibleTravel.x * viewPosition.x,
+        //     possibleTravel.y * (1F-viewPosition.y))
+        // val travel = possibleTravel * viewPosition
+            // possibleTravel.x * viewPosition.x,
+            // possibleTravel.y * (1F-viewPosition.y))
         val childPosition = zero - pivot - travel
 
         // logMessage("contentSize " + metersToPx(childSize.x).toString())
 
         child.localPosition = Vector3(childPosition.x, childPosition.y, 0F)
+
+
         if (child is TransformNode) {
-            val clipArea = calculateClipArea(viewSize, travel)
+            val viewTravel = PointF(
+                possibleTravel.x * viewPosition.x,
+                possibleTravel.y * (1F-viewPosition.y))
+            val clipArea = calculateClipArea(viewSize, viewTravel)
             (child as TransformNode).setClipBounds(clipArea)
         }
     }
 
     private fun calculateClipArea(viewSize: PointF, travel: PointF): RectF {
         return RectF(
-            travel.x, 
-            viewSize.y + travel.y, 
-            viewSize.x + travel.x, 
-            travel.y)
+            0F, 
+            viewSize.y, 
+            viewSize.x, 
+            0F)
     }
 
     private fun metersToPx(meters: Float): Int {

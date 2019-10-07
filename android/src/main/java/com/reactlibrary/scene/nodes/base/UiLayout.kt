@@ -101,9 +101,33 @@ abstract class UiLayout(initProps: ReadableMap)
         for (i in 0 until contentNode.children.size) {
             val node = contentNode.children[i]
             if (node is TransformNode) {
-                node.setClipBounds(clipBounds)
+                val bounds = node.getBounding()
+                val clip = RectF(
+                    clipBounds.left - bounds.left,
+                    clipBounds.top - bounds.top,
+                    clipBounds.right - bounds.left,
+                    clipBounds.bottom - bounds.top
+                )
+                // val clip = RectF(
+                //     clipBounds.left - node.localPosition.x,
+                //     -(clipBounds.bottom - node.localPosition.y),
+                //     clipBounds.right - node.localPosition.x,
+                //     -(clipBounds.top - node.localPosition.y)
+                // )
+                // val clip = RectF(
+                //     clipBounds.left - bounds.left,
+                //     clipBounds.top - bounds.bottom,
+                //     clipBounds.right - bounds.left,
+                //     clipBounds.bottom - bounds.bottom
+                // )
+                logMessage("clip in " + clipBounds.toString())
+                logMessage("localPosition " + node.localPosition.toString())
+                logMessage("bounds " + bounds.toString())
+                logMessage("clip " + clip.toString())
+                node.setClipBounds(clip)
             }
         }
+        logMessage(" ")
     }
 
 }

@@ -39,7 +39,7 @@ public enum ImageAsset: String {
         #elseif os(watchOS)
         let image = Image(named: rawValue)
         #endif
-        guard let result = image else { fatalError("Unable to load image \(rawValue).") }
+        guard let result = image else { fatalError("Unable to load image \"\(rawValue)\".") }
         return result
     }
 }

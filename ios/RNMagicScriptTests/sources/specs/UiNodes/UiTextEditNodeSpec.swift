@@ -231,7 +231,7 @@ class UiTextEditNodeSpec: QuickSpec {
 
                 it("should update 'style' prop") {
                     let referenceFontStyle = FontStyle.italic
-                    node.update(["fontParams": ["style" : referenceFontStyle.rawValue]])
+                    node.update(["fontParameters": ["style" : referenceFontStyle.rawValue]])
                     expect(node.style).to(equal(referenceFontStyle))
                     expect(node.isLayoutNeeded).to(beTrue())
 
@@ -241,7 +241,7 @@ class UiTextEditNodeSpec: QuickSpec {
 
                 it("should update 'weight' prop") {
                     let referenceFontWeight = FontWeight.bold
-                    node.update(["fontParams": ["weight" : referenceFontWeight.rawValue]])
+                    node.update(["fontParameters": ["weight" : referenceFontWeight.rawValue]])
                     expect(node.weight).to(equal(referenceFontWeight))
                     expect(node.isLayoutNeeded).to(beTrue())
 
@@ -251,7 +251,7 @@ class UiTextEditNodeSpec: QuickSpec {
 
                 it("should update 'fontSize' prop") {
                     let refrerenceFontSize: CGFloat = 0.27
-                    node.update(["fontParams": ["fontSize" : refrerenceFontSize]])
+                    node.update(["fontParameters": ["fontSize" : refrerenceFontSize]])
                     expect(node.textSize).to(beCloseTo(refrerenceFontSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
@@ -261,7 +261,7 @@ class UiTextEditNodeSpec: QuickSpec {
 
                 it("should update 'tracking' prop") {
                     let refrerenceTracking: Int = 90
-                    node.update(["fontParams": ["tracking" : refrerenceTracking]])
+                    node.update(["fontParameters": ["tracking" : refrerenceTracking]])
                     expect(node.tracking).to(equal(refrerenceTracking))
                     expect(node.isLayoutNeeded).to(beTrue())
 
@@ -271,7 +271,7 @@ class UiTextEditNodeSpec: QuickSpec {
 
                 it("should update 'allCaps' prop") {
                     let refrerenceAllCaps = true
-                    node.update(["fontParams": ["allCaps" : refrerenceAllCaps]])
+                    node.update(["fontParameters": ["allCaps" : refrerenceAllCaps]])
                     expect(node.allCaps).to(equal(refrerenceAllCaps))
                     expect(node.isLayoutNeeded).to(beTrue())
 

@@ -52,7 +52,7 @@ class UiSpinnerNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiSpinnerNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiSpinnerNode.PROP_HEIGHT)
 
@@ -61,7 +61,7 @@ class UiSpinnerNodeTest {
 
     @Test
     fun shouldHaveDefaultDeterminateFlag() {
-        val node = UiSpinnerNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val isDeterminate = node.getProperty(UiSpinnerNode.PROP_DETERMINATE)
 

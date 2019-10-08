@@ -21,6 +21,8 @@ enum class FontStyle {
     ITALIC;
 
     companion object {
+        val DEFAULT = NORMAL
+
         fun fromName(string: String): FontStyle? {
             return when (string) {
                 "normal" -> NORMAL

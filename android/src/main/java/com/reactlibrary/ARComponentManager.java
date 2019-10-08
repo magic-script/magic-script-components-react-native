@@ -38,6 +38,9 @@ import com.reactlibrary.ar.VideoRenderableLoader;
 import com.reactlibrary.ar.VideoRenderableLoaderImpl;
 import com.reactlibrary.ar.ViewRenderableLoader;
 import com.reactlibrary.ar.ViewRenderableLoaderImpl;
+import com.reactlibrary.font.FontProvider;
+import com.reactlibrary.font.providers.FontProviderImpl;
+import com.reactlibrary.font.providers.SystemFontProvider;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -71,7 +74,7 @@ import java.util.Map;
 import kotlin.Unit;
 
 /**
- * Android module that is responsible for "parsing" JS tags in order to generate AR Nodes
+ * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
  * Based on: https://facebook.github.io/react-native/docs/native-modules-android
  * <p>
  * Node creation methods are called from
@@ -97,10 +100,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
 
+    // Renderable loaders
     private ViewRenderableLoader viewRenderableLoader;
     private ModelRenderableLoader modelRenderableLoader;
     private VideoRenderableLoader videoRenderableLoader;
     private CubeRenderableBuilder cubeRenderableBuilder;
+
+    // Font provider
+    private FontProvider fontProvider;
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -109,6 +116,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
         this.cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+
+        SystemFontProvider systemFontProvider = new SystemFontProvider();
+        this.fontProvider = new FontProviderImpl(context, systemFontProvider);
+
         context.addLifecycleEventListener(this);
     }
 
@@ -142,7 +153,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
      */
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiButtonNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> {
+            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
@@ -152,12 +166,18 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createTextNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiTextNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> {
+            UiTextNode node = new UiTextNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
     public void createTextEditNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiTextEditNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> {
+            UiTextEditNode node = new UiTextEditNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
@@ -185,7 +205,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createToggleNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiToggleNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> {
+            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod

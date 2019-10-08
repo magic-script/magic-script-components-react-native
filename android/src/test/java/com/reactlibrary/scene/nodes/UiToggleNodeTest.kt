@@ -63,7 +63,7 @@ class UiToggleNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiToggleNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
 
@@ -74,7 +74,7 @@ class UiToggleNodeTest {
     fun defaultTextSizeShouldBeEqualToHeight() {
         val height: Double = 0.1
         val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
-        val node = UiToggleNode(props, context, mock())
+        val node = createNodeWithViewSpy(props)
 
         val textSize = node.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
@@ -126,7 +126,7 @@ class UiToggleNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context, mock()) {
+        return object : UiToggleNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

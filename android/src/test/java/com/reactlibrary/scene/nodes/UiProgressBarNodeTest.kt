@@ -53,7 +53,7 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldHaveDefaultWidth() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val width = node.getProperty(UiProgressBarNode.PROP_WIDTH)
 
@@ -62,7 +62,7 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiProgressBarNode.PROP_HEIGHT)
 

@@ -64,7 +64,7 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiTextEditNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
         val textSize = node.getProperty(UiTextEditNode.PROP_TEXT_SIZE)
@@ -74,7 +74,7 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldHaveDefaultAlignment() {
-        val node = UiTextEditNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
@@ -84,7 +84,7 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldHaveDefaultTextPadding() {
-        val node = UiTextEditNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
         val textPadding = node.getProperty(UiTextEditNode.PROP_TEXT_PADDING)
@@ -94,7 +94,7 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldHaveDefaultCharactersSpacing() {
-        val node = UiTextEditNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
         val charSpacing = node.getProperty(UiTextEditNode.PROP_CHARACTERS_SPACING)
@@ -202,7 +202,7 @@ class UiTextEditNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {
-        return object : UiTextEditNode(props, context, mock()) {
+        return object : UiTextEditNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

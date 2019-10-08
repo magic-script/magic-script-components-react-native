@@ -51,7 +51,7 @@ class UiGridLayoutTest {
 
         verify(gridLayoutManager).columns = UiGridLayout.COLUMNS_DEFAULT
         verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested) // redrew already happened
+        assertFalse(node.redrawRequested) // redraw already happened
     }
 
     @Test
@@ -61,7 +61,6 @@ class UiGridLayoutTest {
 
         verify(gridLayoutManager).rows = UiGridLayout.ROWS_DEFAULT
         verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested)  // redrew already happened
     }
 
     @Test
@@ -73,7 +72,6 @@ class UiGridLayoutTest {
         verify(gridLayoutManager).itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
         verify(gridLayoutManager).itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
         verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested) // redrew already happened on build
     }
 
     @Test

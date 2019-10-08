@@ -55,7 +55,7 @@ class UiTextNodeTest {
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiTextNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val textSize = node.getProperty(UiTextNode.PROP_TEXT_SIZE)
 
@@ -64,7 +64,7 @@ class UiTextNodeTest {
 
     @Test
     fun shouldHaveDefaultAlignment() {
-        val node = UiTextNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
 
@@ -167,7 +167,7 @@ class UiTextNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
-        return object : UiTextNode(props, context, mock()) {
+        return object : UiTextNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

@@ -26,15 +26,18 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
-import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 
-open class UiButtonNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiButtonNode(initProps: ReadableMap,
+                        context: Context,
+                        viewRenderableLoader: ViewRenderableLoader,
+                        private val fontProvider: FontProvider
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -76,7 +79,8 @@ open class UiButtonNode(initProps: ReadableMap, context: Context, viewRenderable
     override fun provideView(context: Context): View {
         val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
         val button = LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
-        button.setTypeface(FontProvider.provideFont(context))
+        val font = fontProvider.provideFont()
+        button.setTypeface(font)
 
         // padding is added when button width or height is "wrap content"
         val textHeightPx = Utils.metersToFontPx(textSize, context)

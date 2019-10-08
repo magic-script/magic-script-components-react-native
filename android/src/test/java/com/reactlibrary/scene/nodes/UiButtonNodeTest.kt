@@ -53,7 +53,7 @@ class UiButtonNodeTest {
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiButtonNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val textSize = node.getProperty(UiButtonNode.PROP_TEXT_SIZE)
 
@@ -62,7 +62,7 @@ class UiButtonNodeTest {
 
     @Test
     fun shouldHaveDefaultRoundness() {
-        val node = UiButtonNode(JavaOnlyMap(), context, mock())
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val roundness = node.getProperty(UiButtonNode.PROP_ROUNDNESS)
 
@@ -127,7 +127,7 @@ class UiButtonNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock()) {
+        return object : UiButtonNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

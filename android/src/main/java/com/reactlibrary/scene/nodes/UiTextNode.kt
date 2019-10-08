@@ -27,10 +27,14 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.*
 
-open class UiTextNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+open class UiTextNode(initProps: ReadableMap,
+                      context: Context,
+                      viewRenderableLoader: ViewRenderableLoader,
+                      private val fontProvider: FontProvider)
     : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -61,9 +65,8 @@ open class UiTextNode(initProps: ReadableMap, context: Context, viewRenderableLo
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null && fontParams?.style == null) {
-            // setting a default typeface
-            view.typeface = FontProvider.provideFont(context)
+        if (fontParams == null) {  // setting a default typeface
+            view.typeface = fontProvider.provideFont()
         }
         return view
     }
@@ -177,13 +180,9 @@ open class UiTextNode(initProps: ReadableMap, context: Context, viewRenderableLo
 
     private fun setFontParams(props: Bundle) {
         val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
-
-        if (fontParams.weight != null || fontParams.style != null) {
-            (view as TextView).typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
-        }
-        if (fontParams.allCaps != null) {
-            (view as TextView).isAllCaps = fontParams.allCaps
-        }
+        val textView = (view as TextView)
+        textView.typeface = fontProvider.provideFont(fontParams)
+        textView.isAllCaps = fontParams.allCaps
     }
 
 }

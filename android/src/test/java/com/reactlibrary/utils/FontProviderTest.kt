@@ -18,8 +18,11 @@ package com.reactlibrary.utils
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontStyle
 import com.reactlibrary.font.FontWeight
+import com.reactlibrary.font.providers.FontProviderImpl
+import com.reactlibrary.font.providers.SystemFontProvider
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,28 +33,33 @@ import org.robolectric.RobolectricTestRunner
 class FontProviderTest {
 
     private lateinit var context: Context
+    private lateinit var fontProvider: FontProviderImpl
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext<Context>()
+        val systemFontProvider = SystemFontProvider()
+        fontProvider = FontProviderImpl(context, systemFontProvider)
     }
 
     @Test
     fun `should return same typeface object for same font params`() {
-        val fontWeight = FontWeight.BOLD
-        val fontStyle = FontStyle.ITALIC
+        val fontParams = FontParams(FontWeight.BOLD, FontStyle.ITALIC, false)
 
-        val font1 = FontProvider.provideFont(context, fontWeight, fontStyle)
-        val font2 = FontProvider.provideFont(context, fontWeight, fontStyle)
+        val font1 = fontProvider.provideFont(fontParams)
+        val font2 = fontProvider.provideFont(fontParams)
 
         assertTrue(font1 === font2) // comparing references
     }
 
 
     @Test
-    fun `should return different typeface objects for different font params`() {
-        val font1 = FontProvider.provideFont(context, FontWeight.REGULAR, FontStyle.NORMAL)
-        val font2 = FontProvider.provideFont(context, FontWeight.BOLD, FontStyle.ITALIC)
+    fun `should return different typeface objects for different weights`() {
+        val fontParams1 = FontParams(FontWeight.LIGHT, FontStyle.NORMAL, false)
+        val fontParams2 = FontParams(FontWeight.MEDIUM, FontStyle.NORMAL, false)
+
+        val font1 = fontProvider.provideFont(fontParams1)
+        val font2 = fontProvider.provideFont(fontParams2)
 
         assertTrue(font1 !== font2) // comparing references
     }

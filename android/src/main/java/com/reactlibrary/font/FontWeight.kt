@@ -25,6 +25,8 @@ enum class FontWeight {
     EXTRA_BOLD;
 
     companion object {
+        val DEFAULT = REGULAR
+
         fun fromName(string: String): FontWeight? {
             return when (string) {
                 "extra-light" -> EXTRA_LIGHT

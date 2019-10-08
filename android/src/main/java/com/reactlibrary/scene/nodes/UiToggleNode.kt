@@ -27,14 +27,18 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.FontProvider
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
-open class UiToggleNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+open class UiToggleNode(initProps: ReadableMap,
+                        context: Context,
+                        viewRenderableLoader: ViewRenderableLoader,
+                        private val fontProvider: FontProvider
+) :
         UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
@@ -62,7 +66,7 @@ open class UiToggleNode(initProps: ReadableMap, context: Context, viewRenderable
 
     override fun provideView(context: Context): View {
         val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
-        view.tv_toggle.typeface = FontProvider.provideFont(context)
+        view.tv_toggle.typeface = fontProvider.provideFont()
         view.iv_toggle.setOnClickListener {
             // disabling parent view is not sufficient
             if (!properties.getBoolean(PROP_ENABLED)) {

@@ -33,13 +33,17 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.InputDialogBuilder
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
-open class UiTextEditNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiTextEditNode(initProps: ReadableMap,
+                          context: Context,
+                          viewRenderableLoader: ViewRenderableLoader,
+                          private val fontProvider: FontProvider
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -111,9 +115,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context, viewRenderab
         val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
 
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null && fontParams?.style == null) {
-            // setting a default typeface
-            container.text_edit.typeface = FontProvider.provideFont(context)
+        if (fontParams == null) { // setting a default typeface
+            container.text_edit.typeface = fontProvider.provideFont()
         }
 
         container.text_edit.setSingleLine() // single line by default
@@ -298,13 +301,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context, viewRenderab
 
     private fun setFontParams(props: Bundle) {
         val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
-
-        if (fontParams.weight != null || fontParams.style != null) {
-            view.text_edit.typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
-        }
-        if (fontParams.allCaps != null) {
-            view.text_edit.isAllCaps = fontParams.allCaps
-        }
+        view.text_edit.typeface = fontProvider.provideFont(fontParams)
+        view.text_edit.isAllCaps = fontParams.allCaps
     }
 
     private fun setScrollBarVisibility(props: Bundle) {

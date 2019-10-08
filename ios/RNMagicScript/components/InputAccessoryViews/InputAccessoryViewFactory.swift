@@ -17,7 +17,15 @@
 import UIKit
 
 class InputAccessoryViewFactory {
-    static func createView(for input: InputDataProviding, onFinishEditing: (() -> Void)?) -> UIView {
+    static func createView(for input: DataProviding, onFinishEditing: (() -> Void)?) -> UIView? {
+        if let textInput = input as? InputDataProviding {
+            return InputAccessoryViewFactory.createView(for: textInput, onFinishEditing: onFinishEditing)
+        }
+
+        return nil
+    }
+
+    static func createView(for input: InputDataProviding, onFinishEditing: (() -> Void)?) -> UIView? {
         let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
         if (input.multiline) {
             let multiLineView = MultiLineTextAccessoryView(frame: rect)

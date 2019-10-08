@@ -60,6 +60,16 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         return CustomScrollBar(context)
     }
 
+    override fun setupView() {
+        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
+        val widthPx = Utils.metersToPx(widthInMeters, context)
+
+        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightPx = Utils.metersToPx(heightInMeters, context)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -70,16 +80,6 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         setThumbPosition(props)
         setThumbSize(props)
         setOrientation(props)
-    }
-
-    override fun setViewSize() {
-        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     private fun setThumbPosition(props: Bundle) {

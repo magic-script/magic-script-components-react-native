@@ -65,34 +65,10 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.toggle, null)
-        view.tv_toggle.typeface = fontProvider.provideFont()
-        view.iv_toggle.setOnClickListener {
-            // disabling parent view is not sufficient
-            if (!properties.getBoolean(PROP_ENABLED)) {
-                return@setOnClickListener
-            }
-            isOn = !isOn
-            refreshImage()
-            toggleChangedListener?.invoke(isOn)
-        }
-        return view
+        return LayoutInflater.from(context).inflate(R.layout.toggle, null)
     }
 
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-
-        if (props.containsKey(PROP_HEIGHT)) {
-            setNeedsRebuild()
-        }
-
-        setIsChecked(props)
-        setText(props)
-        setTextSize(props)
-        setTextColor(props)
-    }
-
-    override fun setViewSize() {
+    override fun setupView() {
         var heightMeters = properties.getDouble(PROP_HEIGHT).toFloat()
         if (heightMeters == 0F) { // use default height when 0
             heightMeters = DEFAULT_HEIGHT.toFloat()
@@ -108,6 +84,22 @@ open class UiToggleNode(initProps: ReadableMap,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
+
+        view.tv_toggle.typeface = fontProvider.provideFont()
+        setupClickListener()
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+
+        setIsChecked(props)
+        setText(props)
+        setTextSize(props)
+        setTextColor(props)
     }
 
     override fun applyAlignment() {
@@ -162,6 +154,18 @@ open class UiToggleNode(initProps: ReadableMap,
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
             view.tv_toggle.setTextColor(color)
+        }
+    }
+
+    private fun setupClickListener() {
+        view.iv_toggle.setOnClickListener {
+            // disabling parent view is not sufficient
+            if (!properties.getBoolean(PROP_ENABLED)) {
+                return@setOnClickListener
+            }
+            isOn = !isOn
+            refreshImage()
+            toggleChangedListener?.invoke(isOn)
         }
     }
 

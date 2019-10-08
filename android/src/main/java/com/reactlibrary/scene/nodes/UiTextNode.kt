@@ -63,12 +63,29 @@ open class UiTextNode(initProps: ReadableMap,
     }
 
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
+        return LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
+    }
+
+    override fun setupView() {
+        // dimensions in pixels
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        if (width == WRAP_CONTENT_DIMENSION) {
+            (view as TextView).setSingleLine(true)
+        } else {
+            widthPx = Utils.metersToPx(width, context)
+        }
+
+        if (height != WRAP_CONTENT_DIMENSION) {
+            heightPx = Utils.metersToPx(height, context)
+        }
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
         if (fontParams == null) {  // setting a default typeface
-            view.typeface = fontProvider.provideFont()
+            (view as TextView).typeface = fontProvider.provideFont()
         }
-        return view
     }
 
     override fun applyProperties(props: Bundle) {
@@ -89,23 +106,6 @@ open class UiTextNode(initProps: ReadableMap,
         setCharactersSpacing(props)
         setWrap(props)
         setFontParams(props)
-    }
-
-    override fun setViewSize() {
-        // dimensions in pixels
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        if (width == WRAP_CONTENT_DIMENSION) {
-            (view as TextView).setSingleLine(true)
-        } else {
-            widthPx = Utils.metersToPx(width, context)
-        }
-
-        if (height != WRAP_CONTENT_DIMENSION) {
-            heightPx = Utils.metersToPx(height, context)
-        }
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     private fun canResizeOnContentChange(): Boolean {

@@ -112,37 +112,31 @@ open class UiTextEditNode(initProps: ReadableMap,
     }
 
     override fun provideView(context: Context): View {
-        val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+    }
+
+    override fun setupView() {
+        // default dimension
+        var widthPx = LinearLayout.LayoutParams.WRAP_CONTENT
+        var heightPx = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+            widthPx = Utils.metersToPx(widthInMeters, context)
+        }
+
+        if (properties.containsKey(PROP_HEIGHT)) {
+            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+            heightPx = Utils.metersToPx(heightInMeters, context)
+        }
+        view.sv_text_edit.layoutParams = LinearLayout.LayoutParams(widthPx, heightPx)
 
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
         if (fontParams == null) { // setting a default typeface
-            container.text_edit.typeface = fontProvider.provideFont()
+            view.text_edit.typeface = fontProvider.provideFont()
         }
-
-        container.text_edit.setSingleLine() // single line by default
-
-        container.text_edit.setOnClickListener {
-            // disabling parent view is not sufficient
-            if (!properties.getBoolean(PROP_ENABLED)) {
-                return@setOnClickListener
-            }
-            val activity = ArViewManager.getActivityRef().get()
-            if (activity != null) {
-                isSelected = true
-                startCursorAnimation()
-                showBorder()
-                view.text_edit_underline.visibility = View.INVISIBLE
-                view.text_edit.setTextColor(textColor)
-                showInputDialog(activity)
-            }
-        }
-
-        // override touch event to disable scroll if needed
-        container.sv_text_edit.setOnTouchListener { _, _ ->
-            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
-        }
-
-        return container
+        view.text_edit.setSingleLine() // single line by default
+        setupViewListeners()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -162,47 +156,6 @@ open class UiTextEditNode(initProps: ReadableMap,
         setTextPadding(props)
         setFontParams(props)
         setScrollBarVisibility(props)
-    }
-
-    override fun setViewSize() {
-        // default dimension
-        var widthPx = LinearLayout.LayoutParams.WRAP_CONTENT
-        var heightPx = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            widthPx = Utils.metersToPx(widthInMeters, context)
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(heightInMeters, context)
-        }
-        view.sv_text_edit.layoutParams = LinearLayout.LayoutParams(widthPx, heightPx)
-    }
-
-    private fun showBorder() {
-        adjustBackground()
-
-        // add some padding because of rounded corners
-        val multiline = properties.getBoolean(PROP_MULTILINE)
-        val resources = context.resources
-        val paddingHorizontal = if (multiline) {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz_big)
-        } else {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz)
-        }
-        val paddingVertical = if (multiline) {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical_big)
-        } else {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical)
-        }
-        view.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
-    }
-
-    private fun hideBorder() {
-        adjustBackground()
-        view.setPadding(0, 0, 0, 0)
     }
 
     private fun setText(props: Bundle) {
@@ -323,6 +276,29 @@ open class UiTextEditNode(initProps: ReadableMap,
         }
     }
 
+    private fun setupViewListeners() {
+        view.text_edit.setOnClickListener {
+            // disabling parent view is not sufficient
+            if (!properties.getBoolean(PROP_ENABLED)) {
+                return@setOnClickListener
+            }
+            val activity = ArViewManager.getActivityRef().get()
+            if (activity != null) {
+                isSelected = true
+                startCursorAnimation()
+                showBorder()
+                view.text_edit_underline.visibility = View.INVISIBLE
+                view.text_edit.setTextColor(textColor)
+                showInputDialog(activity)
+            }
+        }
+
+        // override touch event to disable scroll if needed
+        view.sv_text_edit.setOnTouchListener { _, _ ->
+            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
+        }
+    }
+
     private fun startCursorAnimation() {
         cursorAnimationRunnable.run()
     }
@@ -373,6 +349,30 @@ open class UiTextEditNode(initProps: ReadableMap,
         }
 
         builder.show()
+    }
+
+    private fun showBorder() {
+        adjustBackground()
+
+        // add some padding because of rounded corners
+        val multiline = properties.getBoolean(PROP_MULTILINE)
+        val resources = context.resources
+        val paddingHorizontal = if (multiline) {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz_big)
+        } else {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz)
+        }
+        val paddingVertical = if (multiline) {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical_big)
+        } else {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical)
+        }
+        view.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
+    }
+
+    private fun hideBorder() {
+        adjustBackground()
+        view.setPadding(0, 0, 0, 0)
     }
 
     private fun adjustBackground() {

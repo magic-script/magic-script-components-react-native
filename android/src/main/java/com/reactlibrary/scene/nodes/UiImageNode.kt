@@ -48,19 +48,7 @@ open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableL
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            setNeedsRebuild()
-        }
-
-        setImagePath(props)
-        setColor(props)
-        setUseFrame(props)
-    }
-
-    override fun setViewSize() {
+    override fun setupView() {
         // default dimension
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -75,6 +63,18 @@ open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableL
             heightPx = Utils.metersToPx(heightInMeters, context)
         }
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+
+        setImagePath(props)
+        setColor(props)
+        setUseFrame(props)
     }
 
     private fun setImagePath(props: Bundle) {

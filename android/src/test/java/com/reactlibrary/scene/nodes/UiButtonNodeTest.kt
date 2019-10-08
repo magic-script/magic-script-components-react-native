@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
@@ -25,6 +26,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.font.FontParams
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.views.CustomButton
@@ -44,11 +47,28 @@ class UiButtonNodeTest {
 
     private lateinit var context: Context
     private lateinit var viewSpy: CustomButton
+    private lateinit var providerTypeface: Typeface
+    private lateinit var fontProvider: FontProvider
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.viewSpy = spy(CustomButton(context))
+        this.providerTypeface = Typeface.DEFAULT_BOLD
+        this.fontProvider = object : FontProvider {
+            override fun provideFont(fontParams: FontParams?): Typeface {
+                return providerTypeface
+            }
+        }
+    }
+
+    @Test
+    fun shouldUseTypefaceFromProvider() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(viewSpy).setTypeface(providerTypeface)
     }
 
     @Test
@@ -127,7 +147,7 @@ class UiButtonNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock(), mock()) {
+        return object : UiButtonNode(props, context, mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

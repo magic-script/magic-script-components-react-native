@@ -58,6 +58,16 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRende
         return LayoutInflater.from(context).inflate(R.layout.progress_bar, null)
     }
 
+    override fun setupView() {
+        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+        val widthPx = Utils.metersToPx(widthInMeters, context)
+
+        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightPx = Utils.metersToPx(heightInMeters, context)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -69,16 +79,6 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRende
         setMin(props)
         setMax(props)
         setProgressColor(props)
-    }
-
-    override fun setViewSize() {
-        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     override fun setAlignment(props: Bundle) {

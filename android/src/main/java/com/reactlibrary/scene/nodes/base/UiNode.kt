@@ -65,9 +65,9 @@ abstract class UiNode(
      */
     override fun build() {
         initView()
+        setupView()
         addChild(contentNode)
         applyProperties(properties)
-        setViewSize()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -106,7 +106,11 @@ abstract class UiNode(
 
     protected open fun onViewClick() {}
 
-    protected open fun setViewSize() {
+    /**
+     * Should setup the [view] instance (size, listeners, etc) before it gets
+     * attached to the node.
+     */
+    protected open fun setupView() {
         // default dimensions
         val widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         val heightPx = ViewGroup.LayoutParams.WRAP_CONTENT

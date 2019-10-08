@@ -59,6 +59,13 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
         return LayoutInflater.from(context).inflate(R.layout.spinner, null)
     }
 
+    override fun setupView() {
+        val height = properties.getDouble(PROP_HEIGHT).toFloat()
+        val widthPx = Utils.metersToPx(height, context)
+        val heightPx = Utils.metersToPx(height, context)
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
         if (!properties.getBoolean(PROP_DETERMINATE)) {
@@ -81,13 +88,6 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for spinner
-    }
-
-    override fun setViewSize() {
-        val height = properties.getDouble(PROP_HEIGHT).toFloat()
-        val widthPx = Utils.metersToPx(height, context)
-        val heightPx = Utils.metersToPx(height, context)
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     private fun setDeterminate(props: Bundle) {

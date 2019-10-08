@@ -77,37 +77,10 @@ open class UiButtonNode(initProps: ReadableMap,
     }
 
     override fun provideView(context: Context): View {
-        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
-        val button = LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
-        val font = fontProvider.provideFont()
-        button.setTypeface(font)
-
-        // padding is added when button width or height is "wrap content"
-        val textHeightPx = Utils.metersToFontPx(textSize, context)
-        val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
-        val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
-        button.setTextPadding(textPaddingHorizontal, textPaddingVertical)
-        return button
+        return LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
     }
 
-    override fun onViewClick() {
-        super.onViewClick()
-        animate()
-    }
-
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            setNeedsRebuild()
-        }
-        setText(props)
-        setTextSize(props)
-        setTextColor(props)
-        setRoundness(props)
-    }
-
-    override fun setViewSize() {
+    override fun setupView() {
         // default dimension
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -125,6 +98,33 @@ open class UiButtonNode(initProps: ReadableMap,
             }
         }
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+
+        val font = fontProvider.provideFont()
+        (view as CustomButton).setTypeface(font)
+
+        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
+        // padding is added when button width or height is "wrap content"
+        val textHeightPx = Utils.metersToFontPx(textSize, context)
+        val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
+        val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
+        (view as CustomButton).setTextPadding(textPaddingHorizontal, textPaddingVertical)
+    }
+
+    override fun onViewClick() {
+        super.onViewClick()
+        animate()
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+        setText(props)
+        setTextSize(props)
+        setTextColor(props)
+        setRoundness(props)
     }
 
     override fun setAlignment(props: Bundle) {

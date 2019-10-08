@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -31,6 +32,8 @@ import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.R
+import com.reactlibrary.font.FontParams
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
@@ -50,6 +53,8 @@ class UiToggleNodeTest {
     private lateinit var containerSpy: LinearLayout
     private lateinit var textViewSpy: TextView
     private lateinit var switchSpy: ImageView
+    private lateinit var fontProvider: FontProvider
+    private lateinit var providerTypeface: Typeface
 
     @Before
     fun setUp() {
@@ -57,8 +62,23 @@ class UiToggleNodeTest {
         this.containerSpy = spy(LinearLayout(context))
         this.textViewSpy = spy(TextView(context))
         this.switchSpy = spy(ImageView(context))
+        this.providerTypeface = Typeface.DEFAULT_BOLD
+        this.fontProvider = object : FontProvider {
+            override fun provideFont(fontParams: FontParams?): Typeface {
+                return providerTypeface
+            }
+        }
         whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
         whenever(containerSpy.iv_toggle).thenReturn(switchSpy)
+    }
+
+    @Test
+    fun shouldUseTypefaceFromProvider() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(textViewSpy).typeface = providerTypeface
     }
 
     @Test
@@ -126,7 +146,7 @@ class UiToggleNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context, mock(), mock()) {
+        return object : UiToggleNode(props, context, mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

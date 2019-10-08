@@ -72,8 +72,10 @@ import SceneKit
         setupNode()
     }
 
-    @objc public convenience init(props: [String: Any]) {
-        self.init()
+    @objc public required init(props: [String: Any]) {
+//        self.init()
+        super.init()
+        setupNode()
         update(props)
     }
 

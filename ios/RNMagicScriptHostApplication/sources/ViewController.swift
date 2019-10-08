@@ -57,15 +57,24 @@ class ViewController: UIViewController {
             arView.topAnchor.constraint(equalTo: view.topAnchor),
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            ])
+        ])
 
         arView.delegate = self
     }
 
-    fileprivate var spinner2: UiSpinnerNode!
-    fileprivate var text: UiTextNode!
-
     fileprivate func setupTests() {
+//        setupDefaultIconsTest()
+        let scrollViewId: String = "scroll_view"
+        let scrollBarId: String = "scroll_bar"
+        let scrollView: UiScrollViewNode = createComponent([:
+
+        ], nodeId: scrollViewId)
+        let scrollBar: UiScrollBarNode = createComponent([:
+
+        ], nodeId: scrollBarId, parentId: scrollViewId)
+    }
+
+    fileprivate func setupDefaultIconsTest() {
 
         let grid = UiGridLayoutNode(props: [
             "columns": 14,
@@ -90,16 +99,17 @@ class ViewController: UIViewController {
         grid.layoutIfNeeded()
     }
 
-    fileprivate func convertString(_ text: String) -> String {
-        let result = text.split(separator: "-").map { $0.prefix(1).uppercased() + $0.dropFirst() }.joined()
-        return result.prefix(1).lowercased() + result.dropFirst()
-    }
-
-    fileprivate func createComponent(_ props: [String: Any], nodeId: String) {
-        let node = UiImageNode(props: props)
+    @discardableResult
+    fileprivate func createComponent<T: UiNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
+        let node = T.init(props: props)
         node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)
-        UiNodesManager.instance.addNodeToRoot(nodeId)
+        if let parentId = parentId {
+            UiNodesManager.instance.addNode(nodeId, toParent: parentId)
+        } else {
+            UiNodesManager.instance.addNodeToRoot(nodeId)
+        }
+        return node
     }
 }
 

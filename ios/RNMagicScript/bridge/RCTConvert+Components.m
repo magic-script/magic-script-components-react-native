@@ -47,6 +47,14 @@
     return [[UiProgressBarNode alloc] initWithProps:json];
 }
 
++ (UiScrollBarNode *)UiScrollBarNode:(id)json {
+    return [[UiScrollBarNode alloc] initWithProps:json];
+}
+
++ (UiScrollViewNode *)UiScrollViewNode:(id)json {
+    return [[UiScrollViewNode alloc] initWithProps:json];
+}
+
 + (UiSliderNode *)UiSliderNode:(id)json {
     return [[UiSliderNode alloc] initWithProps:json];
 }

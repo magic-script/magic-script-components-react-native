@@ -18,6 +18,25 @@ import SceneKit
 
 @objc open class UiScrollBarNode: UiNode {
 
+    @objc override var alignment: Alignment {
+        get { return .centerCenter }
+        set { }
+    }
+
+    // Gets an indication between 0 and 1 for the size of the thumb in respect to the track.
+    // It returns 1 to mean the thumb is as long as its track.
+    // It returns a value of .5f to mean the thumb is half as long as its track.
+    @objc var thumbSize: CGFloat = 0.5 {
+        didSet { setNeedsLayout() }
+    }
+
+    // Gets an indication between 0 and 1 for the position of the thumb along the track.
+    // It returns 0 to mean the thumb is at the left/upper most possible position along the track.
+    // It returns 1 to mean the thumb is at the right/bottom most possible position along the track.
+    @objc var thumbPosition: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+
     @objc override func setupNode() {
         super.setupNode()
     }
@@ -25,6 +44,9 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
+        if let thumbSize = Convert.toCGFloat(props["thumbSize"]) {
+            self.thumbSize = thumbSize
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {

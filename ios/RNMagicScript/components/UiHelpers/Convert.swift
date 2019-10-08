@@ -128,6 +128,13 @@ class Convert {
         return HorizontalTextAlignment(rawValue: alignment)
     }
 
+    static func toAABB(_ value: Any?) -> (min: SCNVector3, max: SCNVector3)? {
+        guard let aabb = value as? [String: Any] else { return nil }
+        guard let min = Convert.toVector3(aabb["min"]),
+            let max = Convert.toVector3(aabb["max"]) else { return nil }
+        return (min: min, max: max)
+    }
+
     static func toAlignment(_ value: Any?) -> Alignment? {
         guard let alignment = value as? String else { return nil }
         return Alignment(rawValue: alignment)
@@ -146,6 +153,11 @@ class Convert {
     static func toScrollBarVisibility(_ value: Any?) -> ScrollBarVisibility? {
         guard let scrollBarVisibility = value as? String else { return nil }
         return ScrollBarVisibility(rawValue: scrollBarVisibility)
+    }
+
+    static func toScrollDirection(_ value: Any?) -> ScrollDirection? {
+        guard let scrollDirection = value as? String else { return nil }
+        return ScrollDirection(rawValue: scrollDirection)
     }
 
     static func toTextEntryMode(_ value: Any?) -> TextEntryMode? {

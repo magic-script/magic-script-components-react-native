@@ -18,6 +18,25 @@ import SceneKit
 
 @objc open class UiScrollViewNode: UiNode {
 
+    @objc var scrollDirection: ScrollDirection = .vertical {
+        didSet { setNeedsLayout() }
+    }
+    // Scroll speed in scene units per second.
+    @objc var scrollSpeed: CGFloat = 0.1
+    @objc var scrollOffset: SCNVector3 = SCNVector3() {
+        didSet { setNeedsLayout() }
+    }
+    @objc var scrollValue: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+    //@objc
+    var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
+        didSet { setNeedsLayout() }
+    }
+    @objc var scrollBarVisibility: ScrollBarVisibility = .auto {
+        didSet { setNeedsLayout() }
+    }
+
     @objc public var onScrollChanged: ((_ sender: UiNode, _ value: CGFloat) -> (Void))?
 
     @objc override func setupNode() {
@@ -27,6 +46,29 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
+        if let scrollDirection = Convert.toScrollDirection(props["scrollDirection"]) {
+            self.scrollDirection = scrollDirection
+        }
+
+        if let scrollSpeed = Convert.toCGFloat(props["scrollSpeed"]) {
+            self.scrollSpeed = scrollSpeed
+        }
+
+        if let scrollOffset = Convert.toVector3(props["scrollOffset"]) {
+            self.scrollOffset = scrollOffset
+        }
+
+        if let scrollValue = Convert.toCGFloat(props["scrollValue"]) {
+            self.scrollValue = scrollValue
+        }
+
+        if let scrollBounds = Convert.toAABB(props["scrollBounds"]) {
+            self.scrollBounds = scrollBounds
+        }
+        
+        if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {
+            self.scrollBarVisibility = scrollBarVisibility
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {

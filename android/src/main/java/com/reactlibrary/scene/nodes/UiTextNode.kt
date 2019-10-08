@@ -53,9 +53,6 @@ open class UiTextNode(initProps: ReadableMap,
         const val WRAP_CONTENT_DIMENSION = 0F // 0 width or height means "wrap content"
     }
 
-    private var width = WRAP_CONTENT_DIMENSION
-    private var height = WRAP_CONTENT_DIMENSION
-
     init {
         // set default values of properties
         properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
@@ -70,6 +67,10 @@ open class UiTextNode(initProps: ReadableMap,
         // dimensions in pixels
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        val size = readSize()
+        val width = size.first
+        val height = size.second
 
         if (width == WRAP_CONTENT_DIMENSION) {
             (view as TextView).setSingleLine(true)
@@ -92,10 +93,6 @@ open class UiTextNode(initProps: ReadableMap,
         super.applyProperties(props)
 
         if (props.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
-            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
-            width = bounds[0].toFloat()
-            height = bounds[1].toFloat()
             setNeedsRebuild()
         }
 
@@ -109,7 +106,8 @@ open class UiTextNode(initProps: ReadableMap,
     }
 
     private fun canResizeOnContentChange(): Boolean {
-        return width == WRAP_CONTENT_DIMENSION || height == WRAP_CONTENT_DIMENSION
+        val size = readSize()
+        return size.first == WRAP_CONTENT_DIMENSION || size.second == WRAP_CONTENT_DIMENSION
     }
 
     private fun setText(properties: Bundle) {
@@ -168,6 +166,7 @@ open class UiTextNode(initProps: ReadableMap,
     }
 
     private fun setWrap(props: Bundle) {
+        val width = readSize().first
         if (width == WRAP_CONTENT_DIMENSION) {
             return
         }
@@ -183,6 +182,18 @@ open class UiTextNode(initProps: ReadableMap,
         val textView = (view as TextView)
         textView.typeface = fontProvider.provideFont(fontParams)
         textView.isAllCaps = fontParams.allCaps
+    }
+
+    private fun readSize(): Pair<Float, Float> {
+        if (properties.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
+            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
+            val width = bounds[0].toFloat()
+            val height = bounds[1].toFloat()
+            return Pair(width, height)
+        } else {
+            return Pair(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+        }
     }
 
 }

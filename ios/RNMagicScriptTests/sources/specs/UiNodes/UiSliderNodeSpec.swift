@@ -118,14 +118,14 @@ class UiSliderNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'progressColor' (beginColor and endColor)") {
+                it("should update 'foregroundColor'") {
                     let orangeColor = UIColor.orange
                     let grayColor = UIColor.gray
 
-                    node.update(["progressColor" : orangeColor.toArrayOfCGFloat])
+                    node.update(["foregroundColor" : orangeColor.toArrayOfCGFloat])
                     expect(node.foregroundColor).to(beCloseTo(orangeColor))
 
-                    node.update(["progressColor" : grayColor.toArrayOfCGFloat])
+                    node.update(["foregroundColor" : grayColor.toArrayOfCGFloat])
                     expect(node.foregroundColor).to(beCloseTo(grayColor))
                 }
 
@@ -166,8 +166,8 @@ class UiSliderNodeSpec: QuickSpec {
                 }
             }
 
-            context("update progress bar") {
-                it("should update progress bar to given length") {
+            context("update slider bar") {
+                it("should update slider bar to given length") {
                     let referenceWidth: CGFloat = 13.0
                     let referenceValue: CGFloat = 0.61
                     node.width = referenceWidth
@@ -176,8 +176,8 @@ class UiSliderNodeSpec: QuickSpec {
 
                     let size = node.getSize()
                     expect(size.width).to(beCloseTo(referenceWidth))
-                    let progressBarNode: SCNNode = node.contentNode.childNodes[1]
-                    let plane: SCNPlane = progressBarNode.geometry as! SCNPlane
+                    let foregroundNode: SCNNode = node.contentNode.childNodes[2]
+                    let plane: SCNPlane = foregroundNode.geometry as! SCNPlane
                     expect(plane.width).to(beCloseTo(referenceWidth * referenceValue))
                 }
 
@@ -186,8 +186,8 @@ class UiSliderNodeSpec: QuickSpec {
                     node.max = 0.30000001
                     node.layoutIfNeeded()
 
-                    let progressBarNode: SCNNode = node.contentNode.childNodes[1]
-                    let plane: SCNPlane = progressBarNode.geometry as! SCNPlane
+                    let foregroundNode: SCNNode = node.contentNode.childNodes[2]
+                    let plane: SCNPlane = foregroundNode.geometry as! SCNPlane
                     expect(plane.width).to(beCloseTo(0))
                 }
             }
@@ -207,6 +207,21 @@ class UiSliderNodeSpec: QuickSpec {
 
                         expect(node.hasFocus).to(beFalse())
                     }
+                }
+            }
+
+            context("when update min/max label") {
+                it("should update related nodes") {
+                    let minLabelReferenceText = "minLabelText"
+                    let maxLabelReferenceText = "maxLabelText"
+                    node.update(["minLabel" : minLabelReferenceText])
+                    node.update(["maxLabel" : maxLabelReferenceText])
+
+                    let minLabelNode = node.contentNode.childNodes[0] as! LabelNode
+                    expect(minLabelNode.text).to(equal(minLabelReferenceText))
+                    let maxLabelNode = node.contentNode.childNodes[3] as! LabelNode
+                    expect(maxLabelNode.text).to(equal(maxLabelReferenceText))
+                    expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
         }

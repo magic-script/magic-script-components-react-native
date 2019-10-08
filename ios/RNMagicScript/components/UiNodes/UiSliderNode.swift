@@ -79,7 +79,7 @@ import SceneKit
     fileprivate var _max: CGFloat = 1.0
     fileprivate var _value: CGFloat = 0.0
     fileprivate var backgroundGeometry: SCNPlane!
-    fileprivate var progressGeometry: SCNPlane!
+    fileprivate var foregroundGeometry: SCNPlane!
     fileprivate var foregroundImage: UIImage?
     fileprivate var progressNode: SCNNode!
     fileprivate var minLabelNode: LabelNode!
@@ -96,10 +96,10 @@ import SceneKit
         let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
         backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
 
-        progressGeometry = SCNPlane(width: width, height: height)
-        progressGeometry.firstMaterial?.lightingModel = .constant
-        progressGeometry.firstMaterial?.isDoubleSided = true
-        progressGeometry.firstMaterial?.readsFromDepthBuffer = false
+        foregroundGeometry = SCNPlane(width: width, height: height)
+        foregroundGeometry.firstMaterial?.lightingModel = .constant
+        foregroundGeometry.firstMaterial?.isDoubleSided = true
+        foregroundGeometry.firstMaterial?.readsFromDepthBuffer = false
 
         minLabelNode = LabelNode()
         minLabelNode.defaultTextSize = 0.0167
@@ -114,7 +114,7 @@ import SceneKit
         maxLabelNode.textAlignment = .center
 
         let bgNode = SCNNode(geometry: backgroundGeometry)
-        progressNode = SCNNode(geometry: progressGeometry)
+        progressNode = SCNNode(geometry: foregroundGeometry)
 
         progressNode.renderingOrder = 1
         contentNode.addChildNode(minLabelNode)
@@ -155,8 +155,8 @@ import SceneKit
             self.value = value
         }
 
-        if let progressColor = Convert.toColor(props["progressColor"]) {
-            self.foregroundColor = progressColor
+        if let foregroundColor = Convert.toColor(props["foregroundColor"]) {
+            self.foregroundColor = foregroundColor
         }
     }
 
@@ -178,13 +178,13 @@ import SceneKit
 
         if foregroundImage == nil {
             foregroundImage = UIImage.gradientImage(withSize: CGSize(width: 32.0, height: 32.0), colors: [foregroundColor.cgColor, foregroundColor.cgColor])
-            progressGeometry.firstMaterial?.diffuse.contents = foregroundImage
+            foregroundGeometry.firstMaterial?.diffuse.contents = foregroundImage
         }
 
         let progressWidth = size.width * progress
-        progressGeometry.width = progressWidth
-        progressGeometry.height = size.height
-        progressGeometry.cornerRadius = 0.5 * size.height
+        foregroundGeometry.width = progressWidth
+        foregroundGeometry.height = size.height
+        foregroundGeometry.cornerRadius = 0.5 * size.height
         progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(progressWidth), 0.0, 0.0)
         progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)
 

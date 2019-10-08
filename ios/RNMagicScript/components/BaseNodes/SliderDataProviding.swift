@@ -12,18 +12,14 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
-import UIKit
+import Foundation
+import CoreGraphics // CGFloat import
 
 //sourcery: AutoMockable
-protocol InputDataProviding {
-    var value: Any? { get set }
-    var placeholder: String? { get }
-    var charLimit: Int { get }
-    var multiline: Bool { get }
-    var password: Bool { get }
-    var autocapitalizationType: UITextAutocapitalizationType? { get }
-    var keyboardType: UIKeyboardType? { get }
-    var textContentType: UITextContentType? { get }
+protocol SliderDataProviding {
+    var value: CGFloat { get set }
+    var min: CGFloat { get set }
+    var max: CGFloat { get set }
 }

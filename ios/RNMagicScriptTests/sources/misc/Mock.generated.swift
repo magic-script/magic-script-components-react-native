@@ -909,6 +909,424 @@ open class GLTFSceneSourceProtocolMock: GLTFSceneSourceProtocol, Mock {
     }
 }
 
+// MARK: - InputDataProviding
+open class InputDataProvidingMock: InputDataProviding, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    public var value: Any? {
+		get {	invocations.append(.p_value_get); return __p_value ?? optionalGivenGetterValue(.p_value_get, "InputDataProvidingMock - stub value for value was not defined") }
+		set {	invocations.append(.p_value_set(.value(newValue))); __p_value = newValue }
+	}
+	private var __p_value: (Any)?
+
+    public var placeholder: String? {
+		get {	invocations.append(.p_placeholder_get); return __p_placeholder ?? optionalGivenGetterValue(.p_placeholder_get, "InputDataProvidingMock - stub value for placeholder was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_placeholder = newValue }
+	}
+	private var __p_placeholder: (String)?
+
+    public var charLimit: Int {
+		get {	invocations.append(.p_charLimit_get); return __p_charLimit ?? givenGetterValue(.p_charLimit_get, "InputDataProvidingMock - stub value for charLimit was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_charLimit = newValue }
+	}
+	private var __p_charLimit: (Int)?
+
+    public var multiline: Bool {
+		get {	invocations.append(.p_multiline_get); return __p_multiline ?? givenGetterValue(.p_multiline_get, "InputDataProvidingMock - stub value for multiline was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_multiline = newValue }
+	}
+	private var __p_multiline: (Bool)?
+
+    public var password: Bool {
+		get {	invocations.append(.p_password_get); return __p_password ?? givenGetterValue(.p_password_get, "InputDataProvidingMock - stub value for password was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_password = newValue }
+	}
+	private var __p_password: (Bool)?
+
+    public var autocapitalizationType: UITextAutocapitalizationType? {
+		get {	invocations.append(.p_autocapitalizationType_get); return __p_autocapitalizationType ?? optionalGivenGetterValue(.p_autocapitalizationType_get, "InputDataProvidingMock - stub value for autocapitalizationType was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_autocapitalizationType = newValue }
+	}
+	private var __p_autocapitalizationType: (UITextAutocapitalizationType)?
+
+    public var keyboardType: UIKeyboardType? {
+		get {	invocations.append(.p_keyboardType_get); return __p_keyboardType ?? optionalGivenGetterValue(.p_keyboardType_get, "InputDataProvidingMock - stub value for keyboardType was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_keyboardType = newValue }
+	}
+	private var __p_keyboardType: (UIKeyboardType)?
+
+    public var textContentType: UITextContentType? {
+		get {	invocations.append(.p_textContentType_get); return __p_textContentType ?? optionalGivenGetterValue(.p_textContentType_get, "InputDataProvidingMock - stub value for textContentType was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_textContentType = newValue }
+	}
+	private var __p_textContentType: (UITextContentType)?
+
+
+
+
+
+
+    fileprivate enum MethodType {
+        case p_value_get
+		case p_value_set(Parameter<Any?>)
+        case p_placeholder_get
+        case p_charLimit_get
+        case p_multiline_get
+        case p_password_get
+        case p_autocapitalizationType_get
+        case p_keyboardType_get
+        case p_textContentType_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.p_value_get,.p_value_get): return true
+			case (.p_value_set(let left),.p_value_set(let right)): return Parameter<Any?>.compare(lhs: left, rhs: right, with: matcher)
+            case (.p_placeholder_get,.p_placeholder_get): return true
+            case (.p_charLimit_get,.p_charLimit_get): return true
+            case (.p_multiline_get,.p_multiline_get): return true
+            case (.p_password_get,.p_password_get): return true
+            case (.p_autocapitalizationType_get,.p_autocapitalizationType_get): return true
+            case (.p_keyboardType_get,.p_keyboardType_get): return true
+            case (.p_textContentType_get,.p_textContentType_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .p_value_get: return 0
+			case .p_value_set(let newValue): return newValue.intValue
+            case .p_placeholder_get: return 0
+            case .p_charLimit_get: return 0
+            case .p_multiline_get: return 0
+            case .p_password_get: return 0
+            case .p_autocapitalizationType_get: return 0
+            case .p_keyboardType_get: return 0
+            case .p_textContentType_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func value(getter defaultValue: Any?...) -> PropertyStub {
+            return Given(method: .p_value_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func placeholder(getter defaultValue: String?...) -> PropertyStub {
+            return Given(method: .p_placeholder_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func charLimit(getter defaultValue: Int...) -> PropertyStub {
+            return Given(method: .p_charLimit_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func multiline(getter defaultValue: Bool...) -> PropertyStub {
+            return Given(method: .p_multiline_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func password(getter defaultValue: Bool...) -> PropertyStub {
+            return Given(method: .p_password_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func autocapitalizationType(getter defaultValue: UITextAutocapitalizationType?...) -> PropertyStub {
+            return Given(method: .p_autocapitalizationType_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func keyboardType(getter defaultValue: UIKeyboardType?...) -> PropertyStub {
+            return Given(method: .p_keyboardType_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func textContentType(getter defaultValue: UITextContentType?...) -> PropertyStub {
+            return Given(method: .p_textContentType_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static var value: Verify { return Verify(method: .p_value_get) }
+		public static func value(set newValue: Parameter<Any?>) -> Verify { return Verify(method: .p_value_set(newValue)) }
+        public static var placeholder: Verify { return Verify(method: .p_placeholder_get) }
+        public static var charLimit: Verify { return Verify(method: .p_charLimit_get) }
+        public static var multiline: Verify { return Verify(method: .p_multiline_get) }
+        public static var password: Verify { return Verify(method: .p_password_get) }
+        public static var autocapitalizationType: Verify { return Verify(method: .p_autocapitalizationType_get) }
+        public static var keyboardType: Verify { return Verify(method: .p_keyboardType_get) }
+        public static var textContentType: Verify { return Verify(method: .p_textContentType_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - SliderDataProviding
+open class SliderDataProvidingMock: SliderDataProviding, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    public var value: CGFloat {
+		get {	invocations.append(.p_value_get); return __p_value ?? givenGetterValue(.p_value_get, "SliderDataProvidingMock - stub value for value was not defined") }
+		set {	invocations.append(.p_value_set(.value(newValue))); __p_value = newValue }
+	}
+	private var __p_value: (CGFloat)?
+
+    public var min: CGFloat {
+		get {	invocations.append(.p_min_get); return __p_min ?? givenGetterValue(.p_min_get, "SliderDataProvidingMock - stub value for min was not defined") }
+		set {	invocations.append(.p_min_set(.value(newValue))); __p_min = newValue }
+	}
+	private var __p_min: (CGFloat)?
+
+    public var max: CGFloat {
+		get {	invocations.append(.p_max_get); return __p_max ?? givenGetterValue(.p_max_get, "SliderDataProvidingMock - stub value for max was not defined") }
+		set {	invocations.append(.p_max_set(.value(newValue))); __p_max = newValue }
+	}
+	private var __p_max: (CGFloat)?
+
+
+
+
+
+
+    fileprivate enum MethodType {
+        case p_value_get
+		case p_value_set(Parameter<CGFloat>)
+        case p_min_get
+		case p_min_set(Parameter<CGFloat>)
+        case p_max_get
+		case p_max_set(Parameter<CGFloat>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.p_value_get,.p_value_get): return true
+			case (.p_value_set(let left),.p_value_set(let right)): return Parameter<CGFloat>.compare(lhs: left, rhs: right, with: matcher)
+            case (.p_min_get,.p_min_get): return true
+			case (.p_min_set(let left),.p_min_set(let right)): return Parameter<CGFloat>.compare(lhs: left, rhs: right, with: matcher)
+            case (.p_max_get,.p_max_get): return true
+			case (.p_max_set(let left),.p_max_set(let right)): return Parameter<CGFloat>.compare(lhs: left, rhs: right, with: matcher)
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .p_value_get: return 0
+			case .p_value_set(let newValue): return newValue.intValue
+            case .p_min_get: return 0
+			case .p_min_set(let newValue): return newValue.intValue
+            case .p_max_get: return 0
+			case .p_max_set(let newValue): return newValue.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func value(getter defaultValue: CGFloat...) -> PropertyStub {
+            return Given(method: .p_value_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func min(getter defaultValue: CGFloat...) -> PropertyStub {
+            return Given(method: .p_min_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func max(getter defaultValue: CGFloat...) -> PropertyStub {
+            return Given(method: .p_max_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static var value: Verify { return Verify(method: .p_value_get) }
+		public static func value(set newValue: Parameter<CGFloat>) -> Verify { return Verify(method: .p_value_set(newValue)) }
+        public static var min: Verify { return Verify(method: .p_min_get) }
+		public static func min(set newValue: Parameter<CGFloat>) -> Verify { return Verify(method: .p_min_set(newValue)) }
+        public static var max: Verify { return Verify(method: .p_max_get) }
+		public static func max(set newValue: Parameter<CGFloat>) -> Verify { return Verify(method: .p_max_set(newValue)) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - URLSessionDownloadingTask
 open class URLSessionDownloadingTaskMock: URLSessionDownloadingTask, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {

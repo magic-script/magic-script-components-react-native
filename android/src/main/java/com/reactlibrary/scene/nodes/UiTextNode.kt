@@ -46,7 +46,7 @@ open class UiTextNode(initProps: ReadableMap,
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_CHARACTERS_SPACING = "charSpacing"
-        const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_FONT_PARAMS = "fontParameters"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         const val DEFAULT_ALIGNMENT = "bottom-left" // view alignment (pivot)

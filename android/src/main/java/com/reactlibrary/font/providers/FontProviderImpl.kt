@@ -42,7 +42,7 @@ class FontProviderImpl(private val context: Context,
     /**
      * Returns a typeface for a given [fontParams].
      * If external font files are present in assets, this function returns
-     * a proper typeface based on these files, else it returns a default typeface.
+     * a proper typeface based on these files, else it returns a system typeface.
      */
     override fun provideFont(fontParams: FontParams?): Typeface {
         val weight = fontParams?.weight ?: FontWeight.DEFAULT

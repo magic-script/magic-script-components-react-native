@@ -62,7 +62,7 @@ open class UiTextEditNode(initProps: ReadableMap,
         const val PROP_MULTILINE = "multiline"
         const val PROP_TEXT_PADDING = "textPadding"
         const val PROP_SCROLLING = "scrolling"
-        const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_FONT_PARAMS = "fontParameters"
         const val PROP_TEXT_ENTRY_MODE = "textEntry"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 

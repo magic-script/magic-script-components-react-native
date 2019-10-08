@@ -54,7 +54,7 @@ import SceneKit
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, _min, _max)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
+            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); }
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {

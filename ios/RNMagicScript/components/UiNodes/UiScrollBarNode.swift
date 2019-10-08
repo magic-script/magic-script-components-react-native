@@ -18,23 +18,47 @@ import SceneKit
 
 @objc open class UiScrollBarNode: UiNode {
 
+    static let defaultScrollBarWidth: CGFloat = 0.02
+
     @objc override var alignment: Alignment {
         get { return .centerCenter }
         set { }
     }
 
+    // The length of the scrollbar. This is a little bit longer than the scroll range
+    // (which is the range the thumb will run).
+    @objc var width: CGFloat = 0.0 {
+        didSet { setNeedsLayout() }
+    }
+
+    // This is how wide the scrollbar will be. A user should normally not care about this
+    // unless they intend to change the skin of an app.
+    @objc var height: CGFloat = 0.0 {
+        didSet { setNeedsLayout() }
+    }
+
     // Gets an indication between 0 and 1 for the size of the thumb in respect to the track.
     // It returns 1 to mean the thumb is as long as its track.
     // It returns a value of .5f to mean the thumb is half as long as its track.
-    @objc var thumbSize: CGFloat = 0.5 {
-        didSet { setNeedsLayout() }
+    fileprivate var _thumbSize: CGFloat = 0.1
+    @objc var thumbSize: CGFloat {
+        get { return _thumbSize }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
+            if (_thumbSize != clampedValue) { _thumbSize = clampedValue; setNeedsLayout() }
+        }
     }
 
     // Gets an indication between 0 and 1 for the position of the thumb along the track.
     // It returns 0 to mean the thumb is at the left/upper most possible position along the track.
     // It returns 1 to mean the thumb is at the right/bottom most possible position along the track.
-    @objc var thumbPosition: CGFloat = 0 {
-        didSet { setNeedsLayout() }
+    fileprivate var _thumbPosition: CGFloat = 0
+    @objc var thumbPosition: CGFloat {
+        get { return _thumbPosition }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
+            if (_thumbPosition != clampedValue) { _thumbPosition = clampedValue; setNeedsLayout() }
+        }
     }
 
     @objc override func setupNode() {
@@ -44,8 +68,20 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
+        }
+
         if let thumbSize = Convert.toCGFloat(props["thumbSize"]) {
             self.thumbSize = thumbSize
+        }
+
+        if let thumbPosition = Convert.toCGFloat(props["thumbPosition"]) {
+            self.thumbPosition = thumbPosition
         }
     }
 

@@ -18,7 +18,7 @@ import SceneKit
 
 @objc open class UiScrollViewNode: UiNode {
 
-    @objc var scrollDirection: ScrollDirection = .vertical {
+    @objc var scrollDirection: ScrollDirection = .horizontal {
         didSet { setNeedsLayout() }
     }
     // Scroll speed in scene units per second.

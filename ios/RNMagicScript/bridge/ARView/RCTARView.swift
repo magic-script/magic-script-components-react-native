@@ -116,9 +116,6 @@ import SceneKit
         UiNodesManager.instance.onInputFocused = { [weak self] input in
             self?.presentInput(input)
         }
-        UiNodesManager.instance.onSliderFocused = { [weak self] slider in
-            self?.presentInput(slider)
-        }
         UiNodesManager.instance.onInputUnfocused = { [weak self] in
             self?.dismissInput()
         }
@@ -126,7 +123,7 @@ import SceneKit
         return view
     }
 
-    fileprivate func presentInput(_ input: InputDataProviding) {
+    fileprivate func presentInput(_ input: DataProviding) {
         if (inputResponder == nil) {
             inputResponder = UITextField()
             inputResponder!.isHidden = true
@@ -136,27 +133,15 @@ import SceneKit
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
             UiNodesManager.instance.handleNodeTap(nil)
         })
-        inputResponder!.inputAccessoryView = inputAccessoryView
-        inputResponder!.becomeFirstResponder()
-        inputAccessoryView.becomeFirstResponder()
-    }
 
-    fileprivate func presentInput(_ slider: SliderDataProviding) {
-        if (inputResponder == nil) {
-            inputResponder = UITextField()
-            inputResponder!.isHidden = true
-            addSubview(inputResponder!)
-        }
-
-        let inputAccessoryView = InputAccessoryViewFactory.createView(for: slider, onFinish: {
+        let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
             UiNodesManager.instance.handleNodeTap(nil)
         })
 
-        inputResponder!.inputView = InputViewFactory.createView(for: slider, onValueChanged: { value in
-            inputAccessoryView.updateCurrentValue(CGFloat(value))
-        })
         inputResponder!.inputAccessoryView = inputAccessoryView
+        inputResponder!.inputView = inputView
         inputResponder!.becomeFirstResponder()
+        inputAccessoryView?.becomeFirstResponder()
     }
 
     fileprivate func dismissInput() {

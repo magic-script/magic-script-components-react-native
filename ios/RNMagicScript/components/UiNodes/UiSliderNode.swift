@@ -18,7 +18,7 @@ import SceneKit
 
 @objc open class UiSliderNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
-    static fileprivate let defaultHeight: CGFloat = 0.004
+    static fileprivate let defaultHeight: CGFloat = 0.018
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -34,7 +34,7 @@ import SceneKit
         get { return _min }
         set { if (newValue != _min && newValue < _max) { _min = newValue; setNeedsLayout(); } }
     }
-    @objc var minLabel: String = "min" {
+    @objc var minLabel: String? {
         didSet {
             minLabelNode.text = minLabel
             minLabelNode.reload()
@@ -44,7 +44,7 @@ import SceneKit
         get { return _max }
         set { if (newValue != _max && _min < newValue) { _max = newValue; setNeedsLayout(); } }
     }
-    @objc var maxLabel: String = "max" {
+    @objc var maxLabel: String? {
         didSet {
             maxLabelNode.text = maxLabel
             maxLabelNode.reload()
@@ -181,11 +181,11 @@ import SceneKit
             foregroundGeometry.firstMaterial?.diffuse.contents = foregroundImage
         }
 
-        let progressWidth = size.width * progress
-        foregroundGeometry.width = progressWidth
+        let slideWidth = size.width * progress
+        foregroundGeometry.width = slideWidth
         foregroundGeometry.height = size.height
         foregroundGeometry.cornerRadius = 0.5 * size.height
-        progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(progressWidth), 0.0, 0.0)
+        progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(slideWidth), 0.0, 0.0)
         progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)
 
         reloadOutlineNode()

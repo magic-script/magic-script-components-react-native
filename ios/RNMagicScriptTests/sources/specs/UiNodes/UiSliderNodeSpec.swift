@@ -35,7 +35,9 @@ class UiSliderNodeSpec: QuickSpec {
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
                     expect(node.min).to(beCloseTo(0.0))
+                    expect(node.minLabel).to(beNil())
                     expect(node.max).to(beCloseTo(1.0))
+                    expect(node.maxLabel).to(beNil())
                     expect(node.value).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
                     let referenceWhiteColor = UIColor.white
@@ -148,7 +150,7 @@ class UiSliderNodeSpec: QuickSpec {
                 context("when width set") {
                     it("should calculate it (default height)") {
                         node = UiSliderNode(props: ["width" : 0.75])
-                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.004)))
+                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.018)))
                     }
                 }
 
@@ -161,7 +163,7 @@ class UiSliderNodeSpec: QuickSpec {
 
                 context("when no width/height set") {
                     it("should return default") {
-                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.5, height: 0.004)))
+                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.5, height: 0.018)))
                     }
                 }
             }

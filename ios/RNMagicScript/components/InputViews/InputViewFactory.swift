@@ -17,11 +17,20 @@
 import UIKit
 
 class InputViewFactory {
-    static func createView(for input: SliderDataProviding, onValueChanged: ((Float) -> (Void))?) -> SliderInputView {
+    static func createView(for input: DataProviding, onFinishEditing: (() -> Void)?) -> UIView? {
+        if let sliderInput = input as? SliderDataProviding {
+            return InputViewFactory.createView(for: sliderInput, onFinishEditing: onFinishEditing)
+        }
+
+        return nil
+    }
+
+
+    static func createView(for input: SliderDataProviding, onFinishEditing: (() -> Void)?) -> UIView? {
         let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
         let sliderInputView = SliderInputView(frame: rect)
         sliderInputView.input = input
-        sliderInputView.onValueChanged = onValueChanged
+        sliderInputView.onFinishEditing = onFinishEditing
         return sliderInputView
     }
 }

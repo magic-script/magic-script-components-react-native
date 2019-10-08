@@ -25,12 +25,19 @@ class SliderInputView: UIView {
                 slider.minimumValue = Float(input.min)
                 slider.maximumValue = Float(input.max)
                 slider.value = Float(input.value)
+                updateCurrentValue(input.value)
             }
         }
     }
 
-    var onValueChanged: ((Float) -> (Void))?
+    func updateCurrentValue(_ value: CGFloat) {
+        currentValueLabel.text = String(format: "Current value: %.1f", arguments: [value])
+        setNeedsLayout()
+    }
 
+    var onFinishEditing: (() -> (Void))?
+
+    fileprivate var currentValueLabel: UILabel!
     fileprivate var slider: UISlider!
     fileprivate var minLabel: UILabel!
     fileprivate var maxLabel: UILabel!
@@ -48,6 +55,27 @@ class SliderInputView: UIView {
     fileprivate func setupView() {
         backgroundColor = UIColor.white
 
+        currentValueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+        currentValueLabel.text = String(format: "Current value: %d", arguments: [input?.value ?? "n/a"])
+        currentValueLabel.font = UIFont.systemFont(ofSize: 15)
+        currentValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(currentValueLabel)
+
+        let button: UIButton = UIButton(type: .system)
+        button.setTitle("Done", for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(doneButtonAction(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(button)
+
+        let margin: CGFloat = 8.0
+        NSLayoutConstraint.activate([
+            currentValueLabel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: margin),
+            currentValueLabel.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+
+            button.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -margin),
+            button.centerYAnchor.constraint(equalTo: currentValueLabel.centerYAnchor)
+        ])
+
         minLabel = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: 30.0, height: 22.0))
         minLabel.font = UIFont.systemFont(ofSize: 15)
 
@@ -62,7 +90,6 @@ class SliderInputView: UIView {
         addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        let margin: CGFloat = 8.0
         NSLayoutConstraint.activate([
             stackView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: margin),
             stackView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
@@ -75,6 +102,10 @@ class SliderInputView: UIView {
 extension SliderInputView {
     @objc fileprivate func onValueChangedAction(_ sender: UISlider) {
         input?.value = CGFloat(slider.value)
-        onValueChanged?(slider.value)
+        currentValueLabel.text = String(format: "Current value: %.1f", arguments: [slider.value])
+    }
+
+    @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+        onFinishEditing?()
     }
 }

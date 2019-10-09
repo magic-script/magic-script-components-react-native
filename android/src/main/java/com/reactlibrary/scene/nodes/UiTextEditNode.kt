@@ -191,22 +191,24 @@ open class UiTextEditNode(initProps: ReadableMap,
     }
 
     private fun setTextAlignment(props: Bundle) {
-        val textAlignment = props.getString(PROP_TEXT_ALIGNMENT)
-        textGravityHorizontal = when (textAlignment) {
-            "left" -> {
-                Gravity.LEFT
+        if (props.containsKey(PROP_TEXT_ALIGNMENT)) {
+            val textAlignment = props.getString(PROP_TEXT_ALIGNMENT)
+            textGravityHorizontal = when (textAlignment) {
+                "left" -> {
+                    Gravity.LEFT
+                }
+                "center" -> {
+                    Gravity.CENTER_HORIZONTAL
+                }
+                "right" -> {
+                    Gravity.RIGHT
+                }
+                else -> {
+                    Gravity.LEFT
+                }
             }
-            "center" -> {
-                Gravity.CENTER_HORIZONTAL
-            }
-            "right" -> {
-                Gravity.RIGHT
-            }
-            else -> {
-                Gravity.LEFT
-            }
+            view.text_edit.gravity = textGravityVertical or textGravityHorizontal
         }
-        view.text_edit.gravity = textGravityVertical or textGravityHorizontal
     }
 
     private fun setTextColor(props: Bundle) {

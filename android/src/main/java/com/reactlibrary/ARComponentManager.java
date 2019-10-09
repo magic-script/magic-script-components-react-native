@@ -90,6 +90,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_PRESS = "onPress";
     private static final String EVENT_TEXT_CHANGED = "onTextChanged";
     private static final String EVENT_TOGGLE_CHANGED = "onToggleChanged";
+    private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -326,6 +327,21 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     params.putBoolean(EVENT_ARG_TOGGLE_ACTIVE, isOn);
 
                     sendEvent(EVENT_TOGGLE_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnVideoPreparedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof VideoNode) {
+                ((VideoNode) node).setOnVideoPreparedListener(()->{
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_VIDEO_PREPARED, params);
                     return Unit.INSTANCE;
                 });
             }

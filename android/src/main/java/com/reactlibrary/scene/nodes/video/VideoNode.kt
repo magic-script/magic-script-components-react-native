@@ -50,6 +50,8 @@ class VideoNode(initProps: ReadableMap,
         const val DEFAULT_VOLUME = 1.0
     }
 
+    var onVideoPreparedListener: (() -> Unit)? = null
+
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
     private val initialWidth = 1F // meters
@@ -92,7 +94,9 @@ class VideoNode(initProps: ReadableMap,
         if (videoUri != null) {
             val texture = ExternalTexture()
             try {
-                videoPlayer.loadVideo(videoUri, texture.surface) {}
+                videoPlayer.loadVideo(videoUri, texture.surface, onLoadedListener = {
+                    onVideoPreparedListener?.invoke()
+                })
             } catch (exception: Exception) {
                 logMessage("video load exception: $exception", warn = true)
             }

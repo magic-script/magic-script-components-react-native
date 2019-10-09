@@ -18,7 +18,6 @@ package com.reactlibrary.icons
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import java.util.*
 
 class IconsProviderImpl(private val context: Context,
                         private val defaultIconsProvider: DefaultIconsProvider) : IconsProvider {
@@ -48,14 +47,15 @@ class IconsProviderImpl(private val context: Context,
         if (!iconsCatalogExists) {
             return null
         }
+        val assetsIconName = name.split("-").joinToString(separator = "", transform = {
+            it.capitalize()
+        }) + ".png"
 
-        val assetsIconName = name.split("-").joinToString { it.toUpperCase(Locale.US) }
         val iconExists = context.assets.list(ICONS_DIR)?.contains(assetsIconName) ?: false
         if (!iconExists) {
             return null
         }
-
-        val iconPath = "$ICONS_DIR/$assetsIconName.png"
+        val iconPath = "$ICONS_DIR/$assetsIconName"
         return Drawable.createFromStream(context.assets.open(iconPath), null)
     }
 

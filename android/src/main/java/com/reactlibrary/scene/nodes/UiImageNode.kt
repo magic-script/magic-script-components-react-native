@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,12 +28,16 @@ import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.icons.IconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.image.view.*
 
-open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+open class UiImageNode(initProps: ReadableMap,
+                       context: Context,
+                       viewRenderableLoader: ViewRenderableLoader,
+                       private val iconsProvider: IconsProvider)
     : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -40,6 +45,7 @@ open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableL
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
         const val PROP_FILE_PATH = "filePath"
+        const val PROP_ICON = "icon"
         const val PROP_COLOR = "color"
         const val PROP_FRAME = "useFrame"
     }
@@ -73,6 +79,7 @@ open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableL
         }
 
         setImagePath(props)
+        setIcon(props)
         setColor(props)
         setUseFrame(props)
     }
@@ -91,14 +98,26 @@ open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableL
         }
     }
 
+    private fun setIcon(props: Bundle) {
+        val iconName = props.getString(PROP_ICON)
+        if (iconName != null) {
+            val icon = iconsProvider.provideIcon(iconName)
+            if (icon != null) {
+                view.image_view.setImageDrawable(icon)
+            } else { // TODO remove?
+                view.image_view.setBackgroundColor(Color.RED)
+            }
+        }
+    }
+
     private fun setColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_COLOR)
         if (color != null) {
             if (properties.containsKey(PROP_FILE_PATH)) {
                 // blend color with image
-                (view.image_view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+                view.image_view.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
             } else { // use color instead of image
-                (view.image_view as ImageView).setBackgroundColor(color)
+                view.image_view.setBackgroundColor(color)
             }
         }
     }

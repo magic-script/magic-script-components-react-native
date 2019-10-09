@@ -41,6 +41,9 @@ import com.reactlibrary.ar.ViewRenderableLoaderImpl;
 import com.reactlibrary.font.FontProvider;
 import com.reactlibrary.font.providers.FontProviderImpl;
 import com.reactlibrary.font.providers.SystemFontProvider;
+import com.reactlibrary.icons.DefaultIconsProvider;
+import com.reactlibrary.icons.IconsProvider;
+import com.reactlibrary.icons.IconsProviderImpl;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -106,8 +109,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private VideoRenderableLoader videoRenderableLoader;
     private CubeRenderableBuilder cubeRenderableBuilder;
 
-    // Font provider
+    // Other resources providers
     private FontProvider fontProvider;
+    private IconsProvider iconsProvider;
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -119,6 +123,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
         SystemFontProvider systemFontProvider = new SystemFontProvider();
         this.fontProvider = new FontProviderImpl(context, systemFontProvider);
+
+        DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
+        this.iconsProvider = new IconsProviderImpl(context, defaultIconsProvider);
 
         context.addLifecycleEventListener(this);
     }
@@ -161,7 +168,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createImageNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiImageNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> {
+            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, iconsProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod

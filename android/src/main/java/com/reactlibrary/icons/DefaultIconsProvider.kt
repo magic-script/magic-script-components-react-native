@@ -24,6 +24,9 @@ class DefaultIconsProvider(private val context: Context) : IconsProvider {
     override fun provideIcon(name: String): Drawable? {
         val resourceName = name.replace("-", "_")
         val resourceId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+        if (resourceId == 0) { // resource not exists
+            return null
+        }
         return context.getDrawable(resourceId)
     }
 

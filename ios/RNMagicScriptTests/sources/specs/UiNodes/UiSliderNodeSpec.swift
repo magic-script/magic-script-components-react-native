@@ -109,15 +109,15 @@ class UiSliderNodeSpec: QuickSpec {
                 it("should update 'value' prop (with clamped value rule)") {
                     node.update(["value" : 0.75])
                     expect(node.value).to(beCloseTo(0.75))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
 
                     node.update(["value" : 1.75])
                     expect(node.value).to(beCloseTo(1.0))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
 
                     node.update(["value" : -0.5])
                     expect(node.value).to(beCloseTo(0.0))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
                 }
 
                 it("should update 'foregroundColor'") {

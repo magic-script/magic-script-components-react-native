@@ -39,11 +39,11 @@ import com.reactlibrary.ar.VideoRenderableLoaderImpl;
 import com.reactlibrary.ar.ViewRenderableLoader;
 import com.reactlibrary.ar.ViewRenderableLoaderImpl;
 import com.reactlibrary.font.FontProvider;
+import com.reactlibrary.font.providers.AndroidFontProvider;
 import com.reactlibrary.font.providers.FontProviderImpl;
-import com.reactlibrary.font.providers.SystemFontProvider;
 import com.reactlibrary.icons.DefaultIconsProvider;
-import com.reactlibrary.icons.IconsProvider;
-import com.reactlibrary.icons.IconsProviderImpl;
+import com.reactlibrary.icons.ExternalIconsProvider;
+import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -111,7 +111,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     // Other resources providers
     private FontProvider fontProvider;
-    private IconsProvider iconsProvider;
+    private IconsRepository iconsRepository;
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -121,11 +121,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
         this.cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
 
-        SystemFontProvider systemFontProvider = new SystemFontProvider();
-        this.fontProvider = new FontProviderImpl(context, systemFontProvider);
+        AndroidFontProvider androidFontProvider = new AndroidFontProvider();
+        this.fontProvider = new FontProviderImpl(context, androidFontProvider);
 
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
-        this.iconsProvider = new IconsProviderImpl(context, defaultIconsProvider);
+        ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
+        this.iconsRepository = new IconsRepository(defaultIconsProvider, externalIconsProvider);
 
         context.addLifecycleEventListener(this);
     }
@@ -169,7 +170,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createImageNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, iconsProvider);
+            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, iconsRepository);
             addNode(node, nodeId);
         });
     }

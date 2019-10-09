@@ -19,30 +19,19 @@ package com.reactlibrary.icons
 import android.content.Context
 import android.graphics.drawable.Drawable
 
-class IconsProviderImpl(private val context: Context,
-                        private val defaultIconsProvider: DefaultIconsProvider) : IconsProvider {
+/**
+ * Assets icons provider
+ */
+class ExternalIconsProvider(private val context: Context) : IconsProvider {
 
     companion object {
         private const val ICONS_DIR = "lumin_system_icons"
     }
 
     /**
-     * Returns an icon for a given name or null if not found.
-     *
-     * If an external icon (.png) is present in assets this function returns it,
-     * else it returns a default icon.
-     *
-     * @return icon or null (if both external and default icon was not found)
+     * Returns an icon from assets or null if not exists
      */
     override fun provideIcon(name: String): Drawable? {
-        val externalIcon = getExternalIcon(name)
-        if (externalIcon != null) {
-            return externalIcon
-        }
-        return defaultIconsProvider.provideIcon(name)
-    }
-
-    private fun getExternalIcon(name: String): Drawable? {
         val iconsCatalogExists = context.assets.list("")?.contains(ICONS_DIR) ?: false
         if (!iconsCatalogExists) {
             return null

@@ -69,7 +69,7 @@ class ViewController: UIViewController {
 
         let grid = UiGridLayoutNode(props: [
             "columns": 14,
-            "defaultItemPadding": [0.003, 0.003, 0.003, 0.003],
+            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
             "localPosition": [0, 0.5, 0],
             "alignment": "top-center"
         ])

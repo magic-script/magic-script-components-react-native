@@ -23,8 +23,11 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.reactlibrary.R
+import com.reactlibrary.ar.RenderableResult
+import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultBoolean
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -32,6 +35,7 @@ import com.reactlibrary.utils.logMessage
 abstract class UiNode(
         initProps: ReadableMap,
         protected val context: Context,
+        private val viewRenderableLoader: ViewRenderableLoader,
         useContentNodeAlignment: Boolean = false
 ) : TransformNode(initProps, true, useContentNodeAlignment) {
 
@@ -50,15 +54,20 @@ abstract class UiNode(
     private var shouldRebuild = false
     private var loadingView = false
 
+    init {
+        // set default values of properties
+        properties.putDefaultBoolean(PROP_ENABLED, true)
+    }
+
     /**
      * Initializes the view instance and builds the node by calling [applyProperties]
      * with all initial properties
      */
     override fun build() {
         initView()
+        setupView()
         addChild(contentNode)
         applyProperties(properties)
-        setViewSize()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -97,7 +106,11 @@ abstract class UiNode(
 
     protected open fun onViewClick() {}
 
-    protected open fun setViewSize() {
+    /**
+     * Should setup the [view] instance (size, listeners, etc) before it gets
+     * attached to the node.
+     */
+    protected open fun setupView() {
         // default dimensions
         val widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         val heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -125,33 +138,23 @@ abstract class UiNode(
 
     private fun attachView() {
         loadingView = true
-        val builder = ViewRenderable
-                .builder()
-                .setSource(context, R.raw.android_view) // using custom material to disable back side
-                .setView(context, view)
 
-        if (useContentNodeAlignment) {
-            builder.setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
-            builder.setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
-        } else {
-            val horizontalAlign = ViewRenderable.HorizontalAlignment.valueOf(horizontalAlignment.name)
-            val verticalAlign = ViewRenderable.VerticalAlignment.valueOf(verticalAlignment.name)
-            builder.setHorizontalAlignment(horizontalAlign)
-            builder.setVerticalAlignment(verticalAlign)
+        val alignHorizontal = if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
+        val alignVertical = if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
+        val config = ViewRenderableLoader.Config(
+                view = view,
+                horizontalAlignment = alignHorizontal,
+                verticalAlignment = alignVertical
+        )
+        viewRenderableLoader.loadRenderable(config) { result ->
+            if (result is RenderableResult.Success) {
+                contentNode.renderable = result.renderable
+                loadingView = false
+            } else {
+                loadingView = false
+            }
         }
 
-        builder.build()
-                .thenAccept { renderable ->
-                    renderable.isShadowReceiver = false
-                    renderable.isShadowCaster = false
-                    contentNode.renderable = renderable
-                    loadingView = false
-                }
-                .exceptionally { throwable ->
-                    loadingView = false
-                    logMessage("error loading ViewRenderable: $throwable")
-                    null
-                }
     }
 
     private fun setEnabled(props: Bundle) {

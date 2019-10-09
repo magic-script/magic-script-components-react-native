@@ -40,7 +40,7 @@ class CustomSpinner @JvmOverloads constructor(
      */
     var value: Float = 0F
         set(value) {
-            field = value
+            field = value.coerceIn(0F, 1F)
             invalidate()
         }
 

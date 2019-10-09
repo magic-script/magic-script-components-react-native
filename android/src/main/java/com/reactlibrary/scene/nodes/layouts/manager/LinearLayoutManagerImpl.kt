@@ -20,14 +20,23 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
-import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.props.Padding
 
 /**
  * Linear layout's manager with flexible columns or rows size:
  * column or row will grow to fit the bounding (+ padding) of a child.
  */
-class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
+class LinearLayoutManagerImpl : LinearLayoutManager {
+
+    override var itemPadding = Padding(0F, 0F, 0F, 0F)
+
+    override var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+
+    override var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+
+    override var isVertical = true
 
     override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
         val itemsSpan = calculateSpan(childrenBounds)
@@ -44,7 +53,7 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
         for (i in 0 until childrenBounds.size) {
 
             val bounds = childrenBounds.getValue(i)
-            val span = if (layout.isVertical()) {
+            val span = if (isVertical) {
                 calculateColumnWidth(bounds)
             } else {
                 calculateRowHeight(bounds)
@@ -63,7 +72,7 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
         val itemsOffset = Array(childrenBounds.size) { 0F }
         var offsetSum = 0.0F
 
-        if (layout.isVertical()) {
+        if (isVertical) {
             for (i in (childrenBounds.size - 1) downTo 0) {
                 val bounds = childrenBounds.getValue(i)
                 itemsOffset[i] = offsetSum
@@ -95,48 +104,48 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
         val boundsCenterY = nodeBounds.top - nodeHeight / 2
         val pivotOffsetY = node.localPosition.y - boundsCenterY // aligning according to center
 
-        if (layout.isVertical()) {
+        if (isVertical) {
 
             // calculating x position for a child
-            val x = when (layout.itemHorizontalAlignment) {
-                ViewRenderable.HorizontalAlignment.LEFT -> {
-                    nodeWidth / 2 + pivotOffsetX + layout.itemPadding.left
+            val x = when (itemHorizontalAlignment) {
+                Alignment.HorizontalAlignment.LEFT -> {
+                    nodeWidth / 2 + pivotOffsetX + itemPadding.left
                 }
 
-                ViewRenderable.HorizontalAlignment.CENTER -> {
-                    val paddingDiff = layout.itemPadding.left - layout.itemPadding.right
+                Alignment.HorizontalAlignment.CENTER -> {
+                    val paddingDiff = itemPadding.left - itemPadding.right
                     span / 2 + pivotOffsetX + paddingDiff
                 }
 
-                ViewRenderable.HorizontalAlignment.RIGHT -> {
-                    span - nodeWidth / 2 + pivotOffsetX - layout.itemPadding.right
+                Alignment.HorizontalAlignment.RIGHT -> {
+                    span - nodeWidth / 2 + pivotOffsetX - itemPadding.right
                 }
             }
 
             // calculating y position for a child
-            val paddingDiffY = layout.itemPadding.top - layout.itemPadding.bottom
+            val paddingDiffY = itemPadding.top - itemPadding.bottom
             val y = offset + nodeHeight / 2 + pivotOffsetY - paddingDiffY
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
         } else {
 
             // calculating x position for a child
-            val paddingDiffX = layout.itemPadding.left - layout.itemPadding.right
+            val paddingDiffX = itemPadding.left - itemPadding.right
             val x = offset + nodeWidth / 2 + pivotOffsetX - paddingDiffX
 
             // calculating y position for a child
-            val y = when (layout.itemVerticalAlignment) {
-                ViewRenderable.VerticalAlignment.TOP -> {
-                    nodeHeight / 2 + pivotOffsetY - layout.itemPadding.top
+            val y = when (itemVerticalAlignment) {
+                Alignment.VerticalAlignment.TOP -> {
+                    nodeHeight / 2 + pivotOffsetY - itemPadding.top
                 }
 
-                ViewRenderable.VerticalAlignment.CENTER -> {
-                    val paddingDiff = layout.itemPadding.top - layout.itemPadding.bottom
+                Alignment.VerticalAlignment.CENTER -> {
+                    val paddingDiff = itemPadding.top - itemPadding.bottom
                     span / 2 + pivotOffsetY - paddingDiff
                 }
 
-                ViewRenderable.VerticalAlignment.BOTTOM -> {
-                    span + nodeHeight / 2 + pivotOffsetY + layout.itemPadding.bottom
+                Alignment.VerticalAlignment.BOTTOM -> {
+                    span + nodeHeight / 2 + pivotOffsetY + itemPadding.bottom
                 }
             }
 
@@ -145,11 +154,11 @@ class FlexLinearManager(private val layout: UiLinearLayout) : LayoutManager {
     }
 
     private fun calculateColumnWidth(itemBounds: Bounding): Float {
-        return itemBounds.right - itemBounds.left + layout.itemPadding.left + layout.itemPadding.right
+        return itemBounds.right - itemBounds.left + itemPadding.left + itemPadding.right
     }
 
     private fun calculateRowHeight(itemBounds: Bounding): Float {
-        return itemBounds.top - itemBounds.bottom + layout.itemPadding.top + layout.itemPadding.bottom
+        return itemBounds.top - itemBounds.bottom + itemPadding.top + itemPadding.bottom
     }
 
 }

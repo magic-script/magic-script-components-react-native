@@ -17,20 +17,22 @@
 package com.reactlibrary.scene.nodes.video
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
-import com.google.ar.sceneform.rendering.ModelRenderable
-import com.reactlibrary.R
+import com.reactlibrary.ar.RenderableResult
+import com.reactlibrary.ar.VideoRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultDouble
 
-class VideoNode(initProps: ReadableMap, private val context: Context)
-    : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true), MediaPlayer.OnPreparedListener {
+class VideoNode(initProps: ReadableMap,
+                private val context: Context,
+                private val videoPlayer: VideoPlayer,
+                private val videoRenderableLoader: VideoRenderableLoader)
+    : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
@@ -53,10 +55,6 @@ class VideoNode(initProps: ReadableMap, private val context: Context)
     private val initialWidth = 1F // meters
     private val initialHeight = 1F // meters
 
-
-    private var mediaPlayer: MediaPlayer? = null
-    private var readyToPlay = false
-
     init {
         // set default values of properties
         properties.putDefaultDouble(PROP_VOLUME, DEFAULT_VOLUME)
@@ -72,6 +70,8 @@ class VideoNode(initProps: ReadableMap, private val context: Context)
                 loadVideo()
             }
         }
+
+        setSize(props)
         setAction(props)
         setLooping(props)
         setVolume(props)
@@ -81,68 +81,34 @@ class VideoNode(initProps: ReadableMap, private val context: Context)
         loadVideo()
     }
 
-    // called when media player is ready to play
-    override fun onPrepared(mp: MediaPlayer) {
-        readyToPlay = true
-        mp.seekTo(0) // to show first video frame instead of black texture
-    }
-
     // destroying media player when node is detached (e.g. on scene change)
     override fun clearResources() {
         super.clearResources()
-        mediaPlayer?.release()
+        videoPlayer.release()
     }
 
     private fun loadVideo() {
-        mediaPlayer?.release() // release old media player (user can change the video path)
-
-        val texture = ExternalTexture()
         val videoUri = PropertiesReader.readFilePath(properties, PROP_VIDEO_PATH, context)
         if (videoUri != null) {
-            readyToPlay = false
-            val player = MediaPlayerPool.createMediaPlayer()
-            this.mediaPlayer = player
-            val path = videoUri.toString()
+            val texture = ExternalTexture()
             try {
-                if (path.startsWith("http")) {
-                    player.setDataSource(path) // load from URL
-                } else {
-                    // load the video from a local directory, e.g. from res/raw
-                    player.setDataSource(context, videoUri)
-                }
-                player.setSurface(texture.surface)
-                player.setOnPreparedListener(this)
-                player.isLooping = properties.getBoolean(PROP_LOOPING)
-                val volume = properties.getDouble(PROP_VOLUME, DEFAULT_VOLUME).toFloat()
-                player.setVolume(volume, volume)
-                player.prepareAsync() // load video asynchronously
+                videoPlayer.loadVideo(videoUri, texture.surface) {}
             } catch (exception: Exception) {
-                logMessage("video player exception: $exception", warn = true)
+                logMessage("video load exception: $exception", warn = true)
             }
 
-            ModelRenderable.builder()
-                    .setSource(context, R.raw.chroma_key_video)
-                    .build()
-                    .thenAccept { renderable ->
-                        renderable.material.setExternalTexture("videoTexture", texture)
-                        renderable.material.setBoolean("disableChromaKey", true)
-                        // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
-                        renderable.isShadowCaster = false
-                        renderable.isShadowReceiver = false
-                        contentNode.renderable = renderable
-                    }
-                    .exceptionally { throwable ->
-                        logMessage("error loading ModelRenderable: $throwable")
-                        null
-                    }
-
-            adjustScale()
+            videoRenderableLoader.loadRenderable { result ->
+                if (result is RenderableResult.Success) {
+                    result.renderable.material.setExternalTexture("videoTexture", texture)
+                    contentNode.renderable = result.renderable
+                }
+            }
         }
     }
 
     // changing video size by scaling the content node
-    private fun adjustScale() {
-        val sizeArray = properties.getSerializable(PROP_SIZE) as? ArrayList<Double>
+    private fun setSize(props: Bundle) {
+        val sizeArray = props.getSerializable(PROP_SIZE) as? ArrayList<Double>
         if (sizeArray != null && sizeArray.size == 2) {
             val widthMeters = sizeArray[0].toFloat()
             val heightMeters = sizeArray[1].toFloat()
@@ -150,50 +116,45 @@ class VideoNode(initProps: ReadableMap, private val context: Context)
             val scaleX = widthMeters / initialWidth
             val scaleY = heightMeters / initialHeight
             contentNode.localScale = Vector3(scaleX, scaleY, 1F)
-        } else {
-            logMessage("video size not specified", true)
         }
     }
 
     private fun setAction(props: Bundle) {
         val action = props.getString(PROP_ACTION)
-        val player = mediaPlayer ?: return
-        if (!readyToPlay) {
+        if (!videoPlayer.isReady) {
             return
         }
         try {
             when (action) {
                 ACTION_START -> {
-                    player.start()
+                    videoPlayer.start()
                 }
                 ACTION_STOP -> {
-                    if (player.isPlaying) {
+                    if (videoPlayer.isPlaying) {
                         // using stop() would require to prepare() before next playback
-                        player.pause()
-                        player.seekTo(0)
+                        videoPlayer.stop()
                     }
                 }
                 ACTION_PAUSE -> {
-                    if (player.isPlaying) {
-                        player.pause()
+                    if (videoPlayer.isPlaying) {
+                        videoPlayer.pause()
                     }
                 }
             }
         } catch (e: Exception) {
-            logMessage("Error setting action $action: $e", true)
+            logMessage("Error setting video action $action: $e", true)
         }
     }
 
     private fun setLooping(props: Bundle) {
         if (props.containsKey(PROP_LOOPING)) {
-            mediaPlayer?.isLooping = props.getBoolean(PROP_LOOPING)
+            videoPlayer.looping = props.getBoolean(PROP_LOOPING)
         }
     }
 
     private fun setVolume(props: Bundle) {
         if (props.containsKey(PROP_VOLUME)) {
-            val volume = props.getDouble(PROP_VOLUME).toFloat()
-            mediaPlayer?.setVolume(volume, volume)
+            videoPlayer.volume = props.getDouble(PROP_VOLUME).toFloat()
         }
     }
 }

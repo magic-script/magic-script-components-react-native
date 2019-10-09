@@ -14,6 +14,18 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.ar
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import android.view.View
+import com.reactlibrary.scene.nodes.props.Alignment
+
+interface ViewRenderableLoader {
+
+    fun loadRenderable(config: Config, resultCallback: ((result: RenderableResult) -> Unit))
+
+    data class Config(
+            val view: View,
+            val horizontalAlignment: Alignment.HorizontalAlignment,
+            val verticalAlignment: Alignment.VerticalAlignment
+    )
+}

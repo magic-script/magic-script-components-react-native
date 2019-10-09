@@ -16,4 +16,8 @@
 
 package com.reactlibrary.font
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import android.graphics.Typeface
+
+interface FontProvider {
+    fun provideFont(fontParams: FontParams? = null): Typeface
+}

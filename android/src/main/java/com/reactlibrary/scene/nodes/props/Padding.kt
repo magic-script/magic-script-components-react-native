@@ -17,8 +17,8 @@
 package com.reactlibrary.scene.nodes.props
 
 data class Padding(
-        val top: Float,
-        val right: Float,
-        val bottom: Float,
-        val left: Float
+        val top: Float = 0F,
+        val right: Float = 0F,
+        val bottom: Float = 0F,
+        val left: Float = 0F
 )

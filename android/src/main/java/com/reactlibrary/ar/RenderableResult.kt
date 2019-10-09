@@ -14,6 +14,11 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.ar
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import com.google.ar.sceneform.rendering.Renderable
+
+sealed class RenderableResult {
+    data class Success(val renderable: Renderable) : RenderableResult()
+    data class Error(val error: Throwable) : RenderableResult()
+}

@@ -33,8 +33,8 @@ class FontParamsReader {
             val styleName = paramsBundle.getString(PROP_STYLE, "")
             val allCaps = paramsBundle.getBoolean(PROP_ALL_CAPS, false)
 
-            val weight = FontWeight.fromName(weightName)
-            val style = FontStyle.fromName(styleName)
+            val weight = FontWeight.fromName(weightName) ?: FontWeight.DEFAULT
+            val style = FontStyle.fromName(styleName) ?: FontStyle.DEFAULT
 
             return FontParams(weight, style, allCaps)
         }

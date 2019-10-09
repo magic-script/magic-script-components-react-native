@@ -14,6 +14,8 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.ar
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+interface VideoRenderableLoader {
+    fun loadRenderable(resultCallback: ((result: RenderableResult) -> Unit))
+}

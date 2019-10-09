@@ -14,6 +14,27 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.scene.nodes.video
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import android.net.Uri
+import android.view.Surface
+
+interface VideoPlayer {
+    var volume: Float
+
+    var looping: Boolean
+
+    val isPlaying: Boolean
+
+    val isReady: Boolean
+
+    fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit)
+
+    fun start()
+
+    fun pause()
+
+    fun stop()
+
+    fun release()
+}

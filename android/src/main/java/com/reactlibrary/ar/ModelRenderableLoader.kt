@@ -14,6 +14,10 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.ar
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import android.net.Uri
+
+interface ModelRenderableLoader {
+    fun loadRenderable(modelUri: Uri, resultCallback: ((result: RenderableResult) -> Unit))
+}

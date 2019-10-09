@@ -22,6 +22,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Padding
 
 /**
@@ -114,6 +115,16 @@ class PropertiesReader {
             return null
         }
 
+        fun readAlignment(props: Bundle, propertyName: String): Alignment? {
+            val alignmentData = props.getString(propertyName) ?: return null
+            val alignmentArray = alignmentData.split("-")
+            if (alignmentArray.size != 2) {
+                return null
+            }
+            val verticalAlign = Alignment.VerticalAlignment.valueOf(alignmentArray[0].toUpperCase())
+            val horizontalAlign = Alignment.HorizontalAlignment.valueOf(alignmentArray[1].toUpperCase())
+            return Alignment(verticalAlign, horizontalAlign)
+        }
 
         private fun getFileUri(props: Bundle, propertyName: String, context: Context, resType: String): Uri? {
             // If the path is a string, we treat it as a remote URL

@@ -26,12 +26,14 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.image.view.*
 
-open class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiImageNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -46,19 +48,7 @@ open class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initPr
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            setNeedsRebuild()
-        }
-
-        setImagePath(props)
-        setColor(props)
-        setUseFrame(props)
-    }
-
-    override fun setViewSize() {
+    override fun setupView() {
         // default dimension
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
         var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -73,6 +63,18 @@ open class UiImageNode(initProps: ReadableMap, context: Context) : UiNode(initPr
             heightPx = Utils.metersToPx(heightInMeters, context)
         }
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+
+        setImagePath(props)
+        setColor(props)
+        setUseFrame(props)
     }
 
     private fun setImagePath(props: Bundle) {

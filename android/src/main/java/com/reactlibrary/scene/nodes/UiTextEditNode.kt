@@ -32,12 +32,18 @@ import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.InputDialogBuilder
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
-open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiTextEditNode(initProps: ReadableMap,
+                          context: Context,
+                          viewRenderableLoader: ViewRenderableLoader,
+                          private val fontProvider: FontProvider
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -56,7 +62,7 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         const val PROP_MULTILINE = "multiline"
         const val PROP_TEXT_PADDING = "textPadding"
         const val PROP_SCROLLING = "scrolling"
-        const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_FONT_PARAMS = "fontParameters"
         const val PROP_TEXT_ENTRY_MODE = "textEntry"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 
@@ -106,34 +112,31 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
     }
 
     override fun provideView(context: Context): View {
-        val container = LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+        return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
+    }
+
+    override fun setupView() {
+        // default dimension
+        var widthPx = LinearLayout.LayoutParams.WRAP_CONTENT
+        var heightPx = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+            widthPx = Utils.metersToPx(widthInMeters, context)
+        }
+
+        if (properties.containsKey(PROP_HEIGHT)) {
+            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+            heightPx = Utils.metersToPx(heightInMeters, context)
+        }
+        view.sv_text_edit.layoutParams = LinearLayout.LayoutParams(widthPx, heightPx)
 
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null && fontParams?.style == null) {
-            // setting a default typeface
-            container.text_edit.typeface = FontProvider.provideFont(context)
+        if (fontParams == null) { // setting a default typeface
+            view.text_edit.typeface = fontProvider.provideFont()
         }
-
-        container.text_edit.setSingleLine() // single line by default
-
-        container.text_edit.setOnClickListener {
-            val activity = ArViewManager.getActivityRef().get()
-            if (activity != null) {
-                isSelected = true
-                startCursorAnimation()
-                showBorder()
-                view.text_edit_underline.visibility = View.INVISIBLE
-                view.text_edit.setTextColor(textColor)
-                showInputDialog(activity)
-            }
-        }
-
-        // override touch event to disable scroll if needed
-        container.sv_text_edit.setOnTouchListener { _, _ ->
-            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
-        }
-
-        return container
+        view.text_edit.setSingleLine() // single line by default
+        setupViewListeners()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -153,47 +156,6 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         setTextPadding(props)
         setFontParams(props)
         setScrollBarVisibility(props)
-    }
-
-    override fun setViewSize() {
-        // default dimension
-        var widthPx = LinearLayout.LayoutParams.WRAP_CONTENT
-        var heightPx = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            widthPx = Utils.metersToPx(widthInMeters, context)
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(heightInMeters, context)
-        }
-        view.sv_text_edit.layoutParams = LinearLayout.LayoutParams(widthPx, heightPx)
-    }
-
-    private fun showBorder() {
-        adjustBackground()
-
-        // add some padding because of rounded corners
-        val multiline = properties.getBoolean(PROP_MULTILINE)
-        val resources = context.resources
-        val paddingHorizontal = if (multiline) {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz_big)
-        } else {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz)
-        }
-        val paddingVertical = if (multiline) {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical_big)
-        } else {
-            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical)
-        }
-        view.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
-    }
-
-    private fun hideBorder() {
-        adjustBackground()
-        view.setPadding(0, 0, 0, 0)
     }
 
     private fun setText(props: Bundle) {
@@ -292,13 +254,8 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
 
     private fun setFontParams(props: Bundle) {
         val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
-
-        if (fontParams.weight != null || fontParams.style != null) {
-            view.text_edit.typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
-        }
-        if (fontParams.allCaps != null) {
-            view.text_edit.isAllCaps = fontParams.allCaps
-        }
+        view.text_edit.typeface = fontProvider.provideFont(fontParams)
+        view.text_edit.isAllCaps = fontParams.allCaps
     }
 
     private fun setScrollBarVisibility(props: Bundle) {
@@ -316,6 +273,29 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
                     view.sv_text_edit.isVerticalScrollBarEnabled = false
                 }
             }
+        }
+    }
+
+    private fun setupViewListeners() {
+        view.text_edit.setOnClickListener {
+            // disabling parent view is not sufficient
+            if (!properties.getBoolean(PROP_ENABLED)) {
+                return@setOnClickListener
+            }
+            val activity = ArViewManager.getActivityRef().get()
+            if (activity != null) {
+                isSelected = true
+                startCursorAnimation()
+                showBorder()
+                view.text_edit_underline.visibility = View.INVISIBLE
+                view.text_edit.setTextColor(textColor)
+                showInputDialog(activity)
+            }
+        }
+
+        // override touch event to disable scroll if needed
+        view.sv_text_edit.setOnTouchListener { _, _ ->
+            return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)
         }
     }
 
@@ -369,6 +349,30 @@ open class UiTextEditNode(initProps: ReadableMap, context: Context) : UiNode(ini
         }
 
         builder.show()
+    }
+
+    private fun showBorder() {
+        adjustBackground()
+
+        // add some padding because of rounded corners
+        val multiline = properties.getBoolean(PROP_MULTILINE)
+        val resources = context.resources
+        val paddingHorizontal = if (multiline) {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz_big)
+        } else {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_horiz)
+        }
+        val paddingVertical = if (multiline) {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical_big)
+        } else {
+            resources.getDimensionPixelSize(R.dimen.textedit_border_padding_vertical)
+        }
+        view.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
+    }
+
+    private fun hideBorder() {
+        adjustBackground()
+        view.setPadding(0, 0, 0, 0)
     }
 
     private fun adjustBackground() {

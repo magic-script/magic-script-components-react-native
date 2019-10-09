@@ -21,7 +21,7 @@ package com.reactlibrary.scene.nodes.props
  * E.g. when HorizontalAlignment is RIGHT then content of the node is placed
  * on the left (relative to node's position)
  */
-sealed class Alignment {
+data class Alignment(val vertical: VerticalAlignment, val horizontal: HorizontalAlignment) {
     enum class HorizontalAlignment { LEFT, CENTER, RIGHT }
     enum class VerticalAlignment { TOP, CENTER, BOTTOM }
 }

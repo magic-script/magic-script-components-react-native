@@ -14,6 +14,21 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.font
+package com.reactlibrary.scene.nodes.layouts.manager
 
-data class FontParams(val weight: FontWeight, val style: FontStyle, val allCaps: Boolean)
+import com.reactlibrary.scene.nodes.layouts.LayoutManager
+import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Padding
+
+interface GridLayoutManager : LayoutManager {
+    var columns: Int
+
+    var rows: Int
+
+    // default padding for each item [top, right, bottom, left]
+    var itemPadding: Padding
+
+    var itemHorizontalAlignment: Alignment.HorizontalAlignment
+
+    var itemVerticalAlignment: Alignment.VerticalAlignment
+}

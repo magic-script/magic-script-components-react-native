@@ -26,10 +26,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import junit.framework.Assert.assertEquals
 import kotlinx.android.synthetic.main.image.view.*
 import org.junit.Before
@@ -47,10 +49,12 @@ class UiImageNodeTest {
     private lateinit var context: Context
     private lateinit var containerSpy: FrameLayout
     private lateinit var imageViewSpy: ImageView
+    private lateinit var viewRenderableLoader: ViewRenderableLoader
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
+        this.viewRenderableLoader = mock()
         this.containerSpy = spy(FrameLayout(context))
         this.imageViewSpy = spy(ImageView(context))
         whenever(containerSpy.image_view).thenReturn(imageViewSpy)
@@ -93,7 +97,7 @@ class UiImageNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiImageNode {
-        return object : UiImageNode(props, context) {
+        return object : UiImageNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

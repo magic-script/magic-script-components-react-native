@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes
+package com.reactlibrary.scene.nodes.base
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap

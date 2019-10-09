@@ -22,6 +22,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -52,7 +53,7 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldHaveDefaultWidth() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val width = node.getProperty(UiProgressBarNode.PROP_WIDTH)
 
@@ -61,7 +62,7 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiProgressBarNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiProgressBarNode.PROP_HEIGHT)
 
@@ -130,7 +131,7 @@ class UiProgressBarNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiProgressBarNode {
-        return object : UiProgressBarNode(props, context) {
+        return object : UiProgressBarNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

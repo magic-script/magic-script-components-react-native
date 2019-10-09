@@ -23,13 +23,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomProgressBar
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 
-open class UiProgressBarNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -56,6 +58,16 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context) : UiNode(
         return LayoutInflater.from(context).inflate(R.layout.progress_bar, null)
     }
 
+    override fun setupView() {
+        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+        val widthPx = Utils.metersToPx(widthInMeters, context)
+
+        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightPx = Utils.metersToPx(heightInMeters, context)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -67,16 +79,6 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context) : UiNode(
         setMin(props)
         setMax(props)
         setProgressColor(props)
-    }
-
-    override fun setViewSize() {
-        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     override fun setAlignment(props: Bundle) {

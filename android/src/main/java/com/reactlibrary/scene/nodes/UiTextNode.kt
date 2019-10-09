@@ -26,10 +26,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
+import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.*
 
-open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initProps, context) {
+open class UiTextNode(initProps: ReadableMap,
+                      context: Context,
+                      viewRenderableLoader: ViewRenderableLoader,
+                      private val fontProvider: FontProvider)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -40,15 +46,12 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_CHARACTERS_SPACING = "charSpacing"
-        const val PROP_FONT_PARAMS = "fontParams"
+        const val PROP_FONT_PARAMS = "fontParameters"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         const val DEFAULT_ALIGNMENT = "bottom-left" // view alignment (pivot)
         const val WRAP_CONTENT_DIMENSION = 0F // 0 width or height means "wrap content"
     }
-
-    private var width = WRAP_CONTENT_DIMENSION
-    private var height = WRAP_CONTENT_DIMENSION
 
     init {
         // set default values of properties
@@ -57,23 +60,39 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
     }
 
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
-        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
-        if (fontParams?.weight == null && fontParams?.style == null) {
-            // setting a default typeface
-            view.typeface = FontProvider.provideFont(context)
+        return LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
+    }
+
+    override fun setupView() {
+        // dimensions in pixels
+        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        val size = readSize()
+        val width = size.first
+        val height = size.second
+
+        if (width == WRAP_CONTENT_DIMENSION) {
+            (view as TextView).setSingleLine(true)
+        } else {
+            widthPx = Utils.metersToPx(width, context)
         }
-        return view
+
+        if (height != WRAP_CONTENT_DIMENSION) {
+            heightPx = Utils.metersToPx(height, context)
+        }
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+
+        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        if (fontParams == null) {  // setting a default typeface
+            (view as TextView).typeface = fontProvider.provideFont()
+        }
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
         if (props.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
-            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
-            width = bounds[0].toFloat()
-            height = bounds[1].toFloat()
             setNeedsRebuild()
         }
 
@@ -86,25 +105,9 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
         setFontParams(props)
     }
 
-    override fun setViewSize() {
-        // dimensions in pixels
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        if (width == WRAP_CONTENT_DIMENSION) {
-            (view as TextView).setSingleLine(true)
-        } else {
-            widthPx = Utils.metersToPx(width, context)
-        }
-
-        if (height != WRAP_CONTENT_DIMENSION) {
-            heightPx = Utils.metersToPx(height, context)
-        }
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
-    }
-
     private fun canResizeOnContentChange(): Boolean {
-        return width == WRAP_CONTENT_DIMENSION || height == WRAP_CONTENT_DIMENSION
+        val size = readSize()
+        return size.first == WRAP_CONTENT_DIMENSION || size.second == WRAP_CONTENT_DIMENSION
     }
 
     private fun setText(properties: Bundle) {
@@ -163,6 +166,7 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
     }
 
     private fun setWrap(props: Bundle) {
+        val width = readSize().first
         if (width == WRAP_CONTENT_DIMENSION) {
             return
         }
@@ -175,12 +179,20 @@ open class UiTextNode(initProps: ReadableMap, context: Context) : UiNode(initPro
 
     private fun setFontParams(props: Bundle) {
         val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
+        val textView = (view as TextView)
+        textView.typeface = fontProvider.provideFont(fontParams)
+        textView.isAllCaps = fontParams.allCaps
+    }
 
-        if (fontParams.weight != null || fontParams.style != null) {
-            (view as TextView).typeface = FontProvider.provideFont(context, fontParams.weight, fontParams.style)
-        }
-        if (fontParams.allCaps != null) {
-            (view as TextView).isAllCaps = fontParams.allCaps
+    private fun readSize(): Pair<Float, Float> {
+        if (properties.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
+            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
+            val width = bounds[0].toFloat()
+            val height = bounds[1].toFloat()
+            return Pair(width, height)
+        } else {
+            return Pair(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         }
     }
 

@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -26,10 +27,13 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.R
+import com.reactlibrary.font.FontParams
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
@@ -49,6 +53,8 @@ class UiToggleNodeTest {
     private lateinit var containerSpy: LinearLayout
     private lateinit var textViewSpy: TextView
     private lateinit var switchSpy: ImageView
+    private lateinit var fontProvider: FontProvider
+    private lateinit var providerTypeface: Typeface
 
     @Before
     fun setUp() {
@@ -56,13 +62,28 @@ class UiToggleNodeTest {
         this.containerSpy = spy(LinearLayout(context))
         this.textViewSpy = spy(TextView(context))
         this.switchSpy = spy(ImageView(context))
+        this.providerTypeface = Typeface.DEFAULT_BOLD
+        this.fontProvider = object : FontProvider {
+            override fun provideFont(fontParams: FontParams?): Typeface {
+                return providerTypeface
+            }
+        }
         whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
         whenever(containerSpy.iv_toggle).thenReturn(switchSpy)
     }
 
     @Test
+    fun shouldUseTypefaceFromProvider() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(textViewSpy).typeface = providerTypeface
+    }
+
+    @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiToggleNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
 
@@ -73,7 +94,7 @@ class UiToggleNodeTest {
     fun defaultTextSizeShouldBeEqualToHeight() {
         val height: Double = 0.1
         val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
-        val node = UiToggleNode(props, context)
+        val node = createNodeWithViewSpy(props)
 
         val textSize = node.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
@@ -125,7 +146,7 @@ class UiToggleNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context) {
+        return object : UiToggleNode(props, context, mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

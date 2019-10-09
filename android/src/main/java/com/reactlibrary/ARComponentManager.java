@@ -30,6 +30,17 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
+import com.reactlibrary.ar.CubeRenderableBuilder;
+import com.reactlibrary.ar.CubeRenderableBuilderImpl;
+import com.reactlibrary.ar.ModelRenderableLoader;
+import com.reactlibrary.ar.ModelRenderableLoaderImpl;
+import com.reactlibrary.ar.VideoRenderableLoader;
+import com.reactlibrary.ar.VideoRenderableLoaderImpl;
+import com.reactlibrary.ar.ViewRenderableLoader;
+import com.reactlibrary.ar.ViewRenderableLoaderImpl;
+import com.reactlibrary.font.FontProvider;
+import com.reactlibrary.font.providers.FontProviderImpl;
+import com.reactlibrary.font.providers.SystemFontProvider;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -46,8 +57,14 @@ import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
+import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
+import com.reactlibrary.scene.nodes.video.VideoPlayer;
+import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +74,7 @@ import java.util.Map;
 import kotlin.Unit;
 
 /**
- * Android module that is responsible for "parsing" JS tags in order to generate AR Nodes
+ * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
  * Based on: https://facebook.github.io/react-native/docs/native-modules-android
  * <p>
  * Node creation methods are called from
@@ -73,6 +90,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_PRESS = "onPress";
     private static final String EVENT_TEXT_CHANGED = "onTextChanged";
     private static final String EVENT_TOGGLE_CHANGED = "onToggleChanged";
+    private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -83,10 +101,26 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
 
+    // Renderable loaders
+    private ViewRenderableLoader viewRenderableLoader;
+    private ModelRenderableLoader modelRenderableLoader;
+    private VideoRenderableLoader videoRenderableLoader;
+    private CubeRenderableBuilder cubeRenderableBuilder;
+
+    // Font provider
+    private FontProvider fontProvider;
+
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
-        // here activity is null yet (so we use initAR method)
         this.context = reactContext;
+        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
+        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
+        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
+        this.cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+
+        SystemFontProvider systemFontProvider = new SystemFontProvider();
+        this.fontProvider = new FontProviderImpl(context, systemFontProvider);
+
         context.addLifecycleEventListener(this);
     }
 
@@ -120,67 +154,88 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
      */
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiButtonNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
     public void createImageNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiImageNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new UiImageNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createTextNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiTextNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            UiTextNode node = new UiTextNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
     public void createTextEditNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiTextEditNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            UiTextEditNode node = new UiTextEditNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ModelNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new VideoNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            VideoPlayer videoPlayer = new VideoPlayerImpl(context);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader), nodeId);
+        });
     }
 
     @ReactMethod
     public void createScrollBarNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiScrollBarNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new UiScrollBarNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createSpinnerNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiSpinnerNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new UiSpinnerNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createToggleNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiToggleNode(props, context), nodeId));
+        mainHandler.post(() -> {
+            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
     }
 
     @ReactMethod
     public void createProgressBarNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiProgressBarNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new UiProgressBarNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new LineNode(props, context), nodeId));
+        mainHandler.post(() -> addNode(new LineNode(props, context, cubeRenderableBuilder), nodeId));
     }
 
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiGridLayout(props), nodeId));
+        mainHandler.post(() -> {
+            GridLayoutManager layoutManager = new GridLayoutManagerImpl();
+            addNode(new UiGridLayout(props, layoutManager), nodeId);
+        });
     }
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
+        mainHandler.post(() -> {
+            LinearLayoutManager layoutManager = new LinearLayoutManagerImpl();
+            addNode(new UiLinearLayout(props, layoutManager), nodeId);
+        });
     }
 
     @ReactMethod
@@ -272,6 +327,21 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     params.putBoolean(EVENT_ARG_TOGGLE_ACTIVE, isOn);
 
                     sendEvent(EVENT_TOGGLE_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnVideoPreparedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof VideoNode) {
+                ((VideoNode) node).setOnVideoPreparedListener(()->{
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_VIDEO_PREPARED, params);
                     return Unit.INSTANCE;
                 });
             }

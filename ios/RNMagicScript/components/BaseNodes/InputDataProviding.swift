@@ -16,7 +16,8 @@
 
 import UIKit
 
-protocol InputDataProviding {
+//sourcery: AutoMockable
+protocol InputDataProviding: DataProviding {
     var value: Any? { get set }
     var placeholder: String? { get }
     var charLimit: Int { get }

@@ -62,8 +62,10 @@ import SceneKit
             self.scrollValue = scrollValue
         }
 
-        if let scrollBounds = Convert.toAABB(props["scrollBounds"]) {
-            self.scrollBounds = scrollBounds
+        if let scrollBounds = props["scrollBounds"] as? [String: Any],
+            let min = Convert.toVector3(scrollBounds["min"]),
+            let max = Convert.toVector3(scrollBounds["max"]) {
+            self.scrollBounds = (min: min, max: max)
         }
         
         if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {

@@ -18,7 +18,8 @@ import SceneKit
 
 @objc open class UiScrollBarNode: UiNode {
 
-    static let defaultScrollBarWidth: CGFloat = 0.02
+    static let defaultScrollBarWidth: CGFloat = 0.2
+    static let defaultScrollBarHeight: CGFloat = 0.02
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -40,7 +41,6 @@ import SceneKit
     // Gets an indication between 0 and 1 for the size of the thumb in respect to the track.
     // It returns 1 to mean the thumb is as long as its track.
     // It returns a value of .5f to mean the thumb is half as long as its track.
-    fileprivate var _thumbSize: CGFloat = 0.1
     @objc var thumbSize: CGFloat {
         get { return _thumbSize }
         set {
@@ -52,7 +52,6 @@ import SceneKit
     // Gets an indication between 0 and 1 for the position of the thumb along the track.
     // It returns 0 to mean the thumb is at the left/upper most possible position along the track.
     // It returns 1 to mean the thumb is at the right/bottom most possible position along the track.
-    fileprivate var _thumbPosition: CGFloat = 0
     @objc var thumbPosition: CGFloat {
         get { return _thumbPosition }
         set {
@@ -61,8 +60,36 @@ import SceneKit
         }
     }
 
+    @objc var vertical: Bool = false {
+        didSet { setNeedsLayout() }
+    }
+
+    fileprivate var _thumbSize: CGFloat = 0.1
+    fileprivate var _thumbPosition: CGFloat = 0
+    fileprivate var backgroundNode: SCNNode!
+    fileprivate var thumbNode: SCNNode!
+
     @objc override func setupNode() {
         super.setupNode()
+
+        assert(backgroundNode == nil, "Node must not be initialized!")
+
+        let backgroundGeometry = SCNPlane(width: width, height: height)
+        backgroundGeometry.firstMaterial?.lightingModel = .constant
+        backgroundGeometry.firstMaterial?.isDoubleSided = false
+        backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
+        backgroundNode = SCNNode(geometry: backgroundGeometry)
+        contentNode.addChildNode(backgroundNode)
+
+        let thumbGeometry = SCNPlane(width: thumbSize * width, height: height)
+        thumbGeometry.firstMaterial?.lightingModel = .constant
+        thumbGeometry.firstMaterial?.isDoubleSided = false
+        thumbGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        thumbGeometry.firstMaterial?.readsFromDepthBuffer = false
+        thumbNode = SCNNode(geometry: thumbGeometry)
+        thumbNode.renderingOrder = 1
+        backgroundNode.addChildNode(thumbNode)
+        setNeedsLayout()
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -86,10 +113,32 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return CGSize.zero
+        let localWidth: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultScrollBarWidth
+        let localHeight: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultScrollBarHeight
+        return CGSize(width: localWidth, height: localHeight)
     }
 
     @objc override func updateLayout() {
+        let size = getSize()
 
+        if let backgroundGeometry = backgroundNode.geometry as? SCNPlane {
+            backgroundGeometry.width = size.width
+            backgroundGeometry.height = size.height
+            backgroundGeometry.cornerRadius = 0.5 * size.height
+        }
+
+        let barWidth = size.width * thumbSize
+        if let thumbGeometry = thumbNode.geometry as? SCNPlane {
+            thumbGeometry.width = barWidth
+            thumbGeometry.height = size.height
+            thumbGeometry.cornerRadius = 0.5 * size.height
+        }
+
+        thumbNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(barWidth), 0.0, 0.0)
+        let thumbX = -0.5 * size.width + thumbPosition * (size.width - barWidth)
+        thumbNode.position = SCNVector3(thumbX, 0.0, 0.0)
+
+        let angle: Float = vertical ? 0.5 * Float.pi : 0
+        backgroundNode.transform = SCNMatrix4MakeRotation(angle, 0, 0, 1)
     }
 }

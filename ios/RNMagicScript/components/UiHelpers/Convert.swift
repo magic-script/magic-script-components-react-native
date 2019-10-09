@@ -128,13 +128,6 @@ class Convert {
         return HorizontalTextAlignment(rawValue: alignment)
     }
 
-    static func toAABB(_ value: Any?) -> (min: SCNVector3, max: SCNVector3)? {
-        guard let aabb = value as? [String: Any] else { return nil }
-        guard let min = Convert.toVector3(aabb["min"]),
-            let max = Convert.toVector3(aabb["max"]) else { return nil }
-        return (min: min, max: max)
-    }
-
     static func toAlignment(_ value: Any?) -> Alignment? {
         guard let alignment = value as? String else { return nil }
         return Alignment(rawValue: alignment)

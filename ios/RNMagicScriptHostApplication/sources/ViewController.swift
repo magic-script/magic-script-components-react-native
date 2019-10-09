@@ -62,16 +62,17 @@ class ViewController: UIViewController {
         arView.delegate = self
     }
 
+    fileprivate var scrollView: UiScrollViewNode!
+    fileprivate var scrollBar: UiScrollBarNode!
+    fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate func setupTests() {
 //        setupDefaultIconsTest()
         let scrollViewId: String = "scroll_view"
         let scrollBarId: String = "scroll_bar"
-        let scrollView: UiScrollViewNode = createComponent([:
-
-        ], nodeId: scrollViewId)
-        let scrollBar: UiScrollBarNode = createComponent([:
-
-        ], nodeId: scrollBarId, parentId: scrollViewId)
+        scrollView = createComponent(["debug": false], nodeId: scrollViewId)
+        scrollBar = createComponent(["debug": true], nodeId: scrollBarId, parentId: scrollViewId)
+        scrollView.layoutIfNeeded()
+        scrollBar.layoutIfNeeded()
     }
 
     fileprivate func setupDefaultIconsTest() {
@@ -118,5 +119,12 @@ extension ViewController: ARSCNViewDelegate {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
+
+        scrollBarPosition += CGFloat(deltaTime)
+        if scrollBarPosition > 1.0 {
+            scrollBarPosition -= 2.0
+        }
+        scrollBar.thumbPosition = abs(scrollBarPosition)
+        scrollBar.layoutIfNeeded()
     }
 }

@@ -65,12 +65,13 @@ class ViewController: UIViewController {
     fileprivate var scrollView: UiScrollViewNode!
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
+    fileprivate var scrollBarSize: CGFloat = 0.1
     fileprivate func setupTests() {
 //        setupDefaultIconsTest()
         let scrollViewId: String = "scroll_view"
         let scrollBarId: String = "scroll_bar"
-        scrollView = createComponent(["debug": false], nodeId: scrollViewId)
-        scrollBar = createComponent(["debug": true], nodeId: scrollBarId, parentId: scrollViewId)
+        scrollView = createComponent(["debug": true], nodeId: scrollViewId)
+        scrollBar = createComponent(["debug": false], nodeId: scrollBarId, parentId: scrollViewId)
         scrollView.layoutIfNeeded()
         scrollBar.layoutIfNeeded()
     }
@@ -124,7 +125,13 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarPosition > 1.0 {
             scrollBarPosition -= 2.0
         }
+
+        scrollBarSize += CGFloat(deltaTime * 0.1)
+        if scrollBarSize > 1.0 {
+            scrollBarSize -= 2.0
+        }
         scrollBar.thumbPosition = abs(scrollBarPosition)
+        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
         scrollBar.layoutIfNeeded()
     }
 }

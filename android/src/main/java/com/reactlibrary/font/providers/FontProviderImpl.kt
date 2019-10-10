@@ -30,7 +30,7 @@ import com.reactlibrary.utils.logMessage
  * node that contains a text
  */
 class FontProviderImpl(private val context: Context,
-                       private val systemFontProvider: SystemFontProvider) : FontProvider {
+                       private val androidFontProvider: AndroidFontProvider) : FontProvider {
 
     companion object {
         private const val FONTS_DIR = "fonts"
@@ -55,13 +55,13 @@ class FontProviderImpl(private val context: Context,
                 val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
                 if (!fontsCatalogExists) {
                     fontsCache[fontName] = FontState(true, null)
-                    return systemFontProvider.provideFont(fontParams)
+                    return androidFontProvider.provideFont(fontParams)
                 }
 
                 val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
                 if (!fontExists) {
                     fontsCache[fontName] = FontState(true, null)
-                    return systemFontProvider.provideFont(fontParams)
+                    return androidFontProvider.provideFont(fontParams)
                 }
 
                 val fontPath = "$FONTS_DIR/$fontName"
@@ -73,7 +73,7 @@ class FontProviderImpl(private val context: Context,
             }
 
             fontState.loadError -> // already tried to load this font, but it's absent
-                return systemFontProvider.provideFont(fontParams)
+                return androidFontProvider.provideFont(fontParams)
 
             else -> return fontState.typeface!!
         }

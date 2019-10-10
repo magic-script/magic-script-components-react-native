@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -104,8 +103,6 @@ open class UiImageNode(initProps: ReadableMap,
             val icon = iconsProvider.provideIcon(iconName)
             if (icon != null) {
                 view.image_view.setImageDrawable(icon)
-            } else { // TODO remove?
-                view.image_view.setBackgroundColor(Color.RED)
             }
         }
     }

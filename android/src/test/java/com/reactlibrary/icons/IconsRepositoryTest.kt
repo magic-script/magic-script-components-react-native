@@ -46,8 +46,8 @@ class IconsRepositoryTest {
 
     @Test
     fun `should return icon from external provider when available in both providers`() {
-        val externalIcon = context.getDrawable(R.drawable.actions_left)
-        val defaultIcon = context.getDrawable(R.drawable.actions_off)
+        val externalIcon = context.getDrawable(R.drawable.add)
+        val defaultIcon = context.getDrawable(R.drawable.address_book)
         whenever(externalIconsProvider.provideIcon(anyString())).thenReturn(externalIcon)
         whenever(defaultIconsProvider.provideIcon(anyString())).thenReturn(defaultIcon)
 
@@ -59,7 +59,7 @@ class IconsRepositoryTest {
     @Test
     fun `should return icon from default provider when not found in external`() {
         whenever(externalIconsProvider.provideIcon(anyString())).thenReturn(null)
-        val defaultIcon = context.getDrawable(R.drawable.actions_off)
+        val defaultIcon = context.getDrawable(R.drawable.add)
         whenever(defaultIconsProvider.provideIcon(anyString())).thenReturn(defaultIcon)
 
         val icon = iconsRepository.provideIcon("sample-icon")

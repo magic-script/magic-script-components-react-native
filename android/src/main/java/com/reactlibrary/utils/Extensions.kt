@@ -145,3 +145,19 @@ inline fun View.onLayoutListener(crossinline f: () -> Unit) {
         }
     })
 }
+
+inline fun View.onPreDrawListener(crossinline f: () -> Boolean) {
+    viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            return f()
+        }
+    })
+}
+
+inline fun View.onDrawListener(crossinline f: () -> Unit) {
+    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
+        override fun onDraw() {
+            f()
+        }
+    })
+}

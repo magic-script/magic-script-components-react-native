@@ -18,8 +18,7 @@ import SceneKit
 
 @objc open class UiScrollBarNode: UiNode {
 
-    static let defaultScrollBarWidth: CGFloat = 0.2
-    static let defaultScrollBarHeight: CGFloat = 0.02
+    static let defaultSize = CGSize(width: 0.2, height: 0.02)
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -113,8 +112,8 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let localWidth: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultScrollBarWidth
-        let localHeight: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultScrollBarHeight
+        let localWidth: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultSize.width
+        let localHeight: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultSize.height
         return CGSize(width: localWidth, height: localHeight)
     }
 
@@ -138,7 +137,7 @@ import SceneKit
         let thumbX = -0.5 * size.width + thumbPosition * (size.width - barWidth)
         thumbNode.position = SCNVector3(thumbX, 0.0, 0.0)
 
-        let angle: Float = vertical ? 0.5 * Float.pi : 0
+        let angle: Float = vertical ? -0.5 * Float.pi : 0
         backgroundNode.transform = SCNMatrix4MakeRotation(angle, 0, 0, 1)
     }
 }

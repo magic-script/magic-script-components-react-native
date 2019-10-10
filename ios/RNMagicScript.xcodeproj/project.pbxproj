@@ -26,6 +26,7 @@
 		44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
 		44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
 		44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
+		447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -369,6 +370,7 @@
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
+		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
@@ -906,6 +908,7 @@
 				44F0930D232D985A0081FF14 /* UiLineNodeSpec.swift */,
 				44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */,
 				44F09312232D985A0081FF14 /* UiProgressBarNodeSpec.swift */,
+				447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */,
 				44F0930C232D985A0081FF14 /* UiSpinnerNodeSpec.swift */,
 				44F09313232D985A0081FF14 /* UiTextNodeSpec.swift */,
 				44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */,
@@ -1550,6 +1553,7 @@
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
+				447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,
 				44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */,
 				44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */,

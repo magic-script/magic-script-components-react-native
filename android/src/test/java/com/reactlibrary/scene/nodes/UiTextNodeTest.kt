@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -25,8 +26,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.atLeastOnce
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.font.FontParams
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.FontParamsReader
 import com.reactlibrary.utils.Utils
@@ -45,16 +50,33 @@ class UiTextNodeTest {
 
     private lateinit var context: Context
     private lateinit var viewSpy: TextView
+    private lateinit var fontProvider: FontProvider
+    private lateinit var providerTypeface: Typeface
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.viewSpy = spy(TextView(context))
+        this.providerTypeface = Typeface.DEFAULT_BOLD
+        this.fontProvider = object : FontProvider {
+            override fun provideFont(fontParams: FontParams?): Typeface {
+                return providerTypeface
+            }
+        }
+    }
+
+    @Test
+    fun shouldUseTypefaceFromProvider() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(viewSpy).typeface = providerTypeface
     }
 
     @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiTextNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val textSize = node.getProperty(UiTextNode.PROP_TEXT_SIZE)
 
@@ -63,7 +85,7 @@ class UiTextNodeTest {
 
     @Test
     fun shouldHaveDefaultAlignment() {
-        val node = UiTextNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
 
@@ -104,7 +126,7 @@ class UiTextNodeTest {
 
         node.build()
 
-        verify(viewSpy).setSingleLine(true)
+        verify(viewSpy, atLeastOnce()).setSingleLine(true)
     }
 
     @Test
@@ -166,7 +188,7 @@ class UiTextNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
-        return object : UiTextNode(props, context) {
+        return object : UiTextNode(props, context, mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

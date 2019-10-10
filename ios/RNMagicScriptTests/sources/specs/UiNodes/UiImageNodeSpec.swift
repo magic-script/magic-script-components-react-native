@@ -33,8 +33,8 @@ class UiImageNodeSpec: QuickSpec {
                 it("should have set default values") {
                     expect(node.url).to(beNil())
                     expect(node.image).to(beNil())
-                    expect(node.width).to(beCloseTo(0.5))
-                    expect(node.height).to(beCloseTo(0.5))
+                    expect(node.width).to(beCloseTo(0))
+                    expect(node.height).to(beCloseTo(0))
                     expect(node.useFrame).to(beFalse())
                     expect(node.color).to(beNil())
                 }

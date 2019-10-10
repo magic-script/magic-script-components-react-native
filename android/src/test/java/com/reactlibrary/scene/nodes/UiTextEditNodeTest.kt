@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -27,11 +28,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.reactlibrary.R
+import com.reactlibrary.font.FontParams
+import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.text_edit.view.*
@@ -54,6 +54,8 @@ class UiTextEditNodeTest {
     private lateinit var containerSpy: LinearLayout
     private lateinit var scrollViewSpy: ScrollView
     private lateinit var textViewSpy: TextView
+    private lateinit var fontProvider: FontProvider
+    private lateinit var providerTypeface: Typeface
 
     @Before
     fun setUp() {
@@ -61,13 +63,29 @@ class UiTextEditNodeTest {
         this.containerSpy = spy(LinearLayout(context))
         this.scrollViewSpy = spy(ScrollView(context))
         this.textViewSpy = spy(TextView(context))
+        this.providerTypeface = Typeface.DEFAULT_BOLD
+        this.fontProvider = object : FontProvider {
+            override fun provideFont(fontParams: FontParams?): Typeface {
+                return providerTypeface
+            }
+        }
         whenever(containerSpy.sv_text_edit).thenReturn(scrollViewSpy)
         whenever(containerSpy.text_edit).thenReturn(textViewSpy)
     }
 
     @Test
+    fun shouldUseTypefaceFromProvider() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(textViewSpy).typeface = providerTypeface
+    }
+
+    @Test
     fun shouldHaveDefaultTextSize() {
-        val node = UiTextEditNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
 
         val textSize = node.getProperty(UiTextEditNode.PROP_TEXT_SIZE)
 
@@ -76,11 +94,32 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldHaveDefaultAlignment() {
-        val node = UiTextEditNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
 
         assertEquals(UiTextEditNode.DEFAULT_ALIGNMENT, alignment)
+    }
+
+    @Test
+    fun shouldHaveDefaultTextPadding() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
+
+        val textPadding = node.getProperty(UiTextEditNode.PROP_TEXT_PADDING)
+
+        assertEquals(UiTextEditNode.DEFAULT_TEXT_PADDING, textPadding)
+    }
+
+    @Test
+    fun shouldHaveDefaultCharactersSpacing() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
+
+        val charSpacing = node.getProperty(UiTextEditNode.PROP_CHARACTERS_SPACING)
+
+        assertEquals(UiTextEditNode.DEFAULT_CHARACTERS_SPACING, charSpacing)
     }
 
     @Test
@@ -183,7 +222,7 @@ class UiTextEditNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {
-        return object : UiTextEditNode(props, context) {
+        return object : UiTextEditNode(props, context, mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

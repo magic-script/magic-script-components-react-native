@@ -18,18 +18,18 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 
-class UiScrollBarNode(initProps: ReadableMap, context: Context) :
-        UiNode(initProps, context, useContentNodeAlignment = false) {
+open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+        UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -52,12 +52,22 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
-    fun setOnScrollChangeListener(listener:(on: Float) -> Unit){
+    fun setOnScrollChangeListener(listener: ((on: Float) -> Unit)) {
         (view as CustomScrollBar).onScrollChangeListener = listener
     }
 
     override fun provideView(context: Context): View {
         return CustomScrollBar(context)
+    }
+
+    override fun setupView() {
+        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
+        val widthPx = Utils.metersToPx(widthInMeters, context)
+
+        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
+        val heightPx = Utils.metersToPx(heightInMeters, context)
+
+        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     override fun applyProperties(props: Bundle) {
@@ -70,16 +80,6 @@ class UiScrollBarNode(initProps: ReadableMap, context: Context) :
         setThumbPosition(props)
         setThumbSize(props)
         setOrientation(props)
-    }
-
-    override fun setViewSize() {
-        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
     private fun setThumbPosition(props: Bundle) {

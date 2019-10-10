@@ -22,7 +22,7 @@ import SceneKit
     @objc public private (set) var rootNode: TransformNode
     @objc let focusableNodeBitMask: Int = 8
 
-    var onInputFocused: ((_ input: InputDataProviding) -> (Void))?
+    var onInputFocused: ((_ input: DataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
 
     fileprivate var nodesById: [String: TransformNode]
@@ -56,7 +56,7 @@ import SceneKit
 
         focusedNode = componentNode as? UiNode
         focusedNode?.enterFocus()
-        if let input = focusedNode as? InputDataProviding {
+        if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
         }
     }

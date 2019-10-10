@@ -169,6 +169,11 @@ class Convert {
         return nil
     }
 
+    static func toSystemIcon(_ value: Any?) -> SystemIcon? {
+        guard let icon = value as? String else { return nil }
+        return SystemIcon(icon)
+    }
+
     static func toVideoAction(_ value: Any?) -> VideoAction? {
         guard let action = value as? String else { return nil }
         return VideoAction(rawValue: action)

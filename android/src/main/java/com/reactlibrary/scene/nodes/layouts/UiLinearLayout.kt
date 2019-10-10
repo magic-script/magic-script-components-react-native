@@ -18,16 +18,17 @@ package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.scene.nodes.base.UiLayout
-import com.reactlibrary.scene.nodes.layouts.manager.FlexLinearManager
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultSerializable
 import com.reactlibrary.utils.putDefaultString
 
-class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
+class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
+    : UiLayout(props, layoutManager) {
 
     companion object {
         // properties
@@ -39,31 +40,22 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
         const val ORIENTATION_HORIZONTAL = "horizontal"
 
         // default values
-        const val ORIENTATION_DEFAULT = ORIENTATION_VERTICAL
+        const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ALIGNMENT = "top-left"
+        const val DEFAULT_ITEM_ALIGNMENT = "center-center"
+        // default padding for each item [top, right, bottom, left]
+        val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
     init {
-        layoutManager = FlexLinearManager(this)
-
         // set default values of properties
 
         // alignment of the layout itself (pivot)
         properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefaultString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        properties.putDefaultString(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        properties.putDefaultSerializable(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
-
-    var orientation = properties.getString(PROP_ORIENTATION, ORIENTATION_DEFAULT)
-        private set
-
-    // default padding for each item [top, right, bottom, left]
-    var itemPadding = Padding(0F, 0F, 0F, 0F)
-        private set
-
-    var itemHorizontalAlignment = ViewRenderable.HorizontalAlignment.CENTER
-        private set
-
-    var itemVerticalAlignment = ViewRenderable.VerticalAlignment.CENTER
-        private set
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -74,6 +66,8 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
+        val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)
+                ?: Padding()
         return Bounding(
                 childBounds.left + contentNode.localPosition.x - itemPadding.left,
                 childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
@@ -84,7 +78,8 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
 
     private fun setOrientation(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
-            orientation = props.getString(PROP_ORIENTATION)
+            val isVertical = props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
+            (layoutManager as LinearLayoutManager).isVertical = isVertical
             requestLayout()
         }
     }
@@ -92,25 +87,18 @@ class UiLinearLayout(props: ReadableMap) : UiLayout(props) {
     private fun setItemPadding(props: Bundle) {
         val padding = PropertiesReader.readPadding(props, PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
-            itemPadding = padding
+            (layoutManager as LinearLayoutManager).itemPadding = padding
             requestLayout()
         }
     }
 
     private fun setItemAlignment(props: Bundle) {
-        val alignment = props.getString(PROP_DEFAULT_ITEM_ALIGNMENT)
+        val alignment = PropertiesReader.readAlignment(props, PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
-            val alignmentArray = alignment.split("-")
-            if (alignmentArray.size == 2) {
-                val verticalAlign = alignmentArray[0]
-                val horizontalAlign = alignmentArray[1]
-                itemVerticalAlignment = ViewRenderable.VerticalAlignment.valueOf(verticalAlign.toUpperCase())
-                itemHorizontalAlignment = ViewRenderable.HorizontalAlignment.valueOf(horizontalAlign.toUpperCase())
-            }
+            (layoutManager as LinearLayoutManager)
+            layoutManager.itemVerticalAlignment = alignment.vertical
+            layoutManager.itemHorizontalAlignment = alignment.horizontal
         }
     }
 
-    fun isVertical(): Boolean {
-        return orientation == ORIENTATION_VERTICAL
-    }
 }

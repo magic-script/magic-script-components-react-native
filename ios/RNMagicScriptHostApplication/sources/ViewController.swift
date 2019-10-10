@@ -67,42 +67,38 @@ class ViewController: UIViewController {
 
     fileprivate func setupTests() {
 
-        let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        createTextEdit([
-//            "debug": true,
-            "alignment": "top-center",
-            "charLimit": 15,
-            "width": 0.4,
-            "height": 0.08,
-            "text": "",
-            "textSize": 0.04,
-            "textPadding": [0.02, 0.02, 0.02, 0.02],
-            "hint": "Password",
-            "hintColor": [0.9,0.9,0.9,0.75],
-            "localPosition": [0, 0.6, 0],
-            "password": true
-        ], nodeId: "text_edit1")
+        let grid = UiGridLayoutNode(props: [
+            "columns": 14,
+            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
+            "localPosition": [0, 0.5, 0],
+            "alignment": "top-center"
+        ])
+        let gridId = "grid"
+        UiNodesManager.instance.registerNode(grid, nodeId: gridId)
+        UiNodesManager.instance.addNodeToRoot(gridId)
 
-        createTextEdit([
-//            "debug": true,
-            "alignment": "top-center",
-            "width": 0.4,
-            "height": 0.6,
-            "hint": "Put some text...",
-            "text": loremIpsum,
-            "textSize": 0.04,
-            "textPadding": [0.02, 0.02, 0.02, 0.02],
-            "multiline": true,
-            "charSpacing": 0.1,
-            "lineSpacing": 2.0,
-            "localPosition": [0, 0.4, 0]
-        ], nodeId: "text_edit2")
+        SystemIcon.names.enumerated().forEach { (index, name) in
+            let icon = UiImageNode(props: [
+                "icon": name,
+                "height": 0.04,
+            ])
+            let nodeId: String = "icon_\(index)"
+            UiNodesManager.instance.registerNode(icon, nodeId: nodeId)
+            UiNodesManager.instance.addNode(nodeId, toParent: gridId)
+        }
+
+        grid.layoutIfNeeded()
     }
 
-    fileprivate func createTextEdit(_ props: [String: Any], nodeId: String) {
-        let textEdit = UiTextEditNode(props: props)
-        textEdit.layoutIfNeeded()
-        UiNodesManager.instance.registerNode(textEdit, nodeId: nodeId)
+    fileprivate func convertString(_ text: String) -> String {
+        let result = text.split(separator: "-").map { $0.prefix(1).uppercased() + $0.dropFirst() }.joined()
+        return result.prefix(1).lowercased() + result.dropFirst()
+    }
+
+    fileprivate func createComponent(_ props: [String: Any], nodeId: String) {
+        let node = UiImageNode(props: props)
+        node.layoutIfNeeded()
+        UiNodesManager.instance.registerNode(node, nodeId: nodeId)
         UiNodesManager.instance.addNodeToRoot(nodeId)
     }
 }

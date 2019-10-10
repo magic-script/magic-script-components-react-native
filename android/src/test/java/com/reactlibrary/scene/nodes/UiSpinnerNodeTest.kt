@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -51,7 +52,7 @@ class UiSpinnerNodeTest {
 
     @Test
     fun shouldHaveDefaultHeight() {
-        val node = UiSpinnerNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiSpinnerNode.PROP_HEIGHT)
 
@@ -60,7 +61,7 @@ class UiSpinnerNodeTest {
 
     @Test
     fun shouldHaveDefaultDeterminateFlag() {
-        val node = UiSpinnerNode(JavaOnlyMap(), context)
+        val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val isDeterminate = node.getProperty(UiSpinnerNode.PROP_DETERMINATE)
 
@@ -117,7 +118,7 @@ class UiSpinnerNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiSpinnerNode {
-        return object : UiSpinnerNode(props, context) {
+        return object : UiSpinnerNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

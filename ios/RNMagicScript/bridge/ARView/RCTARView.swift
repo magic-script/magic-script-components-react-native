@@ -123,7 +123,7 @@ import SceneKit
         return view
     }
 
-    fileprivate func presentInput(_ input: InputDataProviding) {
+    fileprivate func presentInput(_ input: DataProviding) {
         if (inputResponder == nil) {
             inputResponder = UITextField()
             inputResponder!.isHidden = true
@@ -133,9 +133,15 @@ import SceneKit
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
             UiNodesManager.instance.handleNodeTap(nil)
         })
+
+        let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
+            UiNodesManager.instance.handleNodeTap(nil)
+        })
+
         inputResponder!.inputAccessoryView = inputAccessoryView
+        inputResponder!.inputView = inputView
         inputResponder!.becomeFirstResponder()
-        inputAccessoryView.becomeFirstResponder()
+        inputAccessoryView?.becomeFirstResponder()
     }
 
     fileprivate func dismissInput() {
@@ -144,6 +150,7 @@ import SceneKit
         // when being removed from hierarchy.
         inputResponder?.inputAccessoryView?.resignFirstResponder()
 
+        inputResponder?.inputView = nil
         inputResponder?.inputAccessoryView = nil
         inputResponder?.resignFirstResponder()
     }

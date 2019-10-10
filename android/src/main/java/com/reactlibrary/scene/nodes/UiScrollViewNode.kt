@@ -80,6 +80,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
                 scrollView.contentSize = PointF(
                         Utils.metersToPx(childSize.x, context).toFloat(),
                         Utils.metersToPx(childSize.y, context).toFloat())
+                        logMessage("update")
                 update(scrollView.viewPosition())
             }
 
@@ -154,13 +155,13 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
                 -possibleTravel.x * viewPosition.x,
                 possibleTravel.y * viewPosition.y)
 
-        this.childPosition = alignTopLeft + travel
+        newChildPosition = alignTopLeft + travel
         
         val clipArea = RectF(
-                viewBounds.left - childPosition.x,
-                viewBounds.top - childPosition.y,
-                viewBounds.right - childPosition.x - DEFAULT_SCROLLBAR_WIDTH,
-                viewBounds.bottom - childPosition.y + DEFAULT_SCROLLBAR_WIDTH)
+                viewBounds.left - newChildPosition.x,
+                viewBounds.top - newChildPosition.y,
+                viewBounds.right - newChildPosition.x - DEFAULT_SCROLLBAR_WIDTH,
+                viewBounds.bottom - newChildPosition.y + DEFAULT_SCROLLBAR_WIDTH)
         (child as TransformNode).setClipBounds(clipArea)
 
         scrollRequested = true

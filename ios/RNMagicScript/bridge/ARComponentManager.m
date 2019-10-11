@@ -207,7 +207,7 @@ RCT_EXPORT_METHOD(addOnScrollChangedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiScrollViewNode class]]) {
         UiScrollViewNode *scrollView = (UiScrollViewNode *)node;
         scrollView.onScrollChanged = ^(UiNode *sender, CGFloat value) {
-            ARLog(@"scrollView changed: %@", text);
+            ARLog(@"scrollView changed: %@", @(value));
             [[AREventsManager instance] onScrollChangedEventReceived:sender value:value];
         };
     }

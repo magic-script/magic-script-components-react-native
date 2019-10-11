@@ -28,7 +28,7 @@ import SceneKit
         }
     }
     @objc var icon: SystemIcon? {
-        didSet { image = icon?.image }
+        didSet { image = icon?.getImage(forceDefaultImage: useDefaultIcon) }
     }
     @objc var image: UIImage? {
         didSet { updateDisplay(); updateLayout() }
@@ -43,6 +43,9 @@ import SceneKit
         didSet { setFrame(visible: useFrame); setNeedsLayout() }
     }
     @objc var color: UIColor? {
+        didSet { updateDisplay(); setNeedsLayout() }
+    }
+    @objc var useDefaultIcon: Bool = false {
         didSet { updateDisplay(); setNeedsLayout() }
     }
 
@@ -69,6 +72,10 @@ import SceneKit
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        if let useDefaultIcon = Convert.toBool(props["useDefaultIcon"]) {
+            self.useDefaultIcon = useDefaultIcon
+        }
 
         if let url = Convert.toFileURL(props["filePath"]) {
             self.url = url

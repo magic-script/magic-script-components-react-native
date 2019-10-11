@@ -17,7 +17,7 @@
 import SceneKit
 
 class UiDropdownListItemNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultTextSize: CGFloat = 0.0235
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -30,13 +30,8 @@ class UiDropdownListItemNode: UiNode {
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; setNeedsLayout() }
     }
-    fileprivate var _textSize: CGFloat = 0.0
-    @objc var textSize: CGFloat {
-        get { return _textSize }
-        set {
-            let clampedValue: CGFloat = Math.clamp(newValue, UiDropdownListItemNode.defaultTextSize / 2, 2 * UiDropdownListItemNode.defaultTextSize)
-            if (_textSize != clampedValue) { _textSize = clampedValue; labelNode.textSize = clampedValue; setNeedsLayout(); }
-        }
+    @objc var textSize: CGFloat = 0 {
+        didSet { labelNode.textSize = textSize; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var width: CGFloat = 0 {
         didSet { setNeedsLayout() }
@@ -54,15 +49,43 @@ class UiDropdownListItemNode: UiNode {
         guard hasFocus else { return }
     }
 
-    fileprivate var labelNode: LabelNode!
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        labelNode.setNeedsLayout()
+        gridLayoutNode.setNeedsLayout()
+    }
+
+    @objc var isNested: Bool {
+        return false
+    }
+
+    fileprivate var gridLayoutNode: UiGridLayoutNode!
+    fileprivate var labelNode: UiLabelNode!
+    fileprivate var iconNode: UiImageNode!
 
     @objc override func setupNode() {
         super.setupNode()
         assert(labelNode == nil, "Node must not be initialized!")
-        labelNode = LabelNode()
-        labelNode.textAlignment = .center
-        labelNode.defaultTextSize = UiDropdownListItemNode.defaultTextSize
-        contentNode.addChildNode(labelNode)
+        labelNode = UiLabelNode()
+        labelNode.layoutIfNeeded()
+
+        iconNode = UiImageNode(props: ["icon": "chevron-right", "height": 0.04])
+        iconNode.layoutIfNeeded()
+
+        gridLayoutNode = UiGridLayoutNode(props: [
+            "columns": 2,
+            "rows": 1,
+            "defaultItemPadding": [0.005, 0.005, 0.005, 0.005],
+            "alignment": "center-center"
+        ])
+        gridLayoutNode.setDebugMode(true)
+        gridLayoutNode.addChild(labelNode)
+        if isNested {
+            gridLayoutNode.addChild(iconNode)
+        }
+        gridLayoutNode.layoutIfNeeded()
+
+        contentNode.addChildNode(gridLayoutNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -90,14 +113,23 @@ class UiDropdownListItemNode: UiNode {
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let labelSize = labelNode.getSize()
-        let textHeightMultiplier: CGFloat = 2.3
-        let contentWidth: CGFloat = labelSize.width + textHeightMultiplier * labelSize.height
-        let contentHeight: CGFloat = textHeightMultiplier * labelSize.height
+        let buttonToTextHeightMultiplier: CGFloat = 1.4
+        let contentWidth: CGFloat = (width > 0) ? width : gridLayoutNode.getSize().width + buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
+        let contentHeight: CGFloat = (height > 0) ? height : buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {
-        labelNode.reload()
+        labelNode.layoutIfNeeded()
+        gridLayoutNode.layoutIfNeeded()
+    }
+
+    fileprivate func updateLabelTextSizeBasedOnHeight() {
+        guard textSize == 0 && height > 0 else  {
+            labelNode.textSize = textSize
+            return
+        }
+
+        labelNode.textSize = max(0, 0.333 * height)
     }
 }

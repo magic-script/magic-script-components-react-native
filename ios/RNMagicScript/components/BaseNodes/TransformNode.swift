@@ -73,7 +73,6 @@ import SceneKit
     }
 
     @objc public required init(props: [String: Any]) {
-//        self.init()
         super.init()
         setupNode()
         update(props)

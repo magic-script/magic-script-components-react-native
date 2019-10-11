@@ -86,6 +86,18 @@ RCT_EXPORT_METHOD(createProgressBarNode:(UiProgressBarNode *)node nodeId:(NSStri
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createScrollBarNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createScrollBarNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createScrollViewNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createScrollViewNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createSliderNode:(UiSliderNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createSliderNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -104,15 +116,14 @@ RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId re
     resolve(nil);
 }
 
-//mock method for UiVideoNode iOS component
-RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createVideoNode: %@", nodeId);
+RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createTextEditNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createTextEditNode: %@", nodeId);
+RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createVideoNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -187,6 +198,18 @@ RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiButtonNode class]]) {
         UiButtonNode *button = (UiButtonNode *)node;
         button.onTap = nil;
+    }
+}
+
+RCT_EXPORT_METHOD(addOnScrollChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnScrollChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiScrollViewNode class]]) {
+        UiScrollViewNode *scrollView = (UiScrollViewNode *)node;
+        scrollView.onScrollChanged = ^(UiNode *sender, CGFloat value) {
+            ARLog(@"scrollView changed: %@", text);
+            [[AREventsManager instance] onScrollChangedEventReceived:sender value:value];
+        };
     }
 }
 

@@ -22,7 +22,7 @@ import com.reactlibrary.font.FontProvider
 import com.reactlibrary.font.FontStyle
 import com.reactlibrary.font.FontWeight
 
-class SystemFontProvider : FontProvider {
+class AndroidFontProvider : FontProvider {
 
     companion object {
         private const val FAMILY_EXTRA_LIGHT = "sans-serif-thin"

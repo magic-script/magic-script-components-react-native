@@ -14,15 +14,12 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.utils
+package com.reactlibrary.font
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.reactlibrary.font.FontParams
-import com.reactlibrary.font.FontStyle
-import com.reactlibrary.font.FontWeight
 import com.reactlibrary.font.providers.FontProviderImpl
-import com.reactlibrary.font.providers.SystemFontProvider
+import com.reactlibrary.font.providers.AndroidFontProvider
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,7 +27,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class FontProviderTest {
+class FontProviderImplTest {
 
     private lateinit var context: Context
     private lateinit var fontProvider: FontProviderImpl
@@ -38,7 +35,7 @@ class FontProviderTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext<Context>()
-        val systemFontProvider = SystemFontProvider()
+        val systemFontProvider = AndroidFontProvider()
         fontProvider = FontProviderImpl(context, systemFontProvider)
     }
 

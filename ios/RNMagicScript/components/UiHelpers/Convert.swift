@@ -148,6 +148,11 @@ class Convert {
         return ScrollBarVisibility(rawValue: scrollBarVisibility)
     }
 
+    static func toScrollDirection(_ value: Any?) -> ScrollDirection? {
+        guard let scrollDirection = value as? String else { return nil }
+        return ScrollDirection(rawValue: scrollDirection)
+    }
+
     static func toTextEntryMode(_ value: Any?) -> TextEntryMode? {
         guard let textEntryMode = value as? String else { return nil }
         return TextEntryMode(rawValue: textEntryMode)

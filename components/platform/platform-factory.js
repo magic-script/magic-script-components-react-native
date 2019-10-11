@@ -29,6 +29,7 @@ export class PlatformFactory extends NativeFactory {
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent('onPress');
         this.startListeningEvent('onClick');
+        this.startListeningEvent('onScrollChanged');
         this.startListeningEvent('onTextChanged');
         this.startListeningEvent('onToggleChanged');
         this.startListeningEvent('onVideoPrepared');
@@ -55,6 +56,8 @@ export class PlatformFactory extends NativeFactory {
 
         if (name === 'onClick' || name === 'onPress') {
             this.componentManager.addOnPressEventHandler(elementId);
+        } else if (name === 'onScrollChanged') {
+            this.componentManager.addOnScrollChangedEventHandler(elementId);
         } else if (name === 'onTextChanged') {
             this.componentManager.addOnTextChangedEventHandler(elementId);
         } else if (name === 'onToggleChanged') {
@@ -68,10 +71,8 @@ export class PlatformFactory extends NativeFactory {
         if (events === undefined) {
             events = [pair];
             this.eventsByElementId[elementId] = events;
-            // Log.debug(`[EVENTS] "${elementId}" register first ${name} event (${this.eventsByElementId[elementId].length}).`);
         } else {
             events.push(pair);
-            // Log.debug(`[EVENTS] "${elementId}" register another ${name} event (${this.eventsByElementId[elementId].length}).`);
         }
     }
 
@@ -95,7 +96,6 @@ export class PlatformFactory extends NativeFactory {
             }
 
             this.registerEvent(elementId, pair.name, pair.handler);
-            // element[eventName](pair.handler);
         }
     }
 

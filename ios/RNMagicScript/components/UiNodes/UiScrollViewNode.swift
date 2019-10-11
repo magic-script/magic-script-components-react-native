@@ -43,6 +43,10 @@ import SceneKit
         super.setupNode()
     }
 
+    fileprivate weak var verticalScrollBar: UiScrollBarNode?
+    fileprivate weak var horizontalScrollBar: UiScrollBarNode?
+    fileprivate weak var scrollContent: TransformNode?
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
@@ -74,7 +78,10 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return CGSize.zero
+        guard let scrollBounds = scrollBounds else { return CGSize.zero }
+        let width: CGFloat = CGFloat(scrollBounds.max.x - scrollBounds.min.x)
+        let height: CGFloat = CGFloat(scrollBounds.max.y - scrollBounds.min.y)
+        return CGSize(width: width, height: height)
     }
 
     @objc override func updateLayout() {

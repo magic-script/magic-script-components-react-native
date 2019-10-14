@@ -7,16 +7,16 @@ import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
-export class PlatformFactory extends NativeFactory {
+// Events names
+const ON_PRESS_EVENT = 'onPress';
+const ON_CLICK_EVENT = 'onClick';
+const ON_SCROLL_CHANGED_EVENT = 'onScrollChanged';
+const ON_TEXT_CHANGED_EVENT = 'onTextChanged';
+const ON_TOGGLE_CHANGED_EVENT = 'onToggleChanged';
+const ON_VIDEO_PREPARED_EVENT = 'onVideoPrepared';
+const ON_SLIDER_CHANGED_EVENT = 'onSliderChanged';
 
-    // Events names
-    ON_PRESS_EVENT = 'onPress';
-    ON_CLICK_EVENT = 'onClick';
-    ON_SCROLL_CHANGED_EVENT = 'onScrollChanged';
-    ON_TEXT_CHANGED_EVENT = 'onTextChanged';
-    ON_TOGGLE_CHANGED_EVENT = 'onToggleChanged';
-    ON_VIDEO_PREPARED_EVENT = 'onVideoPrepared';
-    ON_SLIDER_CHANGED_EVENT = 'onSliderChanged';
+export class PlatformFactory extends NativeFactory {
 
     constructor(componentMapping) {
         super(componentMapping);

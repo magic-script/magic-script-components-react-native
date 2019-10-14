@@ -76,7 +76,7 @@ class CustomSlider @JvmOverloads constructor(
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
             return false
         }
-        if (width < thumbSize) {
+        if (width <= thumbSize) {
             return false
         }
 

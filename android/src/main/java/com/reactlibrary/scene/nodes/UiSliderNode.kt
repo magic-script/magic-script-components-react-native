@@ -82,7 +82,7 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
     }
 
     override fun setAlignment(props: Bundle) {
-        // according to Lumin we cannot change alignment for progress bar
+        // according to Lumin we cannot change alignment for slider?
     }
 
     private fun setValue(props: Bundle) {

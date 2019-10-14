@@ -39,6 +39,7 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
                     expect(node.canHaveFocus).to(beTrue())
+                    expect(node.isSelected).to(beFalse())
                 }
             }
 
@@ -88,6 +89,29 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     node.update(["height" : referenceHeight])
                     expect(node.height).to(beCloseTo(referenceHeight))
                     expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should not update 'isSelected' prop") {
+                    node.update(["isSelected": true])
+                    expect(node.isSelected).to(beFalse())
+                    node.update(["isSelected": true])
+                    expect(node.isSelected).to(beFalse())
+                }
+            }
+
+            context("when textSize set to zero and height set") {
+                it("labelNode textSize should be calculated based on height") {
+                    node.height = 0.25
+                    node.textSize = 0.0
+                }
+            }
+
+            context("selection") {
+                it("should maintain selection state") {
+                    node.toggleSelection()
+                    expect(node.isSelected).to(beTrue())
+                    node.toggleSelection()
+                    expect(node.isSelected).to(beFalse())
                 }
             }
 

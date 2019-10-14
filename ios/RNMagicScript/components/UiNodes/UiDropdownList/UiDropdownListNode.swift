@@ -31,7 +31,7 @@ class UiDropdownListNode: UiNode {
         didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
     @objc var textSize: CGFloat = 0 {
-        didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
+        didSet { reloadOutline = true; labelNode.textSize = textSize; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var width: CGFloat = 0 {
         didSet { reloadOutline = true; setNeedsLayout() }
@@ -53,17 +53,17 @@ class UiDropdownListNode: UiNode {
     }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
+    @objc public var onSelectionItemChanged: ((_ sender: UiNode,_ selectedItem: UiDropdownListItemNode?) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var gridLayoutNode: UiGridLayoutNode!
-    fileprivate var labelNode: UiLabelNode!
+    fileprivate(set) var labelNode: UiLabelNode!
     fileprivate var iconNode: UiImageNode!
 
     fileprivate var itemsList: Array<SCNNode> = []
-    fileprivate var selectedItem: UiDropdownListItemNode?
-    fileprivate var listVisibilityState: Bool = false
+    fileprivate(set) var selectedItem: UiDropdownListItemNode?
     fileprivate let listGridLayoutNodeId = "dropDownListGridLayout"
-    fileprivate var listGridLayoutNode: UiGridLayoutNode!
+    fileprivate(set) var listGridLayoutNode: UiGridLayoutNode!
 
     fileprivate var reloadOutline: Bool = true
 
@@ -92,7 +92,6 @@ class UiDropdownListNode: UiNode {
     fileprivate func toggleListNodeVisibility() {
         listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(getSize().height / 2), position.z)
         listGridLayoutNode.visible = listGridLayoutNode.visible ? false : true
-        listVisibilityState = listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
 
@@ -249,5 +248,6 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
         sender.toggleSelection()
         selectedItem = sender.isSelected ? sender : nil
         // notify about item selection
+        onSelectionItemChanged?(self, selectedItem)
     }
 }

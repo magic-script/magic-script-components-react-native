@@ -59,13 +59,8 @@ class UiDropdownListItemNode: UiNode {
 
     @objc fileprivate(set) var isSelected: Bool = false
 
-    @objc var isNested: Bool {
-        return false
-    }
-
     fileprivate var gridLayoutNode: UiGridLayoutNode!
     fileprivate var labelNode: UiLabelNode!
-    fileprivate var iconNode: UiImageNode!
 
     fileprivate var backgroundNode: SCNNode!
     fileprivate var backgroundGeometry: SCNPlane!
@@ -76,9 +71,6 @@ class UiDropdownListItemNode: UiNode {
         labelNode = UiLabelNode()
         labelNode.layoutIfNeeded()
 
-        iconNode = UiImageNode(props: ["icon": "chevron-right", "height": 0.04])
-        iconNode.layoutIfNeeded()
-
         gridLayoutNode = UiGridLayoutNode(props: [
             "columns": 2,
             "rows": 1,
@@ -86,9 +78,6 @@ class UiDropdownListItemNode: UiNode {
             "alignment": "center-center"
         ])
         gridLayoutNode.addChild(labelNode)
-        if isNested {
-            gridLayoutNode.addChild(iconNode)
-        }
         gridLayoutNode.layoutIfNeeded()
 
         backgroundGeometry = SCNPlane(width: gridLayoutNode.getSize().width, height: gridLayoutNode.getSize().height)

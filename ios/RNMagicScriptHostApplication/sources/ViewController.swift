@@ -84,6 +84,13 @@ class ViewController: UIViewController {
             UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
             UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
         }
+        dropdownList.onTap = { sender in
+            print("BUKA: dropDown onTap \(sender)")
+        }
+
+        dropdownList.onSelectionItemChanged = { sender, selectedItem in
+            print("BUKA: dropDown onSelectedItemChanged \(sender) \(selectedItem)")
+        }
     }
 
     @discardableResult

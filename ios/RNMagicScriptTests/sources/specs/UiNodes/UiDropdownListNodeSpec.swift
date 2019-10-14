@@ -63,8 +63,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     node.update(["text" : shortReferenceText])
                     expect(node.text).to(equal(shortReferenceText))
 
-//                    let labelNode = node.contentNode.childNodes[1] as! UiLabelNode
-//                    expect(labelNode.text).to(equal(shortReferenceText))
+                    expect(node.labelNode.text).to(equal(shortReferenceText))
                 }
 
                 it("should update 'textColor' prop") {
@@ -73,8 +72,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-//                    let labelNode = node.contentNode.childNodes.first as! UiLabelNode
-//                    expect(labelNode.textColor).to(beCloseTo(referenceTextColor))
+                    expect(node.labelNode.textColor).to(beCloseTo(referenceTextColor))
                 }
 
                 it("should update 'textSize' prop") {
@@ -83,8 +81,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(referenceTextSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
-//                    let labelNode = node.contentNode.childNodes.first as! UiLabelNode
-//                    expect(labelNode.textSize).to(beCloseTo(referenceTextSize))
+                    expect(node.labelNode.textSize).to(beCloseTo(referenceTextSize))
                 }
 
                 it("should update 'width' prop") {
@@ -137,9 +134,81 @@ class UiDropdownListNodeSpec: QuickSpec {
             }
 
             context("focus") {
-                it("should has focus") {
+                it("should maintaing focus state") {
                     node.enterFocus()
                     expect(node.hasFocus).to(beTrue())
+
+                    node.leaveFocus()
+                    expect(node.hasFocus).to(beFalse())
+                }
+
+                context("when entering/leaving focus") {
+                    it("should maintain list visibility") {
+                        node.enterFocus()
+                        expect(node.listGridLayoutNode.visible).to(beTrue())
+
+                        node.leaveFocus()
+                        expect(node.listGridLayoutNode.visible).to(beFalse())
+                    }
+                }
+            }
+
+            context("when item added") {
+                context("when item is DropdownList item") {
+                    it("should add it to the list node") {
+                        let itemNode = UiDropdownListItemNode(props: [:])
+                        node.addChild(itemNode)
+                        expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+
+                        let otherNode = TransformNode(props: [:])
+                        node.addChild(otherNode)
+                        expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+                    }
+                }
+            }
+
+            context("when item removed") {
+                it("should remove it from the list node") {
+                    let itemNode = UiDropdownListItemNode(props: [:])
+                    node.addChild(itemNode)
+                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+
+                    let otherNode = TransformNode(props: [:])
+                    node.removeChild(otherNode)
+                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+
+                    node.removeChild(itemNode)
+                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(0))
+
+                }
+            }
+
+            context("when handling item tap") {
+                it("should maintain selection state - selection") {
+                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    node.handleTap(dummyItemNode)
+
+                    expect(node.selectedItem).to(equal(dummyItemNode))
+                    expect(dummyItemNode.isSelected).to(beTrue())
+                }
+
+                it("should maintain selection state - deselection") {
+                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    node.handleTap(dummyItemNode)
+                    node.handleTap(dummyItemNode)
+
+                    expect(node.selectedItem).to(beNil())
+                    expect(dummyItemNode.isSelected).to(beFalse())
+                }
+
+                it("notify upper layer") {
+                    var upperLayerNotified = false
+                    node.onSelectionItemChanged = { sender, selecctedItem in
+                        upperLayerNotified = true
+                    }
+                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    node.handleTap(dummyItemNode)
+                    expect(upperLayerNotified).to(beTrue())
                 }
             }
         }

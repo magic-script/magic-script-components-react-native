@@ -25,5 +25,7 @@
     <color name="text_edit_border_color">#7f84ab</color>
     <color name="scroll_bar_background">#BF9C9C9C</color>
     <color name="scroll_bar_thumb">#FFECECEC</color>
+    <color name="slider_active_part">#FFF</color>
+    <color name="slider_inactive_part">#BF9C9C9C</color>
     <color name="color_spinner">#c6d8e5</color>
 </resources>

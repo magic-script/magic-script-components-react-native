@@ -16,7 +16,7 @@
 
 import SceneKit
 
-class UiDropdownListItemNode: UiNode {
+@objc open class UiDropdownListItemNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.0235
 
     @objc override var alignment: Alignment {

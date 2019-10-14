@@ -31,6 +31,8 @@
 @class UiTextEditNode;
 @class UiToggleNode;
 @class UiVideoNode;
+@class UiDropdownListNode;
+@class UiDropdownListItemNode;
 
 @interface RCTConvert (Components)
 + (UiButtonNode *)UiButtonNode:(id)json;
@@ -48,5 +50,6 @@
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
-
++ (UiDropdownListNode *)UiDropdownListNode:(id)json;
++ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json;
 @end

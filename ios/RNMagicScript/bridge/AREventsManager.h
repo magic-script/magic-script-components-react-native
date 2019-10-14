@@ -20,6 +20,8 @@
 
 @class UiNode;
 @class UiVideoNode;
+@class UiDropdownListNode;
+@class UiDropdownListItemNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -30,5 +32,6 @@
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
+- (void)onSelectedDropdownListItemChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem;
 
 @end

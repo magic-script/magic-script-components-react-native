@@ -16,7 +16,7 @@
 
 import SceneKit
 
-class UiDropdownListNode: UiNode {
+@objc open class UiDropdownListNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.0167
 
     @objc override var alignment: Alignment {
@@ -53,7 +53,7 @@ class UiDropdownListNode: UiNode {
     }
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
-    @objc public var onSelectionItemChanged: ((_ sender: UiNode,_ selectedItem: UiDropdownListItemNode?) -> (Void))?
+    @objc public var onSelectionItemChanged: ((_ sender: UiDropdownListNode, _ selectedItem: UiDropdownListItemNode?) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var gridLayoutNode: UiGridLayoutNode!

@@ -44,15 +44,15 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
         const val DEFAULT_HEIGHT = 0.018
     }
 
+    init {
+        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+    }
+
     fun setOnSliderChangedListener(listener: (value: Float) -> Unit) {
         (view as CustomSlider).onScrollChangeListener = { value ->
             listener(value)
         }
-    }
-
-    init {
-        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
     override fun provideView(context: Context): View {

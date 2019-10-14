@@ -20,6 +20,13 @@
 		442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */; };
 		442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
 		442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
+		4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
+		4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
+		44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
+		44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
+		44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
+		44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
+		447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -360,6 +367,10 @@
 		442AED5623461BDF000B83AE /* SystemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIcon.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
+		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
+		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
+		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
@@ -770,6 +781,8 @@
 				44AFAC0B232B9BCE005AC8EF /* UiProgressBarNode.swift */,
 				44AFAC11232B9BCE005AC8EF /* UiSliderNode.swift */,
 				44AFAC10232B9BCE005AC8EF /* UiSpinnerNode.swift */,
+				4455654D234C996600301AB3 /* UiScrollBarNode.swift */,
+				44556550234C997300301AB3 /* UiScrollViewNode.swift */,
 				44AFAC06232B9BCE005AC8EF /* UiTextNode.swift */,
 				44AFAC0E232B9BCE005AC8EF /* UiTextEditNode.swift */,
 				44AFAC0A232B9BCE005AC8EF /* UiToggleNode.swift */,
@@ -786,6 +799,7 @@
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
 				44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */,
+				44556553234C9FF800301AB3 /* ScrollDirection.swift */,
 				442AED5623461BDF000B83AE /* SystemIcon.swift */,
 				441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */,
 				44D8FE672336B1A0007FD766 /* TextEntryMode.swift */,
@@ -894,6 +908,7 @@
 				44F0930D232D985A0081FF14 /* UiLineNodeSpec.swift */,
 				44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */,
 				44F09312232D985A0081FF14 /* UiProgressBarNodeSpec.swift */,
+				447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */,
 				44F0930C232D985A0081FF14 /* UiSpinnerNodeSpec.swift */,
 				44F09313232D985A0081FF14 /* UiTextNodeSpec.swift */,
 				44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */,
@@ -1457,6 +1472,7 @@
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
+				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */,
 				44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
@@ -1476,6 +1492,7 @@
 				44AFAD27232BCAE3005AC8EF /* Maths+Extension.swift in Sources */,
 				44AFAD1C232BCAE3005AC8EF /* UiModelNode.swift in Sources */,
 				44AFAD15232BCAE3005AC8EF /* Convert.swift in Sources */,
+				44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
@@ -1485,6 +1502,7 @@
 				44AFAD17232BCAE3005AC8EF /* UiButtonNode.swift in Sources */,
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAD1D232BCAE3005AC8EF /* UiProgressBarNode.swift in Sources */,
+				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				44AFAD23232BCAE3005AC8EF /* UiVideoNode.swift in Sources */,
 				C4BE7BCF234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
 				44AFAD28232BCAE3005AC8EF /* UIImage+Extension.swift in Sources */,
@@ -1535,6 +1553,7 @@
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
+				447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,
 				44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */,
 				44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */,
@@ -1561,6 +1580,7 @@
 				44AFAC60232B9BCF005AC8EF /* ARComponentManager.m in Sources */,
 				44AFAC51232B9BCF005AC8EF /* Maths+Extension.swift in Sources */,
 				44AFAC40232B9BCF005AC8EF /* UiImageNode.swift in Sources */,
+				44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				44AFAC3D232B9BCF005AC8EF /* UiTextNode.swift in Sources */,
 				441EA5A22347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
 				44AFAC4B232B9BCF005AC8EF /* Alignment.swift in Sources */,
@@ -1597,11 +1617,13 @@
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,
+				4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
+				44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				44AFAC44232B9BCF005AC8EF /* UiVideoNode.swift in Sources */,
 				44AFAC5B232B9BCF005AC8EF /* UiNodesManager.swift in Sources */,

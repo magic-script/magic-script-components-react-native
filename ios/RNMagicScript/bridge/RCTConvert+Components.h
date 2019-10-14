@@ -23,6 +23,8 @@
 @class UiLineNode;
 @class UiModelNode;
 @class UiProgressBarNode;
+@class UiScrollBarNode;
+@class UiScrollViewNode;
 @class UiSliderNode;
 @class UiSpinnerNode;
 @class UiTextNode;
@@ -38,6 +40,8 @@
 + (UiLineNode *)UiLineNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
++ (UiScrollBarNode *)UiScrollBarNode:(id)json;
++ (UiScrollViewNode *)UiScrollViewNode:(id)json;
 + (UiSliderNode *)UiSliderNode:(id)json;
 + (UiSpinnerNode *)UiSpinnerNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;

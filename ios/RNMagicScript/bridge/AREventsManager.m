@@ -58,6 +58,7 @@ RCT_EXPORT_MODULE();
     return @[
              @"onPress",
              @"onClick",
+             @"onScrollChanged",
              @"onTextChanged",
              @"onToggleChanged",
              @"onVideoPrepared"
@@ -76,6 +77,14 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
         });
     }
 }

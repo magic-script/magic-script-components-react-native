@@ -58,6 +58,13 @@ class UiDropdownListNode: UiNode {
     fileprivate var gridLayoutNode: UiGridLayoutNode!
     fileprivate var labelNode: UiLabelNode!
     fileprivate var iconNode: UiImageNode!
+
+    fileprivate var itemsList: Array<SCNNode> = []
+    fileprivate var selectedItem: UiDropdownListItemNode?
+    fileprivate var listVisibilityState: Bool = false
+    fileprivate let listGridLayoutNodeId = "dropDownListGridLayout"
+    fileprivate var listGridLayoutNode: UiGridLayoutNode!
+
     fileprivate var reloadOutline: Bool = true
 
     deinit {
@@ -73,6 +80,20 @@ class UiDropdownListNode: UiNode {
         guard hasFocus else { return }
 
         simulateTap()
+        toggleListNodeVisibility()
+    }
+
+    @objc override func leaveFocus() {
+        super.leaveFocus()
+
+        toggleListNodeVisibility()
+    }
+
+    fileprivate func toggleListNodeVisibility() {
+        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(getSize().height / 2), position.z)
+        listGridLayoutNode.visible = listGridLayoutNode.visible ? false : true
+        listVisibilityState = listGridLayoutNode.visible
+        listGridLayoutNode.layoutIfNeeded()
     }
 
     @objc override func setNeedsLayout() {
@@ -117,6 +138,18 @@ class UiDropdownListNode: UiNode {
         gridLayoutNode.layoutIfNeeded()
 
         contentNode.addChildNode(gridLayoutNode)
+
+        listGridLayoutNode = UiGridLayoutNode(props: [
+            "columns": 1,
+            "defaultItemPadding": [0.0, 0.0, 0.0, 0.0],
+            "defaultItemAlignment": "center-left",
+            "alignment": "top-center"
+        ])
+
+        UiNodesManager.instance.registerNode(listGridLayoutNode, nodeId: listGridLayoutNodeId)
+        UiNodesManager.instance.addNodeToRoot(listGridLayoutNodeId)
+        listGridLayoutNode.visible = false
+        listGridLayoutNode.layoutIfNeeded()
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -148,15 +181,16 @@ class UiDropdownListNode: UiNode {
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let buttonToTextHeightMultiplier: CGFloat = 1.1
-        let contentWidth: CGFloat = (width > 0) ? width : gridLayoutNode.getSize().width + buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
-        let contentHeight: CGFloat = (height > 0) ? height : buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
+        let dropDownToTextHeightMultiplier: CGFloat = 0.75
+        let contentWidth: CGFloat = (width > 0) ? width : gridLayoutNode.getSize().width + dropDownToTextHeightMultiplier * gridLayoutNode.getSize().height
+        let contentHeight: CGFloat = (height > 0) ? height : dropDownToTextHeightMultiplier * gridLayoutNode.getSize().height
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {
         labelNode.layoutIfNeeded()
         gridLayoutNode.layoutIfNeeded()
+        listGridLayoutNode.updateLayout()
         if reloadOutline {
             reloadOutline = false
             reloadOutlineNode()
@@ -183,9 +217,37 @@ class UiDropdownListNode: UiNode {
         outlineNode?.removeFromParentNode()
 
         let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
-        let thickness: CGFloat = 0.05 * min(size.width, size.height)
+        let thickness: CGFloat = 0.045 * min(size.width, size.height)
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)
+    }
+
+    @objc override func addChild(_ child: TransformNode) {
+        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+        itemsList.append(dropDownListItem)
+        dropDownListItem.tapHandler = self
+        listGridLayoutNode.addChild(dropDownListItem)
+        setNeedsLayout()
+    }
+
+    @objc override func removeChild(_ child: TransformNode) {
+        itemsList.removeAll { node -> Bool in
+            return node == child
+        }
+        listGridLayoutNode.removeChild(child)
+        listGridLayoutNode.layoutIfNeeded()
+        setNeedsLayout()
+    }
+}
+
+extension UiDropdownListNode: DropdownListItemTapHandling {
+    func handleTap(_ sender: UiDropdownListItemNode) {
+        if sender != selectedItem {
+            selectedItem?.toggleSelection()
+        }
+        sender.toggleSelection()
+        selectedItem = sender.isSelected ? sender : nil
+        // notify about item selection
     }
 }

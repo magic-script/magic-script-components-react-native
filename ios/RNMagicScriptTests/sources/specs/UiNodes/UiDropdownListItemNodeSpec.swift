@@ -60,9 +60,6 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                 it("should update 'text' prop") {
                     node.update(["text" : shortReferenceText])
                     expect(node.text).to(equal(shortReferenceText))
-
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.text).to(equal(shortReferenceText))
                 }
 
                 it("should update 'textColor' prop") {
@@ -70,29 +67,13 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     node.update(["textColor" : referenceTextColor.toArrayOfFloat])
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.isLayoutNeeded).to(beTrue())
-
-                    let labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.textColor).to(beCloseTo(referenceTextColor))
                 }
 
-                it("should clamp and update 'textSize' prop") {
-                    let defaultTextSize: CGFloat = 0.0167
-                    node.textSize = defaultTextSize
-                    node.layoutIfNeeded()
-
-                    var referenceTextSize = 1.0
+                it("should update 'textSize' prop") {
+                    let referenceTextSize = 11.0
                     node.update(["textSize" : referenceTextSize])
-                    expect(node.textSize).to(beCloseTo(defaultTextSize * 2))
+                    expect(node.textSize).to(beCloseTo(referenceTextSize))
                     expect(node.isLayoutNeeded).to(beTrue())
-                    var labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.textSize).to(beCloseTo(defaultTextSize * 2))
-
-                    referenceTextSize = 0.0
-                    node.update(["textSize" : referenceTextSize])
-                    expect(node.textSize).to(beCloseTo(defaultTextSize / 2))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                    labelNode = node.contentNode.childNodes.first as! LabelNode
-                    expect(labelNode.textSize).to(beCloseTo(defaultTextSize / 2))
                 }
 
                 it("should update 'width' prop") {

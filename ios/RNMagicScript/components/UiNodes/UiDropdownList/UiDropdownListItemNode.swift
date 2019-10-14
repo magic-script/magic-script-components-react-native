@@ -39,6 +39,7 @@ class UiDropdownListItemNode: UiNode {
     @objc var height: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
+    var tapHandler: DropdownListItemTapHandling?
 
     @objc override var canHaveFocus: Bool {
         return true
@@ -47,6 +48,7 @@ class UiDropdownListItemNode: UiNode {
     @objc override func enterFocus() {
         super.enterFocus()
         guard hasFocus else { return }
+        tapHandler?.handleTap(self)
     }
 
     @objc override func setNeedsLayout() {
@@ -55,6 +57,8 @@ class UiDropdownListItemNode: UiNode {
         gridLayoutNode.setNeedsLayout()
     }
 
+    @objc fileprivate(set) var isSelected: Bool = false
+
     @objc var isNested: Bool {
         return false
     }
@@ -62,6 +66,9 @@ class UiDropdownListItemNode: UiNode {
     fileprivate var gridLayoutNode: UiGridLayoutNode!
     fileprivate var labelNode: UiLabelNode!
     fileprivate var iconNode: UiImageNode!
+
+    fileprivate var backgroundNode: SCNNode!
+    fileprivate var backgroundGeometry: SCNPlane!
 
     @objc override func setupNode() {
         super.setupNode()
@@ -78,13 +85,19 @@ class UiDropdownListItemNode: UiNode {
             "defaultItemPadding": [0.005, 0.005, 0.005, 0.005],
             "alignment": "center-center"
         ])
-        gridLayoutNode.setDebugMode(true)
         gridLayoutNode.addChild(labelNode)
         if isNested {
             gridLayoutNode.addChild(iconNode)
         }
         gridLayoutNode.layoutIfNeeded()
 
+        backgroundGeometry = SCNPlane(width: gridLayoutNode.getSize().width, height: gridLayoutNode.getSize().height)
+        backgroundGeometry.firstMaterial?.lightingModel = .constant
+        backgroundGeometry.firstMaterial?.isDoubleSided = false
+        backgroundGeometry.firstMaterial?.diffuse.contents = UIColor(red: 236.0/256.0, green: 240.0/256.0, blue: 241.0/256.0, alpha: 0.5)
+        backgroundNode = SCNNode(geometry: backgroundGeometry)
+
+        gridLayoutNode.renderingOrder = 1
         contentNode.addChildNode(gridLayoutNode)
     }
 
@@ -122,6 +135,14 @@ class UiDropdownListItemNode: UiNode {
     @objc override func updateLayout() {
         labelNode.layoutIfNeeded()
         gridLayoutNode.layoutIfNeeded()
+
+        if isSelected {
+            backgroundGeometry.width = gridLayoutNode.getSize().width
+            backgroundGeometry.height = gridLayoutNode.getSize().height
+            contentNode.addChildNode(backgroundNode)
+        } else {
+            backgroundNode.removeFromParentNode()
+        }
     }
 
     fileprivate func updateLabelTextSizeBasedOnHeight() {
@@ -131,5 +152,11 @@ class UiDropdownListItemNode: UiNode {
         }
 
         labelNode.textSize = max(0, 0.333 * height)
+    }
+
+    func toggleSelection() {
+        isSelected = !isSelected
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 }

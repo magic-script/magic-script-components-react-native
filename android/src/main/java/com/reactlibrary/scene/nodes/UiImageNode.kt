@@ -54,19 +54,20 @@ open class UiImageNode(initProps: ReadableMap,
     }
 
     override fun setupView() {
-        // default dimension
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            widthPx = Utils.metersToPx(widthInMeters, context)
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
+        val heightPx = if (properties.containsKey(PROP_HEIGHT)) {
             val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(heightInMeters, context)
+            Utils.metersToPx(heightInMeters, context)
+        } else {
+            ViewGroup.LayoutParams.WRAP_CONTENT
         }
+
+        val widthPx = if (properties.containsKey(PROP_WIDTH)) {
+            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
+            Utils.metersToPx(widthInMeters, context)
+        } else {
+            heightPx // for icons support
+        }
+
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 

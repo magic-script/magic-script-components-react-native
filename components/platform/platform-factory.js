@@ -8,6 +8,16 @@ import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
 export class PlatformFactory extends NativeFactory {
+
+    // Events names
+    ON_PRESS_EVENT = 'onPress';
+    ON_CLICK_EVENT = 'onClick';
+    ON_SCROLL_CHANGED_EVENT = 'onScrollChanged';
+    ON_TEXT_CHANGED_EVENT = 'onTextChanged';
+    ON_TOGGLE_CHANGED_EVENT = 'onToggleChanged';
+    ON_VIDEO_PREPARED_EVENT = 'onVideoPrepared';
+    ON_SLIDER_CHANGED_EVENT = 'onSliderChanged';
+
     constructor(componentMapping) {
         super(componentMapping);
 
@@ -27,12 +37,13 @@ export class PlatformFactory extends NativeFactory {
         this.eventsByElementId = {};
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
-        this.startListeningEvent('onPress');
-        this.startListeningEvent('onClick');
-        this.startListeningEvent('onScrollChanged');
-        this.startListeningEvent('onTextChanged');
-        this.startListeningEvent('onToggleChanged');
-        this.startListeningEvent('onVideoPrepared');
+        this.startListeningEvent(ON_PRESS_EVENT);
+        this.startListeningEvent(ON_CLICK_EVENT);
+        this.startListeningEvent(ON_SCROLL_CHANGED_EVENT);
+        this.startListeningEvent(ON_TEXT_CHANGED_EVENT);
+        this.startListeningEvent(ON_TOGGLE_CHANGED_EVENT);
+        this.startListeningEvent(ON_VIDEO_PREPARED_EVENT);
+        this.startListeningEvent(ON_SLIDER_CHANGED_EVENT);
     }
 
     startListeningEvent(eventName) {
@@ -54,16 +65,18 @@ export class PlatformFactory extends NativeFactory {
     registerEvent(elementId, name, handler) {
         if (elementId === undefined) { return; }
 
-        if (name === 'onClick' || name === 'onPress') {
+        if (name === ON_CLICK_EVENT || name === ON_PRESS_EVENT) {
             this.componentManager.addOnPressEventHandler(elementId);
-        } else if (name === 'onScrollChanged') {
+        } else if (name === ON_SCROLL_CHANGED_EVENT) {
             this.componentManager.addOnScrollChangedEventHandler(elementId);
-        } else if (name === 'onTextChanged') {
+        } else if (name === ON_TEXT_CHANGED_EVENT) {
             this.componentManager.addOnTextChangedEventHandler(elementId);
-        } else if (name === 'onToggleChanged') {
+        } else if (name === ON_TOGGLE_CHANGED_EVENT) {
             this.componentManager.addOnToggleChangedEventHandler(elementId);
-        } else if (name === 'onVideoPrepared') {
+        } else if (name === ON_VIDEO_PREPARED_EVENT) {
             this.componentManager.addOnVideoPreparedEventHandler(elementId);
+        } else if (name === ON_SLIDER_CHANGED_EVENT) {
+            this.componentManager.addOnSliderChangedEventHandler(elementId);
         }
 
         const pair = { name, handler };

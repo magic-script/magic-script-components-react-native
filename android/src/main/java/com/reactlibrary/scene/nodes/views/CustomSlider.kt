@@ -24,7 +24,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat
 import com.reactlibrary.R
 
 class CustomSlider @JvmOverloads constructor(
@@ -35,9 +35,12 @@ class CustomSlider @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
-    var value = 0.5F
+    var min = 0F
+    var max = 1F
+
+    var value = 0F
         set(value) {
-            field = value.coerceIn(0F, 1F)
+            field = value
             invalidate()
         }
 
@@ -51,13 +54,16 @@ class CustomSlider @JvmOverloads constructor(
 
     private val bgPaint = Paint(ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = getColor(context, R.color.scroll_bar_background)
+        color = ContextCompat.getColor(context, R.color.slider_inactive_part)
     }
 
     private val thumbPaint = Paint(ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = getColor(context, R.color.scroll_bar_thumb)
+        color = ContextCompat.getColor(context, R.color.slider_active_part)
     }
+
+    // reusing instance in onDraw() method for better performance
+    private val rect = RectF()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -70,10 +76,16 @@ class CustomSlider @JvmOverloads constructor(
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
             return false
         }
-        if (width > thumbSize / 2) {
-            value = event.x / (width - thumbSize / 2)
-            onScrollChangeListener?.invoke(value)
+        if (width < thumbSize) {
+            return false
         }
+
+        // touch position normalized to touchable area
+        val touchPos = event.x.coerceIn(thumbSize / 2, width.toFloat() - thumbSize / 2)
+        val offset = (touchPos - thumbSize / 2) / (width - thumbSize) // [0;1]
+        value = min + offset * (max - min)
+        onScrollChangeListener?.invoke(value)
+
         return true
     }
 
@@ -81,18 +93,18 @@ class CustomSlider @JvmOverloads constructor(
         val thumbPos = getThumbCenterX()
 
         // left side background
-        val left = thumbSize / 2
-        val right = thumbPos
-        val top = (thumbSize - bgHeight) / 2
-        val bottom = top + bgHeight
-        val bounds = RectF(left, top, right, bottom)
+        rect.left = thumbSize / 2
+        rect.right = thumbPos
+        rect.top = (thumbSize - bgHeight) / 2
+        rect.bottom = rect.top + bgHeight
+
         val radius = bgHeight / 2
-        canvas.drawRoundRect(bounds, radius, radius, thumbPaint)
+        canvas.drawRoundRect(rect, radius, radius, thumbPaint)
 
         // right side background
-        bounds.left = bounds.right
-        bounds.right = width - thumbSize / 2
-        canvas.drawRoundRect(bounds, radius, radius, bgPaint)
+        rect.left = rect.right
+        rect.right = width - thumbSize / 2
+        canvas.drawRoundRect(rect, radius, radius, bgPaint)
     }
 
     private fun drawThumb(canvas: Canvas) {
@@ -101,9 +113,7 @@ class CustomSlider @JvmOverloads constructor(
     }
 
     private fun getThumbCenterX(): Float {
-        val startX = thumbSize / 2
-        val offsetX = (width - thumbSize) * value
-        return startX + offsetX
+        val normalizedValue = if (max - min > 0) (value - min) / (max - min) else 0F // [0;1]
+        return thumbSize / 2 + normalizedValue * (width - thumbSize)
     }
-
 }

@@ -52,6 +52,7 @@ import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
+import com.reactlibrary.scene.nodes.UiSliderNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
@@ -211,6 +212,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createSliderNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiSliderNode(props, context, viewRenderableLoader), nodeId));
+    }
+
+    @ReactMethod
     public void createSpinnerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiSpinnerNode(props, context, viewRenderableLoader), nodeId));
     }
@@ -349,7 +355,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof VideoNode) {
-                ((VideoNode) node).setOnVideoPreparedListener(()->{
+                ((VideoNode) node).setOnVideoPreparedListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     sendEvent(EVENT_VIDEO_PREPARED, params);

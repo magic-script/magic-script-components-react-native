@@ -70,32 +70,31 @@ class ViewController: UIViewController {
 //        setupDefaultIconsTest()
         let scrollViewId: String = "scroll_view"
         let scrollBarId: String = "scroll_bar"
-        scrollView = createComponent(["debug": true], nodeId: scrollViewId)
+        scrollView = createComponent([
+            "alignment": "center-center",
+            "debug": true,
+            "scrollBounds": ["min": [-0.25,-0.45,-0.1], "max": [0.25,0.45,0.1]]
+        ], nodeId: scrollViewId)
         scrollBar = createComponent(["debug": false], nodeId: scrollBarId, parentId: scrollViewId)
+        createGridWithIcons(parentId: scrollViewId)
+
         scrollView.layoutIfNeeded()
         scrollBar.layoutIfNeeded()
     }
 
-    fileprivate func setupDefaultIconsTest() {
+    fileprivate func createGridWithIcons(parentId: String) {
 
-        let grid = UiGridLayoutNode(props: [
-            "columns": 14,
-            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "localPosition": [0, 0.5, 0],
-            "alignment": "top-center"
-        ])
         let gridId = "grid"
-        UiNodesManager.instance.registerNode(grid, nodeId: gridId)
-        UiNodesManager.instance.addNodeToRoot(gridId)
+        let grid: UiGridLayoutNode = createComponent([
+            "columns": 4,
+            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
+            "localPosition": [0, 0, 0],
+            "alignment": "top-center"
+        ], nodeId: gridId, parentId: parentId)
 
         SystemIcon.names.enumerated().forEach { (index, name) in
-            let icon = UiImageNode(props: [
-                "icon": name,
-                "height": 0.04,
-            ])
             let nodeId: String = "icon_\(index)"
-            UiNodesManager.instance.registerNode(icon, nodeId: nodeId)
-            UiNodesManager.instance.addNode(nodeId, toParent: gridId)
+            let _: UiImageNode = createComponent(["icon": name, "height": 0.04], nodeId: nodeId, parentId: gridId)
         }
 
         grid.layoutIfNeeded()

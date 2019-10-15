@@ -153,6 +153,11 @@ class Convert {
         return ScrollDirection(rawValue: scrollDirection)
     }
 
+    static func toOrientation(_ value: Any?) -> Orientation? {
+        guard let orientation = value as? String else { return nil }
+        return Orientation(rawValue: orientation)
+    }
+
     static func toTextEntryMode(_ value: Any?) -> TextEntryMode? {
         guard let textEntryMode = value as? String else { return nil }
         return TextEntryMode(rawValue: textEntryMode)

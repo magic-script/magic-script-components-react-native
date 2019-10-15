@@ -58,7 +58,7 @@ abstract class TransformNode(
          * Indicates how often we measure bounding and (if necessary)
          * refresh alignment. Used only when [useContentNodeAlignment].
          */
-        private const val ALIGNMENT_INTERVAL = 0.1F // in seconds
+        private const val ALIGNMENT_INTERVAL = 0.05F // in seconds
     }
 
     /**
@@ -108,6 +108,10 @@ abstract class TransformNode(
      */
     open fun addContent(child: Node) {
         contentNode.addChild(child)
+    }
+
+    open fun removeContent(child: Node) {
+        contentNode.removeChild(child)
     }
 
     /**

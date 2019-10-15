@@ -45,6 +45,8 @@ abstract class UiNode(
     companion object {
         // properties
         const val PROP_ENABLED = "enabled"
+
+        private const val COLLISION_SHAPE_DELAY = 120L
     }
 
     var clickListener: (() -> Unit)? = null
@@ -56,6 +58,7 @@ abstract class UiNode(
 
     private var shouldRebuild = false
     private var loadingView = false
+    private var validCollisionShape = false
 
     init {
         // set default values of properties
@@ -92,7 +95,7 @@ abstract class UiNode(
         }
     }
 
-    // Returning the bounds only after it's accurate, because the ARCore calculates
+    // Returning the bounds only after it's valid, because the ARCore calculates
     // collision shape "in steps" and at the beginning it's equal to 1m x 1m,
     // which is usually incorrect and cause layouts artifacts.
     override fun getContentBounding(): Bounding {
@@ -100,7 +103,7 @@ abstract class UiNode(
         val offsetY = contentNode.localPosition.y
 
         val collShape = contentNode.collisionShape
-        if (collShape is Box && (collShape.size.x != 1.0F || collShape.size.y != 1.0F)) {
+        if (collShape is Box && validCollisionShape) {
             return Utils.calculateBoundsOfNode(contentNode)
         }
         return Bounding(offsetX, offsetY, offsetX, offsetY)
@@ -165,7 +168,15 @@ abstract class UiNode(
         )
         viewRenderableLoader.loadRenderable(config) { result ->
             if (result is RenderableResult.Success) {
+                validCollisionShape = false
                 contentNode.renderable = result.renderable
+                view.postDelayed({
+                    val collShape = contentNode.collisionShape
+                    if (collShape is Box) {
+                        logMessage("coll shape size known? = ${collShape.size}")
+                    }
+                    validCollisionShape = true
+                }, COLLISION_SHAPE_DELAY)
                 loadingView = false
             } else {
                 loadingView = false

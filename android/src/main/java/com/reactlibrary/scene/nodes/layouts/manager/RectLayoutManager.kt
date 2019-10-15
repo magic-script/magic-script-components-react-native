@@ -6,6 +6,8 @@ import com.reactlibrary.scene.nodes.props.Padding
 
 interface RectLayoutManager: LayoutManager {
 
+    var parentSize: Pair<Float, Float>
+
     var itemPadding: Padding
 
     var itemHorizontalAlignment: Alignment.HorizontalAlignment

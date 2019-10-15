@@ -45,7 +45,6 @@ class UiLabelNode: UiNode {
     @objc override func setupNode() {
         super.setupNode()
 
-        alignment = Alignment.centerCenter
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
         labelNode.textAlignment = .center

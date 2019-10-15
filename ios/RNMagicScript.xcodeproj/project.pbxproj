@@ -205,6 +205,9 @@
 		C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */; };
 		C4C114D22347375D00E80044 /* SliderInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C114D12347375D00E80044 /* SliderInputView.swift */; };
 		C4C114D32347375D00E80044 /* SliderInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C114D12347375D00E80044 /* SliderInputView.swift */; };
+		C4C3D7492355D3E500ECEEDA /* TapSimulating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */; };
+		C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */; };
+		C4C3D74C2355D72A00ECEEDA /* UiLabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */; };
 		C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417A23338D20008D5124 /* VideoAction.swift */; };
 		C4D5417C23338D82008D5124 /* VideoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417A23338D20008D5124 /* VideoAction.swift */; };
 		C4D5417E23338E05008D5124 /* VideoViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417D23338E05008D5124 /* VideoViewMode.swift */; };
@@ -516,6 +519,8 @@
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
 		C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		C4C114D12347375D00E80044 /* SliderInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderInputView.swift; sourceTree = "<group>"; };
+		C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapSimulating.swift; sourceTree = "<group>"; };
+		C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNodeSpec.swift; sourceTree = "<group>"; };
 		C4D5417A23338D20008D5124 /* VideoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAction.swift; sourceTree = "<group>"; };
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
@@ -841,6 +846,7 @@
 				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
 				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
 				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
+				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -939,6 +945,7 @@
 				C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */,
 				C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */,
 				C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */,
+				C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -1510,6 +1517,7 @@
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */,
+				C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */,
 				44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
@@ -1591,6 +1599,7 @@
 				C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
+				C4C3D74C2355D72A00ECEEDA /* UiLabelNodeSpec.swift in Sources */,
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
@@ -1609,6 +1618,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44AFAC45232B9BCF005AC8EF /* UiTextEditNode.swift in Sources */,
+				C4C3D7492355D3E500ECEEDA /* TapSimulating.swift in Sources */,
 				44AFAC47232B9BCF005AC8EF /* UiSpinnerNode.swift in Sources */,
 				44AFAC5C232B9BCF005AC8EF /* Convert.swift in Sources */,
 				44AFAC4F232B9BCF005AC8EF /* ImageAssets.swift in Sources */,

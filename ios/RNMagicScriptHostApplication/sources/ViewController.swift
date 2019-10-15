@@ -67,7 +67,7 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
     fileprivate func setupTests() {
-        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.25, 0], "textSize": 0.0235])
+        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.25, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
         let dropdownListId = "dropdownListId"
         UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
         UiNodesManager.instance.addNodeToRoot(dropdownListId)

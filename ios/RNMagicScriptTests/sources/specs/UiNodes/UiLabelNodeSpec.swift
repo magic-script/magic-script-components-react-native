@@ -12,21 +12,22 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import Quick
 import Nimble
 import SceneKit
 @testable import RNMagicScriptHostApplication
 
-class UiDropdownListItemNodeSpec: QuickSpec {
+class UiLabelNodeSpec: QuickSpec {
     override func spec() {
-        describe("UiDropdownListItemNode") {
-            var node: UiDropdownListItemNode!
+        describe("UiLabelNode") {
+            var node: UiLabelNode!
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiDropdownListItemNode(props: [:])
+                node = UiLabelNode(props: [:])
+                node.layoutIfNeeded()
             }
 
             context("initial properties") {
@@ -35,11 +36,10 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     expect(node.text).to(beNil())
                     let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
+                    let referenceIconColor = UIColor.white
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
-                    expect(node.canHaveFocus).to(beTrue())
-                    expect(node.isSelected).to(beFalse())
                 }
             }
 
@@ -61,6 +61,9 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                 it("should update 'text' prop") {
                     node.update(["text" : shortReferenceText])
                     expect(node.text).to(equal(shortReferenceText))
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.text).to(equal(shortReferenceText))
                 }
 
                 it("should update 'textColor' prop") {
@@ -68,6 +71,9 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     node.update(["textColor" : referenceTextColor.toArrayOfFloat])
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.textColor).to(beCloseTo(referenceTextColor))
                 }
 
                 it("should update 'textSize' prop") {
@@ -75,6 +81,9 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     node.update(["textSize" : referenceTextSize])
                     expect(node.textSize).to(beCloseTo(referenceTextSize))
                     expect(node.isLayoutNeeded).to(beTrue())
+
+                    let labelNode = node.contentNode.childNodes.first as! LabelNode
+                    expect(labelNode.textSize).to(beCloseTo(referenceTextSize))
                 }
 
                 it("should update 'width' prop") {
@@ -90,52 +99,16 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     expect(node.height).to(beCloseTo(referenceHeight))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
-
-                it("should not update 'isSelected' prop") {
-                    node.update(["isSelected": true])
-                    expect(node.isSelected).to(beFalse())
-                    node.update(["isSelected": true])
-                    expect(node.isSelected).to(beFalse())
-                }
-
-
-                context("when updateing 'maxCharacterLimit' prop") {
-                    it("should update stored value") {
-                        let referenceHeight = 11
-                        node.update(["maxCharacterLimit" : referenceHeight])
-                        expect(node.maxCharacterLimit).to(equal(referenceHeight))
-                        expect(node.isLayoutNeeded).to(beTrue())
-                    }
-
-                    it("should update label text according") {
-                        let referenceHeight = 11
-                        node.update(["maxCharacterLimit" : referenceHeight])
-                    }
-                }
             }
 
-            context("when textSize set to zero and height set") {
-                it("labelNode textSize should be calculated based on height") {
-                    node.height = 0.25
-                    node.textSize = 0.0
-                }
-            }
-
-            context("selection") {
-                it("should maintain selection state") {
-                    node.toggleSelection()
-                    expect(node.isSelected).to(beTrue())
-                    node.toggleSelection()
-                    expect(node.isSelected).to(beFalse())
-                }
-            }
-
-            context("focus") {
-                it("should has focus") {
-                    node.enterFocus()
-                    expect(node.hasFocus).to(beTrue())
+            context("when asked for size") {
+                it("should calculate return it based on width and height") {
+                    node.update(["width": 1.75, "height" : 0.25])
+                    /* correctness of calculation should be checked in spec for derived classes */
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1.75, height: 0.25)))
                 }
             }
         }
     }
 }
+

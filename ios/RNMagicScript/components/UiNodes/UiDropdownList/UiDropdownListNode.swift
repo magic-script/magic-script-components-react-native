@@ -39,18 +39,25 @@ import SceneKit
     @objc var height: CGFloat = 0 {
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
-    fileprivate var _roundness: CGFloat = 1.0
-    @objc var roundness: CGFloat {
-        get { return _roundness }
-        set {
-            let clampedValue: CGFloat = max(0, min(newValue, 1.0))
-            if clampedValue != _roundness {
-                _roundness = clampedValue
-                reloadOutline = true
-                setNeedsLayout()
+    fileprivate var roundness: CGFloat = 1.0
+    @objc var maxHeight: CGFloat = 0.0 {
+        didSet { listGridLayoutNode.update(["height" : maxHeight]); setNeedsLayout() }
+    }
+    @objc var maxCharacterLimit: Int = 0 {
+        didSet {
+            itemsList.forEach { (node: UiDropdownListItemNode) in
+                node.maxCharacterLimit = maxCharacterLimit
             }
+            setNeedsLayout()
         }
     }
+    @objc var multiSelectMode: Bool = false {
+        didSet {
+            // multiselect logic
+            setNeedsLayout()
+        }
+    }
+    @objc var listFont: UIFont = UIFont.systemFont(ofSize: 14.0) 
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onSelectionItemChanged: ((_ sender: UiDropdownListNode, _ selectedItem: UiDropdownListItemNode?) -> (Void))?
@@ -60,7 +67,7 @@ import SceneKit
     fileprivate(set) var labelNode: UiLabelNode!
     fileprivate var iconNode: UiImageNode!
 
-    fileprivate var itemsList: Array<SCNNode> = []
+    fileprivate var itemsList: Array<UiDropdownListItemNode> = []
     fileprivate(set) var selectedItem: UiDropdownListItemNode?
     fileprivate let listGridLayoutNodeId = "dropDownListGridLayout"
     fileprivate(set) var listGridLayoutNode: UiGridLayoutNode!
@@ -90,8 +97,8 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(getSize().height / 2), position.z)
-        listGridLayoutNode.visible = listGridLayoutNode.visible ? false : true
+        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(listGridLayoutNode.getSize().height / 2 - getSize().height), position.z)
+        listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
 
@@ -101,23 +108,9 @@ import SceneKit
         gridLayoutNode.setNeedsLayout()
     }
 
-    @objc func simulateTap() {
-        assert(enabled, "Button must be enabled in order to tap it!")
-        onTap?(self)
-        let initialPosition = contentNode.position
-        let animation = CABasicAnimation(keyPath: "position.z")
-        animation.fromValue = initialPosition.z
-        animation.toValue = initialPosition.z - 0.05
-        animation.duration = 0.1
-        animation.autoreverses = true
-        animation.repeatCount = 1
-        contentNode.addAnimation(animation, forKey: "button_tap")
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 
-        alignment = Alignment.centerCenter
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
         labelNode.layoutIfNeeded()
@@ -145,8 +138,8 @@ import SceneKit
             "alignment": "top-center"
         ])
 
-        UiNodesManager.instance.registerNode(listGridLayoutNode, nodeId: listGridLayoutNodeId)
-        UiNodesManager.instance.addNodeToRoot(listGridLayoutNodeId)
+        contentNode.addChildNode(listGridLayoutNode)
+
         listGridLayoutNode.visible = false
         listGridLayoutNode.layoutIfNeeded()
     }
@@ -174,8 +167,16 @@ import SceneKit
             self.height = height
         }
 
-        if let roundness = Convert.toCGFloat(props["roundness"]) {
-            self.roundness = roundness
+        if let maxHeight = Convert.toCGFloat(props["maxHeight"]) {
+            self.maxHeight = maxHeight
+        }
+
+        if let maxCharacterLimit = Convert.toInt(props["maxCharacterLimit"]) {
+            self.maxCharacterLimit = maxCharacterLimit
+        }
+
+        if let multiSelectMode = Convert.toBool(props["multiSelectMode"]) {
+            self.multiSelectMode = multiSelectMode
         }
     }
 
@@ -224,6 +225,7 @@ import SceneKit
 
     @objc override func addChild(_ child: TransformNode) {
         guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+        dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
         dropDownListItem.tapHandler = self
         listGridLayoutNode.addChild(dropDownListItem)
@@ -231,11 +233,12 @@ import SceneKit
     }
 
     @objc override func removeChild(_ child: TransformNode) {
+        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
         itemsList.removeAll { node -> Bool in
-            return node == child
+            return node == dropDownListItem
         }
+        dropDownListItem.tapHandler = nil
         listGridLayoutNode.removeChild(child)
-        listGridLayoutNode.layoutIfNeeded()
         setNeedsLayout()
     }
 }
@@ -251,3 +254,5 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
         onSelectionItemChanged?(self, selectedItem)
     }
 }
+
+extension UiDropdownListNode: TapSimulating { }

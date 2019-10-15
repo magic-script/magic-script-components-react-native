@@ -25,7 +25,7 @@ import SceneKit
     }
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue; setNeedsLayout() }
+        set { labelNode.text = alignTextLenght(newValue, maxCharacterLimit); setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; setNeedsLayout() }
@@ -39,6 +39,22 @@ import SceneKit
     @objc var height: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
+    @objc var maxCharacterLimit: Int = 0 {
+        didSet {
+            labelNode.text = alignTextLenght(text, maxCharacterLimit)
+            setNeedsLayout()
+        }
+    }
+
+    fileprivate func alignTextLenght(_ text: String?, _ maxCharacterLimit: Int) -> String? {
+        guard let text = text else { return nil }
+        if text.count > maxCharacterLimit && maxCharacterLimit > 0 {
+            let trailingCharacters = "..."
+            return text.prefix(maxCharacterLimit) + trailingCharacters
+        }
+        return text
+    }
+
     var tapHandler: DropdownListItemTapHandling?
 
     @objc override var canHaveFocus: Bool {
@@ -60,7 +76,7 @@ import SceneKit
     @objc fileprivate(set) var isSelected: Bool = false
 
     fileprivate var gridLayoutNode: UiGridLayoutNode!
-    fileprivate var labelNode: UiLabelNode!
+    fileprivate(set) var labelNode: UiLabelNode!
 
     fileprivate var backgroundNode: SCNNode!
     fileprivate var backgroundGeometry: SCNPlane!
@@ -111,6 +127,10 @@ import SceneKit
 
         if let height = Convert.toCGFloat(props["height"]) {
             self.height = height
+        }
+
+        if let maxCharacterLimit = Convert.toInt(props["maxCharacterLimit"]) {
+            self.maxCharacterLimit = maxCharacterLimit
         }
     }
 

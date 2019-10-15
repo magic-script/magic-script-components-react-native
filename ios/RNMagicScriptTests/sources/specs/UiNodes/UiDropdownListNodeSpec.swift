@@ -39,8 +39,12 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
-                    expect(node.roundness).to(beCloseTo(1.0))
                     expect(node.canHaveFocus).to(beTrue())
+                    expect(node.maxHeight).to(beCloseTo(0.0))
+                    expect(node.maxCharacterLimit).to(equal(0))
+                    expect(node.multiSelectMode).to(beFalse())
+                    let referenceFont = UIFont.systemFont(ofSize: 14.0)
+                    expect(node.listFont).to(equal(referenceFont))
                 }
             }
 
@@ -98,38 +102,38 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'roundness' prop") {
-                    let referenceRoundness = 0.75
-                    node.update(["roundness" : referenceRoundness])
-                    expect(node.roundness).to(beCloseTo(referenceRoundness))
+                it("should update 'maxHeight' prop") {
+                    let referenceHeight = 3.75
+                    node.update(["maxHeight" : referenceHeight])
+                    expect(node.maxHeight).to(beCloseTo(referenceHeight))
                     expect(node.isLayoutNeeded).to(beTrue())
-                    node.layoutIfNeeded()
-                    node.update(["roundness" : referenceRoundness])
-                    expect(node.roundness).to(beCloseTo(referenceRoundness))
-                    expect(node.isLayoutNeeded).to(beFalse())
                 }
 
-                it("should clamp and update 'roundness' prop") {
-                    node.roundness = 0.5
-                    node.layoutIfNeeded()
+                context("when updatin 'maxCharacterLimit' prop") {
+                    it("should maintain the value ") {
+                        let referenceMaxCharacterLimit = 11
+                        node.update(["maxCharacterLimit" : referenceMaxCharacterLimit])
+                        expect(node.maxCharacterLimit).to(equal(referenceMaxCharacterLimit))
+                        expect(node.isLayoutNeeded).to(beTrue())
+                    }
 
-                    let referenceRoundness1 = 2.75
-                    node.update(["roundness" : referenceRoundness1])
-                    expect(node.roundness).to(beCloseTo(1.0))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                    node.layoutIfNeeded()
-                    node.update(["roundness" : referenceRoundness1])
-                    expect(node.roundness).to(beCloseTo(1.0))
-                    expect(node.isLayoutNeeded).to(beFalse())
+                    it("should propagate new value to item nodes") {
+                        let itemNode1 = UiDropdownListItemNode(props: [:])
+                        node.addChild(itemNode1)
+                        let itemNode2 = UiDropdownListItemNode(props: [:])
+                        node.addChild(itemNode2)
 
-                    let referenceRoundness2 = -2.75
-                    node.update(["roundness" : referenceRoundness2])
-                    expect(node.roundness).to(beCloseTo(0.0))
+                        let referenceMaxCharacterLimit = 11
+                        node.update(["maxCharacterLimit" : referenceMaxCharacterLimit])
+                        expect(itemNode1.maxCharacterLimit).to(equal(referenceMaxCharacterLimit))
+                        expect(itemNode2.maxCharacterLimit).to(equal(referenceMaxCharacterLimit))
+                    }
+                }
+
+                it("should update 'multiSelectMode' prop") {
+                    node.update(["multiSelectMode" : true])
+                    expect(node.multiSelectMode).to(beTrue())
                     expect(node.isLayoutNeeded).to(beTrue())
-                    node.layoutIfNeeded()
-                    node.update(["roundness" : referenceRoundness2])
-                    expect(node.roundness).to(beCloseTo(0.0))
-                    expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
 
@@ -159,6 +163,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                         let itemNode = UiDropdownListItemNode(props: [:])
                         node.addChild(itemNode)
                         expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+                        expect(itemNode.tapHandler).toNot(beNil())
 
                         let otherNode = TransformNode(props: [:])
                         node.addChild(otherNode)
@@ -179,7 +184,7 @@ class UiDropdownListNodeSpec: QuickSpec {
 
                     node.removeChild(itemNode)
                     expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(0))
-
+                    expect(itemNode.tapHandler).to(beNil())
                 }
             }
 
@@ -209,6 +214,14 @@ class UiDropdownListNodeSpec: QuickSpec {
                     let dummyItemNode = UiDropdownListItemNode(props: [:])
                     node.handleTap(dummyItemNode)
                     expect(upperLayerNotified).to(beTrue())
+                }
+            }
+
+            context("when asked for size") {
+                it("should calculate return it based on width and height") {
+                    node.update(["width": 1.75, "height" : 0.25])
+                    /* correctness of calculation should be checked in spec for derived classes */
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1.75, height: 0.25)))
                 }
             }
         }

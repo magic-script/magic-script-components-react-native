@@ -76,7 +76,7 @@ class Utils {
             } else {
                 node.collisionShape
             }
-            return if (collShape is Box && (collShape.size.x != 1F || collShape.size.y != 1F)) { // may be also null
+            return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y
                 val left = collShape.center.x * scaleX - (collShape.size.x * scaleX) / 2 + offsetX

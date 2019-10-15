@@ -22,10 +22,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultBoolean
 
@@ -87,6 +90,20 @@ abstract class UiNode(
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")
         }
+    }
+
+    // Returning the bounds only after it's accurate, because the ARCore calculates
+    // collision shape "in steps" and at the beginning it's equal to 1m x 1m,
+    // which is usually incorrect and cause layouts artifacts.
+    override fun getContentBounding(): Bounding {
+        val offsetX = contentNode.localPosition.x
+        val offsetY = contentNode.localPosition.y
+
+        val collShape = contentNode.collisionShape
+        if (collShape is Box && (collShape.size.x != 1.0F || collShape.size.y != 1.0F)) {
+            return Utils.calculateBoundsOfNode(contentNode)
+        }
+        return Bounding(offsetX, offsetY, offsetX, offsetY)
     }
 
     /**

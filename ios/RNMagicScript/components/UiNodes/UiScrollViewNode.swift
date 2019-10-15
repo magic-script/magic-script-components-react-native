@@ -43,8 +43,7 @@ import SceneKit
         super.setupNode()
     }
 
-    fileprivate weak var verticalScrollBar: UiScrollBarNode?
-    fileprivate weak var horizontalScrollBar: UiScrollBarNode?
+    fileprivate weak var scrollBar: UiScrollBarNode?
     fileprivate weak var scrollContent: TransformNode?
 
     @objc override func update(_ props: [String: Any]) {
@@ -74,6 +73,32 @@ import SceneKit
         
         if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {
             self.scrollBarVisibility = scrollBarVisibility
+        }
+    }
+
+    @objc override func addChild(_ child: TransformNode) {
+        if child is UiScrollBarNode {
+            guard scrollBar == nil else { return }
+            scrollBar = child as? UiScrollBarNode
+            contentNode.addChildNode(child)
+            setNeedsLayout()
+        } else {
+            guard scrollContent == nil else { return }
+            scrollContent = child
+            contentNode.addChildNode(child)
+            setNeedsLayout()
+        }
+    }
+
+    @objc override func removeChild(_ child: TransformNode) {
+        if child == scrollBar {
+            scrollBar?.removeFromParentNode()
+            scrollBar = nil
+            setNeedsLayout()
+        } else if child == scrollContent {
+            scrollContent?.removeFromParentNode()
+            scrollContent = nil
+            setNeedsLayout()
         }
     }
 

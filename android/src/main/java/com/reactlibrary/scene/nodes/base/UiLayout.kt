@@ -20,11 +20,9 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.reactlibrary.scene.nodes.UiButtonNode
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
@@ -38,9 +36,10 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     var redrawRequested = false
         private set
 
+    // "backed" children
     private val childrenList = mutableListOf<Node>()
 
-    // child index, bounding
+    // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     private var handler = Handler(Looper.getMainLooper())
@@ -63,6 +62,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     override fun removeContent(child: Node) {
         childrenList.remove(child)
         contentNode.removeChild(child)
+        childrenBounds.clear() // indexes changed
         redrawRequested = true
     }
 
@@ -84,13 +84,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             redrawRequested = false
 
             // Attach the child after position is calculated
-            handler.postDelayed({
-                childrenList.forEach { child ->
-                    if (!contentNode.children.contains(child)) {
-                        contentNode.addChild(child)
-                    }
+            childrenList.forEach { child ->
+                if (!contentNode.children.contains(child)) {
+                    contentNode.addChild(child)
                 }
-            }, MEASURE_INTERVAL * 2)
+            }
 
         }
 
@@ -114,10 +112,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             }
 
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
-                if (node is UiButtonNode) {
-                    logMessage("bounds changed, old= $oldBounds, new=${childrenBounds[i]}")
-                }
-
                 redrawRequested = true
             }
         }

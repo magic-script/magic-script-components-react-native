@@ -89,7 +89,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                     contentNode.addChild(child)
                 }
             }
-
         }
 
         handler.postDelayed({

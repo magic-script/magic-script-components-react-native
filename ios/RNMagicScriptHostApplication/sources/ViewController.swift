@@ -67,38 +67,30 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
     fileprivate func setupTests() {
-//        setupDefaultIconsTest()
-        let scrollViewId: String = "scroll_view"
-        let scrollBarId: String = "scroll_bar"
-        scrollView = createComponent(["debug": true], nodeId: scrollViewId)
-        scrollBar = createComponent(["debug": false], nodeId: scrollBarId, parentId: scrollViewId)
-        scrollView.layoutIfNeeded()
-        scrollBar.layoutIfNeeded()
-    }
+        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.25, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
+        let dropdownListId = "dropdownListId"
+        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
+        UiNodesManager.instance.addNodeToRoot(dropdownListId)
+        dropdownList.layoutIfNeeded()
 
-    fileprivate func setupDefaultIconsTest() {
+        for index in 0...16 {
+            var dropdownItem: UiDropdownListItemNode
+            if index % 4 == 0 {
+                dropdownItem = UiDropdownListItemNode(props: ["text": "Very long text for dropDownListItem to check how this looks when list appears"])
+            } else {
+                dropdownItem = UiDropdownListItemNode(props: ["text": "Very short text"])
+            }
 
-        let grid = UiGridLayoutNode(props: [
-            "columns": 14,
-            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "localPosition": [0, 0.5, 0],
-            "alignment": "top-center"
-        ])
-        let gridId = "grid"
-        UiNodesManager.instance.registerNode(grid, nodeId: gridId)
-        UiNodesManager.instance.addNodeToRoot(gridId)
-
-        SystemIcon.names.enumerated().forEach { (index, name) in
-            let icon = UiImageNode(props: [
-                "icon": name,
-                "height": 0.04,
-            ])
-            let nodeId: String = "icon_\(index)"
-            UiNodesManager.instance.registerNode(icon, nodeId: nodeId)
-            UiNodesManager.instance.addNode(nodeId, toParent: gridId)
+            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
+            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
+        }
+        dropdownList.onTap = { sender in
+            print("BUKA: dropDown onTap \(sender)")
         }
 
-        grid.layoutIfNeeded()
+        dropdownList.onSelectionItemChanged = { sender, selectedItem in
+            print("BUKA: dropDown onSelectedItemChanged \(sender) \(selectedItem)")
+        }
     }
 
     @discardableResult
@@ -130,8 +122,5 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarSize > 1.0 {
             scrollBarSize -= 2.0
         }
-        scrollBar.thumbPosition = abs(scrollBarPosition)
-        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-        scrollBar.layoutIfNeeded()
     }
 }

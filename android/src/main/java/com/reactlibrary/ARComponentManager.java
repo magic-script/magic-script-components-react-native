@@ -215,6 +215,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createScrollViewNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiScrollViewNode(props, context, viewRenderableLoader), nodeId));
+    }
 
     @ReactMethod
     public void createSliderNode(final ReadableMap props, final String nodeId) {

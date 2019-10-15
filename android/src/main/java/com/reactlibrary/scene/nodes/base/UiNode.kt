@@ -24,9 +24,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.scene.ViewWrapper
+import com.reactlibrary.scene.nodes.UiImageNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.utils.*
 
@@ -51,6 +54,7 @@ abstract class UiNode(
      * A view attached to the node
      */
     protected lateinit var view: View
+    protected var viewWrapper = ViewWrapper(context)
 
     private var shouldRebuild = false
     private var loadingView = false
@@ -129,6 +133,9 @@ abstract class UiNode(
     }
 
     private fun initView() {
+        if (viewWrapper.childCount != 0) {
+            viewWrapper = ViewWrapper(context)
+        }
         this.view = provideView(context)
         this.view.setOnClickListener {
             onViewClick()
@@ -140,10 +147,12 @@ abstract class UiNode(
     private fun attachView() {
         loadingView = true
 
+        viewWrapper.addView(view)
+
         val alignHorizontal = if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
         val alignVertical = if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
         val config = ViewRenderableLoader.Config(
-                view = view,
+                view = viewWrapper,
                 horizontalAlignment = alignHorizontal,
                 verticalAlignment = alignVertical
         )

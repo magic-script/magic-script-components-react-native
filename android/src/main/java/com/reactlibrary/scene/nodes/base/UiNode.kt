@@ -171,10 +171,6 @@ abstract class UiNode(
                 validCollisionShape = false
                 contentNode.renderable = result.renderable
                 view.postDelayed({
-                    val collShape = contentNode.collisionShape
-                    if (collShape is Box) {
-                        logMessage("coll shape size known? = ${collShape.size}")
-                    }
                     validCollisionShape = true
                 }, COLLISION_SHAPE_DELAY)
                 loadingView = false

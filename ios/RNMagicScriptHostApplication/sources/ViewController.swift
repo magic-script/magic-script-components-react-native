@@ -122,8 +122,5 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarSize > 1.0 {
             scrollBarSize -= 2.0
         }
-//        scrollBar.thumbPosition = abs(scrollBarPosition)
-//        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-//        scrollBar.layoutIfNeeded()
     }
 }

@@ -33,6 +33,8 @@ extension TapSimulating where Self: UiNode {
         animation.duration = 0.1
         animation.autoreverses = true
         animation.repeatCount = 1
-        contentNode.addAnimation(animation, forKey: "dropdownList_tap")
+        let objectTypeIdentifier = String(describing: type(of: self))
+        let objectAnimationKey = objectTypeIdentifier + (name ?? "")
+        contentNode.addAnimation(animation, forKey: objectAnimationKey)
     }
 }

@@ -96,7 +96,7 @@ class LabelNode: SCNNode {
         labelGeometry.flatness = 0.5
         labelGeometry.firstMaterial?.lightingModel = .constant
         labelGeometry.firstMaterial?.diffuse.contents = UIColor.white
-        labelGeometry.firstMaterial?.isDoubleSided = true
+        labelGeometry.firstMaterial?.isDoubleSided = false
         labelNode = SCNNode(geometry: labelGeometry)
         addChildNode(labelNode)
         reload()

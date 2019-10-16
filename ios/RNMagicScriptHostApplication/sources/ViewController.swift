@@ -74,7 +74,11 @@ class ViewController: UIViewController {
             "debug": true,
             "scrollBounds": ["min": [-0.25,-0.45,-0.1], "max": [0.25,0.45,0.1]]
         ], nodeId: scrollViewId)
-        scrollBar = createComponent(["debug": false], nodeId: scrollBarId, parentId: scrollViewId)
+        scrollBar = createComponent([
+            "debug": false,
+            "localPosition": [0.25, 0, 0],
+            "width": 0.9
+        ], nodeId: scrollBarId, parentId: scrollViewId)
         createGridWithIcons(parentId: scrollViewId)
 
         scrollView.layoutIfNeeded()
@@ -87,7 +91,6 @@ class ViewController: UIViewController {
         let grid: UiGridLayoutNode = createComponent([
             "columns": 14,
             "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "localPosition": [0, 0, 0],
             "alignment": "top-center"
         ], nodeId: gridId, parentId: parentId)
 
@@ -128,8 +131,8 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarSize > 1.0 {
             scrollBarSize -= 2.0
         }
-        scrollBar.thumbPosition = abs(scrollBarPosition)
+        scrollView.scrollValue = abs(scrollBarPosition)
         scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-        scrollBar.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
     }
 }

@@ -185,6 +185,8 @@
 		44F596452355C5FF00C60F4C /* OrientationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F596442355C5FF00C60F4C /* OrientationSpec.swift */; };
 		44F596472355C62700C60F4C /* ScrollDirectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F596462355C62700C60F4C /* ScrollDirectionSpec.swift */; };
 		44F5964D235729BB00C60F4C /* SystemIconSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5964C235729BB00C60F4C /* SystemIconSpec.swift */; };
+		44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
+		44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
 		44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */; };
 		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
@@ -510,6 +512,7 @@
 		44F596442355C5FF00C60F4C /* OrientationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationSpec.swift; sourceTree = "<group>"; };
 		44F596462355C62700C60F4C /* ScrollDirectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirectionSpec.swift; sourceTree = "<group>"; };
 		44F5964C235729BB00C60F4C /* SystemIconSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIconSpec.swift; sourceTree = "<group>"; };
+		44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+ClippingPlane.swift"; sourceTree = "<group>"; };
 		44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssetsSpec.swift; sourceTree = "<group>"; };
 		7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -872,6 +875,7 @@
 				44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */,
 				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
 				44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */,
+				44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */,
 				44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */,
 				44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */,
 				44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */,
@@ -1504,6 +1508,7 @@
 			files = (
 				44AFAD19232BCAE3005AC8EF /* UiGroupNode.swift in Sources */,
 				44AFAD2E232BCAE3005AC8EF /* Bundle.swift in Sources */,
+				44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
@@ -1661,6 +1666,7 @@
 				44D8FE8023391261007FD766 /* RCTARView.swift in Sources */,
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
+				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
 				44AFAC56232B9BCF005AC8EF /* FileManager+Extension.swift in Sources */,
 				44AFAC42232B9BCF005AC8EF /* UiProgressBarNode.swift in Sources */,

@@ -27,7 +27,7 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
     @objc var scrollValue: CGFloat = 0 {
-        didSet { setNeedsLayout() }
+        didSet { scrollBar?.thumbPosition = scrollValue; setNeedsLayout() }
     }
     //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
@@ -41,10 +41,18 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+
+        proxyNode = SCNNode()
+        contentNode.addChildNode(proxyNode)
     }
 
     fileprivate weak var scrollBar: UiScrollBarNode?
     fileprivate weak var scrollContent: TransformNode?
+    fileprivate var proxyNode: SCNNode!
+
+    deinit {
+        scrollContent?.resetClippingPlanes()
+    }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
@@ -85,7 +93,7 @@ import SceneKit
         } else {
             guard scrollContent == nil else { return }
             scrollContent = child
-            contentNode.addChildNode(child)
+            proxyNode.addChildNode(child)
             setNeedsLayout()
         }
     }
@@ -110,6 +118,44 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        guard let scrollBounds = scrollBounds else { return }
+        scrollContent?.setClippingPlanes([SCNVector4()])
+        scrollBar?.layoutIfNeeded()
+        scrollContent?.layoutIfNeeded()
 
+        let edgeInsets = UIEdgeInsets(top: CGFloat(scrollBounds.max.y), left: CGFloat(scrollBounds.min.x), bottom: CGFloat(scrollBounds.min.y), right: CGFloat(scrollBounds.max.x))
+        let scrollSize = CGSize(width: edgeInsets.right - edgeInsets.left, height: edgeInsets.top - edgeInsets.bottom)
+        let contentSize: CGSize
+        if let scrollContent = scrollContent {
+
+            let contentPositionNegated = scrollContent.position.negated()
+            contentSize = scrollContent.getSize()
+            var offset = CGPoint(
+                x: 0.5 * (contentSize.width - scrollSize.width),
+                y: 0.5 * (contentSize.height - scrollSize.height)
+            )
+
+            if let uiNode = scrollContent as? UiNode {
+                let alignOffset = uiNode.alignment.shiftDirection
+                offset.x -= alignOffset.x * contentSize.width
+                offset.y -= alignOffset.y * contentSize.width
+            }
+            proxyNode.position = contentPositionNegated + SCNVector3(offset.x, offset.y, 0)
+        } else {
+            contentSize = CGSize.zero
+            proxyNode.position = SCNVector3Zero
+        }
+
+        if let scrollBar = scrollBar {
+            var shift: CGPoint = CGPoint.zero
+            switch scrollBar.scrollOrientation {
+            case .horizontal:
+                shift.x = scrollBar.thumbPosition * max(0, contentSize.width - scrollSize.width)
+            case .vertical:
+                shift.y = scrollBar.thumbPosition * max(0, contentSize.height - scrollSize.height)
+            }
+
+            proxyNode.position += SCNVector3(shift.x, shift.y, 0)
+        }
     }
 }

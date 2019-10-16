@@ -61,7 +61,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
 
     override fun removeContent(child: Node) {
         childrenList.remove(child)
-        contentNode.removeChild(child)
+        if (contentNode.children.contains(child)) {
+            contentNode.removeChild(child)
+        }
         childrenBounds.clear() // indexes changed
         redrawRequested = true
     }

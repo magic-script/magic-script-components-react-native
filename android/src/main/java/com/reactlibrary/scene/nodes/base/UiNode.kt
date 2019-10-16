@@ -176,7 +176,7 @@ abstract class UiNode(
             }
             loadingView = false
         }
-        
+
     }
 
     private fun setEnabled(props: Bundle) {

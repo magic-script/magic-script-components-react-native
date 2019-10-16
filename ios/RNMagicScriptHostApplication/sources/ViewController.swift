@@ -67,7 +67,6 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
     fileprivate func setupTests() {
-//        setupDefaultIconsTest()
         let scrollViewId: String = "scroll_view"
         let scrollBarId: String = "scroll_bar"
         scrollView = createComponent([
@@ -86,7 +85,7 @@ class ViewController: UIViewController {
 
         let gridId = "grid"
         let grid: UiGridLayoutNode = createComponent([
-            "columns": 4,
+            "columns": 14,
             "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
             "localPosition": [0, 0, 0],
             "alignment": "top-center"

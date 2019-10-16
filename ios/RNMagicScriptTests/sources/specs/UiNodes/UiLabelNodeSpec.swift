@@ -36,7 +36,6 @@ class UiLabelNodeSpec: QuickSpec {
                     expect(node.text).to(beNil())
                     let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
-                    let referenceIconColor = UIColor.white
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))

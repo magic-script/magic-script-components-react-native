@@ -122,7 +122,7 @@ object UiNodesManager {
             return
         }
         removeFromMap(node)
-        node.parent?.removeChild(node)
+        detachNode(node)
         logMessage("removed node id=$nodeId, nodes count=${nodesById.size}")
     }
 
@@ -130,7 +130,7 @@ object UiNodesManager {
     @Synchronized
     fun clear() {
         nodesById.forEach { (_, node) ->
-            node.parent?.removeChild(node)
+            detachNode(node)
         }
         nodesById.clear()
     }
@@ -148,6 +148,16 @@ object UiNodesManager {
 
         if (node is TransformNode) {
             node.clearResources()
+        }
+    }
+
+    private fun detachNode(node: Node) {
+        val parent = node.parent // content node
+        val grandparent = parent?.parent
+        if (grandparent is TransformNode) {
+            grandparent.removeContent(node)
+        } else {
+            parent?.removeChild(node)
         }
     }
 

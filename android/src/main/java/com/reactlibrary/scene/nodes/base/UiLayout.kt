@@ -16,14 +16,15 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.RectF
 import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.plus
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
@@ -99,24 +100,24 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    override fun setClipBounds(clipBounds: RectF) {
-        for (i in 0 until contentNode.children.size) {
-            val child = contentNode.children[i]
-            val contentClip = RectF(
-                    clipBounds.left - contentNode.localPosition.x,
-                    clipBounds.top - contentNode.localPosition.y,
-                    clipBounds.right - contentNode.localPosition.x,
-                    clipBounds.bottom - contentNode.localPosition.y)
+    override fun contentTranslation(): Vector3 {
+        return Vector3()
+    }
 
+    override fun setClipBounds(clipBounds: Bounding) {
+        for (i in 0 until contentNode.children.size) {
+
+            val child = contentNode.children[i]
             if (child is TransformNode) {
-                val childClip = RectF(
-                        contentClip.left - child.localPosition.x,
-                        contentClip.top - child.localPosition.y,
-                        contentClip.right - child.localPosition.x,
-                        contentClip.bottom - child.localPosition.y)
+
+                val offset = contentNode.localPosition + child.localPosition
+                val childClip = Bounding(
+                        clipBounds.left - offset.x,
+                        clipBounds.top - offset.y,
+                        clipBounds.right - offset.x,
+                        clipBounds.bottom - offset.y)
                 child.setClipBounds(childClip)
             }
         }
     }
-
 }

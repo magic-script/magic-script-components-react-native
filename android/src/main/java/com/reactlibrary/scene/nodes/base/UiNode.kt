@@ -18,20 +18,21 @@ package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
 import android.graphics.Rect
-import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.ViewWrapper
-import com.reactlibrary.scene.nodes.UiImageNode
 import com.reactlibrary.scene.nodes.props.Alignment
-import com.reactlibrary.utils.*
+import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.div
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultBoolean
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -165,7 +166,7 @@ abstract class UiNode(
 
     }
 
-    override fun setClipBounds(clipBounds: RectF) {
+    override fun setClipBounds(clipBounds: Bounding) {
         val pivot = getBounding().size() / 2F
         val clipBoundsPx = Rect(
                 Utils.metersToPx(clipBounds.left + pivot.x, context),

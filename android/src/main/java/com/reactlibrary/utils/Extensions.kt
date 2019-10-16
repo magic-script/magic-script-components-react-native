@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Bounding
 import java.io.Serializable
 import kotlin.math.abs
@@ -99,6 +100,17 @@ fun PointF.equalInexact(other: PointF): Boolean {
 }
 
 /**
+ * com.google.ar.sceneform.math.Vector3
+ */
+operator fun Vector3.plus(other: Vector3): Vector3 {
+    return Vector3(
+            x + other.x,
+            y + other.y,
+            z + other.z
+    )
+}
+
+/**
  * android.os.Bundle
  */
 fun Bundle.putDefaultDouble(name: String, value: Double) {
@@ -123,15 +135,6 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
     if (!containsKey(key)) {
         putSerializable(key, value)
     }
-}
-
-/**
- * com.reactlibrary.scene.nodes.props.Bounding
- */
-fun Bounding.size(): PointF {
-    val width = right - left
-    val height = top - bottom
-    return PointF(width, height)
 }
 
 /**

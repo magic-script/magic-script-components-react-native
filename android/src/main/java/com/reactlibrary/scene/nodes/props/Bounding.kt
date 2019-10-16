@@ -16,6 +16,8 @@
 
 package com.reactlibrary.scene.nodes.props
 
+import android.graphics.PointF
+import com.google.ar.sceneform.math.Vector3
 import kotlin.math.abs
 
 /**
@@ -44,4 +46,9 @@ data class Bounding(
         }
     }
 
+    fun size(): PointF {
+        val width = right - left
+        val height = top - bottom
+        return PointF(width, height)
+    }
 }

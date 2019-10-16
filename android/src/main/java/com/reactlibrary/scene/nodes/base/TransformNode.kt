@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.RectF
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
@@ -271,7 +270,11 @@ abstract class TransformNode(
         contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
     }
 
-    open fun setClipBounds(clipBounds: RectF) {}
+    open fun setClipBounds(clipBounds: Bounding) {}
+
+    open fun contentTranslation(): Vector3{
+        return Vector3()
+    }
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

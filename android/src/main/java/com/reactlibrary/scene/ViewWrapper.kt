@@ -45,9 +45,7 @@ class ViewWrapper(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val scrollNode = findScrollAncestor()!!
-        val scrollView = scrollNode.getScrollView()
-        return scrollView.onTouchEvent(event)
+        return findScrollAncestor()!!.onTouchEvent(event)
     }
 
     private fun findScrollAncestor(): UiScrollViewNode? {

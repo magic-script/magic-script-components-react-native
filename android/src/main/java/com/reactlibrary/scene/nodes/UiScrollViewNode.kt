@@ -18,11 +18,11 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.graphics.PointF
-import android.graphics.RectF
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 import com.facebook.react.bridge.ReadableMap
@@ -61,10 +61,6 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, 1.0)
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
-    }
-
-    fun getScrollView(): CustomScrollView {
-        return view as CustomScrollView
     }
 
     override fun addContent(child: Node) {
@@ -139,6 +135,10 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
+    fun onTouchEvent(event: MotionEvent): Boolean {
+        return view.onTouchEvent(event)
+    }
+
     private fun update(viewPosition: PointF) {
 
         // Non-transform Nodes aren't currently supported.
@@ -161,7 +161,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
 
         newChildPosition = alignTopLeft + travel
 
-        val clipArea = RectF(
+        val clipArea = Bounding(
                 viewBounds.left - newChildPosition.x,
                 viewBounds.top - newChildPosition.y,
                 viewBounds.right - newChildPosition.x - DEFAULT_SCROLLBAR_WIDTH,

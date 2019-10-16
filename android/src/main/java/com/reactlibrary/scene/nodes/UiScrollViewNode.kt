@@ -63,6 +63,10 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
     }
 
+    fun getScrollView(): CustomScrollView {
+        return view as CustomScrollView
+    }
+
     override fun addContent(child: Node) {
         super.addContent(child)
         this.child = child
@@ -80,8 +84,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
                 scrollView.contentSize = PointF(
                         Utils.metersToPx(childSize.x, context).toFloat(),
                         Utils.metersToPx(childSize.y, context).toFloat())
-                        logMessage("update")
-                update(scrollView.viewPosition())
+                update(scrollView.getViewPosition())
             }
 
             layoutLoop()
@@ -94,12 +97,13 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         scrollView.onScrollChangeListener = { position: PointF ->
             update(position)
         }
+        val eps = 1e-5F // epsilon
         view.onPreDrawListener {
-            if (scrollRequested){
+            if (scrollRequested) {
                 child.localPosition = Vector3(
-                    newChildPosition.x,
-                    newChildPosition.y,
-                    child.localPosition.z)
+                        newChildPosition.x,
+                        newChildPosition.y,
+                        eps)
                 scrollRequested = false
             }
             true
@@ -156,7 +160,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
                 possibleTravel.y * viewPosition.y)
 
         newChildPosition = alignTopLeft + travel
-        
+
         val clipArea = RectF(
                 viewBounds.left - newChildPosition.x,
                 viewBounds.top - newChildPosition.y,

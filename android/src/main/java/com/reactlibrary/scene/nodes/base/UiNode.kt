@@ -54,7 +54,7 @@ abstract class UiNode(
      * A view attached to the node
      */
     protected lateinit var view: View
-    protected var viewWrapper = ViewWrapper(context)
+    private lateinit var viewWrapper: ViewWrapper
 
     private var shouldRebuild = false
     private var loadingView = false
@@ -133,9 +133,7 @@ abstract class UiNode(
     }
 
     private fun initView() {
-        if (viewWrapper.childCount != 0) {
-            viewWrapper = ViewWrapper(context)
-        }
+        viewWrapper = ViewWrapper(context, this)
         this.view = provideView(context)
         this.view.setOnClickListener {
             onViewClick()

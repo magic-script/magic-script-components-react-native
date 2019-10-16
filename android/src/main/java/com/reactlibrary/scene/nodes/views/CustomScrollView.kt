@@ -22,6 +22,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
 import com.reactlibrary.utils.div
+import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.minus
 import com.reactlibrary.utils.onLayoutListener
 import kotlinx.android.synthetic.main.scroll_view.view.*
@@ -35,7 +36,7 @@ class CustomScrollView @JvmOverloads constructor(
     var contentSize = PointF()
         set(value) {
             field = value
-            update()
+            updateScrollbars()
         }
 
     var onScrollChangeListener: ((on: PointF) -> Unit)? = null
@@ -54,7 +55,7 @@ class CustomScrollView @JvmOverloads constructor(
                 val viewPosition = PointF(h_bar.thumbPosition, pos)
                 onScrollChangeListener?.invoke(viewPosition)
             }
-            update()
+            updateScrollbars()
         }
     }
 
@@ -70,20 +71,25 @@ class CustomScrollView @JvmOverloads constructor(
             val viewSize = PointF(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
-            h_bar.thumbPosition -= move.x
-            v_bar.thumbPosition -= move.y
+
+            val thumbPos = PointF(
+                    h_bar.thumbPosition - move.x,
+                    v_bar.thumbPosition - move.y)
+            h_bar.thumbPosition = thumbPos.x
+            v_bar.thumbPosition = thumbPos.y
+            onScrollChangeListener?.invoke(thumbPos)
         }
         previousTouch = touch
 
-        onScrollChangeListener?.invoke(viewPosition())
         return true
     }
 
-    fun viewPosition(): PointF {
+    fun getViewPosition(): PointF {
         return PointF(h_bar.thumbPosition, v_bar.thumbPosition)
     }
 
-    private fun update() {
+    // Update scrollbars when content size has changed.
+    private fun updateScrollbars() {
         this.h_bar.thumbSize = width.toFloat() / contentSize.x
         this.v_bar.thumbSize = height.toFloat() / contentSize.y
     }

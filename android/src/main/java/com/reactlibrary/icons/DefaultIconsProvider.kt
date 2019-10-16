@@ -22,7 +22,19 @@ import android.graphics.drawable.Drawable
 class DefaultIconsProvider(private val context: Context) : IconsProvider {
 
     override fun provideIcon(name: String): Drawable? {
-        val resourceName = name.replace("-", "_")
+        if (name.isEmpty()) {
+            return null
+        }
+
+        // resource id cannot start with digit
+        // (we put additional underscore before digit, see drawable/_6_dof.png)
+        val digitCorrectedName = if (name.first().isDigit()) {
+            "_$name"
+        } else {
+            name
+        }
+
+        val resourceName = digitCorrectedName.replace("-", "_")
         val resourceId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
         if (resourceId == 0) { // resource not exists
             return null

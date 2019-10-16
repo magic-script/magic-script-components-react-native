@@ -26,13 +26,15 @@ class ViewWrapper(
         context: Context,
         private val parent: Node) : LinearLayout(context) {
 
-//    private var scrollParent: UiScrollViewNode? = null
-
     init {
         layoutParams = LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
         )
+    }
+
+    override fun shouldDelayChildPressedState(): Boolean {
+        return findScrollAncestor() != null
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -49,8 +51,6 @@ class ViewWrapper(
     }
 
     private fun findScrollAncestor(): UiScrollViewNode? {
-
-//        logMessage("${parent.javaClass.name}")
 
         // If parent is ScrollView we return null,
         // as ther's no sense in intercepting its events.

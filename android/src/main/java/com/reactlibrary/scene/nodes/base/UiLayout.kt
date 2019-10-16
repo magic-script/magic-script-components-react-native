@@ -29,6 +29,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true) {
 
     companion object {
+        const val PROP_WIDTH = "width"
+        const val PROP_HEIGHT = "height"
+
         private const val MEASURE_INTERVAL = 100L // in milliseconds
     }
 

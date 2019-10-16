@@ -112,7 +112,7 @@ abstract class TransformNode(
 
     /**
      * Returns 2D bounding of the node (the minimum rectangle
-     * that includes the node).
+     * relative to the parent node position that includes the node).
      */
     fun getBounding(): Bounding {
         val contentBounding = getContentBounding()
@@ -124,8 +124,16 @@ abstract class TransformNode(
     }
 
     /**
-     * Should return 2D bounding of the [contentNode] (relative to
-     * the parent node position).
+     * Returns 2D bounding of the node (the minimum
+     * rectanglein local frame of reference that
+     * includes the node).
+     */
+    fun getLocalBounding(): Bounding {
+        return getContentBounding()
+    }
+
+    /**
+     * Should return 2D bounding of the [contentNode].
      */
     protected open fun getContentBounding(): Bounding {
         return Utils.calculateBoundsOfNode(contentNode)
@@ -273,7 +281,7 @@ abstract class TransformNode(
     open fun setClipBounds(clipBounds: Bounding) {}
 
     open fun contentTranslation(): Vector3{
-        return Vector3()
+        return localPosition
     }
 
     private fun setPosition(props: Bundle) {

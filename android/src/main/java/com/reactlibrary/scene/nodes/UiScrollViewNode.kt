@@ -37,7 +37,10 @@ import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.scroll_view.view.*
 
-class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader) :
+class UiScrollViewNode(
+        initProps: ReadableMap,
+        context: Context,
+        viewRenderableLoader: ViewRenderableLoader) :
         UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {
@@ -48,14 +51,14 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
     }
 
-    private lateinit var child: Node
-
     private var looperHandler = Handler(Looper.getMainLooper())
 
-    private var childBounds = Bounding()
+    // Non-transform nodes aren't currently supported.
+    private var content: TransformNode? = null
+    private var contentBounds = Bounding()
 
     private var scrollRequested = false
-    private var newChildPosition = PointF()
+    private var requestedContentPosition = PointF()
 
     init {
         // set default properties values
@@ -63,20 +66,43 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         properties.putDefaultDouble(PROP_HEIGHT, 1.0)
     }
 
+    // Starting loops and registering listeners
+    // only after content was delivered.
     override fun addContent(child: Node) {
         super.addContent(child)
-        this.child = child
+        if (child !is TransformNode) {
+            return
+        }
+
+        this.content = child
+
+        view.onPreDrawListener {
+            val eps = 1e-5F // epsilon
+            if (scrollRequested) {
+                content!!.localPosition = Vector3(
+                        requestedContentPosition.x,
+                        requestedContentPosition.y,
+                        eps) // Moving content up, so it'll receive touch events first.
+                scrollRequested = false
+            }
+            true
+        }
+
+        (view as CustomScrollView).onScrollChangeListener = { position: PointF ->
+            update(position)
+        }
+
         layoutLoop()
     }
 
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
-            val newBounds = calculateAbsoluteBoundsOfNode(child)
-            if (!Bounding.equalInexact(childBounds, newBounds)) {
+            val newBounds = content!!.getLocalBounding()
+            if (!Bounding.equalInexact(contentBounds, newBounds)) {
                 val scrollView = (view as CustomScrollView)
-                childBounds = newBounds
-                val childSize = childBounds.size()
+                contentBounds = newBounds
+                val childSize = contentBounds.size()
                 scrollView.contentSize = PointF(
                         Utils.metersToPx(childSize.x, context).toFloat(),
                         Utils.metersToPx(childSize.y, context).toFloat())
@@ -88,23 +114,7 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
     }
 
     override fun provideView(context: Context): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
-        val scrollView = view as CustomScrollView
-        scrollView.onScrollChangeListener = { position: PointF ->
-            update(position)
-        }
-        val eps = 1e-5F // epsilon
-        view.onPreDrawListener {
-            if (scrollRequested) {
-                child.localPosition = Vector3(
-                        newChildPosition.x,
-                        newChildPosition.y,
-                        eps)
-                scrollRequested = false
-            }
-            true
-        }
-        return view
+        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
     }
 
     override fun applyProperties(props: Bundle) {
@@ -135,19 +145,15 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
         scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
+    // Function by which ViewWrapper delivers intercepted motion events.
     fun onTouchEvent(event: MotionEvent): Boolean {
         return view.onTouchEvent(event)
     }
 
     private fun update(viewPosition: PointF) {
 
-        // Non-transform Nodes aren't currently supported.
-        if (child !is TransformNode) {
-            return
-        }
-
-        val childBounds = calculateAbsoluteBoundsOfNode(child)
-        val viewBounds = calculateAbsoluteBoundsOfNode(this)
+        val childBounds = content!!.getLocalBounding()
+        val viewBounds = this.getLocalBounding()
         val alignTopLeft = PointF(
                 viewBounds.left - childBounds.left,
                 viewBounds.top - childBounds.top)
@@ -159,30 +165,30 @@ class UiScrollViewNode(initProps: ReadableMap, context: Context, viewRenderableL
                 -possibleTravel.x * viewPosition.x,
                 possibleTravel.y * viewPosition.y)
 
-        newChildPosition = alignTopLeft + travel
+        requestedContentPosition = alignTopLeft + travel
 
         val clipArea = Bounding(
-                viewBounds.left - newChildPosition.x,
-                viewBounds.top - newChildPosition.y,
-                viewBounds.right - newChildPosition.x - DEFAULT_SCROLLBAR_WIDTH,
-                viewBounds.bottom - newChildPosition.y + DEFAULT_SCROLLBAR_WIDTH)
-        (child as TransformNode).setClipBounds(clipArea)
+                viewBounds.left - requestedContentPosition.x,
+                viewBounds.top - requestedContentPosition.y,
+                viewBounds.right - requestedContentPosition.x - DEFAULT_SCROLLBAR_WIDTH,
+                viewBounds.bottom - requestedContentPosition.y + DEFAULT_SCROLLBAR_WIDTH)
+        content!!.setClipBounds(clipArea)
 
         scrollRequested = true
     }
 
-    private fun calculateAbsoluteBoundsOfNode(node: Node): Bounding {
-        val bounds = if (node is TransformNode) {
-            node.getBounding()
-        } else {
-            Utils.calculateBoundsOfNode(node)
-        }
-        return Bounding(
-                bounds.left - node.localPosition.x,
-                bounds.bottom - node.localPosition.y,
-                bounds.right - node.localPosition.x,
-                bounds.top - node.localPosition.y)
-    }
+//    private fun calculateLocalBoundsOfNode(node: Node): Bounding {
+//        if (node !is TransformNode) {
+//            return Bounding()
+//        }
+//
+//        val bounds = node.getBounding()
+//        return Bounding(
+//                bounds.left - node.localPosition.x,
+//                bounds.bottom - node.localPosition.y,
+//                bounds.right - node.localPosition.x,
+//                bounds.top - node.localPosition.y)
+//    }
 
     private fun metersToPx(meters: Float): Int {
         return Utils.metersToPx(meters, context)

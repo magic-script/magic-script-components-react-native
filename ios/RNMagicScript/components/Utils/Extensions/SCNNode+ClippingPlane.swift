@@ -29,9 +29,9 @@ extension SCNNode {
             "#pragma body\n" +
             "out.myPos = scn_node.modelTransform * _geometry.position;"
         let fragmentModifier: String =
-            "#pragma arguments" +
-            "float4 clippingPlane;" +
-            "#pragma body" +
+//            "#pragma arguments" +
+//            "float4 clippingPlane;" +
+//            "#pragma body" +
             "if (abs(in.myPos.x) > 0.25 || abs(in.myPos.y) > 0.45 || abs(in.myPos.z) > 0.25) {\n" +
                 "discard_fragment();\n" +
             "}\n"

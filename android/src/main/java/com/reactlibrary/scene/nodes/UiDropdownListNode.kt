@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
@@ -32,11 +33,23 @@ class UiDropdownListNode(initProps: ReadableMap,
                          fontProvider: FontProvider)
     : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider) {
 
+
+    companion object {
+        const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
+        const val PROP_LIST_TEXT_SZIE = "listTextSize"
+        const val PROP_CHARACTERS_LIMIT = "maxCharacterLimit" // for list item
+        const val PROP_MULTI_SELECT = "multiSelect"
+        const val PROP_SHOW_LIST = "showList"
+        const val PROP_SELECTED = "selected"
+
+    }
+
     private val listNode: UiLinearLayout
 
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
+        listProps.putString(PROP_ALIGNMENT, "top-left")
         listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
     }
 
@@ -47,11 +60,23 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+
+        setListPosition(props)
     }
 
     override fun addContent(child: Node) {
         if (child is UiDropdownListItemNode) {
             listNode.addContent(child)
+        } else {
+            super.addContent(child)
+        }
+    }
+
+    override fun removeContent(child: Node) {
+        if (child is UiDropdownListItemNode) {
+            listNode.removeContent(child)
+        } else {
+            super.removeContent(child)
         }
     }
 
@@ -61,6 +86,22 @@ class UiDropdownListNode(initProps: ReadableMap,
             contentNode.children.remove(listNode)
         } else {
             addContent(listNode)
+        }
+    }
+
+    private fun setListPosition(props: Bundle) {
+        if (props.containsKey(PROP_HEIGHT)) {
+            val height = props.getDouble(PROP_HEIGHT).toFloat()
+            if (height != WRAP_CONTENT_DIMENSION) {
+                listNode.localPosition = Vector3(0F, -height, 0F)
+            }
+        } else if (props.containsKey(PROP_TEXT_SIZE)) {
+            val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+            if (height != WRAP_CONTENT_DIMENSION.toDouble()) {
+                val textSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
+                val posY = -textSize * PADDING_FACTOR_VERTICAL * 2
+                listNode.localPosition = Vector3(0F, posY, 0F)
+            }
         }
     }
 

@@ -173,12 +173,10 @@ abstract class UiNode(
                 view.postDelayed({
                     validCollisionShape = true
                 }, COLLISION_SHAPE_DELAY)
-                loadingView = false
-            } else {
-                loadingView = false
             }
+            loadingView = false
         }
-
+        
     }
 
     private fun setEnabled(props: Bundle) {

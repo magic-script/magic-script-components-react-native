@@ -50,6 +50,7 @@ class ViewController: UIViewController {
     fileprivate func setupARView() {
         arView = RCTARView()
         arView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
+        arView.debug = true
         arView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(arView)
         NSLayoutConstraint.activate([
@@ -67,30 +68,39 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
     fileprivate func setupTests() {
-        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.25, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
-        let dropdownListId = "dropdownListId"
-        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
-        UiNodesManager.instance.addNodeToRoot(dropdownListId)
-        dropdownList.layoutIfNeeded()
+        let scrollViewId: String = "scroll_view"
+        let scrollBarId: String = "scroll_bar"
+        scrollView = createComponent([
+            "alignment": "center-center",
+            "debug": true,
+            "scrollBounds": ["min": [-0.05,-0.35,-0.1], "max": [0.25,0.45,0.1]]
+        ], nodeId: scrollViewId)
+        scrollBar = createComponent([
+            "debug": false,
+            "localPosition": [0.25, 0, 0],
+            "width": 0.9
+        ], nodeId: scrollBarId, parentId: scrollViewId)
+        createGridWithIcons(parentId: scrollViewId)
 
-        for index in 0...16 {
-            var dropdownItem: UiDropdownListItemNode
-            if index % 4 == 0 {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very long text for dropDownListItem to check how this looks when list appears"])
-            } else {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very short text"])
-            }
+        scrollView.layoutIfNeeded()
+        scrollBar.layoutIfNeeded()
+    }
 
-            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
-            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
-        }
-        dropdownList.onTap = { sender in
-            print("BUKA: dropDown onTap \(sender)")
+    fileprivate func createGridWithIcons(parentId: String) {
+
+        let gridId = "grid"
+        let grid: UiGridLayoutNode = createComponent([
+            "columns": 14,
+            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
+            "alignment": "top-center"
+        ], nodeId: gridId, parentId: parentId)
+
+        SystemIcon.names.enumerated().forEach { (index, name) in
+            let nodeId: String = "icon_\(index)"
+            let _: UiImageNode = createComponent(["icon": name, "height": 0.04], nodeId: nodeId, parentId: gridId)
         }
 
-        dropdownList.onSelectionItemChanged = { sender, selectedItem in
-            print("BUKA: dropDown onSelectedItemChanged \(sender) \(selectedItem)")
-        }
+        grid.layoutIfNeeded()
     }
 
     @discardableResult
@@ -122,5 +132,8 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarSize > 1.0 {
             scrollBarSize -= 2.0
         }
+        scrollView.scrollValue = abs(scrollBarPosition)
+        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
+        scrollView.layoutIfNeeded()
     }
 }

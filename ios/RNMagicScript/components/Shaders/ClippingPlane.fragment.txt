@@ -1,0 +1,16 @@
+#pragma arguments
+float4 clippingPlane1 = float4(0);
+float4 clippingPlane2 = float4(0);
+float4 clippingPlane3 = float4(0);
+float4 clippingPlane4 = float4(0);
+float4 clippingPlane5 = float4(0);
+float4 clippingPlane6 = float4(0);
+
+#pragma body
+
+if (dot(in.myPos, clippingPlane1) < 0) { discard_fragment(); }
+if (dot(in.myPos, clippingPlane2) < 0) { discard_fragment(); }
+if (dot(in.myPos, clippingPlane3) < 0) { discard_fragment(); }
+if (dot(in.myPos, clippingPlane4) < 0) { discard_fragment(); }
+if (dot(in.myPos, clippingPlane5) < 0) { discard_fragment(); }
+if (dot(in.myPos, clippingPlane6) < 0) { discard_fragment(); }

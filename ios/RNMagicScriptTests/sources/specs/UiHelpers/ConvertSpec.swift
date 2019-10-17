@@ -347,6 +347,185 @@ class ConvertSpec: QuickSpec {
                 }
             }
 
+            context("toFontStyle") {
+                it("should convert FontStyle value") {
+                    let normal: FontStyle = .normal
+                    let italic: FontStyle = .italic
+
+                    let normalFontStyleString: String = "normal"
+                    let italicFontStyleString: String = "italic"
+
+                    expect(Convert.toFontStyle(normalFontStyleString)).to(equal(normal))
+                    expect(Convert.toFontStyle(italicFontStyleString)).to(equal(italic))
+
+                    expect(Convert.toFontStyle(normalFontStyleString)).notTo(equal(italic))
+                    expect(Convert.toFontStyle(italicFontStyleString)).notTo(equal(normal))
+
+                    expect(Convert.toFontStyle(nil)).to(beNil())
+                    expect(Convert.toFontStyle(any_bool)).to(beNil())
+                    expect(Convert.toFontStyle(any_int)).to(beNil())
+                    expect(Convert.toFontStyle(any_cgFloat)).to(beNil())
+                    expect(Convert.toFontStyle(any_float)).to(beNil())
+                    expect(Convert.toFontStyle(any_double)).to(beNil())
+                    expect(Convert.toFontStyle(any_vec3)).to(beNil())
+                    expect(Convert.toFontStyle(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toFontWeight") {
+                it("should convert FontWeight value") {
+                    let extraLight: FontWeight = .extraLight
+                    let light: FontWeight = .light
+                    let regular: FontWeight = .regular
+                    let medium: FontWeight = .medium
+                    let bold: FontWeight = .bold
+                    let extraBold: FontWeight = .extraBold
+
+                    let extraLightFontWeightString: String = "extra-light"
+                    let lightFontWeightString: String = "light"
+                    let regularFontWeightString: String = "regular"
+                    let mediumFontWeightString: String = "medium"
+                    let boldFontWeightString: String = "bold"
+                    let extraBoldFontWeightString: String = "extra-bold"
+
+                    expect(Convert.toFontWeight(extraLightFontWeightString)).to(equal(extraLight))
+                    expect(Convert.toFontWeight(lightFontWeightString)).to(equal(light))
+                    expect(Convert.toFontWeight(regularFontWeightString)).to(equal(regular))
+                    expect(Convert.toFontWeight(mediumFontWeightString)).to(equal(medium))
+                    expect(Convert.toFontWeight(boldFontWeightString)).to(equal(bold))
+                    expect(Convert.toFontWeight(extraBoldFontWeightString)).to(equal(extraBold))
+
+                    expect(Convert.toFontWeight(regularFontWeightString)).notTo(equal(extraLight))
+                    expect(Convert.toFontWeight(regularFontWeightString)).notTo(equal(light))
+                    expect(Convert.toFontWeight(regularFontWeightString)).notTo(equal(medium))
+                    expect(Convert.toFontWeight(regularFontWeightString)).notTo(equal(bold))
+                    expect(Convert.toFontWeight(regularFontWeightString)).notTo(equal(extraBold))
+
+                    expect(Convert.toFontWeight(nil)).to(beNil())
+                    expect(Convert.toFontWeight(any_bool)).to(beNil())
+                    expect(Convert.toFontWeight(any_int)).to(beNil())
+                    expect(Convert.toFontWeight(any_cgFloat)).to(beNil())
+                    expect(Convert.toFontWeight(any_float)).to(beNil())
+                    expect(Convert.toFontWeight(any_double)).to(beNil())
+                    expect(Convert.toFontWeight(any_vec3)).to(beNil())
+                    expect(Convert.toFontWeight(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toScrollBarVisibility") {
+                it("should convert ScrollBarVisibility value") {
+                    let always: ScrollBarVisibility = .always
+                    let auto: ScrollBarVisibility = .auto
+                    let off: ScrollBarVisibility = .off
+
+                    let alwaysScrollBarVisibilityString: String = "always"
+                    let autoScrollBarVisibilityString: String = "auto"
+                    let offScrollBarVisibilityString: String = "off"
+
+                    expect(Convert.toScrollBarVisibility(alwaysScrollBarVisibilityString)).to(equal(always))
+                    expect(Convert.toScrollBarVisibility(autoScrollBarVisibilityString)).to(equal(auto))
+                    expect(Convert.toScrollBarVisibility(offScrollBarVisibilityString)).to(equal(off))
+
+                    expect(Convert.toScrollBarVisibility(alwaysScrollBarVisibilityString)).notTo(equal(auto))
+                    expect(Convert.toScrollBarVisibility(alwaysScrollBarVisibilityString)).notTo(equal(off))
+
+                    expect(Convert.toScrollBarVisibility(nil)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_bool)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_int)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_cgFloat)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_float)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_double)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_vec3)).to(beNil())
+                    expect(Convert.toScrollBarVisibility(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toScrollDirection") {
+                it("should convert ScrollDirection value") {
+                    let horizontal: ScrollDirection = .horizontal
+                    let vertical: ScrollDirection = .vertical
+
+                    let horizontalScrollDirectionString: String = "horizontal"
+                    let verticalScrollDirectionString: String = "vertical"
+
+                    expect(Convert.toScrollDirection(horizontalScrollDirectionString)).to(equal(horizontal))
+                    expect(Convert.toScrollDirection(verticalScrollDirectionString)).to(equal(vertical))
+
+                    expect(Convert.toScrollDirection(horizontalScrollDirectionString)).notTo(equal(vertical))
+                    expect(Convert.toScrollDirection(verticalScrollDirectionString)).notTo(equal(horizontal))
+
+                    expect(Convert.toScrollDirection(nil)).to(beNil())
+                    expect(Convert.toScrollDirection(any_bool)).to(beNil())
+                    expect(Convert.toScrollDirection(any_int)).to(beNil())
+                    expect(Convert.toScrollDirection(any_cgFloat)).to(beNil())
+                    expect(Convert.toScrollDirection(any_float)).to(beNil())
+                    expect(Convert.toScrollDirection(any_double)).to(beNil())
+                    expect(Convert.toScrollDirection(any_vec3)).to(beNil())
+                    expect(Convert.toScrollDirection(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toOrientation") {
+                it("should convert Orientation value") {
+                    let horizontal: Orientation = .horizontal
+                    let vertical: Orientation = .vertical
+
+                    let horizontalOrientationString: String = "horizontal"
+                    let verticalOrientationString: String = "vertical"
+
+                    expect(Convert.toOrientation(horizontalOrientationString)).to(equal(horizontal))
+                    expect(Convert.toOrientation(verticalOrientationString)).to(equal(vertical))
+
+                    expect(Convert.toOrientation(horizontalOrientationString)).notTo(equal(vertical))
+                    expect(Convert.toOrientation(verticalOrientationString)).notTo(equal(horizontal))
+
+                    expect(Convert.toOrientation(nil)).to(beNil())
+                    expect(Convert.toOrientation(any_bool)).to(beNil())
+                    expect(Convert.toOrientation(any_int)).to(beNil())
+                    expect(Convert.toOrientation(any_cgFloat)).to(beNil())
+                    expect(Convert.toOrientation(any_float)).to(beNil())
+                    expect(Convert.toOrientation(any_double)).to(beNil())
+                    expect(Convert.toOrientation(any_vec3)).to(beNil())
+                    expect(Convert.toOrientation(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toTextEntryMode") {
+                it("should convert TextEntryMode value") {
+                    let email: TextEntryMode = .email
+                    let none: TextEntryMode = .none
+                    let normal: TextEntryMode = .normal
+                    let numeric: TextEntryMode = .numeric
+                    let url: TextEntryMode = .url
+
+                    let emailTextEntryModeString: String = "email"
+                    let noneTextEntryModeString: String = "none"
+                    let normalTextEntryModeString: String = "normal"
+                    let numericTextEntryModeString: String = "numeric"
+                    let urlTextEntryModeString: String = "url"
+
+                    expect(Convert.toTextEntryMode(emailTextEntryModeString)).to(equal(email))
+                    expect(Convert.toTextEntryMode(noneTextEntryModeString)).to(equal(none))
+                    expect(Convert.toTextEntryMode(normalTextEntryModeString)).to(equal(normal))
+                    expect(Convert.toTextEntryMode(numericTextEntryModeString)).to(equal(numeric))
+                    expect(Convert.toTextEntryMode(urlTextEntryModeString)).to(equal(url))
+
+                    expect(Convert.toTextEntryMode(normalTextEntryModeString)).notTo(equal(email))
+                    expect(Convert.toTextEntryMode(normalTextEntryModeString)).notTo(equal(none))
+                    expect(Convert.toTextEntryMode(normalTextEntryModeString)).notTo(equal(numeric))
+                    expect(Convert.toTextEntryMode(normalTextEntryModeString)).notTo(equal(url))
+
+                    expect(Convert.toTextEntryMode(nil)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_bool)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_int)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_cgFloat)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_float)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_double)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_vec3)).to(beNil())
+                    expect(Convert.toTextEntryMode(any_arrayOfInts)).to(beNil())
+                }
+            }
+
             context("toFileURL") {
                 it("should convert file path value") {
                     let pathURL1 = URL(string: "http://www.sample.com/image.png")!

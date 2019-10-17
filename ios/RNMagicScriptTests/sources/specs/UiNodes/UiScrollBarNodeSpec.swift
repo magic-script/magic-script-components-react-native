@@ -37,6 +37,7 @@ class UiScrollBarNodeSpec: QuickSpec {
                     expect(node.height).to(beCloseTo(0.0))
                     expect(node.thumbSize).to(beCloseTo(0.1))
                     expect(node.thumbPosition).to(beCloseTo(0.0))
+                    expect(node.scrollOrientation).to(equal(.vertical))
                 }
 
                 context("initialization") {
@@ -46,7 +47,7 @@ class UiScrollBarNodeSpec: QuickSpec {
                 }
 
                 it("should have set default size") {
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultSize.width, height: UiScrollBarNode.defaultSize.height)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultThickness, height: UiScrollBarNode.defaultLength)))
                 }
             }
 
@@ -63,7 +64,7 @@ class UiScrollBarNodeSpec: QuickSpec {
                     let referenceWidth: CGFloat = 0.6
                     node.update(["width" : referenceWidth])
                     expect(node.width).to(beCloseTo(referenceWidth))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: UiScrollBarNode.defaultSize.height)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultThickness, height: referenceWidth)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -71,7 +72,7 @@ class UiScrollBarNodeSpec: QuickSpec {
                     let referenceHeight: CGFloat = 0.2
                     node.update(["height" : referenceHeight])
                     expect(node.height).to(beCloseTo(referenceHeight))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultSize.width, height: referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceHeight, height: UiScrollBarNode.defaultLength)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -112,22 +113,31 @@ class UiScrollBarNodeSpec: QuickSpec {
                     expect(node.thumbPosition).to(beCloseTo(0.0))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
+
+                it("should update 'scrollOrientation' prop") {
+                    let referenceOrientation: Orientation = .horizontal
+                    node.update(["orientation" : referenceOrientation.rawValue])
+                    expect(node.scrollOrientation).to(equal(referenceOrientation))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
             }
 
             context("orientation") {
                 it("should support horizontal orientation") {
-                    node.vertical = false
+                    node.scrollOrientation = .horizontal
                     node.layoutIfNeeded()
-                    expect(node.vertical).to(beFalse())
+                    expect(node.scrollOrientation).to(equal(.horizontal))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultLength, height: UiScrollBarNode.defaultThickness)))
 
                     let bgNode = node.contentNode.childNodes[0]
                     expect(bgNode.transform).to(beCloseTo(SCNMatrix4Identity))
                 }
 
                 it("should support vertical orientation") {
-                    node.vertical = true
+                    node.scrollOrientation = .vertical
                     node.layoutIfNeeded()
-                    expect(node.vertical).to(beTrue())
+                    expect(node.scrollOrientation).to(equal(.vertical))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultThickness, height: UiScrollBarNode.defaultLength)))
 
                     let bgNode = node.contentNode.childNodes[0]
                     expect(bgNode.transform).to(beCloseTo(SCNMatrix4MakeRotation(-0.5 * Float.pi, 0, 0, 1)))

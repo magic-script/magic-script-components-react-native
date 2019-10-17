@@ -31,14 +31,17 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true) {
 
     companion object {
-        private const val MEASURE_INTERVAL = 100L // in milliseconds
+        private const val MEASURE_INTERVAL = 50L // in milliseconds
     }
 
     // we should re-draw the grid after adding / removing a child
     var redrawRequested = false
         private set
 
-    // child index, bounding
+    // "backed" children
+    private val childrenList = mutableListOf<Node>()
+
+    // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     private var handler = Handler(Looper.getMainLooper())
@@ -53,7 +56,17 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     override fun addContent(child: Node) {
-        contentNode.addChild(child)
+        //contentNode.addChild(child)
+        childrenList.add(child)
+        redrawRequested = true
+    }
+
+    override fun removeContent(child: Node) {
+        childrenList.remove(child)
+        if (contentNode.children.contains(child)) {
+            contentNode.removeChild(child)
+        }
+        childrenBounds.clear() // indexes changed
         redrawRequested = true
     }
 
@@ -70,9 +83,16 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     private fun layoutLoop() {
         measureChildren()
         if (redrawRequested) {
-            layoutManager.layoutChildren(contentNode.children, childrenBounds)
+            layoutManager.layoutChildren(childrenList, childrenBounds)
             // applyAlignment()
             redrawRequested = false
+
+            // Attach the child after position is calculated
+            childrenList.forEach { child ->
+                if (!contentNode.children.contains(child)) {
+                    contentNode.addChild(child)
+                }
+            }
         }
 
         handler.postDelayed({
@@ -85,8 +105,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * it sets the [redrawRequested] flag to true.
      */
     private fun measureChildren() {
-        for (i in 0 until contentNode.children.size) {
-            val node = contentNode.children[i]
+        for (i in 0 until childrenList.size) {
+            val node = childrenList[i]
             val oldBounds = childrenBounds[i] ?: Bounding()
             childrenBounds[i] = if (node is TransformNode) {
                 node.getBounding()

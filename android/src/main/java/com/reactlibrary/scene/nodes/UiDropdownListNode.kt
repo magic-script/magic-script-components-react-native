@@ -55,8 +55,9 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     init {
         val listProps = JavaOnlyMap()
-        listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
         listProps.putString(PROP_ALIGNMENT, "top-left")
+        listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
+        listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
         listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
     }
 
@@ -118,6 +119,7 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {
         setListTextSize(items, props)
+        setCharactersLimit(items, props)
     }
 
     private fun setListTextSize(items: List<UiDropdownListItemNode>, props: Bundle) {
@@ -125,6 +127,15 @@ class UiDropdownListNode(initProps: ReadableMap,
             val textSize = props.getDouble(PROP_LIST_TEXT_SIZE)
             items.forEach { item ->
                 item.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize))
+            }
+        }
+    }
+
+    private fun setCharactersLimit(items: List<UiDropdownListItemNode>, props: Bundle) {
+        if (props.containsKey(PROP_CHARACTERS_LIMIT)) {
+            val charsLimit = props.getDouble(PROP_CHARACTERS_LIMIT).toInt()
+            items.forEach { item ->
+                item.maxCharacters = charsLimit
             }
         }
     }

@@ -280,9 +280,9 @@ abstract class TransformNode(
 
     open fun setClipBounds(clipBounds: Bounding) {}
 
-    open fun contentTranslation(): Vector3{
-        return localPosition
-    }
+    // open fun localTranslation(): Vector3 {
+    //     return localPosition
+    // }
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

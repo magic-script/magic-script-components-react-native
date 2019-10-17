@@ -77,7 +77,7 @@ class CustomScrollView @JvmOverloads constructor(
                     v_bar.thumbPosition - move.y)
             h_bar.thumbPosition = thumbPos.x
             v_bar.thumbPosition = thumbPos.y
-            onScrollChangeListener?.invoke(thumbPos)
+            onScrollChangeListener?.invoke(getViewPosition())
         }
         previousTouch = touch
 

@@ -100,9 +100,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    override fun contentTranslation(): Vector3 {
-        return Vector3()
-    }
+//    override fun localTranslation(): Vector3 {
+//        return localPosition + contentNode.localPosition
+//    }
 
     override fun setClipBounds(clipBounds: Bounding) {
         for (i in 0 until contentNode.children.size) {
@@ -110,12 +110,12 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             val child = contentNode.children[i]
             if (child is TransformNode) {
 
-                val offset = contentNode.localPosition + child.localPosition
+                val offset = contentNode.localPosition
                 val childClip = Bounding(
-                        clipBounds.left - offset.x,
-                        clipBounds.top - offset.y,
-                        clipBounds.right - offset.x,
-                        clipBounds.bottom - offset.y)
+                        clipBounds.left - offset.x - child.localPosition.x,
+                        clipBounds.top - offset.y - child.localPosition.y,
+                        clipBounds.right - offset.x - child.localPosition.x,
+                        clipBounds.bottom - offset.y - child.localPosition.y)
                 child.setClipBounds(childClip)
             }
         }

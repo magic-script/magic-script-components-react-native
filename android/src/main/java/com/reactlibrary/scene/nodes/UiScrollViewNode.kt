@@ -51,7 +51,8 @@ class UiScrollViewNode(
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
     }
 
-    private var looperHandler = Handler(Looper.getMainLooper())
+    private var width = 0F
+    private var height = 0F
 
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
@@ -59,6 +60,8 @@ class UiScrollViewNode(
 
     private var scrollRequested = false
     private var requestedContentPosition = PointF()
+
+    private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
         // set default properties values
@@ -76,19 +79,19 @@ class UiScrollViewNode(
 
         this.content = child
 
-        view.onPreDrawListener {
+        view.onDrawListener {
             val eps = 1e-5F // epsilon
             if (scrollRequested) {
                 content!!.localPosition = Vector3(
                         requestedContentPosition.x,
                         requestedContentPosition.y,
-                        eps) // Moving content up, so it'll receive touch events first.
+                        eps) // Moving content up in z-plane, so it'll receive touch events first.
                 scrollRequested = false
             }
-            true
         }
 
-        (view as CustomScrollView).onScrollChangeListener = { position: PointF ->
+        val scrollView = view as CustomScrollView
+        scrollView.onScrollChangeListener = { position: PointF ->
             update(position)
         }
 
@@ -102,10 +105,10 @@ class UiScrollViewNode(
             if (!Bounding.equalInexact(contentBounds, newBounds)) {
                 val scrollView = (view as CustomScrollView)
                 contentBounds = newBounds
-                val childSize = contentBounds.size()
+                val contentSize = contentBounds.size()
                 scrollView.contentSize = PointF(
-                        Utils.metersToPx(childSize.x, context).toFloat(),
-                        Utils.metersToPx(childSize.y, context).toFloat())
+                        metersToPx(contentSize.x).toFloat(),
+                        metersToPx(contentSize.y).toFloat())
                 update(scrollView.getViewPosition())
             }
 
@@ -126,11 +129,11 @@ class UiScrollViewNode(
     }
 
     override fun setupView() {
-        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = metersToPx(widthInMeters)
+        width = this.properties.getDouble(PROP_WIDTH).toFloat()
+        height = this.properties.getDouble(PROP_HEIGHT).toFloat()
 
-        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = metersToPx(heightInMeters)
+        val widthPx = metersToPx(width)
+        val heightPx = metersToPx(height)
 
         view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
 
@@ -151,44 +154,43 @@ class UiScrollViewNode(
     }
 
     private fun update(viewPosition: PointF) {
+        if (scrollRequested){
+            return
+        }
 
-        val childBounds = content!!.getLocalBounding()
-        val viewBounds = this.getLocalBounding()
+        val contentBounds = content!!.getLocalBounding()
+        val viewBounds = getScrollBounds()
         val alignTopLeft = PointF(
-                viewBounds.left - childBounds.left,
-                viewBounds.top - childBounds.top)
+                viewBounds.left - contentBounds.left,
+                viewBounds.top - contentBounds.top)
 
-        val childSize = childBounds.size()
-        val viewSize = viewBounds.size() - DEFAULT_SCROLLBAR_WIDTH
-        val possibleTravel = (childSize - viewSize).coerceAtLeast(0F)
+        val contentSize = contentBounds.size()
+        val viewSize = viewBounds.size()
+        val possibleTravel = (contentSize - viewSize).coerceAtLeast(0F)
         val travel = PointF(
                 -possibleTravel.x * viewPosition.x,
                 possibleTravel.y * viewPosition.y)
 
         requestedContentPosition = alignTopLeft + travel
 
-        val clipArea = Bounding(
+        val clipBounds = Bounding(
                 viewBounds.left - requestedContentPosition.x,
-                viewBounds.top - requestedContentPosition.y,
-                viewBounds.right - requestedContentPosition.x - DEFAULT_SCROLLBAR_WIDTH,
-                viewBounds.bottom - requestedContentPosition.y + DEFAULT_SCROLLBAR_WIDTH)
-        content!!.setClipBounds(clipArea)
+                viewBounds.bottom - requestedContentPosition.y,
+                viewBounds.right - requestedContentPosition.x,
+                viewBounds.top - requestedContentPosition.y)
+        content!!.setClipBounds(clipBounds)
+        view.invalidate()
 
         scrollRequested = true
     }
 
-//    private fun calculateLocalBoundsOfNode(node: Node): Bounding {
-//        if (node !is TransformNode) {
-//            return Bounding()
-//        }
-//
-//        val bounds = node.getBounding()
-//        return Bounding(
-//                bounds.left - node.localPosition.x,
-//                bounds.bottom - node.localPosition.y,
-//                bounds.right - node.localPosition.x,
-//                bounds.top - node.localPosition.y)
-//    }
+    private fun getScrollBounds(): Bounding {
+        return Bounding(
+                -width / 2F,
+                -height / 2F + DEFAULT_SCROLLBAR_WIDTH,
+                width / 2F - DEFAULT_SCROLLBAR_WIDTH,
+                height / 2F)
+    }
 
     private fun metersToPx(meters: Float): Int {
         return Utils.metersToPx(meters, context)

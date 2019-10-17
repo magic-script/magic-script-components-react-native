@@ -2,11 +2,12 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 
 interface RectLayoutManager: LayoutManager {
 
-    var parentSize: Pair<Float, Float>
+    var parentBounds: Bounding?
 
     var itemPadding: Padding
 

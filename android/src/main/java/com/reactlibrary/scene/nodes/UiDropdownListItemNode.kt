@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
@@ -27,4 +28,36 @@ class UiDropdownListItemNode(initProps: ReadableMap,
                              fontProvider: FontProvider)
     : UiTextNode(initProps, context, viewRenderableLoader, fontProvider) {
 
+    companion object {
+        const val PROP_ID = "id"
+        const val PROP_LABEL = "label"
+    }
+
+    var onSelectedListener: (() -> Unit)? = null
+
+    var id: Int = 0
+        private set
+
+    var label: String = ""
+        private set
+
+    override fun applyProperties(props: Bundle) {
+        if (props.containsKey(PROP_LABEL)) {
+            label = props.getString(PROP_LABEL)!!
+            props.putString(PROP_TEXT, label)
+        }
+        setId(props)
+        super.applyProperties(props)
+    }
+
+    override fun onViewClick() {
+        super.onViewClick()
+        onSelectedListener?.invoke()
+    }
+
+    private fun setId(props: Bundle) {
+        if (props.containsKey(PROP_ID)) {
+            this.id = props.getDouble(PROP_ID).toInt()
+        }
+    }
 }

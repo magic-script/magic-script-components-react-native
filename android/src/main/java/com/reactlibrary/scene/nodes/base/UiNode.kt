@@ -56,9 +56,11 @@ abstract class UiNode(
      */
     protected lateinit var view: View
 
+    protected var validCollisionShape = false
+        private set
+
     private var shouldRebuild = false
     private var loadingView = false
-    private var validCollisionShape = false
 
     init {
         // set default values of properties

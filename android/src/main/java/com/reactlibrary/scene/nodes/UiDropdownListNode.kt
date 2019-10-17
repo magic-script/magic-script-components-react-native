@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -36,13 +37,17 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
-        const val PROP_LIST_TEXT_SZIE = "listTextSize"
+        const val PROP_LIST_TEXT_SIZE = "listTextSize"
         const val PROP_CHARACTERS_LIMIT = "maxCharacterLimit" // for list item
         const val PROP_MULTI_SELECT = "multiSelect"
         const val PROP_SHOW_LIST = "showList"
         const val PROP_SELECTED = "selected"
 
     }
+
+    // Events
+    var onSelectionChangedListener: ((itemId: Int, itemLabel: String) -> Unit)? = null
+    var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: UiLinearLayout
 
@@ -61,11 +66,17 @@ class UiDropdownListNode(initProps: ReadableMap,
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        setListPosition(props)
+        val listItems = contentNode.children.filterIsInstance<UiDropdownListItemNode>()
+        configureListItems(listItems, props)
+        setShowList(props)
     }
 
     override fun addContent(child: Node) {
         if (child is UiDropdownListItemNode) {
+            configureListItems(listOf(child), properties)
+            child.onSelectedListener = {
+                onSelectionChangedListener?.invoke(child.id, child.label)
+            }
             listNode.addContent(child)
         } else {
             super.addContent(child)
@@ -82,27 +93,57 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     override fun onViewClick() {
         super.onViewClick()
-        if (contentNode.children.contains(listNode)) {
-            contentNode.children.remove(listNode)
+        if (isListVisible()) {
+            hideList()
         } else {
-            addContent(listNode)
+            showList()
         }
     }
 
-    private fun setListPosition(props: Bundle) {
-        if (props.containsKey(PROP_HEIGHT)) {
-            val height = props.getDouble(PROP_HEIGHT).toFloat()
-            if (height != WRAP_CONTENT_DIMENSION) {
-                listNode.localPosition = Vector3(0F, -height, 0F)
-            }
-        } else if (props.containsKey(PROP_TEXT_SIZE)) {
-            val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
-            if (height != WRAP_CONTENT_DIMENSION.toDouble()) {
-                val textSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
-                val posY = -textSize * PADDING_FACTOR_VERTICAL * 2
-                listNode.localPosition = Vector3(0F, posY, 0F)
+    override fun onUpdate(frameTime: FrameTime) {
+        super.onUpdate(frameTime)
+        if (validCollisionShape) {
+            val bounding = getContentBounding()
+            listNode.localPosition = Vector3(bounding.left, bounding.bottom, 0F)
+        }
+    }
+
+    private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {
+        setListTextSize(items, props)
+    }
+
+    private fun setListTextSize(items: List<UiDropdownListItemNode>, props: Bundle) {
+        if (props.containsKey(PROP_LIST_TEXT_SIZE)) {
+            val textSize = props.getDouble(PROP_LIST_TEXT_SIZE)
+            items.forEach { item ->
+                item.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize))
             }
         }
+    }
+
+    private fun setShowList(props: Bundle) {
+        if (props.containsKey(PROP_SHOW_LIST)) {
+            val show = props.getBoolean(PROP_SHOW_LIST)
+            if (show && ! isListVisible()) {
+                showList()
+            } else if (isListVisible()) {
+                hideList()
+            }
+        }
+    }
+
+    private fun isListVisible(): Boolean {
+        return contentNode.children.contains(listNode)
+    }
+
+    private fun showList() {
+        addContent(listNode)
+        onListVisibilityChanged?.invoke(true)
+    }
+
+    private fun hideList() {
+        removeContent(listNode)
+        onListVisibilityChanged?.invoke(false)
     }
 
 }

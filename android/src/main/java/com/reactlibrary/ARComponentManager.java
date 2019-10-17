@@ -49,6 +49,8 @@ import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
+import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
+import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
@@ -252,6 +254,23 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             LinearLayoutManager layoutManager = new LinearLayoutManagerImpl();
             addNode(new UiLinearLayout(props, layoutManager), nodeId);
+        });
+    }
+
+
+    @ReactMethod
+    public void createDropdownListNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiDropdownListNode node = new UiDropdownListNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createDropdownListItemNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiDropdownListItemNode node = new UiDropdownListItemNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
         });
     }
 

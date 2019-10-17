@@ -23,34 +23,32 @@ extension SCNNode {
             return
         }
 
-        let geometryModifier: String =
-            "#pragma varyings\n" +
-            "float4 myPos;\n" +
-            "#pragma body\n" +
-            "out.myPos = scn_node.modelTransform * _geometry.position;"
-        let fragmentModifier: String =
-//            "#pragma arguments" +
-//            "float4 clippingPlane;" +
-//            "#pragma body" +
-            "if (abs(in.myPos.x) > 0.25 || abs(in.myPos.y) > 0.45 || abs(in.myPos.z) > 0.25) {\n" +
-                "discard_fragment();\n" +
-            "}\n"
+        let geometryURL = Bundle.main.url(forResource: "ClippingPlane.geometry", withExtension: "txt")!
+        let geometryModifier: String = try! String(contentsOf: geometryURL)
+
+        let fragmentURL = Bundle.main.url(forResource: "ClippingPlane.fragment", withExtension: "txt")!
+        let fragmentModifier: String = try! String(contentsOf: fragmentURL)
 
         let modifiers = [
             SCNShaderModifierEntryPoint.geometry: geometryModifier,
             SCNShaderModifierEntryPoint.fragment: fragmentModifier
         ]
 
-        applyShanderModifiers(modifiers)
+        applyShanderModifiers(modifiers, planes: planes)
     }
 
     func resetClippingPlanes() {
-        applyShanderModifiers(nil)
+        applyShanderModifiers(nil, planes: [])
     }
 
-    fileprivate func applyShanderModifiers(_ modifiers: [SCNShaderModifierEntryPoint: String]?) {
+    fileprivate func applyShanderModifiers(_ modifiers: [SCNShaderModifierEntryPoint: String]?, planes: [SCNVector4]) {
         enumerateHierarchy { (node, result) in
             node.geometry?.shaderModifiers = modifiers
+            for (index, plane) in planes.enumerated() {
+                let value = NSValue(scnVector4: plane)
+                node.geometry?.setValue(value, forKey: "clippingPlane\(index + 1)")
+            }
+
         }
     }
 }

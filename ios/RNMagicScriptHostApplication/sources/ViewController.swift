@@ -50,6 +50,7 @@ class ViewController: UIViewController {
     fileprivate func setupARView() {
         arView = RCTARView()
         arView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
+        arView.debug = true
         arView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(arView)
         NSLayoutConstraint.activate([
@@ -72,7 +73,7 @@ class ViewController: UIViewController {
         scrollView = createComponent([
             "alignment": "center-center",
             "debug": true,
-            "scrollBounds": ["min": [-0.25,-0.45,-0.1], "max": [0.25,0.45,0.1]]
+            "scrollBounds": ["min": [-0.05,-0.35,-0.1], "max": [0.25,0.45,0.1]]
         ], nodeId: scrollViewId)
         scrollBar = createComponent([
             "debug": false,

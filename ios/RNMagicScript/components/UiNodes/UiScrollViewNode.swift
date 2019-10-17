@@ -31,7 +31,7 @@ import SceneKit
     }
     //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
-        didSet { setNeedsLayout() }
+        didSet { invalidateClippingPlanes = true; setNeedsLayout() }
     }
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto {
         didSet { setNeedsLayout() }
@@ -49,6 +49,7 @@ import SceneKit
     fileprivate weak var scrollBar: UiScrollBarNode?
     fileprivate weak var scrollContent: TransformNode?
     fileprivate var proxyNode: SCNNode!
+    fileprivate var invalidateClippingPlanes: Bool = false
 
     deinit {
         scrollContent?.resetClippingPlanes()
@@ -94,6 +95,7 @@ import SceneKit
             guard scrollContent == nil else { return }
             scrollContent = child
             proxyNode.addChildNode(child)
+            invalidateClippingPlanes = true
             setNeedsLayout()
         }
     }
@@ -106,6 +108,7 @@ import SceneKit
         } else if child == scrollContent {
             scrollContent?.removeFromParentNode()
             scrollContent = nil
+            invalidateClippingPlanes = true
             setNeedsLayout()
         }
     }
@@ -119,7 +122,6 @@ import SceneKit
 
     @objc override func updateLayout() {
         guard let scrollBounds = scrollBounds else { return }
-        scrollContent?.setClippingPlanes([SCNVector4()])
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
@@ -156,6 +158,21 @@ import SceneKit
             }
 
             proxyNode.position += SCNVector3(shift.x, shift.y, 0)
+        }
+
+        if invalidateClippingPlanes {
+            invalidateClippingPlanes = false
+
+            let min = scrollBounds.min
+            let max = scrollBounds.max
+            scrollContent?.setClippingPlanes([
+                SCNVector4( 1, 0, 0,-min.x),
+                SCNVector4(-1, 0, 0, max.x),
+                SCNVector4(0, 1, 0,-min.y),
+                SCNVector4(0,-1, 0, max.y),
+                SCNVector4(0, 0, 1,-min.z),
+                SCNVector4(0, 0,-1, max.z),
+            ])
         }
     }
 }

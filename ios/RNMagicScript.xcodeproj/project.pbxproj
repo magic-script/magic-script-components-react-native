@@ -187,6 +187,10 @@
 		44F5964D235729BB00C60F4C /* SystemIconSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5964C235729BB00C60F4C /* SystemIconSpec.swift */; };
 		44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
 		44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
+		44F5965923585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */; };
+		44F5965A23585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */; };
+		44F5965C23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
+		44F5965D23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
 		44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */; };
 		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
@@ -513,6 +517,8 @@
 		44F596462355C62700C60F4C /* ScrollDirectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirectionSpec.swift; sourceTree = "<group>"; };
 		44F5964C235729BB00C60F4C /* SystemIconSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIconSpec.swift; sourceTree = "<group>"; };
 		44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+ClippingPlane.swift"; sourceTree = "<group>"; };
+		44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ClippingPlane.geometry.txt; sourceTree = "<group>"; };
+		44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ClippingPlane.fragment.txt; sourceTree = "<group>"; };
 		44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssetsSpec.swift; sourceTree = "<group>"; };
 		7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -783,6 +789,7 @@
 				44AFAC12232B9BCF005AC8EF /* Enums */,
 				C4C114D02347374600E80044 /* InputViews */,
 				44A59E83233DF83F006A15D0 /* InputAccessoryViews */,
+				44F5965E2358755100C60F4C /* Shaders */,
 				44AFAC28232B9BCF005AC8EF /* UiHelpers */,
 				44AFAC04232B9BCE005AC8EF /* UiNodes */,
 				44AFAC17232B9BCF005AC8EF /* Utils */,
@@ -1026,6 +1033,15 @@
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		44F5965E2358755100C60F4C /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */,
+				44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		58B511D21A9E6C8500147676 = {
@@ -1355,6 +1371,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44F5965C23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */,
+				44F5965923585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1376,6 +1394,7 @@
 				44AFAB3B232B968C005AC8EF /* hedra_05.bin in Resources */,
 				44AFAB35232B968C005AC8EF /* hedra_001_Normal.png in Resources */,
 				44AFAB2F232B968C005AC8EF /* DemoPicture3.png in Resources */,
+				44F5965A23585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */,
 				44AFAB3D232B968C005AC8EF /* box.glb in Resources */,
 				44AFAB36232B968C005AC8EF /* hedra_001_BaseColor.png in Resources */,
 				44AFAB38232B968C005AC8EF /* hedra.obj in Resources */,
@@ -1385,6 +1404,7 @@
 				44AFAB2A232B968C005AC8EF /* Main.storyboard in Resources */,
 				44AFAB3A232B968C005AC8EF /* hedra_06.bin in Resources */,
 				44AFAB39232B968C005AC8EF /* hedra_05.gltf in Resources */,
+				44F5965D23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */,
 				44AFAB2D232B968C005AC8EF /* DemoPicture1.png in Resources */,
 				44AFAB37232B968C005AC8EF /* hedra.mtl in Resources */,
 				44AFAB31232B968C005AC8EF /* DemoPicture5.jpg in Resources */,

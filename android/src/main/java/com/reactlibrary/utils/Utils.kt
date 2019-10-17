@@ -47,11 +47,28 @@ class Utils {
          *  usually they are almost the same)
          */
         fun metersToPx(meters: Float, context: Context): Int {
+            return metersToPxFloat(meters, context).toInt()
+        }
+
+        fun metersToPxFloat(meters: Float, context: Context): Float {
             val xdpi = context.resources.displayMetrics.xdpi
             val ydpi = context.resources.displayMetrics.ydpi
             val averageDensity = (xdpi + ydpi) / 2
             val densityAvgFactor = averageDensity / BASELINE_DENSITY
-            return (meters * DP_TO_METER_RATIO * densityAvgFactor).toInt()
+            return (meters * DP_TO_METER_RATIO * densityAvgFactor)
+        }
+
+        /**
+         *  Converts native pixels to ARCore's meters
+         *  (Uses an average of horizontal and vertical density -
+         *  usually they are almost the same)
+         */
+        fun pxToMeters(px: Float, context: Context): Float {
+            val xdpi = context.resources.displayMetrics.xdpi
+            val ydpi = context.resources.displayMetrics.ydpi
+            val averageDensity = (xdpi + ydpi) / 2
+            val densityAvgFactor = averageDensity / BASELINE_DENSITY
+            return px / (DP_TO_METER_RATIO * densityAvgFactor)
         }
 
         /**

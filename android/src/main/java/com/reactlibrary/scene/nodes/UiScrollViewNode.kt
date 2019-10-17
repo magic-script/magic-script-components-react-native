@@ -107,8 +107,8 @@ class UiScrollViewNode(
                 contentBounds = newBounds
                 val contentSize = contentBounds.size()
                 scrollView.contentSize = PointF(
-                        metersToPx(contentSize.x).toFloat(),
-                        metersToPx(contentSize.y).toFloat())
+                        metersToPx(contentSize.x),
+                        metersToPx(contentSize.y))
                 update(scrollView.getViewPosition())
             }
 
@@ -132,8 +132,8 @@ class UiScrollViewNode(
         width = this.properties.getDouble(PROP_WIDTH).toFloat()
         height = this.properties.getDouble(PROP_HEIGHT).toFloat()
 
-        val widthPx = metersToPx(width)
-        val heightPx = metersToPx(height)
+        val widthPx = metersToPx(width).toInt()
+        val heightPx = metersToPx(height).toInt()
 
         view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
 
@@ -141,20 +141,47 @@ class UiScrollViewNode(
         // because we want to set view dimensions in one place and
         // for consistency use meters instead of pixels.
         val scrollView = view as CustomScrollView
-        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH)
+        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH).toInt()
         scrollView.h_bar.layoutParams.width = widthPx - scrollBarWidthPx
         scrollView.h_bar.layoutParams.height = scrollBarWidthPx
         scrollView.v_bar.layoutParams.width = scrollBarWidthPx
         scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
+    fun stopNestedScroll() {
+        view.stopNestedScroll()
+    }
+
     // Function by which ViewWrapper delivers intercepted motion events.
     fun onTouchEvent(event: MotionEvent): Boolean {
+
+        val viewBounds = getScrollBounds()
+        event.setLocation(
+                metersToPx(event.getX() - viewBounds.left),
+                metersToPx(- event.getY() + viewBounds.top))
+
+//        logMessage("qqq trans ${event.getX()} ${event.getY()}")
+
         return view.onTouchEvent(event)
     }
 
+    override fun scrollTranslation(): PointF {
+        // When translating clip bounds to node's local cooridanate
+        // system we use localPositions. Hovewer due to ARCore nature
+        // localPosition of ScrollViewNode direct descendant can change
+        // randomly for some milliseconds after beeing writen to. Thus
+        // we can't relaibly use it. To solve the problem we add child
+        // localPosition to translation - the child node will subtract
+        // it in it's setClipBounds method, effectively zeroing it.
+        // Instead of zeroed child localPosition we use
+        // requestedContentPosition.
+        return PointF(
+                requestedContentPosition.x - content!!.localPosition.x,
+                requestedContentPosition.y - content!!.localPosition.y)
+    }
+
     private fun update(viewPosition: PointF) {
-        if (scrollRequested){
+        if (scrollRequested) {
             return
         }
 
@@ -174,10 +201,10 @@ class UiScrollViewNode(
         requestedContentPosition = alignTopLeft + travel
 
         val clipBounds = Bounding(
-                viewBounds.left - requestedContentPosition.x,
-                viewBounds.bottom - requestedContentPosition.y,
-                viewBounds.right - requestedContentPosition.x,
-                viewBounds.top - requestedContentPosition.y)
+                viewBounds.left - scrollTranslation().x,
+                viewBounds.bottom - scrollTranslation().y,
+                viewBounds.right - scrollTranslation().x,
+                viewBounds.top - scrollTranslation().y)
         content!!.setClipBounds(clipBounds)
         view.invalidate()
 
@@ -192,7 +219,7 @@ class UiScrollViewNode(
                 height / 2F)
     }
 
-    private fun metersToPx(meters: Float): Int {
-        return Utils.metersToPx(meters, context)
+    private fun metersToPx(meters: Float): Float {
+        return Utils.metersToPxFloat(meters, context)
     }
 }

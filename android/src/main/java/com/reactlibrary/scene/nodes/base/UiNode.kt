@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
@@ -165,13 +166,22 @@ abstract class UiNode(
         }
     }
 
+    override fun scrollTranslation(): PointF {
+        val size = getBounding().size()
+        val pivot = PointF(
+                size.x / -2F,
+                size.y / 2F)
+        return PointF(
+                pivot.x + localPosition.x,
+                pivot.y + localPosition.y)
+    }
+
     override fun setClipBounds(clipBounds: Bounding) {
-        val pivot = getBounding().size() / 2F
         val clipBoundsPx = Rect(
-                Utils.metersToPx(clipBounds.left + pivot.x, context),
-                -Utils.metersToPx(clipBounds.top - pivot.y, context),
-                Utils.metersToPx(clipBounds.right + pivot.x, context),
-                -Utils.metersToPx(clipBounds.bottom - pivot.y, context))
+                Utils.metersToPx(clipBounds.left - scrollTranslation().x, context),
+                -Utils.metersToPx(clipBounds.top - scrollTranslation().y, context),
+                Utils.metersToPx(clipBounds.right - scrollTranslation().x, context),
+                -Utils.metersToPx(clipBounds.bottom - scrollTranslation().y, context))
         view.clipBounds = clipBoundsPx
     }
 

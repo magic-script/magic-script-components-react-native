@@ -41,6 +41,7 @@ class CustomScrollView @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: PointF) -> Unit)? = null
 
+    private var isBeingDragged = false
     private var previousTouch = PointF()
 
     init {
@@ -59,13 +60,23 @@ class CustomScrollView @JvmOverloads constructor(
         }
     }
 
+    override fun stopNestedScroll() {
+        isBeingDragged = false
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
+            stopNestedScroll()
             return false
         }
 
         val touch = PointF(event.getX(), event.getY())
+        if (!isBeingDragged) {
+            isBeingDragged = true
+            previousTouch = touch
+        }
+
         if (action == MotionEvent.ACTION_MOVE) {
             val movePx = touch - previousTouch
             val viewSize = PointF(width.toFloat(), height.toFloat())

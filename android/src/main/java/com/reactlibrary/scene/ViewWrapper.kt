@@ -17,10 +17,13 @@
 package com.reactlibrary.scene
 
 import android.content.Context
+import android.graphics.PointF
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.UiScrollViewNode
+import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.utils.*
 
 class ViewWrapper(
         context: Context,
@@ -38,13 +41,24 @@ class ViewWrapper(
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        if (event.actionMasked != MotionEvent.ACTION_MOVE) {
-            return false
+
+        val scrollNode = findScrollAncestor()
+        if (event.actionMasked != MotionEvent.ACTION_MOVE && scrollNode != null) {
+            scrollNode.stopNestedScroll()
         }
-        return findScrollAncestor() != null
+
+        val action = event.actionMasked
+        return action == MotionEvent.ACTION_MOVE && scrollNode != null
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        val translation = calculateScrollTranslation()
+        val positionMeters = PointF(
+                Utils.pxToMeters(event.getX(), context),
+                -Utils.pxToMeters(event.getY(), context))
+        event.setLocation(
+                positionMeters.x + translation.x,
+                positionMeters.y + translation.y)
         return findScrollAncestor()!!.onTouchEvent(event)
     }
 
@@ -64,6 +78,23 @@ class ViewWrapper(
             p = p.parent
         }
         return null
+    }
+
+    private fun calculateScrollTranslation(): PointF {
+
+        var translation = PointF()
+        var p: Node? = parent
+        while (p != null) {
+            if (p is TransformNode) {
+//                logMessage("qqq    ${p.scrollTranslation()}")
+                translation += p.scrollTranslation()
+            }
+            if (p is UiScrollViewNode) {
+                break
+            }
+            p = p.parent
+        }
+        return translation
     }
 
     // Workaround for https://github.com/magic-script/magic-script-components-react-native/issues/7

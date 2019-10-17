@@ -158,10 +158,7 @@ class UiScrollViewNode(
         val viewBounds = getScrollBounds()
         event.setLocation(
                 metersToPx(event.getX() - viewBounds.left),
-                metersToPx(- event.getY() + viewBounds.top))
-
-//        logMessage("qqq trans ${event.getX()} ${event.getY()}")
-
+                metersToPx(-event.getY() + viewBounds.top))
         return view.onTouchEvent(event)
     }
 

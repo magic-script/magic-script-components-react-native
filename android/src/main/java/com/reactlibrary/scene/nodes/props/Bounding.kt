@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.props
 
 import android.graphics.PointF
-import com.google.ar.sceneform.math.Vector3
 import kotlin.math.abs
 
 /**

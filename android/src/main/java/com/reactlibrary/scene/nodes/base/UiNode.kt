@@ -19,7 +19,6 @@ package com.reactlibrary.scene.nodes.base
 import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
-import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -30,10 +29,11 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.ViewWrapper
-import com.reactlibrary.scene.nodes.UiImageNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultBoolean
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]

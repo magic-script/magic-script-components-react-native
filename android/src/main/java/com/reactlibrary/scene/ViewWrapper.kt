@@ -23,7 +23,8 @@ import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.UiScrollViewNode
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.plus
 
 class ViewWrapper(
         context: Context,
@@ -52,6 +53,7 @@ class ViewWrapper(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
         val translation = calculateScrollTranslation()
         val positionMeters = PointF(
                 Utils.pxToMeters(event.getX(), context),
@@ -86,7 +88,6 @@ class ViewWrapper(
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {
-//                logMessage("qqq    ${p.scrollTranslation()}")
                 translation += p.scrollTranslation()
             }
             if (p is UiScrollViewNode) {

@@ -22,7 +22,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
 import com.reactlibrary.utils.div
-import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.minus
 import com.reactlibrary.utils.onLayoutListener
 import kotlinx.android.synthetic.main.scroll_view.view.*

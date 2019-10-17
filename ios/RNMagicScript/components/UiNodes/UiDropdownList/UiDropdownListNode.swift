@@ -60,7 +60,7 @@ import SceneKit
     @objc var listFont: UIFont = UIFont.systemFont(ofSize: 14.0) 
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
-    @objc public var onSelectionItemChanged: ((_ sender: UiDropdownListNode, _ selectedItem: UiDropdownListItemNode?) -> (Void))?
+    @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItem: UiDropdownListItemNode?) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var gridLayoutNode: UiGridLayoutNode!
@@ -251,7 +251,7 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
         sender.toggleSelection()
         selectedItem = sender.isSelected ? sender : nil
         // notify about item selection
-        onSelectionItemChanged?(self, selectedItem)
+        onSelectionChanged?(self, selectedItem)
     }
 }
 

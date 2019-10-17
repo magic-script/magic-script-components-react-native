@@ -61,7 +61,9 @@ RCT_EXPORT_MODULE();
              @"onScrollChanged",
              @"onTextChanged",
              @"onToggleChanged",
-             @"onVideoPrepared"
+             @"onVideoPrepared",
+             @"onSliderChanged",
+             @"onSelectionChanged"
              ];
 }
 
@@ -113,10 +115,10 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void)onSelectedDropdownListItemChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem {
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDropdownListItemSelected" body:@{ @"nodeId": sender.name, @"selectedItem": selectedItem }];
+            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItem": selectedItem.name }];
         });
     }
 }

@@ -15,6 +15,8 @@ const ON_TEXT_CHANGED_EVENT = 'onTextChanged';
 const ON_TOGGLE_CHANGED_EVENT = 'onToggleChanged';
 const ON_VIDEO_PREPARED_EVENT = 'onVideoPrepared';
 const ON_SLIDER_CHANGED_EVENT = 'onSliderChanged';
+const ON_SELECTION_CHANGED_EVENT = 'onSelectionChanged';
+
 
 export class PlatformFactory extends NativeFactory {
 
@@ -44,6 +46,7 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent(ON_TOGGLE_CHANGED_EVENT);
         this.startListeningEvent(ON_VIDEO_PREPARED_EVENT);
         this.startListeningEvent(ON_SLIDER_CHANGED_EVENT);
+        this.startListeningEvent(ON_SELECTION_CHANGED_EVENT);
     }
 
     startListeningEvent(eventName) {
@@ -77,6 +80,8 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnVideoPreparedEventHandler(elementId);
         } else if (name === ON_SLIDER_CHANGED_EVENT) {
             this.componentManager.addOnSliderChangedEventHandler(elementId);
+        } else if (name === ON_SELECTION_CHANGED_EVENT) {
+            this.componentManager.addOnSelectionChangedEventHandler(elementId);
         }
 
         const pair = { name, handler };

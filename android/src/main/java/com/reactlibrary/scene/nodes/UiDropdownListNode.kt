@@ -27,6 +27,7 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.reactlibrary.utils.logMessage
 
 class UiDropdownListNode(initProps: ReadableMap,
                          context: Context,
@@ -50,6 +51,7 @@ class UiDropdownListNode(initProps: ReadableMap,
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: UiLinearLayout
+    private var lastSelectedItem: UiDropdownListItemNode? = null
 
     init {
         val listProps = JavaOnlyMap()
@@ -75,7 +77,10 @@ class UiDropdownListNode(initProps: ReadableMap,
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
             child.onSelectedListener = {
+                lastSelectedItem?.isSelected = false
+                lastSelectedItem = child
                 onSelectionChangedListener?.invoke(child.id, child.label)
+                logMessage("on item selected: ${child.label}")
             }
             listNode.addContent(child)
         } else {
@@ -86,6 +91,9 @@ class UiDropdownListNode(initProps: ReadableMap,
     override fun removeContent(child: Node) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
+            if (child == lastSelectedItem) {
+                lastSelectedItem = null
+            }
         } else {
             super.removeContent(child)
         }
@@ -124,7 +132,7 @@ class UiDropdownListNode(initProps: ReadableMap,
     private fun setShowList(props: Bundle) {
         if (props.containsKey(PROP_SHOW_LIST)) {
             val show = props.getBoolean(PROP_SHOW_LIST)
-            if (show && ! isListVisible()) {
+            if (show && !isListVisible()) {
                 showList()
             } else if (isListVisible()) {
                 hideList()

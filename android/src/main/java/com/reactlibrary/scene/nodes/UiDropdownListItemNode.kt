@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -41,6 +42,13 @@ class UiDropdownListItemNode(initProps: ReadableMap,
     var label: String = ""
         private set
 
+    var isSelected = false
+        set(value) {
+            field = value
+            val bgColor = if (value) Color.GRAY else Color.TRANSPARENT
+            view.setBackgroundColor(bgColor)
+        }
+
     override fun applyProperties(props: Bundle) {
         if (props.containsKey(PROP_LABEL)) {
             label = props.getString(PROP_LABEL)!!
@@ -53,6 +61,7 @@ class UiDropdownListItemNode(initProps: ReadableMap,
     override fun onViewClick() {
         super.onViewClick()
         onSelectedListener?.invoke()
+        isSelected = !isSelected
     }
 
     private fun setId(props: Bundle) {

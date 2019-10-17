@@ -63,6 +63,10 @@ open class UiTextNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
     }
 
+    fun setBackgroundColor(color: Int) {
+        view.setBackgroundColor(color)
+    }
+
     override fun setupView() {
         // dimensions in pixels
         var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT

@@ -68,6 +68,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         redrawRequested = true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
+    }
+
     protected fun requestLayout() {
         redrawRequested = true
     }

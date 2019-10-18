@@ -110,8 +110,8 @@ open class UiTextNode(initProps: ReadableMap,
         return size.first == WRAP_CONTENT_DIMENSION || size.second == WRAP_CONTENT_DIMENSION
     }
 
-    private fun setText(properties: Bundle) {
-        val text = properties.getString(PROP_TEXT)
+    protected open fun setText(props: Bundle) {
+        val text = props.getString(PROP_TEXT)
         if (text != null) {
             (view as TextView).text = text
             // rebuild only if size can be changed

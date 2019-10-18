@@ -128,7 +128,7 @@ class VideoNodeTest {
 
     @Test
     fun shouldReleasePlayerWhenResourcesCleared() {
-        videoNode.clearResources()
+        videoNode.onDestroy()
 
         verify(videoPlayer).release()
     }

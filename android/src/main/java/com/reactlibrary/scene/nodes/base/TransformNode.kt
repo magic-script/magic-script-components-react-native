@@ -94,6 +94,8 @@ abstract class TransformNode(
     private var timeSinceLastAlignment = 0F
 
     init {
+        addChild(contentNode)
+
         // Set default properties if not present
         val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
         properties.putDefaultSerializable(PROP_LOCAL_POSITION, position)
@@ -139,10 +141,8 @@ abstract class TransformNode(
      * Builds the node by calling [applyProperties] with all initial properties
      */
     open fun build() {
-        addChild(contentNode)
         applyProperties(properties)
     }
-
 
     /**
      * Attaches a renderable (view, model) to the node

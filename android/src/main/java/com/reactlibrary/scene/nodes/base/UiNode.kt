@@ -74,7 +74,6 @@ abstract class UiNode(
     override fun build() {
         initView()
         setupView()
-        addChild(contentNode)
         applyProperties(properties)
     }
 
@@ -90,8 +89,16 @@ abstract class UiNode(
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
         if (shouldRebuild && !loadingView) {
-            build() // init a new view and apply all properties
-            attachView()
+            if (renderableRequested) {
+                // init a new view and apply all properties
+                build()
+                attachView()
+            } else {
+                // not reloading the view if the renderable has not been requested yet
+                // because ArCore may not be initialized yet
+                setupView()
+                applyProperties(properties)
+            }
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")
         }
@@ -117,11 +124,7 @@ abstract class UiNode(
      * (resizing the current view does not work - ARCore bug?)
      */
     fun setNeedsRebuild() {
-        // no rebuilding if the renderable has not been requested yet
-        // because ArCore may not be initialized yet
-        if (renderableRequested) {
-            shouldRebuild = true
-        }
+        shouldRebuild = true
     }
 
     protected abstract fun provideView(context: Context): View

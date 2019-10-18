@@ -24,34 +24,37 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import com.reactlibrary.R
 import com.reactlibrary.utils.setTextAndMoveCursor
+import kotlinx.android.synthetic.main.edit_text_2d.view.*
 
 class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boolean)
-    : AlertDialog.Builder(context) {
+    : AlertDialog.Builder(context, R.style.InputDialogTheme) {
+
+    companion object {
+        private const val MAX_HEIGHT = 100
+    }
 
     private var editText: EditText
+    private var tvConfirm: TextView
     private var onSubmitListener: ((text: String) -> Unit)? = null
     private var onCloseListener: (() -> Unit)? = null
 
     init {
-        val resId = if (multiline) R.layout.edit_text_2d_multiline else R.layout.edit_text_2d
-        val nativeEditText = LayoutInflater.from(context).inflate(resId, null)
-        editText = nativeEditText.findViewById(R.id.edit_text_2d) as EditText
+        val contentView = LayoutInflater.from(context).inflate(R.layout.edit_text_2d, null)
+        editText = contentView.edit_text_2d
+
         if (passwordMode) {
             editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         if (multiline) {
             editText.inputType = editText.inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            editText.maxHeight = (MAX_HEIGHT * context.resources.displayMetrics.density).toInt()
         }
-
         editText.imeOptions = EditorInfo.IME_ACTION_DONE
-
-        setView(nativeEditText)
-        setPositiveButton(android.R.string.ok) { _, _ ->
-            onSubmitListener?.invoke(editText.text.toString())
-        }
-        setNegativeButton(android.R.string.cancel, null)
+        tvConfirm = contentView.tv_confirm
+        setView(contentView)
     }
 
     override fun create(): AlertDialog {
@@ -59,6 +62,7 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
         dialog.setOnDismissListener {
             onCloseListener?.invoke()
         }
+
         // show keyboard
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
@@ -68,6 +72,11 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
                 dialog.dismiss()
                 true
             } else false
+        }
+
+        tvConfirm.setOnClickListener {
+            onSubmitListener?.invoke(editText.text.toString())
+            dialog.dismiss()
         }
 
         return dialog

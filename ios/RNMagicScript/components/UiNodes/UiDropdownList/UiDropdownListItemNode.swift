@@ -98,7 +98,7 @@ import SceneKit
 
         backgroundGeometry = SCNPlane(width: gridLayoutNode.getSize().width, height: gridLayoutNode.getSize().height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = false
+        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor(red: 236.0/256.0, green: 240.0/256.0, blue: 241.0/256.0, alpha: 0.5)
         backgroundNode = SCNNode(geometry: backgroundGeometry)
 

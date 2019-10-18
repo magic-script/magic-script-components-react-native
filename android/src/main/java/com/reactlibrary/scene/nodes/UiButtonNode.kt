@@ -54,7 +54,7 @@ open class UiButtonNode(initProps: ReadableMap,
 
         // text padding = factor * text height
         private const val PADDING_FACTOR_HORIZONTAL = 1.55F
-        private const val PADDING_FACTOR_VERTICAL = 1.15F
+        const val PADDING_FACTOR_VERTICAL = 1.15F
     }
 
     private var playingAnim = false

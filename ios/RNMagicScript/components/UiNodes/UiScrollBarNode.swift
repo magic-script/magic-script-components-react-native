@@ -77,14 +77,14 @@ import SceneKit
 
         let backgroundGeometry = SCNPlane(width: width, height: height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = false
+        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
         backgroundNode = SCNNode(geometry: backgroundGeometry)
         contentNode.addChildNode(backgroundNode)
 
         let thumbGeometry = SCNPlane(width: thumbSize * width, height: height)
         thumbGeometry.firstMaterial?.lightingModel = .constant
-        thumbGeometry.firstMaterial?.isDoubleSided = false
+        thumbGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         thumbGeometry.firstMaterial?.diffuse.contents = UIColor.white
         thumbGeometry.firstMaterial?.readsFromDepthBuffer = false
         thumbNode = SCNNode(geometry: thumbGeometry)

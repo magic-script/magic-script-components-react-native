@@ -64,6 +64,17 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
     }
 }
 
+/**
+ * Returns a string limited to [maxCharacters].
+ * If length > [maxCharacters] it adds 3 dots at the end
+ */
+fun String.limited(maxCharacters: Int): String {
+    return if (this.length > maxCharacters) {
+        substring(0, maxCharacters) + "\u2026"
+    } else this
+
+}
+
 fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Pair<Float, Float> {
     val widthMeasureSpec = if (maxWidthMeters > 0) {
         val maxWidth = Utils.metersToPx(maxWidthMeters, context)
@@ -85,3 +96,5 @@ fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeter
     val heightMeters = Utils.pxToMeters(measuredHeight.toFloat(), context)
     return Pair(widthMeters, heightMeters)
 }
+
+

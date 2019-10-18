@@ -84,8 +84,8 @@ class VideoNode(initProps: ReadableMap,
     }
 
     // destroying media player when node is detached (e.g. on scene change)
-    override fun clearResources() {
-        super.clearResources()
+    override fun onDestroy() {
+        super.onDestroy()
         videoPlayer.release()
     }
 

@@ -115,10 +115,10 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem {
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemIndex {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItem": selectedItem.name }];
+            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItem": selectedItemIndex }];
         });
     }
 }

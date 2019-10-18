@@ -272,9 +272,9 @@ RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDropdownListNode class]]) {
         UiDropdownListNode *dropdownList = (UiDropdownListNode *)node;
-        dropdownList.onSelectionChanged = ^(UiDropdownListNode *sender, UiDropdownListItemNode *selectedItem) {
+        dropdownList.onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<NSNumber *> *selectedItemsIndexes) {
             ARLog(@"DropdownList item selected");
-            [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItem: selectedItem];
+            [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItemsIndexes: selectedItemsIndexes];
         };
     }
 }

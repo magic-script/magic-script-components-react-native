@@ -313,9 +313,6 @@ open class UiTextEditNode(initProps: ReadableMap,
     private fun showInputDialog(context: Context) {
         val multiline = properties.getBoolean(PROP_MULTILINE)
         val builder = InputDialogBuilder(context, multiline, isPassword())
-
-        val title = if (hint.isNotEmpty()) hint else context.getString(R.string.input_title_default)
-        builder.setTitle(title)
         builder.setInputText(text)
 
         val charsLimit = properties.getDouble(PROP_CHARACTERS_LIMIT, DEFAULT_CHARACTERS_LIMIT)

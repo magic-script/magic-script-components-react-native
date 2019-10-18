@@ -89,6 +89,9 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
+    protected var updatingProperties = false
+        private set
+
     private var bounding = Bounding(0F, 0F, 0F, 0F) // default
 
     private var timeSinceLastAlignment = 0F
@@ -161,11 +164,13 @@ abstract class TransformNode(
      * @param props properties to change or new properties to apply
      */
     fun update(props: ReadableMap) {
+        updatingProperties = true
         val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
         this.properties.putAll(propsToUpdate) // save new props
 
         logMessage("updating properties: $propsToUpdate")
         applyProperties(propsToUpdate)
+        updatingProperties = false
     }
 
     /**

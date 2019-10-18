@@ -113,7 +113,9 @@ class UiDropdownListNode(initProps: ReadableMap,
         super.onUpdate(frameTime)
         if (validCollisionShape) {
             val bounding = getContentBounding()
-            listNode.localPosition = Vector3(bounding.left, bounding.bottom, 0F)
+            val listX = bounding.left
+            val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
+            listNode.localPosition = Vector3(listX, listY, 0F)
         }
     }
 

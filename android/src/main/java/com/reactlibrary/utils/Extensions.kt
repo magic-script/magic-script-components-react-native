@@ -61,3 +61,13 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
         putSerializable(key, value)
     }
 }
+
+/**
+ * Returns a string limited to [maxCharacters].
+ * If length > [maxCharacters] it adds 3 dots at the end
+ */
+fun String.limited(maxCharacters: Int): String {
+    return if (this.length > maxCharacters) {
+        substring(0, maxCharacters) + "\u2026"
+    } else this
+}

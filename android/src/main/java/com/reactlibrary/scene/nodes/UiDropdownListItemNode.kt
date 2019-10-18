@@ -24,7 +24,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.limited
 
 class UiDropdownListItemNode(initProps: ReadableMap,
                              context: Context,
@@ -60,25 +60,30 @@ class UiDropdownListItemNode(initProps: ReadableMap,
             field = value
             setNeedsRebuild()
         }
-    
+
     override fun setupView() {
         super.setupView()
         val paddingVertPx = Utils.metersToPx(PADDING_VERTICAL, context)
         val paddingHorizPx = Utils.metersToPx(PADDING_HORIZONTAL, context)
         view.setPadding(paddingHorizPx, paddingVertPx, paddingHorizPx, paddingVertPx)
         if (maxCharacters > 0) {
-            (view as TextView).maxEms = maxCharacters
-            logMessage("setting max ems")
+            val textView = view as TextView
+            textView.text = textView.text.toString().limited(maxCharacters)
         }
     }
 
     override fun applyProperties(props: Bundle) {
-        if (props.containsKey(PROP_LABEL)) {
-            label = props.getString(PROP_LABEL)!!
-            props.putString(PROP_TEXT, label)
-        }
-        setId(props)
         super.applyProperties(props)
+        setId(props)
+    }
+
+    override fun setText(props: Bundle) {
+        if (props.containsKey(PROP_LABEL)) {
+            val label = props.getString(PROP_LABEL)!!
+            val limited = if (maxCharacters > 0) label.limited(maxCharacters) else label
+            props.putString(PROP_TEXT, limited)
+        }
+        super.setText(props)
     }
 
     override fun onViewClick() {

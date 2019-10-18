@@ -3,12 +3,14 @@ package com.reactlibrary.scene.nodes.layouts
 import android.os.Bundle
 import android.util.Log
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.rendering.MaterialFactory
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.*
+import java.util.concurrent.CompletableFuture
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
 : UiLayout(initProps, layoutManager) {
@@ -66,11 +68,15 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         Log.d("RectLayout", "rect layout item padding: $itemPadding")
         Log.d("RectLayout", "content node point, x: ${contentNode.localPosition.x}, y: ${contentNode.localPosition.y}")
         val parentBounding = if (isSizeSet()) {
+            val boundsCenterX = contentNode.localPosition.x + width / 2
+            val boundsCenterY = contentNode.localPosition.y - height / 2
+            val pivotOffsetX = contentNode.localPosition.x - boundsCenterX // aligning according to center
+            val pivotOffsetY = contentNode.localPosition.y - boundsCenterY
             Bounding(
-                    contentNode.localPosition.x - itemPadding.left - width/2,
-                    contentNode.localPosition.y - itemPadding.bottom - height/2,
-                    contentNode.localPosition.x + itemPadding.right + width/2,
-                    contentNode.localPosition.y + itemPadding.top + height/2
+                    contentNode.localPosition.x - itemPadding.left - width / 2,
+                    contentNode.localPosition.y - itemPadding.bottom - height / 2,
+                    contentNode.localPosition.x + itemPadding.right + width / 2,
+                    contentNode.localPosition.y + itemPadding.top + height / 2
             )
         } else {
             Bounding(
@@ -87,6 +93,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
                 "top: ${parentBounding.top}"
         )
         if(isSizeSet()) {
+            Log.d("RectLayout", "set parent bounds in rect layout manager")
             (layoutManager as RectLayoutManager).parentBounds = parentBounding
         }
         return parentBounding

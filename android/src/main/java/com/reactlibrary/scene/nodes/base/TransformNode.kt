@@ -183,7 +183,7 @@ abstract class TransformNode(
     /**
      * Should clear all node's resources (if any)
      */
-    open fun clearResources() {}
+    open fun onDestroy() {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

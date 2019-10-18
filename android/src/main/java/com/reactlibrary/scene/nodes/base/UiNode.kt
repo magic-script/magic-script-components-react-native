@@ -108,7 +108,7 @@ abstract class UiNode(
         }
         return Bounding(offsetX, offsetY, offsetX, offsetY)
     }
-
+    
     /**
      * Should be called when the size of the node may have changed,
      * so we need to rebuild the native view (renderable)

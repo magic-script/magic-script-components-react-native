@@ -16,8 +16,10 @@
 
 package com.reactlibrary.utils
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import java.io.Serializable
 
@@ -60,4 +62,26 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
     if (!containsKey(key)) {
         putSerializable(key, value)
     }
+}
+
+fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Pair<Float, Float> {
+    val widthMeasureSpec = if (maxWidthMeters > 0) {
+        val maxWidth = Utils.metersToPx(maxWidthMeters, context)
+        View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
+    } else {
+        View.MeasureSpec.UNSPECIFIED
+    }
+
+    val heightMeasureSpec = if (maxHeightMeters > 0) {
+        val maxHeight = Utils.metersToPx(maxHeightMeters, context)
+        View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
+    } else {
+        View.MeasureSpec.UNSPECIFIED
+    }
+
+    measure(widthMeasureSpec, heightMeasureSpec)
+    logMessage("Measured width= $measuredWidth")
+    val widthMeters = Utils.pxToMeters(measuredWidth.toFloat(), context)
+    val heightMeters = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    return Pair(widthMeters, heightMeters)
 }

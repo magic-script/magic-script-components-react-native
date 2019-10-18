@@ -29,8 +29,11 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.icons.IconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.getSizeInMeters
+import com.reactlibrary.utils.logMessage
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(initProps: ReadableMap,
@@ -82,6 +85,29 @@ open class UiImageNode(initProps: ReadableMap,
         setIcon(props)
         setColor(props)
         setUseFrame(props)
+    }
+
+    override fun getContentBounding(): Bounding {
+        val widthInMeters = properties.getDouble(PROP_WIDTH, 0.0).toFloat()
+        val heightInMeters = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
+        val size = view.getSizeInMeters(context, widthInMeters, heightInMeters)
+        logMessage("view size= $size")
+
+        val centerX = contentNode.localPosition.x
+        val centerY = contentNode.localPosition.y
+
+        val scaleX = contentNode.localScale.x
+        val scaleY = contentNode.localScale.y
+
+        // TODO alignment factor
+        val offsetX = 0
+        val offsetY = 0
+
+        val left = centerX * scaleX - (size.first * scaleX) / 2 + offsetX
+        val right = centerX * scaleX + (size.first * scaleX) / 2 + offsetX
+        val top = centerY * scaleY + (size.second * scaleY) / 2 + offsetY
+        val bottom = centerY * scaleY - (size.second * scaleY) / 2 + offsetY
+        return Bounding(left, bottom, right, top)
     }
 
     private fun setImagePath(props: Bundle) {

@@ -74,7 +74,7 @@ import SceneKit
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant
         toggleGeometry.firstMaterial?.diffuse.contents = ImageAsset.toggleOff.image
-        toggleGeometry.firstMaterial?.isDoubleSided = false
+        toggleGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         toggleNode = SCNNode(geometry: toggleGeometry)
         contentNode.addChildNode(toggleNode)
     }

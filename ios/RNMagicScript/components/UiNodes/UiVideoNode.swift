@@ -134,7 +134,7 @@ import AVKit
     @objc func setupInitialState() {
         plane = SCNPlane(width: size.width, height: size.height)
         plane.firstMaterial?.lightingModel = .constant
-        plane.firstMaterial?.isDoubleSided = false
+        plane.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         planeNode = SCNNode(geometry: plane)
         planeNode.position = anchorPosition
         contentNode.addChildNode(planeNode)

@@ -86,7 +86,7 @@ import SceneKit
         let element = SCNGeometryElement(indices: indices, primitiveType: .line)
         let linesGeometry = SCNGeometry(sources: [source], elements: [element])
         linesGeometry.firstMaterial?.lightingModel = .constant
-        linesGeometry.firstMaterial?.isDoubleSided = false
+        linesGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         return linesGeometry
     }
 }

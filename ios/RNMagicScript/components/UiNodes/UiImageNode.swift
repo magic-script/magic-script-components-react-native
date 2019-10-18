@@ -65,7 +65,7 @@ import SceneKit
         planeGeometry = SCNPlane(width: 1.0, height: 1.0)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
-        planeGeometry.firstMaterial?.isDoubleSided = false
+        planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         imageNode = SCNNode(geometry: planeGeometry)
         contentNode.addChildNode(imageNode)
     }
@@ -131,7 +131,7 @@ import SceneKit
     fileprivate func updateDisplay() {
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
-        planeGeometry.firstMaterial?.isDoubleSided = false
+        planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
     }
 
     fileprivate func setFrame(visible: Bool) {
@@ -161,7 +161,7 @@ import SceneKit
         let frameGeometry = SCNGeometry(sources: [source], elements: [element])
         frameGeometry.firstMaterial?.lightingModel = .constant
         frameGeometry.firstMaterial?.diffuse.contents = UIColor.white
-        frameGeometry.firstMaterial?.isDoubleSided = false
+        frameGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         frameGeometry.firstMaterial?.readsFromDepthBuffer = false
         return frameGeometry
     }

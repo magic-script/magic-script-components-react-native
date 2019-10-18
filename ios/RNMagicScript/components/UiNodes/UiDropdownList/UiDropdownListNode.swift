@@ -97,7 +97,7 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 5), position.y - Float(listGridLayoutNode.getSize().height / 4 - getSize().height), position.z)
+        listGridLayoutNode.position = SCNVector3(position.x, -0.05, position.z)
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }

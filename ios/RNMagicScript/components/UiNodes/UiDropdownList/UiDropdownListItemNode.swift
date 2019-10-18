@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class UiDropdownListItemNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0235
+    static fileprivate let defaultTextSize: CGFloat = 0.065
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -85,6 +85,7 @@ import SceneKit
         super.setupNode()
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
+        labelNode.textSize = UiDropdownListItemNode.defaultTextSize
         labelNode.layoutIfNeeded()
 
         gridLayoutNode = UiGridLayoutNode(props: [

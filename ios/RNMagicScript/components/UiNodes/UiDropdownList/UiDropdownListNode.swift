@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class UiDropdownListNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultTextSize: CGFloat = 0.065
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -97,7 +97,7 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(listGridLayoutNode.getSize().height / 2 - getSize().height), position.z)
+        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 5), position.y - Float(listGridLayoutNode.getSize().height / 4 - getSize().height), position.z)
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
@@ -113,6 +113,7 @@ import SceneKit
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
+        labelNode.textSize = UiDropdownListNode.defaultTextSize
         labelNode.layoutIfNeeded()
 
         iconNode = UiImageNode(props: ["icon": "chevron-down", "height": 0.04])

@@ -65,7 +65,7 @@ import SceneKit
         planeGeometry = SCNPlane(width: 1.0, height: 1.0)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
-        planeGeometry.firstMaterial?.isDoubleSided = true
+        planeGeometry.firstMaterial?.isDoubleSided = false
         imageNode = SCNNode(geometry: planeGeometry)
         contentNode.addChildNode(imageNode)
     }

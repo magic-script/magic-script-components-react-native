@@ -45,7 +45,7 @@ class SCNSpinnerCircle : SCNGeometry {
         for (index, material) in materials.enumerated() {
             material.lightingModel = .constant
             material.diffuse.wrapS = .clamp
-            material.isDoubleSided = true
+            material.isDoubleSided = false
             material.diffuse.contents = UIColor.clear
             material.diffuse.mappingChannel = index
             material.transparencyMode = .singleLayer

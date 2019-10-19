@@ -120,28 +120,35 @@ import SceneKit
         return CGSize(width: width, height: height)
     }
 
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+        guard let scrollBounds = scrollBounds else { return CGRect.zero }
+        let min = scrollBounds.min
+        let max = scrollBounds.max
+        return CGRect(x: CGFloat(min.x), y: CGFloat(min.y), width: CGFloat(max.x - min.x), height: CGFloat(max.y - min.y))
+    }
+
     @objc override func updateLayout() {
         guard let scrollBounds = scrollBounds else { return }
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
-        let edgeInsets = UIEdgeInsets(top: CGFloat(scrollBounds.max.y), left: CGFloat(scrollBounds.min.x), bottom: CGFloat(scrollBounds.min.y), right: CGFloat(scrollBounds.max.x))
-        let scrollSize = CGSize(width: edgeInsets.right - edgeInsets.left, height: edgeInsets.top - edgeInsets.bottom)
+        let bounds = getBounds()
+        let scrollSize = bounds.size
         let contentSize: CGSize
         if let scrollContent = scrollContent {
+            contentSize = scrollContent.getSize()
 
             let contentPositionNegated = scrollContent.position.negated()
-            contentSize = scrollContent.getSize()
             var offset = CGPoint(
                 x: 0.5 * (contentSize.width - scrollSize.width),
                 y: 0.5 * (contentSize.height - scrollSize.height)
             )
 
-            if let uiNode = scrollContent as? UiNode {
-                let alignOffset = uiNode.alignment.shiftDirection
-                offset.x -= alignOffset.x * contentSize.width
-                offset.y -= alignOffset.y * contentSize.width
-            }
+//            if let uiNode = scrollContent as? UiNode {
+//                let alignOffset = uiNode.alignment.shiftDirection
+//                offset.x -= alignOffset.x * contentSize.width
+//                offset.y -= alignOffset.y * contentSize.height
+//            }
             proxyNode.position = contentPositionNegated + SCNVector3(offset.x, offset.y, 0)
         } else {
             contentSize = CGSize.zero
@@ -165,14 +172,14 @@ import SceneKit
 
             let min = scrollBounds.min
             let max = scrollBounds.max
-            scrollContent?.setClippingPlanes([
-                SCNVector4( 1, 0, 0,-min.x),
-                SCNVector4(-1, 0, 0, max.x),
-                SCNVector4(0, 1, 0,-min.y),
-                SCNVector4(0,-1, 0, max.y),
-                SCNVector4(0, 0, 1,-min.z),
-                SCNVector4(0, 0,-1, max.z),
-            ])
+//            scrollContent?.setClippingPlanes([
+//                SCNVector4( 1, 0, 0,-min.x),
+//                SCNVector4(-1, 0, 0, max.x),
+//                SCNVector4(0, 1, 0,-min.y),
+//                SCNVector4(0,-1, 0, max.y),
+//                SCNVector4(0, 0, 1,-min.z),
+//                SCNVector4(0, 0,-1, max.z),
+//            ])
         }
     }
 }

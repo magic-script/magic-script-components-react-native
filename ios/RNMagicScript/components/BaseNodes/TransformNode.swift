@@ -50,6 +50,9 @@ import SceneKit
     @objc var anchorUuid: String = "rootUuid";
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
+    @objc var debug: Bool = false {
+        didSet { setDebugMode(debug) }
+    }
 
 #if targetEnvironment(simulator)
     fileprivate var originNode: SCNNode?
@@ -135,7 +138,7 @@ import SceneKit
             self.anchorUuid = uuid;
         }
         if let debug = Convert.toBool(props["debug"]) {
-            self.setDebugMode(debug)
+            self.debug = debug
         }
     }
 
@@ -204,9 +207,8 @@ extension TransformNode {
     }
 
 #if targetEnvironment(simulator)
-    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
     @objc fileprivate func updateDebugLayout() {
-        guard isDebugMode else { return }
+        guard debug else { return }
 
         // border
         borderNode?.removeFromParentNode()

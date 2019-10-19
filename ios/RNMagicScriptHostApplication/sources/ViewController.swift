@@ -73,17 +73,18 @@ class ViewController: UIViewController {
         scrollView = createComponent([
             "alignment": "center-center",
             "debug": true,
-            "scrollBounds": ["min": [-0.05,-0.35,-0.1], "max": [0.25,0.45,0.1]]
+            "scrollBounds": ["min": [-0.25,-0.35,-0.1], "max": [0.25,0.15,0.1]]
         ], nodeId: scrollViewId)
+        let bounds: CGRect = scrollView.getBounds()
         scrollBar = createComponent([
             "debug": false,
-            "localPosition": [0.25, 0, 0],
-            "width": 0.9
+            "localPosition": [bounds.maxX, bounds.midY, 0],
+            "width": bounds.height
         ], nodeId: scrollBarId, parentId: scrollViewId)
         createGridWithIcons(parentId: scrollViewId)
 
-        scrollView.layoutIfNeeded()
-        scrollBar.layoutIfNeeded()
+//        scrollView.layoutIfNeeded()
+//        scrollBar.layoutIfNeeded()
     }
 
     fileprivate func createGridWithIcons(parentId: String) {
@@ -92,7 +93,7 @@ class ViewController: UIViewController {
         let grid: UiGridLayoutNode = createComponent([
             "columns": 14,
             "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "top-center"
+            "alignment": "center-center"
         ], nodeId: gridId, parentId: parentId)
 
         SystemIcon.names.enumerated().forEach { (index, name) in
@@ -123,17 +124,19 @@ extension ViewController: ARSCNViewDelegate {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        scrollBarPosition += CGFloat(deltaTime)
-        if scrollBarPosition > 1.0 {
-            scrollBarPosition -= 2.0
-        }
-
-        scrollBarSize += CGFloat(deltaTime * 0.1)
-        if scrollBarSize > 1.0 {
-            scrollBarSize -= 2.0
-        }
-        scrollView.scrollValue = abs(scrollBarPosition)
-        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
+//        scrollBarPosition += CGFloat(deltaTime)
+//        if scrollBarPosition > 1.0 {
+//            scrollBarPosition -= 2.0
+//        }
+//
+//        scrollBarSize += CGFloat(deltaTime * 0.1)
+//        if scrollBarSize > 1.0 {
+//            scrollBarSize -= 2.0
+//        }
+//        scrollView.scrollValue = abs(scrollBarPosition)
+//        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
+        scrollView.setNeedsLayout()
+        scrollBar.setNeedsLayout()
         scrollView.layoutIfNeeded()
     }
 }

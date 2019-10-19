@@ -56,13 +56,6 @@ class CustomScrollBar @JvmOverloads constructor(
             field = value
         }
 
-    init {
-        val orientationStr = attrs?.getAttributeValue(null, "orientation")
-        if (orientationStr == "horizontal"){
-            isVertical = false
-        }
-    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {

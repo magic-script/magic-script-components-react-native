@@ -101,7 +101,7 @@ class UiScrollViewNode(
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
-            val newBounds = content!!.getLocalBounding()
+            val newBounds = content!!.getContentBounding()
             if (!Bounding.equalInexact(contentBounds, newBounds)) {
                 val scrollView = (view as CustomScrollView)
                 contentBounds = newBounds
@@ -182,7 +182,7 @@ class UiScrollViewNode(
             return
         }
 
-        val contentBounds = content!!.getLocalBounding()
+        val contentBounds = content!!.getContentBounding()
         val viewBounds = getScrollBounds()
         val alignTopLeft = PointF(
                 viewBounds.left - contentBounds.left,

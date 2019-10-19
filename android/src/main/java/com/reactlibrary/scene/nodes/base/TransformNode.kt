@@ -134,18 +134,11 @@ abstract class TransformNode(
     }
 
     /**
-     * Returns 2D bounding of the node (the minimum
-     * rectanglein local frame of reference that
-     * includes the node).
-     */
-    fun getLocalBounding(): Bounding {
-        return getContentBounding()
-    }
-
-    /**
      * Should return 2D bounding of the [contentNode].
+     * (the minimum rectangle in local frame of
+     * reference that includes the node).
      */
-    protected open fun getContentBounding(): Bounding {
+    open fun getContentBounding(): Bounding {
         return Utils.calculateBoundsOfNode(contentNode)
     }
 

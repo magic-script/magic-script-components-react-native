@@ -197,6 +197,7 @@ extension TransformNode {
             let sphere = SCNSphere(radius: 0.01)
             sphere.segmentCount = 4
             sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
             sphere.firstMaterial?.diffuse.contents = UIColor.yellow
             originNode = SCNNode(geometry: sphere)
         }

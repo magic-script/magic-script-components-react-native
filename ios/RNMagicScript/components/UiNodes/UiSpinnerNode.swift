@@ -107,7 +107,7 @@ import SceneKit
             planeGeometry = SCNPlane(width: width, height: height)
             planeGeometry.firstMaterial?.lightingModel = .constant
             planeGeometry.firstMaterial?.diffuse.contents = ImageAsset.spinner.image
-            planeGeometry.firstMaterial?.isDoubleSided = true
+            planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
             planeGeometry.firstMaterial?.writesToDepthBuffer = false
             planeGeometry.firstMaterial?.transparencyMode = .singleLayer
 

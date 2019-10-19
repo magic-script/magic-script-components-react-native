@@ -14,30 +14,42 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/edit_text_2d"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:textSize="20sp"
-        tools:ignore="UnusedAttribute" />
+        android:background="@color/input_dialog_background"
+        android:orientation="horizontal"
+        android:padding="2dp">
 
-    <!--
-        android:backgroundTint="@color/text_color_default"
-        android:textColor="@color/text_color_default"
-        android:textCursorDrawable="@drawable/text_edit_cursor"
-     -->
+        <EditText
+            android:id="@+id/edit_text_2d"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:textSize="20sp"
+            tools:ignore="UnusedAttribute" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?selectableItemBackground"
+            android:gravity="center_horizontal"
+            android:text="@android:string/ok"
+            android:textColor="#05c5cf"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</ScrollView>
+
 
 

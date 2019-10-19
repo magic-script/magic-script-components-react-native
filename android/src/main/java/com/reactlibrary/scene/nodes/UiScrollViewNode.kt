@@ -167,14 +167,14 @@ class UiScrollViewNode(
         // system we use localPositions. Hovewer due to ARCore nature
         // localPosition of ScrollViewNode direct descendant can change
         // randomly for some milliseconds after beeing writen to. Thus
-        // we can't relaibly use it. To solve the problem we add child
+        // we can't reliably use it. To solve the problem we add child
         // localPosition to translation - the child node will subtract
         // it in it's setClipBounds method, effectively zeroing it.
-        // Instead of zeroed child localPosition we use
+        // Then, instead of zeroed child localPosition we use
         // requestedContentPosition.
         return PointF(
-                requestedContentPosition.x - content!!.localPosition.x,
-                requestedContentPosition.y - content!!.localPosition.y)
+                -requestedContentPosition.x + content!!.localPosition.x,
+                -requestedContentPosition.y + content!!.localPosition.y)
     }
 
     private fun update(viewPosition: PointF) {
@@ -198,10 +198,10 @@ class UiScrollViewNode(
         requestedContentPosition = alignTopLeft + travel
 
         val clipBounds = Bounding(
-                viewBounds.left - getScrollTranslation().x,
-                viewBounds.bottom - getScrollTranslation().y,
-                viewBounds.right - getScrollTranslation().x,
-                viewBounds.top - getScrollTranslation().y)
+                viewBounds.left + getScrollTranslation().x,
+                viewBounds.bottom + getScrollTranslation().y,
+                viewBounds.right + getScrollTranslation().x,
+                viewBounds.top + getScrollTranslation().y)
         content!!.setClipBounds(clipBounds)
         view.invalidate()
 

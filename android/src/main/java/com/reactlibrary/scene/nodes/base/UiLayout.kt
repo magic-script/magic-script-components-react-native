@@ -125,17 +125,18 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
+    // Translation to content node coordinate system.
     override fun getScrollTranslation(): PointF {
         val vector = localPosition + contentNode.localPosition
-        return PointF(vector.x, vector.y)
+        return PointF(-vector.x, -vector.y)
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = Bounding(
-                clipBounds.left - getScrollTranslation().x,
-                clipBounds.bottom - getScrollTranslation().y,
-                clipBounds.right - getScrollTranslation().x,
-                clipBounds.top - getScrollTranslation().y)
+                clipBounds.left + getScrollTranslation().x,
+                clipBounds.bottom + getScrollTranslation().y,
+                clipBounds.right + getScrollTranslation().x,
+                clipBounds.top + getScrollTranslation().y)
 
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]

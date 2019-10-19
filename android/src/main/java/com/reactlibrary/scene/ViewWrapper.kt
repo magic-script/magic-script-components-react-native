@@ -24,7 +24,7 @@ import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.UiScrollViewNode
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.plus
+import com.reactlibrary.utils.minus
 
 class ViewWrapper(
         context: Context,
@@ -68,7 +68,7 @@ class ViewWrapper(
 
         // If parent is ScrollView we return null,
         // as ther's no sense in intercepting its events.
-        if (parent == null || parent is UiScrollViewNode) {
+        if (parent is UiScrollViewNode) {
             return null
         }
 
@@ -88,7 +88,7 @@ class ViewWrapper(
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {
-                translation += p.getScrollTranslation()
+                translation -= p.getScrollTranslation()
             }
             if (p is UiScrollViewNode) {
                 break

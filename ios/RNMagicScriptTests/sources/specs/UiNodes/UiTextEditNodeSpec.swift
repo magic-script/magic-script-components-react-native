@@ -405,6 +405,17 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(node.placeholder).to(equal(referencePlaceholder))
                 }
 
+                it("autocapitalizationType") {
+                    expect(node.autocapitalizationType).to(beNil())
+
+                    node.allCaps = true
+                    expect(node.autocapitalizationType).to(equal(UITextAutocapitalizationType.allCharacters))
+
+                    node.allCaps = false
+                    node.textEntry = .email
+                    expect(node.autocapitalizationType).to(equal(UITextAutocapitalizationType.none))
+                }
+
                 it("keyboardType") {
                     let keyboardTypeByTextEntry: [TextEntryMode : UIKeyboardType?] = [
                         TextEntryMode.email: UIKeyboardType.emailAddress,

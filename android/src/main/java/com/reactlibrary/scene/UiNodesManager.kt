@@ -131,6 +131,7 @@ object UiNodesManager {
     fun clear() {
         nodesById.forEach { (_, node) ->
             detachNode(node)
+            node.onDestroy()
         }
         nodesById.clear()
     }
@@ -147,7 +148,7 @@ object UiNodesManager {
         }
 
         if (node is TransformNode) {
-            node.clearResources()
+            node.onDestroy()
         }
     }
 

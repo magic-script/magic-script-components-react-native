@@ -21,9 +21,17 @@ import UIKit
 
     let name: String
     let imageName: String
+    
+    var image: UIImage { return getImage() }
 
-    var image: UIImage {
-        let image = UIImage(named: imageName, in: SystemIcon.bundle, compatibleWith: UIScreen.main.traitCollection)
+    func getImage(forceDefaultImage: Bool? = nil) -> UIImage {
+        let bundle: Bundle
+        if let forceDefaultImage = forceDefaultImage, forceDefaultImage == true {
+            bundle = Bundle.resourcesBundle()!
+        } else {
+            bundle = SystemIcon.bundle
+        }
+        let image = UIImage(named: imageName, in: bundle, compatibleWith: UIScreen.main.traitCollection)
         guard let result = image else {
             print("Unable to load image \"\(imageName)\".")
             return SystemIcon.missingImage

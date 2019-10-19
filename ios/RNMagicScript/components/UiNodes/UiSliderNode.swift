@@ -92,13 +92,13 @@ import SceneKit
         assert(backgroundGeometry == nil, "Node must not be initialized!")
         backgroundGeometry = SCNPlane(width: width, height: height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = true
+        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
         backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
 
         foregroundGeometry = SCNPlane(width: width, height: height)
         foregroundGeometry.firstMaterial?.lightingModel = .constant
-        foregroundGeometry.firstMaterial?.isDoubleSided = true
+        foregroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         foregroundGeometry.firstMaterial?.readsFromDepthBuffer = false
 
         minLabelNode = LabelNode()

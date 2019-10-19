@@ -20,10 +20,11 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
@@ -49,6 +50,7 @@ abstract class UiNode(
         // properties
         const val PROP_ENABLED = "enabled"
 
+        private const val REBUILD_CHECK_DELAY = 30L
         private const val COLLISION_SHAPE_DELAY = 120L
     }
 
@@ -60,9 +62,14 @@ abstract class UiNode(
     protected lateinit var view: View
     private lateinit var viewWrapper: ViewWrapper
 
+    protected var validCollisionShape = false
+        private set
+
     private var shouldRebuild = false
     private var loadingView = false
-    private var validCollisionShape = false
+
+    private var rebuildLoopStarted = false
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         // set default values of properties
@@ -76,8 +83,11 @@ abstract class UiNode(
     override fun build() {
         initView()
         setupView()
-        addChild(contentNode)
         applyProperties(properties)
+        if (!rebuildLoopStarted) {
+            rebuildLoop()
+            rebuildLoopStarted = true
+        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -87,16 +97,6 @@ abstract class UiNode(
 
     override fun loadRenderable() {
         attachView()
-    }
-
-    override fun onUpdate(frameTime: FrameTime) {
-        super.onUpdate(frameTime)
-        if (shouldRebuild && !loadingView) {
-            build() // init a new view and apply all properties
-            attachView()
-            shouldRebuild = false
-            logMessage("node rebuild, hash:{${this.hashCode()}}")
-        }
     }
 
     // Returning the bounds only after it's valid, because the ARCore calculates
@@ -113,15 +113,18 @@ abstract class UiNode(
         return Bounding(offsetX, offsetY, offsetX, offsetY)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null) //stop the loop
+    }
+
     /**
      * Should be called when the size of the node may have changed,
      * so we need to rebuild the native view (renderable)
      * (resizing the current view does not work - ARCore bug?)
      */
     fun setNeedsRebuild() {
-        // no rebuilding if the renderable has not been requested yet
-        // because ArCore may not be initialized yet
-        if (renderableRequested) {
+        if (updatingProperties) {
             shouldRebuild = true
         }
     }
@@ -202,6 +205,30 @@ abstract class UiNode(
                 Utils.metersToPx(clipBounds.right - scrollTranslation().x, context),
                 -Utils.metersToPx(clipBounds.bottom - scrollTranslation().y, context))
         view.clipBounds = clipBoundsPx
+    }
+
+    /**
+     * Using a handler loop instead of onUpdate to allow for node rebuild,
+     * even if it's not attached to the scene yet (e.g. dropdown list items
+     * that are attached only after click).
+     */
+    private fun rebuildLoop() {
+        if (shouldRebuild && !loadingView) {
+            if (renderableRequested) {
+                // init a new view and apply all properties
+                build()
+                attachView()
+            } else {
+                // not reloading the view if the renderable has not been requested yet
+                // because ArCore may not be initialized yet
+                setupView()
+                applyProperties(properties)
+            }
+            shouldRebuild = false
+            logMessage("node rebuild, hash:{${this.hashCode()}}")
+        }
+
+        handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
     private fun setEnabled(props: Bundle) {

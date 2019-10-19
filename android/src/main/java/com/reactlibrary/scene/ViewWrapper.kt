@@ -88,7 +88,7 @@ class ViewWrapper(
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {
-                translation += p.scrollTranslation()
+                translation += p.getScrollTranslation()
             }
             if (p is UiScrollViewNode) {
                 break

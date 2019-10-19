@@ -162,7 +162,7 @@ class UiScrollViewNode(
         return view.onTouchEvent(event)
     }
 
-    override fun scrollTranslation(): PointF {
+    override fun getScrollTranslation(): PointF {
         // When translating clip bounds to node's local cooridanate
         // system we use localPositions. Hovewer due to ARCore nature
         // localPosition of ScrollViewNode direct descendant can change
@@ -198,10 +198,10 @@ class UiScrollViewNode(
         requestedContentPosition = alignTopLeft + travel
 
         val clipBounds = Bounding(
-                viewBounds.left - scrollTranslation().x,
-                viewBounds.bottom - scrollTranslation().y,
-                viewBounds.right - scrollTranslation().x,
-                viewBounds.top - scrollTranslation().y)
+                viewBounds.left - getScrollTranslation().x,
+                viewBounds.bottom - getScrollTranslation().y,
+                viewBounds.right - getScrollTranslation().x,
+                viewBounds.top - getScrollTranslation().y)
         content!!.setClipBounds(clipBounds)
         view.invalidate()
 

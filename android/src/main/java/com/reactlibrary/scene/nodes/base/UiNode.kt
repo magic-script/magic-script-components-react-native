@@ -188,7 +188,8 @@ abstract class UiNode(
         }
     }
 
-    override fun scrollTranslation(): PointF {
+    // Translate point to native View coordinate system.
+    override fun getScrollTranslation(): PointF {
         val size = getBounding().size()
         val pivot = PointF(
                 size.x / -2F,
@@ -200,10 +201,10 @@ abstract class UiNode(
 
     override fun setClipBounds(clipBounds: Bounding) {
         val clipBoundsPx = Rect(
-                Utils.metersToPx(clipBounds.left - scrollTranslation().x, context),
-                -Utils.metersToPx(clipBounds.top - scrollTranslation().y, context),
-                Utils.metersToPx(clipBounds.right - scrollTranslation().x, context),
-                -Utils.metersToPx(clipBounds.bottom - scrollTranslation().y, context))
+                Utils.metersToPx(clipBounds.left - getScrollTranslation().x, context),
+                -Utils.metersToPx(clipBounds.top - getScrollTranslation().y, context),
+                Utils.metersToPx(clipBounds.right - getScrollTranslation().x, context),
+                -Utils.metersToPx(clipBounds.bottom - getScrollTranslation().y, context))
         view.clipBounds = clipBoundsPx
     }
 

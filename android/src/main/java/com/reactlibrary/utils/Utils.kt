@@ -21,6 +21,9 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
+import kotlin.Float.Companion.MAX_VALUE
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Class containing general purpose utility functions
@@ -113,19 +116,12 @@ class Utils {
          */
         fun calculateSumBounds(nodes: List<Node>): Bounding {
             if (nodes.isEmpty()) {
-                return Bounding(0F, 0F, 0F, 0F)
+                return Bounding()
             }
 
-            val firstNode = nodes[0]
-            val firstChildBounds = if (firstNode is TransformNode) {
-                firstNode.getBounding()
-            } else {
-                calculateBoundsOfNode(firstNode)
-            }
+            val sumBounds = Bounding(MAX_VALUE, MAX_VALUE, -MAX_VALUE, -MAX_VALUE)
 
-            val sumBounds = firstChildBounds.copy()
-
-            for (i in 1 until nodes.size) {
+            for (i in 0 until nodes.size) {
                 val node = nodes[i]
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
@@ -133,18 +129,10 @@ class Utils {
                     calculateBoundsOfNode(node)
                 }
 
-                if (childBounds.left < sumBounds.left) {
-                    sumBounds.left = childBounds.left
-                }
-                if (childBounds.right > sumBounds.right) {
-                    sumBounds.right = childBounds.right
-                }
-                if (childBounds.top > sumBounds.top) {
-                    sumBounds.top = childBounds.top
-                }
-                if (childBounds.bottom < sumBounds.bottom) {
-                    sumBounds.bottom = childBounds.bottom
-                }
+                sumBounds.left = min(childBounds.left, sumBounds.left)
+                sumBounds.right = max(childBounds.right, sumBounds.right)
+                sumBounds.top = max(childBounds.top, sumBounds.top)
+                sumBounds.bottom = min(childBounds.bottom, sumBounds.bottom)
             }
 
             return sumBounds

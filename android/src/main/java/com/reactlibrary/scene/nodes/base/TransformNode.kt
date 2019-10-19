@@ -281,11 +281,11 @@ abstract class TransformNode(
         contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
     }
 
-    open fun setClipBounds(clipBounds: Bounding) {}
-
-    open fun scrollTranslation(): PointF {
-        return PointF(localPosition.x, localPosition.y)
+    open fun getScrollTranslation(): PointF {
+        return PointF()
     }
+
+    open fun setClipBounds(clipBounds: Bounding) {}
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

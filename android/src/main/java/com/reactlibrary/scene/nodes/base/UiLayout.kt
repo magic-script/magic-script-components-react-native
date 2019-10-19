@@ -125,17 +125,17 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    override fun scrollTranslation(): PointF {
+    override fun getScrollTranslation(): PointF {
         val vector = localPosition + contentNode.localPosition
         return PointF(vector.x, vector.y)
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = Bounding(
-                clipBounds.left - scrollTranslation().x,
-                clipBounds.bottom - scrollTranslation().y,
-                clipBounds.right - scrollTranslation().x,
-                clipBounds.top - scrollTranslation().y)
+                clipBounds.left - getScrollTranslation().x,
+                clipBounds.bottom - getScrollTranslation().y,
+                clipBounds.right - getScrollTranslation().x,
+                clipBounds.top - getScrollTranslation().y)
 
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]

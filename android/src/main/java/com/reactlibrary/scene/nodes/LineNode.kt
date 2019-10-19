@@ -26,7 +26,12 @@ import com.google.ar.sceneform.rendering.Color
 import com.reactlibrary.ar.CubeRenderableBuilder
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import kotlin.Float.Companion.MAX_VALUE
+import kotlin.math.max
+import kotlin.math.min
 
 // Node that represents a chain of lines
 class LineNode(initProps: ReadableMap,
@@ -41,6 +46,8 @@ class LineNode(initProps: ReadableMap,
 
         private const val LINE_THICKNESS = 0.002f // in meters
     }
+
+    var linesBounding = Bounding()
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -81,6 +88,8 @@ class LineNode(initProps: ReadableMap,
             drawLineSegment(start, end, color)
             idx++
         }
+
+        updateLinesBounding(points)
     }
 
     private fun drawLineSegment(start: Vector3, end: Vector3, color: Color) {
@@ -99,4 +108,30 @@ class LineNode(initProps: ReadableMap,
         }
     }
 
+    // For some reason Utils.calculateSumBounds fails for this node.
+    // Even if it didn't, we still want to cache content bounding,
+    // because clipping changes content size.
+    private fun updateLinesBounding(points: List<Vector3>) {
+        linesBounding = if (points.isEmpty()) {
+            Bounding()
+        } else {
+            Bounding(MAX_VALUE, MAX_VALUE, -MAX_VALUE, -MAX_VALUE)
+        }
+
+        for (p in points) {
+            linesBounding.left = min(linesBounding.left, p.x)
+            linesBounding.right = max(linesBounding.right, p.x)
+            linesBounding.top = max(linesBounding.top, p.y)
+            linesBounding.bottom = min(linesBounding.bottom, p.y)
+        }
+    }
+
+    override fun getContentBounding(): Bounding {
+        return Bounding(
+                linesBounding.left + contentNode.localPosition.x,
+                linesBounding.bottom + contentNode.localPosition.y,
+                linesBounding.right + contentNode.localPosition.x,
+                linesBounding.top + contentNode.localPosition.y
+        )
+    }
 }

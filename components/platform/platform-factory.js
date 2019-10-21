@@ -8,15 +8,16 @@ import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 
 // Events names
-const ON_PRESS_EVENT = 'onPress';
-const ON_CLICK_EVENT = 'onClick';
-const ON_SCROLL_CHANGED_EVENT = 'onScrollChanged';
-const ON_TEXT_CHANGED_EVENT = 'onTextChanged';
-const ON_TOGGLE_CHANGED_EVENT = 'onToggleChanged';
-const ON_VIDEO_PREPARED_EVENT = 'onVideoPrepared';
-const ON_SLIDER_CHANGED_EVENT = 'onSliderChanged';
-const ON_SELECTION_CHANGED_EVENT = 'onSelectionChanged';
-
+const Event = {
+    onClick = 'onClick',
+    onPress= 'onPress',
+    onScrollChanged = 'onScrollChanged',
+    onSelectionChanged = 'onSelectionChanged',
+    onSliderChanged = 'onSliderChanged',
+    onTextChanged = 'onTextChanged',
+    onToggleChanged = 'onToggleChanged',
+    onVideoPrepared = 'onVideoPrepared'
+};
 
 export class PlatformFactory extends NativeFactory {
 
@@ -39,14 +40,14 @@ export class PlatformFactory extends NativeFactory {
         this.eventsByElementId = {};
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
-        this.startListeningEvent(ON_PRESS_EVENT);
-        this.startListeningEvent(ON_CLICK_EVENT);
-        this.startListeningEvent(ON_SCROLL_CHANGED_EVENT);
-        this.startListeningEvent(ON_TEXT_CHANGED_EVENT);
-        this.startListeningEvent(ON_TOGGLE_CHANGED_EVENT);
-        this.startListeningEvent(ON_VIDEO_PREPARED_EVENT);
-        this.startListeningEvent(ON_SLIDER_CHANGED_EVENT);
-        this.startListeningEvent(ON_SELECTION_CHANGED_EVENT);
+        this.startListeningEvent(Event.onPress);
+        this.startListeningEvent(Event.onClick);
+        this.startListeningEvent(Event.onScrollChanged);
+        this.startListeningEvent(Event.onTextChanged);
+        this.startListeningEvent(Event.onToggleChanged);
+        this.startListeningEvent(Event.onVideoPrepared);
+        this.startListeningEvent(Event.onSliderChanged);
+        this.startListeningEvent(Event.onSelectionChanged);
     }
 
     startListeningEvent(eventName) {
@@ -68,20 +69,20 @@ export class PlatformFactory extends NativeFactory {
     registerEvent(elementId, name, handler) {
         if (elementId === undefined) { return; }
 
-        if (name === ON_CLICK_EVENT || name === ON_PRESS_EVENT) {
+        if (name === Event.onClick || name === Event.onPress) {
             this.componentManager.addOnPressEventHandler(elementId);
-        } else if (name === ON_SCROLL_CHANGED_EVENT) {
+        } else if (name === Event.onScrollChanged) {
             this.componentManager.addOnScrollChangedEventHandler(elementId);
-        } else if (name === ON_TEXT_CHANGED_EVENT) {
-            this.componentManager.addOnTextChangedEventHandler(elementId);
-        } else if (name === ON_TOGGLE_CHANGED_EVENT) {
-            this.componentManager.addOnToggleChangedEventHandler(elementId);
-        } else if (name === ON_VIDEO_PREPARED_EVENT) {
-            this.componentManager.addOnVideoPreparedEventHandler(elementId);
-        } else if (name === ON_SLIDER_CHANGED_EVENT) {
-            this.componentManager.addOnSliderChangedEventHandler(elementId);
-        } else if (name === ON_SELECTION_CHANGED_EVENT) {
+        } else if (name === Event.onSelectionChanged) {
             this.componentManager.addOnSelectionChangedEventHandler(elementId);
+        } else if (name === Event.onSliderChanged) {
+            this.componentManager.addOnSliderChangedEventHandler(elementId);
+        } else if (name === Event.onTextChanged) {
+            this.componentManager.addOnTextChangedEventHandler(elementId);
+        } else if (name === Event.onToggleChanged) {
+            this.componentManager.addOnToggleChangedEventHandler(elementId);
+        } else if (name === Event.onVideoPrepared) {
+            this.componentManager.addOnVideoPreparedEventHandler(elementId);
         }
 
         const pair = { name, handler };

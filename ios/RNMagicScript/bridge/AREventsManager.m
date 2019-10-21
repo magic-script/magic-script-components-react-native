@@ -56,9 +56,11 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-             @"onPress",
              @"onClick",
+             @"onPress",
              @"onScrollChanged",
+             @"onSelectionChanged",
+             @"onSliderChanged",
              @"onTextChanged",
              @"onToggleChanged",
              @"onVideoPrepared"
@@ -113,10 +115,10 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void)onSelectedDropdownListItemChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem {
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDropdownListItemSelected" body:@{ @"nodeId": sender.name, @"selectedItem": selectedItem }];
+            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItems": selectedItemsIndexes }];
         });
     }
 }

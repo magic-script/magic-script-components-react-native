@@ -19,6 +19,7 @@ import SceneKit
 @objc open class UiSliderNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
     static fileprivate let defaultHeight: CGFloat = 0.018
+    static fileprivate let foregroundHeightFactor: CGFloat = 1.25
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -94,7 +95,7 @@ import SceneKit
         backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
 
-        foregroundGeometry = SCNPlane(width: width, height: height)
+        foregroundGeometry = SCNPlane(width: width, height: height * UiSliderNode.foregroundHeightFactor)
         foregroundGeometry.firstMaterial?.lightingModel = .constant
         foregroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         foregroundGeometry.firstMaterial?.readsFromDepthBuffer = false
@@ -178,7 +179,7 @@ import SceneKit
 
         let slideWidth = size.width * progress
         foregroundGeometry.width = slideWidth
-        foregroundGeometry.height = size.height
+        foregroundGeometry.height = size.height * UiSliderNode.foregroundHeightFactor
         foregroundGeometry.cornerRadius = 0.5 * size.height
         progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(slideWidth), 0.0, 0.0)
         progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)

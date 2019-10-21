@@ -76,26 +76,31 @@ fun String.limited(maxCharacters: Int): String {
 
 }
 
-fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Vector2 {
-    val widthMeasureSpec = if (maxWidthMeters > UiNode.WRAP_CONTENT_DIMENSION) {
-        val maxWidth = Utils.metersToPx(maxWidthMeters, context)
-        View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
+/**
+ * Calculates the view size in meters
+ *
+ * @param desiredWidth desired width in meters or [UiNode.WRAP_CONTENT_DIMENSION]
+ * @param desiredHeight desired height in meters or [UiNode.WRAP_CONTENT_DIMENSION]
+ */
+fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: Float): Vector2 {
+    val widthMeasureSpec = if (desiredWidth > UiNode.WRAP_CONTENT_DIMENSION) {
+        val maxWidth = Utils.metersToPx(desiredWidth, context)
+        View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY)
     } else {
         View.MeasureSpec.UNSPECIFIED
     }
 
-    val heightMeasureSpec = if (maxHeightMeters > UiNode.WRAP_CONTENT_DIMENSION) {
-        val maxHeight = Utils.metersToPx(maxHeightMeters, context)
-        View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
+    val heightMeasureSpec = if (desiredHeight > UiNode.WRAP_CONTENT_DIMENSION) {
+        val maxHeight = Utils.metersToPx(desiredHeight, context)
+        View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.EXACTLY)
     } else {
         View.MeasureSpec.UNSPECIFIED
     }
 
     measure(widthMeasureSpec, heightMeasureSpec)
-    logMessage("Measured width= $measuredWidth")
-    val widthMeters = Utils.pxToMeters(measuredWidth.toFloat(), context)
-    val heightMeters = Utils.pxToMeters(measuredHeight.toFloat(), context)
-    return Vector2(widthMeters, heightMeters)
+    val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
+    val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    return Vector2(width, height)
 }
 
 

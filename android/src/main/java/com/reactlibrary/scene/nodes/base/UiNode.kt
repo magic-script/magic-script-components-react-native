@@ -71,7 +71,7 @@ abstract class UiNode(
 
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
-     * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow
+     * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
      */
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
 
@@ -116,9 +116,8 @@ abstract class UiNode(
         val scaleX = contentNode.localScale.x
         val scaleY = contentNode.localScale.y
 
-        // TODO alignment factor
-        val offsetX = 0
-        val offsetY = 0
+        val offsetX = -horizontalAlignment.centerOffset * size.x
+        val offsetY = -verticalAlignment.centerOffset * size.y
 
         val left = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
         val right = centerX * scaleX + (size.x * scaleX) / 2 + offsetX

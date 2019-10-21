@@ -29,7 +29,10 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
@@ -119,6 +122,10 @@ open class UiToggleNode(initProps: ReadableMap,
         val x = contentNode.localPosition.x + pivotOffsetX - nodeWidth / 2 + switchWidth / 2
         val pos = Vector3(x.toFloat(), contentNode.localPosition.y, contentNode.localPosition.z)
         contentNode.localPosition = pos
+    }
+
+    override fun setAlignment(props: Bundle) {
+        // cannot override hardcoded alignment
     }
 
     private fun refreshImage() {

@@ -9,14 +9,14 @@ import isEqual from 'lodash/isEqual';
 
 // Events names
 const Event = {
-    onClick = 'onClick',
-    onPress= 'onPress',
-    onScrollChanged = 'onScrollChanged',
-    onSelectionChanged = 'onSelectionChanged',
-    onSliderChanged = 'onSliderChanged',
-    onTextChanged = 'onTextChanged',
-    onToggleChanged = 'onToggleChanged',
-    onVideoPrepared = 'onVideoPrepared'
+    onClick: 'onClick',
+    onPress: 'onPress',
+    onScrollChanged: 'onScrollChanged',
+    onSelectionChanged: 'onSelectionChanged',
+    onSliderChanged: 'onSliderChanged',
+    onTextChanged: 'onTextChanged',
+    onToggleChanged: 'onToggleChanged',
+    onVideoPrepared: 'onVideoPrepared'
 };
 
 export class PlatformFactory extends NativeFactory {

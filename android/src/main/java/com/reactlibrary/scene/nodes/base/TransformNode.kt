@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.PointF
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
@@ -26,10 +25,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultSerializable
+import com.reactlibrary.utils.*
 
 /**
  * Base node.
@@ -282,8 +278,8 @@ abstract class TransformNode(
     }
 
     // Translation to node local coordinate system.
-    open fun getScrollTranslation(): PointF {
-        return PointF(-localPosition.x, -localPosition.y)
+    open fun getScrollTranslation(): Vector2 {
+        return Vector2(-localPosition.x, -localPosition.y)
     }
 
     open fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {}

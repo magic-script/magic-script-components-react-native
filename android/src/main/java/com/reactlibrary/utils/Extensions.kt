@@ -47,62 +47,6 @@ fun EditText.setTextAndMoveCursor(text: String) {
 }
 
 /**
- * android.graphics.PointF
- */
-operator fun PointF.unaryMinus(): PointF {
-    return PointF(-x, -y)
-}
-
-operator fun PointF.plus(other: PointF): PointF {
-    return PointF(x + other.x, y + other.y)
-}
-
-operator fun PointF.minus(other: PointF): PointF {
-    return PointF(x - other.x, y - other.y)
-}
-
-operator fun PointF.minus(other: Float): PointF {
-    return PointF(x - other, y - other)
-}
-
-operator fun PointF.times(other: PointF): PointF {
-    return PointF(x * other.x, y * other.y)
-}
-
-operator fun PointF.div(other: PointF): PointF {
-    return PointF(if (other.x != 0F) {
-        x / other.x
-    } else {
-        0F
-    }, if (other.y != 0F) {
-        y / other.y
-    } else {
-        0F
-    })
-}
-
-operator fun PointF.div(other: Float): PointF {
-    return div(PointF(other, other))
-}
-
-fun PointF.coerceIn(min: Float, max: Float): PointF {
-    return PointF(x.coerceIn(min, max), y.coerceIn(min, max))
-}
-
-fun PointF.coerceAtLeast(min: Float): PointF {
-    return PointF(x.coerceAtLeast(min), y.coerceAtLeast(min))
-}
-
-fun PointF.equalInexact(other: PointF): Boolean {
-    val eps = 1e-5 // epsilon
-    return abs(x - other.x) < eps && abs(y - other.y) < eps
-}
-
-fun PointF.toVector3(): Vector3 {
-    return Vector3(x, y, 0F)
-}
-
-/**
  * com.google.ar.sceneform.math.Vector3
  */
 operator fun Vector3.plus(other: Vector3): Vector3 {
@@ -152,14 +96,6 @@ inline fun View.onLayoutListener(crossinline f: () -> Unit) {
         override fun onGlobalLayout() {
             viewTreeObserver.removeOnGlobalLayoutListener(this)
             f()
-        }
-    })
-}
-
-inline fun View.onPreDrawListener(crossinline f: () -> Boolean) {
-    viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-        override fun onPreDraw(): Boolean {
-            return f()
         }
     })
 }

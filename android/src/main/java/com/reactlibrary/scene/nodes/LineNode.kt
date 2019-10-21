@@ -32,7 +32,6 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.BoundingBox
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.minus
-import com.reactlibrary.utils.toVector3
 import kotlin.Float.Companion.MAX_VALUE
 import kotlin.math.max
 import kotlin.math.min

@@ -17,12 +17,10 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
-import com.reactlibrary.utils.div
-import com.reactlibrary.utils.minus
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.onLayoutListener
 import kotlinx.android.synthetic.main.scroll_view.view.*
 
@@ -32,16 +30,16 @@ class CustomScrollView @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
 
-    var contentSize = PointF()
+    var contentSize = Vector2()
         set(value) {
             field = value
             updateScrollbars()
         }
 
-    var onScrollChangeListener: ((on: PointF) -> Unit)? = null
+    var onScrollChangeListener: ((on: Vector2) -> Unit)? = null
 
     private var isBeingDragged = false
-    private var previousTouch = PointF()
+    private var previousTouch = Vector2()
 
     init {
         // We can be sure nested scrollBars are 
@@ -49,11 +47,11 @@ class CustomScrollView @JvmOverloads constructor(
         this.onLayoutListener {
             h_bar.isVertical = false
             h_bar.onScrollChangeListener = { pos: Float ->
-                val viewPosition = PointF(pos, v_bar.thumbPosition)
+                val viewPosition = Vector2(pos, v_bar.thumbPosition)
                 onScrollChangeListener?.invoke(viewPosition)
             }
             v_bar.onScrollChangeListener = { pos: Float ->
-                val viewPosition = PointF(h_bar.thumbPosition, pos)
+                val viewPosition = Vector2(h_bar.thumbPosition, pos)
                 onScrollChangeListener?.invoke(viewPosition)
             }
             updateScrollbars()
@@ -71,7 +69,7 @@ class CustomScrollView @JvmOverloads constructor(
             return false
         }
 
-        val touch = PointF(event.getX(), event.getY())
+        val touch = Vector2(event.getX(), event.getY())
         if (!isBeingDragged) {
             isBeingDragged = true
             previousTouch = touch
@@ -79,11 +77,11 @@ class CustomScrollView @JvmOverloads constructor(
 
         if (action == MotionEvent.ACTION_MOVE) {
             val movePx = touch - previousTouch
-            val viewSize = PointF(width.toFloat(), height.toFloat())
+            val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
 
-            val thumbPos = PointF(
+            val thumbPos = Vector2(
                     h_bar.thumbPosition - move.x,
                     v_bar.thumbPosition - move.y)
             h_bar.thumbPosition = thumbPos.x
@@ -95,8 +93,8 @@ class CustomScrollView @JvmOverloads constructor(
         return true
     }
 
-    fun getViewPosition(): PointF {
-        return PointF(h_bar.thumbPosition, v_bar.thumbPosition)
+    fun getViewPosition(): Vector2 {
+        return Vector2(h_bar.thumbPosition, v_bar.thumbPosition)
     }
 
     // Update scrollbars when content size has changed.

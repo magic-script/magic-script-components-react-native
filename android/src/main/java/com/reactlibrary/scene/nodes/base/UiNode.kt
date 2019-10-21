@@ -32,10 +32,7 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.ViewWrapper
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.div
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultBoolean
+import com.reactlibrary.utils.*
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -190,9 +187,9 @@ abstract class UiNode(
     }
 
     // Translation to native View coordinate system.
-    override fun getScrollTranslation(): PointF {
+    override fun getScrollTranslation(): Vector2 {
         val pivot = getBounding().size() / 2F
-        return PointF(
+        return Vector2(
                 pivot.x - localPosition.x,
                 -pivot.y - localPosition.y)
     }

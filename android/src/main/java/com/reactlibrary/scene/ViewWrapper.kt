@@ -17,14 +17,13 @@
 package com.reactlibrary.scene
 
 import android.content.Context
-import android.graphics.PointF
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.UiScrollViewNode
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.minus
+import com.reactlibrary.utils.Vector2
 
 class ViewWrapper(
         context: Context,
@@ -55,7 +54,7 @@ class ViewWrapper(
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         val translation = calculateScrollTranslation()
-        val positionMeters = PointF(
+        val positionMeters = Vector2(
                 Utils.pxToMeters(event.getX(), context),
                 -Utils.pxToMeters(event.getY(), context))
         event.setLocation(
@@ -82,9 +81,9 @@ class ViewWrapper(
         return null
     }
 
-    private fun calculateScrollTranslation(): PointF {
+    private fun calculateScrollTranslation(): Vector2 {
 
-        var translation = PointF()
+        var translation = Vector2()
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {

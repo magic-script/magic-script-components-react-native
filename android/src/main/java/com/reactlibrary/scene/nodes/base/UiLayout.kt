@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.PointF
 import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
@@ -24,6 +23,7 @@ import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.plus
 
 // Base class for layouts (grid, linear, rect)
@@ -126,9 +126,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     // Translation to content node coordinate system.
-    override fun getScrollTranslation(): PointF {
+    override fun getScrollTranslation(): Vector2 {
         val vector = localPosition + contentNode.localPosition
-        return PointF(-vector.x, -vector.y)
+        return Vector2(-vector.x, -vector.y)
     }
 
     override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {

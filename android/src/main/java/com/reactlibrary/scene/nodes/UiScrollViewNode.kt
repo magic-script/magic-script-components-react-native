@@ -49,6 +49,11 @@ class UiScrollViewNode(
         const val PROP_HEIGHT = "height"
 
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
+        const val DEFAULT_WIDTH = 1.0
+        const val DEFAULT_HEIGHT = 1.0
+
+        const val LAYOUT_LOOP_DELAY = 100L
+        const val Z_ORDER_OFFSET = 1e-5F
 
         const val NATIVE_VIEW = true
         const val NON_VIEW = false
@@ -62,19 +67,23 @@ class UiScrollViewNode(
     private var contentBounds = Bounding()
 
     private var scrollRequested = false
-    private var requestedContentPosition = PointF()
+    private var requestedContentPosition = Vector2()
 
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
         // set default properties values
-        properties.putDefaultDouble(PROP_WIDTH, 1.0)
-        properties.putDefaultDouble(PROP_HEIGHT, 1.0)
+        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
     // Starting loops and registering listeners
     // only after content was delivered.
     override fun addContent(child: Node) {
+        if (content != null) {
+            return
+        }
+
         super.addContent(child)
         if (child !is TransformNode) {
             return
@@ -83,7 +92,7 @@ class UiScrollViewNode(
         this.content = child
 
         view.onDrawListener {
-            val eps = 1e-5F // epsilon
+//            val eps = 1e-5F // epsilon
             if (scrollRequested) {
 
                 val viewBounds = getScrollBounds()
@@ -93,13 +102,13 @@ class UiScrollViewNode(
                 content!!.localPosition = Vector3(
                         requestedContentPosition.x,
                         requestedContentPosition.y,
-                        eps) // Moving content up in z-plane, so it'll receive touch events first.
+                        Z_ORDER_OFFSET ) // Moving content up in z-plane, so it'll receive touch events first.
                 scrollRequested = false
             }
         }
 
         val scrollView = view as CustomScrollView
-        scrollView.onScrollChangeListener = { position: PointF ->
+        scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
         }
 
@@ -114,14 +123,14 @@ class UiScrollViewNode(
                 val scrollView = (view as CustomScrollView)
                 contentBounds = newBounds
                 val contentSize = contentBounds.size()
-                scrollView.contentSize = PointF(
+                scrollView.contentSize = Vector2(
                         metersToPx(contentSize.x).toFloat(),
                         metersToPx(contentSize.y).toFloat())
                 update(scrollView.getViewPosition())
             }
 
             layoutLoop()
-        }, 100L)
+        }, LAYOUT_LOOP_DELAY)
     }
 
     override fun provideView(context: Context): View {
@@ -170,7 +179,7 @@ class UiScrollViewNode(
         return view.onTouchEvent(event)
     }
 
-    override fun getScrollTranslation(): PointF {
+    override fun getScrollTranslation(): Vector2 {
         // When translating clip bounds to node's local cooridanate
         // system we use localPositions. Hovewer due to ARCore nature
         // localPosition of ScrollViewNode direct descendant can change
@@ -180,26 +189,26 @@ class UiScrollViewNode(
         // it in it's setClipBounds method, effectively zeroing it.
         // Then, instead of zeroed child localPosition we use
         // requestedContentPosition.
-        return PointF(
+        return Vector2(
                 -requestedContentPosition.x + content!!.localPosition.x,
                 -requestedContentPosition.y + content!!.localPosition.y)
     }
 
-    private fun update(viewPosition: PointF) {
+    private fun update(viewPosition: Vector2) {
         if (scrollRequested) {
             return
         }
 
         val contentBounds = content!!.getContentBounding()
         val viewBounds = getScrollBounds()
-        val alignTopLeft = PointF(
+        val alignTopLeft = Vector2(
                 viewBounds.left - contentBounds.left,
                 viewBounds.top - contentBounds.top)
 
         val contentSize = contentBounds.size()
         val viewSize = viewBounds.size()
         val possibleTravel = (contentSize - viewSize).coerceAtLeast(0F)
-        val travel = PointF(
+        val travel = Vector2(
                 -possibleTravel.x * viewPosition.x,
                 possibleTravel.y * viewPosition.y)
 

@@ -19,10 +19,10 @@ import SceneKit
 extension SCNNode {
     func orientAlong(_ vector: SCNVector3) {
         let up = SCNVector3(0, 1, 0)
-        let rotationAxis: SCNVector3 = vector.cross(up)
-        let angle: Float = vector.angleToVector(up)
+        let rotationAxis: SCNVector3 = vector.cross(up).normalized()
+        let angle: Float = -vector.angleToVector(up)
 
-        let s = sinf(0.5 * angle);
+        let s = sinf(0.5 * angle)
         let quat = SCNQuaternion(rotationAxis.x * s, rotationAxis.y * s, rotationAxis.z * s, cosf(0.5 * angle))
         orientation = quat
     }

@@ -21,7 +21,6 @@ import UIKit
     let begin: SCNVector3
     let direction: SCNVector3
     let length: CGFloat
-
     var end: SCNVector3 {
         return begin + direction * length
     }
@@ -39,8 +38,7 @@ extension Ray {
         guard let view = gesture.view else { return nil }
         guard let camera = cameraNode.camera else { return nil }
 
-        print("fieldOfView: \(camera.fieldOfView)")
-
+        // Screen space computations
         let tapPoint: CGPoint = gesture.location(in: view)
         let tanFOV: CGFloat = CGFloat(tanf(Float(0.5 * camera.fieldOfView.toRadians)))
         let aspect = view.frame.width / view.frame.height
@@ -52,28 +50,23 @@ extension Ray {
             y: tanFOV * (1.0 - tapPoint.y / halfHeight)
         )
 
+        // World space computation
         let cameraPosition = cameraNode.position
         let cameraRight = cameraNode.transform.right
         let cameraUp = cameraNode.transform.up
         let cameraForward = cameraNode.transform.forward.negated()
-        print("cameraPosition: \(cameraPosition)")
-        print("cameraRight: \(cameraRight)")
-        print("cameraUp: \(cameraUp)")
-        print("cameraForward: \(cameraForward)")
 
         let distance = camera.zNear
         let nearPlaneOrigin: SCNVector3 = cameraPosition + cameraForward * distance
         let shiftRight = cameraRight * screenPoint.x * distance
         let shiftUp = cameraUp * screenPoint.y * distance
         let tapPointOnNearPlane: SCNVector3 = nearPlaneOrigin + shiftRight + shiftUp
-        print("nearPlaneOrigin: \(nearPlaneOrigin)")
-        print("shiftRight: \(shiftRight)")
-        print("shiftUp: \(shiftUp)")
 
+        // Ray computations
         let rayCastFrom: SCNVector3 = tapPointOnNearPlane
         let rayCastDir: SCNVector3 = (tapPointOnNearPlane - cameraPosition).normalized()
         let rayLength: CGFloat = CGFloat(camera.zFar - camera.zNear)
-        print("\nrayCastFrom: \(rayCastFrom)\nrayCastDir: \(rayCastDir)\nrayLength: \(rayLength)")
+
         self.init(begin: rayCastFrom, direction: rayCastDir, length: rayLength)
     }
 }

@@ -62,7 +62,7 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         return CustomScrollBar(context)
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         val width = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH)
         val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         return Vector2(width.toFloat(), height.toFloat())

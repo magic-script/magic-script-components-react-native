@@ -66,7 +66,7 @@ open class UiToggleNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.toggle, null)
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         // size is set for nested views, see setupView()
         return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
     }

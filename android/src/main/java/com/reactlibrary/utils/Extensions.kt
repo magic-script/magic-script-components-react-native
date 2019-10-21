@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 
 /**
@@ -76,14 +77,14 @@ fun String.limited(maxCharacters: Int): String {
 }
 
 fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Vector2 {
-    val widthMeasureSpec = if (maxWidthMeters > 0) {
+    val widthMeasureSpec = if (maxWidthMeters > UiNode.WRAP_CONTENT_DIMENSION) {
         val maxWidth = Utils.metersToPx(maxWidthMeters, context)
         View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
     } else {
         View.MeasureSpec.UNSPECIFIED
     }
 
-    val heightMeasureSpec = if (maxHeightMeters > 0) {
+    val heightMeasureSpec = if (maxHeightMeters > UiNode.WRAP_CONTENT_DIMENSION) {
         val maxHeight = Utils.metersToPx(maxHeightMeters, context)
         View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
     } else {

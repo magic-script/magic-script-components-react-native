@@ -79,7 +79,7 @@ open class UiButtonNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
         val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         return Vector2(width.toFloat(), height.toFloat())
@@ -134,6 +134,8 @@ open class UiButtonNode(initProps: ReadableMap,
     }
 
     private fun canResizeOnContentChange(): Boolean {
+        val width = properties.getDouble(PROP_WIDTH).toFloat()
+        val height = properties.getDouble(PROP_HEIGHT).toFloat()
         return width == WRAP_CONTENT_DIMENSION || height == WRAP_CONTENT_DIMENSION
     }
 

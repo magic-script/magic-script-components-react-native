@@ -48,6 +48,15 @@ abstract class UiNode(
         private const val REBUILD_CHECK_DELAY = 30L
     }
 
+    /**
+     * Node width and height based on [view] size (in meters)
+     *
+     * Note that the size is known only after the node is built
+     * (after all properties have been applied)
+     */
+    private var size = Vector2(0F, 0F)
+        private set
+
     var clickListener: (() -> Unit)? = null
 
     /**
@@ -61,18 +70,10 @@ abstract class UiNode(
     private var rebuildLoopStarted = false
 
     /**
-     * Node width based on [view] size (in meters)
-     * Width equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow
+     * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
+     * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow
      */
-    var width: Float = WRAP_CONTENT_DIMENSION
-        private set
-
-    /**
-     * Node height based on [view] size (in meters)
-     * Height equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow
-     */
-    var height: Float = WRAP_CONTENT_DIMENSION
-        private set
+    private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
 
     init {
         // set default values of properties
@@ -85,8 +86,7 @@ abstract class UiNode(
      */
     override fun build() {
         initView()
-        setupView()
-        applyProperties(properties)
+        setup()
         if (!rebuildLoopStarted) {
             rebuildLoop()
             rebuildLoopStarted = true
@@ -110,8 +110,6 @@ abstract class UiNode(
      * layouts artifacts
      */
     override fun getContentBounding(): Bounding {
-        val size = view.getSizeInMeters(context, width, height)
-
         val centerX = contentNode.localPosition.x
         val centerY = contentNode.localPosition.y
 
@@ -147,7 +145,7 @@ abstract class UiNode(
 
     protected abstract fun provideView(context: Context): View
 
-    protected abstract fun getDesiredSize(): Vector2
+    protected abstract fun provideDesiredSize(): Vector2
 
     protected open fun onViewClick() {}
 
@@ -156,9 +154,9 @@ abstract class UiNode(
      * attached to the node.
      */
     protected open fun setupView() {
-        val desiredSize = getDesiredSize()
-        this.width = desiredSize.x
-        this.height = desiredSize.y
+        desiredSize = provideDesiredSize()
+        val width = desiredSize.x
+        val height = desiredSize.y
 
         val widthPx = if (width == WRAP_CONTENT_DIMENSION) {
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -192,6 +190,17 @@ abstract class UiNode(
         }
     }
 
+    private fun setup() {
+        setupView()
+        applyProperties(properties)
+        // calculating the real size after all properties have been set,
+        // because some properties may have changed the view size
+        // when using wrap content
+        val maxWidth = desiredSize.x
+        val maxHeight = desiredSize.y
+        size = view.getSizeInMeters(context, maxWidth, maxHeight)
+    }
+
     private fun attachView() {
         loadingView = true
 
@@ -218,14 +227,12 @@ abstract class UiNode(
     private fun rebuildLoop() {
         if (shouldRebuild && !loadingView) {
             if (renderableRequested) {
-                // init a new view and apply all properties
+                // init a new view, apply all properties and re-attach the view
                 build()
                 attachView()
             } else {
-                // not reloading the view if the renderable has not been requested yet
-                // because ArCore may not be initialized yet
-                setupView()
-                applyProperties(properties)
+                // only setup, because the view has not been attached yet
+                setup()
             }
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")

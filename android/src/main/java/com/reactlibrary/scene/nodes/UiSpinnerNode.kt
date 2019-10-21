@@ -58,7 +58,7 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
         return LayoutInflater.from(context).inflate(R.layout.spinner, null)
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         val width = height
         return Vector2(width.toFloat(), height.toFloat())

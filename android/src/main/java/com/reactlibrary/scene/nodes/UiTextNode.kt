@@ -61,22 +61,14 @@ open class UiTextNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.text, null) as TextView
     }
 
-    override fun getDesiredSize(): Vector2 {
-        if (properties.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
-            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
-            val width = bounds[0].toFloat()
-            val height = bounds[1].toFloat()
-            return Vector2(width, height)
-        } else {
-            return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        }
+    override fun provideDesiredSize(): Vector2 {
+        return readBoundsSize()
     }
 
     override fun setupView() {
         super.setupView()
-
-        if (width == WRAP_CONTENT_DIMENSION) {
+        val bounds = readBoundsSize()
+        if (bounds.x == WRAP_CONTENT_DIMENSION) {
             (view as TextView).setSingleLine(true)
         }
 
@@ -102,8 +94,21 @@ open class UiTextNode(initProps: ReadableMap,
         setFontParams(props)
     }
 
+    private fun readBoundsSize(): Vector2 {
+        if (properties.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = properties.get(PROP_BOUNDS_SIZE) as Bundle
+            val bounds = boundsData.getSerializable(PROP_BOUNDS_SIZE) as ArrayList<Double>
+            val width = bounds[0].toFloat()
+            val height = bounds[1].toFloat()
+            return Vector2(width, height)
+        } else {
+            return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+        }
+    }
+
     private fun canResizeOnContentChange(): Boolean {
-        return width == WRAP_CONTENT_DIMENSION || height == WRAP_CONTENT_DIMENSION
+        val bounds = readBoundsSize()
+        return bounds.x == WRAP_CONTENT_DIMENSION || bounds.y == WRAP_CONTENT_DIMENSION
     }
 
     protected open fun setText(props: Bundle) {
@@ -162,7 +167,7 @@ open class UiTextNode(initProps: ReadableMap,
     }
 
     private fun setWrap(props: Bundle) {
-        if (width == WRAP_CONTENT_DIMENSION) {
+        if (readBoundsSize().x == WRAP_CONTENT_DIMENSION) {
             return
         }
         if (props.containsKey(PROP_BOUNDS_SIZE)) {

@@ -57,7 +57,7 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRende
         return LayoutInflater.from(context).inflate(R.layout.progress_bar, null)
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         val width = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH)
         val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         return Vector2(width.toFloat(), height.toFloat())

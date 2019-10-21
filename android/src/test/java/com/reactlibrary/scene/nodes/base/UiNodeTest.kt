@@ -51,7 +51,7 @@ class UiNodeTest {
                 return mock()
             }
 
-            override fun getDesiredSize(): Vector2 {
+            override fun provideDesiredSize(): Vector2 {
                 return Vector2(0F, 0F)
             }
         }

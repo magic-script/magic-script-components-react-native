@@ -54,7 +54,7 @@ open class UiImageNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun getDesiredSize(): Vector2 {
+    override fun provideDesiredSize(): Vector2 {
         val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         var width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
         if (width.toFloat() == WRAP_CONTENT_DIMENSION) {

@@ -208,7 +208,7 @@ class UiDropdownListNodeSpec: QuickSpec {
 
                 it("notify upper layer") {
                     var upperLayerNotified = false
-                    node.onSelectionItemChanged = { sender, selecctedItem in
+                    node.onSelectionChanged = { sender, selecctedItems in
                         upperLayerNotified = true
                     }
                     let dummyItemNode = UiDropdownListItemNode(props: [:])

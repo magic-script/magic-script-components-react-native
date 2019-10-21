@@ -92,8 +92,6 @@ class ViewController: UIViewController {
         dropdownList.onSelectionChanged = { sender, selectedItem in
             print("dropDown onSelectionChanged \(sender) \(selectedItem)")
         }
-        
-        grid.layoutIfNeeded()
     }
     
     @discardableResult
@@ -115,18 +113,5 @@ extension ViewController: ARSCNViewDelegate {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
-        
-        scrollBarPosition += CGFloat(deltaTime)
-        if scrollBarPosition > 1.0 {
-            scrollBarPosition -= 2.0
-        }
-        
-        scrollBarSize += CGFloat(deltaTime * 0.1)
-        if scrollBarSize > 1.0 {
-            scrollBarSize -= 2.0
-        }
-        scrollView.scrollValue = abs(scrollBarPosition)
-        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-        scrollView.layoutIfNeeded()
     }
 }

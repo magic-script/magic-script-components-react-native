@@ -49,6 +49,9 @@ class UiScrollViewNode(
         const val PROP_HEIGHT = "height"
 
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
+
+        const val NATIVE_VIEW = true
+        const val NON_VIEW = false
     }
 
     private var width = 0F
@@ -82,6 +85,11 @@ class UiScrollViewNode(
         view.onDrawListener {
             val eps = 1e-5F // epsilon
             if (scrollRequested) {
+
+                val viewBounds = getScrollBounds()
+                val clipBounds = viewBounds.translate(getScrollTranslation())
+                content!!.setClipBounds(clipBounds, NON_VIEW)
+
                 content!!.localPosition = Vector3(
                         requestedContentPosition.x,
                         requestedContentPosition.y,
@@ -107,8 +115,8 @@ class UiScrollViewNode(
                 contentBounds = newBounds
                 val contentSize = contentBounds.size()
                 scrollView.contentSize = PointF(
-                        metersToPx(contentSize.x),
-                        metersToPx(contentSize.y))
+                        metersToPx(contentSize.x).toFloat(),
+                        metersToPx(contentSize.y).toFloat())
                 update(scrollView.getViewPosition())
             }
 
@@ -132,8 +140,8 @@ class UiScrollViewNode(
         width = this.properties.getDouble(PROP_WIDTH).toFloat()
         height = this.properties.getDouble(PROP_HEIGHT).toFloat()
 
-        val widthPx = metersToPx(width).toInt()
-        val heightPx = metersToPx(height).toInt()
+        val widthPx = metersToPx(width)
+        val heightPx = metersToPx(height)
 
         view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
 
@@ -141,7 +149,7 @@ class UiScrollViewNode(
         // because we want to set view dimensions in one place and
         // for consistency use meters instead of pixels.
         val scrollView = view as CustomScrollView
-        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH).toInt()
+        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH)
         scrollView.h_bar.layoutParams.width = widthPx - scrollBarWidthPx
         scrollView.h_bar.layoutParams.height = scrollBarWidthPx
         scrollView.v_bar.layoutParams.width = scrollBarWidthPx
@@ -157,8 +165,8 @@ class UiScrollViewNode(
 
         val viewBounds = getScrollBounds()
         event.setLocation(
-                metersToPx(event.getX() - viewBounds.left),
-                metersToPx(-event.getY() + viewBounds.top))
+                metersToPx(event.getX() - viewBounds.left).toFloat(),
+                metersToPx(-event.getY() + viewBounds.top).toFloat())
         return view.onTouchEvent(event)
     }
 
@@ -197,12 +205,8 @@ class UiScrollViewNode(
 
         requestedContentPosition = alignTopLeft + travel
 
-        val clipBounds = Bounding(
-                viewBounds.left + getScrollTranslation().x,
-                viewBounds.bottom + getScrollTranslation().y,
-                viewBounds.right + getScrollTranslation().x,
-                viewBounds.top + getScrollTranslation().y)
-        content!!.setClipBounds(clipBounds)
+        val clipBounds = viewBounds.translate(getScrollTranslation())
+        content!!.setClipBounds(clipBounds, NATIVE_VIEW)
         view.invalidate()
 
         scrollRequested = true
@@ -214,9 +218,5 @@ class UiScrollViewNode(
                 -height / 2F + DEFAULT_SCROLLBAR_WIDTH,
                 width / 2F - DEFAULT_SCROLLBAR_WIDTH,
                 height / 2F)
-    }
-
-    private fun metersToPx(meters: Float): Float {
-        return Utils.metersToPxFloat(meters, context)
     }
 }

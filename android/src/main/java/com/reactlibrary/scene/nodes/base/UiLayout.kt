@@ -131,17 +131,12 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         return PointF(-vector.x, -vector.y)
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        val localBounds = Bounding(
-                clipBounds.left + getScrollTranslation().x,
-                clipBounds.bottom + getScrollTranslation().y,
-                clipBounds.right + getScrollTranslation().x,
-                clipBounds.top + getScrollTranslation().y)
-
+    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+        val localBounds = clipBounds.translate(getScrollTranslation())
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]
             if (child is TransformNode) {
-                child.setClipBounds(localBounds)
+                child.setClipBounds(localBounds, nativeView)
             }
         }
     }

@@ -20,6 +20,8 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.collision.Ray
+import com.google.ar.sceneform.collision.RayHit
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
@@ -27,8 +29,10 @@ import com.reactlibrary.ar.CubeRenderableBuilder
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.utils.BoundingBox
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.minus
+import com.reactlibrary.utils.toVector3
 import kotlin.Float.Companion.MAX_VALUE
 import kotlin.math.max
 import kotlin.math.min
@@ -48,6 +52,7 @@ class LineNode(initProps: ReadableMap,
     }
 
     var linesBounding = Bounding()
+    var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -57,20 +62,21 @@ class LineNode(initProps: ReadableMap,
             // because Sceneform may be uninitialized yet
             // (loadRenderable may have not been called)
             if (renderableRequested) {
-                drawLines()
+                loadRenderable()
             }
         }
     }
 
     override fun loadRenderable() {
-        drawLines()
+        drawLines(clipBox)
+        updateLinesBounding()
     }
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for line
     }
 
-    private fun drawLines() {
+    private fun drawLines(clipBox: BoundingBox) {
         // clear the old line segments in case of update
         for (i in contentNode.children.size - 1 downTo 0) {
             contentNode.removeChild(contentNode.children[i])
@@ -83,13 +89,42 @@ class LineNode(initProps: ReadableMap,
 
         var idx = 0
         while (idx + 1 < points.size) {
-            val start = points[idx]
-            val end = points[idx + 1]
-            drawLineSegment(start, end, color)
+            val clipped = clipLineSegment(points[idx], points[idx + 1], clipBox)
+            if (clipped != null) {
+                val (start, end) = clipped
+                drawLineSegment(start, end, color)
+            }
             idx++
         }
+    }
 
-        updateLinesBounding(points)
+    private fun clipLineSegment(start: Vector3, end: Vector3, clipBox: BoundingBox): Pair<Vector3, Vector3>? {
+
+        var collisions = 0
+        val hit = RayHit()
+
+        val startRay = Ray(start, end - start)
+        val startClipped = if (clipBox.getRayIntersection(startRay, hit)) {
+            collisions++
+            hit.point
+        } else {
+            start
+        }
+
+        val endRay = Ray(end, start - end)
+        val endClipped = if (clipBox.getRayIntersection(endRay, hit)) {
+            collisions++
+            hit.point
+        } else {
+            end
+        }
+
+        if (collisions < 2) {
+            // Line completely outside of clip box.
+            return null
+        }
+
+        return Pair(startClipped, endClipped)
     }
 
     private fun drawLineSegment(start: Vector3, end: Vector3, color: Color) {
@@ -111,7 +146,9 @@ class LineNode(initProps: ReadableMap,
     // For some reason Utils.calculateSumBounds fails for this node.
     // Even if it didn't, we still want to cache content bounding,
     // because clipping changes content size.
-    private fun updateLinesBounding(points: List<Vector3>) {
+    private fun updateLinesBounding() {
+
+        val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
         linesBounding = if (points.isEmpty()) {
             Bounding()
         } else {
@@ -124,6 +161,18 @@ class LineNode(initProps: ReadableMap,
             linesBounding.top = max(linesBounding.top, p.y)
             linesBounding.bottom = min(linesBounding.bottom, p.y)
         }
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+        if (nativeView) {
+            return
+        }
+        val localBounds = clipBounds.translate(getScrollTranslation())
+
+        val center = localBounds.center().toVector3()
+        val size = localBounds.size().toVector3()
+        clipBox = BoundingBox(size, center)
+        drawLines(clipBox)
     }
 
     override fun getContentBounding(): Bounding {

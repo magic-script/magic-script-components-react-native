@@ -33,6 +33,7 @@ import com.reactlibrary.scene.ViewWrapper
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.div
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultBoolean
 
@@ -190,22 +191,20 @@ abstract class UiNode(
 
     // Translation to native View coordinate system.
     override fun getScrollTranslation(): PointF {
-        val size = getBounding().size()
-        val pivot = PointF(
-                size.x / 2F,
-                size.y / -2F)
+        val pivot = getBounding().size() / 2F
         return PointF(
                 pivot.x - localPosition.x,
-                pivot.y - localPosition.y)
+                -pivot.y - localPosition.y)
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        val clipBoundsPx = Rect(
-                Utils.metersToPx(clipBounds.left + getScrollTranslation().x, context),
-                -Utils.metersToPx(clipBounds.top + getScrollTranslation().y, context),
-                Utils.metersToPx(clipBounds.right + getScrollTranslation().x, context),
-                -Utils.metersToPx(clipBounds.bottom + getScrollTranslation().y, context))
-        view.clipBounds = clipBoundsPx
+    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+        if (nativeView) {
+            view.clipBounds = Rect(
+                    metersToPx(clipBounds.left + getScrollTranslation().x),
+                    -metersToPx(clipBounds.top + getScrollTranslation().y),
+                    metersToPx(clipBounds.right + getScrollTranslation().x),
+                    -metersToPx(clipBounds.bottom + getScrollTranslation().y))
+        }
     }
 
     /**
@@ -236,5 +235,9 @@ abstract class UiNode(
         if (props.containsKey(PROP_ENABLED)) {
             view.isEnabled = props.getBoolean(PROP_ENABLED)
         }
+    }
+
+    protected fun metersToPx(meters: Float): Int {
+        return Utils.metersToPx(meters, context)
     }
 }

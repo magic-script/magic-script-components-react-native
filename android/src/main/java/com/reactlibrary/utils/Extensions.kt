@@ -98,15 +98,23 @@ fun PointF.equalInexact(other: PointF): Boolean {
     return abs(x - other.x) < eps && abs(y - other.y) < eps
 }
 
+fun PointF.toVector3(): Vector3 {
+    return Vector3(x, y, 0F)
+}
+
 /**
  * com.google.ar.sceneform.math.Vector3
  */
 operator fun Vector3.plus(other: Vector3): Vector3 {
-    return Vector3(
-            x + other.x,
-            y + other.y,
-            z + other.z
-    )
+    return Vector3.add(this, other)
+}
+
+operator fun Vector3.minus(other: Vector3): Vector3 {
+    return Vector3.subtract(this, other)
+}
+
+operator fun Vector3.div(other: Float): Vector3 {
+    return this.scaled(1F / other)
 }
 
 /**

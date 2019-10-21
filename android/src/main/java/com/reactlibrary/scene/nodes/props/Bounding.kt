@@ -50,4 +50,20 @@ data class Bounding(
         val height = top - bottom
         return PointF(width, height)
     }
+
+    fun center(): PointF {
+        val x = (right + left) / 2F
+        val y = (top + bottom) / 2F
+        return PointF(x, y)
+    }
+
+    // Get new Bounding equal to this translated by 2D vector.
+    fun translate(translation: PointF): Bounding {
+        return Bounding(
+                left + translation.x,
+                bottom + translation.y,
+                right + translation.x,
+                top + translation.y
+        )
+    }
 }

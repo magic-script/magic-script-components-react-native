@@ -40,6 +40,10 @@ import SceneKit
         scene.rootNode.addChildNode(rootNode)
     }
 
+    @objc public func handleTapAction(ray: Ray) {
+        
+    }
+
     @objc public func handleNodeTap(_ node: SCNNode?) {
         var componentNode: SCNNode? = node
         while componentNode != nil {

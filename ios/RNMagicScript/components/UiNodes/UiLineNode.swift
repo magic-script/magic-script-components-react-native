@@ -75,18 +75,16 @@ import SceneKit
 
     fileprivate func generateLinesGeometry() -> SCNGeometry? {
         guard points.count >= 2 else { return nil }
-        let vertices: [SCNVector3] = points.map { SCNVector3(Float($0.x), Float($0.y), 0) }
-
+        
         var indices: [Int16] = []
-        for i in 1..<vertices.count {
+        for i in 1..<points.count {
             indices.append(Int16(i - 1))
             indices.append(Int16(i))
         }
-        let source = SCNGeometrySource(vertices: vertices)
+        let source = SCNGeometrySource(vertices: points)
         let element = SCNGeometryElement(indices: indices, primitiveType: .line)
         let linesGeometry = SCNGeometry(sources: [source], elements: [element])
         linesGeometry.firstMaterial?.lightingModel = .constant
-        linesGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         return linesGeometry
     }
 }

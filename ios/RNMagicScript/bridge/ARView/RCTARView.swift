@@ -27,6 +27,10 @@ import SceneKit
         return arView.scene
     }
 
+    public var cameraNode: SCNNode? {
+        return arView.pointOfView
+    }
+
     @objc public var debug: Bool {
         get { return arView.showsStatistics }
         set {
@@ -106,6 +110,10 @@ import SceneKit
         view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 1.5)
     #endif
 
+        // Set camera's range
+        view.pointOfView?.camera?.zNear = 0.001
+        view.pointOfView?.camera?.zFar = 10
+
         // Add gesture recognizer
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
@@ -170,20 +178,34 @@ import SceneKit
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
     }
+
+    fileprivate var rayCastNode: SCNNode?
 }
 
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
-        let tapPoint: CGPoint = sender.location(in: arView)
-        let options: [SCNHitTestOption : Any] = [
-            SCNHitTestOption.boundingBoxOnly: true,
-            SCNHitTestOption.ignoreHiddenNodes: true,
-            // For some reason, the categoryBitMask test option does not work
-            // (nodes with given categoryBitMask are ignored).
-            // SCNHitTestOption.categoryBitMask: UiNodesManager.instance.focusableNodeBitMask
-        ]
-        let node = arView.hitTest(tapPoint, options: options).first?.node
-        UiNodesManager.instance.handleNodeTap(node)
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+
+        if rayCastNode == nil {
+            let cylinder = SCNCylinder(radius: 0.01, height: ray.length)
+            cylinder.firstMaterial?.lightingModel = .constant
+            cylinder.firstMaterial?.diffuse.contents = UIColor.red
+            cylinder.firstMaterial?.isDoubleSided = true
+            rayCastNode = SCNNode(geometry: cylinder)
+            rayCastNode?.pivot = SCNMatrix4MakeTranslation(0, Float(0.5 * ray.length), 0)
+            scene.rootNode.addChildNode(rayCastNode!)
+        }
+
+        if let node = rayCastNode {
+            node.position = ray.begin
+            node.orientAlong(ray.direction)
+        }
+
+        let node = NodesFactory.createLinesNode(vertices: [ray.begin, ray.end], color: UIColor.green)
+        scene.rootNode.addChildNode(node)
+
+        UiNodesManager.instance.handleTapAction(ray: ray)
     }
 }

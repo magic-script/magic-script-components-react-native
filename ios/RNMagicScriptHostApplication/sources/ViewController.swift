@@ -77,13 +77,19 @@ class ViewController: UIViewController {
         ], nodeId: scrollViewId)
         scrollBar = createComponent([
             "debug": false,
-            "localPosition": [0.25, 0, 0],
+            "localPosition": [0.25, 0, 0.5],
             "width": 0.9
         ], nodeId: scrollBarId, parentId: scrollViewId)
         createGridWithIcons(parentId: scrollViewId)
 
         scrollView.layoutIfNeeded()
         scrollBar.layoutIfNeeded()
+
+        let line: UiLineNode = createComponent([
+            "points" : [[0,0,1.5], [0,0,0]],
+            "color" : [1,1,0,1]
+        ], nodeId: "line")
+        line.layoutIfNeeded()
     }
 
     fileprivate func createGridWithIcons(parentId: String) {
@@ -104,7 +110,7 @@ class ViewController: UIViewController {
     }
 
     @discardableResult
-    fileprivate func createComponent<T: UiNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
+    fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
         node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)

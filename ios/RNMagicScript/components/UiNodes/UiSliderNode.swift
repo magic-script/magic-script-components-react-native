@@ -58,7 +58,7 @@ import SceneKit
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {
-        didSet { if (foregroundColor != oldValue) { foregroundImage = nil; setNeedsLayout(); } }
+        didSet { if (foregroundColor != oldValue) { setNeedsLayout(); } }
     }
 
     @objc override var canHaveFocus: Bool {
@@ -80,7 +80,6 @@ import SceneKit
     fileprivate var _value: CGFloat = 0.0
     fileprivate var backgroundGeometry: SCNPlane!
     fileprivate var foregroundGeometry: SCNPlane!
-    fileprivate var foregroundImage: UIImage?
     fileprivate var progressNode: SCNNode!
     fileprivate var minLabelNode: LabelNode!
     fileprivate var maxLabelNode: LabelNode!
@@ -93,8 +92,7 @@ import SceneKit
         backgroundGeometry = SCNPlane(width: width, height: height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
         backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
-        let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
-        backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
+        backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
 
         foregroundGeometry = SCNPlane(width: width, height: height)
         foregroundGeometry.firstMaterial?.lightingModel = .constant
@@ -176,10 +174,7 @@ import SceneKit
         let delta = max - min
         let progress: CGFloat = (delta > 0.0001) ? (value - min) / delta : 0
 
-        if foregroundImage == nil {
-            foregroundImage = UIImage.gradientImage(withSize: CGSize(width: 32.0, height: 32.0), colors: [foregroundColor.cgColor, foregroundColor.cgColor])
-            foregroundGeometry.firstMaterial?.diffuse.contents = foregroundImage
-        }
+        foregroundGeometry.firstMaterial?.diffuse.contents = foregroundColor.cgColor
 
         let slideWidth = size.width * progress
         foregroundGeometry.width = slideWidth

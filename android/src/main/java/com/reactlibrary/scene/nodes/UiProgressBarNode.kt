@@ -20,14 +20,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomProgressBar
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 
 open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
@@ -58,14 +57,10 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRende
         return LayoutInflater.from(context).inflate(R.layout.progress_bar, null)
     }
 
-    override fun setupView() {
-        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    override fun getDesiredSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH)
+        val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {

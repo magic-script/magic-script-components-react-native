@@ -24,6 +24,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.utils.Vector2
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -48,6 +49,10 @@ class UiNodeTest {
         node = object : UiNode(JavaOnlyMap(), context, viewRenderableLoader) {
             override fun provideView(context: Context): View {
                 return mock()
+            }
+
+            override fun getDesiredSize(): Vector2 {
+                return Vector2(0F, 0F)
             }
         }
         node.build()

@@ -20,7 +20,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.math.Quaternion
@@ -29,7 +28,7 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSpinner
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultBoolean
 import com.reactlibrary.utils.putDefaultDouble
 
@@ -59,11 +58,10 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
         return LayoutInflater.from(context).inflate(R.layout.spinner, null)
     }
 
-    override fun setupView() {
-        val height = properties.getDouble(PROP_HEIGHT).toFloat()
-        val widthPx = Utils.metersToPx(height, context)
-        val heightPx = Utils.metersToPx(height, context)
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    override fun getDesiredSize(): Vector2 {
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        val width = height
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun onUpdate(frameTime: FrameTime) {

@@ -28,7 +28,6 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
@@ -115,21 +114,14 @@ open class UiTextEditNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.text_edit, null)
     }
 
+    override fun getDesiredSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        return Vector2(width.toFloat(), height.toFloat())
+    }
+
     override fun setupView() {
-        // default dimension
-        var widthPx = LinearLayout.LayoutParams.WRAP_CONTENT
-        var heightPx = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            widthPx = Utils.metersToPx(widthInMeters, context)
-        }
-
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            heightPx = Utils.metersToPx(heightInMeters, context)
-        }
-        view.sv_text_edit.layoutParams = LinearLayout.LayoutParams(widthPx, heightPx)
+        super.setupView()
 
         val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
         if (fontParams == null) { // setting a default typeface

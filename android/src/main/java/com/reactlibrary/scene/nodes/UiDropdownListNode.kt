@@ -111,12 +111,11 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
-        if (validCollisionShape) {
-            val bounding = getContentBounding()
-            val listX = bounding.left
-            val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
-            listNode.localPosition = Vector3(listX, listY, 0F)
-        }
+
+        val bounding = getContentBounding()
+        val listX = bounding.left
+        val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
+        listNode.localPosition = Vector3(listX, listY, 0F)
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {

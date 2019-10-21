@@ -20,13 +20,12 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSlider
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 
 open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
@@ -59,14 +58,10 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
         return LayoutInflater.from(context).inflate(R.layout.slider, null)
     }
 
-    override fun setupView() {
-        val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    override fun getDesiredSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {

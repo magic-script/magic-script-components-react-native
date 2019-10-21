@@ -29,11 +29,9 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.icons.IconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.getSizeInMeters
-import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.Vector2
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(initProps: ReadableMap,
@@ -56,22 +54,13 @@ open class UiImageNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun setupView() {
-        val heightPx = if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            Utils.metersToPx(heightInMeters, context)
-        } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT
+    override fun getDesiredSize(): Vector2 {
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        var width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        if (width.toFloat() == WRAP_CONTENT_DIMENSION) {
+            width = height // for icons support
         }
-
-        val widthPx = if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            Utils.metersToPx(widthInMeters, context)
-        } else {
-            heightPx // for icons support
-        }
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {
@@ -85,29 +74,6 @@ open class UiImageNode(initProps: ReadableMap,
         setIcon(props)
         setColor(props)
         setUseFrame(props)
-    }
-
-    override fun getContentBounding(): Bounding {
-        val widthInMeters = properties.getDouble(PROP_WIDTH, 0.0).toFloat()
-        val heightInMeters = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
-        val size = view.getSizeInMeters(context, widthInMeters, heightInMeters)
-        logMessage("view size= $size")
-
-        val centerX = contentNode.localPosition.x
-        val centerY = contentNode.localPosition.y
-
-        val scaleX = contentNode.localScale.x
-        val scaleY = contentNode.localScale.y
-
-        // TODO alignment factor
-        val offsetX = 0
-        val offsetY = 0
-
-        val left = centerX * scaleX - (size.first * scaleX) / 2 + offsetX
-        val right = centerX * scaleX + (size.first * scaleX) / 2 + offsetX
-        val top = centerY * scaleY + (size.second * scaleY) / 2 + offsetY
-        val bottom = centerY * scaleY - (size.second * scaleY) / 2 + offsetY
-        return Bounding(left, bottom, right, top)
     }
 
     private fun setImagePath(props: Bundle) {

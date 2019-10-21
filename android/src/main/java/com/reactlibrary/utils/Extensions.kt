@@ -75,7 +75,7 @@ fun String.limited(maxCharacters: Int): String {
 
 }
 
-fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Pair<Float, Float> {
+fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeters: Float): Vector2 {
     val widthMeasureSpec = if (maxWidthMeters > 0) {
         val maxWidth = Utils.metersToPx(maxWidthMeters, context)
         View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
@@ -94,7 +94,7 @@ fun View.getSizeInMeters(context: Context, maxWidthMeters: Float, maxHeightMeter
     logMessage("Measured width= $measuredWidth")
     val widthMeters = Utils.pxToMeters(measuredWidth.toFloat(), context)
     val heightMeters = Utils.pxToMeters(measuredHeight.toFloat(), context)
-    return Pair(widthMeters, heightMeters)
+    return Vector2(widthMeters, heightMeters)
 }
 
 

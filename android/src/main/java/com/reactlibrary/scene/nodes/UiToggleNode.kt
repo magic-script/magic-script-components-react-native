@@ -29,9 +29,7 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
@@ -68,9 +66,14 @@ open class UiToggleNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.toggle, null)
     }
 
+    override fun getDesiredSize(): Vector2 {
+        // size is set for nested views, see setupView()
+        return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+    }
+
     override fun setupView() {
-        var heightMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        if (heightMeters == 0F) { // use default height when 0
+        var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
+        if (heightMeters == WRAP_CONTENT_DIMENSION) {
             heightMeters = DEFAULT_HEIGHT.toFloat()
         }
         val switchHeightPx = Utils.metersToPx(heightMeters, context)

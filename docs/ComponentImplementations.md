@@ -7,8 +7,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
  3 | TextEdit | UiTextEdit | :thumbsup: | 👍 | :thumbsup: | [link](coverage/TextEdit.md)
  4 | Button | UiButton | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Button.md)
  5 | Image | UiImage | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Image.md)
- 6 | ScrollBar | UiScrollBar | :thumbsup: | 2 D | :thumbsup: | [link](coverage/ScrollBar.md)
- 7 | ScrollView | UiScrollView | :thumbsup: | 3 D | 🚧 |
+ 6 | ScrollBar | UiScrollBar | :thumbsup: | 👍 | :thumbsup: | [link](coverage/ScrollBar.md)
+ 7 | ScrollView | UiScrollView | :thumbsup: | 🚧 | 🚧 |
  8 | ListView | UiListView | :thumbsup: | 2 D | 2 D |
  9 | ListViewItem | UiListViewItem | :thumbsup: | 2 D | 2 D |
 10 | Model | ModelNode | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Model.md)
@@ -18,8 +18,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 14 | GridLayout | UiGridLayout | :thumbsup: | 👍 | :thumbsup: | [link](coverage/GridLayout.md)
 15 | LinearLayout | UiLinearLayout | :thumbsup: | 1 D | :thumbsup: | [link](coverage/LinearLayout.md)
 16 | RectLayout | UiRectLayout | :thumbsup: | 1 D | 1 D |
-17 | DropdownList | UiDropDownList | :thumbsup: | 2 D | 2 D |
-18 | DropdownListItem | DropDownListItem | :thumbsup: | 3 D | 2.5 D |
+17 | DropdownList | UiDropDownList | :thumbsup: | 🚧 | 2 D |
+18 | DropdownListItem | DropDownListItem | :thumbsup: | 🚧 | 2.5 D |
 19 | Toggle | UiToggle | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Toggle.md)
 20 | ToggleGroup | UiToggleGroup | :thumbsup: | ? | ? |
 21 | Panel | UiPanel | :thumbsup: | ? | ? |

@@ -112,9 +112,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * re-draw the layout in such case.
      */
     private fun layoutLoop() {
-//        adjustChildrenSize()
         measureChildren()
-        rescale()
+        rescaleChildren(contentNode.children)
         if (redrawRequested) {
             layoutManager.layoutChildren(childrenList, childrenBounds)
             // applyAlignment()
@@ -134,16 +133,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     /**
-     *  If the dimensions of the layout are set (width & height > 0),
-     *  we have to check in each layout if the child is not higher or wider than the parent.
-     *  If so, we have to scale it down accordingly
-     */
-    protected abstract fun adjustChildrenSize()
-
-    fun rescale() {
-        rescaleChild(contentNode.children)
-    }
-    /**
      * Measures the bounds of children nodes; if any bound has changed
      * it sets the [redrawRequested] flag to true.
      */
@@ -156,20 +145,18 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             } else {
                 Utils.calculateBoundsOfNode(node)
             }
-            Log.d("MeasureChild", "childBounds: ${childrenBounds[i]}, oldBounds: $oldBounds")
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 redrawRequested = true
             }
         }
     }
 
-    private fun rescaleChild(nodes: List<Node>) {
+    private fun rescaleChildren(nodes: List<Node>) {
         for (i in 0 until nodes.size) {
             val node = nodes[i]
             val nodeBounds = childrenBounds[i] ?: Bounding()
             val nodeWidth = nodeBounds.right - nodeBounds.left
             val nodeHeight = nodeBounds.top - nodeBounds.bottom
-            Log.d("RescaleChild", "node width: $nodeWidth, node height: $nodeHeight")
             if (width > 0 || height > 0) {
                 if (maxChildWidth < nodeWidth && maxChildHeight < nodeHeight) {
                     val scale = if (nodeWidth > nodeHeight) {
@@ -177,31 +164,13 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                     } else {
                         maxChildHeight / nodeHeight
                     }
-                    node.localScale = Vector3(scale, scale, node.localScale.z)
-//                node.localPosition.x = node.localPosition.x * scale
-//                node.localPosition.y = node.localPosition.y * scale
-//                nodeBounds.left = nodeBounds.left * scale
-//                nodeBounds.right = nodeBounds.right * scale
-//                nodeBounds.top = nodeBounds.top * scale
-//                nodeBounds.bottom = nodeBounds.bottom * scale
+                    (node as TransformNode).localScale = Vector3(scale, scale, node.localScale.z)
                 } else if (maxChildWidth < nodeWidth) {
                     val scale = maxChildWidth / nodeWidth
-                    node.localScale = Vector3(scale, scale, node.localScale.z)
-//                node.localPosition.x = node.localPosition.x * scale
-//                node.localPosition.y = node.localPosition.y * scale
-//                nodeBounds.left = nodeBounds.left * scale
-//                nodeBounds.right = nodeBounds.right * scale
-//                nodeBounds.top = nodeBounds.top * scale
-//                nodeBounds.bottom = nodeBounds.bottom * scale
+                    (node as TransformNode).localScale = Vector3(scale, scale, node.localScale.z)
                 } else if (maxChildHeight < nodeHeight) {
                     val scale = maxChildHeight / nodeHeight
-                    node.localScale = Vector3(scale, scale, node.localScale.z)
-//                    node.localPosition.x = node.localPosition.x * scale
-//                    node.localPosition.y = node.localPosition.y * scale
-//                nodeBounds.left = nodeBounds.left * scale
-//                nodeBounds.right = nodeBounds.right * scale
-//                nodeBounds.top = nodeBounds.top * scale
-//                nodeBounds.bottom = nodeBounds.bottom * scale
+                    (node as TransformNode).localScale = Vector3(scale, scale, node.localScale.z)
                 }
             }
         }

@@ -198,7 +198,6 @@ abstract class TransformNode(
             timeSinceLastAlignment = 0F
             val currentBounding = getBounding()
             if (!Bounding.equalInexact(currentBounding, bounding)) {
-                Log.d("RectLayout", "Bounding inexact")
                 // Refreshing alignment from a loop, because:
                 // - we don't know node size at beginning,
                 // - node size may have changed,

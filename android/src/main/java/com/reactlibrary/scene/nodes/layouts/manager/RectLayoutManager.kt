@@ -9,7 +9,7 @@ interface RectLayoutManager: LayoutManager {
 
     var itemPadding: Padding
 
-    var itemHorizontalAlignment: Alignment.HorizontalAlignment
+    var contentHorizontalAlignment: Alignment.HorizontalAlignment
 
-    var itemVerticalAlignment: Alignment.VerticalAlignment
+    var contentVerticalAlignment: Alignment.VerticalAlignment
 }

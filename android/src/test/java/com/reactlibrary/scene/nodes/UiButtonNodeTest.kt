@@ -75,6 +75,20 @@ class UiButtonNodeTest {
     }
 
     @Test
+    fun testing() {
+        val node = createNodeWithViewSpy(JavaOnlyMap.of(
+                "width",2.0,"height",2.0
+        ))
+
+        node.localScale = Vector3(0.5f, 0.5f, node.localScale.z)
+        node.build()
+        println("Node bounds: ${node.getBounding()}")
+        println("Node alignment: ${node.horizontalAlignment} ${node.verticalAlignment}")
+
+//        verify(viewSpy).setTypeface(providerTypeface)
+    }
+
+    @Test
     fun shouldHaveDefaultTextSize() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 

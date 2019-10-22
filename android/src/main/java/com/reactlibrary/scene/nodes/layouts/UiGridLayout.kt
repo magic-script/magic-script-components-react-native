@@ -74,10 +74,6 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
         )
     }
 
-    override fun adjustChildrenSize() {
-        // TODO implement scaling of the children relatively to layout dimensions
-    }
-
     private fun setColumns(props: Bundle) {
         if (props.containsKey(PROP_COLUMNS)) {
             (layoutManager as GridLayoutManager).columns = props.getDouble(PROP_COLUMNS).toInt()

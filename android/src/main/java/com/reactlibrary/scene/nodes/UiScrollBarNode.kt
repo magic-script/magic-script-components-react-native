@@ -19,12 +19,11 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 
@@ -41,12 +40,15 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
 
         const val ORIENTATION_VERTICAL = "vertical"
         const val ORIENTATION_HORIZONTAL = "horizontal"
+
+        const val DEFAULT_WIDTH = 0.04
+        const val DEFAULT_HEIGHT = 1.2
     }
 
     init {
         // set default properties values
-        properties.putDefaultDouble(PROP_WIDTH, 0.04)
-        properties.putDefaultDouble(PROP_HEIGHT, 1.2)
+        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         properties.putDefaultDouble(PROP_THUMB_POSITION, 0.0)
         properties.putDefaultDouble(PROP_THUMB_SIZE, 0.0)
         properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
@@ -60,14 +62,10 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         return CustomScrollBar(context)
     }
 
-    override fun setupView() {
-        val widthInMeters = this.properties.getDouble(PROP_WIDTH).toFloat()
-        val widthPx = Utils.metersToPx(widthInMeters, context)
-
-        val heightInMeters = this.properties.getDouble(PROP_HEIGHT).toFloat()
-        val heightPx = Utils.metersToPx(heightInMeters, context)
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    override fun provideDesiredSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH)
+        val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {

@@ -126,16 +126,20 @@ class UiScrollViewNode(
         content = null
     }
 
-    override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
+    }
+
+    override fun provideView(context: Context): View {
+        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
+    }
+
+    override fun provideDesiredSize(): Vector2 {
+        return Vector2(width, height)
     }
 
     override fun setupView() {

@@ -79,5 +79,13 @@
     return [[UiVideoNode alloc] initWithProps:json];
 }
 
++ (UiDropdownListNode *)UiDropdownListNode:(id)json {
+    return [[UiDropdownListNode alloc] initWithProps:json];
+}
+
++ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json {
+    return [[UiDropdownListItemNode alloc] initWithProps:json];
+}
+
 @end
 

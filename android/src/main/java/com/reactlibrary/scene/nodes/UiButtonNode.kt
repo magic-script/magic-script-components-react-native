@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
@@ -31,6 +30,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 
 open class UiButtonNode(initProps: ReadableMap,
@@ -50,11 +50,10 @@ open class UiButtonNode(initProps: ReadableMap,
 
         const val DEFAULT_ROUNDNESS = 1.0
         const val DEFAULT_TEXT_SIZE = 0.0167
-        const val WRAP_CONTENT_DIMENSION = 0F // 0 width or height means "wrap content"
 
         // text padding = factor * text height
         private const val PADDING_FACTOR_HORIZONTAL = 1.55F
-        private const val PADDING_FACTOR_VERTICAL = 1.15F
+        const val PADDING_FACTOR_VERTICAL = 1.15F
     }
 
     private var playingAnim = false
@@ -80,24 +79,14 @@ open class UiButtonNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
     }
 
-    override fun setupView() {
-        // default dimension
-        var widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        var heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+    override fun provideDesiredSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        return Vector2(width.toFloat(), height.toFloat())
+    }
 
-        if (properties.containsKey(PROP_WIDTH)) {
-            val width = properties.getDouble(PROP_WIDTH).toFloat()
-            if (width != WRAP_CONTENT_DIMENSION) {
-                widthPx = Utils.metersToPx(width, context)
-            }
-        }
-        if (properties.containsKey(PROP_HEIGHT)) {
-            val height = properties.getDouble(PROP_HEIGHT).toFloat()
-            if (height != WRAP_CONTENT_DIMENSION) {
-                heightPx = Utils.metersToPx(height, context)
-            }
-        }
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+    override fun setupView() {
+        super.setupView()
 
         val font = fontProvider.provideFont()
         (view as CustomButton).setTypeface(font)

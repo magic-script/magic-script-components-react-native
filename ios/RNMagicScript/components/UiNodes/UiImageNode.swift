@@ -28,7 +28,7 @@ import SceneKit
         }
     }
     @objc var icon: SystemIcon? {
-        didSet { image = icon?.image }
+        didSet { image = icon?.getImage(forceDefaultImage: useDefaultIcon) }
     }
     @objc var image: UIImage? {
         didSet { updateDisplay(); updateLayout() }
@@ -43,6 +43,9 @@ import SceneKit
         didSet { setFrame(visible: useFrame); setNeedsLayout() }
     }
     @objc var color: UIColor? {
+        didSet { updateDisplay(); setNeedsLayout() }
+    }
+    @objc var useDefaultIcon: Bool = false {
         didSet { updateDisplay(); setNeedsLayout() }
     }
 
@@ -62,13 +65,17 @@ import SceneKit
         planeGeometry = SCNPlane(width: 1.0, height: 1.0)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
-        planeGeometry.firstMaterial?.isDoubleSided = true
+        planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         imageNode = SCNNode(geometry: planeGeometry)
         contentNode.addChildNode(imageNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        if let useDefaultIcon = Convert.toBool(props["useDefaultIcon"]) {
+            self.useDefaultIcon = useDefaultIcon
+        }
 
         if let url = Convert.toFileURL(props["filePath"]) {
             self.url = url
@@ -124,7 +131,7 @@ import SceneKit
     fileprivate func updateDisplay() {
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
-        planeGeometry.firstMaterial?.isDoubleSided = false
+        planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
     }
 
     fileprivate func setFrame(visible: Bool) {
@@ -154,7 +161,7 @@ import SceneKit
         let frameGeometry = SCNGeometry(sources: [source], elements: [element])
         frameGeometry.firstMaterial?.lightingModel = .constant
         frameGeometry.firstMaterial?.diffuse.contents = UIColor.white
-        frameGeometry.firstMaterial?.isDoubleSided = false
+        frameGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         frameGeometry.firstMaterial?.readsFromDepthBuffer = false
         return frameGeometry
     }

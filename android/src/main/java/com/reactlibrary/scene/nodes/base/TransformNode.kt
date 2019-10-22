@@ -59,7 +59,7 @@ abstract class TransformNode(
          * Indicates how often we measure bounding and (if necessary)
          * refresh alignment. Used only when [useContentNodeAlignment].
          */
-        private const val ALIGNMENT_INTERVAL = 0.1F // in seconds
+        private const val ALIGNMENT_INTERVAL = 0.05F // in seconds
     }
 
     /**
@@ -90,11 +90,16 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
+    protected var updatingProperties = false
+        private set
+
     private var bounding = Bounding(0F, 0F, 0F, 0F) // default
 
     private var timeSinceLastAlignment = 0F
 
     init {
+        addChild(contentNode)
+
         // Set default properties if not present
         val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
         properties.putDefaultSerializable(PROP_LOCAL_POSITION, position)
@@ -109,6 +114,10 @@ abstract class TransformNode(
      */
     open fun addContent(child: Node) {
         contentNode.addChild(child)
+    }
+
+    open fun removeContent(child: Node) {
+        contentNode.removeChild(child)
     }
 
     /**
@@ -136,10 +145,8 @@ abstract class TransformNode(
      * Builds the node by calling [applyProperties] with all initial properties
      */
     open fun build() {
-        addChild(contentNode)
         applyProperties(properties)
     }
-
 
     /**
      * Attaches a renderable (view, model) to the node
@@ -158,11 +165,13 @@ abstract class TransformNode(
      * @param props properties to change or new properties to apply
      */
     fun update(props: ReadableMap) {
+        updatingProperties = true
         val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
         this.properties.putAll(propsToUpdate) // save new props
 
         logMessage("updating properties: $propsToUpdate")
         applyProperties(propsToUpdate)
+        updatingProperties = false
     }
 
     /**
@@ -175,7 +184,7 @@ abstract class TransformNode(
     /**
      * Should clear all node's resources (if any)
      */
-    open fun clearResources() {}
+    open fun onDestroy() {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

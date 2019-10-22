@@ -18,7 +18,8 @@ import SceneKit
 
 @objc open class UiScrollBarNode: UiNode {
 
-    static let defaultSize = CGSize(width: 0.2, height: 0.02)
+    static let defaultLength: CGFloat = 0.2
+    static let defaultThickness: CGFloat = 0.02
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -59,12 +60,13 @@ import SceneKit
         }
     }
 
-    @objc var vertical: Bool = false {
+    @objc var scrollOrientation: Orientation = .vertical {
         didSet { setNeedsLayout() }
     }
 
     fileprivate var _thumbSize: CGFloat = 0.1
     fileprivate var _thumbPosition: CGFloat = 0
+    fileprivate var _localScrollBarSize: CGSize = CGSize.zero
     fileprivate var backgroundNode: SCNNode!
     fileprivate var thumbNode: SCNNode!
 
@@ -75,14 +77,14 @@ import SceneKit
 
         let backgroundGeometry = SCNPlane(width: width, height: height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = false
+        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
         backgroundNode = SCNNode(geometry: backgroundGeometry)
         contentNode.addChildNode(backgroundNode)
 
         let thumbGeometry = SCNPlane(width: thumbSize * width, height: height)
         thumbGeometry.firstMaterial?.lightingModel = .constant
-        thumbGeometry.firstMaterial?.isDoubleSided = false
+        thumbGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         thumbGeometry.firstMaterial?.diffuse.contents = UIColor.white
         thumbGeometry.firstMaterial?.readsFromDepthBuffer = false
         thumbNode = SCNNode(geometry: thumbGeometry)
@@ -109,16 +111,25 @@ import SceneKit
         if let thumbPosition = Convert.toCGFloat(props["thumbPosition"]) {
             self.thumbPosition = thumbPosition
         }
+
+        if let scrollOrientation = Convert.toOrientation(props["orientation"]) {
+            self.scrollOrientation = scrollOrientation
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let localWidth: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultSize.width
-        let localHeight: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultSize.height
-        return CGSize(width: localWidth, height: localHeight)
+        let length: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultLength
+        let thickness: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultThickness
+        _localScrollBarSize = CGSize(width: length, height: thickness)
+        if scrollOrientation == .horizontal {
+            return _localScrollBarSize
+        }
+
+        return CGSize(width: thickness, height: length)
     }
 
     @objc override func updateLayout() {
-        let size = getSize()
+        let size = _localScrollBarSize
 
         if let backgroundGeometry = backgroundNode.geometry as? SCNPlane {
             backgroundGeometry.width = size.width
@@ -137,7 +148,7 @@ import SceneKit
         let thumbX = -0.5 * size.width + thumbPosition * (size.width - barWidth)
         thumbNode.position = SCNVector3(thumbX, 0.0, 0.0)
 
-        let angle: Float = vertical ? -0.5 * Float.pi : 0
+        let angle: Float = (scrollOrientation == Orientation.vertical) ? -0.5 * Float.pi : 0
         backgroundNode.transform = SCNMatrix4MakeRotation(angle, 0, 0, 1)
     }
 }

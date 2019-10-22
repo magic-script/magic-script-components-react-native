@@ -68,13 +68,13 @@ import SceneKit
         assert(backgroundGeometry == nil, "Node must not be initialized!")
         backgroundGeometry = SCNPlane(width: width, height: height)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = true
+        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
         backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
 
         progressGeometry = SCNPlane(width: width, height: height)
         progressGeometry.firstMaterial?.lightingModel = .constant
-        progressGeometry.firstMaterial?.isDoubleSided = true
+        progressGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         progressGeometry.firstMaterial?.readsFromDepthBuffer = false
 
         let bgNode = SCNNode(geometry: backgroundGeometry)

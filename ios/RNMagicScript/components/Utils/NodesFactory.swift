@@ -21,6 +21,7 @@ import SceneKit
     @objc static func createPlaneNode(size: CGSize, color: UIColor? = UIColor.white, image: UIImage? = nil) -> SCNNode {
         let geometry = SCNPlane(width: size.width, height: size.height)
         geometry.firstMaterial?.lightingModel = .constant
+        geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         geometry.firstMaterial?.diffuse.contents = image ?? color
         geometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
         return SCNNode(geometry: geometry)
@@ -34,6 +35,7 @@ import SceneKit
         let geometry = SCNRectangle(size: size, thickness: thickness, radius: cornerRadius)
         geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.diffuse.contents = color
+        geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         return SCNNode(geometry: geometry)
     }
 
@@ -52,6 +54,7 @@ import SceneKit
         let geometry = SCNGeometry(sources: [source], elements: [element])
         geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.diffuse.contents = color
+        geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         return SCNNode(geometry: geometry)
     }
 }

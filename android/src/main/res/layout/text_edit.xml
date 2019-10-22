@@ -15,15 +15,15 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="20dp"
     android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/sv_text_edit"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <!-- Not using EditText, because it has some bugs in ArCore -->
@@ -40,6 +40,7 @@
         android:id="@+id/text_edit_underline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_gravity="bottom"
         android:background="@color/text_color_default" />
 
-</LinearLayout>
+</FrameLayout>

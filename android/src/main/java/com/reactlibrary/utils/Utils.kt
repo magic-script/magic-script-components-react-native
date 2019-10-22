@@ -55,6 +55,19 @@ class Utils {
         }
 
         /**
+         *  Converts native pixels to ARCore's meters
+         *  (Uses an average of horizontal and vertical density -
+         *  usually they are almost the same)
+         */
+        fun pxToMeters(px: Float, context: Context): Float {
+            val xdpi = context.resources.displayMetrics.xdpi
+            val ydpi = context.resources.displayMetrics.ydpi
+            val averageDensity = (xdpi + ydpi) / 2
+            val densityAvgFactor = averageDensity / BASELINE_DENSITY
+            return px / (DP_TO_METER_RATIO * densityAvgFactor)
+        }
+
+        /**
          * Converts ARCore's meters to "font" pixels (font size is scaled
          * to match Lumin's implementation)
          */

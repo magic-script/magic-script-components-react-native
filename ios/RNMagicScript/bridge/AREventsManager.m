@@ -56,9 +56,11 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-             @"onPress",
              @"onClick",
+             @"onPress",
              @"onScrollChanged",
+             @"onSelectionChanged",
+             @"onSliderChanged",
              @"onTextChanged",
              @"onToggleChanged",
              @"onVideoPrepared"
@@ -109,6 +111,14 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onVideoPrepared" body:@{ @"nodeId": sender.name, @"videoURL": videoURL }];
+        });
+    }
+}
+
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItems": selectedItemsIndexes }];
         });
     }
 }

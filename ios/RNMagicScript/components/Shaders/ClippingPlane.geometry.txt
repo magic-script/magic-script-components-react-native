@@ -1,0 +1,5 @@
+#pragma varyings
+float4 myPos;
+
+#pragma body
+out.myPos = scn_node.modelTransform * _geometry.position;

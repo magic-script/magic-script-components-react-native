@@ -25,7 +25,7 @@ import UIKit
         return begin + direction * length
     }
 
-    init(begin: SCNVector3, direction: SCNVector3, length: CGFloat = 0) {
+    init(begin: SCNVector3, direction: SCNVector3, length: CGFloat) {
         self.begin = begin
         self.direction = direction
         self.length = length

@@ -39,7 +39,6 @@ class RaySpec: QuickSpec {
             }
 
             context("init with gesture and cameraNode") {
-
                 it("should not init Ray object due to gesture not attached to any view") {
                     let tapGesture = UITapGestureRecognizer()
                     let cameraNode = SCNNode()

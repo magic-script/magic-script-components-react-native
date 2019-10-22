@@ -121,6 +121,11 @@ class UiScrollViewNode(
         layoutLoop()
     }
 
+    override fun removeContent(child: Node) {
+        super.removeContent(child)
+        content = null
+    }
+
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
     }
@@ -163,23 +168,26 @@ class UiScrollViewNode(
         // it in it's setClipBounds method, effectively zeroing it.
         // Then, instead of zeroed child localPosition we use
         // requestedContentPosition.
+        val position = content!!.localPosition ?: Vector3()
         return Vector2(
-                -requestedContentPosition.x + content!!.localPosition.x,
-                -requestedContentPosition.y + content!!.localPosition.y)
+                -requestedContentPosition.x + position.x,
+                -requestedContentPosition.y + position.y)
     }
 
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
-            val newBounds = content!!.getContentBounding()
-            if (!Bounding.equalInexact(contentBounds, newBounds)) {
-                val scrollView = (view as CustomScrollView)
-                contentBounds = newBounds
-                val contentSize = contentBounds.size()
-                scrollView.contentSize = Vector2(
-                        metersToPx(contentSize.x).toFloat(),
-                        metersToPx(contentSize.y).toFloat())
-                update(scrollView.getViewPosition())
+            if (content != null) {
+                val newBounds = content!!.getContentBounding()
+                if (!Bounding.equalInexact(contentBounds, newBounds)) {
+                    val scrollView = (view as CustomScrollView)
+                    contentBounds = newBounds
+                    val contentSize = contentBounds.size()
+                    scrollView.contentSize = Vector2(
+                            metersToPx(contentSize.x).toFloat(),
+                            metersToPx(contentSize.y).toFloat())
+                    update(scrollView.getViewPosition())
+                }
             }
 
             layoutLoop()
@@ -187,7 +195,7 @@ class UiScrollViewNode(
     }
 
     private fun update(viewPosition: Vector2) {
-        if (scrollRequested) {
+        if (scrollRequested || content == null) {
             return
         }
 

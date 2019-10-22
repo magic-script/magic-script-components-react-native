@@ -20,6 +20,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.plus
 
 /**
  * Container for other Nodes (<view>)
@@ -32,6 +34,22 @@ import com.reactlibrary.utils.Utils
 class GroupNode(initProps: ReadableMap) :
         TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
+    // Translation to content node coordinate system.
+    override fun getScrollTranslation(): Vector2 {
+        val vector = localPosition + contentNode.localPosition
+        return Vector2(-vector.x, -vector.y)
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+        val localBounds = clipBounds.translate(getScrollTranslation())
+        for (i in 0 until contentNode.children.size) {
+            val child = contentNode.children[i]
+            if (child is TransformNode) {
+                child.setClipBounds(localBounds, nativeView)
+            }
+        }
+    }
+
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         return Bounding(
@@ -41,6 +59,5 @@ class GroupNode(initProps: ReadableMap) :
                 childBounds.top + contentNode.localPosition.y
         )
     }
-
 }
 

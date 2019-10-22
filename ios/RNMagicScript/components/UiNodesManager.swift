@@ -41,8 +41,11 @@ import SceneKit
 
     @objc public func handleTapAction(ray: Ray?) {
         let hitNode: TransformNode? = (ray != nil) ? hitTest(ray: ray!) : nil
-        
-        if focusedNode != hitNode && (focusedNode is UiDropdownListNode && !(hitNode is UiDropdownListItemNode) ) {
+        handleNodeTap(hitNode)
+    }
+
+    @objc public func handleNodeTap(_ node: TransformNode?) {
+        if focusedNode != node && (focusedNode is UiDropdownListNode && !(node is UiDropdownListItemNode) ) {
             focusedNode?.leaveFocus()
         }
 
@@ -50,7 +53,7 @@ import SceneKit
             onInputUnfocused?()
         }
 
-        focusedNode = hitNode as? UiNode
+        focusedNode = node as? UiNode
         focusedNode?.enterFocus()
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
@@ -61,7 +64,7 @@ import SceneKit
         let nodes = Array(nodesById.values)
             .filter {
                 // Add more filter rules for hit test
-                let canHaveFocus = true//($0 as? UiNode)?.canHaveFocus ?? true
+                let canHaveFocus = ($0 as? UiNode)?.canHaveFocus ?? true
                 let isEnabled = ($0 as? UiNode)?.enabled ?? true
                 return canHaveFocus && isEnabled && !$0.skipRaycast
             }

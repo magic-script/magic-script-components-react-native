@@ -145,6 +145,8 @@
 		44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
 		44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */; };
 		44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */; };
+		44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71A235F3FE100AC0B6C /* RaySpec.swift */; };
+		44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */; };
 		44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
 		44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
 		44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
@@ -488,6 +490,8 @@
 		44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
 		44AFAC37232B9BCF005AC8EF /* RNMagicScript-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNMagicScript-Bridging-Header.h"; sourceTree = "<group>"; };
 		44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extension.swift"; sourceTree = "<group>"; };
+		44C5D71A235F3FE100AC0B6C /* RaySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaySpec.swift; sourceTree = "<group>"; };
+		44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneSpec.swift; sourceTree = "<group>"; };
 		44D8FE672336B1A0007FD766 /* TextEntryMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryMode.swift; sourceTree = "<group>"; };
 		44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibility.swift; sourceTree = "<group>"; };
 		44D8FE7F23391261007FD766 /* RCTARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARView.swift; sourceTree = "<group>"; };
@@ -940,6 +944,15 @@
 			path = ARView;
 			sourceTree = "<group>";
 		};
+		44C5D719235F3FCC00AC0B6C /* Maths */ = {
+			isa = PBXGroup;
+			children = (
+				44C5D71A235F3FE100AC0B6C /* RaySpec.swift */,
+				44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */,
+			);
+			path = Maths;
+			sourceTree = "<group>";
+		};
 		44DA5F57235EF5A50058212C /* Math */ = {
 			isa = PBXGroup;
 			children = (
@@ -1019,6 +1032,7 @@
 			isa = PBXGroup;
 			children = (
 				44F09334232D990B0081FF14 /* Extensions */,
+				44C5D719235F3FCC00AC0B6C /* Maths */,
 				44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */,
 				44F09317232D985A0081FF14 /* ModelDownloaderSpec.swift */,
 				44F0933F232DA5530081FF14 /* SCNRectangleSpec.swift */,
@@ -1673,9 +1687,11 @@
 				C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
+				44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */,
 				C4C3D74C2355D72A00ECEEDA /* UiLabelNodeSpec.swift in Sources */,
 				C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
+				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
 				447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,

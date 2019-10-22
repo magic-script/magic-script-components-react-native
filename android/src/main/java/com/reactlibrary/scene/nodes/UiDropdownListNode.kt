@@ -35,7 +35,6 @@ class UiDropdownListNode(initProps: ReadableMap,
                          fontProvider: FontProvider)
     : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider) {
 
-
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
         const val PROP_LIST_TEXT_SIZE = "listTextSize"
@@ -43,11 +42,10 @@ class UiDropdownListNode(initProps: ReadableMap,
         const val PROP_MULTI_SELECT = "multiSelect"
         const val PROP_SHOW_LIST = "showList"
         const val PROP_SELECTED = "selected"
-
     }
 
     // Events
-    var onSelectionChangedListener: ((itemId: Int, itemLabel: String) -> Unit)? = null
+    var onSelectionChangedListener: ((itemIndex: Int) -> Unit)? = null
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: UiLinearLayout
@@ -80,8 +78,9 @@ class UiDropdownListNode(initProps: ReadableMap,
             child.onSelectedListener = {
                 lastSelectedItem?.isSelected = false
                 lastSelectedItem = child
-                onSelectionChangedListener?.invoke(child.id, child.label)
-                logMessage("on item selected: ${child.label}")
+                val index = listNode.contentNode.children.size
+                onSelectionChangedListener?.invoke(index)
+                logMessage("on item selected, index= $index")
             }
             listNode.addContent(child)
         } else {

@@ -285,7 +285,7 @@ RCT_EXPORT_METHOD(addOnSliderChangedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiSliderNode class]]) {
         UiSliderNode *sliderNode = (UiSliderNode *)node;
         sliderNode.onSliderChanged = ^(UiSliderNode *sender, CGFloat value) {
-            ARLog(@"scrollView changed: %@", @(value));
+            ARLog(@"slider changed: %@", @(value));
             [[AREventsManager instance] onSliderChangedEventReceived:sender value:value];
         };
     }

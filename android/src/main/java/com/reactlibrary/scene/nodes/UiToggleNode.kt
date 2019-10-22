@@ -29,10 +29,7 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
@@ -63,6 +60,14 @@ open class UiToggleNode(initProps: ReadableMap,
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         properties.putDefaultDouble(PROP_TEXT_SIZE, height)
+    }
+
+    override fun getScrollTranslation(): Vector2 {
+        val bounds = getContentBounding()
+        val position = localPosition + contentNode.localPosition
+        return Vector2(
+                bounds.size().x / 2F - position.x,
+                -bounds.size().y / 2F - position.y)
     }
 
     override fun provideView(context: Context): View {
@@ -111,10 +116,9 @@ open class UiToggleNode(initProps: ReadableMap,
     override fun applyAlignment() {
         // hardcoding the "pivot" point at the center of switch;
         // alignment cannot be changed for toggle according to Lumin implementation
-        val bounds = getBounding()
-        val nodeWidth = bounds.right - bounds.left
-        val boundsCenterX = bounds.left + nodeWidth / 2
-        val pivotOffsetX = localPosition.x - boundsCenterX // aligning according to center
+        val bounds = getContentBounding()
+        val nodeWidth = bounds.size().x
+        val pivotOffsetX = -bounds.center().x // aligning according to center
 
         val switchHeight = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         val switchWidth = switchHeight * SWITCH_WIDTH_TO_HEIGHT_RATIO

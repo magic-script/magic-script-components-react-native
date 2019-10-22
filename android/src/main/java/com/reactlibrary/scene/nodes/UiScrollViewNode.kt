@@ -72,6 +72,8 @@ class UiScrollViewNode(
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+
+        layoutLoop()
     }
 
     // Function by which ViewWrapper delivers intercepted motion events.
@@ -117,8 +119,6 @@ class UiScrollViewNode(
         scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
         }
-
-        layoutLoop()
     }
 
     override fun removeContent(child: Node) {

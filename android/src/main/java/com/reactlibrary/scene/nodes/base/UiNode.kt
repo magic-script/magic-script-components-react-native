@@ -27,9 +27,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
 
 /**
@@ -141,10 +141,12 @@ abstract class UiNode(
     }
 
     override fun getScrollTranslation(): Vector2 {
-        val pivot = getBounding().size() / 2F
+        val pivot = Vector2(
+                0.5F + horizontalAlignment.centerOffset,
+                0.5F - verticalAlignment.centerOffset)
         return Vector2(
-                pivot.x - localPosition.x,
-                -pivot.y - localPosition.y)
+                size.x * pivot.x - localPosition.x,
+                -size.y * pivot.y - localPosition.y)
     }
 
     override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {

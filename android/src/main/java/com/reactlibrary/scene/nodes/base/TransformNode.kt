@@ -126,10 +126,10 @@ abstract class TransformNode(
     fun getBounding(): Bounding {
         val contentBounding = getContentBounding()
         return Bounding(
-                left = contentBounding.left + localPosition.x,
-                bottom = contentBounding.bottom + localPosition.y,
-                right = contentBounding.right + localPosition.x,
-                top = contentBounding.top + localPosition.y)
+                left = contentBounding.left * localScale.x + localPosition.x,
+                bottom = contentBounding.bottom * localScale.y + localPosition.y,
+                right = contentBounding.right * localScale.x + localPosition.x,
+                top = contentBounding.top * localScale.y + localPosition.y)
     }
 
     /**

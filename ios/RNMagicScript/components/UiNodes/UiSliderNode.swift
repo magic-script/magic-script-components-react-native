@@ -55,7 +55,7 @@ import SceneKit
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, _min, _max)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); }
+            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); onSliderChanged?(self, clampedValue); }
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {
@@ -85,6 +85,8 @@ import SceneKit
     fileprivate var minLabelNode: LabelNode!
     fileprivate var maxLabelNode: LabelNode!
     fileprivate var outlineNode: SCNNode!
+
+    @objc public var onSliderChanged: ((_ sender: UiSliderNode, _ value: CGFloat) -> (Void))?
 
     @objc override func setupNode() {
         super.setupNode()

@@ -16,9 +16,12 @@
 
 package com.reactlibrary.utils
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
+import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 
 /**
@@ -70,4 +73,34 @@ fun String.limited(maxCharacters: Int): String {
     return if (this.length > maxCharacters) {
         substring(0, maxCharacters) + "\u2026"
     } else this
+
 }
+
+/**
+ * Calculates the view size in meters
+ *
+ * @param desiredWidth desired width in meters or [UiNode.WRAP_CONTENT_DIMENSION]
+ * @param desiredHeight desired height in meters or [UiNode.WRAP_CONTENT_DIMENSION]
+ */
+fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: Float): Vector2 {
+    val widthMeasureSpec = if (desiredWidth > UiNode.WRAP_CONTENT_DIMENSION) {
+        val maxWidth = Utils.metersToPx(desiredWidth, context)
+        View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY)
+    } else {
+        View.MeasureSpec.UNSPECIFIED
+    }
+
+    val heightMeasureSpec = if (desiredHeight > UiNode.WRAP_CONTENT_DIMENSION) {
+        val maxHeight = Utils.metersToPx(desiredHeight, context)
+        View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.EXACTLY)
+    } else {
+        View.MeasureSpec.UNSPECIFIED
+    }
+
+    measure(widthMeasureSpec, heightMeasureSpec)
+    val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
+    val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    return Vector2(width, height)
+}
+
+

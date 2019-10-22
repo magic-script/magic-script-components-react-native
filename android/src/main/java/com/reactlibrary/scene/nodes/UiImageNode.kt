@@ -31,6 +31,7 @@ import com.reactlibrary.icons.IconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(initProps: ReadableMap,
@@ -53,22 +54,13 @@ open class UiImageNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun setupView() {
-        val heightPx = if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            Utils.metersToPx(heightInMeters, context)
-        } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT
+    override fun provideDesiredSize(): Vector2 {
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        var width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        if (width.toFloat() == WRAP_CONTENT_DIMENSION) {
+            width = height // for icons support
         }
-
-        val widthPx = if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            Utils.metersToPx(widthInMeters, context)
-        } else {
-            heightPx // for icons support
-        }
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {

@@ -85,11 +85,12 @@ class ViewController: UIViewController {
         scrollView.layoutIfNeeded()
         scrollBar.layoutIfNeeded()
 
-        let line: UiLineNode = createComponent([
-            "points" : [[0,0,1.5], [0,0,0]],
-            "color" : [1,1,0,1]
-        ], nodeId: "line")
-        line.layoutIfNeeded()
+        let button: UiButtonNode = createComponent([
+            "localPosition": [0, 0.6, 0],
+            "textSize": 0.05,
+            "text": "Button"
+        ], nodeId: "button")
+        button.layoutIfNeeded()
     }
 
     fileprivate func createGridWithIcons(parentId: String) {
@@ -103,7 +104,7 @@ class ViewController: UIViewController {
 
         SystemIcon.names.enumerated().forEach { (index, name) in
             let nodeId: String = "icon_\(index)"
-            let _: UiImageNode = createComponent(["icon": name, "height": 0.04], nodeId: nodeId, parentId: gridId)
+            let _: UiImageNode = createComponent(["icon": name, "height": 0.04, "skipRaycast": false], nodeId: nodeId, parentId: gridId)
         }
 
         grid.layoutIfNeeded()

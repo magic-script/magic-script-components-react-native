@@ -142,11 +142,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            UiNodesManager.instance.handleTapAction(ray: nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            UiNodesManager.instance.handleTapAction(ray: nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView

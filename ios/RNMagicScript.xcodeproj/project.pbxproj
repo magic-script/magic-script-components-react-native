@@ -158,6 +158,8 @@
 		44D8FE95233B9A2E007FD766 /* UiTextEditNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */; };
 		44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */; };
 		44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */; };
+		44DA5F55235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
+		44DA5F56235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -495,6 +497,7 @@
 		44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTextEditNodeSpec.swift; sourceTree = "<group>"; };
 		44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoActionSpec.swift; sourceTree = "<group>"; };
 		44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModeSpec.swift; sourceTree = "<group>"; };
+		44DA5F54235EF3900058212C /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -871,11 +874,11 @@
 			isa = PBXGroup;
 			children = (
 				44AFAC1B232B9BCF005AC8EF /* Extensions */,
+				44DA5F57235EF5A50058212C /* Math */,
 				44AFAC25232B9BCF005AC8EF /* Bundle.swift */,
 				44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */,
 				44AFAC19232B9BCF005AC8EF /* ModelDownloader.swift */,
 				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
-				448586FA235DC1FD00D372CB /* Ray.swift */,
 				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
 				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
@@ -935,6 +938,15 @@
 				44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */,
 			);
 			path = ARView;
+			sourceTree = "<group>";
+		};
+		44DA5F57235EF5A50058212C /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				44DA5F54235EF3900058212C /* Plane.swift */,
+				448586FA235DC1FD00D372CB /* Ray.swift */,
+			);
+			path = Math;
 			sourceTree = "<group>";
 		};
 		44F09305232D985A0081FF14 /* specs */ = {
@@ -1596,6 +1608,7 @@
 				44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
+				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
 				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
@@ -1700,6 +1713,7 @@
 				C465C260234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
 				442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAC57232B9BCF005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
+				44DA5F55235EF3900058212C /* Plane.swift in Sources */,
 				44AFAC4D232B9BCF005AC8EF /* SCNRectangle.swift in Sources */,
 				44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */,
 				44D8FE8023391261007FD766 /* RCTARView.swift in Sources */,

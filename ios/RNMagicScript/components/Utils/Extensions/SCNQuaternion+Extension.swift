@@ -22,7 +22,7 @@ extension SCNQuaternion {
     public static let identity = SCNQuaternionIdentity
     
     public static func fromAxis(_ axis: SCNVector3, andAngle angle: Float) -> SCNQuaternion {
-        let s: Float = sin(angle / 2)
-        return SCNQuaternion(axis.x * s, axis.y * s, axis.z * s, cos(angle / 2))
+        let s: Float = sin(0.5 * angle)
+        return SCNQuaternion(axis.x * s, axis.y * s, axis.z * s, cos(0.5 * angle))
     }
 }

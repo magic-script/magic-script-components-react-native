@@ -97,6 +97,20 @@ import SceneKit
         }
     }
 
+    @objc func hitTest(ray: Ray) -> Bool {
+        let localRay = convertRayToLocal(ray: ray)
+        let localPlane = getPlane()
+        guard let point = localPlane.intersectRay(localRay) else { return false }
+
+        let bounds = getBounds()
+        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
+            print("intersection = \(point) (\(name))")
+            return true
+        }
+
+        return false
+    }
+
     fileprivate func setNeedsLayoutForAllParents() {
         var node: SCNNode? = parent
         while node != nil {
@@ -112,6 +126,9 @@ import SceneKit
 
         if let name = Convert.toString(props["id"]) {
             self.name = name
+        }
+        if let skipRaycast = Convert.toBool(props["skipRaycast"]) {
+            self.skipRaycast = skipRaycast
         }
         if let visible = Convert.toBool(props["visible"]) {
             self.visible = visible
@@ -176,6 +193,19 @@ import SceneKit
     }
 
     @objc func updatePivot() {
+    }
+}
+
+// MARK: - HitTest
+extension TransformNode {
+    @objc func convertRayToLocal(ray: Ray) -> Ray {
+       let localRayBegin = convertPosition(ray.begin, from: nil)
+       let localRayDirection = convertVector(ray.direction, from: nil)
+       return Ray(begin: localRayBegin, direction: localRayDirection, length: ray.length)
+    }
+
+    @objc func getPlane() -> Plane {
+        return Plane(center: position, normal: transform.forward)
     }
 }
 

@@ -20,7 +20,6 @@ import SceneKit
 @objc open class UiNodesManager: NSObject {
     @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
     @objc public private (set) var rootNode: TransformNode
-    @objc let focusableNodeBitMask: Int = 8
 
     var onInputFocused: ((_ input: DataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
@@ -40,20 +39,10 @@ import SceneKit
         scene.rootNode.addChildNode(rootNode)
     }
 
-    @objc public func handleTapAction(ray: Ray) {
+    @objc public func handleTapAction(ray: Ray?) {
+        let hitNode: TransformNode? = (ray != nil) ? hitTest(ray: ray!) : nil
         
-    }
-
-    @objc public func handleNodeTap(_ node: SCNNode?) {
-        var componentNode: SCNNode? = node
-        while componentNode != nil {
-            if componentNode?.categoryBitMask == focusableNodeBitMask {
-                break
-            }
-            componentNode = componentNode?.parent
-        }
-
-        if focusedNode != componentNode && (focusedNode is UiDropdownListNode && !(componentNode is UiDropdownListItemNode) ) {
+        if focusedNode != hitNode && (focusedNode is UiDropdownListNode && !(hitNode is UiDropdownListItemNode) ) {
             focusedNode?.leaveFocus()
         }
 
@@ -61,11 +50,34 @@ import SceneKit
             onInputUnfocused?()
         }
 
-        focusedNode = componentNode as? UiNode
+        focusedNode = hitNode as? UiNode
         focusedNode?.enterFocus()
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
         }
+    }
+
+    fileprivate func hitTest(ray: Ray) -> TransformNode? {
+        let nodes = Array(nodesById.values)
+            .filter {
+                // Add more filter rules for hit test
+                let canHaveFocus = true//($0 as? UiNode)?.canHaveFocus ?? true
+                let isEnabled = ($0 as? UiNode)?.enabled ?? true
+                return canHaveFocus && isEnabled && !$0.skipRaycast
+            }
+            .sorted { (node1, node2) -> Bool in
+                let dist1 = (node1.position - ray.begin).lengthSq()
+                let dist2 = (node2.position - ray.begin).lengthSq()
+                return dist1 < dist2
+            }
+
+        for node in nodes {
+            if node.hitTest(ray: ray) {
+                return node
+            }
+        }
+
+        return nil
     }
     
     @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {
@@ -81,10 +93,6 @@ import SceneKit
         nodesById[nodeId] = node
         if (node.anchorUuid != "rootUuid") {
             nodeByAnchorUuid[node.anchorUuid] = node;
-        }
-
-        if let node = node as? UiNode, node.canHaveFocus {
-            node.categoryBitMask = focusableNodeBitMask
         }
     }
 

@@ -77,6 +77,10 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
         )
     }
 
+    override fun adjustChildrenSize() {
+        // TODO implement scaling of the children relatively to layout dimensions
+    }
+
     private fun setOrientation(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
             val isVertical = props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL

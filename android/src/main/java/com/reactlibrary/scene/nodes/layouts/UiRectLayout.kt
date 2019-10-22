@@ -15,15 +15,12 @@ import java.util.concurrent.CompletableFuture
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
 : UiLayout(initProps, layoutManager) {
 
-    var width: Float = 0f
-    var height: Float = 0f
+    private var padding: Padding? = Padding(0f,0f,0f,0f)
 
     companion object {
         // properties
         const val PROP_PADDING = "padding"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "contentAlignment"
-        const val PROP_WIDTH = "width"
-        const val PROP_HEIGHT = "height"
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
@@ -39,24 +36,29 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         properties.putDefaultString(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
         properties.putDefaultSerializable(PROP_PADDING, DEFAULT_ITEM_PADDING)
-//        properties.putFloat(PROP_WIDTH, 0f)
-//        properties.putFloat(PROP_HEIGHT, 0f)
     }
 
     override fun applyProperties(props: Bundle) {
-        Log.d("RectLayout", "props: $props")
         super.applyProperties(props)
         setItemPadding(props)
         setItemAlignment(props)
-        setLayoutSize(props)
+        val paddingHorizontal = padding?.left?.plus((padding?.right ?: 0f)) ?: 0f
+        val paddingVertical = padding?.top?.plus((padding?.bottom ?: 0f)) ?: 0f
+        maxChildHeight = height - paddingVertical
+        maxChildWidth = width - paddingHorizontal
     }
 
-    private fun setLayoutSize(props: Bundle) {
-        width = props.getDouble(PROP_WIDTH).toFloat()
-        height = props.getDouble(PROP_HEIGHT).toFloat()
-        Log.d("RectLayout", "width: $width, height: $height")
+    override fun adjustChildrenSize() {
         if(isSizeSet()) {
-            requestLayout()
+//            for (i in 0 until contentNode.children.size) {
+//                val node = contentNode.children[i]
+//                val bounding = childrenBounds[i]!!
+//                val newBounding = rescaleChild(node, bounding)
+//                if(newBounding != null) {
+//                    Log.d("RescaleChild", "newBounding: $newBounding")
+//                    childrenBounds[i] = newBounding
+//                }
+//            }
         }
     }
 
@@ -64,19 +66,12 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING)
                 ?: Padding()
-        Log.d("RectLayout", "child bounds: $childBounds")
-        Log.d("RectLayout", "rect layout item padding: $itemPadding")
-        Log.d("RectLayout", "content node point, x: ${contentNode.localPosition.x}, y: ${contentNode.localPosition.y}")
         val parentBounding = if (isSizeSet()) {
-            val boundsCenterX = contentNode.localPosition.x + width / 2
-            val boundsCenterY = contentNode.localPosition.y - height / 2
-            val pivotOffsetX = contentNode.localPosition.x - boundsCenterX // aligning according to center
-            val pivotOffsetY = contentNode.localPosition.y - boundsCenterY
             Bounding(
-                    contentNode.localPosition.x - itemPadding.left - width / 2,
-                    contentNode.localPosition.y - itemPadding.bottom - height / 2,
-                    contentNode.localPosition.x + itemPadding.right + width / 2,
-                    contentNode.localPosition.y + itemPadding.top + height / 2
+                    contentNode.localPosition.x - width / 2,
+                    contentNode.localPosition.y - height / 2,
+                    contentNode.localPosition.x + width / 2,
+                    contentNode.localPosition.y + height / 2
             )
         } else {
             Bounding(
@@ -86,27 +81,16 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
                     childBounds.top + contentNode.localPosition.y + itemPadding.top
             )
         }
-        Log.d("RectLayout", "parent content bounds , " +
-                "left: ${parentBounding.left}, " +
-                "bottom: ${parentBounding.bottom}" +
-                "right: ${parentBounding.right}" +
-                "top: ${parentBounding.top}"
-        )
         if(isSizeSet()) {
-            Log.d("RectLayout", "set parent bounds in rect layout manager")
-            (layoutManager as RectLayoutManager).parentBounds = parentBounding
+            layoutManager.parentBounds = parentBounding
         }
         return parentBounding
     }
 
-    private fun isSizeSet(): Boolean {
-        return (width > 0 && height > 0)
-    }
-
     private fun setItemPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_PADDING)
+        padding = PropertiesReader.readPadding(props, PROP_PADDING)
         if (padding != null) {
-            (layoutManager as RectLayoutManager).itemPadding = padding
+            (layoutManager as RectLayoutManager).itemPadding = padding!!
             requestLayout()
         }
     }

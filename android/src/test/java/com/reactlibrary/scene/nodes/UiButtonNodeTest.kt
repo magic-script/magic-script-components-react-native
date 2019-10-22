@@ -18,11 +18,13 @@ package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.graphics.Typeface
+import android.util.Log
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -33,6 +35,7 @@ import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

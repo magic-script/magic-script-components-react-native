@@ -108,7 +108,7 @@ repositories {
 
 dependencies {
     // react native is taken from node_modules (main project), not from maven
-    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.facebook.react:react-native:0.61.2'
     // In case of AR core update we must also re-generate res/raw/*sfb files using latest
     // Google Sceneform Tools (Android Studio plugin). Source files are located in /sources folder.
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.12.0" // AR Core

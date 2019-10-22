@@ -55,7 +55,7 @@ import SceneKit
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, _min, _max)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); onSliderChanged?(self, clampedValue); }
+            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); }
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {
@@ -217,4 +217,17 @@ import SceneKit
     }
 }
 
-extension UiSliderNode: SliderDataProviding { }
+extension UiSliderNode: SliderDataProviding {
+    var sliderValue: CGFloat {
+        get {
+            return value
+        }
+        set {
+            if value != newValue {
+                value = newValue
+                layoutIfNeeded()
+                onSliderChanged?(self, value);
+            }
+        }
+    }
+}

@@ -50,7 +50,7 @@ class InputViewFactorySpec: QuickSpec {
 
 fileprivate struct SimpleDataProvider: DataProviding { }
 fileprivate struct SimpleSliderDataProvider: SliderDataProviding {
-    var value: CGFloat = 0.0
+    var sliderValue: CGFloat = 0.0
     var min: CGFloat = 0.0
     var max: CGFloat = 1.0
 }

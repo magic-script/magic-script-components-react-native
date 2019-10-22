@@ -13,15 +13,15 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
  9 | ListViewItem | UiListViewItem | :thumbsup: | 3 D | 3 D |
 10 | Model | ModelNode | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Model.md)
 11 | Spinner | UiLoadingSpinner | :thumbsup: | 👍| :thumbsup: | [link](coverage/Spinner.md)
-12 | Slider | UiSlider | :thumbsup: | 🚧 | 2 D |
+12 | Slider | UiSlider | :thumbsup: | 🚧 | 👍 | [link](coverage/Slider.md)
 13 | ProgressBar | UiProgressBar | :thumbsup: | 👍 | :thumbsup: | [link](coverage/ProgressBar.md)
 14 | GridLayout | UiGridLayout | :thumbsup: | 👍 | :thumbsup: | [link](coverage/GridLayout.md)
 15 | LinearLayout | UiLinearLayout | :thumbsup: | 3 D | :thumbsup: | [link](coverage/LinearLayout.md)
 16 | RectLayout | UiRectLayout | :thumbsup: | 7 D | 2 D |
-17 | DropdownList | UiDropDownList | :thumbsup: | 🚧 | 2 D |
-18 | DropdownListItem | DropDownListItem | :thumbsup: | 🚧 | 2.5 D |
+17 | DropdownList | UiDropDownList | :thumbsup: | 🚧 | 🚧 | [link](coverage/DropdownList.md)
+18 | DropdownListItem | DropDownListItem | :thumbsup: | 🚧 | 👍 | [link](coverage/DropdownListItem.md)
 19 | Toggle | UiToggle | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Toggle.md)
-20 | ToggleGroup | UiToggleGroup | :thumbsup: | 10 D | 4 D |
+20 | ToggleGroup | UiToggleGroup | :thumbsup: | 10 D | 2 D |
 21 | Panel | UiPanel | :thumbsup: | ? | 2 D |
 22 | Video | VideoNode | :thumbsup: | 👍 | :thumbsup: | [link](coverage/Video.md)
 23 | Audio | AudioNode | :thumbsup: | 3 D | 4 D |

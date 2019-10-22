@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -34,7 +33,9 @@ import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.onDrawListener
+import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.scroll_view.view.*
 
 class UiScrollViewNode(
@@ -54,9 +55,6 @@ class UiScrollViewNode(
 
         const val LAYOUT_LOOP_DELAY = 100L
         const val Z_ORDER_OFFSET = 1e-5F
-
-        const val NATIVE_VIEW = true
-        const val NON_VIEW = false
     }
 
     private var width = 0F
@@ -65,7 +63,6 @@ class UiScrollViewNode(
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
-
     private var scrollRequested = false
     private var requestedContentPosition = Vector2()
 
@@ -77,32 +74,41 @@ class UiScrollViewNode(
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
+    // Function by which ViewWrapper delivers intercepted motion events.
+    fun onTouchEvent(event: MotionEvent): Boolean {
+        val viewBounds = getScrollBounds()
+        event.setLocation(
+                metersToPx(event.x - viewBounds.left).toFloat(),
+                metersToPx(-event.y + viewBounds.top).toFloat())
+        return view.onTouchEvent(event)
+    }
+
+    fun stopNestedScroll() {
+        view.stopNestedScroll()
+    }
+
     // Starting loops and registering listeners
     // only after content was delivered.
     override fun addContent(child: Node) {
         if (content != null) {
             return
         }
-
         super.addContent(child)
+
         if (child !is TransformNode) {
             return
         }
-
         this.content = child
-
         view.onDrawListener {
-//            val eps = 1e-5F // epsilon
             if (scrollRequested) {
-
                 val viewBounds = getScrollBounds()
                 val clipBounds = viewBounds.translate(getScrollTranslation())
-                content!!.setClipBounds(clipBounds, NON_VIEW)
+                content!!.setClipBounds(clipBounds, nativeView = false)
 
                 content!!.localPosition = Vector3(
                         requestedContentPosition.x,
                         requestedContentPosition.y,
-                        Z_ORDER_OFFSET ) // Moving content up in z-plane, so it'll receive touch events first.
+                        Z_ORDER_OFFSET) // Moving content up in z-plane, so it'll receive touch events first.
                 scrollRequested = false
             }
         }
@@ -113,24 +119,6 @@ class UiScrollViewNode(
         }
 
         layoutLoop()
-    }
-
-    private fun layoutLoop() {
-        looperHandler.postDelayed({
-
-            val newBounds = content!!.getContentBounding()
-            if (!Bounding.equalInexact(contentBounds, newBounds)) {
-                val scrollView = (view as CustomScrollView)
-                contentBounds = newBounds
-                val contentSize = contentBounds.size()
-                scrollView.contentSize = Vector2(
-                        metersToPx(contentSize.x).toFloat(),
-                        metersToPx(contentSize.y).toFloat())
-                update(scrollView.getViewPosition())
-            }
-
-            layoutLoop()
-        }, LAYOUT_LOOP_DELAY)
     }
 
     override fun provideView(context: Context): View {
@@ -165,25 +153,11 @@ class UiScrollViewNode(
         scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
-    fun stopNestedScroll() {
-        view.stopNestedScroll()
-    }
-
-    // Function by which ViewWrapper delivers intercepted motion events.
-    fun onTouchEvent(event: MotionEvent): Boolean {
-
-        val viewBounds = getScrollBounds()
-        event.setLocation(
-                metersToPx(event.getX() - viewBounds.left).toFloat(),
-                metersToPx(-event.getY() + viewBounds.top).toFloat())
-        return view.onTouchEvent(event)
-    }
-
     override fun getScrollTranslation(): Vector2 {
-        // When translating clip bounds to node's local cooridanate
-        // system we use localPositions. Hovewer due to ARCore nature
+        // When translating clip bounds to node's local coordinate
+        // system we use localPositions. However due to ARCore nature
         // localPosition of ScrollViewNode direct descendant can change
-        // randomly for some milliseconds after beeing writen to. Thus
+        // randomly for some milliseconds after being written to. Thus
         // we can't reliably use it. To solve the problem we add child
         // localPosition to translation - the child node will subtract
         // it in it's setClipBounds method, effectively zeroing it.
@@ -192,6 +166,24 @@ class UiScrollViewNode(
         return Vector2(
                 -requestedContentPosition.x + content!!.localPosition.x,
                 -requestedContentPosition.y + content!!.localPosition.y)
+    }
+
+    private fun layoutLoop() {
+        looperHandler.postDelayed({
+
+            val newBounds = content!!.getContentBounding()
+            if (!Bounding.equalInexact(contentBounds, newBounds)) {
+                val scrollView = (view as CustomScrollView)
+                contentBounds = newBounds
+                val contentSize = contentBounds.size()
+                scrollView.contentSize = Vector2(
+                        metersToPx(contentSize.x).toFloat(),
+                        metersToPx(contentSize.y).toFloat())
+                update(scrollView.getViewPosition())
+            }
+
+            layoutLoop()
+        }, LAYOUT_LOOP_DELAY)
     }
 
     private fun update(viewPosition: Vector2) {
@@ -215,7 +207,7 @@ class UiScrollViewNode(
         requestedContentPosition = alignTopLeft + travel
 
         val clipBounds = viewBounds.translate(getScrollTranslation())
-        content!!.setClipBounds(clipBounds, NATIVE_VIEW)
+        content!!.setClipBounds(clipBounds, nativeView = true)
         view.invalidate()
 
         scrollRequested = true

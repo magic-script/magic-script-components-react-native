@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.scene
+package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
 import android.view.MotionEvent
@@ -36,70 +36,8 @@ class ViewWrapper(
         )
     }
 
-    override fun shouldDelayChildPressedState(): Boolean {
-        return findScrollAncestor() != null
-    }
-
-    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-
-        val scrollNode = findScrollAncestor()
-        if (event.actionMasked != MotionEvent.ACTION_MOVE && scrollNode != null) {
-            scrollNode.stopNestedScroll()
-        }
-
-        val action = event.actionMasked
-        return action == MotionEvent.ACTION_MOVE && scrollNode != null
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-
-        val translation = calculateScrollTranslation()
-        val positionMeters = Vector2(
-                Utils.pxToMeters(event.getX(), context),
-                -Utils.pxToMeters(event.getY(), context))
-        event.setLocation(
-                positionMeters.x + translation.x,
-                positionMeters.y + translation.y)
-        return findScrollAncestor()!!.onTouchEvent(event)
-    }
-
-    private fun findScrollAncestor(): UiScrollViewNode? {
-
-        // If parent is ScrollView we return null,
-        // as ther's no sense in intercepting its events.
-        if (parent is UiScrollViewNode) {
-            return null
-        }
-
-        var p: Node? = parent.parent
-        while (p != null) {
-            if (p is UiScrollViewNode) {
-                return p
-            }
-            p = p.parent
-        }
-        return null
-    }
-
-    private fun calculateScrollTranslation(): Vector2 {
-
-        var translation = Vector2()
-        var p: Node? = parent
-        while (p != null) {
-            if (p is TransformNode) {
-                translation -= p.getScrollTranslation()
-            }
-            if (p is UiScrollViewNode) {
-                break
-            }
-            p = p.parent
-        }
-        return translation
-    }
-
     // Workaround for https://github.com/magic-script/magic-script-components-react-native/issues/7
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val width = if (widthMode == MeasureSpec.AT_MOST) {
             MeasureSpec.UNSPECIFIED
@@ -116,4 +54,62 @@ class ViewWrapper(
 
         super.onMeasure(width, height)
     }
+
+    override fun shouldDelayChildPressedState(): Boolean {
+        return findScrollAncestor() != null
+    }
+
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        val scrollNode = findScrollAncestor()
+        if (event.actionMasked != MotionEvent.ACTION_MOVE && scrollNode != null) {
+            scrollNode.stopNestedScroll()
+        }
+
+        val action = event.actionMasked
+        return action == MotionEvent.ACTION_MOVE && scrollNode != null
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val translation = calculateScrollTranslation()
+        val positionMeters = Vector2(
+                Utils.pxToMeters(event.x, context),
+                -Utils.pxToMeters(event.y, context))
+        event.setLocation(
+                positionMeters.x + translation.x,
+                positionMeters.y + translation.y)
+        return findScrollAncestor()?.onTouchEvent(event) ?: false
+    }
+
+    private fun findScrollAncestor(): UiScrollViewNode? {
+        // If parent is ScrollView we return null,
+        // as there's no sense in intercepting its events.
+        if (parent is UiScrollViewNode) {
+            return null
+        }
+
+        var p: Node? = parent.parent
+        while (p != null) {
+            if (p is UiScrollViewNode) {
+                return p
+            }
+            p = p.parent
+        }
+        return null
+    }
+
+    private fun calculateScrollTranslation(): Vector2 {
+        var translation = Vector2()
+        var p: Node? = parent
+        while (p != null) {
+            if (p is TransformNode) {
+                translation -= p.getScrollTranslation()
+            }
+            if (p is UiScrollViewNode) {
+                break
+            }
+            p = p.parent
+        }
+        return translation
+    }
+
 }

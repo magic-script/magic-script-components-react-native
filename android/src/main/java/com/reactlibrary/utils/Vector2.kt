@@ -2,9 +2,7 @@ package com.reactlibrary.utils
 
 import com.google.ar.sceneform.math.Vector3
 
-class Vector2(var x: Float, var y: Float) {
-
-    constructor() : this(0F, 0F)
+data class Vector2(var x: Float = 0F, var y: Float = 0F) {
 
     operator fun unaryMinus(): Vector2 {
         return Vector2(-x, -y)

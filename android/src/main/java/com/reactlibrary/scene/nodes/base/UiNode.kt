@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
-import android.graphics.PointF
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
@@ -29,7 +28,7 @@ import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.scene.ViewWrapper
+import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.*
@@ -75,6 +74,17 @@ abstract class UiNode(
     }
 
     /**
+     * Should be called when the size of the node may have changed,
+     * so we need to rebuild the native view (renderable)
+     * (resizing the current view does not work - ARCore bug?)
+     */
+    fun setNeedsRebuild() {
+        if (updatingProperties) {
+            shouldRebuild = true
+        }
+    }
+
+    /**
      * Initializes the view instance and builds the node by calling [applyProperties]
      * with all initial properties
      */
@@ -111,20 +121,26 @@ abstract class UiNode(
         return Bounding(offsetX, offsetY, offsetX, offsetY)
     }
 
+    override fun getScrollTranslation(): Vector2 {
+        val pivot = getBounding().size() / 2F
+        return Vector2(
+                pivot.x - localPosition.x,
+                -pivot.y - localPosition.y)
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+        if (nativeView) {
+            view.clipBounds = Rect(
+                    metersToPx(clipBounds.left + getScrollTranslation().x),
+                    -metersToPx(clipBounds.top + getScrollTranslation().y),
+                    metersToPx(clipBounds.right + getScrollTranslation().x),
+                    -metersToPx(clipBounds.bottom + getScrollTranslation().y))
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null) //stop the loop
-    }
-
-    /**
-     * Should be called when the size of the node may have changed,
-     * so we need to rebuild the native view (renderable)
-     * (resizing the current view does not work - ARCore bug?)
-     */
-    fun setNeedsRebuild() {
-        if (updatingProperties) {
-            shouldRebuild = true
-        }
     }
 
     protected abstract fun provideView(context: Context): View
@@ -183,24 +199,6 @@ abstract class UiNode(
                 }, COLLISION_SHAPE_DELAY)
             }
             loadingView = false
-        }
-    }
-
-    // Translation to native View coordinate system.
-    override fun getScrollTranslation(): Vector2 {
-        val pivot = getBounding().size() / 2F
-        return Vector2(
-                pivot.x - localPosition.x,
-                -pivot.y - localPosition.y)
-    }
-
-    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
-        if (nativeView) {
-            view.clipBounds = Rect(
-                    metersToPx(clipBounds.left + getScrollTranslation().x),
-                    -metersToPx(clipBounds.top + getScrollTranslation().y),
-                    metersToPx(clipBounds.right + getScrollTranslation().x),
-                    -metersToPx(clipBounds.bottom + getScrollTranslation().y))
         }
     }
 

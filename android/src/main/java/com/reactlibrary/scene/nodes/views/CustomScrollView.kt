@@ -58,6 +58,10 @@ class CustomScrollView @JvmOverloads constructor(
         }
     }
 
+    fun getViewPosition(): Vector2 {
+        return Vector2(h_bar.thumbPosition, v_bar.thumbPosition)
+    }
+
     override fun stopNestedScroll() {
         isBeingDragged = false
     }
@@ -91,10 +95,6 @@ class CustomScrollView @JvmOverloads constructor(
         previousTouch = touch
 
         return true
-    }
-
-    fun getViewPosition(): Vector2 {
-        return Vector2(h_bar.thumbPosition, v_bar.thumbPosition)
     }
 
     // Update scrollbars when content size has changed.

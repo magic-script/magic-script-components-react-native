@@ -183,6 +183,15 @@ abstract class TransformNode(
      */
     open fun onDestroy() {}
 
+    /**
+     * Translation to node local coordinate system.
+     */
+    open fun getScrollTranslation(): Vector2 {
+        return Vector2(-localPosition.x, -localPosition.y)
+    }
+
+    open fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {}
+
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
 
@@ -276,13 +285,6 @@ abstract class TransformNode(
 
         contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
     }
-
-    // Translation to node local coordinate system.
-    open fun getScrollTranslation(): Vector2 {
-        return Vector2(-localPosition.x, -localPosition.y)
-    }
-
-    open fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {}
 
     private fun setPosition(props: Bundle) {
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)

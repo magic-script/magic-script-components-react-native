@@ -31,6 +31,7 @@ import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
@@ -68,9 +69,14 @@ open class UiToggleNode(initProps: ReadableMap,
         return LayoutInflater.from(context).inflate(R.layout.toggle, null)
     }
 
+    override fun provideDesiredSize(): Vector2 {
+        // size is set for nested views, see setupView()
+        return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+    }
+
     override fun setupView() {
-        var heightMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-        if (heightMeters == 0F) { // use default height when 0
+        var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
+        if (heightMeters == WRAP_CONTENT_DIMENSION) {
             heightMeters = DEFAULT_HEIGHT.toFloat()
         }
         val switchHeightPx = Utils.metersToPx(heightMeters, context)
@@ -116,6 +122,10 @@ open class UiToggleNode(initProps: ReadableMap,
         val x = contentNode.localPosition.x + pivotOffsetX - nodeWidth / 2 + switchWidth / 2
         val pos = Vector3(x.toFloat(), contentNode.localPosition.y, contentNode.localPosition.z)
         contentNode.localPosition = pos
+    }
+
+    override fun setAlignment(props: Bundle) {
+        // cannot override hardcoded alignment
     }
 
     private fun refreshImage() {

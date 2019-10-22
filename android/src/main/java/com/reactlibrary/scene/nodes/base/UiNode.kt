@@ -23,15 +23,12 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultBoolean
+import com.reactlibrary.utils.*
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -47,9 +44,18 @@ abstract class UiNode(
         // properties
         const val PROP_ENABLED = "enabled"
 
+        const val WRAP_CONTENT_DIMENSION = 0.0F // width or height that grow to fit content
         private const val REBUILD_CHECK_DELAY = 30L
-        private const val COLLISION_SHAPE_DELAY = 120L
     }
+
+    /**
+     * Node width and height based on [view] size (in meters)
+     *
+     * Note that the size is known only after the node is built
+     * (after all properties have been applied)
+     */
+    private var size = Vector2(0F, 0F)
+        private set
 
     var clickListener: (() -> Unit)? = null
 
@@ -58,14 +64,16 @@ abstract class UiNode(
      */
     protected lateinit var view: View
 
-    protected var validCollisionShape = false
-        private set
-
+    private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
     private var loadingView = false
-
     private var rebuildLoopStarted = false
-    private val handler = Handler(Looper.getMainLooper())
+
+    /**
+     * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
+     * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
+     */
+    private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
 
     init {
         // set default values of properties
@@ -78,8 +86,7 @@ abstract class UiNode(
      */
     override fun build() {
         initView()
-        setupView()
-        applyProperties(properties)
+        setup()
         if (!rebuildLoopStarted) {
             rebuildLoop()
             rebuildLoopStarted = true
@@ -95,18 +102,28 @@ abstract class UiNode(
         attachView()
     }
 
-    // Returning the bounds only after it's valid, because the ARCore calculates
-    // collision shape "in steps" and at the beginning it's equal to 1m x 1m,
-    // which is usually incorrect and cause layouts artifacts.
+    /**
+     * Should return the node bounds based on a measured native view size.
+     *
+     * Not using the collision shape based size because ARCore calculates it "in steps",
+     * so at the beginning it's equal to 1m x 1m, which is usually incorrect and cause
+     * layouts artifacts
+     */
     override fun getContentBounding(): Bounding {
-        val offsetX = contentNode.localPosition.x
-        val offsetY = contentNode.localPosition.y
+        val centerX = contentNode.localPosition.x
+        val centerY = contentNode.localPosition.y
 
-        val collShape = contentNode.collisionShape
-        if (collShape is Box && validCollisionShape) {
-            return Utils.calculateBoundsOfNode(contentNode)
-        }
-        return Bounding(offsetX, offsetY, offsetX, offsetY)
+        val scaleX = contentNode.localScale.x
+        val scaleY = contentNode.localScale.y
+
+        val offsetX = -horizontalAlignment.centerOffset * size.x
+        val offsetY = -verticalAlignment.centerOffset * size.y
+
+        val left = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
+        val right = centerX * scaleX + (size.x * scaleX) / 2 + offsetX
+        val top = centerY * scaleY + (size.y * scaleY) / 2 + offsetY
+        val bottom = centerY * scaleY - (size.y * scaleY) / 2 + offsetY
+        return Bounding(left, bottom, right, top)
     }
 
     override fun onDestroy() {
@@ -127,18 +144,31 @@ abstract class UiNode(
 
     protected abstract fun provideView(context: Context): View
 
+    protected abstract fun provideDesiredSize(): Vector2
+
     protected open fun onViewClick() {}
 
     /**
-     * Should setup the [view] instance (size, listeners, etc) before it gets
+     * Should setup the [view] instance (e.g. register listeners) before it gets
      * attached to the node.
      */
     protected open fun setupView() {
-        // default dimensions
-        val widthPx = ViewGroup.LayoutParams.WRAP_CONTENT
-        val heightPx = ViewGroup.LayoutParams.WRAP_CONTENT
+        desiredSize = provideDesiredSize()
+        val width = desiredSize.x
+        val height = desiredSize.y
 
-        // the size should be set before attaching view to the node
+        val widthPx = if (width == WRAP_CONTENT_DIMENSION) {
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        } else {
+            Utils.metersToPx(width, context)
+        }
+
+        val heightPx = if (height == WRAP_CONTENT_DIMENSION) {
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        } else {
+            Utils.metersToPx(height, context)
+        }
+        // we have to set layout params before attaching view to the node
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
     }
 
@@ -150,13 +180,24 @@ abstract class UiNode(
         }
     }
 
+    // build calls applyProperties, so we need to initialize the view before
     private fun initView() {
         this.view = provideView(context)
         this.view.setOnClickListener {
             onViewClick()
             clickListener?.invoke()
         }
-        // build calls applyProperties, so we need to initialize the view before
+    }
+
+    private fun setup() {
+        setupView()
+        applyProperties(properties)
+        // calculating the real size after all properties have been set,
+        // because some properties may have changed the view size
+        // when using wrap content
+        val maxWidth = desiredSize.x
+        val maxHeight = desiredSize.y
+        size = view.getSizeInMeters(context, maxWidth, maxHeight)
     }
 
     private fun attachView() {
@@ -171,15 +212,10 @@ abstract class UiNode(
         )
         viewRenderableLoader.loadRenderable(config) { result ->
             if (result is RenderableResult.Success) {
-                validCollisionShape = false
                 contentNode.renderable = result.renderable
-                view.postDelayed({
-                    validCollisionShape = true
-                }, COLLISION_SHAPE_DELAY)
             }
             loadingView = false
         }
-
     }
 
     /**
@@ -190,14 +226,12 @@ abstract class UiNode(
     private fun rebuildLoop() {
         if (shouldRebuild && !loadingView) {
             if (renderableRequested) {
-                // init a new view and apply all properties
+                // init a new view, apply all properties and re-attach the view
                 build()
                 attachView()
             } else {
-                // not reloading the view if the renderable has not been requested yet
-                // because ArCore may not be initialized yet
-                setupView()
-                applyProperties(properties)
+                // only setup, because the view has not been attached yet
+                setup()
             }
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")

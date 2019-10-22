@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class UiDropdownListNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultTextSize: CGFloat = 0.065
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -60,7 +60,7 @@ import SceneKit
     @objc var listFont: UIFont = UIFont.systemFont(ofSize: 14.0) 
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
-    @objc public var onSelectionItemChanged: ((_ sender: UiDropdownListNode, _ selectedItem: UiDropdownListItemNode?) -> (Void))?
+    @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItem: [Int]) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var gridLayoutNode: UiGridLayoutNode!
@@ -97,7 +97,7 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x + Float(listGridLayoutNode.getSize().width / 4), position.y - Float(listGridLayoutNode.getSize().height / 2 - getSize().height), position.z)
+        listGridLayoutNode.position = SCNVector3(position.x, -0.05, position.z)
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
@@ -113,6 +113,7 @@ import SceneKit
 
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
+        labelNode.textSize = UiDropdownListNode.defaultTextSize
         labelNode.layoutIfNeeded()
 
         iconNode = UiImageNode(props: ["icon": "chevron-down", "height": 0.04])
@@ -251,7 +252,14 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
         sender.toggleSelection()
         selectedItem = sender.isSelected ? sender : nil
         // notify about item selection
-        onSelectionItemChanged?(self, selectedItem)
+        onSelectionChanged?(self, selectedItemIndex(selectedItem: selectedItem))
+    }
+
+    private func selectedItemIndex(selectedItem: UiDropdownListItemNode?) -> [Int] {
+        if let selectedItem = selectedItem, let selectedIndex = itemsList.firstIndex(of: selectedItem) {
+            return [selectedIndex]
+        }
+        return []
     }
 }
 

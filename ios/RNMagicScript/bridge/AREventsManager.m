@@ -126,7 +126,7 @@ RCT_EXPORT_MODULE();
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onSliderChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
+            [self sendEventWithName:@"onSliderChanged" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
         });
     }
 }

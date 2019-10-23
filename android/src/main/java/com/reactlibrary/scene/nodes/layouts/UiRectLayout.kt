@@ -1,13 +1,15 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.putDefaultSerializable
+import com.reactlibrary.utils.putDefaultString
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
 : UiLayout(initProps, layoutManager) {
@@ -65,7 +67,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
             )
         }
         if(isSizeSet()) {
-            if(layoutManager.parentBounds == null || layoutManager.parentBounds != parentBounding) {
+            if(layoutManager.parentBounds == null || !Bounding.equalInexact(layoutManager.parentBounds!!,parentBounding)) {
                 layoutManager.parentBounds = parentBounding
                 requestLayout()
             }
@@ -87,6 +89,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
             (layoutManager as RectLayoutManager)
             layoutManager.contentVerticalAlignment = alignment.vertical
             layoutManager.contentHorizontalAlignment = alignment.horizontal
+            requestLayout()
         }
     }
 }

@@ -49,9 +49,7 @@ import SceneKit
             componentNode = componentNode?.parent
         }
 
-        if focusedNode != componentNode && (focusedNode is UiDropdownListNode && !(componentNode is UiDropdownListItemNode) ) {
-            focusedNode?.leaveFocus()
-        }
+        focusedNode?.leaveFocus()
 
         if focusedNode != nil {
             onInputUnfocused?()

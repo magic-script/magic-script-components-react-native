@@ -24,8 +24,8 @@ class SliderInputView: UIView {
                 maxLabel.text = "\(input.max)"
                 slider.minimumValue = Float(input.min)
                 slider.maximumValue = Float(input.max)
-                slider.value = Float(input.value)
-                updateCurrentValue(input.value)
+                slider.value = Float(input.sliderValue)
+                updateCurrentValue(input.sliderValue)
             }
         }
     }
@@ -56,7 +56,7 @@ class SliderInputView: UIView {
         backgroundColor = UIColor.white
 
         currentValueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
-        currentValueLabel.text = String(format: "Current value: %d", arguments: [input?.value ?? "n/a"])
+        currentValueLabel.text = String(format: "Current value: %d", arguments: [input?.sliderValue ?? "n/a"])
         currentValueLabel.font = UIFont.systemFont(ofSize: 15)
         currentValueLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(currentValueLabel)
@@ -101,7 +101,7 @@ class SliderInputView: UIView {
 // MARK: - Event handlers
 extension SliderInputView {
     @objc fileprivate func onValueChangedAction(_ sender: UISlider) {
-        input?.value = CGFloat(slider.value)
+        input?.sliderValue = CGFloat(slider.value)
         currentValueLabel.text = String(format: "Current value: %.1f", arguments: [slider.value])
     }
 

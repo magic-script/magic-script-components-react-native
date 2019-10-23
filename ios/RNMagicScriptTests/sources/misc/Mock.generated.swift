@@ -838,8 +838,8 @@ open class FileManagingMock: FileManaging, Mock {
     }
 }
 
-// MARK: - GLTFSceneSourceBuildering
-open class GLTFSceneSourceBuilderingMock: GLTFSceneSourceBuildering, Mock {
+// MARK: - GLTFSceneSourceBuilding
+open class GLTFSceneSourceBuildingMock: GLTFSceneSourceBuilding, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy

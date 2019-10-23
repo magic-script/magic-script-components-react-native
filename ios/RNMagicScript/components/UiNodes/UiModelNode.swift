@@ -22,7 +22,7 @@ import GLTFSceneKit
     fileprivate var dataTask: URLSessionDataTask?
 
     var downloader: Downloading = ModelDownloader()
-    var sceneBuilder: GLTFSceneSourceBuildering = GLTFSceneSourceBuilder()
+    var sceneBuilder: GLTFSceneSourceBuilding = GLTFSceneSourceBuilder()
 
     deinit {
         downloadTask?.cancel()

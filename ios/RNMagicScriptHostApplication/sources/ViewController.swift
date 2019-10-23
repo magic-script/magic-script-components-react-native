@@ -19,34 +19,35 @@ import ARKit
 import SceneKit
 
 class ViewController: UIViewController {
-    
+
     fileprivate var arView: RCTARView!
     fileprivate var lastTime: TimeInterval = 0
-    
+
     override var shouldAutorotate: Bool { return true }
     override var prefersStatusBarHidden: Bool { return true }
-    
+
     fileprivate var rootNode: SCNNode {
         return arView.scene.rootNode
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupARView()
-        setupToggleTest()
+        setupScrollViewTest()
+        setupDropdownListTest()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         arView.reset()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         arView.pause()
     }
-    
+
     fileprivate func setupARView() {
         arView = RCTARView()
         arView.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
@@ -59,22 +60,98 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
+
         arView.delegate = self
     }
-    
+
     fileprivate var scrollView: UiScrollViewNode!
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
-    fileprivate func setupToggleTest() {
 
-        let toggle: UiToggleNode = createComponent(["text" : "Dummy", "height": 0.08, "textSize": 0.08, "debug": true], nodeId: "toggle")
-        toggle.layoutIfNeeded()
+    fileprivate func setupScrollViewTest() {
+        // Group
+        let groupId: String = "group"
+        let group: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
+
+        // Scroll view
+        let scrollViewId: String = "scroll_view"
+        scrollView = createComponent([
+            "alignment": "center-center",
+            "debug": true,
+            "scrollBounds": ["min": [-0.25,-0.45,-0.1], "max": [0.25,0.45,0.1]]
+        ], nodeId: scrollViewId, parentId: groupId)
+
+        // Scroll bar
+        let scrollBarId: String = "scroll_bar"
+        scrollBar = createComponent([
+            "debug": false,
+            "localPosition": [0.25, 0, 0],
+            "width": 0.9
+        ], nodeId: scrollBarId, parentId: scrollViewId)
+        createGridWithIcons(parentId: scrollViewId)
+
+        scrollView.layoutIfNeeded()
+        scrollBar.layoutIfNeeded()
+
+        // Button
+        let button: UiButtonNode = createComponent([
+            "localPosition": [0, 0.6, 0],
+            "textSize": 0.05,
+            "text": "Button"
+        ], nodeId: "button", parentId: groupId)
+        button.layoutIfNeeded()
+
+        group.layoutIfNeeded()
     }
-    
+
+    fileprivate func createGridWithIcons(parentId: String) {
+
+        let gridId = "grid"
+        let grid: UiGridLayoutNode = createComponent([
+            "columns": 14,
+            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
+            "alignment": "top-center"
+        ], nodeId: gridId, parentId: parentId)
+
+        SystemIcon.names.enumerated().forEach { (index, name) in
+            let nodeId: String = "icon_\(index)"
+            let _: UiImageNode = createComponent(["icon": name, "height": 0.04, "skipRaycast": false], nodeId: nodeId, parentId: gridId)
+        }
+
+        grid.layoutIfNeeded()
+    }
+
+    fileprivate func setupDropdownListTest() {
+        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.5, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
+        let dropdownListId = "dropdownListId"
+        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
+        UiNodesManager.instance.addNodeToRoot(dropdownListId)
+        dropdownList.layoutIfNeeded()
+
+        for index in 0...16 {
+            var dropdownItem: UiDropdownListItemNode
+            if index % 4 == 0 {
+                dropdownItem = UiDropdownListItemNode(props: ["text": "Very long text for dropDownListItem to check how this looks when list appears"])
+            } else {
+                dropdownItem = UiDropdownListItemNode(props: ["text": "Very short text"])
+            }
+            dropdownItem.setDebugMode(true)
+
+            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
+            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
+        }
+        dropdownList.onTap = { sender in
+//            print("dropDown onTap \(sender)")
+        }
+
+        dropdownList.onSelectionChanged = { sender, selectedItem in
+//            print("dropDown onSelectionChanged \(sender) \(selectedItem)")
+        }
+    }
+
     @discardableResult
-    fileprivate func createComponent<T: UiNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
+    fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
         node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)
@@ -92,5 +169,18 @@ extension ViewController: ARSCNViewDelegate {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
+
+        scrollBarPosition += CGFloat(deltaTime)
+        if scrollBarPosition > 1.0 {
+            scrollBarPosition -= 2.0
+        }
+
+        scrollBarSize += CGFloat(deltaTime * 0.1)
+        if scrollBarSize > 1.0 {
+            scrollBarSize -= 2.0
+        }
+//        scrollView.scrollValue = abs(scrollBarPosition)
+//        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
+        scrollView.layoutIfNeeded()
     }
 }

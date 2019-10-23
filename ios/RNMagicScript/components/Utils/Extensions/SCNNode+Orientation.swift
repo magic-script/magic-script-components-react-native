@@ -12,17 +12,16 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import SceneKit
 
-let SCNQuaternionIdentity = SCNQuaternion(0, 0, 0, 1)
-
-extension SCNQuaternion {
-    public static let identity = SCNQuaternionIdentity
-    
-    public static func fromAxis(_ axis: SCNVector3, andAngle angle: Float) -> SCNQuaternion {
-        let s: Float = sin(0.5 * angle)
-        return SCNQuaternion(axis.x * s, axis.y * s, axis.z * s, cos(0.5 * angle))
+extension SCNNode {
+    func orientAlong(_ vector: SCNVector3) {
+        let up = SCNVector3(0, 1, 0)
+        let rotationAxis: SCNVector3 = vector.cross(up).normalized()
+        let angle: Float = -vector.angleToVector(up)
+        orientation = SCNQuaternion.fromAxis(rotationAxis, andAngle: angle)
     }
 }
+

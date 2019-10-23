@@ -73,6 +73,9 @@ import SceneKit
     fileprivate(set) var listGridLayoutNode: UiGridLayoutNode!
 
     fileprivate var reloadOutline: Bool = true
+    fileprivate var isListExpanded: Bool {
+        return listGridLayoutNode.visible
+    }
 
     deinit {
         contentNode.removeAllAnimations()
@@ -97,7 +100,7 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x, -0.05, position.z)
+        listGridLayoutNode.position = SCNVector3(position.x, -0.05, position.z + 0.03)
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
@@ -143,6 +146,26 @@ import SceneKit
 
         listGridLayoutNode.visible = false
         listGridLayoutNode.layoutIfNeeded()
+    }
+
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        if isListExpanded {
+            if let hitPoint = listGridLayoutNode.getHitTestPoint(ray: ray) {
+                listGridLayoutNode.setDebugMode(true)
+                let gridBounds = listGridLayoutNode.getBounds(parentSpace: true)
+                let itemHeight: CGFloat = itemsList.first?.getSize().height ?? 0
+
+                print("\ngridBounds: \(gridBounds);\nhitPoint: \(hitPoint);\ngridBounds.minY: \(gridBounds.minY);\ngridBounds.maxY: \(gridBounds.maxY)")
+                let dy: CGFloat = gridBounds.maxY - CGFloat(hitPoint.y)
+                let index: Int = (itemHeight > 0.00001) ? Int(dy / itemHeight) : -1
+                print("index: \(index)")
+                if index >= 0 && index < itemsList.count {
+                    return itemsList[index]
+                }
+            }
+        }
+
+        return selfHitTest(ray: ray)
     }
 
     @objc override func update(_ props: [String: Any]) {

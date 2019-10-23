@@ -20,8 +20,8 @@ import SceneKit
 
     // var name: String // native property
     // var parentedBoneName: String
-    // var skipRaycast: Bool = false
-    // var triggerable: Bool = true
+     var skipRaycast: Bool = false
+    // var triggerable: Bool = true // not related to iOS
     @objc var visible: Bool {
         get { return !self.isHidden }
         set { self.isHidden = !newValue }
@@ -97,6 +97,10 @@ import SceneKit
         }
     }
 
+    @objc func hitTest(ray: Ray) -> TransformNode? {
+        return selfHitTest(ray: ray)
+    }
+
     fileprivate func setNeedsLayoutForAllParents() {
         var node: SCNNode? = parent
         while node != nil {
@@ -112,6 +116,9 @@ import SceneKit
 
         if let name = Convert.toString(props["id"]) {
             self.name = name
+        }
+        if let skipRaycast = Convert.toBool(props["skipRaycast"]) {
+            self.skipRaycast = skipRaycast
         }
         if let visible = Convert.toBool(props["visible"]) {
             self.visible = visible
@@ -176,6 +183,37 @@ import SceneKit
     }
 
     @objc func updatePivot() {
+    }
+}
+
+// MARK: - HitTest
+extension TransformNode {
+    func getHitTestPoint(ray: Ray) -> SCNVector3? {
+        let localRay = convertRayToLocal(ray: ray)
+        let localPlane = getPlane()
+        guard let point = localPlane.intersectRay(localRay) else { return nil }
+        let bounds = getBounds()
+        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
+            return point
+        }
+
+        return nil
+    }
+
+    @objc func selfHitTest(ray: Ray) -> TransformNode? {
+        guard !skipRaycast && visible else { return nil }
+        guard let _ = getHitTestPoint(ray: ray) else { return nil }
+        return self
+    }
+
+    @objc func convertRayToLocal(ray: Ray) -> Ray {
+       let localRayBegin = convertPosition(ray.begin, from: nil)
+       let localRayDirection = convertVector(ray.direction, from: nil)
+       return Ray(begin: localRayBegin, direction: localRayDirection, length: ray.length)
+    }
+
+    @objc func getPlane() -> Plane {
+        return Plane(center: position, normal: transform.forward)
     }
 }
 

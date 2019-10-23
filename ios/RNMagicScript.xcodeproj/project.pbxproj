@@ -147,6 +147,8 @@
 		44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */; };
 		44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71A235F3FE100AC0B6C /* RaySpec.swift */; };
 		44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */; };
+		44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D7272360993600AC0B6C /* UiNodeSelector.swift */; };
+		44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D7272360993600AC0B6C /* UiNodeSelector.swift */; };
 		44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
 		44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE672336B1A0007FD766 /* TextEntryMode.swift */; };
 		44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */; };
@@ -493,6 +495,7 @@
 		44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extension.swift"; sourceTree = "<group>"; };
 		44C5D71A235F3FE100AC0B6C /* RaySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaySpec.swift; sourceTree = "<group>"; };
 		44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneSpec.swift; sourceTree = "<group>"; };
+		44C5D7272360993600AC0B6C /* UiNodeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelector.swift; sourceTree = "<group>"; };
 		44D8FE672336B1A0007FD766 /* TextEntryMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEntryMode.swift; sourceTree = "<group>"; };
 		44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollBarVisibility.swift; sourceTree = "<group>"; };
 		44D8FE7F23391261007FD766 /* RCTARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARView.swift; sourceTree = "<group>"; };
@@ -815,6 +818,7 @@
 				44AFAC04232B9BCE005AC8EF /* UiNodes */,
 				44AFAC17232B9BCF005AC8EF /* Utils */,
 				44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */,
+				44C5D7272360993600AC0B6C /* UiNodeSelector.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -1624,6 +1628,7 @@
 				44AFAD15232BCAE3005AC8EF /* Convert.swift in Sources */,
 				44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
+				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
@@ -1767,6 +1772,7 @@
 				C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */,
 				44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				44AFAC4C232B9BCF005AC8EF /* HorizontalTextAlignment.swift in Sources */,
+				44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */,
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,

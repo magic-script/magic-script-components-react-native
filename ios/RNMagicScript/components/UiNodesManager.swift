@@ -27,6 +27,7 @@ import SceneKit
     fileprivate var nodesById: [String: TransformNode]
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
+    fileprivate var nodeSelector: UiNodeSelector?
 
     init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
@@ -37,11 +38,12 @@ import SceneKit
 
     @objc public func registerScene(_ scene: SCNScene) {
         scene.rootNode.addChildNode(rootNode)
+        nodeSelector = UiNodeSelector(rootNode)
     }
 
     @objc public func handleTapAction(ray: Ray?) {
         if let ray = ray {
-            let hitNode = hitTest(ray: ray)
+            let hitNode = nodeSelector?.hitTest(ray: ray)
             handleNodeTap(hitNode)
         #if targetEnvironment(simulator)
             if let node = hitNode {
@@ -65,34 +67,6 @@ import SceneKit
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
         }
-    }
-
-    fileprivate func hitTest(ray: Ray) -> TransformNode? {
-        let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
-        var hitNodes: [TransformNode] = []
-
-        for node in topNodes {
-            if let hitNode = node.hitTest(ray: ray) {
-                hitNodes.append(hitNode)
-            }
-        }
-
-        let refPoint = SCNVector3(0,0,1.5)
-        hitNodes.sort { (node1, node2) -> Bool in
-            let worldPosition1 = node1.convertPosition(node1.position, to: nil)
-            let worldPosition2 = node2.convertPosition(node2.position, to: nil)
-            let dist1 = (worldPosition1 - refPoint).lengthSq()
-            let dist2 = (worldPosition2 - refPoint).lengthSq()
-            return dist1 < dist2
-        }
-
-        let names: [(name: String?, position: SCNVector3, distance: Float)] = hitNodes.map { (node) -> (name: String?, position: SCNVector3, distance: Float) in
-            let position = node.convertPosition(node.position, to: nil)
-            return (name: node.name, position: position, distance: position.distance(refPoint))
-        }
-        print("hitNodes.sorted: \(names)")
-
-        return hitNodes.first
     }
     
     @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {

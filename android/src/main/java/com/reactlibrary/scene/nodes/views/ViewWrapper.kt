@@ -30,6 +30,13 @@ class ViewWrapper(
         context: Context,
         private val parent: UiNode) : LinearLayout(context) {
 
+    companion object {
+        const val TOUCH_RADIUS_PX = 8L
+    }
+
+    private var isBeingDragged = false
+    private var previousTouch = Vector2()
+
     init {
         layoutParams = LayoutParams(
                 LayoutParams.WRAP_CONTENT,
@@ -71,11 +78,26 @@ class ViewWrapper(
         }
 
         val action = event.actionMasked
-        if (action != MotionEvent.ACTION_MOVE) {
-            scrollNode.stopNestedScroll()
+        val pos = Vector2(event.x, event.y)
+
+        // Check if the user has moved far enough from his original
+        // down touch to consider this event a scroll.
+        if (action == MotionEvent.ACTION_MOVE && !isBeingDragged) {
+            val dist = pos - previousTouch
+            val radiusSqr = dist.x * dist.x + dist.y * dist.y
+            if (radiusSqr >= TOUCH_RADIUS_PX * TOUCH_RADIUS_PX) {
+                isBeingDragged = true
+            }
         }
 
-        return action == MotionEvent.ACTION_MOVE
+        if (action != MotionEvent.ACTION_MOVE) {
+            scrollNode.stopNestedScroll()
+            isBeingDragged = false
+        } else {
+            previousTouch = pos
+        }
+
+        return action == MotionEvent.ACTION_MOVE && isBeingDragged
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         setupARView()
-        setupTests()
+        setupToggleTest()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,31 +67,10 @@ class ViewController: UIViewController {
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
-    fileprivate func setupTests() {
-        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.25, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
-        let dropdownListId = "dropdownListId"
-        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
-        UiNodesManager.instance.addNodeToRoot(dropdownListId)
-        dropdownList.layoutIfNeeded()
-        
-        for index in 0...16 {
-            var dropdownItem: UiDropdownListItemNode
-            if index % 4 == 0 {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very long text for dropDownListItem to check how this looks when list appears"])
-            } else {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very short text"])
-            }
-            
-            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
-            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
-        }
-        dropdownList.onTap = { sender in
-            print("dropDown onTap \(sender)")
-        }
-        
-        dropdownList.onSelectionChanged = { sender, selectedItem in
-            print("dropDown onSelectionChanged \(sender) \(selectedItem)")
-        }
+    fileprivate func setupToggleTest() {
+
+        let toggle: UiToggleNode = createComponent(["text" : "Dummy", "height": 0.08, "textSize": 0.08, "debug": true], nodeId: "toggle")
+        toggle.layoutIfNeeded()
     }
     
     @discardableResult

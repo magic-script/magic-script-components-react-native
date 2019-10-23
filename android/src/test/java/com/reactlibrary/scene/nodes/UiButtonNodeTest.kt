@@ -30,9 +30,11 @@ import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -144,6 +146,35 @@ class UiButtonNodeTest {
 
         assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
         assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
+    }
+
+    @Test
+    fun shouldReturnCorrectBounds() {
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(-1.0, 1.0, 0.0),
+                UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
+        )
+        val node = createNodeWithViewSpy(props)
+        val expectedBounds = Bounding(-2F, 0.5F, 0F, 1.5F)
+
+        node.build()
+
+        assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
+    }
+
+    @Test
+    fun shouldReturnCorrectBoundsWhenScaled() {
+        val scale = JavaOnlyArray.of(0.5, 0.5, 0.5)
+        val props = JavaOnlyMap.of(
+                UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0,
+                TransformNode.PROP_LOCAL_SCALE, scale
+        )
+        val node = createNodeWithViewSpy(props)
+        val expectedBounds = Bounding(-0.5F, -0.25F, 0.5F, 0.25F)
+
+        node.build()
+
+        assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {

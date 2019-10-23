@@ -28,7 +28,6 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultSerializable
 
 /**
  * Base node.
@@ -98,10 +97,6 @@ abstract class TransformNode(
 
     init {
         addChild(contentNode)
-
-        // Set default properties if not present
-        val position: ArrayList<Double> = arrayListOf(0.0, 0.0, 0.0)
-        properties.putDefaultSerializable(PROP_LOCAL_POSITION, position)
         logMessage("initial properties = ${this.properties}")
     }
 
@@ -126,10 +121,10 @@ abstract class TransformNode(
     fun getBounding(): Bounding {
         val contentBounding = getContentBounding()
         return Bounding(
-                left = contentBounding.left + localPosition.x,
-                bottom = contentBounding.bottom + localPosition.y,
-                right = contentBounding.right + localPosition.x,
-                top = contentBounding.top + localPosition.y)
+                left = contentBounding.left * localScale.x + localPosition.x,
+                bottom = contentBounding.bottom * localScale.y + localPosition.y,
+                right = contentBounding.right * localScale.x + localPosition.x,
+                top = contentBounding.top * localScale.y + localPosition.y)
     }
 
     /**
@@ -214,7 +209,7 @@ abstract class TransformNode(
      * @param props properties to apply
      */
     protected open fun applyProperties(props: Bundle) {
-        setPosition(props)
+        setLocalPosition(props)
         setLocalScale(props)
         setLocalRotation(props)
         setLocalTransform(props)
@@ -279,7 +274,14 @@ abstract class TransformNode(
         contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
     }
 
-    private fun setPosition(props: Bundle) {
+
+    private fun setLocalPosition(props: Bundle) {
+        val registeredParent = parent?.parent // first parent is a content node
+        if (registeredParent is Layoutable) {
+            // position is managed by a parent, so we should not change it
+            return
+        }
+
         val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)
         if (localPosition != null) {
             this.localPosition = localPosition

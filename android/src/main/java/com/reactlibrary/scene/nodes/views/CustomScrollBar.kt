@@ -52,9 +52,6 @@ class CustomScrollBar @JvmOverloads constructor(
     private var touchOffset = 0F
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
-        set(value){
-            field = value
-        }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
@@ -140,9 +137,9 @@ class CustomScrollBar @JvmOverloads constructor(
 
     private fun getTouchPos(event: MotionEvent): Float {
         return if (isVertical) {
-            event.getY()
+            event.y
         } else {
-            event.getX()
+            event.x
         }
     }
 

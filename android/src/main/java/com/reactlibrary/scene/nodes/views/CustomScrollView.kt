@@ -21,8 +21,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.onLayoutListener
-import kotlinx.android.synthetic.main.scroll_view.view.*
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
@@ -38,29 +36,23 @@ class CustomScrollView @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: Vector2) -> Unit)? = null
 
-    private var isBeingDragged = false
-    private var previousTouch = Vector2()
-
-    init {
-        // We can be sure nested scrollBars are 
-        // initialized only after layout is completed. 
-        this.onLayoutListener {
-            h_bar.isVertical = false
-            h_bar.onScrollChangeListener = { pos: Float ->
-                val viewPosition = Vector2(pos, v_bar.thumbPosition)
-                onScrollChangeListener?.invoke(viewPosition)
-            }
-            v_bar.onScrollChangeListener = { pos: Float ->
-                val viewPosition = Vector2(h_bar.thumbPosition, pos)
-                onScrollChangeListener?.invoke(viewPosition)
-            }
+    var hBar: CustomScrollBar? = null
+        set(value) {
+            field = value
             updateScrollbars()
         }
-    }
 
-    fun getViewPosition(): Vector2 {
-        return Vector2(h_bar.thumbPosition, v_bar.thumbPosition)
-    }
+    var vBar: CustomScrollBar? = null
+        set(value) {
+            field = value
+            updateScrollbars()
+        }
+
+    var position = Vector2()
+        private set
+
+    private var isBeingDragged = false
+    private var previousTouch = Vector2()
 
     override fun stopNestedScroll() {
         isBeingDragged = false
@@ -73,24 +65,22 @@ class CustomScrollView @JvmOverloads constructor(
             return false
         }
 
-        val touch = Vector2(event.getX(), event.getY())
+        val touch = Vector2(event.x, event.y)
         if (!isBeingDragged) {
             isBeingDragged = true
             previousTouch = touch
         }
 
         if (action == MotionEvent.ACTION_MOVE) {
-            val movePx = touch - previousTouch
+            val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
 
-            val thumbPos = Vector2(
-                    h_bar.thumbPosition - move.x,
-                    v_bar.thumbPosition - move.y)
-            h_bar.thumbPosition = thumbPos.x
-            v_bar.thumbPosition = thumbPos.y
-            onScrollChangeListener?.invoke(getViewPosition())
+            position = (position + move).coerceIn(0F, 1F)
+            hBar?.thumbPosition = position.x
+            vBar?.thumbPosition = position.y
+            onScrollChangeListener?.invoke(position)
         }
         previousTouch = touch
 
@@ -99,7 +89,7 @@ class CustomScrollView @JvmOverloads constructor(
 
     // Update scrollbars when content size has changed.
     private fun updateScrollbars() {
-        this.h_bar.thumbSize = width.toFloat() / contentSize.x
-        this.v_bar.thumbSize = height.toFloat() / contentSize.y
+        this.hBar?.thumbSize = width.toFloat() / contentSize.x
+        this.vBar?.thumbSize = height.toFloat() / contentSize.y
     }
 }

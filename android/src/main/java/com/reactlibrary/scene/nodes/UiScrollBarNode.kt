@@ -58,6 +58,10 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         (view as CustomScrollBar).onScrollChangeListener = listener
     }
 
+    fun getCustomScrollBar(): CustomScrollBar {
+        return view as CustomScrollBar
+    }
+
     override fun disallowInterceptTouchEvent(): Boolean {
         return true
     }

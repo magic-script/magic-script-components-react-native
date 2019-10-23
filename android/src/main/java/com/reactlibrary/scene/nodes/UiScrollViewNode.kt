@@ -31,10 +31,13 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.scene.nodes.props.AABB
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
-import com.reactlibrary.utils.*
-import kotlinx.android.synthetic.main.scroll_view.view.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.onDrawListener
 
 class UiScrollViewNode(
         initProps: ReadableMap,
@@ -47,15 +50,12 @@ class UiScrollViewNode(
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
 
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
-        const val DEFAULT_WIDTH = 1.0F
-        const val DEFAULT_HEIGHT = 1.0F
 
         const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
     }
 
-    private var width = DEFAULT_WIDTH
-    private var height = DEFAULT_HEIGHT
+    private var scrollBounds = AABB(Vector3.zero(), Vector3.one())
 
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
@@ -85,6 +85,11 @@ class UiScrollViewNode(
     // Starting loops and registering listeners
     // only after content was delivered.
     override fun addContent(child: Node) {
+        if (child is UiScrollBarNode) {
+            addScrollBar(child)
+            return
+        }
+
         if (content != null) {
             return
         }
@@ -128,34 +133,25 @@ class UiScrollViewNode(
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
+        return CustomScrollView(context)//LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
-        return Vector2(width, height)
+        return Vector2(
+                scrollBounds.getWidth(),
+                scrollBounds.getHeight())
     }
 
     override fun setupView() {
-        val scrollBounds = PropertiesReader.readAABB(this.properties, PROP_SCROLL_BOUNDS)
-        if (scrollBounds != null) {
-            width = scrollBounds.getWidth()
-            height = scrollBounds.getHeight()
+        val propBounds = PropertiesReader.readAABB(this.properties, PROP_SCROLL_BOUNDS)
+        if (propBounds != null) {
+            scrollBounds = propBounds
         }
 
-        val widthPx = metersToPx(width)
-        val heightPx = metersToPx(height)
+        val widthPx = metersToPx(scrollBounds.getWidth())
+        val heightPx = metersToPx(scrollBounds.getHeight())
 
         view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
-
-        // Overriding scrollbars dimensions from layout xml
-        // because we want to set view dimensions in one place and
-        // for consistency use meters instead of pixels.
-        val scrollView = view as CustomScrollView
-        val scrollBarWidthPx = metersToPx(DEFAULT_SCROLLBAR_WIDTH)
-        scrollView.h_bar.layoutParams.width = widthPx - scrollBarWidthPx
-        scrollView.h_bar.layoutParams.height = scrollBarWidthPx
-        scrollView.v_bar.layoutParams.width = scrollBarWidthPx
-        scrollView.v_bar.layoutParams.height = heightPx - scrollBarWidthPx
     }
 
     override fun getScrollTranslation(): Vector2 {
@@ -174,6 +170,23 @@ class UiScrollViewNode(
                 -requestedContentPosition.y + position.y)
     }
 
+    private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
+        super.addContent(scrollBarNode)
+        val bar = scrollBarNode.getCustomScrollBar()
+        val scrollView = view as CustomScrollView
+        if (bar.isVertical) {
+            val posX = (scrollBarNode.size.x - size.x) / -2F
+            scrollBarNode.localPosition = Vector3(posX, 0F, 0F)
+            bar.layoutParams.height = metersToPx(size.y)
+            scrollView.vBar = bar
+        } else {
+            val posY = (scrollBarNode.size.y - size.y) / 2F
+            scrollBarNode.localPosition = Vector3(0F, posY, 0F)
+            bar.layoutParams.width = metersToPx(size.x)
+            scrollView.hBar = bar
+        }
+    }
+
     private fun layoutLoop() {
         looperHandler.postDelayed({
 
@@ -186,7 +199,7 @@ class UiScrollViewNode(
                     scrollView.contentSize = Vector2(
                             metersToPx(contentSize.x).toFloat(),
                             metersToPx(contentSize.y).toFloat())
-                    update(scrollView.getViewPosition(), true)
+                    update(scrollView.position, true)
                 }
             }
 
@@ -226,9 +239,9 @@ class UiScrollViewNode(
 
     private fun getScrollBounds(): Bounding {
         return Bounding(
-                -width / 2F,
-                -height / 2F + DEFAULT_SCROLLBAR_WIDTH,
-                width / 2F - DEFAULT_SCROLLBAR_WIDTH,
-                height / 2F)
+                -size.x / 2F,
+                -size.y / 2F + DEFAULT_SCROLLBAR_WIDTH,
+                size.x / 2F - DEFAULT_SCROLLBAR_WIDTH,
+                size.y / 2F)
     }
 }

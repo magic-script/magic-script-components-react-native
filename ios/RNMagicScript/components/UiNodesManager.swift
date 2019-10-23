@@ -54,10 +54,8 @@ import SceneKit
     }
 
     @objc public func handleNodeTap(_ node: TransformNode?) {
-        if focusedNode != node && (focusedNode is UiDropdownListNode && !(node is UiDropdownListItemNode) ) {
-            focusedNode?.leaveFocus()
-        }
 
+        focusedNode?.leaveFocus()
         if focusedNode != nil {
             onInputUnfocused?()
         }

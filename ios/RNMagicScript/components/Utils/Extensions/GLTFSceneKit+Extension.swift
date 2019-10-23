@@ -19,11 +19,11 @@ import SceneKit
 import GLTFSceneKit
 
 //sourcery: AutoMockable
-protocol GLTFSceneSourceBuildering {
+protocol GLTFSceneSourceBuilding {
     func build(path: String, options: [SCNSceneSource.LoadingOption : Any]?, extensions: [String:Codable.Type]?) throws -> GLTFSceneSourceProtocol
 }
 
-class GLTFSceneSourceBuilder: GLTFSceneSourceBuildering {
+class GLTFSceneSourceBuilder: GLTFSceneSourceBuilding {
     func build(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, extensions: [String:Codable.Type]? = nil) throws -> GLTFSceneSourceProtocol {
         return try GLTFSceneSource(path: path, options: options, extensions: extensions)
     }

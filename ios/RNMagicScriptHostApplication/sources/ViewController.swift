@@ -68,6 +68,7 @@ class ViewController: UIViewController {
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
+
     fileprivate func setupScrollViewTest() {
         // Group
         let groupId: String = "group"

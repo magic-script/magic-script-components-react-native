@@ -234,6 +234,7 @@
 		C4D5417C23338D82008D5124 /* VideoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417A23338D20008D5124 /* VideoAction.swift */; };
 		C4D5417E23338E05008D5124 /* VideoViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417D23338E05008D5124 /* VideoViewMode.swift */; };
 		C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417D23338E05008D5124 /* VideoViewMode.swift */; };
+		C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */; };
 		C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */; };
 		C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */; };
 		C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */; };
@@ -559,6 +560,7 @@
 		C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNodeSpec.swift; sourceTree = "<group>"; };
 		C4D5417A23338D20008D5124 /* VideoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAction.swift; sourceTree = "<group>"; };
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
+		C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactorySpec.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
 		C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodesManagerSpec.swift; sourceTree = "<group>"; };
 		C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactory.swift; sourceTree = "<group>"; };
@@ -611,6 +613,7 @@
 			isa = PBXGroup;
 			children = (
 				442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */,
+				C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */,
 			);
 			path = InputAccessoryViews;
 			sourceTree = "<group>";
@@ -1670,6 +1673,7 @@
 				44F09331232D985A0081FF14 /* Mock.generated.swift in Sources */,
 				44F0932B232D985A0081FF14 /* UiTextNodeSpec.swift in Sources */,
 				44F0933C232D9E3B0081FF14 /* FontWeightSpec.swift in Sources */,
+				C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */,
 				44F09333232D985A0081FF14 /* SharedData.swift in Sources */,
 				44F09326232D985A0081FF14 /* UiToggleNodeSpec.swift in Sources */,
 				44F596472355C62700C60F4C /* ScrollDirectionSpec.swift in Sources */,

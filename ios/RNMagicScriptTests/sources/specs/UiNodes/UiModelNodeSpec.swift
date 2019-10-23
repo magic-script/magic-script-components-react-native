@@ -31,13 +31,13 @@ class UiModelNodeSpec: QuickSpec {
             let gltfModelPath = "resources/assets/models/glb/hedra_05.gltf"
             let objModelPath = "resources/assets/models/obj/hedra.obj"
             var downloaderMock: DownloadingMock!
-            var sceneBuilderMock: GLTFSceneSourceBuilderingMock!
+            var sceneBuilderMock: GLTFSceneSourceBuildingMock!
             var sceneMock: GLTFSceneSourceProtocolMock!
             let scene = SCNScene()
 
             beforeEach {
                 downloaderMock = DownloadingMock()
-                sceneBuilderMock = GLTFSceneSourceBuilderingMock()
+                sceneBuilderMock = GLTFSceneSourceBuildingMock()
                 sceneMock = GLTFSceneSourceProtocolMock()
                 node = UiModelNode(props: [:])
                 node.downloader = downloaderMock

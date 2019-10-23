@@ -19,6 +19,7 @@ import SceneKit
 @objc open class UiSliderNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
     static fileprivate let defaultHeight: CGFloat = 0.018
+    static fileprivate let backgroundHeightFactor: CGFloat = 0.75
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -58,7 +59,7 @@ import SceneKit
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {
-        didSet { if (foregroundColor != oldValue) { foregroundImage = nil; setNeedsLayout(); } }
+        didSet { if (foregroundColor != oldValue) { setNeedsLayout(); } }
     }
 
     @objc override var canHaveFocus: Bool {
@@ -80,21 +81,21 @@ import SceneKit
     fileprivate var _value: CGFloat = 0.0
     fileprivate var backgroundGeometry: SCNPlane!
     fileprivate var foregroundGeometry: SCNPlane!
-    fileprivate var foregroundImage: UIImage?
     fileprivate var progressNode: SCNNode!
     fileprivate var minLabelNode: LabelNode!
     fileprivate var maxLabelNode: LabelNode!
     fileprivate var outlineNode: SCNNode!
 
+    @objc public var onSliderChanged: ((_ sender: UiSliderNode, _ value: CGFloat) -> (Void))?
+
     @objc override func setupNode() {
         super.setupNode()
 
         assert(backgroundGeometry == nil, "Node must not be initialized!")
-        backgroundGeometry = SCNPlane(width: width, height: height)
+        backgroundGeometry = SCNPlane(width: width, height: height * UiSliderNode.backgroundHeightFactor)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
         backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
-        let backgroundImage = UIImage.image(from: [.lightGray], size: 32)
-        backgroundGeometry.firstMaterial?.diffuse.contents = backgroundImage
+        backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
 
         foregroundGeometry = SCNPlane(width: width, height: height)
         foregroundGeometry.firstMaterial?.lightingModel = .constant
@@ -106,12 +107,14 @@ import SceneKit
         minLabelNode.textSize = 0.065
         minLabelNode.textColor = .white
         minLabelNode.textAlignment = .center
+        minLabelNode.textPadding = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0125)
 
         maxLabelNode = LabelNode()
         maxLabelNode.defaultTextSize = 0.0167
         maxLabelNode.textSize = 0.065
         maxLabelNode.textColor = .white
         maxLabelNode.textAlignment = .center
+        maxLabelNode.textPadding = UIEdgeInsets(top: 0.0, left: 0.0125, bottom: 0.0, right: 0.0)
 
         let bgNode = SCNNode(geometry: backgroundGeometry)
         progressNode = SCNNode(geometry: foregroundGeometry)
@@ -170,16 +173,13 @@ import SceneKit
         let size = getSize()
 
         backgroundGeometry.width = size.width
-        backgroundGeometry.height = size.height
+        backgroundGeometry.height = size.height * UiSliderNode.backgroundHeightFactor
         backgroundGeometry.cornerRadius = 0.5 * size.height
 
         let delta = max - min
         let progress: CGFloat = (delta > 0.0001) ? (value - min) / delta : 0
 
-        if foregroundImage == nil {
-            foregroundImage = UIImage.gradientImage(withSize: CGSize(width: 32.0, height: 32.0), colors: [foregroundColor.cgColor, foregroundColor.cgColor])
-            foregroundGeometry.firstMaterial?.diffuse.contents = foregroundImage
-        }
+        foregroundGeometry.firstMaterial?.diffuse.contents = foregroundColor.cgColor
 
         let slideWidth = size.width * progress
         foregroundGeometry.width = slideWidth
@@ -217,6 +217,25 @@ import SceneKit
             outlineNode.position = SCNVector3((maxLabelWidthFactor-minLabelWidthFactor) / 2, 0.0, 0.0)
         }
     }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        minLabelNode.setDebugMode(debug)
+        maxLabelNode.setDebugMode(debug)
+    }
 }
 
-extension UiSliderNode: SliderDataProviding { }
+extension UiSliderNode: SliderDataProviding {
+    var sliderValue: CGFloat {
+        get {
+            return value
+        }
+        set {
+            if value != newValue {
+                value = newValue
+                layoutIfNeeded()
+                onSliderChanged?(self, value);
+            }
+        }
+    }
+}

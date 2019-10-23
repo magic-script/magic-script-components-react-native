@@ -150,9 +150,12 @@ class UiButtonNodeTest {
 
     @Test
     fun shouldReturnCorrectBounds() {
-        val props = JavaOnlyMap.of(UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(-1.0, 1.0, 0.0),
+                UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
+        )
         val node = createNodeWithViewSpy(props)
-        val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
+        val expectedBounds = Bounding(-2F, 0.5F, 0F, 1.5F)
 
         node.build()
 
@@ -170,8 +173,6 @@ class UiButtonNodeTest {
         val expectedBounds = Bounding(-0.5F, -0.25F, 0.5F, 0.25F)
 
         node.build()
-
-        val bounds = node.getBounding()
 
         assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
     }

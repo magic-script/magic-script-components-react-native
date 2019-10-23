@@ -25,6 +25,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.scene.nodes.base.Layoutable
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
 import com.reactlibrary.utils.logMessage
@@ -33,7 +34,7 @@ class UiDropdownListNode(initProps: ReadableMap,
                          context: Context,
                          viewRenderableLoader: ViewRenderableLoader,
                          fontProvider: FontProvider)
-    : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider) {
+    : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider), Layoutable {
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"

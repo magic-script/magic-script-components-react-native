@@ -50,7 +50,7 @@ class UiScrollViewNode(
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
 
-        const val LAYOUT_LOOP_DELAY = 100L
+        const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
     }
 
@@ -186,7 +186,7 @@ class UiScrollViewNode(
                     scrollView.contentSize = Vector2(
                             metersToPx(contentSize.x).toFloat(),
                             metersToPx(contentSize.y).toFloat())
-                    update(scrollView.getViewPosition())
+                    update(scrollView.getViewPosition(), true)
                 }
             }
 
@@ -194,8 +194,11 @@ class UiScrollViewNode(
         }, LAYOUT_LOOP_DELAY)
     }
 
-    private fun update(viewPosition: Vector2) {
-        if (scrollRequested || content == null) {
+    private fun update(viewPosition: Vector2, forceUpdate: Boolean = false) {
+        if (content == null) {
+            return
+        }
+        if (scrollRequested && !forceUpdate) {
             return
         }
 

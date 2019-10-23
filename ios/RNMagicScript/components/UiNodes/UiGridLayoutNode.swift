@@ -37,6 +37,20 @@ import SceneKit
 
     fileprivate var gridDesc: GridLayoutDescriptor?
 
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        let nodes: [TransformNode] = gridDesc?.children.map { $0.childNodes[0] as! TransformNode } ?? []
+        // TODO: here, we don't need to iterate through all grid's elements, instead we can calculate
+        // row and column of hit element based on ray's hit position
+        for node in nodes {
+            if let hitNode = node.hitTest(ray: ray) {
+                return hitNode
+            }
+        }
+
+        return nil
+    }
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 

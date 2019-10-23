@@ -40,8 +40,17 @@ import SceneKit
     }
 
     @objc public func handleTapAction(ray: Ray?) {
-        let hitNode: TransformNode? = (ray != nil) ? hitTest(ray: ray!) : nil
-        handleNodeTap(hitNode)
+        if let ray = ray {
+            let hitNode = hitTest(ray: ray)
+            handleNodeTap(hitNode)
+        #if targetEnvironment(simulator)
+            if let node = hitNode {
+                print("hitTest: \(node.name ?? "unknown")")
+            }
+        #endif
+        } else {
+            handleNodeTap(nil)
+        }
     }
 
     @objc public func handleNodeTap(_ node: TransformNode?) {
@@ -61,26 +70,31 @@ import SceneKit
     }
 
     fileprivate func hitTest(ray: Ray) -> TransformNode? {
-        let nodes = Array(nodesById.values)
-            .filter {
-                // Add more filter rules for hit test
-                let canHaveFocus = ($0 as? UiNode)?.canHaveFocus ?? true
-                let isEnabled = ($0 as? UiNode)?.enabled ?? true
-                return canHaveFocus && isEnabled && !$0.skipRaycast
-            }
-            .sorted { (node1, node2) -> Bool in
-                let dist1 = (node1.position - ray.begin).lengthSq()
-                let dist2 = (node2.position - ray.begin).lengthSq()
-                return dist1 < dist2
-            }
+        let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        var hitNodes: [TransformNode] = []
 
-        for node in nodes {
-            if node.hitTest(ray: ray) {
-                return node
+        for node in topNodes {
+            if let hitNode = node.hitTest(ray: ray) {
+                hitNodes.append(hitNode)
             }
         }
 
-        return nil
+        let refPoint = SCNVector3(0,0,1.5)
+        hitNodes.sort { (node1, node2) -> Bool in
+            let worldPosition1 = node1.convertPosition(node1.position, to: nil)
+            let worldPosition2 = node2.convertPosition(node2.position, to: nil)
+            let dist1 = (worldPosition1 - refPoint).lengthSq()
+            let dist2 = (worldPosition2 - refPoint).lengthSq()
+            return dist1 < dist2
+        }
+
+        let names: [(name: String?, position: SCNVector3, distance: Float)] = hitNodes.map { (node) -> (name: String?, position: SCNVector3, distance: Float) in
+            let position = node.convertPosition(node.position, to: nil)
+            return (name: node.name, position: position, distance: position.distance(refPoint))
+        }
+        print("hitNodes.sorted: \(names)")
+
+        return hitNodes.first
     }
     
     @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {

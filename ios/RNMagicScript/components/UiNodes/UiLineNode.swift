@@ -30,6 +30,10 @@ import SceneKit
         contentNode.addChildNode(linesNode)
     }
 
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        return nil
+    }
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 

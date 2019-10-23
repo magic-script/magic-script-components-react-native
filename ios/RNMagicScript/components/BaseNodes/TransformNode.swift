@@ -97,18 +97,8 @@ import SceneKit
         }
     }
 
-    @objc func hitTest(ray: Ray) -> Bool {
-        let localRay = convertRayToLocal(ray: ray)
-        let localPlane = getPlane()
-        guard let point = localPlane.intersectRay(localRay) else { return false }
-
-        let bounds = getBounds()
-        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
-            print("intersection = \(point) (\(name))")
-            return true
-        }
-
-        return false
+    @objc func hitTest(ray: Ray) -> TransformNode? {
+        return selfHitTest(ray: ray)
     }
 
     fileprivate func setNeedsLayoutForAllParents() {
@@ -198,6 +188,24 @@ import SceneKit
 
 // MARK: - HitTest
 extension TransformNode {
+    func getHitTestPoint(ray: Ray) -> SCNVector3? {
+        let localRay = convertRayToLocal(ray: ray)
+        let localPlane = getPlane()
+        guard let point = localPlane.intersectRay(localRay) else { return nil }
+        let bounds = getBounds()
+        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
+            return point
+        }
+
+        return nil
+    }
+
+    @objc func selfHitTest(ray: Ray) -> TransformNode? {
+        guard !skipRaycast && visible else { return nil }
+        guard let _ = getHitTestPoint(ray: ray) else { return nil }
+        return self
+    }
+
     @objc func convertRayToLocal(ray: Ray) -> Ray {
        let localRayBegin = convertPosition(ray.begin, from: nil)
        let localRayDirection = convertVector(ray.direction, from: nil)

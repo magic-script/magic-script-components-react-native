@@ -72,11 +72,7 @@ class ViewWrapper(
             return false
         }
 
-        val scrollNode = findScrollAncestor()
-        if (scrollNode == null) {
-            return false
-        }
-
+        val scrollNode = findScrollAncestor() ?: return false
         val action = event.actionMasked
         val pos = Vector2(event.x, event.y)
 

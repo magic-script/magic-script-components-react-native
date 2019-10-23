@@ -33,9 +33,7 @@ import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.onDrawListener
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.scroll_view.view.*
 
 class UiScrollViewNode(
@@ -46,19 +44,18 @@ class UiScrollViewNode(
 
     companion object {
         // properties
-        const val PROP_WIDTH = "width"
-        const val PROP_HEIGHT = "height"
+        const val PROP_SCROLL_BOUNDS = "scrollBounds"
 
         const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
-        const val DEFAULT_WIDTH = 1.0
-        const val DEFAULT_HEIGHT = 1.0
+        const val DEFAULT_WIDTH = 1.0F
+        const val DEFAULT_HEIGHT = 1.0F
 
         const val LAYOUT_LOOP_DELAY = 100L
         const val Z_ORDER_OFFSET = 1e-5F
     }
 
-    private var width = 0F
-    private var height = 0F
+    private var width = DEFAULT_WIDTH
+    private var height = DEFAULT_HEIGHT
 
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
@@ -69,10 +66,6 @@ class UiScrollViewNode(
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
-        // set default properties values
-        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-
         layoutLoop()
     }
 
@@ -129,7 +122,7 @@ class UiScrollViewNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+        if (props.containsKey(PROP_SCROLL_BOUNDS)) {
             setNeedsRebuild()
         }
     }
@@ -143,8 +136,11 @@ class UiScrollViewNode(
     }
 
     override fun setupView() {
-        width = this.properties.getDouble(PROP_WIDTH).toFloat()
-        height = this.properties.getDouble(PROP_HEIGHT).toFloat()
+        val scrollBounds = PropertiesReader.readAABB(this.properties, PROP_SCROLL_BOUNDS)
+        if (scrollBounds != null) {
+            width = scrollBounds.getWidth()
+            height = scrollBounds.getHeight()
+        }
 
         val widthPx = metersToPx(width)
         val heightPx = metersToPx(height)

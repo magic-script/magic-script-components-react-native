@@ -32,7 +32,6 @@ class RectLayoutManagerImpl: RectLayoutManager {
     }
 
     private fun layoutNodeWithinParentSize(node: Node, nodeBounds: Bounding, parentBounds: Bounding) {
-        Log.d("RectLayoutManager", "scale: ${node.localScale} bounds: ${nodeBounds}")
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
         val boundsCenterX = nodeBounds.left + nodeWidth / 2

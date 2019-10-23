@@ -55,7 +55,6 @@ abstract class UiNode(
      * (after all properties have been applied)
      */
     private var size = Vector2(0F, 0F)
-        private set
 
     var clickListener: (() -> Unit)? = null
 

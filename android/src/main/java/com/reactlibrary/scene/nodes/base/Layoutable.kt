@@ -14,13 +14,9 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.icons
-
-import android.graphics.drawable.Drawable
+package com.reactlibrary.scene.nodes.base
 
 /**
- * Returns an icon for a given name or null if not found.
+ * This interface must be used by a node that manages its children positions.
  */
-interface IconsRepository {
-    fun getIcon(name: String, forceDefault: Boolean = false): Drawable?
-}
+interface Layoutable

@@ -32,7 +32,7 @@ class UiDropdownListItemNodeSpec: QuickSpec {
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.alignment).to(equal(Alignment.centerCenter))
-                    expect(node.text).to(beNil())
+                    expect(node.label).to(beNil())
                     let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.textSize).to(beCloseTo(0.0))
@@ -58,9 +58,9 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
 
-                it("should update 'text' prop") {
-                    node.update(["text" : shortReferenceText])
-                    expect(node.text).to(equal(shortReferenceText))
+                it("should update 'label' prop") {
+                    node.update(["label" : shortReferenceText])
+                    expect(node.label).to(equal(shortReferenceText))
                 }
 
                 it("should update 'textColor' prop") {

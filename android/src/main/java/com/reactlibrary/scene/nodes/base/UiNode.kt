@@ -94,6 +94,10 @@ abstract class UiNode(
         }
     }
 
+    open fun disallowInterceptTouchEvent(): Boolean {
+        return false
+    }
+
     /**
      * Initializes the view instance and builds the node by calling [applyProperties]
      * with all initial properties

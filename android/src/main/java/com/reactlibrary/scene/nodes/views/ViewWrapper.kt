@@ -22,12 +22,13 @@ import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.UiScrollViewNode
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.Vector2
 
 class ViewWrapper(
         context: Context,
-        private val parent: Node) : LinearLayout(context) {
+        private val parent: UiNode) : LinearLayout(context) {
 
     init {
         layoutParams = LayoutParams(
@@ -60,13 +61,21 @@ class ViewWrapper(
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        if (parent.disallowInterceptTouchEvent()) {
+            return false
+        }
+
         val scrollNode = findScrollAncestor()
-        if (event.actionMasked != MotionEvent.ACTION_MOVE && scrollNode != null) {
-            scrollNode.stopNestedScroll()
+        if (scrollNode == null) {
+            return false
         }
 
         val action = event.actionMasked
-        return action == MotionEvent.ACTION_MOVE && scrollNode != null
+        if (action != MotionEvent.ACTION_MOVE) {
+            scrollNode.stopNestedScroll()
+        }
+
+        return action == MotionEvent.ACTION_MOVE
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

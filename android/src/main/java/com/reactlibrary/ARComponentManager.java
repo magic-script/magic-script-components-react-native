@@ -45,6 +45,7 @@ import com.reactlibrary.font.providers.FontProviderImpl;
 import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
+import com.reactlibrary.icons.IconsRepositoryImpl;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -135,7 +136,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
         ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
-        this.iconsRepository = new IconsRepository(defaultIconsProvider, externalIconsProvider);
+        this.iconsRepository = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
 
         context.addLifecycleEventListener(this);
     }

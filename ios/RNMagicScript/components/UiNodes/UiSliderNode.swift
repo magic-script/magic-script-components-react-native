@@ -19,7 +19,7 @@ import SceneKit
 @objc open class UiSliderNode: UiNode {
     static fileprivate let defaultWidth: CGFloat = 0.5
     static fileprivate let defaultHeight: CGFloat = 0.018
-    static fileprivate let foregroundHeightFactor: CGFloat = 1.25
+    static fileprivate let backgroundHeightFactor: CGFloat = 0.75
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -92,12 +92,12 @@ import SceneKit
         super.setupNode()
 
         assert(backgroundGeometry == nil, "Node must not be initialized!")
-        backgroundGeometry = SCNPlane(width: width, height: height)
+        backgroundGeometry = SCNPlane(width: width, height: height * UiSliderNode.backgroundHeightFactor)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
         backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
 
-        foregroundGeometry = SCNPlane(width: width, height: height * UiSliderNode.foregroundHeightFactor)
+        foregroundGeometry = SCNPlane(width: width, height: height)
         foregroundGeometry.firstMaterial?.lightingModel = .constant
         foregroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         foregroundGeometry.firstMaterial?.readsFromDepthBuffer = false
@@ -107,12 +107,14 @@ import SceneKit
         minLabelNode.textSize = 0.065
         minLabelNode.textColor = .white
         minLabelNode.textAlignment = .center
+        minLabelNode.textPadding = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0125)
 
         maxLabelNode = LabelNode()
         maxLabelNode.defaultTextSize = 0.0167
         maxLabelNode.textSize = 0.065
         maxLabelNode.textColor = .white
         maxLabelNode.textAlignment = .center
+        maxLabelNode.textPadding = UIEdgeInsets(top: 0.0, left: 0.0125, bottom: 0.0, right: 0.0)
 
         let bgNode = SCNNode(geometry: backgroundGeometry)
         progressNode = SCNNode(geometry: foregroundGeometry)
@@ -171,7 +173,7 @@ import SceneKit
         let size = getSize()
 
         backgroundGeometry.width = size.width
-        backgroundGeometry.height = size.height
+        backgroundGeometry.height = size.height * UiSliderNode.backgroundHeightFactor
         backgroundGeometry.cornerRadius = 0.5 * size.height
 
         let delta = max - min
@@ -181,7 +183,7 @@ import SceneKit
 
         let slideWidth = size.width * progress
         foregroundGeometry.width = slideWidth
-        foregroundGeometry.height = size.height * UiSliderNode.foregroundHeightFactor
+        foregroundGeometry.height = size.height
         foregroundGeometry.cornerRadius = 0.5 * size.height
         progressNode.pivot = SCNMatrix4MakeTranslation(-0.5 * Float(slideWidth), 0.0, 0.0)
         progressNode.position = SCNVector3(-0.5 * size.width, 0.0, 0.0)
@@ -214,6 +216,12 @@ import SceneKit
             contentNode.addChildNode(outlineNode)
             outlineNode.position = SCNVector3((maxLabelWidthFactor-minLabelWidthFactor) / 2, 0.0, 0.0)
         }
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        minLabelNode.setDebugMode(debug)
+        maxLabelNode.setDebugMode(debug)
     }
 }
 

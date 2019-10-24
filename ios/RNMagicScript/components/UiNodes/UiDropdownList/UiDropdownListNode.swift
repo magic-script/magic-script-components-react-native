@@ -69,7 +69,8 @@ import SceneKit
 
     fileprivate var itemsList: Array<UiDropdownListItemNode> = []
     fileprivate(set) var selectedItem: UiDropdownListItemNode?
-    fileprivate let listGridLayoutNodeId = "dropDownListGridLayout"
+    fileprivate var listNode: SCNNode!
+    fileprivate var backgroundNode: SCNNode!
     fileprivate(set) var listGridLayoutNode: UiGridLayoutNode!
 
     fileprivate var reloadOutline: Bool = true
@@ -100,7 +101,17 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
-        listGridLayoutNode.position = SCNVector3(position.x, -0.05, position.z + 0.03)
+        let buttonSize = gridLayoutNode.getSize()
+        let listSize = listGridLayoutNode.getSize()
+        listNode.position = SCNVector3(0.5 * listSize.width - 0.45 * buttonSize.width, -0.05, 0.03)
+        if let plane = backgroundNode.geometry as? SCNPlane {
+            plane.width = listSize.width
+            plane.height = listSize.height
+        }
+
+        backgroundNode.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
+        backgroundNode.isHidden = listGridLayoutNode.visible
+
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         listGridLayoutNode.layoutIfNeeded()
     }
@@ -109,6 +120,7 @@ import SceneKit
         super.setNeedsLayout()
         labelNode.setNeedsLayout()
         gridLayoutNode.setNeedsLayout()
+        listGridLayoutNode.setNeedsLayout()
     }
 
     @objc override func setupNode() {
@@ -117,52 +129,62 @@ import SceneKit
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
         labelNode.textSize = UiDropdownListNode.defaultTextSize
-        labelNode.layoutIfNeeded()
 
         iconNode = UiImageNode(props: ["icon": "chevron-down", "height": 0.04])
-        iconNode.layoutIfNeeded()
 
-        gridLayoutNode = UiGridLayoutNode(props: [
-            "columns": 2,
-            "rows": 1,
-            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "center-center"
-        ])
+        gridLayoutNode = UiGridLayoutNode()
+        gridLayoutNode.columns = 2
+        gridLayoutNode.rows = 1
+        gridLayoutNode.defaultItemPadding = UIEdgeInsets(top: 0.015, left: 0.005, bottom: 0.015, right: 0.005)
+        gridLayoutNode.alignment = Alignment.centerCenter
 
         gridLayoutNode.addChild(labelNode)
         gridLayoutNode.addChild(iconNode)
-        gridLayoutNode.layoutIfNeeded()
 
         contentNode.addChildNode(gridLayoutNode)
 
-        listGridLayoutNode = UiGridLayoutNode(props: [
-            "columns": 1,
-            "defaultItemPadding": [0.0, 0.0, 0.0, 0.0],
-            "defaultItemAlignment": "center-left",
-            "alignment": "top-center"
-        ])
+        // List items node
+        listNode = SCNNode()
+        contentNode.addChildNode(listNode)
 
-        contentNode.addChildNode(listGridLayoutNode)
+        backgroundNode = NodesFactory.createPlaneNode(width: 0, height: 0, image: ImageAsset.dropdownListBackground.image)
+        backgroundNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        backgroundNode.isHidden = true
+        backgroundNode.renderingOrder = 0
+        listNode.addChildNode(backgroundNode)
 
-        listGridLayoutNode.visible = false
-        listGridLayoutNode.layoutIfNeeded()
+        listGridLayoutNode = UiGridLayoutNode()
+        listGridLayoutNode.isHidden = true
+        listGridLayoutNode.columns = 1
+        listGridLayoutNode.defaultItemPadding = UIEdgeInsets.zero
+        listGridLayoutNode.defaultItemAlignment = Alignment.centerLeft
+        listGridLayoutNode.alignment = Alignment.topCenter
+        listGridLayoutNode.renderingOrder = 1
+        listNode.addChildNode(listGridLayoutNode)
+    }
+
+    @objc override func addChild(_ child: TransformNode) {
+        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+        dropDownListItem.maxCharacterLimit = maxCharacterLimit
+        itemsList.append(dropDownListItem)
+        dropDownListItem.tapHandler = self
+        listGridLayoutNode.addChild(dropDownListItem)
+        setNeedsLayout()
+    }
+
+    @objc override func removeChild(_ child: TransformNode) {
+        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+        itemsList.removeAll { node -> Bool in
+            return node == dropDownListItem
+        }
+        dropDownListItem.tapHandler = nil
+        listGridLayoutNode.removeChild(child)
+        setNeedsLayout()
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
         if isListExpanded {
-            if let hitPoint = listGridLayoutNode.getHitTestPoint(ray: ray) {
-                listGridLayoutNode.setDebugMode(true)
-                let gridBounds = listGridLayoutNode.getBounds(parentSpace: true)
-                let itemHeight: CGFloat = itemsList.first?.getSize().height ?? 0
-
-                print("\ngridBounds: \(gridBounds);\nhitPoint: \(hitPoint);\ngridBounds.minY: \(gridBounds.minY);\ngridBounds.maxY: \(gridBounds.maxY)")
-                let dy: CGFloat = gridBounds.maxY - CGFloat(hitPoint.y)
-                let index: Int = (itemHeight > 0.00001) ? Int(dy / itemHeight) : -1
-                print("index: \(index)")
-                if index >= 0 && index < itemsList.count {
-                    return itemsList[index]
-                }
-            }
+            return listGridLayoutNode.hitTest(ray: ray)
         }
 
         return selfHitTest(ray: ray)
@@ -214,7 +236,14 @@ import SceneKit
     @objc override func updateLayout() {
         labelNode.layoutIfNeeded()
         gridLayoutNode.layoutIfNeeded()
-        listGridLayoutNode.updateLayout()
+        listGridLayoutNode.layoutIfNeeded()
+
+        if let plane = backgroundNode.geometry as? SCNPlane {
+            let size = listGridLayoutNode.getSize()
+            plane.width = size.width
+            plane.height = size.height
+        }
+
         if reloadOutline {
             reloadOutline = false
             reloadOutlineNode()
@@ -245,25 +274,6 @@ import SceneKit
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
         contentNode.addChildNode(outlineNode)
-    }
-
-    @objc override func addChild(_ child: TransformNode) {
-        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
-        dropDownListItem.maxCharacterLimit = maxCharacterLimit
-        itemsList.append(dropDownListItem)
-        dropDownListItem.tapHandler = self
-        listGridLayoutNode.addChild(dropDownListItem)
-        setNeedsLayout()
-    }
-
-    @objc override func removeChild(_ child: TransformNode) {
-        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
-        itemsList.removeAll { node -> Bool in
-            return node == dropDownListItem
-        }
-        dropDownListItem.tapHandler = nil
-        listGridLayoutNode.removeChild(child)
-        setNeedsLayout()
     }
 }
 

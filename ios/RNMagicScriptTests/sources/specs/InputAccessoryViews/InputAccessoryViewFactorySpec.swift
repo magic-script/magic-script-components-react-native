@@ -21,20 +21,47 @@ import Nimble
 class InputAccessoryViewFactorySpec: QuickSpec {
     override func spec() {
         describe("InputAccessoryViewFactory") {
-            context("createView") {
-                it("should create multiline text accessory view") {
-                    let textEdit = UiTextEditNode(props: ["multiline" : true])
-                    let view = InputAccessoryViewFactory.createView(for: textEdit, onFinishEditing: nil)
-                    expect(view is MultiLineTextAccessoryView).to(beTrue())
+            context("when parent view is kind of InputDataProviding") {
+                it("should return correct accessory view") {
+                    let inputDataProvider: DataProviding = SimpleInputDataProvider()
+                    let view = InputAccessoryViewFactory.createView(for: inputDataProvider, onFinishEditing: nil)
+                    expect(view).toNot(beNil())
                 }
 
-                it("should create single line text accessory view") {
-                    let textEdit = UiTextEditNode(props: ["multiline" : false])
-                    let view = InputAccessoryViewFactory.createView(for: textEdit, onFinishEditing: nil)
-                    expect(view is SingleLineTextAccessoryView).to(beTrue())
-                }
+                context("when requested") {
+                    it("should create multiline text accessory view") {
+                        let textEdit = UiTextEditNode(props: ["multiline" : true])
+                        let view = InputAccessoryViewFactory.createView(for: textEdit, onFinishEditing: nil)
+                        expect(view is MultiLineTextAccessoryView).to(beTrue())
+                    }
 
+                    it("should create single line text accessory view") {
+                        let textEdit = UiTextEditNode(props: ["multiline" : false])
+                        let view = InputAccessoryViewFactory.createView(for: textEdit, onFinishEditing: nil)
+                        expect(view is SingleLineTextAccessoryView).to(beTrue())
+                    }
+                }
+            }
+
+            context("when parent view isn't kind of InputDataProviding") {
+                it("should return nil") {
+                    let dataProvider = SimpleDataProvider()
+                    let view = InputAccessoryViewFactory.createView(for: dataProvider, onFinishEditing: nil)
+                    expect(view).to(beNil())
+                }
             }
         }
     }
+}
+
+fileprivate struct SimpleDataProvider: DataProviding { }
+fileprivate struct SimpleInputDataProvider: InputDataProviding {
+    var value: Any? = nil
+    var placeholder: String? = nil
+    var charLimit: Int = 0
+    var multiline: Bool = false
+    var password: Bool = false
+    var autocapitalizationType: UITextAutocapitalizationType? = nil
+    var keyboardType: UIKeyboardType? = nil
+    var textContentType: UITextContentType? = nil
 }

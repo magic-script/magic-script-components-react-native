@@ -34,7 +34,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setupARView()
-        setupTests()
+        setupScrollViewTest()
+        setupDropdownListTest()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -67,15 +68,23 @@ class ViewController: UIViewController {
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
-    fileprivate func setupTests() {
+
+    fileprivate func setupScrollViewTest() {
+        // Group
+        let groupId: String = "group"
+        let group: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
+
+        // Scroll view
         let scrollViewId: String = "scroll_view"
-        let scrollBarId: String = "scroll_bar"
         scrollView = createComponent([
             "alignment": "center-center",
             "debug": true,
             "scrollBounds": ["min": [-0.25,-0.35,-0.1], "max": [0.25,0.15,0.1]]
         ], nodeId: scrollViewId)
         let bounds: CGRect = scrollView.getBounds()
+
+        // Scroll bar
+        let scrollBarId: String = "scroll_bar"
         scrollBar = createComponent([
             "debug": false,
             "localPosition": [bounds.maxX, bounds.midY, 0],
@@ -83,8 +92,18 @@ class ViewController: UIViewController {
         ], nodeId: scrollBarId, parentId: scrollViewId)
         createGridWithIcons(parentId: scrollViewId)
 
-//        scrollView.layoutIfNeeded()
-//        scrollBar.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+        scrollBar.layoutIfNeeded()
+
+        // Button
+        let button: UiButtonNode = createComponent([
+            "localPosition": [0, 0.6, 0],
+            "textSize": 0.05,
+            "text": "Button"
+        ], nodeId: "button", parentId: groupId)
+        button.layoutIfNeeded()
+
+        group.layoutIfNeeded()
     }
 
     fileprivate func createGridWithIcons(parentId: String) {
@@ -98,14 +117,47 @@ class ViewController: UIViewController {
 
         SystemIcon.names.enumerated().forEach { (index, name) in
             let nodeId: String = "icon_\(index)"
-            let _: UiImageNode = createComponent(["icon": name, "height": 0.04], nodeId: nodeId, parentId: gridId)
+            let _: UiImageNode = createComponent(["icon": name, "height": 0.04, "skipRaycast": false], nodeId: nodeId, parentId: gridId)
         }
 
         grid.layoutIfNeeded()
     }
 
+    fileprivate var dropdownItems: [UiDropdownListItemNode] = []
+    fileprivate func setupDropdownListTest() {
+        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.5, 0], "textSize": 0.0235, "maxCharacterLimit": 0])
+        let dropdownListId = "dropdownListId"
+        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
+        UiNodesManager.instance.addNodeToRoot(dropdownListId)
+        dropdownList.layoutIfNeeded()
+
+        for index in 0...16 {
+            let dropdownItem: UiDropdownListItemNode
+            if index % 4 == 0 {
+                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very long text for dropDownListItem to check how this looks when list appears", "textSize": 0.03])
+            } else {
+                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very short text", "textSize": 0.03])
+            }
+            dropdownItems.append(dropdownItem)
+
+            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
+            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
+        }
+        dropdownList.onTap = { sender in
+//            print("dropDown onTap \(sender)")
+        }
+
+        dropdownList.onSelectionChanged = { [weak self] sender, selectedItems in 
+//            print("dropDown onSelectionChanged \(sender) \(selectedItem)")
+            if let index = selectedItems.first {
+                sender.text = self?.dropdownItems[index].label
+                sender.layoutIfNeeded()
+            }
+        }
+    }
+
     @discardableResult
-    fileprivate func createComponent<T: UiNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
+    fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
         node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)
@@ -124,19 +176,18 @@ extension ViewController: ARSCNViewDelegate {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-//        scrollBarPosition += CGFloat(deltaTime)
-//        if scrollBarPosition > 1.0 {
-//            scrollBarPosition -= 2.0
-//        }
-//
-//        scrollBarSize += CGFloat(deltaTime * 0.1)
-//        if scrollBarSize > 1.0 {
-//            scrollBarSize -= 2.0
-//        }
-//        scrollView.scrollValue = abs(scrollBarPosition)
-//        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-        scrollView.setNeedsLayout()
-        scrollBar.setNeedsLayout()
+        scrollBarPosition += CGFloat(deltaTime)
+        if scrollBarPosition > 1.0 {
+            scrollBarPosition -= 2.0
+        }
+
+        scrollBarSize += CGFloat(deltaTime * 0.1)
+        if scrollBarSize > 1.0 {
+            scrollBarSize -= 2.0
+        }
+
+        scrollView.scrollValue = abs(scrollBarPosition)
+        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
         scrollView.layoutIfNeeded()
     }
 }

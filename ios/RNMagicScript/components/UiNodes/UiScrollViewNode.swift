@@ -39,13 +39,6 @@ import SceneKit
 
     @objc public var onScrollChanged: ((_ sender: UiNode, _ value: CGFloat) -> (Void))?
 
-    @objc override func setupNode() {
-        super.setupNode()
-
-        proxyNode = SCNNode()
-        contentNode.addChildNode(proxyNode)
-    }
-
     fileprivate weak var scrollBar: UiScrollBarNode?
     fileprivate weak var scrollContent: TransformNode?
     fileprivate var proxyNode: SCNNode!
@@ -53,6 +46,26 @@ import SceneKit
 
     deinit {
         scrollContent?.resetClippingPlanes()
+    }
+
+    @objc override func setupNode() {
+        super.setupNode()
+
+        proxyNode = SCNNode()
+        contentNode.addChildNode(proxyNode)
+    }
+
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+
+        let nodes: [TransformNode?] = [scrollContent, scrollBar]
+        for node in nodes {
+            if let hitNode = node?.hitTest(ray: ray) {
+                return hitNode
+            }
+        }
+
+        return nil
     }
 
     @objc override func update(_ props: [String: Any]) {

@@ -267,14 +267,26 @@ RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(onSelectedDropdownListItemChangedEventHandler:(NSString *)nodeId) {
-    ARLog(@"onSelectedDropdownListItemChangedEventHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnSelectionChangedEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
-    if (node && [node isKindOfClass:[UiVideoNode class]]) {
+    if (node && [node isKindOfClass:[UiDropdownListNode class]]) {
         UiDropdownListNode *dropdownList = (UiDropdownListNode *)node;
-        dropdownList.onSelectionItemChanged = ^(UiDropdownListNode *sender, UiDropdownListItemNode *selectedItem) {
+        dropdownList.onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<NSNumber *> *selectedItemsIndexes) {
             ARLog(@"DropdownList item selected");
-            [[AREventsManager instance] onSelectedDropdownListItemChangedEventReceived:sender selectedItem: selectedItem];
+            [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItemsIndexes: selectedItemsIndexes];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnSliderChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnSliderChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiSliderNode class]]) {
+        UiSliderNode *sliderNode = (UiSliderNode *)node;
+        sliderNode.onSliderChanged = ^(UiSliderNode *sender, CGFloat value) {
+            ARLog(@"slider changed: %@", @(value));
+            [[AREventsManager instance] onSliderChangedEventReceived:sender value:value];
         };
     }
 }

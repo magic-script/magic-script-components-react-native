@@ -27,6 +27,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.ar.sceneform.Node;
@@ -44,6 +45,7 @@ import com.reactlibrary.font.providers.FontProviderImpl;
 import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
+import com.reactlibrary.icons.IconsRepositoryImpl;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -97,11 +99,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_TEXT_CHANGED = "onTextChanged";
     private static final String EVENT_TOGGLE_CHANGED = "onToggleChanged";
     private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
+    private static final String EVENT_DROPDOWN_SELECTION_CHANGED = "onSelectionChanged";
+    private static final String EVENT_SLIDER_VALUE_CHANGED = "onSliderChanged";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
     private static final String EVENT_ARG_TEXT = "text";
     private static final String EVENT_ARG_TOGGLE_ACTIVE = "On";
+    private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
+    private static final String EVENT_ARG_SLIDER_VALUE = "value";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -130,7 +136,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
         ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
-        this.iconsRepository = new IconsRepository(defaultIconsProvider, externalIconsProvider);
+        this.iconsRepository = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
 
         context.addLifecycleEventListener(this);
     }
@@ -378,6 +384,40 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     sendEvent(EVENT_VIDEO_PREPARED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnSliderChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiSliderNode) {
+                ((UiSliderNode) node).setOnSliderChangedListener((value) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putDouble(EVENT_ARG_SLIDER_VALUE, value);
+                    sendEvent(EVENT_SLIDER_VALUE_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnSelectionChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiDropdownListNode) {
+                ((UiDropdownListNode) node).setOnSelectionChangedListener((itemIndex) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    WritableArray selectedItems = Arguments.createArray();
+                    selectedItems.pushInt(itemIndex);
+                    params.putArray(EVENT_ARG_SELECTED_ITEMS, selectedItems);
+                    sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params);
                     return Unit.INSTANCE;
                 });
             }

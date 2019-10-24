@@ -31,7 +31,8 @@
         android:includeFontPadding="false"
         android:textColor="@color/text_color_default"
         android:textSize="20sp"
-        tools:ignore="RtlHardcoded" />
+        tools:ignore="RtlHardcoded"
+        tools:text="Toggle" />
 
     <ImageView
         android:id="@+id/iv_toggle"

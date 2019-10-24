@@ -19,7 +19,7 @@ import CoreGraphics // CGFloat import
 
 //sourcery: AutoMockable
 protocol SliderDataProviding: DataProviding {
-    var value: CGFloat { get set }
+    var sliderValue: CGFloat { get set }
     var min: CGFloat { get set }
     var max: CGFloat { get set }
 }

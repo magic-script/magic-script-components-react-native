@@ -17,11 +17,26 @@
 package com.reactlibrary.scene.nodes.props
 
 /**
- * Alignment that represents the pivot point (anchor) of a Node
- * E.g. when HorizontalAlignment is RIGHT then content of the node is placed
- * on the left (relative to node's position)
+ * Alignment that represents the pivot point (anchor) of a Node or layout's content alignment.
  */
 data class Alignment(val vertical: VerticalAlignment, val horizontal: HorizontalAlignment) {
-    enum class HorizontalAlignment { LEFT, CENTER, RIGHT }
-    enum class VerticalAlignment { TOP, CENTER, BOTTOM }
+    /**
+     * Horizontal alignment
+     * @param centerOffset center offset factor relative to a node width
+     */
+    enum class HorizontalAlignment(val centerOffset: Float) {
+        LEFT(-0.5F),
+        CENTER(0F),
+        RIGHT(0.5F)
+    }
+
+    /**
+     * Vertical alignment
+     * @param centerOffset center offset factor relative to a node height
+     */
+    enum class VerticalAlignment(val centerOffset: Float) {
+        TOP(0.5F),
+        CENTER(0F),
+        BOTTOM(-0.5F)
+    }
 }

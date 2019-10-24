@@ -20,6 +20,7 @@
 
 @class UiNode;
 @class UiVideoNode;
+@class UiSliderNode;
 @class UiDropdownListNode;
 @class UiDropdownListItemNode;
 
@@ -32,6 +33,7 @@
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
-- (void)onSelectedDropdownListItemChangedEventReceived:(UiDropdownListNode *)sender selectedItem:(UiDropdownListItemNode *)selectedItem;
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes;
+- (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value;
 
 @end

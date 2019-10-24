@@ -21,22 +21,21 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.icons.IconsProvider
+import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(initProps: ReadableMap,
                        context: Context,
                        viewRenderableLoader: ViewRenderableLoader,
-                       private val iconsProvider: IconsProvider)
+                       private val iconsRepo: IconsRepository)
     : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -47,28 +46,20 @@ open class UiImageNode(initProps: ReadableMap,
         const val PROP_ICON = "icon"
         const val PROP_COLOR = "color"
         const val PROP_FRAME = "useFrame"
+        const val PROP_USE_DEFAULT_ICON = "useDefaultIcon"
     }
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }
 
-    override fun setupView() {
-        val heightPx = if (properties.containsKey(PROP_HEIGHT)) {
-            val heightInMeters = properties.getDouble(PROP_HEIGHT).toFloat()
-            Utils.metersToPx(heightInMeters, context)
-        } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT
+    override fun provideDesiredSize(): Vector2 {
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        var width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        if (width.toFloat() == WRAP_CONTENT_DIMENSION) {
+            width = height // for icons support
         }
-
-        val widthPx = if (properties.containsKey(PROP_WIDTH)) {
-            val widthInMeters = properties.getDouble(PROP_WIDTH).toFloat()
-            Utils.metersToPx(widthInMeters, context)
-        } else {
-            heightPx // for icons support
-        }
-
-        view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+        return Vector2(width.toFloat(), height.toFloat())
     }
 
     override fun applyProperties(props: Bundle) {
@@ -80,6 +71,7 @@ open class UiImageNode(initProps: ReadableMap,
 
         setImagePath(props)
         setIcon(props)
+        setUseDefaultIcon(props)
         setColor(props)
         setUseFrame(props)
     }
@@ -99,12 +91,19 @@ open class UiImageNode(initProps: ReadableMap,
     }
 
     private fun setIcon(props: Bundle) {
+        val forceDefault = properties.getBoolean(PROP_USE_DEFAULT_ICON, false)
         val iconName = props.getString(PROP_ICON)
         if (iconName != null) {
-            val icon = iconsProvider.provideIcon(iconName)
+            val icon = iconsRepo.getIcon(iconName, forceDefault)
             if (icon != null) {
                 view.image_view.setImageDrawable(icon)
             }
+        }
+    }
+
+    private fun setUseDefaultIcon(props: Bundle) {
+        if (updatingProperties && props.containsKey(PROP_USE_DEFAULT_ICON)) {
+            setIcon(props) // reload icon
         }
     }
 

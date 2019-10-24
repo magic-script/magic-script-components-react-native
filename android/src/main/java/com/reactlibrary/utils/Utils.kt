@@ -55,6 +55,19 @@ class Utils {
         }
 
         /**
+         *  Converts native pixels to ARCore's meters
+         *  (Uses an average of horizontal and vertical density -
+         *  usually they are almost the same)
+         */
+        fun pxToMeters(px: Float, context: Context): Float {
+            val xdpi = context.resources.displayMetrics.xdpi
+            val ydpi = context.resources.displayMetrics.ydpi
+            val averageDensity = (xdpi + ydpi) / 2
+            val densityAvgFactor = averageDensity / BASELINE_DENSITY
+            return px / (DP_TO_METER_RATIO * densityAvgFactor)
+        }
+
+        /**
          * Converts ARCore's meters to "font" pixels (font size is scaled
          * to match Lumin's implementation)
          */
@@ -63,19 +76,13 @@ class Utils {
         }
 
         /**
-         * Calculates local bounds of a node using its collision shape
+         * Calculates local bounds of a basic node [Node] using its collision shape.
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
             // TODO (optionally) add Sphere collision shape support (currently never used)
-            var offsetX = node.localPosition.x
-            var offsetY = node.localPosition.y
-            val collShape = if (node is TransformNode) {
-                offsetX += node.contentNode.localPosition.x
-                offsetY += node.contentNode.localPosition.y
-                node.contentNode.collisionShape
-            } else {
-                node.collisionShape
-            }
+            val offsetX = node.localPosition.x
+            val offsetY = node.localPosition.y
+            val collShape = node.collisionShape
             return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y

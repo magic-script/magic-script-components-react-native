@@ -23,8 +23,26 @@ import SceneKit
         set { }
     }
 
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        let nodes: [TransformNode] = contentNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
+        for node in nodes {
+            if let hitNode = node.hitTest(ray: ray) {
+                return hitNode
+            }
+        }
+
+        return nil
+    }
+
     @objc override func _calculateSize() -> CGSize {
         return getBoundsCollection().size
+    }
+
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+        let bounds = getBoundsCollection()
+        let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(position.x), y: CGFloat(position.y)) : CGPoint.zero
+        return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 
     @objc override func updateLayout() {
@@ -40,11 +58,11 @@ import SceneKit
 // MARK: - Helpers
 extension UiGroupNode {
     @objc fileprivate func getBoundsCollection() -> CGRect {
-        let nodes: [SCNNode] = contentNode.childNodes.filter { $0 is TransformNode }
+        let nodes: [TransformNode] = contentNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
         guard !nodes.isEmpty else { return CGRect.zero }
-        var bounds: CGRect = (nodes[0] as! TransformNode).getBounds(parentSpace: true)
+        var bounds: CGRect = nodes[0].getBounds(parentSpace: true)
         for i in 1..<nodes.count {
-            let b = (nodes[i] as! TransformNode).getBounds(parentSpace: true)
+            let b = nodes[i].getBounds(parentSpace: true)
             bounds = bounds.union(b)
         }
 

@@ -17,13 +17,13 @@
 import SceneKit
 
 @objc open class UiDropdownListItemNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0235
+    static fileprivate let defaultTextSize: CGFloat = 0.065
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
         set { }
     }
-    @objc var text: String? {
+    @objc var label: String? {
         get { return labelNode.text }
         set { labelNode.text = alignTextLenght(newValue, maxCharacterLimit); setNeedsLayout() }
     }
@@ -41,7 +41,7 @@ import SceneKit
     }
     @objc var maxCharacterLimit: Int = 0 {
         didSet {
-            labelNode.text = alignTextLenght(text, maxCharacterLimit)
+            labelNode.text = alignTextLenght(label, maxCharacterLimit)
             setNeedsLayout()
         }
     }
@@ -85,6 +85,7 @@ import SceneKit
         super.setupNode()
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = UiLabelNode()
+        labelNode.textSize = UiDropdownListItemNode.defaultTextSize
         labelNode.layoutIfNeeded()
 
         gridLayoutNode = UiGridLayoutNode(props: [
@@ -109,8 +110,8 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let text = Convert.toString(props["text"]) {
-            self.text = text
+        if let label = Convert.toString(props["label"]) {
+            self.label = label
         }
 
         if let textColor = Convert.toColor(props["textColor"]) {

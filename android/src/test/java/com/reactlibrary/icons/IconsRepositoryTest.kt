@@ -34,14 +34,14 @@ class IconsRepositoryTest {
     private lateinit var context: Context
     private lateinit var defaultIconsProvider: DefaultIconsProvider
     private lateinit var externalIconsProvider: ExternalIconsProvider
-    private lateinit var iconsRepository: IconsRepository
+    private lateinit var iconsRepository: IconsRepositoryImpl
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext<Context>()
         defaultIconsProvider = mock()
         externalIconsProvider = mock()
-        iconsRepository = IconsRepository(defaultIconsProvider, externalIconsProvider)
+        iconsRepository = IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider)
     }
 
     @Test
@@ -51,7 +51,7 @@ class IconsRepositoryTest {
         whenever(externalIconsProvider.provideIcon(anyString())).thenReturn(externalIcon)
         whenever(defaultIconsProvider.provideIcon(anyString())).thenReturn(defaultIcon)
 
-        val icon = iconsRepository.provideIcon("sample-icon")
+        val icon = iconsRepository.getIcon("sample-icon")
 
         assertEquals(externalIcon, icon)
     }
@@ -62,7 +62,7 @@ class IconsRepositoryTest {
         val defaultIcon = context.getDrawable(R.drawable.add)
         whenever(defaultIconsProvider.provideIcon(anyString())).thenReturn(defaultIcon)
 
-        val icon = iconsRepository.provideIcon("sample-icon")
+        val icon = iconsRepository.getIcon("sample-icon")
 
         assertEquals(defaultIcon, icon)
     }

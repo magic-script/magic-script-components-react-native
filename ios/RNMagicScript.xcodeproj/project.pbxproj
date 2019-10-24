@@ -236,6 +236,27 @@
 		C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */; };
 		C487A5B82330CD8F002B4D36 /* UiVideoNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */; };
+		C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
+		C4A12B0D2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
+		C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */; };
+		C4A12B102361AD38009B7083 /* UiDatePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */; };
+		C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */; };
+		C4A12B132361AD46009B7083 /* UiTimePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */; };
+		C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */; };
+		C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */; };
+		C4A12B1B2361B708009B7083 /* UiColorPickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */; };
+		C4A12B1D2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */; };
+		C4A12B1E2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */; };
+		C4A12B202361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
+		C4A12B212361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
+		C4A12B232361BA06009B7083 /* ColorPickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */; };
+		C4A12B242361BA06009B7083 /* ColorPickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */; };
+		C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */; };
+		C4A12B282361BC84009B7083 /* DatePickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */; };
+		C4A12B2A2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */; };
+		C4A12B2B2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */; };
+		C4A12B2D2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */; };
+		C4A12B2E2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */; };
 		C4B4B66B234618390029E59C /* UiSliderNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */; };
 		C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */; };
 		C4BE7BCF234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */; };
@@ -581,6 +602,18 @@
 		C4816BF1234C9082001CCBDD /* DataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviding.swift; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
+		C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNode.swift; sourceTree = "<group>"; };
+		C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNode.swift; sourceTree = "<group>"; };
+		C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNode.swift; sourceTree = "<group>"; };
+		C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNodeSpec.swift; sourceTree = "<group>"; };
+		C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNodeSpec.swift; sourceTree = "<group>"; };
+		C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNodeSpec.swift; sourceTree = "<group>"; };
+		C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerAccessoryView.swift; sourceTree = "<group>"; };
+		C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerInputView.swift; sourceTree = "<group>"; };
+		C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerInputView.swift; sourceTree = "<group>"; };
+		C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerDataProviding.swift; sourceTree = "<group>"; };
+		C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerDataProviding.swift; sourceTree = "<group>"; };
+		C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerDataProviding.swift; sourceTree = "<group>"; };
 		C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSliderNodeSpec.swift; sourceTree = "<group>"; };
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
 		C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
@@ -706,6 +739,7 @@
 				44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */,
 				44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */,
 				44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */,
+				C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */,
 			);
 			path = InputAccessoryViews;
 			sourceTree = "<group>";
@@ -892,6 +926,9 @@
 				C4816BF1234C9082001CCBDD /* DataProviding.swift */,
 				44D8FE87233A0E93007FD766 /* InputDataProviding.swift */,
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
+				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
+				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
+				C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -900,6 +937,7 @@
 			isa = PBXGroup;
 			children = (
 				4425EDFC2366052F0064A2EA /* Layouts */,
+				C4A12B142361B69B009B7083 /* Pickers */,
 				C465C25E234DC89200157AA6 /* UiDropdownList */,
 				44AFAC0C232B9BCE005AC8EF /* UiButtonNode.swift */,
 				44AFAC05232B9BCE005AC8EF /* UiGroupNode.swift */,
@@ -1057,6 +1095,7 @@
 			isa = PBXGroup;
 			children = (
 				44A3FCFF2366254600402912 /* Layouts */,
+				C4A12B152361B6AC009B7083 /* Pickers */,
 				44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */,
 				C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */,
 				C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */,
@@ -1195,11 +1234,33 @@
 			path = UiDropdownList;
 			sourceTree = "<group>";
 		};
+		C4A12B142361B69B009B7083 /* Pickers */ = {
+			isa = PBXGroup;
+			children = (
+				C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */,
+				C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */,
+				C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */,
+			);
+			path = Pickers;
+			sourceTree = "<group>";
+		};
+		C4A12B152361B6AC009B7083 /* Pickers */ = {
+			isa = PBXGroup;
+			children = (
+				C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */,
+				C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */,
+				C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */,
+			);
+			path = Pickers;
+			sourceTree = "<group>";
+		};
 		C4C114D02347374600E80044 /* InputViews */ = {
 			isa = PBXGroup;
 			children = (
 				C4C114D12347375D00E80044 /* SliderInputView.swift */,
 				C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */,
+				C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */,
+				C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */,
 			);
 			path = InputViews;
 			sourceTree = "<group>";
@@ -1637,8 +1698,12 @@
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
 				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
+				C4A12B282361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */,
+				C4A12B0D2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */,
 				44AFAD10232BCAE3005AC8EF /* UiNode.swift in Sources */,
+				C4A12B242361BA06009B7083 /* ColorPickerInputView.swift in Sources */,
+				C4A12B2B2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */,
 				44AFAD30232BCAE3005AC8EF /* ModelDownloader.swift in Sources */,
 				44AFAD1E232BCAE3005AC8EF /* UiSliderNode.swift in Sources */,
 				44AFAD1A232BCAE3005AC8EF /* UiImageNode.swift in Sources */,
@@ -1652,6 +1717,7 @@
 				44AFAD2A232BCAE3005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
+				C4A12B212361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
@@ -1662,6 +1728,7 @@
 				C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
 				44AFAD2B232BCAE3005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */,
+				C4A12B1E2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */,
 				448586FC235DC1FD00D372CB /* Ray.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */,
@@ -1680,6 +1747,7 @@
 				44AFAD1C232BCAE3005AC8EF /* UiModelNode.swift in Sources */,
 				44AFAD15232BCAE3005AC8EF /* Convert.swift in Sources */,
 				44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
+				C4A12B102361AD38009B7083 /* UiDatePickerNode.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
@@ -1698,11 +1766,13 @@
 				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				44AFAD23232BCAE3005AC8EF /* UiVideoNode.swift in Sources */,
 				441FC16D2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
+				C4A12B2E2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
 				44F596432355C5B500C60F4C /* Orientation.swift in Sources */,
 				C4BE7BCF234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
 				44AFAD28232BCAE3005AC8EF /* UIImage+Extension.swift in Sources */,
 				C4D5417C23338D82008D5124 /* VideoAction.swift in Sources */,
 				44AFAD0D232BCAE3005AC8EF /* LabelNode.swift in Sources */,
+				C4A12B132361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAD25232BCAE3005AC8EF /* FileManager+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1729,6 +1799,7 @@
 				4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */,
 				C465C268234DE34600157AA6 /* UiDropdownListNodeSpec.swift in Sources */,
 				C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */,
+				C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
 				C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */,
@@ -1742,6 +1813,7 @@
 				C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */,
 				44F09333232D985A0081FF14 /* SharedData.swift in Sources */,
 				44F09326232D985A0081FF14 /* UiToggleNodeSpec.swift in Sources */,
+				C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */,
 				44F596472355C62700C60F4C /* ScrollDirectionSpec.swift in Sources */,
 				44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */,
 				44F0932E232D985A0081FF14 /* ConvertSpec.swift in Sources */,
@@ -1749,6 +1821,7 @@
 				44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */,
 				44F0932F232D985A0081FF14 /* beCloseTo.swift in Sources */,
 				44F09324232D985A0081FF14 /* UiSpinnerNodeSpec.swift in Sources */,
+				C4A12B1B2361B708009B7083 /* UiColorPickerNodeSpec.swift in Sources */,
 				44F596452355C5FF00C60F4C /* OrientationSpec.swift in Sources */,
 				44F09325232D985A0081FF14 /* UiLineNodeSpec.swift in Sources */,
 				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
@@ -1797,6 +1870,7 @@
 				44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4809BB2234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44AFAC3D232B9BCF005AC8EF /* UiTextNode.swift in Sources */,
+				C4A12B232361BA06009B7083 /* ColorPickerInputView.swift in Sources */,
 				441EA5A22347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
 				44AFAC4B232B9BCF005AC8EF /* Alignment.swift in Sources */,
 				C465C260234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
@@ -1807,6 +1881,7 @@
 				44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */,
 				44D8FE8023391261007FD766 /* RCTARView.swift in Sources */,
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
+				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				4425EDFE2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
@@ -1816,7 +1891,9 @@
 				44AFAC42232B9BCF005AC8EF /* UiProgressBarNode.swift in Sources */,
 				44AFAC4E232B9BCF005AC8EF /* ModelDownloader.swift in Sources */,
 				44AFAC3F232B9BCF005AC8EF /* UiGridLayoutNode.swift in Sources */,
+				C4A12B2A2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */,
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
+				C4A12B202361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */,
 				44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */,
 				4425EE04236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,
 				C465C263234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */,
@@ -1826,6 +1903,7 @@
 				C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
 				C4C04ACE2334E85100C2725C /* AVPlayer+Extension.swift in Sources */,
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,
+				C4A12B2D2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
 				448586FE235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
@@ -1839,8 +1917,10 @@
 				C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */,
 				44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				44AFAC4C232B9BCF005AC8EF /* HorizontalTextAlignment.swift in Sources */,
+				C4A12B1D2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */,
 				44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */,
+				C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */,
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,
@@ -1849,6 +1929,7 @@
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,
+				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
@@ -1857,6 +1938,7 @@
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				44AFAC44232B9BCF005AC8EF /* UiVideoNode.swift in Sources */,
 				44AFAC5B232B9BCF005AC8EF /* UiNodesManager.swift in Sources */,
+				C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */,
 				44AFAC39232B9BCF005AC8EF /* RenderNode.swift in Sources */,
 				C4C114D22347375D00E80044 /* SliderInputView.swift in Sources */,
 				44AFAC3B232B9BCF005AC8EF /* UiNode.swift in Sources */,

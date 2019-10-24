@@ -35,6 +35,7 @@ import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.onDrawListener
+import com.reactlibrary.utils.putDefaultString
 
 class UiScrollViewNode(
         initProps: ReadableMap,
@@ -45,6 +46,9 @@ class UiScrollViewNode(
     companion object {
         // properties
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
+        const val PROP_SCROLL_DIRECTION = "scrollDirection"
+
+        const val DEFAULT_SCROLL_DIRECTION = "vertical"
 
         const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
@@ -65,6 +69,7 @@ class UiScrollViewNode(
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
+        properties.putDefaultString(PROP_SCROLL_DIRECTION, DEFAULT_SCROLL_DIRECTION)
         layoutLoop()
     }
 
@@ -139,6 +144,8 @@ class UiScrollViewNode(
         if (props.containsKey(PROP_SCROLL_BOUNDS)) {
             setNeedsRebuild()
         }
+
+        setScrollDirection(props)
     }
 
     override fun provideView(context: Context): View {
@@ -259,5 +266,12 @@ class UiScrollViewNode(
                 -size.y / 2F + (hBar?.size?.y ?: 0F),
                 size.x / 2F - (vBar?.size?.x ?: 0F),
                 size.y / 2F)
+    }
+
+    private fun setScrollDirection(props: Bundle) {
+        val value = props.getString(PROP_SCROLL_DIRECTION)
+        if (value != null) {
+            (view as CustomScrollView).scrollDirection = value
+        }
     }
 }

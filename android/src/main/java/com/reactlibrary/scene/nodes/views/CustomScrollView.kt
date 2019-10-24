@@ -21,12 +21,18 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
 import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.onLayoutListener
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        const val SCROLL_VERTICAL = "vertical"
+        const val SCROLL_HORIZONTAL = "horizontal"
+    }
 
     var contentSize = Vector2()
         set(value) {
@@ -48,11 +54,19 @@ class CustomScrollView @JvmOverloads constructor(
             updateScrollbars()
         }
 
+    var scrollDirection = ""
+
     var position = Vector2()
         private set
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+
+    init {
+        this.onLayoutListener {
+            updateScrollbars()
+        }
+    }
 
     override fun stopNestedScroll() {
         isBeingDragged = false
@@ -76,6 +90,11 @@ class CustomScrollView @JvmOverloads constructor(
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
             val move = movePx / maxTravel
+
+            when (scrollDirection) {
+                SCROLL_VERTICAL -> move.x = 0F
+                SCROLL_HORIZONTAL -> move.y = 0F
+            }
 
             position = (position + move).coerceIn(0F, 1F)
             hBar?.thumbPosition = position.x

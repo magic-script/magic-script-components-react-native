@@ -80,15 +80,9 @@ class Utils {
          */
         fun calculateBoundsOfNode(node: Node): Bounding {
             // TODO (optionally) add Sphere collision shape support (currently never used)
-            var offsetX = node.localPosition.x
-            var offsetY = node.localPosition.y
-            val collShape = if (node is TransformNode) {
-                offsetX += node.contentNode.localPosition.x
-                offsetY += node.contentNode.localPosition.y
-                node.contentNode.collisionShape
-            } else {
-                node.collisionShape
-            }
+            val offsetX = node.localPosition.x
+            val offsetY = node.localPosition.y
+            val collShape = node.collisionShape
             return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y

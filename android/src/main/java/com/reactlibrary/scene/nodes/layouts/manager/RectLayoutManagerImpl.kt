@@ -3,7 +3,6 @@ package com.reactlibrary.scene.nodes.layouts.manager
 import android.util.Log
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
@@ -38,6 +37,7 @@ class RectLayoutManagerImpl: RectLayoutManager {
         val boundsCenterY = nodeBounds.top - nodeHeight / 2
         val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
         val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
+
         // calculating x position for a child
         val x = when (contentHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
@@ -45,12 +45,12 @@ class RectLayoutManagerImpl: RectLayoutManager {
             }
 
             Alignment.HorizontalAlignment.CENTER -> {
-                val paddingDiff = itemPadding.left - itemPadding.right
+                val paddingDiff = itemPadding.right - itemPadding.left
                 pivotOffsetX + paddingDiff
             }
 
             Alignment.HorizontalAlignment.RIGHT -> {
-                ((parentBounds.right - parentBounds.left) / 2) - nodeWidth / 2 - pivotOffsetX - itemPadding.right
+                ((parentBounds.right - parentBounds.left) / 2) - nodeWidth / 2 + pivotOffsetX - itemPadding.right
             }
         }
 
@@ -66,9 +66,10 @@ class RectLayoutManagerImpl: RectLayoutManager {
             }
 
             Alignment.VerticalAlignment.BOTTOM -> {
-                ((parentBounds.bottom - parentBounds.top) / 2) + nodeHeight / 2 - pivotOffsetY + itemPadding.bottom
+                ((parentBounds.bottom - parentBounds.top) / 2) + nodeHeight / 2 + pivotOffsetY + itemPadding.bottom
             }
         }
+
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 

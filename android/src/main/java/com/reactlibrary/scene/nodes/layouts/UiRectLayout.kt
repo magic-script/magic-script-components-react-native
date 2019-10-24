@@ -1,6 +1,7 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
+import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
@@ -69,6 +70,11 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         if(isSizeSet()) {
             if(layoutManager.parentBounds == null || !Bounding.equalInexact(layoutManager.parentBounds!!,parentBounding)) {
                 layoutManager.parentBounds = parentBounding
+                requestLayout()
+            }
+        } else {
+            if(layoutManager.parentBounds != null) {
+                layoutManager.parentBounds = null
                 requestLayout()
             }
         }

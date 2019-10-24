@@ -23,6 +23,7 @@ typealias Image = NSImage
 #endif
 
 public enum ImageAsset: String {
+    case dropdownListBackground = "dropdown_list_background"
     case spinner = "spinner"
     case spinnerProgressBegin = "spinner_begin"
     case spinnerProgressEnd = "spinner_end"

@@ -122,21 +122,22 @@ class ViewController: UIViewController {
         grid.layoutIfNeeded()
     }
 
+    fileprivate var dropdownItems: [UiDropdownListItemNode] = []
     fileprivate func setupDropdownListTest() {
-        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.5, 0], "textSize": 0.0235, "maxCharacterLimit": 35])
+        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.5, 0], "textSize": 0.0235, "maxCharacterLimit": 0])
         let dropdownListId = "dropdownListId"
         UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
         UiNodesManager.instance.addNodeToRoot(dropdownListId)
         dropdownList.layoutIfNeeded()
 
         for index in 0...16 {
-            var dropdownItem: UiDropdownListItemNode
+            let dropdownItem: UiDropdownListItemNode
             if index % 4 == 0 {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very long text for dropDownListItem to check how this looks when list appears"])
+                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very long text for dropDownListItem to check how this looks when list appears", "textSize": 0.03])
             } else {
-                dropdownItem = UiDropdownListItemNode(props: ["text": "Very short text"])
+                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very short text", "textSize": 0.03])
             }
-            dropdownItem.setDebugMode(true)
+            dropdownItems.append(dropdownItem)
 
             UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
             UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
@@ -145,8 +146,12 @@ class ViewController: UIViewController {
 //            print("dropDown onTap \(sender)")
         }
 
-        dropdownList.onSelectionChanged = { sender, selectedItem in
+        dropdownList.onSelectionChanged = { [weak self] sender, selectedItems in 
 //            print("dropDown onSelectionChanged \(sender) \(selectedItem)")
+            if let index = selectedItems.first {
+                sender.text = self?.dropdownItems[index].label
+                sender.layoutIfNeeded()
+            }
         }
     }
 

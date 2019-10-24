@@ -29,7 +29,10 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.putDefaultDouble
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
@@ -60,14 +63,6 @@ open class UiToggleNode(initProps: ReadableMap,
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         properties.putDefaultDouble(PROP_TEXT_SIZE, height)
-    }
-
-    override fun getScrollTranslation(): Vector2 {
-        val bounds = getContentBounding()
-        val position = localPosition + contentNode.localPosition
-        return Vector2(
-                bounds.size().x / 2F - position.x,
-                -bounds.size().y / 2F - position.y)
     }
 
     override fun provideView(context: Context): View {

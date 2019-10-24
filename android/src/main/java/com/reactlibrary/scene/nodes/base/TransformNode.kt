@@ -190,7 +190,7 @@ abstract class TransformNode(
         return Vector2(-localPosition.x, -localPosition.y)
     }
 
-    open fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {}
+    open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

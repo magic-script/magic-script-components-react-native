@@ -107,7 +107,7 @@ class UiScrollViewNode(
             if (scrollRequested) {
                 val viewBounds = getScrollBounds()
                 val clipBounds = viewBounds.translate(getScrollTranslation())
-                content!!.setClipBounds(clipBounds, nativeView = false)
+                content!!.setClipBounds(clipBounds, clipNativeView = false)
 
                 content!!.localPosition = Vector3(
                         requestedContentPosition.x,
@@ -254,7 +254,7 @@ class UiScrollViewNode(
         requestedContentPosition = alignTopLeft + travel
 
         val clipBounds = viewBounds.translate(getScrollTranslation())
-        content!!.setClipBounds(clipBounds, nativeView = true)
+        content!!.setClipBounds(clipBounds, clipNativeView = true)
         view.invalidate()
 
         scrollRequested = true

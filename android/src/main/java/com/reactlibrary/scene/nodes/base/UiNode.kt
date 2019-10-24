@@ -24,6 +24,7 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -31,6 +32,8 @@ import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
+import java.lang.Float.max
+import java.lang.Float.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -98,6 +101,12 @@ abstract class UiNode(
         return false
     }
 
+    open fun getPivot(): Vector2 {
+        return Vector2(
+                size.x * (0.5F + horizontalAlignment.centerOffset),
+                size.y * (0.5F - verticalAlignment.centerOffset))
+    }
+
     /**
      * Initializes the view instance and builds the node by calling [applyProperties]
      * with all initial properties
@@ -144,23 +153,53 @@ abstract class UiNode(
         return Bounding(left, bottom, right, top)
     }
 
+    /**
+     * Translation to native view local coordinate system.
+     */
     override fun getScrollTranslation(): Vector2 {
-        val pivot = Vector2(
-                0.5F + horizontalAlignment.centerOffset,
-                0.5F - verticalAlignment.centerOffset)
+        val pivot = getPivot()
         return Vector2(
-                size.x * pivot.x - localPosition.x,
-                -size.y * pivot.y - localPosition.y)
+                pivot.x - localPosition.x - contentNode.localPosition.x,
+                -pivot.y - localPosition.y - contentNode.localPosition.y)
     }
 
-    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
-        if (nativeView) {
-            view.clipBounds = Rect(
-                    metersToPx(clipBounds.left + getScrollTranslation().x),
-                    -metersToPx(clipBounds.top + getScrollTranslation().y),
-                    metersToPx(clipBounds.right + getScrollTranslation().x),
-                    -metersToPx(clipBounds.bottom + getScrollTranslation().y))
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        if (!clipNativeView) {
+            return
         }
+
+        // Clipping view.
+        val localBounds = clipBounds.translate(getScrollTranslation())
+        view.clipBounds = Rect(
+                metersToPx(localBounds.left),
+                -metersToPx(localBounds.top),
+                metersToPx(localBounds.right),
+                -metersToPx(localBounds.bottom))
+
+        // Clipping content node collision shape.
+        val contentNodePosition = Vector2(
+                -localPosition.x - contentNode.localPosition.x,
+                -localPosition.y - contentNode.localPosition.y
+        )
+
+        val nodeCollisionShape = Bounding(0F, 0F, size.x, size.y)
+                .translate(-getPivot())
+        val clipCollisionShape = clipBounds
+                .translate(contentNodePosition)
+
+        var intersection = Bounding(
+                max(nodeCollisionShape.left, clipCollisionShape.left),
+                max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
+                min(nodeCollisionShape.right, clipCollisionShape.right),
+                min(nodeCollisionShape.top, clipCollisionShape.top)
+        )
+        if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
+            intersection = Bounding()
+        }
+
+        contentNode.collisionShape = Box(
+                intersection.size().toVector3(),
+                intersection.center().toVector3())
     }
 
     override fun onDestroy() {

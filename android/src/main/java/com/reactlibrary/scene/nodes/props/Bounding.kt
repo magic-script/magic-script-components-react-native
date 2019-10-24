@@ -16,7 +16,6 @@
 
 package com.reactlibrary.scene.nodes.props
 
-import android.util.Log
 import kotlin.math.abs
 
 /**

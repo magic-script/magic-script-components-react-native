@@ -75,13 +75,13 @@ class RectLayoutManagerImpl: RectLayoutManager {
 
     private fun layoutNode(node: Node, nodeBounds: Bounding) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
-
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
 
         val boundsCenterX = nodeBounds.left + nodeWidth / 2
         val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
         val boundsCenterY = nodeBounds.top - nodeHeight / 2
         val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
+
         // calculating x position for a child
         val x = when (contentHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {

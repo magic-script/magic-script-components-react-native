@@ -15,7 +15,7 @@ import com.reactlibrary.utils.putDefaultString
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
 : UiLayout(initProps, layoutManager) {
 
-    private var padding: Padding? = Padding(0f,0f,0f,0f)
+    private var padding: Padding = Padding(0f,0f,0f,0f)
 
     companion object {
         // properties
@@ -42,16 +42,15 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         super.applyProperties(props)
         setItemPadding(props)
         setContentAlignment(props)
-        val paddingHorizontal = padding?.left?.plus((padding?.right ?: 0f)) ?: 0f
-        val paddingVertical = padding?.top?.plus((padding?.bottom ?: 0f)) ?: 0f
+        val paddingHorizontal = padding.left + padding.right
+        val paddingVertical = padding.top + padding.bottom
         maxChildHeight = height - paddingVertical
         maxChildWidth = width - paddingHorizontal
     }
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING)
-                ?: Padding()
+        val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
         val parentBounding = if (isSizeSet()) {
             Bounding(
                     contentNode.localPosition.x - width / 2,
@@ -82,9 +81,10 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
     }
 
     private fun setItemPadding(props: Bundle) {
-        padding = PropertiesReader.readPadding(props, PROP_PADDING)
+        val padding = PropertiesReader.readPadding(props, PROP_PADDING)
         if (padding != null) {
-            (layoutManager as RectLayoutManager).itemPadding = padding!!
+            this.padding = padding
+            (layoutManager as RectLayoutManager).itemPadding = padding
             requestLayout()
         }
     }

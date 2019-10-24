@@ -16,17 +16,13 @@
 
 package com.reactlibrary.scene.nodes.base
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
-import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
-import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
 
@@ -73,11 +69,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     private fun setLayoutSize(props: Bundle) {
-        if(props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            if(props.containsKey(PROP_WIDTH)) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            if (props.containsKey(PROP_WIDTH)) {
                 width = props.getDouble(PROP_WIDTH).toFloat()
             }
-            if(props.containsKey(PROP_HEIGHT)) {
+            if (props.containsKey(PROP_HEIGHT)) {
                 height = props.getDouble(PROP_HEIGHT).toFloat()
             }
             requestLayout()
@@ -120,7 +116,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      */
     private fun layoutLoop() {
         measureChildren()
-        rescaleChildren(contentNode.children)
+        rescaleChildren(childrenList)
         if (redrawRequested) {
             layoutManager.layoutChildren(childrenList, childrenBounds)
             // applyAlignment()
@@ -165,7 +161,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             val nodeWidth = nodeBounds.right - nodeBounds.left
             val nodeHeight = nodeBounds.top - nodeBounds.bottom
             if (width > 0 || height > 0) {
-                (node as TransformNode).localScale  = if (maxChildWidth < nodeWidth && maxChildHeight < nodeHeight) {
+                node.localScale = if (maxChildWidth < nodeWidth && maxChildHeight < nodeHeight) {
                     val scale = if (nodeWidth > nodeHeight) {
                         maxChildWidth / nodeWidth
                     } else {

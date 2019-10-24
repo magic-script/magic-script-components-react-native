@@ -20,14 +20,12 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -36,7 +34,6 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.onDrawListener
 
 class UiScrollViewNode(
@@ -49,8 +46,6 @@ class UiScrollViewNode(
         // properties
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
 
-        const val DEFAULT_SCROLLBAR_WIDTH = 0.03F
-
         const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
     }
@@ -60,6 +55,10 @@ class UiScrollViewNode(
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
+
+    private var hBar: UiScrollBarNode? = null
+    private var vBar: UiScrollBarNode? = null
+
     private var scrollRequested = false
     private var requestedContentPosition = Vector2()
 
@@ -121,7 +120,17 @@ class UiScrollViewNode(
 
     override fun removeContent(child: Node) {
         super.removeContent(child)
-        content = null
+        when (child) {
+            content -> content = null
+            hBar -> {
+                hBar = null
+                (view as CustomScrollView).hBar = null
+            }
+            vBar -> {
+                vBar = null
+                (view as CustomScrollView).vBar = null
+            }
+        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -133,7 +142,7 @@ class UiScrollViewNode(
     }
 
     override fun provideView(context: Context): View {
-        return CustomScrollView(context)//LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
+        return CustomScrollView(context)
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -171,19 +180,26 @@ class UiScrollViewNode(
     }
 
     private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
-        super.addContent(scrollBarNode)
         val bar = scrollBarNode.getCustomScrollBar()
         val scrollView = view as CustomScrollView
         if (bar.isVertical) {
-            val posX = (scrollBarNode.size.x - size.x) / -2F
-            scrollBarNode.localPosition = Vector3(posX, 0F, 0F)
-            bar.layoutParams.height = metersToPx(size.y)
-            scrollView.vBar = bar
+            if (vBar == null) {
+                super.addContent(scrollBarNode)
+                vBar = scrollBarNode
+                val posX = (scrollBarNode.size.x - size.x) / -2F
+                scrollBarNode.localPosition = Vector3(posX, 0F, 0F)
+                bar.layoutParams.height = metersToPx(size.y)
+                scrollView.vBar = bar
+            }
         } else {
-            val posY = (scrollBarNode.size.y - size.y) / 2F
-            scrollBarNode.localPosition = Vector3(0F, posY, 0F)
-            bar.layoutParams.width = metersToPx(size.x)
-            scrollView.hBar = bar
+            if (hBar == null) {
+                super.addContent(scrollBarNode)
+                hBar = scrollBarNode
+                val posY = (scrollBarNode.size.y - size.y) / 2F
+                scrollBarNode.localPosition = Vector3(0F, posY, 0F)
+                bar.layoutParams.width = metersToPx(size.x)
+                scrollView.hBar = bar
+            }
         }
     }
 
@@ -240,8 +256,8 @@ class UiScrollViewNode(
     private fun getScrollBounds(): Bounding {
         return Bounding(
                 -size.x / 2F,
-                -size.y / 2F + DEFAULT_SCROLLBAR_WIDTH,
-                size.x / 2F - DEFAULT_SCROLLBAR_WIDTH,
+                -size.y / 2F + (hBar?.size?.y ?: 0F),
+                size.x / 2F - (vBar?.size?.x ?: 0F),
                 size.y / 2F)
     }
 }

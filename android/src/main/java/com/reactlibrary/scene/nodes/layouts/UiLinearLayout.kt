@@ -98,6 +98,7 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
             (layoutManager as LinearLayoutManager)
             layoutManager.itemVerticalAlignment = alignment.vertical
             layoutManager.itemHorizontalAlignment = alignment.horizontal
+            requestLayout()
         }
     }
 

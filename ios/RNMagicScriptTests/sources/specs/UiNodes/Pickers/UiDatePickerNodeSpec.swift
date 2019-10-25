@@ -22,6 +22,84 @@ import SceneKit
 class UiDatePickerNodeSpec: QuickSpec {
     override func spec() {
         describe("UiDatePickerNode") {
+            var node: UiDatePickerNode!
+            let shortReferenceText: String = "Info text"
+
+            beforeEach {
+                node = UiDatePickerNode(props: [:])
+            }
+
+            context("initial properties") {
+                it("should have set default values") {
+                    expect(node.label).to(beNil())
+                    expect(node.labelSide).to(equal(.top))
+                    expect(node.dateFormat).to(equal(UiDatePickerNode.defaultInputDateFormat))
+                    expect(node.defaultDate).to(equal(Date().toString(format: "MM/dd/YYYY")))
+                    expect(node.yearMin).to(equal(-1))
+                    expect(node.yearMax).to(equal(-1))
+                }
+            }
+
+            context("update properties") {
+                it("should update 'label' prop") {
+                    node.update(["label": shortReferenceText])
+                    expect(node.label).to(equal(shortReferenceText))
+                }
+
+                it("should update 'labelSide' prop") {
+                    node.update(["labelSide": "right"])
+                    expect(node.labelSide).to(equal(Side.right))
+                }
+
+                context("when correct (from the list: MM/dd/YYYY, dd/MM/YYYY, DD/YYYY, MM/YYYY) dateFormat provided") {
+                    it("should update 'dateFormat' prop") {
+                        for referenceDateFormat in ["MM/dd/YYYY", "dd/MM/YYYY", "DD/YYYY", "MM/YYYY"] {
+                            node.update(["dateFormat": referenceDateFormat])
+                            expect(node.dateFormat).to(equal(referenceDateFormat))
+                        }
+                    }
+                }
+
+                context("when incorrect dateFormat provided") {
+                    it("should not update 'dateFormat' prop") {
+                        node.update(["dateFormat": "YYYY/DD/MM"])
+                        expect(node.dateFormat).to(equal(UiDatePickerNode.defaultInputDateFormat))
+                    }
+                }
+
+                context("when correct (in format MM/DD/YYYY) defaultDate provided") {
+                    it("should update 'defaultDate' prop") {
+                        let referenceDefaultDate = "11/01/2019"
+                        node.update(["defaultDate": referenceDefaultDate])
+                        expect(node.defaultDate).to(equal(referenceDefaultDate))
+                    }
+                }
+
+                context("when incorrect defaultDate provided") {
+                    it("should not update 'defaultDate' prop (default date should be today)") {
+                        let referenceDefaultDate = Date().toString(format: "MM/dd/YYYY")
+                        node.update(["defaultDate": "13/33/3033"])
+                        expect(node.defaultDate).to(equal(referenceDefaultDate))
+                    }
+                }
+
+                it("should update 'yearMin' prop") {
+                    node.update(["yearMin": "right"])
+                    expect(node.labelSide).to(equal(Side.right))
+                }
+
+                it("should update 'yearMin' prop") {
+                    let referenceYear = 1300
+                    node.update(["yearMin": referenceYear])
+                    expect(node.yearMin).to(equal(referenceYear))
+                }
+
+                it("should update 'yearMin' prop") {
+                    let referenceYear = 2500
+                    node.update(["yearMin": referenceYear])
+                    expect(node.yearMin).to(equal(referenceYear))
+                }
+            }
         }
     }
 }

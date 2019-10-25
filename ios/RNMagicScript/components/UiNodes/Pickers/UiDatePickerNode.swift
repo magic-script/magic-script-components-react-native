@@ -14,8 +14,77 @@
 //  limitations under the License.
 //
 
-import SpriteKit
+import SceneKit
 
 @objc open class UiDatePickerNode: UiNode {
+    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static let defaultInputDateFormat = "MM/dd/YYYY"
+    static let defaultInputDateRegex = "^(((0)[0-9])|((1)[0-2]))(\\/)([0-2][0-9]|(3)[0-1])(\\/)\\d{4}"
+
+    @objc var label: String?
+
+    @objc var labelSide: Side = .top
+
+    fileprivate let dateFormats: [String] = ["MM/dd/YYYY",
+                                             "dd/MM/YYYY",
+                                             "DD/YYYY",
+                                             "MM/YYYY"]
+    fileprivate var _dateFormat: String = UiDatePickerNode.defaultInputDateFormat
+    @objc var dateFormat: String {
+        set {
+            let normalizedDateFormats = dateFormats.map { $0.lowercased() }
+            if normalizedDateFormats.contains(newValue.lowercased()) {
+                _dateFormat = newValue; setNeedsLayout()
+            }
+        }
+        get { return _dateFormat}
+    }
+
+    fileprivate var _defaultDate: Date = Date()
+    fileprivate var _defaultDateString: String = Date().toString(format: UiDatePickerNode.defaultInputDateFormat)
+    // accept string with format MM/DD/YYYY
+    @objc var defaultDate: String {
+        set {
+            if newValue ~= UiDatePickerNode.defaultInputDateRegex {
+            _defaultDateString = newValue
+            }
+        }
+        get { return _defaultDateString }
+    }
+
+    @objc var yearMin: Int = -1
+
+    @objc var yearMax: Int = -1
+
+    fileprivate var labelNode: LabelNode!
+    fileprivate var valueNode: LabelNode!
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let label = Convert.toString(props["label"]) {
+            self.label = label
+        }
+
+        if let labelSide = Convert.toSide(props["labelSide"]) {
+            self.labelSide = labelSide
+        }
+
+        if let dateFormat = Convert.toString(props["dateFormat"]) {
+            self.dateFormat = dateFormat
+        }
+
+        if let defaultDate = Convert.toString(props["defaultDate"]) {
+            self.defaultDate = defaultDate
+        }
+
+        if let yearMin = Convert.toInt(props["yearMin"]) {
+            self.yearMin = yearMin
+        }
+
+        if let yearMax = Convert.toInt(props["yearMax"]) {
+            self.yearMin = yearMax
+        }
+    }
 
 }

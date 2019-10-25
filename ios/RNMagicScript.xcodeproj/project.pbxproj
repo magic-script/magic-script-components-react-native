@@ -15,6 +15,7 @@
 		441FC1712362F19B0004DBF1 /* CGPointExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1702362F19B0004DBF1 /* CGPointExtensionSpec.swift */; };
 		441FC1732362F3C60004DBF1 /* ClippingPlane.geometry.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */; };
 		441FC1742362F3C60004DBF1 /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
+		441FC1762362F4540004DBF1 /* SCNNodeOrientationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
 		44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
@@ -404,6 +405,7 @@
 		441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemIcon+Names.swift"; sourceTree = "<group>"; };
 		441FC16B2362E9590004DBF1 /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
 		441FC1702362F19B0004DBF1 /* CGPointExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPointExtensionSpec.swift; sourceTree = "<group>"; };
+		441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNodeOrientationSpec.swift; sourceTree = "<group>"; };
 		44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtensionSpec.swift; sourceTree = "<group>"; };
 		44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
@@ -1095,6 +1097,7 @@
 				44F09335232D991B0081FF14 /* CGSizeExtensionSpec.swift */,
 				44226126232F9173006E2FBA /* MathsExtensionSpec.swift */,
 				44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */,
+				441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */,
 				44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */,
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
 			);
@@ -1667,6 +1670,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				441FC1762362F4540004DBF1 /* SCNNodeOrientationSpec.swift in Sources */,
 				44F0933E232D9FDE0081FF14 /* AlignmentSpec.swift in Sources */,
 				44D8FE95233B9A2E007FD766 /* UiTextEditNodeSpec.swift in Sources */,
 				44F0933A232D9E2E0081FF14 /* FontStyleSpec.swift in Sources */,

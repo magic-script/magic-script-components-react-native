@@ -44,7 +44,7 @@ import SceneKit
     @objc var thumbSize: CGFloat {
         get { return _thumbSize }
         set {
-            let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
+            let clampedValue: CGFloat = Math.clamp(newValue, 0.1, 1.0)
             if (_thumbSize != clampedValue) { _thumbSize = clampedValue; setNeedsLayout() }
         }
     }

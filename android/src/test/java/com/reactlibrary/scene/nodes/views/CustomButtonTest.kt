@@ -21,6 +21,7 @@ import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.R
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -72,6 +73,15 @@ class CustomButtonTest {
     @Test
     fun shouldRedrawAfterSettingTextColor() {
         button.setTextColor(Color.GREEN)
+
+        verify(button).invalidate()
+    }
+
+    @Test
+    fun shouldRedrawAfterSettingIcon() {
+        val icon = context.getDrawable(R.drawable.arrow_down)
+
+        button.setIcon(icon)
 
         verify(button).invalidate()
     }

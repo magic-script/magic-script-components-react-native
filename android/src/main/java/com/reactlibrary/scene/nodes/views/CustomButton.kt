@@ -17,14 +17,14 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
-import android.graphics.Rect
-import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
+import com.reactlibrary.utils.Vector2
 import kotlin.math.min
 
 class CustomButton @JvmOverloads constructor(
@@ -33,8 +33,9 @@ class CustomButton @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    // border width = shorter button dimension * borderWidthFactor
-    private val borderWidthFactor = 0.07F
+    enum class IconPosition {
+        LEFT, RIGHT
+    }
 
     var text = ""
         set(value) {
@@ -49,24 +50,50 @@ class CustomButton @JvmOverloads constructor(
             invalidate()
         }
 
+    /**
+     * Icon size in pixels
+     */
+    var iconSize: Vector2 = Vector2(0F, 0F)
+        set(value) {
+            field = value
+            if (iconBitmap != null) {
+                invalidate()
+            }
+        }
+
+    var iconPosition = IconPosition.LEFT
+        set(value) {
+            field = value
+            if (iconBitmap != null) {
+                invalidate()
+            }
+        }
+
+    // border width = shorter button dimension * borderWidthFactor
+    private val borderWidthFactor = 0.07F
+    private val defaultIconHeightFactor = 0.65F // when size not provided
+    private val iconSpacingFactor = 0.3F // spacing offset from text (relative to icon width)
     private var textPaddingHorizontal = 0
-
     private var textPaddingVertical = 0
-
-    // private val maxStrokeSize = Utils.metersToPx(0.005F, context).toFloat()
+    private var iconBitmap: Bitmap? = null
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
         color = getColor(context, android.R.color.white)
         textSize = 12F
     }
 
+    private val iconPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
+        color = getColor(context, android.R.color.white)
+        colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+    }
+
     private val bgPaint = Paint(ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = getColor(context, android.R.color.white)
-        // maskFilter = BlurMaskFilter(8f, BlurMaskFilter.Blur.NORMAL)
     }
 
     private val textBounds = Rect()
+    private val iconBounds = RectF()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
@@ -95,29 +122,27 @@ class CustomButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        // logMessage("CustomButton onDraw")
-        val centerX = width / 2
-        val centerY = height / 2
 
-        // draw background
-        val strokeSize = borderWidthFactor * min(width, height)
-        val radius = (height.toFloat() - strokeSize) / 2 * roundnessFactor
+        drawBackground(canvas)
 
-        bgPaint.strokeWidth = strokeSize
-        canvas.drawRoundRect(
-                strokeSize / 2,
-                strokeSize / 2,
-                width.toFloat() - strokeSize / 2,
-                height.toFloat() - strokeSize / 2,
-                radius,
-                radius,
-                bgPaint
-        )
+        // draw icon if provided
+        val icon = iconBitmap
+        if (icon != null) {
+            if (iconSize.x == 0F && iconSize.y == 0F) {
+                val iconHeight = defaultIconHeightFactor * this.height
+                val iconWidth = icon.width / icon.height * iconHeight
+                iconSize = Vector2(iconWidth, iconHeight)
+            }
+            drawIcon(canvas, icon)
+        }
 
         // draw text
-        val textX = centerX - textBounds.exactCenterX()
-        val textY = centerY - textBounds.exactCenterY()
-        canvas.drawText(text, textX, textY, textPaint)
+        val textOffsetX = when {
+            icon == null -> 0F
+            iconPosition == IconPosition.LEFT -> iconSize.x / 2F
+            else -> -iconSize.x / 2F
+        }
+        drawText(canvas, textOffsetX)
     }
 
     fun setTextSize(textSizePx: Float) {
@@ -140,6 +165,78 @@ class CustomButton @JvmOverloads constructor(
 
     fun setTypeface(typeface: Typeface) {
         textPaint.typeface = typeface
+    }
+
+    /**
+     * Sets an icon for the button or removes current icon (when passed null)
+     */
+    fun setIcon(drawable: Drawable?) {
+        if (drawable != null) {
+            val icon = drawableToBitmap(drawable)
+            this.iconBitmap = icon
+        } else {
+            this.iconBitmap = null
+        }
+        invalidate()
+    }
+
+    private fun drawBackground(canvas: Canvas) {
+        val strokeSize = borderWidthFactor * min(width, height)
+        val radius = (height.toFloat() - strokeSize) / 2 * roundnessFactor
+
+        bgPaint.strokeWidth = strokeSize
+        canvas.drawRoundRect(
+                strokeSize / 2,
+                strokeSize / 2,
+                width.toFloat() - strokeSize / 2,
+                height.toFloat() - strokeSize / 2,
+                radius,
+                radius,
+                bgPaint
+        )
+    }
+
+    private fun drawIcon(canvas: Canvas, icon: Bitmap) {
+        val offsetX = iconSpacingFactor * iconSize.x
+        if (iconPosition == IconPosition.LEFT) {
+            iconBounds.right = this.width / 2 - textBounds.width() / 2F + iconSize.x / 2 - offsetX
+            iconBounds.left = iconBounds.right - iconSize.x
+        } else {
+            iconBounds.left = this.width / 2 + textBounds.width() / 2F - iconSize.x / 2 + offsetX
+            iconBounds.right = iconBounds.left + iconSize.x
+        }
+        iconBounds.top = (this.height - iconSize.y) / 2F
+        iconBounds.bottom = iconBounds.top + iconSize.y
+        canvas.drawBitmap(icon, null, iconBounds, iconPaint)
+    }
+
+    private fun drawText(canvas: Canvas, offsetFromCenterX: Float) {
+        val centerX = width / 2
+        val centerY = height / 2
+        val textX = centerX - textBounds.exactCenterX() + offsetFromCenterX
+        val textY = centerY - textBounds.exactCenterY()
+        canvas.drawText(text, textX, textY, textPaint)
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap {
+        if (drawable is BitmapDrawable) {
+            if (drawable.bitmap != null) {
+                return drawable.bitmap
+            }
+        }
+        val bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        } else {
+            Bitmap.createBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+            )
+        }
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 
 }

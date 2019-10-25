@@ -29,6 +29,7 @@ import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.Layoutable
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.logMessage
 
 class UiDropdownListNode(initProps: ReadableMap,
@@ -60,11 +61,14 @@ class UiDropdownListNode(initProps: ReadableMap,
         listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
         listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
         listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
+
+        properties.putString(PROP_ICON, "arrow-down")
     }
 
     override fun build() {
         super.build()
         listNode.build()
+        (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
     }
 
     override fun applyProperties(props: Bundle) {

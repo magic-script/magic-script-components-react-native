@@ -43,12 +43,6 @@ import SceneKit
             return dist1 < dist2
         }
 
-//        let names: [(name: String?, position: SCNVector3, distance: Float)] = hitNodes.map { (node) -> (name: String?, position: SCNVector3, distance: Float) in
-//            let position = node.convertPosition(node.position, to: nil)
-//            return (name: node.name, position: position, distance: position.distance(ray.begin))
-//        }
-//        print("hitNodes.sorted: \(names)")
-
         return hitNodes.first
     }
 }

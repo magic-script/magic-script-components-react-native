@@ -42,6 +42,16 @@ class PropertiesReader {
             return getFileUri(props, propertyName, context, "raw")
         }
 
+        fun readVector2(props: Bundle, propertyName: String): Vector2? {
+            val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
+            if (vector.size == 2) {
+                val x = vector[0].toFloat()
+                val y = vector[1].toFloat()
+                return Vector2(x, y)
+            }
+            return null
+        }
+
         fun readVector3(props: Bundle, propertyName: String): Vector3? {
             val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
             if (vector.size == 3) {

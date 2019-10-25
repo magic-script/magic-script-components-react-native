@@ -156,6 +156,12 @@ class CustomButton @JvmOverloads constructor(
         invalidate()
     }
 
+    fun setIconColor(color: Int) {
+        iconPaint.color = color
+        iconPaint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+        invalidate()
+    }
+
     fun setTextPadding(paddingHorizontalPx: Int, paddingVerticalPx: Int) {
         textPaddingHorizontal = paddingHorizontalPx
         textPaddingVertical = paddingVerticalPx
@@ -197,7 +203,7 @@ class CustomButton @JvmOverloads constructor(
     }
 
     private fun drawIcon(canvas: Canvas, icon: Bitmap) {
-        val offsetX = iconSpacingFactor * iconSize.x
+        val offsetX = if (text.isNotEmpty()) iconSpacingFactor * iconSize.x else 0F
         if (iconPosition == IconPosition.LEFT) {
             iconBounds.right = this.width / 2 - textBounds.width() / 2F + iconSize.x / 2 - offsetX
             iconBounds.left = iconBounds.right - iconSize.x

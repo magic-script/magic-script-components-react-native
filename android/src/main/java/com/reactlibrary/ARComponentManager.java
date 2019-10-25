@@ -121,7 +121,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     // Other resources providers
     private FontProvider fontProvider;
-    private IconsRepository iconsRepository;
+    private IconsRepository iconsRepo;
 
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -136,7 +136,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
         ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
-        this.iconsRepository = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
+        this.iconsRepo = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
 
         context.addLifecycleEventListener(this);
     }
@@ -172,7 +172,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider);
+            UiButtonNode node
+                    = new UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -180,7 +181,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createImageNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, iconsRepository);
+            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -267,7 +268,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDropdownListNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDropdownListNode node = new UiDropdownListNode(props, context, viewRenderableLoader, fontProvider);
+            UiDropdownListNode node
+                    = new UiDropdownListNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }

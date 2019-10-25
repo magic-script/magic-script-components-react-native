@@ -42,10 +42,6 @@ import GLTFSceneKit
         return !contentNode.childNodes.isEmpty
     }
 
-    @objc override func setupNode() {
-        super.setupNode()
-    }
-
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 

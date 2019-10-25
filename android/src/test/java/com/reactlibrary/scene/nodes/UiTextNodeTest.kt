@@ -33,8 +33,10 @@ import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.FontParamsReader
 import com.reactlibrary.utils.Utils
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -185,6 +187,33 @@ class UiTextNodeTest {
         node.build()
 
         verify(viewSpy).letterSpacing = spacing.toFloat()
+    }
+
+    @Test
+    fun shouldReturnProperBounds() {
+        val boundsSize = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.8, 0.4))
+        val props = JavaOnlyMap.of(
+                UiTextNode.PROP_BOUNDS_SIZE, boundsSize,
+                TransformNode.PROP_ALIGNMENT, "center-right"
+        )
+        val node = createNodeWithViewSpy(props)
+        val expectedBounds = Bounding(-0.8F, -0.2F, 0F, 0.2F)
+
+        node.build()
+
+        Assert.assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
+    }
+
+    @Test
+    fun shouldUpdateBoundsWhenTextChanged() {
+        val node = createNodeWithViewSpy(JavaOnlyMap.of(UiTextNode.PROP_TEXT, "abc"))
+        node.build()
+        val initialBounds = node.getBounding()
+
+        node.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, "longer text"))
+        node.build() // rebuild to update bounds
+
+        Assert.assertFalse(Bounding.equalInexact(initialBounds, node.getBounding()))
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {

@@ -102,6 +102,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
             (layoutManager as GridLayoutManager)
             layoutManager.itemVerticalAlignment = alignment.vertical
             layoutManager.itemHorizontalAlignment = alignment.horizontal
+            requestLayout()
         }
     }
 

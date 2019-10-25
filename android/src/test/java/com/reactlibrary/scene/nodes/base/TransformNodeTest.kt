@@ -21,7 +21,6 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import org.junit.Assert.*
@@ -35,6 +34,14 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {
+
+    @Test
+    fun shouldBeLocatedAtZeroPositionByDefault() {
+        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+        node.build()
+
+        assertEquals(Vector3.zero(), node.localPosition)
+    }
 
     @Test
     fun shouldContainInitialProperties() {

@@ -28,7 +28,7 @@ import com.reactlibrary.utils.plus
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
-    : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true) {
+    : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     companion object {
         private const val MEASURE_INTERVAL = 50L // in milliseconds

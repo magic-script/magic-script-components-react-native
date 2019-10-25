@@ -23,7 +23,7 @@ import SceneKit
         get { return .centerCenter }
         set { }
     }
-    @objc var text: String? {
+    @objc var label: String? {
         get { return labelNode.text }
         set { labelNode.text = alignTextLenght(newValue, maxCharacterLimit); setNeedsLayout() }
     }
@@ -41,7 +41,7 @@ import SceneKit
     }
     @objc var maxCharacterLimit: Int = 0 {
         didSet {
-            labelNode.text = alignTextLenght(text, maxCharacterLimit)
+            labelNode.text = alignTextLenght(label, maxCharacterLimit)
             setNeedsLayout()
         }
     }
@@ -110,8 +110,8 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let text = Convert.toString(props["text"]) {
-            self.text = text
+        if let label = Convert.toString(props["label"]) {
+            self.label = label
         }
 
         if let textColor = Convert.toColor(props["textColor"]) {

@@ -22,7 +22,7 @@ import GLTFSceneKit
     fileprivate var dataTask: URLSessionDataTask?
 
     var downloader: Downloading = ModelDownloader()
-    var sceneBuilder: GLTFSceneSourceBuildering = GLTFSceneSourceBuilder()
+    var sceneBuilder: GLTFSceneSourceBuilding = GLTFSceneSourceBuilder()
 
     deinit {
         downloadTask?.cancel()
@@ -40,10 +40,6 @@ import GLTFSceneKit
 
     @objc var isLoaded: Bool {
         return !contentNode.childNodes.isEmpty
-    }
-
-    @objc override func setupNode() {
-        super.setupNode()
     }
 
     @objc override func update(_ props: [String: Any]) {

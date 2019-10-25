@@ -27,7 +27,7 @@ import UIKit
     func getImage(forceDefaultImage: Bool? = nil) -> UIImage {
         let bundle: Bundle
         if let forceDefaultImage = forceDefaultImage, forceDefaultImage == true {
-            bundle = Bundle.resourcesBundle()!
+            bundle = Bundle.resourcesBundle!
         } else {
             bundle = SystemIcon.bundle
         }
@@ -67,6 +67,6 @@ extension SystemIcon {
 
         print("Using \"default-system-icons\"")
         // Then, use default sytem icons from RNMagicScriptResources.
-        return Bundle.resourcesBundle()!
+        return Bundle.resourcesBundle!
     }()
 }

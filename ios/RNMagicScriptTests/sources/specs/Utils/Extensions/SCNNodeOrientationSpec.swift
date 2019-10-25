@@ -14,14 +14,22 @@
 //  limitations under the License.
 // 
 
+import Quick
+import Nimble
 import SceneKit
+@testable import RNMagicScriptHostApplication
 
-extension SCNNode {
-    func orientUpVectorAlong(_ vector: SCNVector3) {
-        let up = SCNVector3(0, 1, 0)
-        let rotationAxis: SCNVector3 = vector.cross(up).normalized()
-        let angle: Float = -vector.angleToVector(up)
-        orientation = SCNQuaternion.fromAxis(rotationAxis, andAngle: angle)
+class SCNNodeOrientationSpec: QuickSpec {
+    override func spec() {
+        describe("SCNNode+Orientation") {
+            context("orientUpVectorAlong") {
+                it("should orient node's Up vector along given vector") {
+                    let referenceVector = SCNVector3(0.4, 0.6, 0.8).normalized()
+                    let referenceNode = SCNNode()
+                    referenceNode.orientUpVectorAlong(referenceVector)
+                    expect(referenceNode.transform.up).to(beCloseTo(referenceVector))
+                }
+            }
+        }
     }
 }
-

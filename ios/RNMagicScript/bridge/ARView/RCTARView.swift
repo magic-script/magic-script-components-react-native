@@ -199,7 +199,7 @@ extension RCTARView {
 
         if let node = rayCastNode {
             node.position = ray.begin
-            node.orientAlong(ray.direction)
+            node.orientUpVectorAlong(ray.direction)
             node.scale = SCNVector3(1, ray.length, 1)
         }
     #endif

@@ -53,7 +53,7 @@ class UiDatePickerNodeSpec: QuickSpec {
 
                 context("when correct (from the list: MM/dd/YYYY, dd/MM/YYYY, DD/YYYY, MM/YYYY) dateFormat provided") {
                     it("should update 'dateFormat' prop") {
-                        for referenceDateFormat in ["MM/dd/YYYY", "dd/MM/YYYY", "DD/YYYY", "MM/YYYY"] {
+                        for referenceDateFormat in ["MM/dd/yyyy", "dd/MM/yyyy", "DD/yyyy", "MM/yyyy"] {
                             node.update(["dateFormat": referenceDateFormat])
                             expect(node.dateFormat).to(equal(referenceDateFormat))
                         }
@@ -69,7 +69,7 @@ class UiDatePickerNodeSpec: QuickSpec {
 
                 context("when correct (in format MM/DD/YYYY) defaultDate provided") {
                     it("should update 'defaultDate' prop") {
-                        let referenceDefaultDate = "11/01/2019"
+                        let referenceDefaultDate = "06/13/1983"
                         node.update(["defaultDate": referenceDefaultDate])
                         expect(node.defaultDate).to(equal(referenceDefaultDate))
                     }
@@ -84,20 +84,15 @@ class UiDatePickerNodeSpec: QuickSpec {
                 }
 
                 it("should update 'yearMin' prop") {
-                    node.update(["yearMin": "right"])
-                    expect(node.labelSide).to(equal(Side.right))
-                }
-
-                it("should update 'yearMin' prop") {
                     let referenceYear = 1300
                     node.update(["yearMin": referenceYear])
                     expect(node.yearMin).to(equal(referenceYear))
                 }
 
-                it("should update 'yearMin' prop") {
+                it("should update 'yearMax' prop") {
                     let referenceYear = 2500
-                    node.update(["yearMin": referenceYear])
-                    expect(node.yearMin).to(equal(referenceYear))
+                    node.update(["yearMax": referenceYear])
+                    expect(node.yearMax).to(equal(referenceYear))
                 }
             }
         }

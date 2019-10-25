@@ -26,7 +26,7 @@ extension Date: DateTimeConverting {
     static func from(string: String, format: String) -> Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
-        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
         dateFormatter.locale = Locale.current
         return dateFormatter.date(from: string) ?? Date()
     }
@@ -34,7 +34,7 @@ extension Date: DateTimeConverting {
     func toString(format: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
-        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
         dateFormatter.locale = Locale.current
         return dateFormatter.string(from: self)
     }

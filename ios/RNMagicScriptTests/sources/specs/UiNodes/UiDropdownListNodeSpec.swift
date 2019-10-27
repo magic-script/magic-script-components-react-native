@@ -176,14 +176,14 @@ class UiDropdownListNodeSpec: QuickSpec {
                 it("should remove it from the list node") {
                     let itemNode = UiDropdownListItemNode(props: [:])
                     node.addChild(itemNode)
-                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+                    expect(node.listGridLayoutNode.itemsCount).to(equal(1))
 
                     let otherNode = TransformNode(props: [:])
                     node.removeChild(otherNode)
-                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
+                    expect(node.listGridLayoutNode.itemsCount).to(equal(1))
 
                     node.removeChild(itemNode)
-                    expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(0))
+                    expect(node.listGridLayoutNode.itemsCount).to(equal(0))
                     expect(itemNode.tapHandler).to(beNil())
                 }
             }

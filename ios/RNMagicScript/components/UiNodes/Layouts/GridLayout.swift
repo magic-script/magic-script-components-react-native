@@ -37,6 +37,9 @@ import SceneKit
     var itemsCount: Int {
         return container.childNodes.count
     }
+    var recalculateNeeded: Bool {
+        return gridDesc == nil
+    }
 
     let container: SCNNode = SCNNode()
     fileprivate var gridDesc: GridLayoutDescriptor?
@@ -53,6 +56,7 @@ import SceneKit
         gridDesc = nil
     }
 
+    @discardableResult
     @objc func removeItem(_ item: TransformNode) -> Bool {
         if let proxyNode = item.parent,
             let parent = proxyNode.parent, parent == container {
@@ -96,8 +100,14 @@ import SceneKit
         return gridDesc.children[elementIndex].childNodes[0] as? TransformNode
     }
 
-    @objc func getSize() -> CGSize {
+    @objc func recalculate() {
         gridDesc = calculateGridDescriptor()
+    }
+
+    @objc func getSize() -> CGSize {
+        if gridDesc == nil {
+            recalculate()
+        }
         return gridDesc?.size ?? CGSize.zero
     }
 

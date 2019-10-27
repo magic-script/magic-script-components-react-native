@@ -31,16 +31,20 @@ import SceneKit
             setNeedsLayout()
         }
     }
-    @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
-        didSet { setNeedsLayout() }
+    @objc var defaultItemAlignment: Alignment {
+        get { return gridLayout.defaultItemAlignment }
+        set { gridLayout.defaultItemAlignment = newValue; setNeedsLayout() }
     }
-    @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { setNeedsLayout() }
+    @objc var defaultItemPadding: UIEdgeInsets {
+        get { return gridLayout.defaultItemPadding }
+        set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
-    @objc var skipInvisibleItems: Bool = false {
-        didSet { setNeedsLayout() }
+    @objc var skipInvisibleItems: Bool {
+        get { return gridLayout.skipInvisibleItems }
+        set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
     }
 
+    var itemsCount: Int { return gridLayout.itemsCount }
     fileprivate var gridLayout = GridLayout()
 
     @objc override func setupNode() {

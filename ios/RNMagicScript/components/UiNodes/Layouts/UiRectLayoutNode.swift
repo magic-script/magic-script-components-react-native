@@ -18,13 +18,16 @@ import Foundation
 import SceneKit
 
 @objc open class UiRectLayoutNode: UiLayoutNode {
-    @objc var contentAlignment: Alignment = Alignment.centerCenter {
-        didSet { setNeedsLayout() }
+    @objc var contentAlignment: Alignment {
+        get { return gridLayout.defaultItemAlignment }
+        set { gridLayout.defaultItemAlignment = newValue; setNeedsLayout() }
     }
-    @objc var padding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { setNeedsLayout() }
+    @objc var padding: UIEdgeInsets {
+        get { return gridLayout.defaultItemPadding }
+        set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
 
+    var itemsCount: Int { return gridLayout.itemsCount }
     fileprivate var gridLayout = GridLayout()
 
     @objc override func setupNode() {

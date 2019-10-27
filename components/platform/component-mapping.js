@@ -10,6 +10,7 @@ import LinearLayoutBuilder from './elements/builders/linear-layout-builder.js';
 import LineBuilder from './elements/builders/line-builder.js';
 import ModelBuilder from './elements/builders/model-builder.js';
 import ProgressBarBuilder from './elements/builders/progress-bar-builder.js';
+import RectLayoutBuilder from './elements/builders/rect-layout-builder.js';
 import ScrollBarBuilder from './elements/builders/scroll-bar-builder.js';
 import ScrollViewBuilder from './elements/builders/scroll-view-builder.js';
 import SliderBuilder from './elements/builders/slider-builder.js';
@@ -19,34 +20,36 @@ import TextEditBuilder from './elements/builders/text-edit-builder.js';
 import ToggleBuilder from './elements/builders/toggle-builder.js';
 import VideoBuilder from './elements/builders/video-builder.js';
 
-
 export default {
-    version: '1.0',
-    platform: 'mobile (ios, android)',
-    controllers: {
-        // 'scene': () => new ControllerBuilder(),
-    },
-    elements: {
-        // ui nodes
-        'button': (componentManager) => new ButtonBuilder(componentManager),
-        'dropdownList': (componentManager) => new DropdownListBuilder(componentManager),
-        'dropdownListItem': (componentManager) => new DropdownListItemBuilder(componentManager),
-        'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
-        'image': (componentManager) => new ImageBuilder(componentManager),
-        'linearLayout': (componentManager) => new LinearLayoutBuilder(componentManager),
-        'progressBar': (componentManager) => new ProgressBarBuilder(componentManager),
-        'scrollBar': (componentManager) => new ScrollBarBuilder(componentManager),
-        'scrollView': (componentManager) => new ScrollViewBuilder(componentManager),
-        'slider': (componentManager) => new SliderBuilder(componentManager),
-        'spinner': (componentManager) => new SpinnerBuilder(componentManager),
-        'text': (componentManager) => new TextBuilder(componentManager),
-        'textEdit': (componentManager) => new TextEditBuilder(componentManager),
-        'toggle': (componentManager) => new ToggleBuilder(componentManager),
-        'view': (componentManager) => new GroupBuilder(componentManager),
+  version: '1.0',
+  platform: 'mobile (ios, android)',
+  controllers: {
+    // 'scene': () => new ControllerBuilder(),
+  },
+  elements: {
+    // ui nodes
+    'button': (componentManager) => new ButtonBuilder(componentManager),
+    'dropdownList': (componentManager) => new DropdownListBuilder(componentManager),
+    'dropdownListItem': (componentManager) => new DropdownListItemBuilder(componentManager),
+    'image': (componentManager) => new ImageBuilder(componentManager),
+    'progressBar': (componentManager) => new ProgressBarBuilder(componentManager),
+    'scrollBar': (componentManager) => new ScrollBarBuilder(componentManager),
+    'scrollView': (componentManager) => new ScrollViewBuilder(componentManager),
+    'slider': (componentManager) => new SliderBuilder(componentManager),
+    'spinner': (componentManager) => new SpinnerBuilder(componentManager),
+    'text': (componentManager) => new TextBuilder(componentManager),
+    'textEdit': (componentManager) => new TextEditBuilder(componentManager),
+    'toggle': (componentManager) => new ToggleBuilder(componentManager),
+    'view': (componentManager) => new GroupBuilder(componentManager),
 
-        // render nodes
-        'line': (componentManager) => new LineBuilder(componentManager),
-        'model': (componentManager) => new ModelBuilder(componentManager),
-        'video': (componentManager) => new VideoBuilder(componentManager),
-    }
+    // layouts
+    'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),
+    'linearLayout': (componentManager) => new LinearLayoutBuilder(componentManager),
+    'rectLayout': (componentManager) => new RectLayoutBuilder(componentManager),
+
+    // render nodes
+    'line': (componentManager) => new LineBuilder(componentManager),
+    'model': (componentManager) => new ModelBuilder(componentManager),
+    'video': (componentManager) => new VideoBuilder(componentManager),
+  }
 };

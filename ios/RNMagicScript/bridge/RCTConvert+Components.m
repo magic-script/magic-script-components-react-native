@@ -35,6 +35,10 @@
     return [[UiImageNode alloc] initWithProps:json];
 }
 
++ (UiLinearLayoutNode *)UiLinearLayoutNode:(id)json {
+    return [[UiLinearLayoutNode alloc] initWithProps:json];
+}
+
 + (UiLineNode *)UiLineNode:(id)json {
     return [[UiLineNode alloc] initWithProps:json];
 }
@@ -45,6 +49,10 @@
 
 + (UiProgressBarNode *)UiProgressBarNode:(id)json {
     return [[UiProgressBarNode alloc] initWithProps:json];
+}
+
++ (UiRectLayoutNode *)UiRectLayoutNode:(id)json {
+    return [[UiRectLayoutNode alloc] initWithProps:json];
 }
 
 + (UiScrollBarNode *)UiScrollBarNode:(id)json {

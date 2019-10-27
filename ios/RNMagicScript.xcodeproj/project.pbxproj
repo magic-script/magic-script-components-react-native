@@ -50,6 +50,7 @@
 		44A3FD032366364900402912 /* UiLinearLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */; };
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
 		44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */; };
+		44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -442,6 +443,7 @@
 		44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLinearLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLayoutNodeSpec.swift; sourceTree = "<group>"; };
+		44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelectorSpec.swift; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
@@ -1039,6 +1041,7 @@
 				44F09318232D985A0081FF14 /* UiHelpers */,
 				44F0930B232D985A0081FF14 /* UiNodes */,
 				44F09316232D985A0081FF14 /* Utils */,
+				44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */,
 			);
 			path = specs;
 			sourceTree = "<group>";
@@ -1739,6 +1742,7 @@
 				C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */,
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
 				44F0932C232D985A0081FF14 /* UiImageNodeSpec.swift in Sources */,
+				44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */,
 				441FC1712362F19B0004DBF1 /* CGPointExtensionSpec.swift in Sources */,
 				44F09331232D985A0081FF14 /* Mock.generated.swift in Sources */,
 				44F0932B232D985A0081FF14 /* UiTextNodeSpec.swift in Sources */,

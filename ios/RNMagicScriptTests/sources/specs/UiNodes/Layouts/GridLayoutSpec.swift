@@ -218,7 +218,6 @@ class GridLayoutSpec: QuickSpec {
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: referenceHeight)))
                 }
             }
-
         }
     }
 }

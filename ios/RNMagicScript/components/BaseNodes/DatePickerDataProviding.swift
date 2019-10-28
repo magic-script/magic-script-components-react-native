@@ -18,4 +18,5 @@ import Foundation
 
 //sourcery: AutoMockable
 protocol DatePickerDataProviding: DataProviding {
+    var datePickerValue: Date { get set }
 }

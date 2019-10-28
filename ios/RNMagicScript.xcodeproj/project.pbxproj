@@ -245,8 +245,6 @@
 		C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */; };
 		C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */; };
 		C4A12B1B2361B708009B7083 /* UiColorPickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */; };
-		C4A12B1D2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */; };
-		C4A12B1E2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */; };
 		C4A12B202361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
 		C4A12B212361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
 		C4A12B232361BA06009B7083 /* ColorPickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */; };
@@ -614,7 +612,6 @@
 		C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNodeSpec.swift; sourceTree = "<group>"; };
 		C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNodeSpec.swift; sourceTree = "<group>"; };
 		C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNodeSpec.swift; sourceTree = "<group>"; };
-		C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerAccessoryView.swift; sourceTree = "<group>"; };
 		C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerInputView.swift; sourceTree = "<group>"; };
 		C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerInputView.swift; sourceTree = "<group>"; };
 		C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerDataProviding.swift; sourceTree = "<group>"; };
@@ -748,7 +745,6 @@
 				44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */,
 				44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */,
 				44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */,
-				C4A12B1C2361B8E1009B7083 /* PickerAccessoryView.swift */,
 			);
 			path = InputAccessoryViews;
 			sourceTree = "<group>";
@@ -1740,7 +1736,6 @@
 				C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
 				44AFAD2B232BCAE3005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */,
-				C4A12B1E2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */,
 				448586FC235DC1FD00D372CB /* Ray.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */,
@@ -1933,7 +1928,6 @@
 				C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */,
 				44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				44AFAC4C232B9BCF005AC8EF /* HorizontalTextAlignment.swift in Sources */,
-				C4A12B1D2361B8E1009B7083 /* PickerAccessoryView.swift in Sources */,
 				44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */,
 				C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */,

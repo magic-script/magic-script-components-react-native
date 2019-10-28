@@ -30,6 +30,18 @@ import SceneKit
 
     @objc var labelSide: Side = .top
 
+    fileprivate var _date: String? = nil
+    @objc var date: String {
+        get {
+            guard let date = _date else { return dateFormat.uppercased() }
+            return date
+        }
+        set {
+            _date = newValue ~= UiDatePickerNode.defaultInputDateRegex ? newValue : nil
+            valueNode.text = _date
+        }
+    }
+
     fileprivate let dateFormats: [String] = ["MM/dd/yyyy",
                                              "dd/MM/yyyy",
                                              "DD/yyyy",
@@ -42,7 +54,7 @@ import SceneKit
                 _dateFormat = dateFormats[normalizedDateFormats.firstIndex(of: newValue.lowercased())!]; setNeedsLayout()
             }
         }
-        get { return _dateFormat}
+        get { return _dateFormat }
     }
 
     fileprivate var _defaultDate: Date = Date()
@@ -53,7 +65,6 @@ import SceneKit
             if newValue ~= UiDatePickerNode.defaultInputDateRegex {
                 _defaultDate = Date.from(string: newValue, format: UiDatePickerNode.defaultInputDateFormat)
                 _defaultDateString = _defaultDate.toString(format: dateFormat)
-                valueNode.text = _defaultDateString
             }
         }
         get { return _defaultDateString }
@@ -68,6 +79,13 @@ import SceneKit
 
     fileprivate var underlineGeometry: SCNPlane!
     fileprivate var underlineNode: SCNNode!
+
+    fileprivate var isActive: Bool = false {
+        didSet {
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
+    }
 
     @objc override func setupNode() {
         super.setupNode()
@@ -84,8 +102,8 @@ import SceneKit
         valueNode = LabelNode()
         valueNode.textAlignment = .center
         valueNode.defaultTextSize = UiDatePickerNode.defaultTextSize
-        valueNode.textColor = UIColor(white: 1.0, alpha: 0.75)
-        valueNode.text = defaultDate
+        valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
+        valueNode.text = date
         valueNode.position = SCNVector3((valueNode.getSize().width * 0.5 - labelNode.getSize().width * 0.5), 0.0, 0.0)
         contentNode.addChildNode(valueNode)
 
@@ -133,6 +151,8 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
+
         valueNode.position = SCNVector3((valueNode.getSize().width * 0.5 - labelNode.getSize().width * 0.5), 0.0, 0.0)
 
         underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0010)
@@ -144,5 +164,50 @@ import SceneKit
 
         labelNode.reload()
         valueNode.reload()
+    }
+
+    @objc override func setDebugMode(_ debug: Bool) {
+        super.setDebugMode(debug)
+        labelNode.setDebugMode(debug)
+        valueNode.setDebugMode(debug)
+    }
+
+    @objc override func _calculateSize() -> CGSize {
+        let labelNodeSize = labelNode.getSize()
+        let valueNodeSize = valueNode.getSize()
+        let contentWidth: CGFloat = valueNodeSize.width
+        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 0.025
+        return CGSize(width: contentWidth, height: contentHeight)
+    }
+
+    @objc override var canHaveFocus: Bool {
+        return true
+    }
+
+    @objc override func enterFocus() {
+        super.enterFocus()
+        guard hasFocus else { return }
+
+        isActive = hasFocus
+    }
+
+    @objc override func leaveFocus() {
+        super.leaveFocus()
+
+        isActive = hasFocus
+    }
+}
+
+extension UiDatePickerNode: DatePickerDataProviding {
+    var datePickerValue: Date {
+        get {
+            return _date != nil ? Date.from(string: _date!, format: UiDatePickerNode.defaultInputDateFormat) : Date()
+        }
+        set {
+            // callback
+            if datePickerValue != newValue {
+                date = newValue.toString(format: UiDatePickerNode.defaultInputDateFormat)
+            }
+        }
     }
 }

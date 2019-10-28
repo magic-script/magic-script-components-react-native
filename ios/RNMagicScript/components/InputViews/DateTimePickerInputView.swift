@@ -17,4 +17,70 @@
 import UIKit
 
 class DateTimePickerInputView: UIView {
+    var pickerData: DatePickerDataProviding? {
+        didSet {
+            if let pickerData = pickerData {
+                dateTimePicker.date = pickerData.datePickerValue
+            }
+        }
+    }
+
+    var onFinish: (() -> (Void))?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+
+    fileprivate var dateTimePicker: UIDatePicker!
+
+    fileprivate func setupView() {
+        backgroundColor = .white
+
+        let button: UIButton = UIButton(type: .system)
+        button.setTitle("Done", for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(doneButtonAction(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(button)
+
+        let margin: CGFloat = 8
+        NSLayoutConstraint.activate([
+            button.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
+            button.heightAnchor.constraint(equalToConstant: 20),
+            button.widthAnchor.constraint(equalToConstant: 100),
+            button.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+        ])
+
+        dateTimePicker = UIDatePicker()
+        dateTimePicker.backgroundColor = .white
+        dateTimePicker.datePickerMode = .date
+        dateTimePicker.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(dateTimePicker)
+
+        NSLayoutConstraint.activate([
+            dateTimePicker.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+            dateTimePicker.topAnchor.constraint(equalTo: button.bottomAnchor, constant: margin),
+            dateTimePicker.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+            dateTimePicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        ])
+
+        dateTimePicker.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+    }
+}
+
+
+// MARK: - Event handlers
+extension DateTimePickerInputView {
+    @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
+        pickerData?.datePickerValue = sender.date
+    }
+
+    @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+        onFinish?()
+    }
 }

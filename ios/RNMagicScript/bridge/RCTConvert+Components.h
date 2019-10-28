@@ -20,9 +20,11 @@
 @class UiGridLayoutNode;
 @class UiGroupNode;
 @class UiImageNode;
+@class UiLinearLayoutNode;
 @class UiLineNode;
 @class UiModelNode;
 @class UiProgressBarNode;
+@class UiRectLayoutNode;
 @class UiScrollBarNode;
 @class UiScrollViewNode;
 @class UiSliderNode;
@@ -39,9 +41,11 @@
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
++ (UiLinearLayoutNode *)UiLinearLayoutNode:(id)json;
 + (UiLineNode *)UiLineNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
++ (UiRectLayoutNode *)UiRectLayoutNode:(id)json;
 + (UiScrollBarNode *)UiScrollBarNode:(id)json;
 + (UiScrollViewNode *)UiScrollViewNode:(id)json;
 + (UiSliderNode *)UiSliderNode:(id)json;

@@ -45,9 +45,9 @@ import SceneKit
     @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
-        let offset = alignment.boundsOffset
-        let offsetOrigin = CGPoint(x: offset.x * size.width, y: offset.y * size.height)
-        return CGRect(origin: origin, size: size).offsetBy(dx: offsetOrigin.x, dy: offsetOrigin.y)
+        let boundsOffset = alignment.boundsOffset
+        let offset = CGPoint(x: boundsOffset.x * size.width, y: boundsOffset.y * size.height)
+        return CGRect(origin: origin + offset, size: size)
     }
 
     @objc override func updateLayout() {

@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.os.Bundle
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime

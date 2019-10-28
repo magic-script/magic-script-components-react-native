@@ -14,8 +14,22 @@
 //  limitations under the License.
 // 
 
+import Quick
+import Nimble
 import SceneKit
+@testable import RNMagicScriptHostApplication
 
-@objc open class UiRectLayoutNode: UiNode {
-
+class SCNNodeOrientationSpec: QuickSpec {
+    override func spec() {
+        describe("SCNNode+Orientation") {
+            context("orientUpVectorAlong") {
+                it("should orient node's Up vector along given vector") {
+                    let referenceVector = SCNVector3(0.4, 0.6, 0.8).normalized()
+                    let referenceNode = SCNNode()
+                    referenceNode.orientUpVectorAlong(referenceVector)
+                    expect(referenceNode.transform.up).to(beCloseTo(referenceVector))
+                }
+            }
+        }
+    }
 }

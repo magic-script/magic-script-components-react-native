@@ -14,14 +14,31 @@
 //  limitations under the License.
 // 
 
+import Foundation
 import SceneKit
 
-extension SCNNode {
-    func orientUpVectorAlong(_ vector: SCNVector3) {
-        let up = SCNVector3(0, 1, 0)
-        let rotationAxis: SCNVector3 = vector.cross(up).normalized()
-        let angle: Float = -vector.angleToVector(up)
-        orientation = SCNQuaternion.fromAxis(rotationAxis, andAngle: angle)
+@objc open class UiLayoutNode: UiNode {
+
+    @objc var width: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+    @objc var height: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
+        }
+    }
+
+    @objc override func _calculateSize() -> CGSize {
+        return CGSize(width: width, height: height)
     }
 }
-

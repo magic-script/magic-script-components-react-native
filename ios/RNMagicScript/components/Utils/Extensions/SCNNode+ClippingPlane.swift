@@ -23,18 +23,20 @@ extension SCNNode {
             return
         }
 
-        let geometryURL = Bundle.main.url(forResource: "ClippingPlane.geometry", withExtension: "txt")!
-        let geometryModifier: String = try! String(contentsOf: geometryURL)
+        if let bundle = Bundle.resourcesBundle {
+            let geometryURL = bundle.url(forResource: "ClippingPlane.geometry", withExtension: "txt")!
+            let geometryModifier: String = try! String(contentsOf: geometryURL)
 
-        let fragmentURL = Bundle.main.url(forResource: "ClippingPlane.fragment", withExtension: "txt")!
-        let fragmentModifier: String = try! String(contentsOf: fragmentURL)
+            let fragmentURL = bundle.url(forResource: "ClippingPlane.fragment", withExtension: "txt")!
+            let fragmentModifier: String = try! String(contentsOf: fragmentURL)
 
-        let modifiers = [
-            SCNShaderModifierEntryPoint.geometry: geometryModifier,
-            SCNShaderModifierEntryPoint.fragment: fragmentModifier
-        ]
+            let modifiers = [
+                SCNShaderModifierEntryPoint.geometry: geometryModifier,
+                SCNShaderModifierEntryPoint.fragment: fragmentModifier
+            ]
 
-        applyShanderModifiers(modifiers, planes: planes)
+            applyShanderModifiers(modifiers, planes: planes)
+        }
     }
 
     func resetClippingPlanes() {

@@ -106,11 +106,12 @@ class ViewController: UIViewController {
         group.layoutIfNeeded()
     }
 
-    fileprivate func createGridWithIcons(parentId: String) {
+    fileprivate func createGridWithIcons(parentId: String? = nil) {
 
         let gridId = "grid"
         let grid: UiGridLayoutNode = createComponent([
             "columns": 14,
+//            "orientation": "vertical",
             "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
             "alignment": "center-center"
         ], nodeId: gridId, parentId: parentId)

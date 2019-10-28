@@ -64,6 +64,16 @@ class CustomButtonTest {
     }
 
     @Test
+    fun shouldMeasureAndRedrawAfterSettingIcon() {
+        val icon = context.getDrawable(R.drawable.arrow_down)
+
+        button.setIcon(icon)
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+    @Test
     fun shouldRedrawAfterSettingRoundnessFactor() {
         button.roundnessFactor = 0.5f
 
@@ -73,15 +83,6 @@ class CustomButtonTest {
     @Test
     fun shouldRedrawAfterSettingTextColor() {
         button.setTextColor(Color.GREEN)
-
-        verify(button).invalidate()
-    }
-
-    @Test
-    fun shouldRedrawAfterSettingIcon() {
-        val icon = context.getDrawable(R.drawable.arrow_down)
-
-        button.setIcon(icon)
 
         verify(button).invalidate()
     }

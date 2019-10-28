@@ -25,6 +25,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.utils.Vector2
+import kotlin.math.max
 import kotlin.math.min
 
 class CustomButton @JvmOverloads constructor(
@@ -56,8 +57,10 @@ class CustomButton @JvmOverloads constructor(
     var iconSize: Vector2 = Vector2(0F, 0F)
         set(value) {
             field = value
+            usingDefaultIconSize = false
             if (iconBitmap != null) {
                 invalidate()
+                requestLayout()
             }
         }
 
@@ -71,11 +74,12 @@ class CustomButton @JvmOverloads constructor(
 
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
-    private val defaultIconHeightFactor = 0.65F // when size not provided
+    private val defaultIconHeightFactor = 0.65F // relative to button height
     private val iconSpacingFactor = 0.3F // spacing offset from text (relative to icon width)
     private var textPaddingHorizontal = 0
     private var textPaddingVertical = 0
     private var iconBitmap: Bitmap? = null
+    private var usingDefaultIconSize = true
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
         color = getColor(context, android.R.color.white)
@@ -101,20 +105,42 @@ class CustomButton @JvmOverloads constructor(
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
+        // read text area size
         textPaint.getTextBounds(text, 0, text.length, textBounds)
-        val defaultWidth = textBounds.width() + 2 * textPaddingHorizontal
-        val defaultHeight = textBounds.height() + 2 * textPaddingVertical
+        val textWidth = textBounds.width() + 2F * textPaddingHorizontal
+        val textHeight = textBounds.height() + 2F * textPaddingVertical
 
-        val width: Int = if (widthMode == MeasureSpec.EXACTLY) { // exact size
-            widthSize
-        } else { // WRAP_CONTENT
-            defaultWidth
+        var iconSpacing = 0F
+        // set default icon size
+        val icon = iconBitmap
+        if (icon != null) {
+            if (usingDefaultIconSize) {
+                val referenceHeight = if (widthMode == MeasureSpec.EXACTLY) {
+                    heightSize.toFloat()
+                } else {
+                    textHeight
+                }
+                val iconHeight = defaultIconHeightFactor * referenceHeight
+                val iconWidth = icon.width / icon.height * iconHeight
+                iconSize = Vector2(iconWidth, iconHeight)
+                iconSpacing = iconSpacingFactor * iconSize.x
+            }
         }
 
-        val height: Int = if (heightMode == MeasureSpec.EXACTLY) { // exact size
+        val defaultWidth = max(textWidth + iconSize.x + iconSpacing, textWidth)
+        val defaultHeight = max(iconSize.y + iconSpacing, textHeight)
+
+        // button width and height
+        val width: Int = if (widthMode == MeasureSpec.EXACTLY) { // exact size provided
+            widthSize
+        } else { // WRAP_CONTENT
+            defaultWidth.toInt()
+        }
+
+        val height: Int = if (heightMode == MeasureSpec.EXACTLY) { // exact size provided
             heightSize
         } else { // WRAP_CONTENT
-            defaultHeight
+            defaultHeight.toInt()
         }
 
         setMeasuredDimension(width, height)
@@ -128,11 +154,6 @@ class CustomButton @JvmOverloads constructor(
         // draw icon if provided
         val icon = iconBitmap
         if (icon != null) {
-            if (iconSize.x == 0F && iconSize.y == 0F) {
-                val iconHeight = defaultIconHeightFactor * this.height
-                val iconWidth = icon.width / icon.height * iconHeight
-                iconSize = Vector2(iconWidth, iconHeight)
-            }
             drawIcon(canvas, icon)
         }
 
@@ -184,6 +205,7 @@ class CustomButton @JvmOverloads constructor(
             this.iconBitmap = null
         }
         invalidate()
+        requestLayout()
     }
 
     private fun drawBackground(canvas: Canvas) {

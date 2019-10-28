@@ -19,30 +19,30 @@ import SceneKit
 
 @objc open class GridLayout: NSObject {
     @objc var columns: Int = 0 {
-        didSet { gridDesc = nil }
+        didSet { gridDescriptor = nil }
     }
     @objc var rows: Int = 0 {
-        didSet { gridDesc = nil }
+        didSet { gridDescriptor = nil }
     }
     @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
-        didSet { gridDesc = nil }
+        didSet { gridDescriptor = nil }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { gridDesc = nil }
+        didSet { gridDescriptor = nil }
     }
     @objc var skipInvisibleItems: Bool = false {
-        didSet { gridDesc = nil }
+        didSet { gridDescriptor = nil }
     }
 
     var itemsCount: Int {
         return container.childNodes.count
     }
     var recalculateNeeded: Bool {
-        return gridDesc == nil
+        return gridDescriptor == nil
     }
 
     let container: SCNNode = SCNNode()
-    fileprivate var gridDesc: GridLayoutDescriptor?
+    fileprivate var gridDescriptor: GridLayoutDescriptor?
 
     deinit {
         container.removeFromParentNode()
@@ -53,7 +53,7 @@ import SceneKit
         proxyNode.name = item.name
         container.addChildNode(proxyNode)
         proxyNode.addChildNode(item)
-        gridDesc = nil
+        gridDescriptor = nil
     }
 
     @discardableResult
@@ -62,7 +62,7 @@ import SceneKit
             let parent = proxyNode.parent, parent == container {
             proxyNode.removeFromParentNode()
             item.removeFromParentNode()
-            gridDesc = nil
+            gridDescriptor = nil
             return true
         }
 
@@ -70,15 +70,15 @@ import SceneKit
     }
 
     @objc func hitTest(ray: Ray, node: UiNode) -> TransformNode? {
-        guard let gridDesc = gridDesc else { return nil }
+        guard let gridDescriptor = gridDescriptor else { return nil }
         guard let hitPoint = node.getHitTestPoint(ray: ray) else { return nil }
         let gridBounds = node.getBounds()
         let localPoint = CGPoint(x: CGFloat(hitPoint.x) - gridBounds.minX, y: gridBounds.height - (CGFloat(hitPoint.y) - gridBounds.minY))
         guard localPoint.x >= 0 && localPoint.x <= gridBounds.width,
             localPoint.y >= 0 && localPoint.y <= gridBounds.height else { return nil }
 
-        let columnsBounds = gridDesc.columnsBounds
-        let rowsBounds = gridDesc.rowsBounds
+        let columnsBounds = gridDescriptor.columnsBounds
+        let rowsBounds = gridDescriptor.rowsBounds
 
         var columnIndex = 0
         for (index, bound) in columnsBounds.enumerated() {
@@ -96,28 +96,28 @@ import SceneKit
             }
         }
 
-        let elementIndex = rowIndex * gridDesc.columns + columnIndex
-        return gridDesc.children[elementIndex].childNodes[0] as? TransformNode
+        let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
+        return gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
     }
 
     @objc func recalculate() {
-        gridDesc = calculateGridDescriptor()
+        gridDescriptor = calculateGridDescriptor()
     }
 
     @objc func getSize() -> CGSize {
-        if gridDesc == nil {
+        if gridDescriptor == nil {
             recalculate()
         }
-        return gridDesc?.size ?? CGSize.zero
+        return gridDescriptor?.size ?? CGSize.zero
     }
 
     @objc func updateLayout() {
-        guard let gridDesc = gridDesc else { return }
+        guard let gridDescriptor = gridDescriptor else { return }
 
-        let origin = CGPoint(x: -0.5 * gridDesc.size.width, y: 0.5 * gridDesc.size.height)
-        for i in 0..<gridDesc.children.count {
-            let pos: CGPoint = getLocalPositionForChild(at: i, desc: gridDesc)
-            gridDesc.children[i].position = SCNVector3(origin.x + pos.x, origin.y - pos.y, 0)
+        let origin = CGPoint(x: -0.5 * gridDescriptor.size.width, y: 0.5 * gridDescriptor.size.height)
+        for i in 0..<gridDescriptor.children.count {
+            let pos: CGPoint = getLocalPositionForChild(at: i, desc: gridDescriptor)
+            gridDescriptor.children[i].position = SCNVector3(origin.x + pos.x, origin.y - pos.y, 0)
         }
     }
 }

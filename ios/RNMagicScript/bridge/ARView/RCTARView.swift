@@ -22,9 +22,16 @@ import SceneKit
 
     fileprivate(set) var arView: ARSCNView!
     fileprivate var inputResponder: UITextField?
+#if targetEnvironment(simulator)
+    fileprivate var rayCastNode: SCNNode?
+#endif
 
     public var scene: SCNScene {
         return arView.scene
+    }
+
+    public var cameraNode: SCNNode? {
+        return arView.pointOfView
     }
 
     @objc public var debug: Bool {
@@ -106,6 +113,10 @@ import SceneKit
         view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 1.5)
     #endif
 
+        // Set camera's range
+        view.pointOfView?.camera?.zNear = 0.001
+        view.pointOfView?.camera?.zFar = 10
+
         // Add gesture recognizer
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
@@ -131,11 +142,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            UiNodesManager.instance.handleTapAction(ray: nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            UiNodesManager.instance.handleTapAction(ray: nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView
@@ -175,15 +186,22 @@ import SceneKit
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
-        let tapPoint: CGPoint = sender.location(in: arView)
-        let options: [SCNHitTestOption : Any] = [
-            SCNHitTestOption.boundingBoxOnly: true,
-            SCNHitTestOption.ignoreHiddenNodes: true,
-            // For some reason, the categoryBitMask test option does not work
-            // (nodes with given categoryBitMask are ignored).
-            // SCNHitTestOption.categoryBitMask: UiNodesManager.instance.focusableNodeBitMask
-        ]
-        let node = arView.hitTest(tapPoint, options: options).first?.node
-        UiNodesManager.instance.handleNodeTap(node)
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+
+        UiNodesManager.instance.handleTapAction(ray: ray)
+
+    #if targetEnvironment(simulator)
+        if debug && rayCastNode == nil {
+            rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
+            scene.rootNode.addChildNode(rayCastNode!)
+        }
+
+        if let node = rayCastNode {
+            node.position = ray.begin
+            node.orientUpVectorAlong(ray.direction)
+            node.scale = SCNVector3(1, ray.length, 1)
+        }
+    #endif
     }
 }

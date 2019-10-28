@@ -18,17 +18,9 @@ package com.reactlibrary.icons
 
 import android.graphics.drawable.Drawable
 
-class IconsRepository(private val defaultIconsProvider: DefaultIconsProvider,
-                      private val externalIconsProvider: ExternalIconsProvider) : IconsProvider {
-    /**
-     * Returns an icon for a given name or null if not found.
-     */
-    override fun provideIcon(name: String): Drawable? {
-        val externalIcon = externalIconsProvider.provideIcon(name)
-        if (externalIcon != null) {
-            return externalIcon
-        }
-        return defaultIconsProvider.provideIcon(name)
-    }
-
+/**
+ * Returns an icon for a given name or null if not found.
+ */
+interface IconsRepository {
+    fun getIcon(name: String, forceDefault: Boolean = false): Drawable?
 }

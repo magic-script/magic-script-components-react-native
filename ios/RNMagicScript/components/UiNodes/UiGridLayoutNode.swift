@@ -37,6 +37,38 @@ import SceneKit
 
     fileprivate var gridDesc: GridLayoutDescriptor?
 
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let gridDesc = gridDesc else { return nil }
+        guard let hitPoint = getHitTestPoint(ray: ray) else { return nil }
+        let gridBounds = getBounds()
+        let localPoint = CGPoint(x: CGFloat(hitPoint.x) - gridBounds.minX, y: gridBounds.height - (CGFloat(hitPoint.y) - gridBounds.minY))
+        guard localPoint.x >= 0 && localPoint.x <= gridBounds.width,
+            localPoint.y >= 0 && localPoint.y <= gridBounds.height else { return nil }
+
+        let columnsBounds = gridDesc.columnsBounds
+        let rowsBounds = gridDesc.rowsBounds
+
+        var columnIndex = 0
+        for (index, bound) in columnsBounds.enumerated() {
+            if localPoint.x < bound.x + bound.width {
+                columnIndex = index
+                break
+            }
+        }
+
+        var rowIndex = 0
+        for (index, bound) in rowsBounds.enumerated() {
+            if localPoint.y < bound.y + bound.height {
+                rowIndex = index
+                break
+            }
+        }
+
+        let elementIndex = rowIndex * gridDesc.columns + columnIndex
+        let node: TransformNode = gridDesc.children[elementIndex].childNodes[0] as! TransformNode
+        return node
+    }
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 

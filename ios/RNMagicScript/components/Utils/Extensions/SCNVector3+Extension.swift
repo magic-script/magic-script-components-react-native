@@ -152,6 +152,22 @@ func * (scalar: Float, vector: SCNVector3) -> SCNVector3 {
     return SCNVector3Make(vector.x * scalar, vector.y * scalar, vector.z * scalar)
 }
 
+func * (vector: SCNVector3, scalar: CGFloat) -> SCNVector3 {
+    return vector * Float(scalar)
+}
+
+func * (scalar: CGFloat, vector: SCNVector3) -> SCNVector3 {
+    return Float(scalar) * vector
+}
+
+func * (vector: SCNVector3, scalar: Double) -> SCNVector3 {
+    return vector * Float(scalar)
+}
+
+func * (scalar: Double, vector: SCNVector3) -> SCNVector3 {
+    return Float(scalar) * vector
+}
+
 func * (vector: SCNVector3, scalar: Int) -> SCNVector3 {
     return vector * Float(scalar)
 }

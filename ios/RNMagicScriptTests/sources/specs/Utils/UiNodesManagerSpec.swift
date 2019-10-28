@@ -108,19 +108,6 @@ class UiNodesManagerSpec: QuickSpec {
                         expect(result).to(beIdenticalTo(referenceNode))
                     }
                 }
-                
-                context("when node is UiNode and canHaveFocus") {
-                    it("should set correct categoryBitMask") {
-                        let localReferenceNode = UiButtonNode(props: [:])
-                        let localReferenceNodeId = "referenceNodeId"
-                        nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
-                        
-                        nodesManager.registerNode(localReferenceNode, nodeId: localReferenceNodeId)
-                        
-                        let result = nodesManager.findNodeWithId(referenceNodeId)
-                        expect(result?.categoryBitMask).to(equal(8))
-                    }
-                }
             }
             
             context("when asked to unregister node") {

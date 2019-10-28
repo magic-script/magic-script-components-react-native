@@ -36,8 +36,7 @@ class UiDropdownListItemNode(initProps: ReadableMap,
         const val PROP_ID = "id"
         const val PROP_LABEL = "label"
 
-        private const val PADDING_VERTICAL = 0.005F // meters
-        private const val PADDING_HORIZONTAL = 0.03F // meters
+        private const val PADDING_FACTOR = 1.2F
     }
 
     var onSelectedListener: (() -> Unit)? = null
@@ -63,9 +62,12 @@ class UiDropdownListItemNode(initProps: ReadableMap,
 
     override fun setupView() {
         super.setupView()
-        val paddingVertPx = Utils.metersToPx(PADDING_VERTICAL, context)
-        val paddingHorizPx = Utils.metersToPx(PADDING_HORIZONTAL, context)
-        view.setPadding(paddingHorizPx, paddingVertPx, paddingHorizPx, paddingVertPx)
+
+        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
+        val textSizePx = Utils.metersToPx(textSize, context)
+        val padding = (textSizePx * PADDING_FACTOR).toInt()
+        view.setPadding(padding, padding, padding, padding)
+
         if (maxCharacters > 0) {
             val textView = view as TextView
             textView.text = textView.text.toString().limited(maxCharacters)

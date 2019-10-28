@@ -114,6 +114,14 @@ import SceneKit
         return CGSize(width: widthContent, height: heightContent)
     }
 
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+        let size = getSize()
+        let toggleSize = getToggleSize()
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
+        let offset = CGPoint(x: -size.width + 0.5 * toggleSize.width, y: -0.5 * size.height)
+        return CGRect(origin: origin + offset, size: size)
+    }
+
     @objc override func updateLayout() {
         labelNode.reload()
 

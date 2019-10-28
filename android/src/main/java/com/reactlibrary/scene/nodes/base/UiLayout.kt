@@ -28,7 +28,7 @@ import com.reactlibrary.utils.Utils
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
-    : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true) {
+    : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     protected var width: Float = 0f
     protected var height: Float = 0f

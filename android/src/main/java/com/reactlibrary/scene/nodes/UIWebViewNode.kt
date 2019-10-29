@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
@@ -27,6 +26,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultDouble
 
 class UIWebViewNode(
     initProps: ReadableMap,
@@ -45,6 +45,13 @@ class UIWebViewNode(
         const val ACTION_BACK = "back"
         const val ACTION_FORWARD = "forward"
         const val ACTION_RELOAD = "reload"
+    }
+
+    init {
+        properties.apply {
+            putDefaultDouble(PROP_WIDTH, 1.0)
+            putDefaultDouble(PROP_HEIGHT, 1.0)
+        }
     }
 
     override fun provideView(context: Context) =
@@ -75,7 +82,7 @@ class UIWebViewNode(
     }
 
     private fun setScrollBy(props: Bundle) {
-        if(props.containsKey(PROP_SCROLL_BY)) {
+        if (props.containsKey(PROP_SCROLL_BY)) {
             (view as WebView).scrollBy(0, props.getInt(PROP_SCROLL_BY))
         }
     }

@@ -35,5 +35,7 @@
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
 - (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes;
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value;
+- (void)onDateChangedEventReceived:(UiSliderNode *)sender value:(NSString *)value;
+- (void)onDateConfirmedEventReceived:(UiSliderNode *)sender value:(NSString *)value;
 
 @end

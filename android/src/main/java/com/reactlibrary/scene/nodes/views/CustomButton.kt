@@ -76,10 +76,6 @@ class CustomButton @JvmOverloads constructor(
     private val borderWidthFactor = 0.07F
     private val defaultIconHeightFactor = 0.65F // relative to button height
     private val iconSpacingFactor = 0.3F // spacing offset from text (relative to icon width)
-    private var textPaddingHorizontal = 0
-    private var textPaddingVertical = 0
-    private var iconBitmap: Bitmap? = null
-    private var usingDefaultIconSize = true
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
         color = getColor(context, android.R.color.white)
@@ -99,21 +95,25 @@ class CustomButton @JvmOverloads constructor(
     private val textBounds = Rect()
     private val iconBounds = RectF()
 
+    private var textPaddingHorizontal = 0
+    private var textPaddingVertical = 0
+    private var iconBitmap: Bitmap? = null
+    private var iconPadding = 0F
+    private var usingDefaultIconSize = true
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        // read text area size
+        // read text area size (caution: textBounds is non zero for empty text)
         textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textWidth = textBounds.width() + 2F * textPaddingHorizontal
         val textHeight = textBounds.height() + 2F * textPaddingVertical
 
-        var iconSpacing = 0F
         // set default icon size
-        val icon = iconBitmap
-        if (icon != null) {
+        iconBitmap?.let { icon ->
             if (usingDefaultIconSize) {
                 val referenceHeight = if (widthMode == MeasureSpec.EXACTLY) {
                     heightSize.toFloat()
@@ -123,12 +123,21 @@ class CustomButton @JvmOverloads constructor(
                 val iconHeight = defaultIconHeightFactor * referenceHeight
                 val iconWidth = icon.width / icon.height * iconHeight
                 iconSize = Vector2(iconWidth, iconHeight)
-                iconSpacing = iconSpacingFactor * iconSize.x
             }
+            iconPadding = iconSpacingFactor * iconSize.x
         }
 
-        val defaultWidth = max(textWidth + iconSize.x + iconSpacing, textWidth)
-        val defaultHeight = max(iconSize.y + iconSpacing, textHeight)
+        val defaultWidth = if (text.isNotEmpty()) {
+            max(textWidth + iconSize.x + iconPadding, textWidth)
+        } else {
+            iconSize.x + iconPadding
+        }
+
+        val defaultHeight = if (text.isNotEmpty()) {
+            max(iconSize.y + iconPadding, textHeight)
+        } else {
+            iconSize.y + iconPadding
+        }
 
         // button width and height
         val width: Int = if (widthMode == MeasureSpec.EXACTLY) { // exact size provided
@@ -152,14 +161,13 @@ class CustomButton @JvmOverloads constructor(
         drawBackground(canvas)
 
         // draw icon if provided
-        val icon = iconBitmap
-        if (icon != null) {
-            drawIcon(canvas, icon)
+        iconBitmap?.let {
+            drawIcon(canvas, it)
         }
 
         // draw text
         val textOffsetX = when {
-            icon == null -> 0F
+            iconBitmap == null -> 0F
             iconPosition == IconPosition.LEFT -> iconSize.x / 2F
             else -> -iconSize.x / 2F
         }
@@ -225,12 +233,15 @@ class CustomButton @JvmOverloads constructor(
     }
 
     private fun drawIcon(canvas: Canvas, icon: Bitmap) {
-        val offsetX = if (text.isNotEmpty()) iconSpacingFactor * iconSize.x else 0F
+        val iconOffset = if (text.isNotEmpty()) {
+            textBounds.width() / 2F + iconPadding
+        } else 0F
+
         if (iconPosition == IconPosition.LEFT) {
-            iconBounds.right = this.width / 2 - textBounds.width() / 2F + iconSize.x / 2 - offsetX
+            iconBounds.right = this.width / 2 + iconSize.x / 2 - iconOffset
             iconBounds.left = iconBounds.right - iconSize.x
         } else {
-            iconBounds.left = this.width / 2 + textBounds.width() / 2F - iconSize.x / 2 + offsetX
+            iconBounds.left = this.width / 2 - iconSize.x / 2 + iconOffset
             iconBounds.right = iconBounds.left + iconSize.x
         }
         iconBounds.top = (this.height - iconSize.y) / 2F

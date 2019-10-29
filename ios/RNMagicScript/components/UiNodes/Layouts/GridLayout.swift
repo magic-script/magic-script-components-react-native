@@ -97,7 +97,8 @@ import SceneKit
         }
 
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
-        return gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
+        let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
+        return hitNode?.hitTest(ray: ray)
     }
 
     @objc func recalculate() {

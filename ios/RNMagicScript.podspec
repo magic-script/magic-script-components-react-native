@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "git@github.com:magic-script/magic-script-components-ios.git", :tag => "master" }
   s.source_files  = ["RNMagicScript/**/*.{h,m,swift}"]
   s.resource_bundles = {
-    "RNMagicScriptResources" => ["**/*.{xcassets}"]
+    "RNMagicScriptResources" => ["**/*.{xcassets}", "**/Shaders/*.{txt}"]
   }
   s.requires_arc = true
 

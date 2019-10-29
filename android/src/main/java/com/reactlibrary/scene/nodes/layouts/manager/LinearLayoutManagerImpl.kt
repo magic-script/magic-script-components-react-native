@@ -29,6 +29,11 @@ import com.reactlibrary.scene.nodes.props.Padding
  * column or row will grow to fit the bounding (+ padding) of a child.
  */
 class LinearLayoutManagerImpl : LinearLayoutManager {
+    /*
+     *  TODO if parent bounding is not null, use it to layout children
+     *   relatively to maximum width and height the node can be
+     */
+    override var parentBounds: Bounding? = null
 
     override var itemPadding = Padding(0F, 0F, 0F, 0F)
 

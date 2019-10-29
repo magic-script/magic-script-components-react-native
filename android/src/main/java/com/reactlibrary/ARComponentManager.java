@@ -66,10 +66,13 @@ import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
+import com.reactlibrary.scene.nodes.layouts.UiRectLayout;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
@@ -283,6 +286,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             UiDropdownListItemNode node = new UiDropdownListItemNode(props, context, viewRenderableLoader, fontProvider);
             addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createRectLayoutNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            RectLayoutManager layoutManager = new RectLayoutManagerImpl();
+            addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
     }
 

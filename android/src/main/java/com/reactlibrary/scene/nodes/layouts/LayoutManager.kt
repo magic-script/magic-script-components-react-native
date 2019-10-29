@@ -24,5 +24,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
  * the correct positions inside [UiLayout]
  */
 interface LayoutManager {
+    var parentBounds: Bounding?
+
     fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>)
 }

@@ -14,8 +14,31 @@
 //  limitations under the License.
 // 
 
+import Foundation
 import SceneKit
 
-@objc open class UiRectLayoutNode: UiNode {
+@objc open class UiLayoutNode: UiNode {
 
+    @objc var width: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+    @objc var height: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let width = Convert.toCGFloat(props["width"]) {
+            self.width = width
+        }
+
+        if let height = Convert.toCGFloat(props["height"]) {
+            self.height = height
+        }
+    }
+
+    @objc override func _calculateSize() -> CGSize {
+        return CGSize(width: width, height: height)
+    }
 }

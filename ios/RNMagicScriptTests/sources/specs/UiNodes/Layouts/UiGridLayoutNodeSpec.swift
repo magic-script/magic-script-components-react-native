@@ -33,7 +33,7 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.skipInvisibleItems).to(beFalse())
-
+                    expect(node.itemsCount).to(equal(0))
                 }
             }
 
@@ -89,16 +89,17 @@ class UiGridLayoutNodeSpec: QuickSpec {
             context("always") {
                 it("should add child node correctly") {
                     node = UiGridLayoutNode(props: [:])
+                    let childNodes = node.contentNode.childNodes
+                    expect(childNodes.count).to(equal(1))
 
                     let referenceNode = TransformNode(props: [:])
                     node.addChild(referenceNode)
+                    expect(childNodes.count).to(equal(1))
 
-                    let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(1))
-                    guard let proxyChild = childNodes.first,
-                        let childChildNode = proxyChild.childNodes.first else { fail("Sth wrong with child nodes structure."); return }
-                    expect(childNodes.count).to(equal(1))
-                    expect(childChildNode).to(beIdenticalTo(referenceNode))
+                    guard let containerNode = childNodes.first,
+                        let proxyChild = containerNode.childNodes.first,
+                        let itemNode = proxyChild.childNodes.first else { fail("Sth wrong with child nodes structure."); return }
+                    expect(itemNode).to(beIdenticalTo(referenceNode))
                 }
 
                 it("should remove child node correctly") {
@@ -109,7 +110,38 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     node.removeChild(referenceNode)
 
                     let childNodes = node.contentNode.childNodes
-                    expect(childNodes.count).to(equal(0))
+                    expect(childNodes.count).to(equal(1))
+
+                    guard let containerNode = childNodes.first else { fail("Sth wrong with child nodes structure."); return }
+                    expect(containerNode.childNodes.count).to(equal(0))
+                }
+            }
+
+            context("hitTest") {
+                it("should return nil if ray does not hit the area of node") {
+                    node = UiGridLayoutNode(props: ["alignment": "center-center"])
+
+                    let referenceSize: CGFloat = 0.08
+                    let referenceNode = UiImageNode(props: ["icon": "address-book", "height": referenceSize])
+                    node.addChild(referenceNode)
+                    node.layoutIfNeeded()
+
+                    let ray = Ray(begin: SCNVector3(-1, 0, 1), direction: SCNVector3(0, 0, -1), length: 3)
+                    let result = node.hitTest(ray: ray)
+                    expect(result).to(beNil())
+                }
+
+                it("should return hit node if ray hits the area of node") {
+                    node = UiGridLayoutNode(props: ["alignment": "center-center"])
+
+                    let referenceSize: CGFloat = 0.08
+                    let referenceNode = UiImageNode(props: ["icon": "address-book", "height": referenceSize])
+                    node.addChild(referenceNode)
+                    node.layoutIfNeeded()
+
+                    let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 3)
+                    let result = node.hitTest(ray: ray)
+                    expect(result).to(beIdenticalTo(referenceNode))
                 }
             }
 
@@ -181,7 +213,6 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: referenceHeight)))
                 }
             }
-
         }
     }
 }

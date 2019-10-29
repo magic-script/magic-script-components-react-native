@@ -18,7 +18,7 @@ jobs:
       - name: Build and test
         run: |
           cd ios
-          xcodebuild clean test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
+          xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES
         env:
          destination: ${{ matrix.destination }}
       - name: Code Coverage
@@ -35,4 +35,5 @@ jobs:
           path: ios/html
       - name: Codecov update
         run: |
-          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -cF swift
+          cd ios
+          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -J '^RNMagicScriptTests'

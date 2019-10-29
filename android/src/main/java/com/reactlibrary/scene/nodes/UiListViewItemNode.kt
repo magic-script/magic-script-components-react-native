@@ -30,14 +30,14 @@ class UiListViewItemNode(initProps: ReadableMap,
     }
 
     private fun setBackgroundColor(props: Bundle) {
-        val androidColor = PropertiesReader.readColor(props, UiTextNode.PROP_TEXT_COLOR)
+        val androidColor = PropertiesReader.readColor(props, PROP_BACKGROUND_COLOR)
         if (androidColor != null) {
             currentColor = Color(androidColor)
             val colorNode = Node()
             colorNode.name = COLOR_TAG
             val color = Color(androidColor)
             val bounding = getBounding()
-            renderableLoader.buildRenderable(Vector3(bounding.right - bounding.left, bounding.top - bounding.bottom, 0.01f), contentNode.localPosition, color) { result ->
+            renderableLoader.buildRenderable(Vector3(bounding.right - bounding.left, bounding.top - bounding.bottom, 0.1f), contentNode.localPosition, color) { result ->
                 if (result is RenderableResult.Success) {
                     if(contentNode.children.any { it.name == COLOR_TAG }) {
                         contentNode.children.removeAll { it.name == COLOR_TAG }

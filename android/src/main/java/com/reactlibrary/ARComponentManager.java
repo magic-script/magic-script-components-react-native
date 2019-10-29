@@ -54,6 +54,7 @@ import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
+import com.reactlibrary.scene.nodes.UiListViewItemNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
 import com.reactlibrary.scene.nodes.UiSliderNode;
@@ -289,6 +290,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             RectLayoutManager layoutManager = new RectLayoutManagerImpl();
             addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
+    }
+
+    @ReactMethod
+    public void createUiListViewItemNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, cubeRenderableBuilder), nodeId));
     }
 
     @ReactMethod

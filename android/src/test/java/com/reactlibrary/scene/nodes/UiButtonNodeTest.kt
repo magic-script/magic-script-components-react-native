@@ -168,8 +168,9 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldSetIconSizeWhenIconSizePropertyUpdated() {
-        val iconSize = JavaOnlyArray.of(0.1, 0.1)
+    fun shouldSetIconSizeWhenIconSizePropertyPresent() {
+        val sizeInMeters = 0.1
+        val iconSize = JavaOnlyArray.of(sizeInMeters, sizeInMeters)
         val props = JavaOnlyMap.of(
                 UiButtonNode.PROP_ICON, "magic-icon",
                 UiButtonNode.PROP_ICON_SIZE, iconSize
@@ -178,7 +179,8 @@ class UiButtonNodeTest {
 
         node.build()
 
-        verify(viewSpy).iconSize = Vector2(0.1F, 0.1F)
+        val sizeInPixels = Utils.metersToPx(sizeInMeters.toFloat(), context).toFloat()
+        verify(viewSpy).iconSize = Vector2(sizeInPixels, sizeInPixels)
     }
 
     @Test

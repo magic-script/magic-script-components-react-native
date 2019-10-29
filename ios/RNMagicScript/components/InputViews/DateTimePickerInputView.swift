@@ -42,18 +42,32 @@ class DateTimePickerInputView: UIView {
     fileprivate func setupView() {
         backgroundColor = .white
 
-        let button: UIButton = UIButton(type: .system)
-        button.setTitle("Done", for: UIControl.State.normal)
-        button.addTarget(self, action: #selector(doneButtonAction(_:)), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(button)
+        let doneButton: UIButton = UIButton(type: .system)
+        doneButton.setTitle("Done", for: UIControl.State.normal)
+        doneButton.addTarget(self, action: #selector(doneButtonAction(_:)), for: .touchUpInside)
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(doneButton)
 
         let margin: CGFloat = 8
         NSLayoutConstraint.activate([
-            button.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
-            button.heightAnchor.constraint(equalToConstant: 20),
-            button.widthAnchor.constraint(equalToConstant: 100),
-            button.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+            doneButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
+            doneButton.heightAnchor.constraint(equalToConstant: 20),
+            doneButton.widthAnchor.constraint(equalToConstant: 100),
+            doneButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+        ])
+
+
+        let cancelButton: UIButton = UIButton(type: .system)
+        cancelButton.setTitle("Cancel", for: UIControl.State.normal)
+        cancelButton.addTarget(self, action: #selector(cancelButtonAction(_:)), for: .touchUpInside)
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(cancelButton)
+
+        NSLayoutConstraint.activate([
+            cancelButton.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: margin),
+            cancelButton.heightAnchor.constraint(equalToConstant: 20),
+            cancelButton.widthAnchor.constraint(equalToConstant: 100),
+            cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
         ])
 
         dateTimePicker = UIDatePicker()
@@ -64,7 +78,7 @@ class DateTimePickerInputView: UIView {
 
         NSLayoutConstraint.activate([
             dateTimePicker.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
-            dateTimePicker.topAnchor.constraint(equalTo: button.bottomAnchor, constant: margin),
+            dateTimePicker.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: margin),
             dateTimePicker.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
             dateTimePicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
@@ -78,9 +92,15 @@ class DateTimePickerInputView: UIView {
 extension DateTimePickerInputView {
     @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
         pickerData?.datePickerValue = sender.date
+        pickerData?.dateChanged()
     }
 
     @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+        pickerData?.dateConfirmed()
+        onFinish?()
+    }
+
+    @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
         onFinish?()
     }
 }

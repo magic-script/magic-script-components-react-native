@@ -74,6 +74,9 @@ import SceneKit
 
     @objc var yearMax: Int = -1
 
+    @objc public var onDateChanged: ((_ sender: UiDatePickerNode, _ selected: String) -> (Void))?
+    @objc public var onDateConfirmed: ((_ sender: UiDatePickerNode, _ confirmed: String) -> (Void))?
+
     fileprivate var labelNode: LabelNode!
     fileprivate var valueNode: LabelNode!
 
@@ -211,5 +214,13 @@ extension UiDatePickerNode: DatePickerDataProviding {
                 date = newValue.toString(format: UiDatePickerNode.defaultInputDateFormat)
             }
         }
+    }
+
+    func dateChanged() {
+        onDateChanged?(self, date)
+    }
+
+    func dateConfirmed() {
+        onDateConfirmed?(self, date)
     }
 }

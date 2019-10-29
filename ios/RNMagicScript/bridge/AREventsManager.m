@@ -63,7 +63,9 @@ RCT_EXPORT_MODULE();
              @"onSliderChanged",
              @"onTextChanged",
              @"onToggleChanged",
-             @"onVideoPrepared"
+             @"onVideoPrepared",
+             @"onDateChanged",
+             @"onDateConfirmed"
              ];
 }
 

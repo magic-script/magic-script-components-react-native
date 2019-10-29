@@ -26,6 +26,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.printProps
 import com.reactlibrary.utils.putDefaultDouble
 
 class UIWebViewNode(
@@ -66,6 +67,8 @@ class UIWebViewNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
+        printProps(props)
+
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
@@ -102,5 +105,4 @@ class UIWebViewNode(
             }
         }
     }
-
 }

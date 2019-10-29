@@ -1,3 +1,11 @@
+[![codecov](https://codecov.io/gh/magic-script/magic-script-components-react-native/branch/master/graph/badge.svg)](https://codecov.io/gh/magic-script-components-react-native)
+[![JSX_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20JavaScript/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)
+[![Android_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20Android/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)
+[![iOS_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20iOS/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)
+[![npm version](https://badge.fury.io/js/magic-script-components-react-native.svg)](https://badge.fury.io/js/magic-script-components-react-native)
+[![npm downloads](https://img.shields.io/npm/dt/magic-script-components-react-native.svg)](https://www.npmjs.com/package/magic-script-components-react-native)
+[![License](https://img.shields.io/:license-Apache%202.0-blue.svg)](LICENSE)
+
 
 # react-native-magic-script
 

@@ -33,3 +33,6 @@ jobs:
         with:
           name: code-coverage-artifact-ios
           path: ios/html
+      - name: Codecov update
+        run: |
+          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -cF swift

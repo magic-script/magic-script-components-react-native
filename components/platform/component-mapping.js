@@ -19,6 +19,7 @@ import TextBuilder from './elements/builders/text-builder.js';
 import TextEditBuilder from './elements/builders/text-edit-builder.js';
 import ToggleBuilder from './elements/builders/toggle-builder.js';
 import VideoBuilder from './elements/builders/video-builder.js';
+import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
 
 export default {
   version: '1.0',
@@ -51,5 +52,6 @@ export default {
     'line': (componentManager) => new LineBuilder(componentManager),
     'model': (componentManager) => new ModelBuilder(componentManager),
     'video': (componentManager) => new VideoBuilder(componentManager),
+    'listViewItem': (componentManager) => new ListViewItemBuilder(componentManager),
   }
 };

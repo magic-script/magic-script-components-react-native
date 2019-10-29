@@ -27,12 +27,17 @@ class UiDatePickerNodeSpec: QuickSpec {
 
             beforeEach {
                 node = UiDatePickerNode(props: [:])
+                node.layoutIfNeeded()
             }
 
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.label).to(beNil())
                     expect(node.labelSide).to(equal(.top))
+                    let referenceDefaultDate = "MM/DD/YYYY"
+                    expect(node.date).to(equal(referenceDefaultDate))
+                    let referenceTextColor = UIColor(white: 0.75, alpha: 1.0)
+                    expect(node.color).to(beCloseTo(referenceTextColor))
                     expect(node.dateFormat).to(equal(UiDatePickerNode.defaultInputDateFormat))
                     expect(node.defaultDate).to(equal(Date().toString(format: "MM/dd/YYYY")))
                     expect(node.yearMin).to(equal(-1))
@@ -49,6 +54,31 @@ class UiDatePickerNodeSpec: QuickSpec {
                 it("should update 'labelSide' prop") {
                     node.update(["labelSide": "right"])
                     expect(node.labelSide).to(equal(Side.right))
+                }
+
+                it("should update 'color' prop") {
+                    let referenceTextColor = UIColor(white: 0.5, alpha: 0.5)
+                    node.update(["color" : referenceTextColor.toArrayOfFloat])
+                    expect(node.color).to(beCloseTo(referenceTextColor))
+                    expect(node.isLayoutNeeded).to(beTrue())
+
+                    expect(node.valueNode.textColor).to(beCloseTo(referenceTextColor))
+                }
+
+                context("when correct (in format MM/DD/YYYY) date provided") {
+                    it("should update 'date' prop") {
+                        let referenceDefaultDate = "06/13/1983"
+                        node.update(["date": referenceDefaultDate])
+                        expect(node.date).to(equal(referenceDefaultDate))
+                    }
+                }
+
+                context("when incorrect dateFormat provided") {
+                    it("should not update 'date' prop (should return dateFormat)") {
+                        let referenceDefaultDate = "15/15/1515"
+                        node.update(["date": referenceDefaultDate])
+                        expect(node.date).to(equal("MM/DD/YYYY"))
+                    }
                 }
 
                 context("when correct (from the list: MM/dd/YYYY, dd/MM/YYYY, DD/YYYY, MM/YYYY) dateFormat provided") {
@@ -94,6 +124,14 @@ class UiDatePickerNodeSpec: QuickSpec {
                     node.update(["yearMax": referenceYear])
                     expect(node.yearMax).to(equal(referenceYear))
                 }
+            }
+
+            it("should reload node when active state changed") {
+                expect(node.isLayoutNeeded).to(beFalse())
+                node.enterFocus()
+                expect(node.isLayoutNeeded).to(beFalse())
+                node.leaveFocus()
+                expect(node.isLayoutNeeded).to(beFalse())
             }
         }
     }

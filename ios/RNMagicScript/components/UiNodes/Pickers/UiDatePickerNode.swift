@@ -42,6 +42,10 @@ import SceneKit
         }
     }
 
+    @objc var color: UIColor = UIColor(white: 0.75, alpha: 1.0) {
+        didSet { valueNode.textColor = color; setNeedsLayout() }
+    }
+
     fileprivate let dateFormats: [String] = ["MM/dd/yyyy",
                                              "dd/MM/yyyy",
                                              "DD/yyyy",
@@ -78,7 +82,7 @@ import SceneKit
     @objc public var onDateConfirmed: ((_ sender: UiDatePickerNode, _ confirmed: String) -> (Void))?
 
     fileprivate var labelNode: LabelNode!
-    fileprivate var valueNode: LabelNode!
+    fileprivate(set) var valueNode: LabelNode!
 
     fileprivate var underlineGeometry: SCNPlane!
     fileprivate var underlineNode: SCNNode!
@@ -133,6 +137,14 @@ import SceneKit
 
         if let labelSide = Convert.toSide(props["labelSide"]) {
             self.labelSide = labelSide
+        }
+
+        if let date = Convert.toString(props["date"]) {
+            self.date = date
+        }
+
+        if let color = Convert.toColor(props["color"]) {
+            self.color = color
         }
 
         if let dateFormat = Convert.toString(props["dateFormat"]) {

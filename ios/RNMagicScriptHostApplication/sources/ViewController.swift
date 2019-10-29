@@ -75,6 +75,7 @@ class ViewController: UIViewController {
         let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId)
         uiDatePickerNode.position = SCNVector3(-0.125, 0.125, 0.0)
 
+        uiDatePickerNode.setDebugMode(true)
         uiDatePickerNode.layoutIfNeeded()
     }
 

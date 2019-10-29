@@ -96,7 +96,7 @@ import SceneKit
         labelNode.defaultTextSize = UiDatePickerNode.defaultTextSize
         labelNode.textColor = UIColor(white: 1.0, alpha: 0.75)
         labelNode.text = label
-        labelNode.position = SCNVector3(0.0, labelNode.getSize().height + 0.025, 0.0)
+
         contentNode.addChildNode(labelNode)
 
         valueNode = LabelNode()
@@ -104,7 +104,7 @@ import SceneKit
         valueNode.defaultTextSize = UiDatePickerNode.defaultTextSize
         valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
         valueNode.text = date
-        valueNode.position = SCNVector3((valueNode.getSize().width * 0.5 - labelNode.getSize().width * 0.5), 0.0, 0.0)
+
         contentNode.addChildNode(valueNode)
 
         labelNode.reload()
@@ -115,7 +115,6 @@ import SceneKit
         underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         underlineGeometry.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.45)
         underlineNode = SCNNode(geometry: underlineGeometry)
-        underlineNode.position = SCNVector3(x: valueNode.position.x, y: Float(-valueNode.getSize().height), z: 0.0)
 
         contentNode.addChildNode(underlineNode)
 
@@ -151,16 +150,19 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
+        let labelNodeSize = labelNode.getSize()
+        let valueNodeSize = valueNode.getSize()
 
-        valueNode.position = SCNVector3((valueNode.getSize().width * 0.5 - labelNode.getSize().width * 0.5), 0.0, 0.0)
+        labelNode.position = SCNVector3((labelNodeSize.width - valueNodeSize.width) * 0.5, labelNodeSize.height + 0.005, 0.0)
+
+        valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
 
         underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0010)
         underlineGeometry.firstMaterial?.lightingModel = .constant
         underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         underlineGeometry.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.45)
         underlineNode.geometry = underlineGeometry
-        underlineNode.position = SCNVector3(x: valueNode.position.x, y: Float(-valueNode.getSize().height), z: 0.0)
+        underlineNode.position = SCNVector3(CGFloat(valueNode.position.x), -valueNode.getSize().height * 0.85, 0.0)
 
         labelNode.reload()
         valueNode.reload()
@@ -175,8 +177,8 @@ import SceneKit
     @objc override func _calculateSize() -> CGSize {
         let labelNodeSize = labelNode.getSize()
         let valueNodeSize = valueNode.getSize()
-        let contentWidth: CGFloat = valueNodeSize.width
-        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 0.025
+        let contentWidth: CGFloat = max(valueNodeSize.width, labelNodeSize.width)
+        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 0.015
         return CGSize(width: contentWidth, height: contentHeight)
     }
 

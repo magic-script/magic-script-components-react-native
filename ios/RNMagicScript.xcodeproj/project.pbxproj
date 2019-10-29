@@ -217,10 +217,6 @@
 		44F5964D235729BB00C60F4C /* SystemIconSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5964C235729BB00C60F4C /* SystemIconSpec.swift */; };
 		44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
 		44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
-		44F5965923585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */; };
-		44F5965A23585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */; };
-		44F5965C23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
-		44F5965D23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
 		44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */; };
 		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
@@ -1477,8 +1473,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44F5965C23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */,
-				44F5965923585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1502,7 +1496,6 @@
 				44AFAB3B232B968C005AC8EF /* hedra_05.bin in Resources */,
 				44AFAB35232B968C005AC8EF /* hedra_001_Normal.png in Resources */,
 				44AFAB2F232B968C005AC8EF /* DemoPicture3.png in Resources */,
-				44F5965A23585D4F00C60F4C /* ClippingPlane.geometry.txt in Resources */,
 				44AFAB3D232B968C005AC8EF /* box.glb in Resources */,
 				44AFAB36232B968C005AC8EF /* hedra_001_BaseColor.png in Resources */,
 				44AFAB38232B968C005AC8EF /* hedra.obj in Resources */,
@@ -1512,7 +1505,6 @@
 				44AFAB2A232B968C005AC8EF /* Main.storyboard in Resources */,
 				44AFAB3A232B968C005AC8EF /* hedra_06.bin in Resources */,
 				44AFAB39232B968C005AC8EF /* hedra_05.gltf in Resources */,
-				44F5965D23585ED300C60F4C /* ClippingPlane.fragment.txt in Resources */,
 				44AFAB2D232B968C005AC8EF /* DemoPicture1.png in Resources */,
 				44AFAB37232B968C005AC8EF /* hedra.mtl in Resources */,
 				44AFAB31232B968C005AC8EF /* DemoPicture5.jpg in Resources */,

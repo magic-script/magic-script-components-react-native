@@ -37,7 +37,7 @@ class UiListViewItemNode(initProps: ReadableMap,
             colorNode.name = COLOR_TAG
             val color = Color(androidColor)
             val bounding = getBounding()
-            renderableLoader.buildRenderable(Vector3(bounding.right - bounding.left, bounding.top - bounding.bottom, 0f), contentNode.localPosition, color) { result ->
+            renderableLoader.buildRenderable(Vector3(bounding.right - bounding.left, bounding.top - bounding.bottom, 0.01f), contentNode.localPosition, color) { result ->
                 if (result is RenderableResult.Success) {
                     if(contentNode.children.any { it.name == COLOR_TAG }) {
                         contentNode.children.removeAll { it.name == COLOR_TAG }
@@ -50,6 +50,10 @@ class UiListViewItemNode(initProps: ReadableMap,
                 }
             }
         }
+    }
+
+    override fun getContentBounding(): Bounding {
+        return Bounding(-0.5f, -0.5f, 0.5f, 0.5f)
     }
 
     override fun applyProperties(props: Bundle) {

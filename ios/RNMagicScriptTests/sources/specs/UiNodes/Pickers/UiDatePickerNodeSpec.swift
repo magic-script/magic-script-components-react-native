@@ -83,7 +83,7 @@ class UiDatePickerNodeSpec: QuickSpec {
 
                 context("when correct (from the list: MM/dd/YYYY, dd/MM/YYYY, DD/YYYY, MM/YYYY) dateFormat provided") {
                     it("should update 'dateFormat' prop") {
-                        for referenceDateFormat in ["MM/dd/yyyy", "dd/MM/yyyy", "DD/yyyy", "MM/yyyy"] {
+                        for referenceDateFormat in ["MM/dd/yyyy", "dd/MM/yyyy", "dd/yyyy", "MM/yyyy"] {
                             node.update(["dateFormat": referenceDateFormat])
                             expect(node.dateFormat).to(equal(referenceDateFormat))
                         }

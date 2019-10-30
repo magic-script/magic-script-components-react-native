@@ -110,7 +110,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_TEXT = "text";
     private static final String EVENT_ARG_TOGGLE_ACTIVE = "On";
     private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
-    private static final String EVENT_ARG_SLIDER_VALUE = "value";
+    private static final String EVENT_ARG_SLIDER_VALUE = "Value";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());

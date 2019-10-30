@@ -47,7 +47,7 @@ import SceneKit
             handleNodeTap(hitNode)
         #if targetEnvironment(simulator)
             if let node = hitNode {
-                print("hitTest: \(node.name ?? "unknown")")
+                print("hitTest: \(type(of: node))")
             }
         #endif
         } else {

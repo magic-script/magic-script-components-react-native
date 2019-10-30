@@ -3,7 +3,7 @@ on: [push]
 jobs:
   test:
     name: Test
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -26,3 +26,6 @@ jobs:
       with:
         name: code-coverage-artifact-android
         path: android/build/reports/jacoco/jacocoTestReport/html
+    - name: Codecov update
+      run: |
+        bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -cF kotlin

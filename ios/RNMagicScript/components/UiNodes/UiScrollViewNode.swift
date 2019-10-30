@@ -172,9 +172,9 @@ import SceneKit
             var shift: CGPoint = CGPoint.zero
             switch scrollBar.scrollOrientation {
             case .horizontal:
-                shift.x = scrollBar.thumbPosition * max(0, contentSize.width - scrollSize.width)
+                shift.x = -scrollBar.thumbPosition * max(0, contentSize.width - scrollSize.width)
             case .vertical:
-                shift.y = scrollBar.thumbPosition * max(0, contentSize.height - scrollSize.height)
+                shift.y = (scrollBar.thumbPosition - 1) * max(0, contentSize.height - scrollSize.height)
             }
 
             proxyNode.position += SCNVector3(shift.x, shift.y, 0)
@@ -185,14 +185,14 @@ import SceneKit
 
             let min = scrollBounds.min
             let max = scrollBounds.max
-//            scrollContent?.setClippingPlanes([
-//                SCNVector4( 1, 0, 0,-min.x),
-//                SCNVector4(-1, 0, 0, max.x),
-//                SCNVector4(0, 1, 0,-min.y),
-//                SCNVector4(0,-1, 0, max.y),
-//                SCNVector4(0, 0, 1,-min.z),
-//                SCNVector4(0, 0,-1, max.z),
-//            ])
+            scrollContent?.setClippingPlanes([
+                SCNVector4( 1, 0, 0,-min.x),
+                SCNVector4(-1, 0, 0, max.x),
+                SCNVector4(0, 1, 0,-min.y),
+                SCNVector4(0,-1, 0, max.y),
+                SCNVector4(0, 0, 1,-min.z),
+                SCNVector4(0, 0,-1, max.z),
+            ])
         }
     }
 }

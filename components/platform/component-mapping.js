@@ -1,6 +1,7 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
 import ButtonBuilder from './elements/builders/button-builder.js';
+import DatePickerBuilder from './elements/builders/date-picker-builder.js';
 import DropdownListBuilder from './elements/builders/dropdown-list-builder.js';
 import DropdownListItemBuilder from './elements/builders/dropdown-list-item-builder.js';
 import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
@@ -29,6 +30,7 @@ export default {
   elements: {
     // ui nodes
     'button': (componentManager) => new ButtonBuilder(componentManager),
+    'datePicker': (componentManager) => new DatePickerBuilder(componentManager),
     'dropdownList': (componentManager) => new DropdownListBuilder(componentManager),
     'dropdownListItem': (componentManager) => new DropdownListItemBuilder(componentManager),
     'image': (componentManager) => new ImageBuilder(componentManager),

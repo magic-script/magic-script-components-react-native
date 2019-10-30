@@ -24,7 +24,11 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
-        guard let _ = selfHitTest(ray: ray) else { return nil }
+        // Do not perform selfHitTest on group node becuase group may include
+        // child components which can change their size during interaction
+        // (e.g. UiDropdownList). Therefore, the bounds of the group may not cover
+        // some parts of components. Instead, perform hitTest on each child node.
+        //guard let _ = selfHitTest(ray: ray) else { return nil }
         let nodes: [TransformNode] = contentNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
         for node in nodes {
             if let hitNode = node.hitTest(ray: ray) {

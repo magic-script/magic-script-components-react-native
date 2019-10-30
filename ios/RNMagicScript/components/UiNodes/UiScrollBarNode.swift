@@ -129,6 +129,7 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        let _ = getSize() // this forces _calculateSize() function to be called
         let size = _localScrollBarSize
 
         if let backgroundGeometry = backgroundNode.geometry as? SCNPlane {

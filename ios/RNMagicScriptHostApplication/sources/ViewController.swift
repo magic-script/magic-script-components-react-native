@@ -176,7 +176,6 @@ class ViewController: UIViewController {
     @discardableResult
     fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
-        node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)
         if let parentId = parentId {
             UiNodesManager.instance.addNode(nodeId, toParent: parentId)
@@ -203,11 +202,11 @@ extension ViewController: ARSCNViewDelegate {
             scrollBarSize -= 2.0
         }
 
-        DispatchQueue.main.async() { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
+//        DispatchQueue.main.async() { [weak self] in
+//            guard let strongSelf = self else { return }
+//            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
 //            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
-            UiNodesManager.instance.updateLayout()
-        }
+//            UiNodesManager.instance.updateLayout()
+//        }
     }
 }

@@ -40,7 +40,7 @@ import SceneKit
             return date
         }
         set {
-            _date = newValue ~= UiDatePickerNode.defaultInputDateRegex ? newValue : nil
+            _date = (newValue ~= UiDatePickerNode.defaultInputDateRegex) ? newValue : nil
             valueNode.text = Date.from(string: newValue, format: UiDatePickerNode.defaultInputDateFormat).toString(format: dateFormat)
         }
     }

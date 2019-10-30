@@ -136,7 +136,7 @@ RCT_EXPORT_MODULE();
 - (void)onDateChangedEventReceived:(UiSliderNode *)sender value:(NSString *)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDateChanged" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
+            [self sendEventWithName:@"onDateChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
         });
     }
 }
@@ -144,7 +144,7 @@ RCT_EXPORT_MODULE();
 - (void)onDateConfirmedEventReceived:(UiSliderNode *)sender value:(NSString *)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDateConfirmed" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
+            [self sendEventWithName:@"onDateConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
         });
     }
 }

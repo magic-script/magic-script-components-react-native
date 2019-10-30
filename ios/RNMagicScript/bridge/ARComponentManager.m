@@ -309,7 +309,7 @@ RCT_EXPORT_METHOD(addOnDateChangedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
         UiDatePickerNode *datePickerNode = (UiDatePickerNode *)node;
         datePickerNode.onDateChanged = ^(UiDatePickerNode *sender, NSString *value) {
-            ARLog(@"datePicker changed: %@", @(value));
+            ARLog(@"datePicker changed: %@", value);
             [[AREventsManager instance] onDateChangedEventReceived:sender value:value];
         };
     }
@@ -321,7 +321,7 @@ RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
         UiDatePickerNode *datePickerNode = (UiDatePickerNode *)node;
         datePickerNode.onDateConfirmed = ^(UiDatePickerNode *sender, NSString *value) {
-            ARLog(@"datePicker confirmed: %@", @(value));
+            ARLog(@"datePicker confirmed: %@", value);
             [[AREventsManager instance] onDateConfirmedEventReceived:sender value:value];
         };
     }

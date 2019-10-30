@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class UiDatePickerNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultTextSize: CGFloat = 0.065
     static let defaultInputDateFormat = "MM/dd/yyyy"
     static let defaultInputDateRegex = "^(((0)[0-9])|((1)[0-2]))(\\/)([0-2][0-9]|(3)[0-1])(\\/)\\d{4}"
 
@@ -38,7 +38,7 @@ import SceneKit
         }
         set {
             _date = newValue ~= UiDatePickerNode.defaultInputDateRegex ? newValue : nil
-            valueNode.text = _date
+            valueNode.text = Date.from(string: newValue, format: UiDatePickerNode.defaultInputDateFormat).toString(format: dateFormat)
         }
     }
 
@@ -48,14 +48,16 @@ import SceneKit
 
     fileprivate let dateFormats: [String] = ["MM/dd/yyyy",
                                              "dd/MM/yyyy",
-                                             "DD/yyyy",
+                                             "dd/yyyy",
                                              "MM/yyyy"]
     fileprivate var _dateFormat: String = UiDatePickerNode.defaultInputDateFormat
     @objc var dateFormat: String {
         set {
             let normalizedDateFormats = dateFormats.map { $0.lowercased() }
             if normalizedDateFormats.contains(newValue.lowercased()) {
-                _dateFormat = dateFormats[normalizedDateFormats.firstIndex(of: newValue.lowercased())!]; setNeedsLayout()
+                _dateFormat = dateFormats[normalizedDateFormats.firstIndex(of: newValue.lowercased())!]
+                valueNode.text = date // update displayed value
+                setNeedsLayout()
             }
         }
         get { return _dateFormat }
@@ -117,7 +119,7 @@ import SceneKit
         labelNode.reload()
         valueNode.reload()
 
-        underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0010)
+        underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0015)
         underlineGeometry.firstMaterial?.lightingModel = .constant
         underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         underlineGeometry.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.45)

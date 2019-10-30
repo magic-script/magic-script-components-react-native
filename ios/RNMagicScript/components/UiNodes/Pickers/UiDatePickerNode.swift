@@ -18,6 +18,7 @@ import SceneKit
 
 @objc open class UiDatePickerNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.065
+    static fileprivate let defaultLabelGap: CGFloat = 0.015
     static let defaultInputDateFormat = "MM/dd/yyyy"
     static let defaultInputDateRegex = "^(((0)[0-9])|((1)[0-2]))(\\/)([0-2][0-9]|(3)[0-1])(\\/)\\d{4}"
 
@@ -28,7 +29,9 @@ import SceneKit
         }
     }
 
-    @objc var labelSide: Side = .top
+    @objc var labelSide: Side = .top {
+        didSet { setNeedsLayout() }
+    }
 
     fileprivate var _date: String? = nil
     @objc var date: String {
@@ -85,8 +88,6 @@ import SceneKit
 
     fileprivate var labelNode: LabelNode!
     fileprivate(set) var valueNode: LabelNode!
-
-    fileprivate var underlineGeometry: SCNPlane!
     fileprivate var underlineNode: SCNNode!
 
     fileprivate var isActive: Bool = false {
@@ -119,10 +120,11 @@ import SceneKit
         labelNode.reload()
         valueNode.reload()
 
-        underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0015)
+        let underlineGeometry = SCNPlane(width: 0, height: 0.001)
         underlineGeometry.firstMaterial?.lightingModel = .constant
         underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         underlineGeometry.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.45)
+
         underlineNode = SCNNode(geometry: underlineGeometry)
 
         contentNode.addChildNode(underlineNode)
@@ -169,17 +171,23 @@ import SceneKit
     @objc override func updateLayout() {
         let labelNodeSize = labelNode.getSize()
         let valueNodeSize = valueNode.getSize()
+        let size = getSize()
+        let gap = UiDatePickerNode.defaultLabelGap
 
-        labelNode.position = SCNVector3((labelNodeSize.width - valueNodeSize.width) * 0.5, labelNodeSize.height + 0.005, 0.0)
+        if labelSide == Side.top {
+            labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.5 * (size.height - labelNodeSize.height), 0.0)
+            valueNode.position = SCNVector3(-0.5 * (size.width - valueNodeSize.width), -0.5 * size.height + 0.5 * valueNodeSize.height + gap, 0.0)
+        } else {
+            labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.5 * (size.height - labelNodeSize.height), 0.0)
+            valueNode.position = SCNVector3(-0.5 * (size.width - valueNodeSize.width), -0.5 * size.height + 0.5 * valueNodeSize.height + gap, 0.0)
+        }
 
         valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
 
-        underlineGeometry = SCNPlane(width: valueNode.getSize().width, height: 0.0010)
-        underlineGeometry.firstMaterial?.lightingModel = .constant
-        underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
-        underlineGeometry.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.45)
-        underlineNode.geometry = underlineGeometry
-        underlineNode.position = SCNVector3(CGFloat(valueNode.position.x), -valueNode.getSize().height * 0.85, 0.0)
+        if let underlineGeometry = underlineNode.geometry as? SCNPlane {
+            underlineGeometry.width = valueNode.getSize().width
+        }
+        underlineNode.position = SCNVector3(CGFloat(valueNode.position.x), -0.5 * size.height, 0.0)
 
         labelNode.reload()
         valueNode.reload()
@@ -195,7 +203,7 @@ import SceneKit
         let labelNodeSize = labelNode.getSize()
         let valueNodeSize = valueNode.getSize()
         let contentWidth: CGFloat = max(valueNodeSize.width, labelNodeSize.width)
-        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 0.015
+        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 2 * UiDatePickerNode.defaultLabelGap
         return CGSize(width: contentWidth, height: contentHeight)
     }
 

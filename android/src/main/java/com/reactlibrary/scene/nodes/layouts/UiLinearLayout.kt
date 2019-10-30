@@ -65,6 +65,10 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
         setItemAlignment(props)
     }
 
+    override fun setLayoutSize(props: Bundle) {
+        // width and height properties are not supported yet (we can't rescale children)
+    }
+
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)

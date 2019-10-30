@@ -19,17 +19,7 @@ import SceneKit
 
 @objc open class UiLinearLayoutNode: UiLayoutNode {
     @objc var layoutOrientation: Orientation = Orientation.vertical {
-        didSet {
-            switch layoutOrientation {
-            case .vertical:
-                gridLayout.columns = 1
-                gridLayout.rows = 0
-            case .horizontal:
-                gridLayout.columns = 0
-                gridLayout.rows = 1
-            }
-            setNeedsLayout()
-        }
+        didSet { updateOrientation(); setNeedsLayout() }
     }
     @objc var defaultItemAlignment: Alignment {
         get { return gridLayout.defaultItemAlignment }
@@ -49,6 +39,7 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+        updateOrientation()
         contentNode.addChildNode(gridLayout.container)
     }
 
@@ -95,5 +86,21 @@ import SceneKit
         // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
         let _ = getSize()
         gridLayout.updateLayout()
+    }
+
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        gridLayout.invalidate()
+    }
+
+    fileprivate func updateOrientation() {
+        switch layoutOrientation {
+        case .vertical:
+            gridLayout.columns = 1
+            gridLayout.rows = 0
+        case .horizontal:
+            gridLayout.columns = 0
+            gridLayout.rows = 1
+        }
     }
 }

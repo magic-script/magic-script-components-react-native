@@ -70,7 +70,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         setLayoutSize(props)
     }
 
-    private fun setLayoutSize(props: Bundle) {
+    protected open fun setLayoutSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             if (props.containsKey(PROP_WIDTH)) {
                 width = props.getDouble(PROP_WIDTH).toFloat()

@@ -21,9 +21,10 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
-import kotlin.Float.Companion.MAX_VALUE
+import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sin
 
 /**
  * Class containing general purpose utility functions
@@ -109,10 +110,9 @@ class Utils {
                 return Bounding()
             }
 
-            val sumBounds = Bounding(MAX_VALUE, MAX_VALUE, -MAX_VALUE, -MAX_VALUE)
+            val sumBounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
-            for (i in 0 until nodes.size) {
-                val node = nodes[i]
+            for (node in nodes) {
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
                 } else {
@@ -128,6 +128,38 @@ class Utils {
             return sumBounds
         }
 
+        fun findMinimumBounding(points: List<Vector2>): Bounding {
+            if (points.isEmpty()) {
+                return Bounding()
+            }
+
+            val bounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+
+            for (point in points) {
+                bounds.left = min(point.x, bounds.left)
+                bounds.right = max(point.x, bounds.right)
+                bounds.top = max(point.y, bounds.top)
+                bounds.bottom = min(point.y, bounds.bottom)
+            }
+            return bounds
+        }
+
+        /**
+         * Rotates the [point] around [cx] and [cy] by [angle] in radians
+         */
+        fun rotatePoint(point: Vector2, cx: Float, cy: Float, angle: Float): Vector2 {
+            // move to origin
+            point.x = point.x - cx
+            point.y = point.y - cy
+
+            val x = point.x * cos(angle) - point.y * sin(angle)
+            val y = point.x * sin(angle) + point.y * cos(angle)
+
+            // move back
+            point.x = x + cx
+            point.y = y + cy
+            return point
+        }
     }
 
 }

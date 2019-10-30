@@ -35,9 +35,12 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {
 
+    // epsilon
+    private val eps = 1e-5f
+
     @Test
     fun shouldBeLocatedAtZeroPositionByDefault() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+        val node = createNode(JavaOnlyMap())
         node.build()
 
         assertEquals(Vector3.zero(), node.localPosition)
@@ -49,7 +52,7 @@ class TransformNodeTest {
         val propsMap = JavaOnlyMap()
         propsMap.putString(property, "value")
 
-        val node = object : TransformNode(propsMap, false, true) {}
+        val node = createNode(propsMap)
 
         assertNotNull(node.getProperty(property))
     }
@@ -59,7 +62,7 @@ class TransformNodeTest {
         val initialProperty = "initialProp"
         val initialProps = JavaOnlyMap()
         initialProps.putString(initialProperty, "value")
-        val node = object : TransformNode(initialProps, false, true) {}
+        val node = createNode(initialProps)
 
         val newProps = JavaOnlyMap()
         val propertyToAdd = "propToAdd"
@@ -76,7 +79,7 @@ class TransformNodeTest {
         val initialValue = "value"
         val initialProps = JavaOnlyMap()
         initialProps.putString(propKey, initialValue)
-        val node = object : TransformNode(initialProps, false, true) {}
+        val node = createNode(initialProps)
 
         val updatedValue = "updated value"
         val propsToChange = JavaOnlyMap()
@@ -95,7 +98,7 @@ class TransformNodeTest {
                 TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(*positionArray),
                 TransformNode.PROP_LOCAL_SCALE, JavaOnlyArray.of(*scaleArray)
         )
-        val node = object : TransformNode(properties, false, true) {}
+        val node = createNode(properties)
 
         node.build()
 
@@ -105,7 +108,7 @@ class TransformNodeTest {
 
     @Test
     fun shouldApplyNewPropertiesOnUpdate() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+        val node = createNode(JavaOnlyMap())
         node.build()
         val alignment = "bottom-right"
         val propsToUpdate = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
@@ -121,18 +124,32 @@ class TransformNodeTest {
         val positionProp = JavaOnlyArray.of(2.0, 5.0, 0.0)
         val props = JavaOnlyMap.of(TransformNode.PROP_LOCAL_POSITION, positionProp)
         val bounds = Bounding(-2F, -2F, 2F, 2F)
-        val node = createNodeWithBounding(props, bounds, useContentNodeAlignment = true)
+        val node = createNodeWithContentBounding(props, bounds)
         node.build()
-        val expected = Bounding(
-                node.localPosition.x + bounds.left,
-                node.localPosition.y + bounds.bottom,
-                node.localPosition.x + bounds.right,
-                node.localPosition.y + bounds.top
-        )
+        val expected = Bounding(0F, 3F, 4F, 7F)
 
         val result = node.getBounding()
 
-        assertEquals(expected, result)
+        assertTrue(Bounding.equalInexact(expected, result))
+    }
+
+    @Test
+    fun shouldReturnCorrectBoundingWhenRotated() {
+        val position = JavaOnlyArray.of(0.0, 0.0, 0.0)
+        // 90 degrees around z
+        val rotation = JavaOnlyArray.of(0.0, 0.0, 0.7071068, 0.7071068)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, position,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+        )
+        val bounds = Bounding(0F, 0F, 2F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+        val expected = Bounding(0.5F, -0.5F, 1.5F, 1.5F)
+
+        val result = node.getBounding()
+
+        assertTrue(Bounding.equalInexact(expected, result))
     }
 
     @Test
@@ -140,19 +157,18 @@ class TransformNodeTest {
         val alignment = "top-right"
         val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
         val bounds = Bounding(-2F, -5F, 2F, 5F)
-        val node = createNodeWithBounding(props, bounds, useContentNodeAlignment = true)
+        val node = createNodeWithContentBounding(props, bounds)
 
         node.build()
 
-        val epsilon = 0.0001F
-        assertEquals(-2.0F, node.contentNode.localPosition.x, epsilon)
-        assertEquals(-5.0F, node.contentNode.localPosition.y, epsilon)
+        assertEquals(-2.0F, node.contentNode.localPosition.x, eps)
+        assertEquals(-5.0F, node.contentNode.localPosition.y, eps)
         assertEquals(Vector3.zero(), node.localPosition)
     }
 
     @Test
     fun shouldChildrenBeAddedToContentNode() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+        val node = createNode(JavaOnlyMap())
         val child1 = Node()
         val child2 = Node()
 
@@ -165,25 +181,25 @@ class TransformNodeTest {
 
     @Test
     fun shouldRenderableRequestedBeTrueAfterAttachingRenderable() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+        val node = createNode(JavaOnlyMap())
         node.attachRenderable()
         assertTrue(node.renderableRequested)
     }
 
-    private fun Array<Double>.toVector3(): Vector3 {
-        return Vector3(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
-    }
-
-    private fun createNodeWithBounding(
-            properties: ReadableMap,
-            bounding: Bounding,
-            useContentNodeAlignment: Boolean): TransformNode {
-
-        return object : TransformNode(properties, false, useContentNodeAlignment) {
+    private fun createNodeWithContentBounding(properties: ReadableMap, bounding: Bounding): TransformNode {
+        return object : TransformNode(properties, false, true) {
             override fun getContentBounding(): Bounding {
                 return bounding
             }
         }
+    }
+
+    private fun createNode(properties: ReadableMap): TransformNode {
+        return object : TransformNode(properties, false, true) {}
+    }
+
+    private fun Array<Double>.toVector3(): Vector3 {
+        return Vector3(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
     }
 
 }

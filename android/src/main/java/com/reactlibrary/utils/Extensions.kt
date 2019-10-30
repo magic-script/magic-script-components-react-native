@@ -22,9 +22,12 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
+import kotlin.math.*
+
 
 /**
  * ==========Extension methods============
@@ -146,4 +149,32 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     return Vector2(width, height)
 }
 
+/**
+ * Returns euler angles in radians for each axis (x, y, z)
+ */
+fun Quaternion.toEulerAngles(): Vector3 {
+    val rotation = Vector3()
 
+    // x-axis rotation
+    val a = 2.0 * (w * x + y * z)
+    val b = 1.0 - 2.0 * (x * x + y * y)
+    rotation.x = atan2(a, b).toFloat()
+
+    // y-axis rotation
+    val sin = 2.0 * (w * y - z * x)
+    if (abs(sin) >= 1) {
+        val sign = sign(sin)
+        rotation.y = if (sign != 0.0) {
+            (sign * abs(PI / 2)).toFloat()
+        } else {
+            abs(PI / 2).toFloat()
+        }
+    } else rotation.y = asin(sin).toFloat()
+
+    // z-axis rotation
+    val c = 2.0 * (w * z + x * y)
+    val d = 1.0 - 2.0 * (y * y + z * z)
+    rotation.z = atan2(c, d).toFloat()
+
+    return rotation
+}

@@ -101,12 +101,6 @@ abstract class UiNode(
         return false
     }
 
-    open fun getPivot(): Vector2 {
-        return Vector2(
-                size.x * (0.5F + horizontalAlignment.centerOffset),
-                size.y * (0.5F - verticalAlignment.centerOffset))
-    }
-
     /**
      * Initializes the view instance and builds the node by calling [applyProperties]
      * with all initial properties
@@ -245,6 +239,10 @@ abstract class UiNode(
         }
     }
 
+    protected fun metersToPx(meters: Float): Int {
+        return Utils.metersToPx(meters, context)
+    }
+
     // build calls applyProperties, so we need to initialize the view before
     private fun initView() {
         viewWrapper = ViewWrapper(context, this)
@@ -314,7 +312,9 @@ abstract class UiNode(
         }
     }
 
-    protected fun metersToPx(meters: Float): Int {
-        return Utils.metersToPx(meters, context)
+    private fun getPivot(): Vector2 {
+        return Vector2(
+                size.x * (0.5F + horizontalAlignment.centerOffset),
+                size.y * (0.5F - verticalAlignment.centerOffset))
     }
 }

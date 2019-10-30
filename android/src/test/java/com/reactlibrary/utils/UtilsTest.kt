@@ -22,8 +22,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.scene.nodes.props.Bounding
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
@@ -32,6 +31,9 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class UtilsTest {
+
+    // epsilon
+    private val eps = 1e-5f
 
     @Test
     fun shouldReturnCorrectNumberOfPixels() {
@@ -75,10 +77,10 @@ class UtilsTest {
         val bounding = Utils.calculateBoundsOfNode(node)
 
         assertNotNull(bounding)
-        assertEquals(node.localPosition.x, bounding.left)
-        assertEquals(node.localPosition.x, bounding.right)
-        assertEquals(node.localPosition.y, bounding.top)
-        assertEquals(node.localPosition.y, bounding.bottom)
+        assertEquals(node.localPosition.x, bounding.left, eps)
+        assertEquals(node.localPosition.x, bounding.right, eps)
+        assertEquals(node.localPosition.y, bounding.top, eps)
+        assertEquals(node.localPosition.y, bounding.bottom, eps)
     }
 
     @Test
@@ -93,10 +95,10 @@ class UtilsTest {
         val bounding = Utils.calculateSumBounds(listOf(testNode1, testNode2, testNode3))
 
         assertNotNull(bounding)
-        assertEquals(1f, bounding.left)
-        assertEquals(100f, bounding.right)
-        assertEquals(2f, bounding.bottom)
-        assertEquals(200f, bounding.top)
+        assertEquals(1f, bounding.left, eps)
+        assertEquals(100f, bounding.right, eps)
+        assertEquals(2f, bounding.bottom, eps)
+        assertEquals(200f, bounding.top, eps)
     }
 
     @Test
@@ -110,10 +112,26 @@ class UtilsTest {
     fun shouldReturnFirstNodeBoundingIfListContainsOnlyOneNode() {
         val testNode = Node()
         testNode.localPosition = Vector3(1f, 1f, 1f)
+        val expectedBounding = Bounding(1f, 1f, 1f, 1f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode))
 
-        assertEquals(Bounding(1f, 1f, 1f, 1f), bounding)
+        assertTrue(Bounding.equalInexact(expectedBounding, bounding))
+    }
+
+    @Test
+    fun shouldReturnMinimumBoundingForListOfPoints() {
+        val points = listOf(
+                Vector2(-1f, 2f),
+                Vector2(-1f, -1f),
+                Vector2(4f, -1f),
+                Vector2(5f, 4f)
+        )
+        val expectedBounding = Bounding(-1f, -1f, 5f, 4f)
+
+        val bounding = Utils.findMinimumBounding(points)
+
+        assertTrue(Bounding.equalInexact(expectedBounding, bounding))
     }
 
 }

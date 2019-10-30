@@ -21,7 +21,6 @@ class InputAccessoryViewFactory {
         if let textInput = input as? InputDataProviding {
             return InputAccessoryViewFactory.createView(for: textInput, onFinishEditing: onFinishEditing)
         }
-
         return nil
     }
 

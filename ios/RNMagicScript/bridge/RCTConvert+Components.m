@@ -95,5 +95,9 @@
     return [[UiDropdownListItemNode alloc] initWithProps:json];
 }
 
++ (UiDatePickerNode *)UiDatePickerNode:(id)json {
+    return [[UiDatePickerNode alloc] initWithProps: json];
+}
+
 @end
 

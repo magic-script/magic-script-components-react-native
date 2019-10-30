@@ -10,13 +10,15 @@ import isEqual from 'lodash/isEqual';
 // Events names
 const Event = {
     onClick: 'onClick',
+    onDateChanged: 'onDateChanged',
+    onDateConfirmed: 'onDateConfirmed',
     onPress: 'onPress',
     onScrollChanged: 'onScrollChanged',
     onSelectionChanged: 'onSelectionChanged',
     onSliderChanged: 'onSliderChanged',
     onTextChanged: 'onTextChanged',
     onToggleChanged: 'onToggleChanged',
-    onVideoPrepared: 'onVideoPrepared'
+    onVideoPrepared: 'onVideoPrepared',
 };
 
 export class PlatformFactory extends NativeFactory {
@@ -40,14 +42,16 @@ export class PlatformFactory extends NativeFactory {
         this.eventsByElementId = {};
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
-        this.startListeningEvent(Event.onPress);
         this.startListeningEvent(Event.onClick);
+        this.startListeningEvent(Event.onDateChanged);
+        this.startListeningEvent(Event.onDateConfirmed);
+        this.startListeningEvent(Event.onPress);
         this.startListeningEvent(Event.onScrollChanged);
+        this.startListeningEvent(Event.onSelectionChanged);
+        this.startListeningEvent(Event.onSliderChanged);
         this.startListeningEvent(Event.onTextChanged);
         this.startListeningEvent(Event.onToggleChanged);
         this.startListeningEvent(Event.onVideoPrepared);
-        this.startListeningEvent(Event.onSliderChanged);
-        this.startListeningEvent(Event.onSelectionChanged);
     }
 
     startListeningEvent(eventName) {
@@ -71,6 +75,10 @@ export class PlatformFactory extends NativeFactory {
 
         if (name === Event.onClick || name === Event.onPress) {
             this.componentManager.addOnPressEventHandler(elementId);
+        } else if (name === Event.onDateChanged) {
+            this.componentManager.addOnDateChangedEventHandler(elementId);
+        } else if (name === Event.onDateConfirmed) {
+            this.componentManager.addOnDateConfirmedEventHandler(elementId);
         } else if (name === Event.onScrollChanged) {
             this.componentManager.addOnScrollChangedEventHandler(elementId);
         } else if (name === Event.onSelectionChanged) {

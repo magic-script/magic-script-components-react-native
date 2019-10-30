@@ -45,10 +45,10 @@ import Foundation
 
     public init?(rawValue: RawValue) {
         switch rawValue {
-        case "extra-light":
-            self = .extraLight
         case "light":
             self = .light
+        case "extra-light":
+            self = .extraLight
         case "regular":
             self = .regular
         case "medium":

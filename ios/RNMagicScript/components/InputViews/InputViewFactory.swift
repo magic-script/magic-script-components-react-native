@@ -22,9 +22,12 @@ class InputViewFactory {
             return InputViewFactory.createView(for: sliderInput, onFinishEditing: onFinishEditing)
         }
 
+        if let datePicker = input as? DatePickerDataProviding {
+            return InputViewFactory.createView(for: datePicker, onFinish: onFinishEditing)
+        }
+
         return nil
     }
-
 
     static func createView(for input: SliderDataProviding, onFinishEditing: (() -> Void)?) -> UIView? {
         let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
@@ -32,5 +35,13 @@ class InputViewFactory {
         sliderInputView.input = input
         sliderInputView.onFinishEditing = onFinishEditing
         return sliderInputView
+    }
+
+    static func createView(for input: DatePickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
+        let dateTimePickerInputView = DateTimePickerInputView(frame: rect)
+        dateTimePickerInputView.onFinish = onFinish
+        dateTimePickerInputView.pickerData = input
+        return dateTimePickerInputView
     }
 }

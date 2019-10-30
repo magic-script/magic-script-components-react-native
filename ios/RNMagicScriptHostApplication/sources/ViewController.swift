@@ -34,8 +34,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setupARView()
-        setupScrollViewTest()
-        setupDropdownListTest()
+//        setupScrollViewTest()
+//        setupDropdownListTest()
+        setupUiDatePickerNodeTest()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -68,6 +69,22 @@ class ViewController: UIViewController {
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
+
+    fileprivate func setupUiDatePickerNodeTest() {
+        let uiDatePickerNodeId: String = "uiDatePickerNodeId"
+        let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId)
+        uiDatePickerNode.position = SCNVector3(-0.125, 0.125, 0.0)
+
+        uiDatePickerNode.onDateConfirmed = { sender, value in
+            print("\(sender) confirmed \(value)")
+        }
+
+        uiDatePickerNode.onDateChanged = { sender, value in
+            print("\(sender) changed \(value)")
+        }
+
+        uiDatePickerNode.layoutIfNeeded()
+    }
 
     fileprivate func setupScrollViewTest() {
         // Group
@@ -144,7 +161,6 @@ class ViewController: UIViewController {
             UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
         }
         dropdownList.onTap = { sender in
-//            print("dropDown onTap \(sender)")
         }
 
         dropdownList.onSelectionChanged = { [weak self] sender, selectedItems in 
@@ -187,6 +203,6 @@ extension ViewController: ARSCNViewDelegate {
         }
 //        scrollView.scrollValue = abs(scrollBarPosition)
 //        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-        scrollView.layoutIfNeeded()
+//        scrollView.layoutIfNeeded()
     }
 }

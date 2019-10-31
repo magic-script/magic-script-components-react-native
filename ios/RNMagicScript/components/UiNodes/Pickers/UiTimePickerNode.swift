@@ -169,8 +169,8 @@ import SceneKit
             labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.5 * (size.height - labelNodeSize.height), 0.0)
             valueNode.position = SCNVector3(-0.5 * (size.width - valueNodeSize.width), -0.5 * size.height + 0.5 * valueNodeSize.height + gap, 0.0)
         } else {
-            labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.5 * (size.height - labelNodeSize.height), 0.0)
-            valueNode.position = SCNVector3(-0.5 * (size.width - valueNodeSize.width), -0.5 * size.height + 0.5 * valueNodeSize.height + gap, 0.0)
+            labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.0, 0.0)
+            valueNode.position = SCNVector3(0.5 * (size.width - valueNodeSize.width), 0.0, 0.0)
         }
 
         valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
@@ -193,8 +193,16 @@ import SceneKit
     @objc override func _calculateSize() -> CGSize {
         let labelNodeSize = labelNode.getSize()
         let valueNodeSize = valueNode.getSize()
-        let contentWidth: CGFloat = max(valueNodeSize.width, labelNodeSize.width)
-        let contentHeight: CGFloat = labelNodeSize.height + valueNodeSize.height + 2 * UiTimePickerNode.defaultLabelGap
+        let gap = UiTimePickerNode.defaultLabelGap
+        var contentWidth: CGFloat = 0.0
+        var contentHeight: CGFloat = 0.0
+        if labelSide == Side.top {
+            contentWidth = max(valueNodeSize.width, labelNodeSize.width)
+            contentHeight = labelNodeSize.height + valueNodeSize.height + 2 * gap
+        } else {
+            contentWidth = valueNodeSize.width + labelNodeSize.width + gap
+            contentHeight = max(labelNodeSize.height, valueNodeSize.height) + gap
+        }
         return CGSize(width: contentWidth, height: contentHeight)
     }
 

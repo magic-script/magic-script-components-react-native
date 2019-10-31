@@ -40,12 +40,12 @@ class GroupNode(initProps: ReadableMap) :
         return Vector2(-vector.x, -vector.y)
     }
 
-    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
         val localBounds = clipBounds.translate(getScrollTranslation())
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]
             if (child is TransformNode) {
-                child.setClipBounds(localBounds, nativeView)
+                child.setClipBounds(localBounds, clipNativeView)
             }
         }
     }

@@ -33,6 +33,7 @@ import com.reactlibrary.scene.nodes.props.AABB
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils.Companion.metersToPx
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.onDrawListener
 import com.reactlibrary.utils.putDefaultString
@@ -77,8 +78,8 @@ class UiScrollViewNode(
     fun onTouchEvent(event: MotionEvent): Boolean {
         val viewBounds = getScrollBounds()
         event.setLocation(
-                metersToPx(event.x - viewBounds.left).toFloat(),
-                metersToPx(-event.y + viewBounds.top).toFloat())
+                metersToPx(event.x - viewBounds.left, context).toFloat(),
+                metersToPx(-event.y + viewBounds.top, context).toFloat())
         return view.onTouchEvent(event)
     }
 
@@ -164,8 +165,8 @@ class UiScrollViewNode(
             scrollBounds = propBounds
         }
 
-        val widthPx = metersToPx(scrollBounds.getWidth())
-        val heightPx = metersToPx(scrollBounds.getHeight())
+        val widthPx = metersToPx(scrollBounds.getWidth(), context)
+        val heightPx = metersToPx(scrollBounds.getHeight(), context)
 
         view.layoutParams = RelativeLayout.LayoutParams(widthPx, heightPx)
     }
@@ -195,7 +196,7 @@ class UiScrollViewNode(
                 vBar = scrollBarNode
                 val posX = (scrollBarNode.size.x - size.x) / -2F
                 scrollBarNode.localPosition = Vector3(posX, 0F, 0F)
-                bar.layoutParams.height = metersToPx(size.y)
+                bar.layoutParams.height = metersToPx(size.y, context)
                 scrollView.vBar = bar
             }
         } else {
@@ -204,7 +205,7 @@ class UiScrollViewNode(
                 hBar = scrollBarNode
                 val posY = (scrollBarNode.size.y - size.y) / 2F
                 scrollBarNode.localPosition = Vector3(0F, posY, 0F)
-                bar.layoutParams.width = metersToPx(size.x)
+                bar.layoutParams.width = metersToPx(size.x, context)
                 scrollView.hBar = bar
             }
         }
@@ -220,8 +221,8 @@ class UiScrollViewNode(
                     contentBounds = newBounds
                     val contentSize = contentBounds.size()
                     scrollView.contentSize = Vector2(
-                            metersToPx(contentSize.x).toFloat(),
-                            metersToPx(contentSize.y).toFloat())
+                            metersToPx(contentSize.x, context).toFloat(),
+                            metersToPx(contentSize.y, context).toFloat())
                     update(scrollView.position, true)
                 }
             }

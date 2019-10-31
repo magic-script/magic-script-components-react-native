@@ -162,8 +162,8 @@ class LineNode(initProps: ReadableMap,
         }
     }
 
-    override fun setClipBounds(clipBounds: Bounding, nativeView: Boolean) {
-        if (nativeView) {
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        if (clipNativeView) {
             return
         }
         val localBounds = clipBounds.translate(getScrollTranslation())

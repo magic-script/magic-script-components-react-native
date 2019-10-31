@@ -32,8 +32,9 @@ import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
-import java.lang.Float.max
-import java.lang.Float.min
+import com.reactlibrary.utils.Utils.Companion.metersToPx
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -165,10 +166,11 @@ abstract class UiNode(
         // Clipping view.
         val localBounds = clipBounds.translate(getScrollTranslation())
         view.clipBounds = Rect(
-                metersToPx(localBounds.left),
-                -metersToPx(localBounds.top),
-                metersToPx(localBounds.right),
-                -metersToPx(localBounds.bottom))
+                metersToPx(localBounds.left, context),
+                -metersToPx(localBounds.top, context),
+                metersToPx(localBounds.right, context),
+                -metersToPx(localBounds.bottom, context)
+        )
 
         // Clipping content node collision shape.
         val contentNodePosition = Vector2(
@@ -237,10 +239,6 @@ abstract class UiNode(
         } else {
             setNeedsRebuild() // need to re-attach the renderable
         }
-    }
-
-    protected fun metersToPx(meters: Float): Int {
-        return Utils.metersToPx(meters, context)
     }
 
     // build calls applyProperties, so we need to initialize the view before

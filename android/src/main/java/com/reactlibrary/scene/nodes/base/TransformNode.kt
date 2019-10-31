@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
@@ -29,6 +28,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.rotatedBy
 
 /**
  * Base node.
@@ -120,20 +120,15 @@ abstract class TransformNode(
      * that includes the node).
      */
     fun getBounding(): Bounding {
-        val contentBounding = getContentBounding()
+        val contentBounds = getContentBounding()
 
         // bounding vertices
-        val p1 = Vector3(contentBounding.left, contentBounding.top, localPosition.z)
-        val p2 = Vector3(contentBounding.left, contentBounding.bottom, localPosition.z)
-        val p3 = Vector3(contentBounding.right, contentBounding.bottom, localPosition.z)
-        val p4 = Vector3(contentBounding.right, contentBounding.top, localPosition.z)
+        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z).rotatedBy(localRotation)
 
-        val p1_rot = Utils.rotateVector(p1, localRotation)
-        val p2_rot = Utils.rotateVector(p2, localRotation)
-        val p3_rot = Utils.rotateVector(p3, localRotation)
-        val p4_rot = Utils.rotateVector(p4, localRotation)
-
-        val minimumBounds = Utils.findMinimumBounding(listOf(p1_rot, p2_rot, p3_rot, p4_rot))
+        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
 
         return Bounding(
                 left = minimumBounds.left * localScale.x + localPosition.x,

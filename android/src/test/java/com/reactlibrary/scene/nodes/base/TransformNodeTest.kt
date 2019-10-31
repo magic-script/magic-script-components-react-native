@@ -145,7 +145,7 @@ class TransformNodeTest {
         val bounds = Bounding(0F, 0F, 2F, 1F)
         val node = createNodeWithContentBounding(props, bounds)
         node.build()
-        val expected = Bounding(0.5F, -0.5F, 1.5F, 1.5F)
+        val expected = Bounding(-1F, 0F, 0F, 2F)
 
         val result = node.getBounding()
 

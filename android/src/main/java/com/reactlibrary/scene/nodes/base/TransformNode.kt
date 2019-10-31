@@ -25,10 +25,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.*
 
 /**
  * Base node.
@@ -150,23 +147,18 @@ abstract class TransformNode(
 
     /**
      * Returns 2D bounding of the node (the minimum rectangle
-     * relative to the parent node position that includes the node).
+     * that includes the node).
      */
     fun getBounding(): Bounding {
-        val contentBounding = getContentBounding()
+        val contentBounds = getContentBounding()
 
         // bounding vertices
-        val p1 = Vector3(contentBounding.left, contentBounding.top, localPosition.z)
-        val p2 = Vector3(contentBounding.left, contentBounding.bottom, localPosition.z)
-        val p3 = Vector3(contentBounding.right, contentBounding.bottom, localPosition.z)
-        val p4 = Vector3(contentBounding.right, contentBounding.top, localPosition.z)
+        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z).rotatedBy(localRotation)
 
-        val p1_rot = Utils.rotateVector(p1, localRotation)
-        val p2_rot = Utils.rotateVector(p2, localRotation)
-        val p3_rot = Utils.rotateVector(p3, localRotation)
-        val p4_rot = Utils.rotateVector(p4, localRotation)
-
-        val minimumBounds = Utils.findMinimumBounding(listOf(p1_rot, p2_rot, p3_rot, p4_rot))
+        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
 
         return Bounding(
                 left = minimumBounds.left * localScale.x + localPosition.x,
@@ -175,11 +167,9 @@ abstract class TransformNode(
                 top = minimumBounds.top * localScale.y + localPosition.y)
     }
 
-
     /**
-     * Should return 2D bounding of the [contentNode].
-     * (the minimum rectangle in local frame of
-     * reference that includes the node).
+     * Should return 2D bounding of the [contentNode] (relative to
+     * the parent node position).
      */
     open fun getContentBounding(): Bounding {
         return Utils.calculateBoundsOfNode(contentNode)

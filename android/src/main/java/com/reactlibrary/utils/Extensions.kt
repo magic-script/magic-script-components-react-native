@@ -22,10 +22,10 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
-
 
 /**
  * ==========Extension methods============
@@ -60,6 +60,10 @@ operator fun Vector3.minus(other: Vector3): Vector3 {
 
 operator fun Vector3.div(other: Float): Vector3 {
     return this.scaled(1F / other)
+}
+
+fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
+    return Utils.rotateVector(this, quaternion)
 }
 
 /**

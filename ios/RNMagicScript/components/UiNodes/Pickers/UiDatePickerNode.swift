@@ -46,7 +46,7 @@ import SceneKit
     }
 
     @objc var color: UIColor = UIColor(white: 0.75, alpha: 1.0) {
-        didSet { valueNode.textColor = color; setNeedsLayout() }
+        didSet { valueNode.textColor = color }
     }
 
     fileprivate let dateFormats: [String] = ["MM/dd/yyyy",

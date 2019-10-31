@@ -42,11 +42,12 @@ import SceneKit
         set {
             _time = (newValue ~= UiTimePickerNode.defaultInputTimeRegex) ? newValue : nil
             valueNode.text = Date.fromTime(string: newValue, format: UiTimePickerNode.defaultInputTimeFormat).toTimeString(format: timeFormat)
+            setNeedsLayout()
         }
     }
 
     @objc var color: UIColor = UIColor(white: 0.75, alpha: 1.0) {
-        didSet { valueNode.textColor = color; setNeedsLayout() }
+        didSet { valueNode.textColor = color }
     }
 
     fileprivate let timeFormats: [String] = ["HH:mm:ss p",
@@ -58,6 +59,7 @@ import SceneKit
                                              "mm:ss"]
     fileprivate var _timeFormat: String = UiTimePickerNode.defaultInputTimeFormat
     @objc var timeFormat: String {
+        get { return _timeFormat }
         set {
             let normalizedDateFormats = timeFormats.map { $0.lowercased() }
             if normalizedDateFormats.contains(newValue.lowercased()) {
@@ -66,20 +68,20 @@ import SceneKit
                 setNeedsLayout()
             }
         }
-        get { return _timeFormat }
     }
 
     fileprivate var _defaultTime: Date = Date()
     fileprivate var _defaultTimeString: String = Date().toTimeString(format: UiTimePickerNode.defaultInputTimeFormat)
     // accept string with format hh:mm:ss
     @objc var defaultTime: String {
+        get { return _defaultTimeString }
         set {
             if newValue ~= UiTimePickerNode.defaultInputTimeRegex {
                 _defaultTime = Date.fromTime(string: newValue, format: UiTimePickerNode.defaultInputTimeFormat)
                 _defaultTimeString = _defaultTime.toTimeString(format: timeFormat)
+                setNeedsLayout()
             }
         }
-        get { return _defaultTimeString }
     }
 
     @objc public var onTimeChanged: ((_ sender: UiTimePickerNode, _ selected: String) -> (Void))?
@@ -91,8 +93,7 @@ import SceneKit
 
     fileprivate var isActive: Bool = false {
         didSet {
-            setNeedsLayout()
-            layoutIfNeeded()
+            valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
         }
     }
 
@@ -172,8 +173,6 @@ import SceneKit
             labelNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.width), 0.0, 0.0)
             valueNode.position = SCNVector3(0.5 * (size.width - valueNodeSize.width), 0.0, 0.0)
         }
-
-        valueNode.textColor = isActive ? UIColor(white: 1.0, alpha: 1.0) : UIColor(white: 1.0, alpha: 0.75)
 
         if let underlineGeometry = underlineNode.geometry as? SCNPlane {
             underlineGeometry.width = valueNode.getSize().width

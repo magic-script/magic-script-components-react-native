@@ -26,22 +26,18 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.Vector2
 
-class ViewWrapper(
-        context: Context,
-        private val parent: UiNode) : LinearLayout(context) {
+class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(context) {
 
     companion object {
-        const val TOUCH_RADIUS_PX = 8L
+        const val TOUCH_RADIUS_DP = 16F
     }
 
+    private val touchRadiusPx = context.resources.displayMetrics.density * TOUCH_RADIUS_DP
     private var isBeingDragged = false
     private var previousTouch = Vector2()
 
     init {
-        layoutParams = LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT
-        )
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
     // Workaround for https://github.com/magic-script/magic-script-components-react-native/issues/7
@@ -81,7 +77,7 @@ class ViewWrapper(
         if (action == MotionEvent.ACTION_MOVE && !isBeingDragged) {
             val dist = pos - previousTouch
             val radiusSqr = dist.x * dist.x + dist.y * dist.y
-            if (radiusSqr >= TOUCH_RADIUS_PX * TOUCH_RADIUS_PX) {
+            if (radiusSqr >= touchRadiusPx * touchRadiusPx) {
                 isBeingDragged = true
             }
         }

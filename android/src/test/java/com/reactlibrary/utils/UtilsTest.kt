@@ -122,10 +122,10 @@ class UtilsTest {
     @Test
     fun shouldReturnMinimumBoundingForListOfPoints() {
         val points = listOf(
-                Vector2(-1f, 2f),
-                Vector2(-1f, -1f),
-                Vector2(4f, -1f),
-                Vector2(5f, 4f)
+                Vector3(-1f, 2f, 0f),
+                Vector3(-1f, -1f, 0f),
+                Vector3(4f, -1f, 0f),
+                Vector3(5f, 4f, 0f)
         )
         val expectedBounding = Bounding(-1f, -1f, 5f, 4f)
 

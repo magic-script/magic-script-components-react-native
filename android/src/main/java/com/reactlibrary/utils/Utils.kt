@@ -19,6 +19,8 @@ package com.reactlibrary.utils
 import android.content.Context
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import kotlin.math.cos
@@ -128,7 +130,7 @@ class Utils {
             return sumBounds
         }
 
-        fun findMinimumBounding(points: List<Vector2>): Bounding {
+        fun findMinimumBounding(points: List<Vector3>): Bounding {
             if (points.isEmpty()) {
                 return Bounding()
             }
@@ -145,21 +147,26 @@ class Utils {
         }
 
         /**
-         * Rotates the [point] around [cx] and [cy] by [angle] in radians
+         * Rotates vector by a quaternion
          */
-        fun rotatePoint(point: Vector2, cx: Float, cy: Float, angle: Float): Vector2 {
-            // move to origin
-            point.x = point.x - cx
-            point.y = point.y - cy
+        fun rotateVector(v: Vector3, quat: Quaternion): Vector3 {
+            val u = Vector3(quat.x, quat.y, quat.z)
+            val s = quat.w
 
-            val x = point.x * cos(angle) - point.y * sin(angle)
-            val y = point.x * sin(angle) + point.y * cos(angle)
+            val a = 2.0f * Vector3.dot(u, v)
+            val p1 = Vector3(u.x * a, u.y * a, u.z * a)
 
-            // move back
-            point.x = x + cx
-            point.y = y + cy
-            return point
+            val b = s * s - Vector3.dot(u, u)
+            val p2 = Vector3(v.x * b, v.y * b, v.z * b)
+
+            val c = 2.0f * s
+            val cross = Vector3.cross(u, v)
+            val p3 = Vector3(cross.x * c, cross.y * c, cross.z * c)
+
+            val sum1 = Vector3.add(p1, p2)
+            return Vector3.add(sum1, p3)
         }
+
     }
 
 }

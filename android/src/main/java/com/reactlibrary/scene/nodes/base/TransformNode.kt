@@ -25,7 +25,10 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.logMessage
 
 /**
  * Base node.
@@ -153,19 +156,15 @@ abstract class TransformNode(
         val contentBounding = getContentBounding()
 
         // bounding vertices
-        val p1 = Vector2(contentBounding.left, contentBounding.top)
-        val p2 = Vector2(contentBounding.left, contentBounding.bottom)
-        val p3 = Vector2(contentBounding.right, contentBounding.bottom)
-        val p4 = Vector2(contentBounding.right, contentBounding.top)
+        val p1 = Vector3(contentBounding.left, contentBounding.top, localPosition.z)
+        val p2 = Vector3(contentBounding.left, contentBounding.bottom, localPosition.z)
+        val p3 = Vector3(contentBounding.right, contentBounding.bottom, localPosition.z)
+        val p4 = Vector3(contentBounding.right, contentBounding.top, localPosition.z)
 
-        val eulerAngles = localRotation.toEulerAngles()
-        val cX = 0f // contentNode.localPosition.x
-        val cY = 0f // contentNode.localPosition.y
-
-        val p1_rot = Utils.rotatePoint(p1, cX, cY, eulerAngles.z)
-        val p2_rot = Utils.rotatePoint(p2, cX, cY, eulerAngles.z)
-        val p3_rot = Utils.rotatePoint(p3, cX, cY, eulerAngles.z)
-        val p4_rot = Utils.rotatePoint(p4, cX, cY, eulerAngles.z)
+        val p1_rot = Utils.rotateVector(p1, localRotation)
+        val p2_rot = Utils.rotateVector(p2, localRotation)
+        val p3_rot = Utils.rotateVector(p3, localRotation)
+        val p4_rot = Utils.rotateVector(p4, localRotation)
 
         val minimumBounds = Utils.findMinimumBounding(listOf(p1_rot, p2_rot, p3_rot, p4_rot))
 

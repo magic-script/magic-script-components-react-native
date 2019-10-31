@@ -121,11 +121,25 @@ abstract class TransformNode(
      */
     fun getBounding(): Bounding {
         val contentBounding = getContentBounding()
+
+        // bounding vertices
+        val p1 = Vector3(contentBounding.left, contentBounding.top, localPosition.z)
+        val p2 = Vector3(contentBounding.left, contentBounding.bottom, localPosition.z)
+        val p3 = Vector3(contentBounding.right, contentBounding.bottom, localPosition.z)
+        val p4 = Vector3(contentBounding.right, contentBounding.top, localPosition.z)
+
+        val p1_rot = Utils.rotateVector(p1, localRotation)
+        val p2_rot = Utils.rotateVector(p2, localRotation)
+        val p3_rot = Utils.rotateVector(p3, localRotation)
+        val p4_rot = Utils.rotateVector(p4, localRotation)
+
+        val minimumBounds = Utils.findMinimumBounding(listOf(p1_rot, p2_rot, p3_rot, p4_rot))
+
         return Bounding(
-                left = contentBounding.left * localScale.x + localPosition.x,
-                bottom = contentBounding.bottom * localScale.y + localPosition.y,
-                right = contentBounding.right * localScale.x + localPosition.x,
-                top = contentBounding.top * localScale.y + localPosition.y)
+                left = minimumBounds.left * localScale.x + localPosition.x,
+                bottom = minimumBounds.bottom * localScale.y + localPosition.y,
+                right = minimumBounds.right * localScale.x + localPosition.x,
+                top = minimumBounds.top * localScale.y + localPosition.y)
     }
 
     /**

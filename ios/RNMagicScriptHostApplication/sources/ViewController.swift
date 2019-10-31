@@ -167,7 +167,7 @@ class ViewController: UIViewController {
         ]
         colors.enumerated().forEach { (index, rgba) in
             let nodeId: String = "image_\(index)"
-            let _: UiImageNode = createComponent(["color": rgba, "width": imageSize.width, "height": imageSize.height], nodeId: nodeId, parentId: linearId)
+            let _: UiImageNode = createComponent(["skipRaycast": true, "color": rgba, "width": imageSize.width, "height": imageSize.height], nodeId: nodeId, parentId: linearId)
         }
 
         return linear

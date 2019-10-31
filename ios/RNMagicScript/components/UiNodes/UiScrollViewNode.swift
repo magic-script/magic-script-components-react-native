@@ -26,8 +26,17 @@ import SceneKit
     @objc var scrollOffset: SCNVector3 = SCNVector3() {
         didSet { setNeedsLayout() }
     }
-    @objc var scrollValue: CGFloat = 0 {
-        didSet { scrollBar?.thumbPosition = scrollValue; setNeedsLayout() }
+    fileprivate var _scrollValue: CGFloat = 0
+    @objc var scrollValue: CGFloat {
+        get { return _scrollValue }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
+            if (_scrollValue != clampedValue) {
+                _scrollValue = clampedValue
+                scrollBar?.thumbPosition = clampedValue
+                setNeedsLayout()
+            }
+        }
     }
     //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
@@ -65,7 +74,7 @@ import SceneKit
             }
         }
 
-        return nil
+        return self
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -168,17 +177,15 @@ import SceneKit
             proxyNode.position = SCNVector3Zero
         }
 
-        if let scrollBar = scrollBar {
-            var shift: CGPoint = CGPoint.zero
-            switch scrollBar.scrollOrientation {
-            case .horizontal:
-                shift.x = -scrollBar.thumbPosition * max(0, contentSize.width - scrollSize.width)
-            case .vertical:
-                shift.y = (scrollBar.thumbPosition - 1) * max(0, contentSize.height - scrollSize.height)
-            }
-
-            proxyNode.position += SCNVector3(shift.x, shift.y, 0)
+        scrollBar?.thumbPosition = scrollValue
+        var shift: CGPoint = CGPoint.zero
+        switch scrollDirection {
+        case .horizontal:
+            shift.x = -scrollValue * max(0, contentSize.width - scrollSize.width)
+        case .vertical:
+            shift.y = (scrollValue - 1) * max(0, contentSize.height - scrollSize.height)
         }
+        proxyNode.position += SCNVector3(shift.x, shift.y, 0)
 
         if invalidateClippingPlanes {
             invalidateClippingPlanes = false
@@ -194,5 +201,32 @@ import SceneKit
                 SCNVector4(0, 0,-1, max.z),
             ])
         }
+    }
+}
+
+extension UiScrollViewNode: Dragging {
+    var dragAxis: Ray? {
+        guard let scrollBounds = scrollBounds else { return nil }
+        let min = scrollBounds.min
+        let max = scrollBounds.max
+        let center: SCNVector3 = 0.5 * (min + max)
+        let direction: SCNVector3
+        if scrollDirection == .horizontal {
+            direction = SCNVector3(center.x - max.x, center.y, center.z)
+        } else {
+            direction = SCNVector3(center.x, max.y - center.y, center.z)
+        }
+
+        return Ray(begin: center - direction, direction: direction.normalized(), length: CGFloat(2 * direction.length()))
+    }
+
+    var contentLength: CGFloat {
+        guard let contentSize = scrollContent?.getSize() else { return 0 }
+        return (scrollDirection == .horizontal) ? contentSize.width : contentSize.height
+    }
+
+    var dragValue: CGFloat {
+        get { return scrollValue }
+        set { scrollValue = newValue; layoutIfNeeded() }
     }
 }

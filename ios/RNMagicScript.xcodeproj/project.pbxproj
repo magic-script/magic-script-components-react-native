@@ -35,6 +35,10 @@
 		442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */; };
 		442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
 		442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
+		44444719236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
+		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
+		4444471C236B259100665D31 /* DragGestureDeltaCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4444471B236B259100665D31 /* DragGestureDeltaCalculator.swift */; };
+		4444471D236B259100665D31 /* DragGestureDeltaCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4444471B236B259100665D31 /* DragGestureDeltaCalculator.swift */; };
 		4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
@@ -454,6 +458,8 @@
 		442AED5623461BDF000B83AE /* SystemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIcon.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		44444718236AFD5A00665D31 /* Dragging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dragging.swift; sourceTree = "<group>"; };
+		4444471B236B259100665D31 /* DragGestureDeltaCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureDeltaCalculator.swift; sourceTree = "<group>"; };
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
@@ -930,10 +936,10 @@
 				44AFAC03232B9BCE005AC8EF /* UiNode.swift */,
 				C4816BF1234C9082001CCBDD /* DataProviding.swift */,
 				44D8FE87233A0E93007FD766 /* InputDataProviding.swift */,
-				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
+				C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */,
 				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
-				C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */,
+				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -1028,6 +1034,8 @@
 			children = (
 				44AFAC29232B9BCF005AC8EF /* Convert.swift */,
 				44AFAC2A232B9BCF005AC8EF /* Measures.swift */,
+				44444718236AFD5A00665D31 /* Dragging.swift */,
+				4444471B236B259100665D31 /* DragGestureDeltaCalculator.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -1739,6 +1747,7 @@
 				448586FC235DC1FD00D372CB /* Ray.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */,
+				4444471A236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44AFAD29232BCAE3005AC8EF /* URLSession+Extension.swift in Sources */,
 				44AFAD0F232BCAE3005AC8EF /* TransformNode.swift in Sources */,
 				44AFAD13232BCAE3005AC8EF /* FontWeight.swift in Sources */,
@@ -1780,6 +1789,7 @@
 				44F596432355C5B500C60F4C /* Orientation.swift in Sources */,
 				C4BE7BCF234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
 				44AFAD28232BCAE3005AC8EF /* UIImage+Extension.swift in Sources */,
+				4444471D236B259100665D31 /* DragGestureDeltaCalculator.swift in Sources */,
 				C4D5417C23338D82008D5124 /* VideoAction.swift in Sources */,
 				44AFAD0D232BCAE3005AC8EF /* LabelNode.swift in Sources */,
 				C4A12B132361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
@@ -1893,6 +1903,7 @@
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
+				44444719236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				4425EDFE2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				448586FB235DC1FD00D372CB /* Ray.swift in Sources */,
@@ -1938,6 +1949,7 @@
 				44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
+				4444471C236B259100665D31 /* DragGestureDeltaCalculator.swift in Sources */,
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,
 				C4A12B332361D19B009B7083 /* Date+Extension.swift in Sources */,
 				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,

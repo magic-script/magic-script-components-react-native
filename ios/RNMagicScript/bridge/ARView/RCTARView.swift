@@ -106,7 +106,7 @@ import SceneKit
 
     #if targetEnvironment(simulator)
         // Allow for basic orbit gestures if we're running in the simulator
-        view.allowsCameraControl = true
+        view.allowsCameraControl = false
         view.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
         view.defaultCameraController.maximumVerticalAngle = 45
         view.defaultCameraController.inertiaEnabled = true
@@ -121,6 +121,10 @@ import SceneKit
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         addGestureRecognizer(tapGestureRecognizer)
+
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanAction(_:)))
+        panGestureRecognizer.maximumNumberOfTouches = 1
+        addGestureRecognizer(panGestureRecognizer)
 
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
@@ -186,6 +190,7 @@ import SceneKit
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
+        print("tap.state: \(sender.state.rawValue)")
         guard let cameraNode = cameraNode,
             let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
 
@@ -203,5 +208,15 @@ extension RCTARView {
             node.scale = SCNVector3(1, ray.length, 1)
         }
     #endif
+    }
+
+    @objc fileprivate func handlePanAction(_ sender: UIPanGestureRecognizer) {
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+
+        UiNodesManager.instance.handlePanAction(ray: ray, state: sender.state)
+//        print("pan.state: \(sender.state.rawValue)")
+//        print("pan.translation: \(sender.translation(in: sender.view))")
+//        print("pan.velocity: \(sender.velocity(in: sender.view))")
     }
 }

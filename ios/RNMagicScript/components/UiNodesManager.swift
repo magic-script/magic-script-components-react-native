@@ -27,6 +27,7 @@ import SceneKit
     fileprivate var nodesById: [String: TransformNode]
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
+    fileprivate var dragCalculator: DragGestureDeltaCalculator?
     fileprivate var nodeSelector: UiNodeSelector?
 
     init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
@@ -52,6 +53,35 @@ import SceneKit
         #endif
         } else {
             handleNodeTap(nil)
+        }
+    }
+
+    @objc public func handlePanAction(ray: Ray?, state: UIGestureRecognizer.State) {
+        guard let ray = ray else { return }
+
+        switch state {
+        case .began:
+            if let draggedNode = nodeSelector?.draggingHitTest(ray: ray) {
+                dragCalculator = DragGestureDeltaCalculator(draggedObject: draggedNode, ray: ray)
+            }
+        case .changed:
+            print("calculating delta...")
+            if let calculator = dragCalculator {
+                let delta = calculator.calculateDelta(for: ray)
+                print("delta: \(delta)")
+                let obj = calculator.draggedObject
+                obj.dragValue = calculator.beginDragValue + delta / obj.contentLength
+            }
+        case .ended:
+            dragCalculator = nil
+        case .cancelled:
+            dragCalculator = nil
+        case .possible:
+            dragCalculator = nil
+        case .failed:
+            dragCalculator = nil
+        @unknown default:
+            dragCalculator = nil
         }
     }
 

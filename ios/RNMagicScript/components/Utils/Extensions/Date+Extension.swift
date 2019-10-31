@@ -38,4 +38,26 @@ extension Date: DateTimeConverting {
         dateFormatter.locale = Locale.current
         return dateFormatter.string(from: self)
     }
+
+    static func fromTime(string: String, format: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
+        dateFormatter.locale = Locale.current
+        return dateFormatter.date(from: string) ?? Date()
+    }
+
+    func toTimeString(format: String) -> String {
+        let dateFormatter = DateFormatter()
+        if format.contains(" p") {
+            dateFormatter.dateFormat = format.replacingOccurrences(of: " p", with: " a").replacingOccurrences(of: "HH:", with: "h:")
+            dateFormatter.amSymbol = "AM"
+            dateFormatter.pmSymbol = "PM"
+        } else {
+            dateFormatter.dateFormat = format
+        }
+        dateFormatter.locale = Locale.current
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
+        return dateFormatter.string(from: self)
+    }
 }

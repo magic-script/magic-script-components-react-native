@@ -18,6 +18,7 @@ import SliderBuilder from './elements/builders/slider-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
 import TextBuilder from './elements/builders/text-builder.js';
 import TextEditBuilder from './elements/builders/text-edit-builder.js';
+import TimePickerBuilder from './elements/builders/time-picker-builder.js';
 import ToggleBuilder from './elements/builders/toggle-builder.js';
 import VideoBuilder from './elements/builders/video-builder.js';
 
@@ -41,6 +42,7 @@ export default {
     'spinner': (componentManager) => new SpinnerBuilder(componentManager),
     'text': (componentManager) => new TextBuilder(componentManager),
     'textEdit': (componentManager) => new TextEditBuilder(componentManager),
+    'timePicker': (componentManager) => new TimePickerBuilder(componentManager),
     'toggle': (componentManager) => new ToggleBuilder(componentManager),
     'view': (componentManager) => new GroupBuilder(componentManager),
 

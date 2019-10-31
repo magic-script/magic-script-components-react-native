@@ -75,7 +75,9 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
     }
 
     override fun setLayoutSize(props: Bundle) {
-        // width and height properties are not supported yet (we can't rescale children)
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            logMessage("width and height properties are not supported yet", true)
+        }
     }
 
     private fun setColumns(props: Bundle) {

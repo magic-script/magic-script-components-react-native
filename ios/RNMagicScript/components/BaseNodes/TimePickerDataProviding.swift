@@ -18,4 +18,7 @@ import Foundation
 
 //sourcery: AutoMockable
 protocol TimePickerDataProviding: DataProviding {
+    var timePickerValue: Date { get set }
+    func timeChanged()
+    func timeConfirmed()
 }

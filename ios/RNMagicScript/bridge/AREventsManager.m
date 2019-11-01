@@ -65,7 +65,9 @@ RCT_EXPORT_MODULE();
              @"onToggleChanged",
              @"onVideoPrepared",
              @"onDateChanged",
-             @"onDateConfirmed"
+             @"onDateConfirmed",
+             @"onTimeChanged",
+             @"onTimeConfirmed"
              ];
 }
 
@@ -145,6 +147,22 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onDateConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onTimeChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onTimeConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
         });
     }
 }

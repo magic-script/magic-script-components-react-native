@@ -152,6 +152,12 @@ RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)n
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createTimePickerNode:(UiTimePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createTimePickerNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createToggleNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -323,6 +329,30 @@ RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
         datePickerNode.onDateConfirmed = ^(UiDatePickerNode *sender, NSString *value) {
             ARLog(@"datePicker confirmed: %@", value);
             [[AREventsManager instance] onDateConfirmedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeChanged = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker changed: %@", value);
+            [[AREventsManager instance] onTimeChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeConfirmed = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker confirmed: %@", value);
+            [[AREventsManager instance] onTimeConfirmedEventReceived:sender value:value];
         };
     }
 }

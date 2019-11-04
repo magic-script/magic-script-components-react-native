@@ -124,7 +124,7 @@ class ViewController: UIViewController {
             "alignment": "center-center",
             "debug": true,
             "scrollBarVisibility": "always",
-        ], nodeId: scrollViewId)
+        ], nodeId: scrollViewId, parentId: groupId)
 
         // Scroll bar
         let scrollBarId: String = "scroll_bar"
@@ -136,6 +136,8 @@ class ViewController: UIViewController {
 
         // Linear
         linearLayout = createLinearLayoutWithImages(imageSize, parentId: scrollViewId)
+
+        let slider: UiSliderNode = createComponent(["width" : 0.7, "height": 0.04, "localPosition": [0, -0.5, 0]], nodeId: "slider", parentId: groupId)
 
         onOrientationChange(true)
     }

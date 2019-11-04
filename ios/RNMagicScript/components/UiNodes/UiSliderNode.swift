@@ -234,7 +234,34 @@ extension UiSliderNode: SliderDataProviding {
             if value != newValue {
                 value = newValue
                 layoutIfNeeded()
-                onSliderChanged?(self, value);
+                onSliderChanged?(self, value)
+            }
+        }
+    }
+}
+
+extension UiSliderNode: Dragging {
+    var dragAxis: Ray? {
+        let size = getSize()
+        let min = position + SCNVector3(-0.5 * size.width, 0, 0)
+        let max = position + SCNVector3(0.5 * size.width, 0, 0)
+        let center: SCNVector3 = 0.5 * (min + max)
+        let direction = SCNVector3(max.x - center.x, 0, 0)
+        return Ray(begin: center - direction, direction: direction.normalized(), length: CGFloat(2 * direction.length()))
+    }
+
+    var dragRange: CGFloat {
+        let size = getSize()
+        return size.width
+    }
+
+    var dragValue: CGFloat {
+        get { return value }
+        set {
+            if value != newValue {
+                value = newValue
+                layoutIfNeeded()
+                onSliderChanged?(self, value)
             }
         }
     }

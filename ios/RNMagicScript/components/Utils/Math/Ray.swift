@@ -35,11 +35,15 @@ import UIKit
 // MARK: UITapGestureRecognizer
 extension Ray {
     convenience init?(gesture: UIGestureRecognizer, cameraNode: SCNNode) {
-        guard let view = gesture.view else { return nil }
+        let tapPoint: CGPoint = gesture.location(in: gesture.view)
+        self.init(view: gesture.view, tapPoint: tapPoint, cameraNode: cameraNode)
+    }
+
+    convenience init?(view: UIView?, tapPoint: CGPoint, cameraNode: SCNNode) {
+        guard let view = view else { return nil }
         guard let camera = cameraNode.camera else { return nil }
 
         // Screen space computations
-        let tapPoint: CGPoint = gesture.location(in: view)
         let tanFOV: CGFloat = CGFloat(tanf(Float(0.5 * camera.fieldOfView.toRadians)))
         let aspect = view.frame.width / view.frame.height
         let halfWidth = view.frame.width * 0.5

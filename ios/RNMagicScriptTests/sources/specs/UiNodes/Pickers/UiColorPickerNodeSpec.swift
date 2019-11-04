@@ -22,6 +22,47 @@ import SceneKit
 class UiColorPickerNodeSpec: QuickSpec {
     override func spec() {
         describe("UiColorPickerNode") {
+            var node: UiColorPickerNode!
+
+            beforeEach {
+                node = UiColorPickerNode(props: [:])
+                node.layoutIfNeeded()
+            }
+
+            context("initial properties") {
+                it("should have set default values") {
+                    let referenceStartingColor = UIColor.white
+                    expect(node.startingColor).to(beCloseTo(referenceStartingColor))
+                    let referenceColor = UIColor.white
+                    expect(node.color).to(beCloseTo(referenceColor))
+                    expect(node.height).to(beCloseTo(0.0))
+                }
+            }
+
+            context("update properties") {
+                it("should update 'startingColor' prop") {
+                    let referenceColor = UIColor.red
+                    node.update(["startingColor" : referenceColor.toArrayOfFloat])
+                    expect(node.startingColor).to(beCloseTo(referenceColor))
+                    expect(node.isLayoutNeeded).to(beFalse())
+                }
+
+                it("should update 'color' prop") {
+                    let referenceColor = UIColor(white: 0.5, alpha: 0.5)
+                    node.update(["color" : referenceColor.toArrayOfFloat])
+                    expect(node.color).to(beCloseTo(referenceColor))
+                    expect(node.isLayoutNeeded).to(beFalse())
+                }
+
+            }
+
+            it("should reload node when active state changed") {
+                expect(node.isLayoutNeeded).to(beFalse())
+                node.enterFocus()
+                expect(node.isLayoutNeeded).to(beFalse())
+                node.leaveFocus()
+                expect(node.isLayoutNeeded).to(beFalse())
+            }
         }
     }
 }

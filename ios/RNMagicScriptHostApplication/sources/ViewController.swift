@@ -77,7 +77,7 @@ class ViewController: UIViewController {
     fileprivate func setupUiColorPickerNodeTest() {
         let uiColorPickerNodeId: String = "uiColorPickerNodeId"
         let uiColorPickerNode: UiColorPickerNode = createComponent([:], nodeId: uiColorPickerNodeId)
-        uiColorPickerNode.position = SCNVector3(-0.125, 0.250, 0.0)
+        uiColorPickerNode.position = SCNVector3(0.0, 0.250, 0.0)
 
         uiColorPickerNode.onColorChanged = { sender, value in
             print("\(sender) changed \(value)")
@@ -91,6 +91,7 @@ class ViewController: UIViewController {
             print("\(sender) canceled ")
         }
 
+//        uiColorPickerNode.setDebugMode(true)
         uiColorPickerNode.layoutIfNeeded()
     }
 

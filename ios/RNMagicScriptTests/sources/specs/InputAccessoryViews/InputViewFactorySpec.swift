@@ -21,8 +21,32 @@ import Nimble
 class InputViewFactorySpec: QuickSpec {
     override func spec() {
         describe("InputViewFactory") {
+            context("when parent view is kind of DatePickerDataProviding") {
+                it("should return correct input view") {
+                    let datePickerDataProvider: DataProviding = SimpleDatePickerDataProvider()
+                    let view = InputViewFactory.createView(for: datePickerDataProvider, onFinishEditing: nil)
+                    expect(view).toNot(beNil())
+                }
+            }
+
+            context("when parent view is kind of DatePickerDataProviding") {
+                it("should return correct input view") {
+                    let timePickerDataProvider: DataProviding = SimpleTimePickerDataProvider()
+                    let view = InputViewFactory.createView(for: timePickerDataProvider, onFinishEditing: nil)
+                    expect(view).toNot(beNil())
+                }
+            }
+
+            context("when parent view is kind of ColorPickerDataProviding") {
+                it("should return correct input view") {
+                    let colorPickerDataProvider: DataProviding = SimpleColorPickerDataProvider()
+                    let view = InputViewFactory.createView(for: colorPickerDataProvider, onFinishEditing: nil)
+                    expect(view).toNot(beNil())
+                }
+            }
+
             context("when parent view is kind of SliderDataProviding") {
-                it("should return correct accessory view") {
+                it("should return correct input view") {
                     let sliderDataProvider: DataProviding = SimpleSliderDataProvider()
                     let view = InputViewFactory.createView(for: sliderDataProvider, onFinishEditing: nil)
                     expect(view).toNot(beNil())
@@ -36,14 +60,6 @@ class InputViewFactorySpec: QuickSpec {
                     expect(view).to(beNil())
                 }
             }
-
-            context("when requested") {
-                it("should create correct input view") {
-                    let sliderDataProvider: DataProviding = SimpleSliderDataProvider()
-                    let view = InputViewFactory.createView(for: sliderDataProvider, onFinishEditing: nil)
-                    expect(view is SliderInputView).to(beTrue())
-                }
-            }
         }
     }
 }
@@ -53,4 +69,20 @@ fileprivate struct SimpleSliderDataProvider: SliderDataProviding {
     var sliderValue: CGFloat = 0.0
     var min: CGFloat = 0.0
     var max: CGFloat = 1.0
+}
+fileprivate struct SimpleDatePickerDataProvider: DatePickerDataProviding {
+    var datePickerValue: Date = Date()
+    func dateChanged() { }
+    func dateConfirmed() { }
+}
+fileprivate struct SimpleTimePickerDataProvider: TimePickerDataProviding {
+    var timePickerValue: Date = Date()
+    func timeChanged() { }
+    func timeConfirmed() { }
+}
+fileprivate struct SimpleColorPickerDataProvider: ColorPickerDataProviding {
+    var colorPickerValue: UIColor = UIColor.white
+    func colorChanged() { }
+    func colorConfirmed() { }
+    func colorCanceled() { }
 }

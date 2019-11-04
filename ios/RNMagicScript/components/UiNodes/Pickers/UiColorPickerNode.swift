@@ -18,6 +18,7 @@ import SceneKit
 
 @objc open class UiColorPickerNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultLabelGap: CGFloat = 0.015
 
     fileprivate var _startingColor: UIColor = .white
     @objc var startingColor: UIColor {
@@ -31,7 +32,15 @@ import SceneKit
             guard let selectedColor = _color else { return startingColor }
             return selectedColor
         }
-        set { _color = newValue }
+        set {
+            _color = newValue
+            if let colorBlockGeometry = colorBlockNode.geometry as? SCNPlane {
+                colorBlockGeometry.firstMaterial?.diffuse.contents = color
+            }
+            labelNode.text = "#" + color.hexCode
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
     }
 
     @objc var height: CGFloat = 0
@@ -44,6 +53,7 @@ import SceneKit
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var labelNode: LabelNode!
+    fileprivate var colorBlockNode: SCNNode!
     fileprivate var reloadOutline: Bool = true
 
     deinit {
@@ -79,12 +89,21 @@ import SceneKit
         alignment = Alignment.centerCenter
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-        labelNode.text = "Color picker"
+        labelNode.text = "#" + color.hexCode
         labelNode.textAlignment = .center
         labelNode.defaultTextSize = UiColorPickerNode.defaultTextSize
         labelNode.reload()
-        reloadOutlineNode()
+
+        let underlineGeometry = SCNPlane(width: 0.0, height: 0.0)
+        underlineGeometry.firstMaterial?.lightingModel = .constant
+        underlineGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        underlineGeometry.firstMaterial?.diffuse.contents = color
+        colorBlockNode = SCNNode(geometry: underlineGeometry)
+
         contentNode.addChildNode(labelNode)
+        contentNode.addChildNode(colorBlockNode)
+
+        reloadOutlineNode()
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -105,18 +124,29 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
+        let colorBlockSize = CGSize(width: labelSize.height * 2, height: labelSize.height)
         let buttonToTextHeightMultiplier: CGFloat = 2.3
-        let contentWidth: CGFloat = labelSize.width + buttonToTextHeightMultiplier * labelSize.height
+        let contentWidth: CGFloat = labelSize.width + colorBlockSize.width + UiColorPickerNode.defaultLabelGap + (buttonToTextHeightMultiplier * labelSize.height)
         let contentHeight: CGFloat = buttonToTextHeightMultiplier * labelSize.height
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {
         labelNode.reload()
-        if reloadOutline {
-            reloadOutline = false
-            reloadOutlineNode()
+        let labelNodeSize = labelNode.getSize()
+        let size = getSize()
+        let gap = UiColorPickerNode.defaultLabelGap
+
+        if let colorBlockGeometry = colorBlockNode.geometry as? SCNPlane {
+            colorBlockGeometry.firstMaterial?.diffuse.contents = color
+            colorBlockGeometry.height = labelNode.getSize().height
+            colorBlockGeometry.width = labelNode.getSize().height * 2
         }
+
+        labelNode.position = SCNVector3(0.5 * (size.width - labelNodeSize.width) - gap, 0.0, 0.0)
+        colorBlockNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.height * 2) + gap, 0.0, 0.0)
+
+        reloadOutlineNode()
     }
 
     @objc override func setDebugMode(_ debug: Bool) {
@@ -143,10 +173,10 @@ import SceneKit
 
 extension UiColorPickerNode: ColorPickerDataProviding {
     var colorPickerValue: UIColor {
-        get { return color }
+        get { return self.color }
         set {
-            if color != newValue {
-                color = newValue
+            if self.color != newValue {
+                self.color = newValue
                 onColorChanged?(self, [])
             }
         }

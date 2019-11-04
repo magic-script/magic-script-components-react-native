@@ -91,7 +91,7 @@ class UiScrollBarNodeSpec: QuickSpec {
                     node.layoutIfNeeded()
 
                     node.thumbSize = referenceThumbSize3
-                    expect(node.thumbSize).to(beCloseTo(0.0))
+                    expect(node.thumbSize).to(beCloseTo(0.1))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 

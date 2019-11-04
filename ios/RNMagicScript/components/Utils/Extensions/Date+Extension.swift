@@ -24,18 +24,50 @@ protocol DateTimeConverting {
 
 extension Date: DateTimeConverting {
     static func from(string: String, format: String) -> Date {
-        let dateFormatter = DateFormatter()
+        let dateFormatter = StaticDateFormatter.dateOnlyFormatter()
         dateFormatter.dateFormat = format
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
-        dateFormatter.locale = Locale.current
         return dateFormatter.date(from: string) ?? Date()
     }
 
     func toString(format: String) -> String {
-        let dateFormatter = DateFormatter()
+        let dateFormatter = StaticDateFormatter.dateOnlyFormatter()
         dateFormatter.dateFormat = format
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
-        dateFormatter.locale = Locale.current
         return dateFormatter.string(from: self)
+    }
+
+    static func fromTime(string: String, format: String) -> Date {
+        let dateFormatter = StaticDateFormatter.dateOnlyFormatter()
+        dateFormatter.dateFormat = format
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
+        return dateFormatter.date(from: string) ?? Date()
+    }
+
+    func toTimeString(format: String) -> String {
+        let dateFormatter = StaticDateFormatter.dateOnlyFormatter()
+        if format.contains(" p") {
+            dateFormatter.dateFormat = format.replacingOccurrences(of: " p", with: " a").replacingOccurrences(of: "HH:", with: "h:")
+            dateFormatter.amSymbol = "AM"
+            dateFormatter.pmSymbol = "PM"
+        } else {
+            dateFormatter.dateFormat = format
+        }
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
+        return dateFormatter.string(from: self)
+    }
+}
+
+class StaticDateFormatter {
+    static fileprivate var _dateOnlyFormatter: DateFormatter! = nil
+    public class func dateOnlyFormatter() -> DateFormatter {
+        if (StaticDateFormatter._dateOnlyFormatter == nil) {
+            let dateFormatter = DateFormatter()
+            dateFormatter.calendar = Calendar.current
+            dateFormatter.locale = Locale.current
+            dateFormatter.timeZone = TimeZone.current
+            StaticDateFormatter._dateOnlyFormatter = dateFormatter
+        }
+        return StaticDateFormatter._dateOnlyFormatter
     }
 }

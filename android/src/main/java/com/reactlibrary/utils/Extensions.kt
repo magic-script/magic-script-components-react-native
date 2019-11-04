@@ -21,6 +21,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 
@@ -101,6 +103,10 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
     val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
     return Vector2(width, height)
+}
+
+fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
+    return Utils.rotateVector(this, quaternion)
 }
 
 

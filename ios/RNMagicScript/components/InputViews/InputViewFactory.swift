@@ -26,6 +26,10 @@ class InputViewFactory {
             return InputViewFactory.createView(for: datePicker, onFinish: onFinishEditing)
         }
 
+        if let timePicker = input as? TimePickerDataProviding {
+            return InputViewFactory.createView(for: timePicker, onFinish: onFinishEditing)
+        }
+
         return nil
     }
 
@@ -39,7 +43,15 @@ class InputViewFactory {
 
     static func createView(for input: DatePickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
         let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
-        let dateTimePickerInputView = DateTimePickerInputView(frame: rect)
+        let dateTimePickerInputView = DatePickerInputView(frame: rect)
+        dateTimePickerInputView.onFinish = onFinish
+        dateTimePickerInputView.pickerData = input
+        return dateTimePickerInputView
+    }
+
+    static func createView(for input: TimePickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
+        let dateTimePickerInputView = TimePickerInputView(frame: rect)
         dateTimePickerInputView.onFinish = onFinish
         dateTimePickerInputView.pickerData = input
         return dateTimePickerInputView

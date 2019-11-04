@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
@@ -29,6 +28,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.rotatedBy
 
 /**
  * Base node.
@@ -120,12 +120,21 @@ abstract class TransformNode(
      * that includes the node).
      */
     fun getBounding(): Bounding {
-        val contentBounding = getContentBounding()
+        val contentBounds = getContentBounding()
+
+        // bounding vertices
+        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+
+        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
+
         return Bounding(
-                left = contentBounding.left * localScale.x + localPosition.x,
-                bottom = contentBounding.bottom * localScale.y + localPosition.y,
-                right = contentBounding.right * localScale.x + localPosition.x,
-                top = contentBounding.top * localScale.y + localPosition.y)
+                left = minimumBounds.left * localScale.x + localPosition.x,
+                bottom = minimumBounds.bottom * localScale.y + localPosition.y,
+                right = minimumBounds.right * localScale.x + localPosition.x,
+                top = minimumBounds.top * localScale.y + localPosition.y)
     }
 
     /**

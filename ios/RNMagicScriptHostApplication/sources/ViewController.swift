@@ -67,8 +67,39 @@ class ViewController: UIViewController {
     fileprivate var scrollBar: UiScrollBarNode!
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
+
     fileprivate var linearLayout: UiLinearLayoutNode!
     fileprivate let contentSize: CGFloat = 0.5
+
+    fileprivate func setupUiDatePickerNodeTest() {
+        let uiDatePickerNodeId: String = "uiDatePickerNodeId"
+        let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId)
+        uiDatePickerNode.position = SCNVector3(-0.125, 0.250, 0.0)
+
+        uiDatePickerNode.onDateConfirmed = { sender, value in
+            print("\(sender) confirmed \(value)")
+        }
+
+        uiDatePickerNode.onDateChanged = { sender, value in
+            print("\(sender) changed \(value)")
+        }
+
+        uiDatePickerNode.layoutIfNeeded()
+
+        let uiTimePickerNodeId: String = "uiTimePickerNodeId"
+        let uiTimePickerNode: UiTimePickerNode = createComponent(["label": "Current time", "timeFormat": "hh:mm:ss p", "time": "13:13:13"], nodeId: uiTimePickerNodeId)
+        uiTimePickerNode.position = SCNVector3(-0.125, 0.0, 0.0)
+
+        uiTimePickerNode.onTimeConfirmed = { sender, value in
+            print("\(sender) confirmed \(value)")
+        }
+
+        uiTimePickerNode.onTimeChanged = { sender, value in
+            print("\(sender) changed \(value)")
+        }
+
+        uiTimePickerNode.layoutIfNeeded()
+    }
 
     fileprivate func setupScrollViewTest() {
         let imageSize = CGSize(width: contentSize, height: contentSize)

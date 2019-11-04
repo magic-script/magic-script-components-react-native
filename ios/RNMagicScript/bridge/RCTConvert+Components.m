@@ -99,5 +99,9 @@
     return [[UiDatePickerNode alloc] initWithProps: json];
 }
 
++ (UiTimePickerNode *)UiTimePickerNode:(id)json {
+    return [[UiTimePickerNode alloc] initWithProps: json];
+}
+
 @end
 

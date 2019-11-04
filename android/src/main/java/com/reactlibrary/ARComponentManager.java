@@ -50,6 +50,7 @@ import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
+import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
@@ -279,6 +280,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createDropdownListItemNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             UiDropdownListItemNode node = new UiDropdownListItemNode(props, context, viewRenderableLoader, fontProvider);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createWebViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UIWebViewNode node = new UIWebViewNode(props, context, viewRenderableLoader);
             addNode(node, nodeId);
         });
     }

@@ -23,6 +23,8 @@
 @class UiSliderNode;
 @class UiDropdownListNode;
 @class UiDropdownListItemNode;
+@class UiDatePickerNode;
+@class UiTimePickerNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -35,5 +37,10 @@
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
 - (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes;
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value;
+- (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;
+- (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;
+- (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
+- (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
+
 
 @end

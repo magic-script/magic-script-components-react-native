@@ -21,6 +21,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 
@@ -113,6 +115,10 @@ fun Any.printProps(bundle: Bundle?) {
 
         this.logMessage(message, false)
     }
+}
+
+fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
+    return Utils.rotateVector(this, quaternion)
 }
 
 

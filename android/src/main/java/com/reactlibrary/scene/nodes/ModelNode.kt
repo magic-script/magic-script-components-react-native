@@ -53,6 +53,10 @@ class ModelNode(initProps: ReadableMap,
         loadModel()
     }
 
+    override fun setAlignment(props: Bundle) {
+        // according to Lumin we cannot change alignment for Model
+    }
+
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
             // cannot update the ModelRenderable before [renderableRequested],

@@ -16,47 +16,37 @@
 
 import Foundation
 
-@objc public enum FontWeight: Int {
-    case extraLight
-    case light
-    case regular
-    case medium
-    case bold
-    case extraBold
+@objc public enum Side: Int {
+    case top
+    case right
+    case bottom
+    case left
 
     public typealias RawValue = String
 
     public var rawValue: RawValue {
         switch self {
-        case .extraLight:
-            return "extra-light"
-        case .light:
-            return "light"
-        case .regular:
-            return "regular"
-        case .medium:
-            return "medium"
-        case .bold:
-            return "bold"
-        case .extraBold:
-            return "extra-bold"
+        case .top:
+            return "top"
+        case .right:
+            return "right"
+        case .bottom:
+            return "bottom"
+        case .left:
+            return "left"
         }
     }
 
     public init?(rawValue: RawValue) {
         switch rawValue {
-        case "light":
-            self = .light
-        case "extra-light":
-            self = .extraLight
-        case "regular":
-            self = .regular
-        case "medium":
-            self = .medium
-        case "bold":
-            self = .bold
-        case "extra-bold":
-            self = .extraBold
+        case "top":
+            self = .top
+        case "right":
+            self = .right
+        case "bottom":
+            self = .bottom
+        case "left":
+            self = .left
         default:
             return nil
         }

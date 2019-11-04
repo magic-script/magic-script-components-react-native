@@ -1,6 +1,7 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
 import ButtonBuilder from './elements/builders/button-builder.js';
+import DatePickerBuilder from './elements/builders/date-picker-builder.js';
 import DropdownListBuilder from './elements/builders/dropdown-list-builder.js';
 import DropdownListItemBuilder from './elements/builders/dropdown-list-item-builder.js';
 import GridLayoutBuilder from './elements/builders/grid-layout-builder.js';
@@ -17,6 +18,7 @@ import SliderBuilder from './elements/builders/slider-builder.js';
 import SpinnerBuilder from './elements/builders/spinner-builder.js';
 import TextBuilder from './elements/builders/text-builder.js';
 import TextEditBuilder from './elements/builders/text-edit-builder.js';
+import TimePickerBuilder from './elements/builders/time-picker-builder.js';
 import ToggleBuilder from './elements/builders/toggle-builder.js';
 import VideoBuilder from './elements/builders/video-builder.js';
 import WebViewBuilder from './elements/builders/webview-builder.js';
@@ -30,6 +32,7 @@ export default {
   elements: {
     // ui nodes
     'button': (componentManager) => new ButtonBuilder(componentManager),
+    'datePicker': (componentManager) => new DatePickerBuilder(componentManager),
     'dropdownList': (componentManager) => new DropdownListBuilder(componentManager),
     'dropdownListItem': (componentManager) => new DropdownListItemBuilder(componentManager),
     'image': (componentManager) => new ImageBuilder(componentManager),
@@ -40,6 +43,7 @@ export default {
     'spinner': (componentManager) => new SpinnerBuilder(componentManager),
     'text': (componentManager) => new TextBuilder(componentManager),
     'textEdit': (componentManager) => new TextEditBuilder(componentManager),
+    'timePicker': (componentManager) => new TimePickerBuilder(componentManager),
     'toggle': (componentManager) => new ToggleBuilder(componentManager),
     'view': (componentManager) => new GroupBuilder(componentManager),
 

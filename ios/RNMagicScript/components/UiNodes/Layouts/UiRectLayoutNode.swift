@@ -75,4 +75,9 @@ import SceneKit
         let _ = getSize()
         gridLayout.updateLayout()
     }
+
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        gridLayout.invalidate()
+    }
 }

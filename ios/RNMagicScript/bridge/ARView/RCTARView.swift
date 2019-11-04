@@ -106,7 +106,7 @@ import SceneKit
 
     #if targetEnvironment(simulator)
         // Allow for basic orbit gestures if we're running in the simulator
-        view.allowsCameraControl = false
+        view.allowsCameraControl = true
         view.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
         view.defaultCameraController.maximumVerticalAngle = 45
         view.defaultCameraController.inertiaEnabled = true
@@ -117,15 +117,6 @@ import SceneKit
         view.pointOfView?.camera?.zNear = 0.001
         view.pointOfView?.camera?.zFar = 10
 
-        // Add gesture recognizer
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
-        addGestureRecognizer(tapGestureRecognizer)
-
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanAction(_:)))
-        panGestureRecognizer.maximumNumberOfTouches = 1
-        addGestureRecognizer(panGestureRecognizer)
-
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
@@ -133,6 +124,22 @@ import SceneKit
         }
         UiNodesManager.instance.onInputUnfocused = { [weak self] in
             self?.dismissInput()
+        }
+
+        // Add gesture recognizers
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
+        tapGestureRecognizer.numberOfTapsRequired = 1
+        addGestureRecognizer(tapGestureRecognizer)
+
+        if let cameraNode = view.pointOfView {
+            let dragGestureRecognizer = DragGestureRecognizer(cameraNode: cameraNode, nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
+            addGestureRecognizer(dragGestureRecognizer)
+
+            // Set dependencies between drag gesture and debug camera pan gesture
+            // so that both gestures can be used in debug mode.
+            view.gestureRecognizers?
+                .filter { $0 is UIPanGestureRecognizer }
+                .forEach{ $0.require(toFail: dragGestureRecognizer) }
         }
 
         return view
@@ -190,7 +197,6 @@ import SceneKit
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
-        print("tap.state: \(sender.state.rawValue)")
         guard let cameraNode = cameraNode,
             let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
 
@@ -210,13 +216,9 @@ extension RCTARView {
     #endif
     }
 
-    @objc fileprivate func handlePanAction(_ sender: UIPanGestureRecognizer) {
-        guard let cameraNode = cameraNode,
-            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
-
-        UiNodesManager.instance.handlePanAction(ray: ray, state: sender.state)
-//        print("pan.state: \(sender.state.rawValue)")
-//        print("pan.translation: \(sender.translation(in: sender.view))")
-//        print("pan.velocity: \(sender.velocity(in: sender.view))")
+    @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
+        if sender.state == UIGestureRecognizer.State.changed {
+            sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
+        }
     }
 }

@@ -220,7 +220,7 @@ extension UiScrollViewNode: Dragging {
         return Ray(begin: center - direction, direction: direction.normalized(), length: CGFloat(2 * direction.length()))
     }
 
-    var contentLength: CGFloat {
+    var dragRange: CGFloat {
         guard let contentSize = scrollContent?.getSize() else { return 0 }
         let size = getSize()
         return (scrollDirection == .horizontal) ? contentSize.width - size.width : contentSize.height - size.height

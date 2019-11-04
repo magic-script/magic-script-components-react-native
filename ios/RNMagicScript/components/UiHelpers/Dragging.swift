@@ -19,6 +19,6 @@ import SceneKit
 
 @objc protocol Dragging {
     var dragAxis: Ray? { get }
-    var contentLength: CGFloat { get }
+    var dragRange: CGFloat { get }
     var dragValue: CGFloat { get set }
 }

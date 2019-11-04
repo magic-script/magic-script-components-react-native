@@ -25,8 +25,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.plus
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
@@ -156,14 +154,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    // Translation to content node coordinate system.
-    override fun getScrollTranslation(): Vector2 {
-        val vector = localPosition + contentNode.localPosition
-        return Vector2(-vector.x, -vector.y)
-    }
-
     override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        val localBounds = clipBounds.translate(getScrollTranslation())
+        val localBounds = clipBounds.translate(-getContentPosition())
         for (i in 0 until contentNode.children.size) {
             val child = contentNode.children[i]
             if (child is TransformNode) {

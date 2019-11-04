@@ -96,10 +96,12 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         val translation = calculateScrollTranslation()
         val positionMeters = Vector2(
                 Utils.pxToMeters(event.x, context),
-                -Utils.pxToMeters(event.y, context))
+                -Utils.pxToMeters(event.y, context)
+        )
         event.setLocation(
                 positionMeters.x + translation.x,
-                positionMeters.y + translation.y)
+                positionMeters.y + translation.y
+        )
         return findScrollAncestor()?.onTouchEvent(event) ?: false
     }
 
@@ -125,7 +127,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {
-                translation -= p.getScrollTranslation()
+                translation += p.getContentPosition()
             }
             if (p is UiScrollViewNode) {
                 break

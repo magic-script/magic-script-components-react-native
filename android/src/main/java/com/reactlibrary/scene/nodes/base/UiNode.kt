@@ -24,7 +24,6 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -33,8 +32,6 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
 import com.reactlibrary.utils.Utils.Companion.metersToPx
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -148,23 +145,19 @@ abstract class UiNode(
         return Bounding(left, bottom, right, top)
     }
 
-    /**
-     * Translation to native view local coordinate system.
-     */
-    override fun getScrollTranslation(): Vector2 {
-        val pivot = getPivot()
-        return Vector2(
-                pivot.x - localPosition.x - contentNode.localPosition.x,
-                -pivot.y - localPosition.y - contentNode.localPosition.y)
-    }
-
     override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
         if (!clipNativeView) {
             return
         }
 
-        // Clipping view.
-        val localBounds = clipBounds.translate(getScrollTranslation())
+        val pivot = getPivot()
+        // Translation to native view local coordinate system (with origin at top-left)
+        val translation = Vector2(
+                pivot.x - localPosition.x - contentNode.localPosition.x,
+                -pivot.y - localPosition.y - contentNode.localPosition.y
+        )
+
+        val localBounds = clipBounds.translate(translation)
         view.clipBounds = Rect(
                 metersToPx(localBounds.left, context),
                 -metersToPx(localBounds.top, context),
@@ -173,6 +166,7 @@ abstract class UiNode(
         )
 
         // Clipping content node collision shape.
+        /*
         val contentNodePosition = Vector2(
                 -localPosition.x - contentNode.localPosition.x,
                 -localPosition.y - contentNode.localPosition.y
@@ -195,7 +189,9 @@ abstract class UiNode(
 
         contentNode.collisionShape = Box(
                 intersection.size().toVector3(),
-                intersection.center().toVector3())
+                intersection.center().toVector3()
+        )
+        */
     }
 
     override fun onDestroy() {
@@ -246,6 +242,7 @@ abstract class UiNode(
         viewWrapper = ViewWrapper(context, this)
         this.view = provideView(context)
         this.view.setOnClickListener {
+            logMessage("view clicked")
             onViewClick()
             clickListener?.invoke()
         }

@@ -26,6 +26,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -68,7 +69,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldUseTypefaceFromProvider() {
+    fun `should use typeface from provider`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         node.build()
@@ -77,7 +78,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultTextSize() {
+    fun `should have default text size`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val textSize = node.getProperty(UiTextNode.PROP_TEXT_SIZE)
@@ -86,7 +87,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultAlignment() {
+    fun `should have default alignment`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val alignment = node.getProperty(TransformNode.PROP_ALIGNMENT)
@@ -95,7 +96,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyTextWhenTextPropertyPresent() {
+    fun `should apply text when text property present`() {
         val text = "ABC"
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
@@ -106,7 +107,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+    fun `should apply text size when text size property present`() {
         val textSize = 0.15F
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize)
         val node = createNodeWithViewSpy(props)
@@ -118,7 +119,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplySingleLineWhenWrapPropertyIsFalse() {
+    fun `should apply single line when wrap property is false`() {
         val boundsData = JavaOnlyMap.of(
                 UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.5, 0.0),
                 UiTextNode.PROP_WRAP, false
@@ -132,7 +133,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplySingleLineWhenWidthIsDynamic() {
+    fun `should apply single line when width is dynamic`() {
         val boundsData = JavaOnlyMap.of(
                 UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.2),
                 UiTextNode.PROP_WRAP, true // wrap has no effect when size is 0 (dynamic)
@@ -146,7 +147,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyTextAlignmentWhenAlignmentPropertyPresent() {
+    fun `should apply text alignment when property present`() {
         val textAlignment = "right"
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_ALIGNMENT, textAlignment)
         val node = createNodeWithViewSpy(props)
@@ -157,7 +158,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresent() {
+    fun `should apply text color when color property present`() {
         val textColor = JavaOnlyArray.of(0.0, 0.0, 0.0, 0.0)
         val props = JavaOnlyMap.of(UiTextNode.PROP_TEXT_COLOR, textColor)
         val node = createNodeWithViewSpy(props)
@@ -168,7 +169,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyCapitalLettersWhenAllCapsPropertyIsTrue() {
+    fun `should apply capital letters when allCaps property is true`() {
         val allCapsProp = JavaOnlyMap.of(FontParamsReader.PROP_ALL_CAPS, true)
         val props = JavaOnlyMap.of(UiTextEditNode.PROP_FONT_PARAMS, allCapsProp)
         val node = createNodeWithViewSpy(props)
@@ -179,7 +180,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
+    fun `should apply characters spacing when spacing property present`() {
         val spacing = 0.1 // 'EM' units
         val props = JavaOnlyMap.of(UiTextNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
@@ -190,14 +191,15 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldReturnProperBounds() {
+    fun `should return proper bounds`() {
         val boundsSize = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.8, 0.4))
         val props = JavaOnlyMap.of(
                 UiTextNode.PROP_BOUNDS_SIZE, boundsSize,
-                TransformNode.PROP_ALIGNMENT, "center-right"
+                TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNodeWithViewSpy(props)
-        val expectedBounds = Bounding(-0.8F, -0.2F, 0F, 0.2F)
+        node.localScale = Vector3(2f, 2f, 1f)
+        val expectedBounds = Bounding(0F, -0.4F, 0.8F, 0F)
 
         node.build()
 
@@ -205,7 +207,7 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun shouldUpdateBoundsWhenTextChanged() {
+    fun `should update bounds when text changed`() {
         val node = createNodeWithViewSpy(JavaOnlyMap.of(UiTextNode.PROP_TEXT, "abc"))
         node.build()
         val initialBounds = node.getBounding()

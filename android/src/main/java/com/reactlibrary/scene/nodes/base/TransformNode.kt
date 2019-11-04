@@ -188,10 +188,11 @@ abstract class TransformNode(
     open fun onDestroy() {}
 
     /**
-     * Translation to node local coordinate system.
+     * Should return position of the content (relative to this node's parent)
      */
-    open fun getScrollTranslation(): Vector2 {
-        return Vector2(-localPosition.x, -localPosition.y)
+    open fun getContentPosition(): Vector2 {
+        val position = localPosition + contentNode.localPosition
+        return Vector2(position.x, position.y)
     }
 
     open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}

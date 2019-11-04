@@ -166,7 +166,7 @@ class LineNode(initProps: ReadableMap,
         if (clipNativeView) {
             return
         }
-        val localBounds = clipBounds.translate(getScrollTranslation())
+        val localBounds = clipBounds.translate(-getContentPosition())
 
         val center = localBounds.center().toVector3()
         val size = localBounds.size().toVector3()

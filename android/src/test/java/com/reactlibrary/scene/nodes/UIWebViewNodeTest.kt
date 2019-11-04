@@ -99,13 +99,13 @@ class UIWebViewNodeTest {
 
     @Test
     fun `should scroll by`() {
-        val scrollBy: Int = 15
+        val scrollBy = 15.0
         val props = JavaOnlyMap.of(PROP_SCROLL_BY, scrollBy)
 
         tested = createNodeWithViewSpy(props, context)
         tested.build()
 
-        verify(containerSpy).scrollBy(eq(0), eq(scrollBy))
+        verify(containerSpy).scrollBy(eq(0), eq(scrollBy.toInt()    ))
     }
 
 

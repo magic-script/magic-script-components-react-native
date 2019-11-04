@@ -88,7 +88,7 @@ open class UIWebViewNode(
 
     private fun setAction(props: Bundle) {
         if (props.containsKey(PROP_ACTION)) {
-            val action = props.getString(VideoNode.PROP_ACTION)
+            val action = props.getString(PROP_ACTION)
 
             when (action) {
                 ACTION_BACK -> (view as WebView).goBack()

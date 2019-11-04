@@ -105,18 +105,6 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     return Vector2(width, height)
 }
 
-fun Any.printProps(bundle: Bundle?) {
-    bundle?.let {
-        var message = "Bundle{"
-        for (key in bundle.keySet()) {
-            message += " " + key + " => " + bundle.get(key) + ";"
-        }
-        message += " }Bundle"
-
-        this.logMessage(message, false)
-    }
-}
-
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
 }

@@ -228,6 +228,12 @@ extension UiScrollViewNode: Dragging {
 
     var dragValue: CGFloat {
         get { return scrollValue }
-        set { scrollValue = newValue; layoutIfNeeded() }
+        set {
+            if scrollValue != newValue {
+                scrollValue = newValue
+                layoutIfNeeded()
+                onScrollChanged?(self, scrollValue)
+            }
+        }
     }
 }

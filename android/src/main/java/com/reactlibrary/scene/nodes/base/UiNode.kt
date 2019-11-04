@@ -29,13 +29,8 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
+import com.reactlibrary.utils.*
 import com.reactlibrary.utils.Utils.Companion.metersToPx
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.getSizeInMeters
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultBoolean
-import java.lang.Float.max
-import java.lang.Float.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -170,26 +165,7 @@ abstract class UiNode(
             return
         }
 
-        val nodeBounds = getBounding()
-        val sizeX = nodeBounds.size().x
-        val sizeY = nodeBounds.size().y
-
-        if (sizeX > 0) {
-            val offsetLeft = nodeBounds.left - clipBounds.left
-            materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
-
-            val offsetRight = nodeBounds.right - clipBounds.right
-            materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
-        }
-
-        if (sizeY > 0) {
-            val offsetBottom = nodeBounds.bottom - clipBounds.bottom
-            materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
-
-            val offsetTop = nodeBounds.top - clipBounds.top
-            materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
-        }
-
+        materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
 
         // TODO Clipping content node collision shape (for click events)
@@ -329,6 +305,12 @@ abstract class UiNode(
         handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
+    private fun applyMaterialClipping() {
+        contentNode.renderable?.material?.let { material ->
+            Utils.applyMaterialClipping(material, materialClip)
+        }
+    }
+
     private fun setEnabled(props: Bundle) {
         if (props.containsKey(PROP_ENABLED)) {
             view.isEnabled = props.getBoolean(PROP_ENABLED)
@@ -339,14 +321,5 @@ abstract class UiNode(
         return Vector2(
                 size.x * (0.5F + horizontalAlignment.centerOffset),
                 size.y * (0.5F - verticalAlignment.centerOffset))
-    }
-
-    private fun applyMaterialClipping() {
-        contentNode.renderable?.material?.apply {
-            setFloat("left", materialClip.left)
-            setFloat("right", materialClip.right)
-            setFloat("top", materialClip.top)
-            setFloat("bottom", materialClip.bottom)
-        }
     }
 }

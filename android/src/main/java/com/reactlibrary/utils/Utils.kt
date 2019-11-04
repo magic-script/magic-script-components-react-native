@@ -21,12 +21,11 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Material
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
-import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.sin
 
 /**
  * Class containing general purpose utility functions
@@ -165,6 +164,42 @@ class Utils {
 
             val sum1 = Vector3.add(p1, p2)
             return Vector3.add(sum1, p3)
+        }
+
+        fun calculateMaterialClipping(clipBounds: Bounding, nodeBounds: Bounding): Bounding {
+            val materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+            val sizeX = nodeBounds.size().x
+            val sizeY = nodeBounds.size().y
+
+            if (sizeX > 0) {
+                val offsetLeft = nodeBounds.left - clipBounds.left
+                materialClip.left = java.lang.Float.max(-0.5f - offsetLeft / sizeX, -0.5f)
+
+                val offsetRight = nodeBounds.right - clipBounds.right
+                materialClip.right = java.lang.Float.min(0.5f - offsetRight / sizeX, 0.5f)
+            }
+
+            if (sizeY > 0) {
+                val offsetBottom = nodeBounds.bottom - clipBounds.bottom
+                materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+
+                val offsetTop = nodeBounds.top - clipBounds.top
+                materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+            }
+            return materialClip
+        }
+
+        /**
+         * Clips the material with the [materialClip] bounds (relative to model size,
+         * with the origin at bottom-center)
+         */
+        fun applyMaterialClipping(material: Material, materialClip: Bounding) {
+            material.apply {
+                setFloat("left", materialClip.left)
+                setFloat("right", materialClip.right)
+                setFloat("top", materialClip.top)
+                setFloat("bottom", materialClip.bottom)
+            }
         }
 
     }

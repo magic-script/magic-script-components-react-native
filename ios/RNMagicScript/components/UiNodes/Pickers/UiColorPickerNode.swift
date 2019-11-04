@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class UiColorPickerNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.0167
+    static fileprivate let defaultTextSize: CGFloat = 0.065
     static fileprivate let defaultLabelGap: CGFloat = 0.015
 
     fileprivate var _startingColor: UIColor = .white

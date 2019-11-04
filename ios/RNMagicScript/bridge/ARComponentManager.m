@@ -368,8 +368,8 @@ RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
-        colorPickerNode.onColorChanged = ^(UiColorPickerNode *sender, [CGFloat] value) {
-            ARLog(@"timePicker confirmed: %@", value);
+        colorPickerNode.onColorChanged = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker changed: %@", value);
             [[AREventsManager instance] onColorChangedEventReceived:sender value:value];
         };
     }
@@ -380,8 +380,8 @@ RCT_EXPORT_METHOD(addOnConfirmEventReceivedHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
-        colorPickerNode.onConfirm = ^(UiColorPickerNode *sender, [CGFloat] value) {
-            ARLog(@"timePicker confirmed: %@", value);
+        colorPickerNode.onConfirm = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker confirmed: %@", value);
             [[AREventsManager instance] onConfirmEventReceived:sender value:value];
         };
     }
@@ -392,9 +392,9 @@ RCT_EXPORT_METHOD(addOnCancelEventReceivedHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
-        colorPickerNode.onCancel = ^(UiColorPickerNode *sender, [CGFloat] value) {
-            ARLog(@"timePicker confirmed: %@", value);
-            [[AREventsManager instance] onCancelEventReceived:sender value:value];
+        colorPickerNode.onCancel = ^(UiColorPickerNode *sender) {
+            ARLog(@"colorPicker canceled: %@");
+            [[AREventsManager instance] onCancelEventReceived:sender];
         };
     }
 }

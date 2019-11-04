@@ -20,9 +20,11 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.ar.ModelRenderableLoader
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 
 class ModelNode(initProps: ReadableMap,
@@ -41,6 +43,7 @@ class ModelNode(initProps: ReadableMap,
 
     // localScale without importScale correction
     private var scale = localScale
+    private var renderableCopy: Renderable? = null
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -55,6 +58,18 @@ class ModelNode(initProps: ReadableMap,
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for Model
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        val contentPosition = getContentPosition()
+        if (contentPosition.x in clipBounds.left..clipBounds.right
+                && contentPosition.y in clipBounds.bottom..clipBounds.top) {
+            if (contentNode.renderable == null) {
+                contentNode.renderable = renderableCopy
+            }
+        } else {
+            contentNode.renderable = null
+        }
     }
 
     private fun setModelPath(props: Bundle) {
@@ -87,7 +102,8 @@ class ModelNode(initProps: ReadableMap,
         if (modelUri != null) {
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {
-                    contentNode.renderable = result.renderable
+                    this.renderableCopy = result.renderable
+                    contentNode.renderable = renderableCopy
                 }
             }
         }

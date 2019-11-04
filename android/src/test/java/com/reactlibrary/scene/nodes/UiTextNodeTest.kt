@@ -26,7 +26,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -198,7 +197,6 @@ class UiTextNodeTest {
                 TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNodeWithViewSpy(props)
-        node.localScale = Vector3(2f, 2f, 1f)
         val expectedBounds = Bounding(0F, -0.4F, 0.8F, 0F)
 
         node.build()

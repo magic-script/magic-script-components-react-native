@@ -38,4 +38,8 @@ import SceneKit
         let sign: CGFloat = (dir.dot(dragAxis.direction) >= 0) ? 1 : -1
         return CGFloat(point.distance(beginPoint)) * sign
     }
+
+    func performDrag(by delta: CGFloat) {
+        draggedObject.dragValue = beginDragValue + delta / draggedObject.contentLength
+    }
 }

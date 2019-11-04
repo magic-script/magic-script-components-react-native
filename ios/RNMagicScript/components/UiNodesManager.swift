@@ -58,27 +58,17 @@ import SceneKit
 
     @objc public func handlePanAction(ray: Ray?, state: UIGestureRecognizer.State) {
         guard let ray = ray else { return }
-
         switch state {
         case .began:
             if let draggedNode = nodeSelector?.draggingHitTest(ray: ray) {
                 dragCalculator = DragGestureDeltaCalculator(draggedObject: draggedNode, ray: ray)
             }
         case .changed:
-            print("calculating delta...")
             if let calculator = dragCalculator {
                 let delta = calculator.calculateDelta(for: ray)
-                print("delta: \(delta)")
-                let obj = calculator.draggedObject
-                obj.dragValue = calculator.beginDragValue + delta / obj.contentLength
+                calculator.performDrag(by: delta)
             }
-        case .ended:
-            dragCalculator = nil
-        case .cancelled:
-            dragCalculator = nil
-        case .possible:
-            dragCalculator = nil
-        case .failed:
+        case .ended, .cancelled, .possible, .failed:
             dragCalculator = nil
         @unknown default:
             dragCalculator = nil

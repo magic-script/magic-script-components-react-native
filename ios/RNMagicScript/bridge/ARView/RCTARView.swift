@@ -140,6 +140,9 @@ import SceneKit
             view.gestureRecognizers?
                 .filter { $0 is UIPanGestureRecognizer }
                 .forEach{ $0.require(toFail: dragGestureRecognizer) }
+
+            // Allow tapping components that are embedded in scrollable content
+            dragGestureRecognizer.require(toFail: tapGestureRecognizer)
         }
 
         return view

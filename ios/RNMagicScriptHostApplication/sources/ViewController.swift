@@ -196,6 +196,7 @@ class ViewController: UIViewController {
             [0.75,0.75,0.25,alpha],
             [1,1,1,alpha]
         ]
+        let _: UiButtonNode = createComponent(["textSize": 0.1, "text": "Button"], nodeId: "button", parentId: linearId)
         colors.enumerated().forEach { (index, rgba) in
             let nodeId: String = "image_\(index)"
             let _: UiImageNode = createComponent(["skipRaycast": true, "color": rgba, "width": imageSize.width, "height": imageSize.height], nodeId: nodeId, parentId: linearId)

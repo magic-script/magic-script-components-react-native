@@ -25,8 +25,6 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.printProps
 import com.reactlibrary.utils.putDefaultDouble
 
 class UIWebViewNode(
@@ -67,8 +65,6 @@ class UIWebViewNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        printProps(props)
-
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
@@ -94,14 +90,10 @@ class UIWebViewNode(
         if (props.containsKey(PROP_ACTION)) {
             val action = props.getString(VideoNode.PROP_ACTION)
 
-            try {
-                when (action) {
-                    ACTION_BACK -> (view as WebView).goBack()
-                    ACTION_FORWARD -> (view as WebView).goForward()
-                    ACTION_RELOAD -> (view as WebView).reload()
-                }
-            } catch (e: Exception) {
-                logMessage("Error setting WebView action $action: $e", true)
+            when (action) {
+                ACTION_BACK -> (view as WebView).goBack()
+                ACTION_FORWARD -> (view as WebView).goForward()
+                ACTION_RELOAD -> (view as WebView).reload()
             }
         }
     }

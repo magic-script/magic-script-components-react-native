@@ -27,7 +27,7 @@ import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultDouble
 
-class UIWebViewNode(
+open class UIWebViewNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader
@@ -82,7 +82,7 @@ class UIWebViewNode(
 
     private fun setScrollBy(props: Bundle) {
         if (props.containsKey(PROP_SCROLL_BY)) {
-            (view as WebView).scrollBy(0, props.getInt(PROP_SCROLL_BY))
+            (view as WebView).scrollBy(0, props.getDouble(PROP_SCROLL_BY).toInt())
         }
     }
 

@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,8 +29,13 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
-import com.reactlibrary.utils.*
 import com.reactlibrary.utils.Utils.Companion.metersToPx
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.getSizeInMeters
+import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.putDefaultBoolean
+import java.lang.Float.max
+import java.lang.Float.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -52,7 +56,8 @@ abstract class UiNode(
     }
 
     /**
-     * Node width and height based on [view] size (in meters)
+     * Node width and height based on [view] size (in meters).
+     * It does not include the scale.
      *
      * Note that the size is known only after the node is built
      * (after all properties have been applied)
@@ -78,6 +83,12 @@ abstract class UiNode(
      * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
      */
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+
+    /**
+     * Set default clipping (all renderable visible).
+     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
+     */
+    private var materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
     init {
         // set default values of properties
@@ -145,27 +156,43 @@ abstract class UiNode(
         return Bounding(left, bottom, right, top)
     }
 
+    /*
+     * Setting clip bounds at a shader level (shader is contained inside material
+     * from which android_view.sfb is built)
+     *
+     * https://google.github.io/filament/Materials.md.html
+     * By default getPosition() returns NDC - Normalized Device Coordinates;
+     * for "vertexDomain" : object it means that coordinates are normalized relative
+     * to a model size (0 - 1), origin (0, 0) is at bottom-center.
+     */
     override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
         if (!clipNativeView) {
             return
         }
 
-        val pivot = getPivot()
-        // Translation to native view local coordinate system (with origin at top-left)
-        val translation = Vector2(
-                pivot.x - localPosition.x - contentNode.localPosition.x,
-                -pivot.y - localPosition.y - contentNode.localPosition.y
-        )
+        val nodeBounds = getBounding()
+        val sizeX = nodeBounds.size().x
+        val sizeY = nodeBounds.size().y
 
-        val localBounds = clipBounds.translate(translation)
-        view.clipBounds = Rect(
-                metersToPx(localBounds.left, context),
-                -metersToPx(localBounds.top, context),
-                metersToPx(localBounds.right, context),
-                -metersToPx(localBounds.bottom, context)
-        )
+        if (sizeX > 0) {
+            val offsetLeft = nodeBounds.left - clipBounds.left
+            materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
 
-        // Clipping content node collision shape.
+            val offsetRight = nodeBounds.right - clipBounds.right
+            materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
+        }
+
+        if (sizeY > 0) {
+            val offsetBottom = nodeBounds.bottom - clipBounds.bottom
+            materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+
+            val offsetTop = nodeBounds.top - clipBounds.top
+            materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+        }
+
+        applyMaterialClipping()
+
+        // TODO Clipping content node collision shape (for click events)
         /*
         val contentNodePosition = Vector2(
                 -localPosition.x - contentNode.localPosition.x,
@@ -217,13 +244,13 @@ abstract class UiNode(
         val widthPx = if (width == WRAP_CONTENT_DIMENSION) {
             ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
-            Utils.metersToPx(width, context)
+            metersToPx(width, context)
         }
 
         val heightPx = if (height == WRAP_CONTENT_DIMENSION) {
             ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
-            Utils.metersToPx(height, context)
+            metersToPx(height, context)
         }
         // we have to set layout params before attaching view to the node
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
@@ -274,6 +301,7 @@ abstract class UiNode(
         viewRenderableLoader.loadRenderable(config) { result ->
             if (result is RenderableResult.Success) {
                 contentNode.renderable = result.renderable
+                applyMaterialClipping()
             }
             loadingView = false
         }
@@ -311,5 +339,14 @@ abstract class UiNode(
         return Vector2(
                 size.x * (0.5F + horizontalAlignment.centerOffset),
                 size.y * (0.5F - verticalAlignment.centerOffset))
+    }
+
+    private fun applyMaterialClipping() {
+        contentNode.renderable?.material?.apply {
+            setFloat("left", materialClip.left)
+            setFloat("right", materialClip.right)
+            setFloat("top", materialClip.top)
+            setFloat("bottom", materialClip.bottom)
+        }
     }
 }

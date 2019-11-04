@@ -195,6 +195,9 @@ abstract class TransformNode(
         return Vector2(position.x, position.y)
     }
 
+    /**
+     * Should hide this part of node that is outside [clipBounds]
+     */
     open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}
 
     override fun onUpdate(frameTime: FrameTime) {

@@ -27,7 +27,7 @@ import SceneKit
     fileprivate var nodesById: [String: TransformNode]
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
-    fileprivate var nodeSelector: UiNodeSelector?
+    fileprivate(set) var nodeSelector: UiNodeSelector!
 
     init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
         self.rootNode = rootNode

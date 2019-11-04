@@ -90,7 +90,7 @@ RCT_EXPORT_MODULE();
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
+            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"ScrollValue": @(value) }];
         });
     }
 }

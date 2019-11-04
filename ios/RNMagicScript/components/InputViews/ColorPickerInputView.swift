@@ -67,7 +67,7 @@ class ColorPickerInputView: UIView {
         let neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
         neatColorPicker.delegate = self //ChromaColorPickerDelegate
         neatColorPicker.padding = 1
-        neatColorPicker.stroke = 1
+        neatColorPicker.stroke = 10
         neatColorPicker.hexLabel.textColor = UIColor.black
         neatColorPicker.translatesAutoresizingMaskIntoConstraints = false
         addSubview(neatColorPicker)

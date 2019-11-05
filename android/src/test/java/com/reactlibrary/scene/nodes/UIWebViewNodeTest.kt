@@ -35,7 +35,7 @@ class UIWebViewNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         containerSpy = spy(WebView(context))
-        tested = createNodeWithViewSpy(context = context)
+        tested = createNodeWithViewSpy()
     }
 
     @Test
@@ -50,7 +50,7 @@ class UIWebViewNodeTest {
         val testedWith = 3.0
         val props = JavaOnlyMap.of(PROP_HEIGHT, testedHeight, PROP_WIDTH, testedWith)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
 
         tested.getProperty(PROP_HEIGHT) shouldEqual testedHeight
         tested.getProperty(PROP_WIDTH) shouldEqual testedWith
@@ -61,7 +61,7 @@ class UIWebViewNodeTest {
         val url = "https://asasd.dsa"
         val props = JavaOnlyMap.of(PROP_URL, url)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
         tested.build()
 
         verify(containerSpy).loadUrl(eq(url))
@@ -71,7 +71,7 @@ class UIWebViewNodeTest {
     fun `should reload page`() {
         val props = JavaOnlyMap.of(PROP_ACTION, ACTION_RELOAD)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
         tested.build()
 
         verify(containerSpy).reload()
@@ -81,7 +81,7 @@ class UIWebViewNodeTest {
     fun `should forward page`() {
         val props = JavaOnlyMap.of(PROP_ACTION, ACTION_FORWARD)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
         tested.build()
 
         verify(containerSpy).goForward()
@@ -91,7 +91,7 @@ class UIWebViewNodeTest {
     fun `should go back on the page`() {
         val props = JavaOnlyMap.of(PROP_ACTION, ACTION_BACK)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
         tested.build()
 
         verify(containerSpy).goBack()
@@ -102,14 +102,14 @@ class UIWebViewNodeTest {
         val scrollBy = 15.0
         val props = JavaOnlyMap.of(PROP_SCROLL_BY, scrollBy)
 
-        tested = createNodeWithViewSpy(props, context)
+        tested = createNodeWithViewSpy(props)
         tested.build()
 
         verify(containerSpy).scrollBy(eq(0), eq(scrollBy.toInt()    ))
     }
 
 
-    fun createNodeWithViewSpy(props: ReadableMap = JavaOnlyMap(), context: Context): UIWebViewNode {
+    fun createNodeWithViewSpy(props: ReadableMap = JavaOnlyMap()): UIWebViewNode {
         return object : UIWebViewNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy

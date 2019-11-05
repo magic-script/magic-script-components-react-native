@@ -22,6 +22,7 @@ import TimePickerBuilder from './elements/builders/time-picker-builder.js';
 import ToggleBuilder from './elements/builders/toggle-builder.js';
 import VideoBuilder from './elements/builders/video-builder.js';
 import WebViewBuilder from './elements/builders/webview-builder.js';
+import ColorPickerBuilder from './elements/builders/color-picker-builder.js';
 
 export default {
   version: '1.0',
@@ -46,6 +47,7 @@ export default {
     'timePicker': (componentManager) => new TimePickerBuilder(componentManager),
     'toggle': (componentManager) => new ToggleBuilder(componentManager),
     'view': (componentManager) => new GroupBuilder(componentManager),
+    'colorPicker': (componentManager) => new ColorPickerBuilder(componentManager),
 
     // layouts
     'gridLayout': (componentManager) => new GridLayoutBuilder(componentManager),

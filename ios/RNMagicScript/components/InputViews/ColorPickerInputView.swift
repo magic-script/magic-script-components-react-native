@@ -19,7 +19,15 @@ import UIKit
 import ChromaColorPicker
 
 class ColorPickerInputView: UIView {
-    var pickerData: ColorPickerDataProviding?
+    var pickerData: ColorPickerDataProviding? {
+        didSet {
+            if let selectedColor = pickerData?.colorPickerValue {
+                neatColorPicker.adjustToColor(selectedColor)
+            }
+        }
+    }
+
+    fileprivate var neatColorPicker: ChromaColorPicker!
 
     var onFinish: (() -> (Void))?
 
@@ -64,7 +72,7 @@ class ColorPickerInputView: UIView {
             cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
         ])
 
-        let neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
         neatColorPicker.delegate = self //ChromaColorPickerDelegate
         neatColorPicker.padding = 1
         neatColorPicker.stroke = 10

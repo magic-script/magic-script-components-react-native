@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
+import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -16,7 +17,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(context)
+    private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {

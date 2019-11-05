@@ -28,8 +28,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 24 | Dialog | UiDialog | 👍 | 4 D | 3 D |
 25 | Tab | UiTab | 👍 | ? | 3 D |
 26 | PageView | UiPageView | 👍 | ? | 2.5 D |
-27 | WebView | UiWebView | 👍 | 3 D | 3 D |
-28 | ColorPicker | UiColorPicker | 👍 | 👍 | 4 D |
+27 | WebView | UiWebView | 👍 | 3 D | 👍|
+28 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 |
 29 | TimePicker | UiTimePicker | 👍 | 👍 | 4 D |
 30 | DatePicker | UiDatePicker | 👍 | 👍 | 4 D |
 31 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

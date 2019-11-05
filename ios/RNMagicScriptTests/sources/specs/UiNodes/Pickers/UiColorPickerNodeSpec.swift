@@ -51,7 +51,7 @@ class UiColorPickerNodeSpec: QuickSpec {
                     let referenceColor = UIColor(white: 0.5, alpha: 0.5)
                     node.update(["color" : referenceColor.toArrayOfFloat])
                     expect(node.color).to(beCloseTo(referenceColor))
-                    expect(node.isLayoutNeeded).to(beFalse())
+                    expect(node.isLayoutNeeded).to(beTrue())
                 }
 
             }

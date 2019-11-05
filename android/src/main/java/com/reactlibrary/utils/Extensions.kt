@@ -152,10 +152,6 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     return Vector2(width, height)
 }
 
-fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
-    return Utils.rotateVector(this, quaternion)
-}
-
 fun Int.toJsColorArray(): Array<Double> {
     val red = Color.red(this).toDouble() / 255
     val green = Color.green(this).toDouble() / 255

@@ -138,15 +138,16 @@ class UiScrollViewNode(
         this.content = child
         view.onDrawListener {
             if (scrollRequested) {
-                val viewBounds = getScrollBounds()
-                val clipBounds = viewBounds.translate(-getContentPosition())
-                content!!.setClipBounds(clipBounds, clipNativeView = false)
-
-                content!!.localPosition = Vector3(
-                        requestedContentPosition.x,
-                        requestedContentPosition.y,
-                        Z_ORDER_OFFSET  // Moving content up in z-plane, so it'll receive touch events first.
-                )
+                content?.let { content ->
+                    val viewBounds = getScrollBounds()
+                    val clipBounds = viewBounds.translate(-getContentPosition())
+                    content.setClipBounds(clipBounds, clipNativeView = false)
+                    content.localPosition = Vector3(
+                            requestedContentPosition.x,
+                            requestedContentPosition.y,
+                            Z_ORDER_OFFSET  // Moving content up in z-plane, so it'll receive touch events first.
+                    )
+                }
                 scrollRequested = false
             }
         }
@@ -215,8 +216,8 @@ class UiScrollViewNode(
 
     private fun layoutLoop() {
         looperHandler.postDelayed({
-            if (content != null) {
-                val newBounds = content!!.getContentBounding()
+            content?.let { it ->
+                val newBounds = it.getContentBounding()
                 if (!Bounding.equalInexact(contentBounds, newBounds)) {
                     val scrollView = (view as CustomScrollView)
                     contentBounds = newBounds
@@ -227,39 +228,37 @@ class UiScrollViewNode(
                     update(scrollView.position, true)
                 }
             }
-
             layoutLoop()
         }, LAYOUT_LOOP_DELAY)
     }
 
     private fun update(viewPosition: Vector2, forceUpdate: Boolean = false) {
-        if (content == null) {
-            return
+        content?.let { content ->
+            if (scrollRequested && !forceUpdate) {
+                return
+            }
+
+            val contentBounds = content.getContentBounding()
+            val viewBounds = getScrollBounds()
+            val alignTopLeft = Vector2(
+                    viewBounds.left - contentBounds.left,
+                    viewBounds.top - contentBounds.top)
+
+            val contentSize = contentBounds.size()
+            val viewSize = viewBounds.size()
+            val possibleTravel = (contentSize - viewSize).coerceAtLeast(0F)
+            val travel = Vector2(
+                    -possibleTravel.x * viewPosition.x,
+                    possibleTravel.y * viewPosition.y)
+
+            requestedContentPosition = alignTopLeft + travel
+
+            val clipBounds = viewBounds.translate(-getContentPosition())
+            content.setClipBounds(clipBounds, clipNativeView = true)
+            view.invalidate()
+
+            scrollRequested = true
         }
-        if (scrollRequested && !forceUpdate) {
-            return
-        }
-
-        val contentBounds = content!!.getContentBounding()
-        val viewBounds = getScrollBounds()
-        val alignTopLeft = Vector2(
-                viewBounds.left - contentBounds.left,
-                viewBounds.top - contentBounds.top)
-
-        val contentSize = contentBounds.size()
-        val viewSize = viewBounds.size()
-        val possibleTravel = (contentSize - viewSize).coerceAtLeast(0F)
-        val travel = Vector2(
-                -possibleTravel.x * viewPosition.x,
-                possibleTravel.y * viewPosition.y)
-
-        requestedContentPosition = alignTopLeft + travel
-
-        val clipBounds = viewBounds.translate(-getContentPosition())
-        content!!.setClipBounds(clipBounds, clipNativeView = true)
-        view.invalidate()
-
-        scrollRequested = true
     }
 
     private fun getScrollBounds(): Bounding {

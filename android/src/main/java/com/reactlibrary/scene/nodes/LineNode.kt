@@ -120,7 +120,6 @@ class LineNode(initProps: ReadableMap,
     }
 
     private fun clipLineSegment(start: Vector3, end: Vector3, clipBox: BoundingBox): Pair<Vector3, Vector3>? {
-
         var collisions = 0
         val hit = RayHit()
 

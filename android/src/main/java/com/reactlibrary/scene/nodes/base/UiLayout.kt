@@ -99,6 +99,13 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         redrawRequested = true
     }
 
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        val localBounds = clipBounds.translate(-getContentPosition())
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.setClipBounds(localBounds, clipNativeView) }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
@@ -154,16 +161,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        val localBounds = clipBounds.translate(-getContentPosition())
-        for (i in 0 until contentNode.children.size) {
-            val child = contentNode.children[i]
-            if (child is TransformNode) {
-                child.setClipBounds(localBounds, clipNativeView)
-            }
-        }
-    }
-
     private fun rescaleChildren(nodes: List<Node>) {
         for (i in 0 until nodes.size) {
             val node = nodes[i]
@@ -192,6 +189,4 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-
 }
-

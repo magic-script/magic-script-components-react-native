@@ -87,7 +87,7 @@ abstract class UiNode(
      * Set default clipping (all renderable visible).
      * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
      */
-    private var materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+    private var materialClipBounding = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
     init {
         // set default values of properties
@@ -170,7 +170,7 @@ abstract class UiNode(
         }
 
         // clipping a texture
-        materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
+        materialClipBounding = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
 
         // clipping collision shape (regarding click events)
@@ -321,7 +321,7 @@ abstract class UiNode(
 
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
-            Utils.applyMaterialClipping(material, materialClip)
+            Utils.applyMaterialClipping(material, materialClipBounding)
         }
     }
 

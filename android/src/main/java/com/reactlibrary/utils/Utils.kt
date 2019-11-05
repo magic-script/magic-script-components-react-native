@@ -46,6 +46,11 @@ class Utils {
         // 160dpi is the "baseline" density
         const val BASELINE_DENSITY = 160F
 
+        private const val CLIP_LEFT_PARAM = "left"
+        private const val CLIP_RIGHT_PARAM = "right"
+        private const val CLIP_TOP_PARAM = "top"
+        private const val CLIP_BOTTOM_PARAM = "bottom"
+
         /**
          *  Converts ARCore's meters to pixels
          *  (Uses an average of horizontal and vertical density -
@@ -195,10 +200,10 @@ class Utils {
          */
         fun applyMaterialClipping(material: Material, materialClip: Bounding) {
             material.apply {
-                setFloat("left", materialClip.left)
-                setFloat("right", materialClip.right)
-                setFloat("top", materialClip.top)
-                setFloat("bottom", materialClip.bottom)
+                setFloat(CLIP_LEFT_PARAM, materialClip.left)
+                setFloat(CLIP_RIGHT_PARAM, materialClip.right)
+                setFloat(CLIP_TOP_PARAM, materialClip.top)
+                setFloat(CLIP_BOTTOM_PARAM, materialClip.bottom)
             }
         }
 

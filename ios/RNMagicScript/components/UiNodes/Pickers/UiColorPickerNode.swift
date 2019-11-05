@@ -17,13 +17,13 @@
 import SceneKit
 
 @objc open class UiColorPickerNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.065
-    static fileprivate let defaultLabelGap: CGFloat = 0.015
+    static fileprivate let defaultTextSize: CGFloat = 0.055
+    static fileprivate let defaultLabelGap: CGFloat = 0.095
 
     fileprivate var _startingColor: UIColor = .white
     @objc var startingColor: UIColor {
         get { return _startingColor }
-        set { _startingColor = newValue }
+        set { _startingColor = newValue; updateHEXValue() }
     }
 
     fileprivate var _color: UIColor? = nil
@@ -37,7 +37,7 @@ import SceneKit
             if let colorBlockGeometry = colorBlockNode.geometry as? SCNPlane {
                 colorBlockGeometry.firstMaterial?.diffuse.contents = color
             }
-            labelNode.text = "#" + color.hexCode
+            updateHEXValue()
             setNeedsLayout()
             layoutIfNeeded()
         }
@@ -89,7 +89,7 @@ import SceneKit
         alignment = Alignment.centerCenter
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-        labelNode.text = "#" + color.hexCode
+        updateHEXValue()
         labelNode.textAlignment = .center
         labelNode.defaultTextSize = UiColorPickerNode.defaultTextSize
         labelNode.reload()
@@ -122,11 +122,15 @@ import SceneKit
         }
     }
 
+    fileprivate func updateHEXValue() {
+        labelNode.text = "#" + color.hexCode
+    }
+
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let colorBlockSize = CGSize(width: labelSize.height * 2, height: labelSize.height)
         let buttonToTextHeightMultiplier: CGFloat = 2.3
-        let contentWidth: CGFloat = labelSize.width + colorBlockSize.width + UiColorPickerNode.defaultLabelGap + (buttonToTextHeightMultiplier * labelSize.height)
+        let contentWidth: CGFloat = labelSize.width + colorBlockSize.width + (buttonToTextHeightMultiplier * labelSize.height)
         let contentHeight: CGFloat = buttonToTextHeightMultiplier * labelSize.height
         return CGSize(width: contentWidth, height: contentHeight)
     }
@@ -143,8 +147,8 @@ import SceneKit
             colorBlockGeometry.width = labelNode.getSize().height * 2
         }
 
-        labelNode.position = SCNVector3(0.5 * (size.width - labelNodeSize.width) - gap, 0.0, 0.0)
-        colorBlockNode.position = SCNVector3(-0.5 * (size.width - labelNodeSize.height * 2) + gap, 0.0, 0.0)
+        labelNode.position = SCNVector3(0.5 * (size.width - labelNodeSize.width - gap), 0.0, 0.0)
+        colorBlockNode.position = SCNVector3(-0.5 * (size.width - (labelNodeSize.height * 2) - gap), 0.0, 0.0)
 
         reloadOutlineNode()
     }

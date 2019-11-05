@@ -62,10 +62,6 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         return view as CustomScrollBar
     }
 
-    override fun disallowInterceptTouchEvent(): Boolean {
-        return true
-    }
-
     override fun provideView(context: Context): View {
         return CustomScrollBar(context)
     }
@@ -86,6 +82,10 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
         setThumbPosition(props)
         setThumbSize(props)
         setOrientation(props)
+    }
+
+    override fun disallowInterceptTouchEvent(): Boolean {
+        return true
     }
 
     private fun setThumbPosition(props: Bundle) {

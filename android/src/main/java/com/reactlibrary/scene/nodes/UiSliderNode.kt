@@ -54,10 +54,6 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
         }
     }
 
-    override fun disallowInterceptTouchEvent(): Boolean {
-        return true
-    }
-
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.slider, null)
     }
@@ -78,6 +74,10 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
         setValue(props)
         setMin(props)
         setMax(props)
+    }
+
+    override fun disallowInterceptTouchEvent(): Boolean {
+        return true
     }
 
     override fun setAlignment(props: Bundle) {

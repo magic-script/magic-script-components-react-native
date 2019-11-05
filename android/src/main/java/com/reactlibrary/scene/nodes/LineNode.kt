@@ -50,8 +50,8 @@ class LineNode(initProps: ReadableMap,
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
-    var linesBounding = Bounding()
-    var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
+    private var linesBounding = Bounding()
+    private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -69,6 +69,28 @@ class LineNode(initProps: ReadableMap,
     override fun loadRenderable() {
         drawLines(clipBox)
         updateLinesBounding()
+    }
+
+
+    override fun getContentBounding(): Bounding {
+        return Bounding(
+                linesBounding.left + contentNode.localPosition.x,
+                linesBounding.bottom + contentNode.localPosition.y,
+                linesBounding.right + contentNode.localPosition.x,
+                linesBounding.top + contentNode.localPosition.y
+        )
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        if (clipNativeView) {
+            return
+        }
+        val localBounds = clipBounds.translate(-getContentPosition())
+
+        val center = localBounds.center().toVector3()
+        val size = localBounds.size().toVector3()
+        clipBox = BoundingBox(size, center)
+        drawLines(clipBox)
     }
 
     override fun setAlignment(props: Bundle) {
@@ -146,7 +168,6 @@ class LineNode(initProps: ReadableMap,
     // Even if it didn't, we still want to cache content bounding,
     // because clipping changes content size.
     private fun updateLinesBounding() {
-
         val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
         linesBounding = if (points.isEmpty()) {
             Bounding()
@@ -160,26 +181,5 @@ class LineNode(initProps: ReadableMap,
             linesBounding.top = max(linesBounding.top, p.y)
             linesBounding.bottom = min(linesBounding.bottom, p.y)
         }
-    }
-
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        if (clipNativeView) {
-            return
-        }
-        val localBounds = clipBounds.translate(-getContentPosition())
-
-        val center = localBounds.center().toVector3()
-        val size = localBounds.size().toVector3()
-        clipBox = BoundingBox(size, center)
-        drawLines(clipBox)
-    }
-
-    override fun getContentBounding(): Bounding {
-        return Bounding(
-                linesBounding.left + contentNode.localPosition.x,
-                linesBounding.bottom + contentNode.localPosition.y,
-                linesBounding.right + contentNode.localPosition.x,
-                linesBounding.top + contentNode.localPosition.y
-        )
     }
 }

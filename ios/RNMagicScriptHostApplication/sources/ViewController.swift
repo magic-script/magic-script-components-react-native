@@ -34,7 +34,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setupARView()
-        setupScrollViewTest()
 //        setupScrollViewTest()
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
@@ -76,7 +75,7 @@ class ViewController: UIViewController {
     fileprivate let contentSize: CGFloat = 0.5
     fileprivate func setupUiColorPickerNodeTest() {
         let uiColorPickerNodeId: String = "uiColorPickerNodeId"
-        let uiColorPickerNode: UiColorPickerNode = createComponent([:], nodeId: uiColorPickerNodeId)
+        let uiColorPickerNode: UiColorPickerNode = createComponent(["color": [0.95, 0.85, 0.75, 1]], nodeId: uiColorPickerNodeId)
         uiColorPickerNode.position = SCNVector3(0.0, 0.250, 0.0)
 
         uiColorPickerNode.onColorChanged = { sender, value in

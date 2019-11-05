@@ -39,12 +39,12 @@ import SceneKit
             }
             updateHEXValue()
             setNeedsLayout()
-            layoutIfNeeded()
         }
     }
 
     @objc var height: CGFloat = 0
 
+    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onColorChanged: ((_ sender: UiColorPickerNode, _ selected: [CGFloat]) -> (Void))?
     @objc public var onConfirm: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
     @objc public var onCancel: ((_ sender: UiColorPickerNode) -> (Void))?
@@ -69,18 +69,6 @@ import SceneKit
         guard hasFocus else { return }
 
         simulateTap()
-    }
-
-    @objc func simulateTap() {
-        assert(enabled, "Button must be enabled in order to tap it!")
-        let initialPosition = contentNode.position
-        let animation = CABasicAnimation(keyPath: "position.z")
-        animation.fromValue = initialPosition.z
-        animation.toValue = initialPosition.z - 0.05
-        animation.duration = 0.1
-        animation.autoreverses = true
-        animation.repeatCount = 1
-        contentNode.addAnimation(animation, forKey: "colorPicker_tap")
     }
 
     @objc override func setupNode() {
@@ -143,8 +131,8 @@ import SceneKit
 
         if let colorBlockGeometry = colorBlockNode.geometry as? SCNPlane {
             colorBlockGeometry.firstMaterial?.diffuse.contents = color
-            colorBlockGeometry.height = labelNode.getSize().height
-            colorBlockGeometry.width = labelNode.getSize().height * 2
+            colorBlockGeometry.height = labelNodeSize.height
+            colorBlockGeometry.width = labelNodeSize.height * 2
         }
 
         labelNode.position = SCNVector3(0.5 * (size.width - labelNodeSize.width - gap), 0.0, 0.0)
@@ -175,6 +163,8 @@ import SceneKit
     }
 }
 
+extension UiColorPickerNode: TapSimulating { }
+
 extension UiColorPickerNode: ColorPickerDataProviding {
     var colorPickerValue: UIColor {
         get { return self.color }
@@ -182,6 +172,7 @@ extension UiColorPickerNode: ColorPickerDataProviding {
             if self.color != newValue {
                 self.color = newValue
                 onColorChanged?(self, [])
+                layoutIfNeeded()
             }
         }
     }

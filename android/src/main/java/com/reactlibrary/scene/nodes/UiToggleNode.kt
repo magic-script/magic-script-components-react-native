@@ -111,10 +111,9 @@ open class UiToggleNode(initProps: ReadableMap,
     override fun applyAlignment() {
         // hardcoding the "pivot" point at the center of switch;
         // alignment cannot be changed for toggle according to Lumin implementation
-        val bounds = getBounding()
-        val nodeWidth = bounds.right - bounds.left
-        val boundsCenterX = bounds.left + nodeWidth / 2
-        val pivotOffsetX = localPosition.x - boundsCenterX // aligning according to center
+        val bounds = getContentBounding()
+        val nodeWidth = bounds.size().x
+        val pivotOffsetX = -bounds.center().x // aligning according to center
 
         val switchHeight = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         val switchWidth = switchHeight * SWITCH_WIDTH_TO_HEIGHT_RATIO

@@ -25,10 +25,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.rotatedBy
+import com.reactlibrary.utils.*
 
 /**
  * Base node.
@@ -102,6 +99,39 @@ abstract class TransformNode(
     }
 
     /**
+     * Builds the node by calling [applyProperties] with all initial properties
+     */
+    open fun build() {
+        applyProperties(properties)
+    }
+
+    /**
+     * Attaches a renderable (view, model) to the node
+     * Must be called after the ARCore resources have been initialized
+     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
+     */
+    fun attachRenderable() {
+        loadRenderable()
+        renderableRequested = true
+    }
+
+    /**
+     * Updates properties of the node.
+     * Should be called after [build]
+     *
+     * @param props properties to change or new properties to apply
+     */
+    fun update(props: ReadableMap) {
+        updatingProperties = true
+        val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
+        this.properties.putAll(propsToUpdate) // save new props
+
+        logMessage("updating properties: $propsToUpdate")
+        applyProperties(propsToUpdate)
+        updatingProperties = false
+    }
+
+    /**
      * Adds [child] to [contentNode]
      *
      * To manage alignment correctly, we should use this method instead of
@@ -141,41 +171,8 @@ abstract class TransformNode(
      * Should return 2D bounding of the [contentNode] (relative to
      * the parent node position).
      */
-    protected open fun getContentBounding(): Bounding {
+    open fun getContentBounding(): Bounding {
         return Utils.calculateBoundsOfNode(contentNode)
-    }
-
-    /**
-     * Builds the node by calling [applyProperties] with all initial properties
-     */
-    open fun build() {
-        applyProperties(properties)
-    }
-
-    /**
-     * Attaches a renderable (view, model) to the node
-     * Must be called after the ARCore resources have been initialized
-     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
-     */
-    fun attachRenderable() {
-        loadRenderable()
-        renderableRequested = true
-    }
-
-    /**
-     * Updates properties of the node.
-     * Should be called after [build]
-     *
-     * @param props properties to change or new properties to apply
-     */
-    fun update(props: ReadableMap) {
-        updatingProperties = true
-        val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
-        this.properties.putAll(propsToUpdate) // save new props
-
-        logMessage("updating properties: $propsToUpdate")
-        applyProperties(propsToUpdate)
-        updatingProperties = false
     }
 
     /**
@@ -189,6 +186,19 @@ abstract class TransformNode(
      * Should clear all node's resources (if any)
      */
     open fun onDestroy() {}
+
+    /**
+     * Should return position of the content (relative to this node's parent)
+     */
+    open fun getContentPosition(): Vector2 {
+        val position = localPosition + contentNode.localPosition
+        return Vector2(position.x, position.y)
+    }
+
+    /**
+     * Should hide this part of node that is outside [clipBounds]
+     */
+    open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

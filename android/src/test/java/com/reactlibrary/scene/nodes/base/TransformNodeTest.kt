@@ -202,6 +202,23 @@ class TransformNodeTest {
     }
 
     @Test
+    fun `should return proper content position`() {
+        val localPosition = JavaOnlyArray.of(5.0, 3.0, 0.0)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, localPosition,
+                TransformNode.PROP_ALIGNMENT, "bottom-right"
+        )
+        val bounds = Bounding(-2F, -1F, 2F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+
+        val contentPosition = node.getContentPosition()
+
+        assertEquals(3f, contentPosition.x, eps)
+        assertEquals(4f, contentPosition.y, eps)
+    }
+
+    @Test
     fun `children should be added to content node`() {
         val node = createNode(JavaOnlyMap())
         val child1 = Node()

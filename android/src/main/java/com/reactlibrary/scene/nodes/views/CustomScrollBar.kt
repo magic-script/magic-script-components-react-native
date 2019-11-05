@@ -137,9 +137,9 @@ class CustomScrollBar @JvmOverloads constructor(
 
     private fun getTouchPos(event: MotionEvent): Float {
         return if (isVertical) {
-            event.getY()
+            event.y
         } else {
-            event.getX()
+            event.x
         }
     }
 

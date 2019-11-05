@@ -47,4 +47,5 @@ public class ArPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(@NotNull ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(new ArViewManager());
     }
+
 }

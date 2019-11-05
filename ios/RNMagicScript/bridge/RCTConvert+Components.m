@@ -103,5 +103,8 @@
     return [[UiTimePickerNode alloc] initWithProps: json];
 }
 
-@end
++ (UiColorPickerNode *)UiColorPickerNode:(id)json {
+    return [[UiColorPickerNode alloc] initWithProps: json];
+}
 
+@end

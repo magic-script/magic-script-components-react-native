@@ -17,5 +17,4 @@
 #import <React/RCTBridgeModule.h>
 
 @interface ARComponentManager : NSObject <RCTBridgeModule>
-
 @end

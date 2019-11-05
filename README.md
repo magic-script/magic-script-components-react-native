@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/magic-script/magic-script-components-react-native/branch/master/graph/badge.svg)](https://codecov.io/gh/magic-script-components-react-native)
+[![codecov](https://codecov.io/gh/magic-script/magic-script-components-react-native/branch/master/graph/badge.svg?token=gZKfulNJa4)](https://codecov.io/gh/magic-script/magic-script-components-react-native)
 [![JSX_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20JavaScript/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)
 [![Android_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20Android/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)
 [![iOS_CI](https://github.com/magic-script/magic-script-components-react-native/workflows/Unit%20tests%20iOS/badge.svg)](https://github.com/magic-script/magic-script-components-react-native/actions)

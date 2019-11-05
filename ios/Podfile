@@ -5,6 +5,7 @@ target 'RNMagicScriptHostApplication' do
 
   pod 'GLTFSceneKit'
   pod 'GrowingTextView', '0.7.1'
+  pod 'ChromaColorPicker'
 
   target 'RNMagicScriptTests' do
     inherit! :search_paths

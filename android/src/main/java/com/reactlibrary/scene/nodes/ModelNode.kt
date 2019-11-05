@@ -44,6 +44,7 @@ class ModelNode(initProps: ReadableMap,
     // localScale without importScale correction
     private var scale = localScale
     private var renderableCopy: Renderable? = null
+    private var hidden = false
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -67,8 +68,10 @@ class ModelNode(initProps: ReadableMap,
             if (contentNode.renderable == null) {
                 contentNode.renderable = renderableCopy
             }
+            hidden = false
         } else {
             contentNode.renderable = null
+            hidden = true
         }
     }
 
@@ -103,7 +106,9 @@ class ModelNode(initProps: ReadableMap,
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {
                     this.renderableCopy = result.renderable
-                    contentNode.renderable = renderableCopy
+                    if (!hidden) { // model can be (re)loaded after setting clip bounds
+                        contentNode.renderable = renderableCopy
+                    }
                 }
             }
         }

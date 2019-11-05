@@ -260,7 +260,6 @@ abstract class UiNode(
         viewWrapper = ViewWrapper(context, this)
         this.view = provideView(context)
         this.view.setOnClickListener {
-            logMessage("view clicked")
             onViewClick()
             clickListener?.invoke()
         }

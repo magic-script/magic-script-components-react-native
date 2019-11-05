@@ -117,11 +117,6 @@ import SceneKit
         view.pointOfView?.camera?.zNear = 0.001
         view.pointOfView?.camera?.zFar = 10
 
-        // Add gesture recognizer
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
-        addGestureRecognizer(tapGestureRecognizer)
-
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
@@ -129,6 +124,22 @@ import SceneKit
         }
         UiNodesManager.instance.onInputUnfocused = { [weak self] in
             self?.dismissInput()
+        }
+
+        // Add gesture recognizers
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
+        tapGestureRecognizer.numberOfTapsRequired = 1
+        addGestureRecognizer(tapGestureRecognizer)
+
+        if let cameraNode = view.pointOfView {
+            let dragGestureRecognizer = DragGestureRecognizer(cameraNode: cameraNode, nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
+            addGestureRecognizer(dragGestureRecognizer)
+
+            // Set dependencies between drag gesture and debug camera pan gesture
+            // so that both gestures can be used in debug mode.
+            view.gestureRecognizers?
+                .filter { $0 is UIPanGestureRecognizer }
+                .forEach{ $0.require(toFail: dragGestureRecognizer) }
         }
 
         return view
@@ -199,9 +210,15 @@ extension RCTARView {
 
         if let node = rayCastNode {
             node.position = ray.begin
-            node.orientAlong(ray.direction)
+            node.orientUpVectorAlong(ray.direction)
             node.scale = SCNVector3(1, ray.length, 1)
         }
     #endif
+    }
+
+    @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
+        if sender.state == UIGestureRecognizer.State.changed {
+            sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
+        }
     }
 }

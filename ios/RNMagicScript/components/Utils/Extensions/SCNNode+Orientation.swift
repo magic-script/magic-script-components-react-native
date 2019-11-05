@@ -17,7 +17,7 @@
 import SceneKit
 
 extension SCNNode {
-    func orientAlong(_ vector: SCNVector3) {
+    func orientUpVectorAlong(_ vector: SCNVector3) {
         let up = SCNVector3(0, 1, 0)
         let rotationAxis: SCNVector3 = vector.cross(up).normalized()
         let angle: Float = -vector.angleToVector(up)

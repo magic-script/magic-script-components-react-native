@@ -26,8 +26,17 @@ import SceneKit
     @objc var scrollOffset: SCNVector3 = SCNVector3() {
         didSet { setNeedsLayout() }
     }
-    @objc var scrollValue: CGFloat = 0 {
-        didSet { scrollBar?.thumbPosition = scrollValue; setNeedsLayout() }
+    fileprivate var _scrollValue: CGFloat = 0
+    @objc var scrollValue: CGFloat {
+        get { return _scrollValue }
+        set {
+            let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
+            if (_scrollValue != clampedValue) {
+                _scrollValue = clampedValue
+                scrollBar?.thumbPosition = clampedValue
+                setNeedsLayout()
+            }
+        }
     }
     //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
@@ -65,7 +74,7 @@ import SceneKit
             }
         }
 
-        return nil
+        return self
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -133,45 +142,50 @@ import SceneKit
         return CGSize(width: width, height: height)
     }
 
+    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+        guard let scrollBounds = scrollBounds else { return CGRect.zero }
+        let min = scrollBounds.min
+        let max = scrollBounds.max
+        return CGRect(x: CGFloat(min.x), y: CGFloat(min.y), width: CGFloat(max.x - min.x), height: CGFloat(max.y - min.y))
+    }
+
     @objc override func updateLayout() {
         guard let scrollBounds = scrollBounds else { return }
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
-        let edgeInsets = UIEdgeInsets(top: CGFloat(scrollBounds.max.y), left: CGFloat(scrollBounds.min.x), bottom: CGFloat(scrollBounds.min.y), right: CGFloat(scrollBounds.max.x))
-        let scrollSize = CGSize(width: edgeInsets.right - edgeInsets.left, height: edgeInsets.top - edgeInsets.bottom)
+        let bounds = getBounds()
+        let scrollSize = bounds.size
         let contentSize: CGSize
         if let scrollContent = scrollContent {
+            contentSize = scrollContent.getSize()
 
             let contentPositionNegated = scrollContent.position.negated()
-            contentSize = scrollContent.getSize()
             var offset = CGPoint(
                 x: 0.5 * (contentSize.width - scrollSize.width),
                 y: 0.5 * (contentSize.height - scrollSize.height)
             )
 
-            if let uiNode = scrollContent as? UiNode {
-                let alignOffset = uiNode.alignment.shiftDirection
-                offset.x -= alignOffset.x * contentSize.width
-                offset.y -= alignOffset.y * contentSize.width
-            }
+//            if let uiNode = scrollContent as? UiNode {
+//                let alignOffset = uiNode.alignment.shiftDirection
+//                offset.x -= alignOffset.x * contentSize.width
+//                offset.y -= alignOffset.y * contentSize.height
+//            }
             proxyNode.position = contentPositionNegated + SCNVector3(offset.x, offset.y, 0)
         } else {
             contentSize = CGSize.zero
             proxyNode.position = SCNVector3Zero
         }
 
-        if let scrollBar = scrollBar {
-            var shift: CGPoint = CGPoint.zero
-            switch scrollBar.scrollOrientation {
-            case .horizontal:
-                shift.x = scrollBar.thumbPosition * max(0, contentSize.width - scrollSize.width)
-            case .vertical:
-                shift.y = scrollBar.thumbPosition * max(0, contentSize.height - scrollSize.height)
-            }
-
-            proxyNode.position += SCNVector3(shift.x, shift.y, 0)
+        scrollBar?.thumbPosition = scrollValue
+        var shift: CGPoint = CGPoint.zero
+        switch scrollDirection {
+        case .horizontal:
+            shift.x = -scrollValue * max(0, contentSize.width - scrollSize.width)
+        case .vertical:
+            shift.y = (scrollValue - 1) * max(0, contentSize.height - scrollSize.height)
         }
+        proxyNode.position += SCNVector3(shift.x, shift.y, 0)
 
         if invalidateClippingPlanes {
             invalidateClippingPlanes = false
@@ -186,6 +200,40 @@ import SceneKit
                 SCNVector4(0, 0, 1,-min.z),
                 SCNVector4(0, 0,-1, max.z),
             ])
+        }
+    }
+}
+
+extension UiScrollViewNode: Dragging {
+    var dragAxis: Ray? {
+        guard let scrollBounds = scrollBounds else { return nil }
+        let min = scrollBounds.min
+        let max = scrollBounds.max
+        let center: SCNVector3 = 0.5 * (min + max)
+        let direction: SCNVector3
+        if scrollDirection == .horizontal {
+            direction = SCNVector3(center.x - max.x, center.y, center.z)
+        } else {
+            direction = SCNVector3(center.x, max.y - center.y, center.z)
+        }
+
+        return Ray(begin: center - direction, direction: direction.normalized(), length: CGFloat(2 * direction.length()))
+    }
+
+    var dragRange: CGFloat {
+        guard let contentSize = scrollContent?.getSize() else { return 0 }
+        let size = getSize()
+        return (scrollDirection == .horizontal) ? contentSize.width - size.width : contentSize.height - size.height
+    }
+
+    var dragValue: CGFloat {
+        get { return scrollValue }
+        set {
+            if scrollValue != newValue {
+                scrollValue = newValue
+                layoutIfNeeded()
+                onScrollChanged?(self, scrollValue)
+            }
         }
     }
 }

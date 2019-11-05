@@ -6,7 +6,7 @@ jobs:
     runs-on: macOS-latest
     strategy:
         matrix:
-          destination: ['platform=iOS Simulator,OS=12.4,name=iPhone X']
+          destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 11 Pro']
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -18,7 +18,7 @@ jobs:
       - name: Build and test
         run: |
           cd ios
-          xcodebuild clean test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
+          xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES
         env:
          destination: ${{ matrix.destination }}
       - name: Code Coverage
@@ -33,3 +33,8 @@ jobs:
         with:
           name: code-coverage-artifact-ios
           path: ios/html
+      - name: Codecov update
+        run: |
+          cd ios
+          slather coverage -x --output-directory xml --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
+          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -f xml/covertura.xml

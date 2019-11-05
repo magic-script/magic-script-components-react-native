@@ -16,10 +16,12 @@
 
 package com.reactlibrary.scene.nodes.base
 
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.Utils
@@ -28,8 +30,16 @@ import com.reactlibrary.utils.Utils
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
     : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
+    protected var width: Float = 0f
+    protected var height: Float = 0f
+
+    protected var maxChildHeight: Float = 0f
+    protected var maxChildWidth: Float = 0f
+
     companion object {
         private const val MEASURE_INTERVAL = 50L // in milliseconds
+        const val PROP_WIDTH = "width"
+        const val PROP_HEIGHT = "height"
     }
 
     // we should re-draw the grid after adding / removing a child
@@ -53,6 +63,27 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+        setLayoutSize(props)
+    }
+
+    protected open fun setLayoutSize(props: Bundle) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            if (props.containsKey(PROP_WIDTH)) {
+                width = props.getDouble(PROP_WIDTH).toFloat()
+            }
+            if (props.containsKey(PROP_HEIGHT)) {
+                height = props.getDouble(PROP_HEIGHT).toFloat()
+            }
+            requestLayout()
+        }
+    }
+
+    protected fun isSizeSet(): Boolean {
+        return (width > 0 && height > 0)
+    }
+
     override fun addContent(child: Node) {
         //contentNode.addChild(child)
         childrenList.add(child)
@@ -66,6 +97,13 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
         childrenBounds.clear() // indexes changed
         redrawRequested = true
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        val localBounds = clipBounds.translate(-getContentPosition())
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.setClipBounds(localBounds, clipNativeView) }
     }
 
     override fun onDestroy() {
@@ -85,6 +123,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      */
     private fun layoutLoop() {
         measureChildren()
+        rescaleChildren(childrenList)
         if (redrawRequested) {
             layoutManager.layoutChildren(childrenList, childrenBounds)
             // applyAlignment()
@@ -116,9 +155,36 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             } else {
                 Utils.calculateBoundsOfNode(node)
             }
-
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 redrawRequested = true
+            }
+        }
+    }
+
+    private fun rescaleChildren(nodes: List<Node>) {
+        for (i in 0 until nodes.size) {
+            val node = nodes[i]
+            val nodeBounds = childrenBounds[i] ?: Bounding()
+            val nodeWidth = nodeBounds.right - nodeBounds.left
+            val nodeHeight = nodeBounds.top - nodeBounds.bottom
+            if (width > 0 || height > 0) {
+                node.localScale = if (maxChildWidth < nodeWidth && maxChildHeight < nodeHeight) {
+                    val scale = if (nodeWidth > nodeHeight) {
+                        maxChildWidth / nodeWidth
+                    } else {
+                        maxChildHeight / nodeHeight
+                    }
+                    Vector3(scale, scale, node.localScale.z)
+                } else if (maxChildWidth < nodeWidth) {
+                    val scale = maxChildWidth / nodeWidth
+                    Vector3(scale, scale, node.localScale.z)
+                } else if (maxChildHeight < nodeHeight) {
+                    val scale = maxChildHeight / nodeHeight
+                    Vector3(scale, scale, node.localScale.z)
+                } else {
+                    node.localScale
+                }
+
             }
         }
     }

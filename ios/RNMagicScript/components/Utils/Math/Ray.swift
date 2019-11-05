@@ -34,7 +34,7 @@ import UIKit
 
 // MARK: UITapGestureRecognizer
 extension Ray {
-    convenience init?(gesture: UITapGestureRecognizer, cameraNode: SCNNode) {
+    convenience init?(gesture: UIGestureRecognizer, cameraNode: SCNNode) {
         guard let view = gesture.view else { return nil }
         guard let camera = cameraNode.camera else { return nil }
 
@@ -68,5 +68,24 @@ extension Ray {
         let rayLength: CGFloat = CGFloat(camera.zFar - camera.zNear)
 
         self.init(begin: rayCastFrom, direction: rayCastDir, length: rayLength)
+    }
+}
+
+// MARK: Intersection
+extension Ray {
+    func getClosestPointTo(ray: Ray) -> SCNVector3? {
+        // https://en.wikipedia.org/wiki/Skew_lines#Distance
+        let p1 = begin
+        let d1 = direction
+        let p2 = ray.begin
+        let d2 = ray.direction
+        let n = d1.cross(d2)
+        let n2 = d2.cross(n)
+
+        let s2 = d1.dot(n2)
+        guard abs(s2) > 0.0001 else { return nil }
+        let s1 = (p2 - p1).dot(n2)
+        let c1 = p1 + (s1 / s2) * d1
+        return c1
     }
 }

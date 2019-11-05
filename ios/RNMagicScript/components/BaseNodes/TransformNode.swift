@@ -50,6 +50,9 @@ import SceneKit
     @objc var anchorUuid: String = "rootUuid";
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
+    @objc var debug: Bool = false {
+        didSet { setDebugMode(debug) }
+    }
 
 #if targetEnvironment(simulator)
     fileprivate var originNode: SCNNode?
@@ -142,7 +145,7 @@ import SceneKit
             self.anchorUuid = uuid;
         }
         if let debug = Convert.toBool(props["debug"]) {
-            self.setDebugMode(debug)
+            self.debug = debug
         }
     }
 
@@ -160,7 +163,8 @@ import SceneKit
     @objc func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y)) : CGPoint.zero
-        return CGRect(origin: origin, size: size).offsetBy(dx: -0.5 * size.width, dy: -0.5 * size.height)
+        let offset = CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
+        return CGRect(origin: origin + offset, size: size)
     }
 
     @objc func getEdgeInsets() -> UIEdgeInsets {
@@ -243,9 +247,8 @@ extension TransformNode {
     }
 
 #if targetEnvironment(simulator)
-    @objc fileprivate var isDebugMode: Bool { return originNode?.parent != nil }
     @objc fileprivate func updateDebugLayout() {
-        guard isDebugMode else { return }
+        guard debug else { return }
 
         // border
         borderNode?.removeFromParentNode()

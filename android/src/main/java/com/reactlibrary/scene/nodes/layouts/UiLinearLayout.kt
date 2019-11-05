@@ -22,10 +22,7 @@ import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.putDefaultSerializable
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.*
 
 class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
     : UiLayout(props, layoutManager) {
@@ -62,6 +59,12 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
         setOrientation(props)
         setItemPadding(props)
         setItemAlignment(props)
+    }
+
+    override fun setLayoutSize(props: Bundle) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            logMessage("width and height properties are not supported yet", true)
+        }
     }
 
     override fun getContentBounding(): Bounding {

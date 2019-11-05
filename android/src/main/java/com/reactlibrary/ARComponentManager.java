@@ -50,12 +50,15 @@ import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
+import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
+import com.reactlibrary.scene.nodes.UiColorPickerNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
+import com.reactlibrary.scene.nodes.UiScrollViewNode;
 import com.reactlibrary.scene.nodes.UiSliderNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
@@ -65,17 +68,22 @@ import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
+import com.reactlibrary.scene.nodes.layouts.UiRectLayout;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
+import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
+import com.reactlibrary.utils.ExtensionsKt;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.cert.Extension;
 import java.util.Collections;
 import java.util.Map;
 
@@ -101,13 +109,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
     private static final String EVENT_DROPDOWN_SELECTION_CHANGED = "onSelectionChanged";
     private static final String EVENT_SLIDER_VALUE_CHANGED = "onSliderChanged";
+    private static final String EVENT_COLOR_SELECTED = "onColorSelected";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
     private static final String EVENT_ARG_TEXT = "text";
     private static final String EVENT_ARG_TOGGLE_ACTIVE = "On";
     private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
-    private static final String EVENT_ARG_SLIDER_VALUE = "value";
+    private static final String EVENT_ARG_SLIDER_VALUE = "Value";
+    private static final String EVENT_ARG_COLOR = "color";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -221,6 +231,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createScrollViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiScrollViewNode(props, context, viewRenderableLoader), nodeId));
+    }
+
+    @ReactMethod
     public void createSliderNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiSliderNode(props, context, viewRenderableLoader), nodeId));
     }
@@ -279,6 +294,30 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             UiDropdownListItemNode node = new UiDropdownListItemNode(props, context, viewRenderableLoader, fontProvider);
             addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createColorPickerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createWebViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UIWebViewNode node = new UIWebViewNode(props, context, viewRenderableLoader);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createRectLayoutNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            RectLayoutManager layoutManager = new RectLayoutManagerImpl();
+            addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
     }
 
@@ -427,6 +466,26 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void addOnColorSelectedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiColorPickerNode) {
+                ((UiColorPickerNode) node).setOnColorSelected((colors) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    WritableArray selectedItems = Arguments.createArray();
+                    for (final Double color : colors) {
+                        selectedItems.pushDouble(color);
+                    }
+                    params.putArray(EVENT_ARG_COLOR, selectedItems);
+                    sendEvent(EVENT_COLOR_SELECTED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
     public void updateLayout() {
         // unused on Android
     }
@@ -454,4 +513,5 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void onHostDestroy() {
         MediaPlayerPool.INSTANCE.destroy();
     }
+    
 }

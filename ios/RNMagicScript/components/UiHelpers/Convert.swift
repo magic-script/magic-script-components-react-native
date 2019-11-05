@@ -193,4 +193,9 @@ class Convert {
         guard let viewMode = value as? String else { return nil }
         return VideoViewMode(rawValue: viewMode)
     }
+
+    static func toSide(_ value: Any?) -> Side? {
+        guard let side = value as? String else { return nil }
+        return Side(rawValue: side)
+    }
 }

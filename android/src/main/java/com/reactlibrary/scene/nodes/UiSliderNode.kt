@@ -76,6 +76,10 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
         setMax(props)
     }
 
+    override fun disallowInterceptTouchEvent(): Boolean {
+        return true
+    }
+
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for slider?
     }

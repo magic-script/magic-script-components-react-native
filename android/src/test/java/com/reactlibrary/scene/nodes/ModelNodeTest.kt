@@ -26,7 +26,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.ar.ModelRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Alignment
 import junit.framework.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -87,6 +89,17 @@ class ModelNodeTest {
         node.attachRenderable()
 
         assertEquals(expectedLocalScale, node.localScale)
+    }
+
+    @Test
+    fun shouldNotChangeHardcodedAlignment() {
+        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "bottom-left")
+        val node = ModelNode(props, context, modelRenderableLoader)
+
+        node.build()
+
+        Assert.assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
+        Assert.assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
     }
 
 }

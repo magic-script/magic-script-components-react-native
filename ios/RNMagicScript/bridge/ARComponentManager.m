@@ -50,6 +50,30 @@ RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createColorPickerNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createDatePickerNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createDropdownListNode:(UiDropdownListNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createDropdownListNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createDropdownListItemNode:(UiDropdownListItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createDropdownListItemNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createGridLayoutNode:(UiGridLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createGridLayoutNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -68,6 +92,12 @@ RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId 
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createLinearLayoutNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createLineNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -82,6 +112,12 @@ RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId 
 
 RCT_EXPORT_METHOD(createProgressBarNode:(UiProgressBarNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createProgressBarNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createRectLayoutNode:(UiRectLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createRectLayoutNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -122,8 +158,8 @@ RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)n
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createVideoNode: %@", nodeId);
+RCT_EXPORT_METHOD(createTimePickerNode:(UiTimePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createTimePickerNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -134,20 +170,8 @@ RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createDropdownListNode:(UiDropdownListNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDropdownListNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(createDropdownListItemNode:(UiDropdownListItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDropdownListItemNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
-}
-
-RCT_EXPORT_METHOD(createRectLayoutNode:(UiRectLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createRectLayoutNode: %@", nodeId);
+RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createVideoNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -287,6 +311,90 @@ RCT_EXPORT_METHOD(addOnSliderChangedEventHandler:(NSString *)nodeId) {
         sliderNode.onSliderChanged = ^(UiSliderNode *sender, CGFloat value) {
             ARLog(@"slider changed: %@", @(value));
             [[AREventsManager instance] onSliderChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDateChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDateChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
+        UiDatePickerNode *datePickerNode = (UiDatePickerNode *)node;
+        datePickerNode.onDateChanged = ^(UiDatePickerNode *sender, NSString *value) {
+            ARLog(@"datePicker changed: %@", value);
+            [[AREventsManager instance] onDateChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDateConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
+        UiDatePickerNode *datePickerNode = (UiDatePickerNode *)node;
+        datePickerNode.onDateConfirmed = ^(UiDatePickerNode *sender, NSString *value) {
+            ARLog(@"datePicker confirmed: %@", value);
+            [[AREventsManager instance] onDateConfirmedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeChanged = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker changed: %@", value);
+            [[AREventsManager instance] onTimeChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeConfirmed = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker confirmed: %@", value);
+            [[AREventsManager instance] onTimeConfirmedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onColorChanged = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker changed: %@", value);
+            [[AREventsManager instance] onColorChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmEventReceivedHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmEventReceivedHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onConfirm = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker confirmed: %@", value);
+            [[AREventsManager instance] onConfirmEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnCancelEventReceivedHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmEventReceivedHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onCancel = ^(UiColorPickerNode *sender) {
+            ARLog(@"colorPicker canceled: %@");
+            [[AREventsManager instance] onCancelEventReceived:sender];
         };
     }
 }

@@ -32,7 +32,7 @@ public enum ImageAsset: String {
     case toggleOff = "toggle_off"
 
     var image: Image {
-        let bundle = Bundle.resourcesBundle()!
+        let bundle = Bundle.resourcesBundle!
         #if os(iOS) || os(tvOS)
         let image = Image(named: rawValue, in: bundle, compatibleWith: UIScreen.main.traitCollection)
         #elseif os(OSX)
@@ -48,7 +48,7 @@ public enum ImageAsset: String {
 extension Image {
     convenience init!(asset: ImageAsset) {
         #if os(iOS) || os(tvOS)
-        let bundle = Bundle.resourcesBundle()
+        let bundle = Bundle.resourcesBundle
         self.init(named: asset.rawValue, in: bundle, compatibleWith: nil)
         #elseif os(OSX) || os(watchOS)
         self.init(named: asset.rawValue)

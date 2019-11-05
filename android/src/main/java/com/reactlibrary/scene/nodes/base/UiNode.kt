@@ -23,6 +23,8 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -31,6 +33,8 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
 import com.reactlibrary.utils.Utils.Companion.metersToPx
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -165,20 +169,24 @@ abstract class UiNode(
             return
         }
 
+        // clipping a texture
         materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
 
-        // TODO Clipping content node collision shape (for click events)
-        /*
-        val contentNodePosition = Vector2(
-                -localPosition.x - contentNode.localPosition.x,
-                -localPosition.y - contentNode.localPosition.y
+        // clipping collision shape (regarding click events)
+        val pivotCenterOffset = Vector2(
+                -horizontalAlignment.centerOffset * size.x,
+                -verticalAlignment.centerOffset * size.y
         )
 
-        val nodeCollisionShape = Bounding(0F, 0F, size.x, size.y)
-                .translate(-getPivot())
-        val clipCollisionShape = clipBounds
-                .translate(contentNodePosition)
+        val nodeCollisionShape = Bounding(
+                -size.x / 2 * localScale.x,
+                -size.y / 2 * localScale.y,
+                size.x / 2 * localScale.x,
+                size.y / 2 * localScale.y
+        ).translate(pivotCenterOffset)
+
+        val clipCollisionShape = clipBounds.translate(-getContentPosition())
 
         var intersection = Bounding(
                 max(nodeCollisionShape.left, clipCollisionShape.left),
@@ -190,11 +198,18 @@ abstract class UiNode(
             intersection = Bounding()
         }
 
-        contentNode.collisionShape = Box(
-                intersection.size().toVector3(),
-                intersection.center().toVector3()
-        )
-        */
+        // collision shape is not aware of scale, we need to scale to original position
+        val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
+        val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
+        val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
+
+        val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
+        val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
+        val collisionShapeCenter = Vector3(centerX, centerY, 0F)
+
+        val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
+
+        contentNode.collisionShape = collisionShape
     }
 
     override fun onDestroy() {
@@ -315,11 +330,5 @@ abstract class UiNode(
         if (props.containsKey(PROP_ENABLED)) {
             view.isEnabled = props.getBoolean(PROP_ENABLED)
         }
-    }
-
-    private fun getPivot(): Vector2 {
-        return Vector2(
-                size.x * (0.5F + horizontalAlignment.centerOffset),
-                size.y * (0.5F - verticalAlignment.centerOffset))
     }
 }

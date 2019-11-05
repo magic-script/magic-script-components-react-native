@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -39,14 +40,39 @@ fun Any.logMessage(message: String, warn: Boolean = false) {
     }
 }
 
+/**
+ * android.widget.EditText
+ */
 fun EditText.setTextAndMoveCursor(text: String) {
     this.setText("")
     this.append(text)
 }
 
-fun Bundle.putDefaultDouble(key: String, value: Double) {
-    if (!containsKey(key)) {
-        putDouble(key, value)
+/**
+ * com.google.ar.sceneform.math.Vector3
+ */
+operator fun Vector3.plus(other: Vector3): Vector3 {
+    return Vector3.add(this, other)
+}
+
+operator fun Vector3.minus(other: Vector3): Vector3 {
+    return Vector3.subtract(this, other)
+}
+
+operator fun Vector3.div(other: Float): Vector3 {
+    return this.scaled(1F / other)
+}
+
+fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
+    return Utils.rotateVector(this, quaternion)
+}
+
+/**
+ * android.os.Bundle
+ */
+fun Bundle.putDefaultDouble(name: String, value: Double) {
+    if (!containsKey(name)) {
+        putDouble(name, value)
     }
 }
 
@@ -69,6 +95,26 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
 }
 
 /**
+ * android.view.View
+ */
+inline fun View.onLayoutListener(crossinline f: () -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            f()
+        }
+    })
+}
+
+inline fun View.onDrawListener(crossinline f: () -> Unit) {
+    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
+        override fun onDraw() {
+            f()
+        }
+    })
+}
+
+/*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end
  */
@@ -118,4 +164,3 @@ fun Int.toJsColorArray(): Array<Double> {
 
     return arrayOf(red, green, blue, alpha)
 }
-

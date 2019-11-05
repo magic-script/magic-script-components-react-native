@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
   s.dependency "React"
   s.dependency "GLTFSceneKit"
   s.dependency "GrowingTextView"
+  s.dependency "ChromaColorPicker"
 
 end
 

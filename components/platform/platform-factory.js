@@ -10,6 +10,9 @@ import isEqual from 'lodash/isEqual';
 // Events names
 const Event = {
     onClick: 'onClick',
+    onConfirm: 'onConfirm',
+    onCancel: 'onCancel',
+    onColorChanged: 'onColorChanged',
     onDateChanged: 'onDateChanged',
     onDateConfirmed: 'onDateConfirmed',
     onPress: 'onPress',
@@ -43,6 +46,9 @@ export class PlatformFactory extends NativeFactory {
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent(Event.onClick);
+        this.startListeningEvent(Event.onConfirm);
+        this.startListeningEvent(Event.onCancel);
+        this.startListeningEvent(Event.onColorChanged);
         this.startListeningEvent(Event.onDateChanged);
         this.startListeningEvent(Event.onDateConfirmed);
         this.startListeningEvent(Event.onPress);
@@ -75,6 +81,12 @@ export class PlatformFactory extends NativeFactory {
 
         if (name === Event.onClick || name === Event.onPress) {
             this.componentManager.addOnPressEventHandler(elementId);
+        } else if (name === Event.onConfirm) {
+            this.componentManager.addOnConfirmEventReceivedHandler(elementId);
+        } else if (name === Event.onCancel) {
+            this.componentManager.addOnCancelEventReceivedHandler(elementId);
+        } else if (name === Event.onColorChanged) {
+            this.componentManager.addOnColorChangedEventHandler(elementId);
         } else if (name === Event.onDateChanged) {
             this.componentManager.addOnDateChangedEventHandler(elementId);
         } else if (name === Event.onDateConfirmed) {

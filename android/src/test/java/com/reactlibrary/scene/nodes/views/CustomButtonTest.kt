@@ -21,6 +21,7 @@ import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.R
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,6 +58,16 @@ class CustomButtonTest {
     @Test
     fun shouldMeasureAndRedrawAfterSettingTextPadding() {
         button.setTextPadding(10, 10)
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+    @Test
+    fun shouldMeasureAndRedrawAfterSettingIcon() {
+        val icon = context.getDrawable(R.drawable.arrow_down)
+
+        button.setIcon(icon)
 
         verify(button).invalidate()
         verify(button).requestLayout()

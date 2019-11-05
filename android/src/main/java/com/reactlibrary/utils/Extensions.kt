@@ -17,6 +17,7 @@
 package com.reactlibrary.utils
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -149,4 +150,17 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
     val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
     return Vector2(width, height)
+}
+
+fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
+    return Utils.rotateVector(this, quaternion)
+}
+
+fun Int.toJsColorArray(): Array<Double> {
+    val red = Color.red(this).toDouble() / 255
+    val green = Color.green(this).toDouble() / 255
+    val blue = Color.blue(this).toDouble() / 255
+    val alpha = Color.alpha(this).toDouble() / 255
+
+    return arrayOf(red, green, blue, alpha)
 }

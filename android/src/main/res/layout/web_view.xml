@@ -14,12 +14,9 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="input_title_default">Input</string>
-
-    <string name="color_picker_dialog_title">Change my color</string>
-    <string name="luminosity">Luminosity</string>
-    <string name="opacity">Opacity</string>
-    <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
-</resources>
+<WebView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/webView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true" />

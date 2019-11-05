@@ -26,6 +26,14 @@ class InputViewFactory {
             return InputViewFactory.createView(for: datePicker, onFinish: onFinishEditing)
         }
 
+        if let timePicker = input as? TimePickerDataProviding {
+            return InputViewFactory.createView(for: timePicker, onFinish: onFinishEditing)
+        }
+
+        if let colorPicker = input as? ColorPickerDataProviding {
+            return InputViewFactory.createView(for: colorPicker, onFinish: onFinishEditing)
+        }
+
         return nil
     }
 
@@ -39,9 +47,26 @@ class InputViewFactory {
 
     static func createView(for input: DatePickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
         let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
-        let dateTimePickerInputView = DateTimePickerInputView(frame: rect)
+        let dateTimePickerInputView = DatePickerInputView(frame: rect)
         dateTimePickerInputView.onFinish = onFinish
         dateTimePickerInputView.pickerData = input
         return dateTimePickerInputView
+    }
+
+    static func createView(for input: TimePickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
+        let dateTimePickerInputView = TimePickerInputView(frame: rect)
+        dateTimePickerInputView.onFinish = onFinish
+        dateTimePickerInputView.pickerData = input
+        return dateTimePickerInputView
+    }
+
+    static func createView(for input: ColorPickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
+        let width = UIScreen.main.bounds.width
+        let rect = CGRect(x: 0, y: 0, width: width, height: width + 52)
+        let colorPickerInputView = ColorPickerInputView(frame: rect)
+        colorPickerInputView.pickerData = input
+        colorPickerInputView.onFinish = onFinish
+        return colorPickerInputView
     }
 }

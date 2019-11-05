@@ -24,6 +24,8 @@
 @class UiDropdownListNode;
 @class UiDropdownListItemNode;
 @class UiDatePickerNode;
+@class UiTimePickerNode;
+@class UiColorPickerNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -38,5 +40,10 @@
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value;
 - (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;
 - (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;
+- (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
+- (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
+- (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onConfirmEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onCancelEventReceived:(UiColorPickerNode *)sender;
 
 @end

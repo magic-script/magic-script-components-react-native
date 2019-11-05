@@ -50,6 +50,12 @@ RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createColorPickerNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createDatePickerNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -148,6 +154,12 @@ RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId re
 
 RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createTextEditNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createTimePickerNode:(UiTimePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createTimePickerNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -323,6 +335,66 @@ RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
         datePickerNode.onDateConfirmed = ^(UiDatePickerNode *sender, NSString *value) {
             ARLog(@"datePicker confirmed: %@", value);
             [[AREventsManager instance] onDateConfirmedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeChanged = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker changed: %@", value);
+            [[AREventsManager instance] onTimeChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnTimeConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnTimeConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
+        UiTimePickerNode *timePickerNode = (UiTimePickerNode *)node;
+        timePickerNode.onTimeConfirmed = ^(UiTimePickerNode *sender, NSString *value) {
+            ARLog(@"timePicker confirmed: %@", value);
+            [[AREventsManager instance] onTimeConfirmedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorChangedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onColorChanged = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker changed: %@", value);
+            [[AREventsManager instance] onColorChangedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmEventReceivedHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmEventReceivedHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onConfirm = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
+            ARLog(@"colorPicker confirmed: %@", value);
+            [[AREventsManager instance] onConfirmEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnCancelEventReceivedHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmEventReceivedHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
+        UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
+        colorPickerNode.onCancel = ^(UiColorPickerNode *sender) {
+            ARLog(@"colorPicker canceled: %@");
+            [[AREventsManager instance] onCancelEventReceived:sender];
         };
     }
 }

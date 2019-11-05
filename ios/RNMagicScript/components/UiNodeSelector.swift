@@ -25,7 +25,7 @@ import SceneKit
         self.rootNode = rootNode
     }
 
-    @objc  func hitTest(ray: Ray) -> TransformNode? {
+    @objc func hitTest(ray: Ray) -> TransformNode? {
         let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
         var hitNodes: [TransformNode] = []
 
@@ -44,5 +44,20 @@ import SceneKit
         }
 
         return hitNodes.first
+    }
+
+    @objc func draggingHitTest(ray: Ray) -> Dragging? {
+        guard let hitNode = hitTest(ray: ray) else { return nil }
+
+        var node: SCNNode? = hitNode
+        while node != nil {
+            if node is Dragging {
+                break
+            }
+
+            node = node?.parent
+        }
+
+        return node as? Dragging
     }
 }

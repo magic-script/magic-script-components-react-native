@@ -12,13 +12,13 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import Foundation
+import SceneKit
 
-//sourcery: AutoMockable
-protocol TimePickerDataProviding: DataProviding {
-    var timePickerValue: Date { get set }
-    func timeChanged()
-    func timeConfirmed()
+@objc protocol Dragging {
+    var dragAxis: Ray? { get }
+    var dragRange: CGFloat { get }
+    var dragValue: CGFloat { get set }
 }

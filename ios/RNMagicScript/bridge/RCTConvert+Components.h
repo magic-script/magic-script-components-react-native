@@ -36,6 +36,8 @@
 @class UiDropdownListNode;
 @class UiDropdownListItemNode;
 @class UiDatePickerNode;
+@class UiTimePickerNode;
+@class UiColorPickerNode;
 
 @interface RCTConvert (Components)
 + (UiButtonNode *)UiButtonNode:(id)json;
@@ -58,4 +60,6 @@
 + (UiDropdownListNode *)UiDropdownListNode:(id)json;
 + (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json;
 + (UiDatePickerNode *)UiDatePickerNode:(id)json;
++ (UiTimePickerNode *)UiTimePickerNode:(id)json;
++ (UiColorPickerNode *)UiColorPickerNode:(id)json;
 @end

@@ -36,7 +36,8 @@ class ViewController: UIViewController {
         setupARView()
 //        setupScrollViewTest()
 //        setupDropdownListTest()
-        setupUiDatePickerNodeTest()
+//        setupUiDatePickerNodeTest()
+        setupUiColorPickerNodeTest()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -70,10 +71,33 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
 
+    fileprivate var linearLayout: UiLinearLayoutNode!
+    fileprivate let contentSize: CGFloat = 0.5
+    fileprivate func setupUiColorPickerNodeTest() {
+        let uiColorPickerNodeId: String = "uiColorPickerNodeId"
+        let uiColorPickerNode: UiColorPickerNode = createComponent(["color": [0.95, 0.85, 0.75, 1]], nodeId: uiColorPickerNodeId)
+        uiColorPickerNode.position = SCNVector3(0.0, 0.250, 0.0)
+
+        uiColorPickerNode.onColorChanged = { sender, value in
+            print("\(sender) changed \(value)")
+        }
+
+        uiColorPickerNode.onConfirm = { sender, value in
+            print("\(sender) confirmed \(value)")
+        }
+
+        uiColorPickerNode.onCancel = { sender in
+            print("\(sender) canceled ")
+        }
+
+//        uiColorPickerNode.setDebugMode(true)
+        uiColorPickerNode.layoutIfNeeded()
+    }
+
     fileprivate func setupUiDatePickerNodeTest() {
         let uiDatePickerNodeId: String = "uiDatePickerNodeId"
         let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId)
-        uiDatePickerNode.position = SCNVector3(-0.125, 0.125, 0.0)
+        uiDatePickerNode.position = SCNVector3(-0.125, 0.250, 0.0)
 
         uiDatePickerNode.onDateConfirmed = { sender, value in
             print("\(sender) confirmed \(value)")
@@ -84,52 +108,89 @@ class ViewController: UIViewController {
         }
 
         uiDatePickerNode.layoutIfNeeded()
+
+        let uiTimePickerNodeId: String = "uiTimePickerNodeId"
+        let uiTimePickerNode: UiTimePickerNode = createComponent(["label": "Current time", "timeFormat": "hh:mm:ss p", "time": "13:13:13"], nodeId: uiTimePickerNodeId)
+        uiTimePickerNode.position = SCNVector3(-0.125, 0.0, 0.0)
+
+        uiTimePickerNode.onTimeConfirmed = { sender, value in
+            print("\(sender) confirmed \(value)")
+        }
+
+        uiTimePickerNode.onTimeChanged = { sender, value in
+            print("\(sender) changed \(value)")
+        }
+
+        uiTimePickerNode.layoutIfNeeded()
     }
 
     fileprivate func setupScrollViewTest() {
+        let imageSize = CGSize(width: contentSize, height: contentSize)
+
         // Group
         let groupId: String = "group"
-        let group: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
+        let _: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
+
+        // Toggle
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0.15, 0.4, 0],
+            "height": 0.04,
+            "textSize": 0.04,
+            "on": true,
+            "text": "Vertical scroll"
+        ], nodeId: "toggle", parentId: groupId)
+        toggle.onChanged = { [weak self] sender, on in self?.onOrientationChange(on) }
 
         // Scroll view
         let scrollViewId: String = "scroll_view"
         scrollView = createComponent([
             "alignment": "center-center",
             "debug": true,
-            "scrollBounds": ["min": [-0.25,-0.45,-0.1], "max": [0.25,0.45,0.1]]
-        ], nodeId: scrollViewId, parentId: groupId)
+            "scrollBarVisibility": "always",
+        ], nodeId: scrollViewId)
 
         // Scroll bar
         let scrollBarId: String = "scroll_bar"
         scrollBar = createComponent([
             "debug": false,
-            "localPosition": [0.25, 0, 0],
-            "width": 0.9
+            "height": 0.02,
         ], nodeId: scrollBarId, parentId: scrollViewId)
-        createGridWithIcons(parentId: scrollViewId)
+//        createGridWithIcons(parentId: scrollViewId)
 
-        scrollView.layoutIfNeeded()
-        scrollBar.layoutIfNeeded()
+        // Linear
+        linearLayout = createLinearLayoutWithImages(imageSize, parentId: scrollViewId)
 
-        // Button
-        let button: UiButtonNode = createComponent([
-            "localPosition": [0, 0.6, 0],
-            "textSize": 0.05,
-            "text": "Button"
-        ], nodeId: "button", parentId: groupId)
-        button.layoutIfNeeded()
+        onOrientationChange(true)
+    }
 
-        group.layoutIfNeeded()
+    fileprivate func onOrientationChange(_ isVertical: Bool) {
+        let direction: ScrollDirection = isVertical ? .vertical : .horizontal
+        let orientation: Orientation = isVertical ? .vertical : .horizontal
+        let size: CGSize = isVertical ? CGSize(width: contentSize, height: 1.25 * contentSize) : CGSize(width: 1.25 * contentSize, height: contentSize)
+        scrollView.scrollDirection = direction
+        scrollBar.scrollOrientation = orientation
+        linearLayout.layoutOrientation = orientation
+
+        scrollView.scrollBounds = (min: SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1),
+                                   max: SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1))
+        scrollBar.width = 1.25 * contentSize
+        let bounds: CGRect = scrollView.getBounds()
+        if orientation == .vertical {
+            scrollBar.localPosition = SCNVector3(bounds.maxX, bounds.midY, 0)
+        } else {
+            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY, 0)
+        }
+
+        scrollView.scrollValue = 0.1
+        UiNodesManager.instance.updateLayout()
     }
 
     fileprivate func createGridWithIcons(parentId: String? = nil) {
-
         let gridId = "grid"
         let grid: UiGridLayoutNode = createComponent([
             "columns": 14,
-//            "orientation": "vertical",
             "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "top-center"
+            "alignment": "center-center"
         ], nodeId: gridId, parentId: parentId)
 
         SystemIcon.names.enumerated().forEach { (index, name) in
@@ -140,42 +201,35 @@ class ViewController: UIViewController {
         grid.layoutIfNeeded()
     }
 
-    fileprivate var dropdownItems: [UiDropdownListItemNode] = []
-    fileprivate func setupDropdownListTest() {
-        let dropdownList = UiDropdownListNode(props: ["text": "dropdownListId", "localPosition": [0, 0.5, 0], "textSize": 0.0235, "maxCharacterLimit": 0])
-        let dropdownListId = "dropdownListId"
-        UiNodesManager.instance.registerNode(dropdownList, nodeId: dropdownListId)
-        UiNodesManager.instance.addNodeToRoot(dropdownListId)
-        dropdownList.layoutIfNeeded()
+    fileprivate func createLinearLayoutWithImages(_ imageSize: CGSize, parentId: String? = nil) -> UiLinearLayoutNode {
+        let linearId = "linear"
+        let linear: UiLinearLayoutNode = createComponent([
+//            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
+            "alignment": "center-center"
+        ], nodeId: linearId, parentId: parentId)
 
-        for index in 0...16 {
-            let dropdownItem: UiDropdownListItemNode
-            if index % 4 == 0 {
-                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very long text for dropDownListItem to check how this looks when list appears", "textSize": 0.03])
-            } else {
-                dropdownItem = UiDropdownListItemNode(props: ["label": "\(index). Very short text", "textSize": 0.03])
-            }
-            dropdownItems.append(dropdownItem)
+        let alpha: CGFloat = 0.2
+        let colors: [[CGFloat]] = [
+            [1,1,0.5,alpha],
+            [1,0.5,1,alpha],
+            [0.5,1,1,alpha],
+            [1,0.5,0.5,alpha],
+            [0.5,0.5,1,alpha],
+            [0.5,1,0.5,alpha],
+            [0.75,0.75,0.25,alpha],
+            [1,1,1,alpha]
+        ]
+        colors.enumerated().forEach { (index, rgba) in
+            let nodeId: String = "image_\(index)"
+            let _: UiImageNode = createComponent(["skipRaycast": true, "color": rgba, "width": imageSize.width, "height": imageSize.height], nodeId: nodeId, parentId: linearId)
+        }
 
-            UiNodesManager.instance.registerNode(dropdownItem, nodeId: String(index))
-            UiNodesManager.instance.addNode(String(index), toParent: dropdownListId)
-        }
-        dropdownList.onTap = { sender in
-        }
-
-        dropdownList.onSelectionChanged = { [weak self] sender, selectedItems in 
-//            print("dropDown onSelectionChanged \(sender) \(selectedItem)")
-            if let index = selectedItems.first {
-                sender.text = self?.dropdownItems[index].label
-                sender.layoutIfNeeded()
-            }
-        }
+        return linear
     }
 
     @discardableResult
     fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
-        node.layoutIfNeeded()
         UiNodesManager.instance.registerNode(node, nodeId: nodeId)
         if let parentId = parentId {
             UiNodesManager.instance.addNode(nodeId, toParent: parentId)
@@ -192,7 +246,7 @@ extension ViewController: ARSCNViewDelegate {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        scrollBarPosition += CGFloat(deltaTime)
+        scrollBarPosition += 0.4 * CGFloat(deltaTime)
         if scrollBarPosition > 1.0 {
             scrollBarPosition -= 2.0
         }
@@ -201,8 +255,12 @@ extension ViewController: ARSCNViewDelegate {
         if scrollBarSize > 1.0 {
             scrollBarSize -= 2.0
         }
-//        scrollView.scrollValue = abs(scrollBarPosition)
-//        scrollBar.thumbSize = max(0.1, abs(scrollBarSize))
-//        scrollView.layoutIfNeeded()
+
+//        DispatchQueue.main.async() { [weak self] in
+//            guard let strongSelf = self else { return }
+//            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
+//            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
+//            UiNodesManager.instance.updateLayout()
+//        }
     }
 }

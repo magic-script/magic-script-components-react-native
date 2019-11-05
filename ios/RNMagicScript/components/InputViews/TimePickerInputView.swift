@@ -16,18 +16,8 @@
 
 import UIKit
 
-import ChromaColorPicker
-
-class ColorPickerInputView: UIView {
-    var pickerData: ColorPickerDataProviding? {
-        didSet {
-            if let selectedColor = pickerData?.colorPickerValue {
-                neatColorPicker.adjustToColor(selectedColor)
-            }
-        }
-    }
-
-    fileprivate var neatColorPicker: ChromaColorPicker!
+class TimePickerInputView: UIView {
+    var pickerData: TimePickerDataProviding?
 
     var onFinish: (() -> (Void))?
 
@@ -40,6 +30,8 @@ class ColorPickerInputView: UIView {
         super.init(coder: coder)
         setupView()
     }
+
+    fileprivate var dateTimePicker: UIDatePicker!
 
     fileprivate func setupView() {
         backgroundColor = .white
@@ -72,35 +64,39 @@ class ColorPickerInputView: UIView {
             cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
         ])
 
-        neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
-        neatColorPicker.delegate = self //ChromaColorPickerDelegate
-        neatColorPicker.padding = 1
-        neatColorPicker.stroke = 10
-        neatColorPicker.hexLabel.textColor = UIColor.black
-        neatColorPicker.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(neatColorPicker)
+        dateTimePicker = UIDatePicker()
+        dateTimePicker.backgroundColor = .white
+        dateTimePicker.datePickerMode = .time
+        dateTimePicker.locale = Locale.current
+        dateTimePicker.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
+        dateTimePicker.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(dateTimePicker)
 
         NSLayoutConstraint.activate([
-            neatColorPicker.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
-            neatColorPicker.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: margin),
-            neatColorPicker.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
-            neatColorPicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            dateTimePicker.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+            dateTimePicker.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: margin),
+            dateTimePicker.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+            dateTimePicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
+
+        dateTimePicker.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
     }
 }
 
-extension ColorPickerInputView: ChromaColorPickerDelegate {
-    func colorPickerDidChooseColor(_ colorPicker: ChromaColorPicker, color: UIColor) {
-        pickerData?.colorPickerValue = color
+
+// MARK: - Event handlers
+extension TimePickerInputView {
+    @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
+        pickerData?.timePickerValue = sender.date
+        pickerData?.timeChanged()
     }
 
     @objc fileprivate func doneButtonAction(_ sender: UIButton) {
-        pickerData?.colorConfirmed()
+        pickerData?.timeConfirmed()
         onFinish?()
     }
 
     @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
-        pickerData?.colorCanceled()
         onFinish?()
     }
 }

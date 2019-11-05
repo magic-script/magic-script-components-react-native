@@ -35,6 +35,8 @@
 		442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */; };
 		442AED5723461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
 		442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
+		44444719236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
+		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
@@ -184,6 +186,8 @@
 		44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */; };
 		44DA5F55235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
 		44DA5F56235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
+		44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
+		44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
 		44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09308232D985A0081FF14 /* TransformNodeSpec.swift */; };
 		44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09309232D985A0081FF14 /* LabelNodeSpec.swift */; };
@@ -245,8 +249,8 @@
 		C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */; };
 		C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */; };
 		C4A12B1B2361B708009B7083 /* UiColorPickerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */; };
-		C4A12B202361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
-		C4A12B212361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */; };
+		C4A12B202361B9F2009B7083 /* DatePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DatePickerInputView.swift */; };
+		C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B1F2361B9F2009B7083 /* DatePickerInputView.swift */; };
 		C4A12B232361BA06009B7083 /* ColorPickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */; };
 		C4A12B242361BA06009B7083 /* ColorPickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */; };
 		C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */; };
@@ -262,6 +266,8 @@
 		C4A12B372361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */; };
 		C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */; };
 		C4B4B66B234618390029E59C /* UiSliderNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */; };
+		C4B82C5F236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
+		C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
 		C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */; };
 		C4BE7BCF234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */; };
 		C4C04ACE2334E85100C2725C /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */; };
@@ -454,6 +460,7 @@
 		442AED5623461BDF000B83AE /* SystemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIcon.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		44444718236AFD5A00665D31 /* Dragging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dragging.swift; sourceTree = "<group>"; };
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
@@ -558,6 +565,7 @@
 		44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoActionSpec.swift; sourceTree = "<group>"; };
 		44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModeSpec.swift; sourceTree = "<group>"; };
 		44DA5F54235EF3900058212C /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		44E949352370337900BD0F32 /* DragGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureRecognizer.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
 		44F09309232D985A0081FF14 /* LabelNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNodeSpec.swift; sourceTree = "<group>"; };
@@ -612,7 +620,7 @@
 		C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNodeSpec.swift; sourceTree = "<group>"; };
 		C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNodeSpec.swift; sourceTree = "<group>"; };
 		C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNodeSpec.swift; sourceTree = "<group>"; };
-		C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerInputView.swift; sourceTree = "<group>"; };
+		C4A12B1F2361B9F2009B7083 /* DatePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerInputView.swift; sourceTree = "<group>"; };
 		C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerInputView.swift; sourceTree = "<group>"; };
 		C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerDataProviding.swift; sourceTree = "<group>"; };
 		C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerDataProviding.swift; sourceTree = "<group>"; };
@@ -621,6 +629,7 @@
 		C4A12B322361D19B009B7083 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+Extension.swift"; sourceTree = "<group>"; };
 		C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSliderNodeSpec.swift; sourceTree = "<group>"; };
+		C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerInputView.swift; sourceTree = "<group>"; };
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
 		C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		C4C114D12347375D00E80044 /* SliderInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderInputView.swift; sourceTree = "<group>"; };
@@ -930,10 +939,10 @@
 				44AFAC03232B9BCE005AC8EF /* UiNode.swift */,
 				C4816BF1234C9082001CCBDD /* DataProviding.swift */,
 				44D8FE87233A0E93007FD766 /* InputDataProviding.swift */,
-				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
+				C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */,
 				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
-				C4A12B2C2361BD86009B7083 /* ColorPickerDataProviding.swift */,
+				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -1028,6 +1037,8 @@
 			children = (
 				44AFAC29232B9BCF005AC8EF /* Convert.swift */,
 				44AFAC2A232B9BCF005AC8EF /* Measures.swift */,
+				44444718236AFD5A00665D31 /* Dragging.swift */,
+				44E949352370337900BD0F32 /* DragGestureRecognizer.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -1267,8 +1278,9 @@
 			children = (
 				C4C114D12347375D00E80044 /* SliderInputView.swift */,
 				C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */,
-				C4A12B1F2361B9F2009B7083 /* DateTimePickerInputView.swift */,
+				C4A12B1F2361B9F2009B7083 /* DatePickerInputView.swift */,
 				C4A12B222361BA06009B7083 /* ColorPickerInputView.swift */,
+				C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */,
 			);
 			path = InputViews;
 			sourceTree = "<group>";
@@ -1602,11 +1614,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChromaColorPicker/ChromaColorPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/GLTFSceneKit/GLTFSceneKit.framework",
 				"${BUILT_PRODUCTS_DIR}/GrowingTextView/GrowingTextView.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChromaColorPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GLTFSceneKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GrowingTextView.framework",
 			);
@@ -1705,6 +1719,7 @@
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
+				C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */,
 				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				C4A12B282361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */,
@@ -1725,7 +1740,7 @@
 				44AFAD2A232BCAE3005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
-				C4A12B212361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */,
+				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
@@ -1739,6 +1754,7 @@
 				448586FC235DC1FD00D372CB /* Ray.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */,
+				4444471A236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44AFAD29232BCAE3005AC8EF /* URLSession+Extension.swift in Sources */,
 				44AFAD0F232BCAE3005AC8EF /* TransformNode.swift in Sources */,
 				44AFAD13232BCAE3005AC8EF /* FontWeight.swift in Sources */,
@@ -1757,6 +1773,7 @@
 				44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				C4A12B102361AD38009B7083 /* UiDatePickerNode.swift in Sources */,
 				C4A12B342361D19B009B7083 /* Date+Extension.swift in Sources */,
+				44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
@@ -1874,6 +1891,7 @@
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
 				C4D5417E23338E05008D5124 /* VideoViewMode.swift in Sources */,
+				44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
 				44AFAC60232B9BCF005AC8EF /* ARComponentManager.m in Sources */,
 				44AFAC51232B9BCF005AC8EF /* Maths+Extension.swift in Sources */,
 				44AFAC40232B9BCF005AC8EF /* UiImageNode.swift in Sources */,
@@ -1893,8 +1911,10 @@
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
+				44444719236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				4425EDFE2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
+				C4B82C5F236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */,
 				448586FB235DC1FD00D372CB /* Ray.swift in Sources */,
 				44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
 				44AFAC56232B9BCF005AC8EF /* FileManager+Extension.swift in Sources */,
@@ -1903,7 +1923,7 @@
 				44AFAC3F232B9BCF005AC8EF /* UiGridLayoutNode.swift in Sources */,
 				C4A12B2A2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */,
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
-				C4A12B202361B9F2009B7083 /* DateTimePickerInputView.swift in Sources */,
+				C4A12B202361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */,
 				4425EE04236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,
 				C465C263234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */,
@@ -2070,6 +2090,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = D2L5MHYLSX;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -2098,6 +2119,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = D2L5MHYLSX;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_FAST_MATH = YES;
@@ -2124,6 +2146,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = DEURTTZ5DW;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = RNMagicScriptTests/resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -2154,6 +2177,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = DEURTTZ5DW;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = RNMagicScriptTests/resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;

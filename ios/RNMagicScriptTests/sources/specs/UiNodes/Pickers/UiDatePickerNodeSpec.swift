@@ -60,7 +60,7 @@ class UiDatePickerNodeSpec: QuickSpec {
                     let referenceTextColor = UIColor(white: 0.5, alpha: 0.5)
                     node.update(["color" : referenceTextColor.toArrayOfFloat])
                     expect(node.color).to(beCloseTo(referenceTextColor))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
 
                     expect(node.valueNode.textColor).to(beCloseTo(referenceTextColor))
                 }

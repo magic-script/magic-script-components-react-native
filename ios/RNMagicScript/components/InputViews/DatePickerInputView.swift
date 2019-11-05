@@ -16,7 +16,7 @@
 
 import UIKit
 
-class DateTimePickerInputView: UIView {
+class DatePickerInputView: UIView {
     var pickerData: DatePickerDataProviding? {
         didSet {
             if let pickerData = pickerData {
@@ -89,7 +89,7 @@ class DateTimePickerInputView: UIView {
 
 
 // MARK: - Event handlers
-extension DateTimePickerInputView {
+extension DatePickerInputView {
     @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
         pickerData?.datePickerValue = sender.date
         pickerData?.dateChanged()

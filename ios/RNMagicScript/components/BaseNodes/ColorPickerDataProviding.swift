@@ -14,8 +14,12 @@
 //  limitations under the License.
 //
 
-import Foundation
+import UIKit
 
 //sourcery: AutoMockable
 protocol ColorPickerDataProviding: DataProviding {
+    var colorPickerValue: UIColor { get set }
+    func colorChanged()
+    func colorConfirmed()
+    func colorCanceled()
 }

@@ -52,6 +52,7 @@ import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
+import com.reactlibrary.scene.nodes.UiColorPickerNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
@@ -77,9 +78,11 @@ import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
+import com.reactlibrary.utils.ExtensionsKt;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.security.cert.Extension;
 import java.util.Collections;
 import java.util.Map;
 
@@ -105,6 +108,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
     private static final String EVENT_DROPDOWN_SELECTION_CHANGED = "onSelectionChanged";
     private static final String EVENT_SLIDER_VALUE_CHANGED = "onSliderChanged";
+    private static final String EVENT_COLOR_SELECTED = "onColorSelected";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -112,6 +116,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_TOGGLE_ACTIVE = "On";
     private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
     private static final String EVENT_ARG_SLIDER_VALUE = "Value";
+    private static final String EVENT_ARG_COLOR = "color";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -285,6 +290,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createColorPickerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
     public void createWebViewNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             UIWebViewNode node = new UIWebViewNode(props, context, viewRenderableLoader);
@@ -438,6 +451,26 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     selectedItems.pushInt(itemIndex);
                     params.putArray(EVENT_ARG_SELECTED_ITEMS, selectedItems);
                     sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnColorSelectedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiColorPickerNode) {
+                ((UiColorPickerNode) node).setOnColorSelected((colors) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    WritableArray selectedItems = Arguments.createArray();
+                    for (final Double color : colors) {
+                        selectedItems.pushDouble(color);
+                    }
+                    params.putArray(EVENT_ARG_COLOR, selectedItems);
+                    sendEvent(EVENT_COLOR_SELECTED, params);
                     return Unit.INSTANCE;
                 });
             }

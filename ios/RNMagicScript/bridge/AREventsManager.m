@@ -69,8 +69,8 @@ RCT_EXPORT_MODULE();
              @"onTimeChanged",
              @"onTimeConfirmed",
              @"onColorChanged",
-             @"onConfirm",
-             @"onCancel"
+             @"onColorConfirmed",
+             @"onColorCanceled"
              ];
 }
 
@@ -178,18 +178,18 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void)onConfirmEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
+- (void)onColorConfirmedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onConfirm" body:@{ @"nodeId": sender.name, @"Value": value }];
+            [self sendEventWithName:@"onColorConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
         });
     }
 }
 
-- (void)onCancelEventReceived:(UiColorPickerNode *)sender {
+- (void)onColorCanceledEventReceived:(UiColorPickerNode *)sender {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onCancel" body:@{ @"nodeId": sender.name }];
+            [self sendEventWithName:@"onColorCanceled" body:@{ @"nodeId": sender.name }];
         });
     }
 }

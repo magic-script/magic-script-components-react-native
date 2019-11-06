@@ -224,6 +224,12 @@ import SceneKit
 }
 
 extension UiTimePickerNode: TimePickerDataProviding {
+    var aMpMFormat: Bool {
+        get {
+            return timeFormat.contains("p")
+        }
+    }
+
     var timePickerValue: Date {
         get {
             return _time != nil ? Date.fromTime(string: _time!, format: UiTimePickerNode.defaultInputTimeFormat) : Date()
@@ -232,6 +238,7 @@ extension UiTimePickerNode: TimePickerDataProviding {
             // callback
             if timePickerValue != newValue {
                 time = newValue.toTimeString(format: UiTimePickerNode.defaultInputTimeFormat)
+                layoutIfNeeded()
             }
         }
     }

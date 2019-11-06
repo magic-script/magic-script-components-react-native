@@ -17,7 +17,15 @@
 import UIKit
 
 class TimePickerInputView: UIView {
-    var pickerData: TimePickerDataProviding?
+    var pickerData: TimePickerDataProviding? {
+        didSet {
+            if let pickerData = pickerData {
+                dateTimePicker.locale = pickerData.aMpMFormat ? Locale(identifier: "en_US") : Locale(identifier: "en_GB")
+            } else {
+                dateTimePicker.locale = Locale(identifier: "en_GB")
+            }
+        }
+    }
 
     var onFinish: (() -> (Void))?
 
@@ -67,7 +75,6 @@ class TimePickerInputView: UIView {
         dateTimePicker = UIDatePicker()
         dateTimePicker.backgroundColor = .white
         dateTimePicker.datePickerMode = .time
-        dateTimePicker.locale = Locale.current
         dateTimePicker.timeZone = TimeZone(abbreviation: "UTC") // to avoid issue with different timezones
         dateTimePicker.translatesAutoresizingMaskIntoConstraints = false
         addSubview(dateTimePicker)

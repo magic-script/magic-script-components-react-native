@@ -82,11 +82,11 @@ class ViewController: UIViewController {
             print("\(sender) changed \(value)")
         }
 
-        uiColorPickerNode.onConfirm = { sender, value in
+        uiColorPickerNode.onColorConfirmed = { sender, value in
             print("\(sender) confirmed \(value)")
         }
 
-        uiColorPickerNode.onCancel = { sender in
+        uiColorPickerNode.onColorCanceled = { sender, value in
             print("\(sender) canceled ")
         }
 

@@ -466,7 +466,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorConfirmedEventHandler(final String nodeId) {
+    public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if(node instanceof UiColorPickerNode) {
@@ -486,7 +486,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorCanceledEventHandler(final String nodeId) {
+    public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if(node instanceof UiColorPickerNode) {

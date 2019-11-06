@@ -51,7 +51,7 @@ class UiSpinnerNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultHeight() {
+    fun `should have default height`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiSpinnerNode.PROP_HEIGHT)
@@ -60,7 +60,7 @@ class UiSpinnerNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultDeterminateFlag() {
+    fun `should have default determinate flag`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val isDeterminate = node.getProperty(UiSpinnerNode.PROP_DETERMINATE)
@@ -68,18 +68,8 @@ class UiSpinnerNodeTest {
         assertEquals(UiSpinnerNode.DEFAULT_DETERMINATE, isDeterminate)
     }
 
-
     @Test
-    fun shouldApplyDefaultIndeterminateAngleWhenNoProperties() {
-        val node = createNodeWithViewSpy(JavaOnlyMap())
-
-        node.build()
-
-        verify(viewSpy).value = UiSpinnerNode.INDETERMINATE_VALUE
-    }
-
-    @Test
-    fun shouldApplyDesiredProgressWhenDeterminate() {
+    fun `should apply progress when determinate`() {
         val value = 0.3
         val props = JavaOnlyMap.of(
                 UiSpinnerNode.PROP_VALUE, value,
@@ -89,11 +79,12 @@ class UiSpinnerNodeTest {
 
         node.build()
 
+        verify(viewSpy).type = CustomSpinner.Type.DETERMINATE
         verify(viewSpy).value = value.toFloat()
     }
 
     @Test
-    fun shouldNotApplyDesiredProgressWhenNotDeterminate() {
+    fun `should not apply progress when not determinate`() {
         val value = 0.6
         val props = JavaOnlyMap.of(
                 UiSpinnerNode.PROP_VALUE, value,
@@ -103,11 +94,12 @@ class UiSpinnerNodeTest {
 
         node.build()
 
+        verify(viewSpy).type = CustomSpinner.Type.INDETERMINATE
         verify(viewSpy, never()).value = value.toFloat()
     }
 
     @Test
-    fun shouldNotChangeHardcodedAlignment() {
+    fun `should not change hardcoded alignment`() {
         val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-left")
         val node = createNodeWithViewSpy(props)
 

@@ -10,8 +10,6 @@ import isEqual from 'lodash/isEqual';
 // Events names
 const Event = {
     onClick: 'onClick',
-    onConfirm: 'onConfirm',
-    onCancel: 'onCancel',
     onColorCanceled: 'onColorCanceled',
     onColorChanged: 'onColorChanged',
     onColorConfirmed: 'onColorConfirmed',
@@ -50,8 +48,7 @@ export class PlatformFactory extends NativeFactory {
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent(Event.onClick);
-        this.startListeningEvent(Event.onConfirm);
-        this.startListeningEvent(Event.onCancel);
+        this.startListeningEvent(Event.onColorCanceled);
         this.startListeningEvent(Event.onColorCanceled);
         this.startListeningEvent(Event.onColorChanged);
         this.startListeningEvent(Event.onColorConfirmed);
@@ -61,9 +58,9 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent(Event.onScrollChanged);
         this.startListeningEvent(Event.onSelectionChanged);
         this.startListeningEvent(Event.onSliderChanged);
+        this.startListeningEvent(Event.onTextChanged);
         this.startListeningEvent(Event.onTimeChanged);
         this.startListeningEvent(Event.onTimeConfirmed);
-        this.startListeningEvent(Event.onTextChanged);
         this.startListeningEvent(Event.onToggleChanged);
         this.startListeningEvent(Event.onVideoPrepared);
     }
@@ -89,10 +86,10 @@ export class PlatformFactory extends NativeFactory {
 
         if (name === Event.onClick || name === Event.onPress) {
             this.componentManager.addOnPressEventHandler(elementId);
-        } else if (name === Event.onConfirm) {
-            this.componentManager.addOnConfirmEventReceivedHandler(elementId);
-        } else if (name === Event.onCancel) {
-            this.componentManager.addOnCancelEventReceivedHandler(elementId);
+        } else if (name === Event.onColorConfirmed) {
+            this.componentManager.addOnColorConfirmedEventReceivedHandler(elementId);
+        } else if (name === Event.onColorCanceled) {
+            this.componentManager.addOnColorCanceledEventReceivedHandler(elementId);
         } else if (name === Event.onColorCanceled) {
             this.componentManager.addOnColorCanceledEventHandler(elementId);
         }else if (name === Event.onColorChanged) {

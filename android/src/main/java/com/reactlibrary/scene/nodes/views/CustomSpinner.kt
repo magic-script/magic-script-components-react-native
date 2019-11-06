@@ -16,11 +16,13 @@
 
 package com.reactlibrary.scene.nodes.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
 
@@ -31,9 +33,34 @@ class CustomSpinner @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val START_ANGLE = 270F
+        private const val START_ANGLE = 270F // degrees
+        private const val INDETERMINATE_SWEEP_ANGLE = 45F // degrees
+        private const val INDETERMNATE_ROTATION_TIME = 1000L
         private const val STROKE_SIZE_TO_HEIGHT_RATIO = 0.035F
     }
+
+    enum class Type {
+        DETERMINATE,
+        INDETERMINATE
+    }
+
+    /**
+     * Spinner type
+     * - use [Type.DETERMINATE] and set progress [value] manually
+     * - use [Type.INDETERMINATE] to set indefinite rotation
+     */
+    var type: Type = Type.INDETERMINATE
+        set(value) {
+            field = value
+            if (value == Type.INDETERMINATE) {
+                if (!animator.isStarted) {
+                    animator.start()
+                }
+            } else if (animator.isStarted) {
+                animator.pause()
+            }
+            invalidate()
+        }
 
     /**
      * Progress (from 0 to 1)
@@ -41,14 +68,58 @@ class CustomSpinner @JvmOverloads constructor(
     var value: Float = 0F
         set(value) {
             field = value.coerceIn(0F, 1F)
-            invalidate()
+            if (type == Type.DETERMINATE) {
+                invalidate()
+            }
         }
 
     private val spinnerRect = RectF()
+    private val animator: ValueAnimator
+    private var animationAngle = START_ANGLE // for indeterminate mode
+    private var attached = false
 
     init {
         // disabling hardware acceleration to make blur effect working
         setLayerType(LAYER_TYPE_SOFTWARE, null)
+
+        animator = ValueAnimator.ofFloat(START_ANGLE, START_ANGLE + 360)
+        animator.repeatCount = ValueAnimator.INFINITE
+        animator.repeatMode = ValueAnimator.RESTART
+        animator.interpolator = LinearInterpolator()
+        animator.duration = INDETERMNATE_ROTATION_TIME
+        animator.addUpdateListener {
+            this.animationAngle = it.animatedValue as Float
+            if (attached) {
+                invalidate()
+            }
+        }
+    }
+
+    // e.g. when activity was resumed
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        attached = true
+        if (type == Type.INDETERMINATE) {
+            if (!animator.isStarted) {
+                animator.start()
+            } else if (animator.isPaused) {
+                animator.resume()
+            }
+        }
+    }
+
+    // Called e.g. when activity was paused. In that case we should pause animation,
+    // because otherwise the invalidate() queue will overflow and animation may hung.
+    // See: https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/ProgressBar.java
+    override fun onDetachedFromWindow() {
+        attached = false
+        if (type == Type.INDETERMINATE && animator.isStarted) {
+            animator.pause()
+        }
+
+        // This should come after stopping animation, otherwise an invalidate message remains in the
+        // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
+        super.onDetachedFromWindow()
     }
 
     private val paint = Paint(ANTI_ALIAS_FLAG).apply {
@@ -58,6 +129,10 @@ class CustomSpinner @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+        val startAngle = if (type == Type.DETERMINATE) START_ANGLE else animationAngle
+        val sweepAngle = if (type == Type.DETERMINATE) value * 360F else INDETERMINATE_SWEEP_ANGLE
+
         val innerStrokeWidth = STROKE_SIZE_TO_HEIGHT_RATIO * height
         val innerBlurRadius = innerStrokeWidth / 2
         val outStrokeWidth = innerStrokeWidth / 2
@@ -84,7 +159,7 @@ class CustomSpinner @JvmOverloads constructor(
         spinnerRect.bottom =
                 height.toFloat() - innerStrokeWidth / 2 - innerBlurRadius - outStrokeWidth - outBlurRadius
 
-        canvas.drawArc(spinnerRect, START_ANGLE, value * 360F, false, paint)
+        canvas.drawArc(spinnerRect, startAngle, sweepAngle, false, paint)
 
         // drawing out circle (with stronger blur effect)
         paint.strokeWidth = outStrokeWidth
@@ -95,7 +170,7 @@ class CustomSpinner @JvmOverloads constructor(
         spinnerRect.right = spinnerRect.right + outStrokeWidth / 2 + outBlurRadius
         spinnerRect.bottom = spinnerRect.bottom + outStrokeWidth / 2 + outBlurRadius
 
-        canvas.drawArc(spinnerRect, START_ANGLE, value * 360F, false, paint)
+        canvas.drawArc(spinnerRect, startAngle, sweepAngle, false, paint)
     }
 
 }

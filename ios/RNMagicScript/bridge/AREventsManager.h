@@ -43,7 +43,7 @@
 - (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
 - (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value;
 - (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
-- (void)onConfirmEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
-- (void)onCancelEventReceived:(UiColorPickerNode *)sender;
+- (void)onColorConfirmedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onColorCanceledEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
 
 @end

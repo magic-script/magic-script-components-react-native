@@ -18,6 +18,7 @@ package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
@@ -38,8 +39,16 @@ class CustomSpinnerTest {
     }
 
     @Test
-    fun shouldRedrawAfterSettingValue() {
+    fun `should redraw after setting value when in determinate mode`() {
+        spinner.type = CustomSpinner.Type.DETERMINATE
         spinner.value = 0.45F
+
+        verify(spinner, atLeastOnce()).invalidate()
+    }
+
+    @Test
+    fun `should redraw after setting mode`() {
+        spinner.type = CustomSpinner.Type.DETERMINATE
 
         verify(spinner).invalidate()
     }

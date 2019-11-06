@@ -192,14 +192,17 @@ import SceneKit
 
             let min = scrollBounds.min
             let max = scrollBounds.max
-            scrollContent?.setClippingPlanes([
+            let planes: [SCNVector4] = [
                 SCNVector4( 1, 0, 0,-min.x),
                 SCNVector4(-1, 0, 0, max.x),
                 SCNVector4(0, 1, 0,-min.y),
                 SCNVector4(0,-1, 0, max.y),
                 SCNVector4(0, 0, 1,-min.z),
                 SCNVector4(0, 0,-1, max.z),
-            ])
+            ]
+
+            let worldSpacePlanes: [SCNVector4] = planes.map { convertPlane(Plane(vector: $0), to: nil).toVector4() }
+            scrollContent?.setClippingPlanes(worldSpacePlanes)
         }
     }
 }
@@ -229,8 +232,9 @@ extension UiScrollViewNode: Dragging {
     var dragValue: CGFloat {
         get { return scrollValue }
         set {
-            if scrollValue != newValue {
-                scrollValue = newValue
+            let prevScrollValue = scrollValue
+            scrollValue = newValue
+            if prevScrollValue != scrollValue {
                 layoutIfNeeded()
                 onScrollChanged?(self, scrollValue)
             }

@@ -24,7 +24,6 @@ const Event = {
     onTimeConfirmed: 'onTimeConfirmed',
     onToggleChanged: 'onToggleChanged',
     onVideoPrepared: 'onVideoPrepared',
-    onColorSelected: 'onColorSelected',
 };
 
 export class PlatformFactory extends NativeFactory {
@@ -63,7 +62,6 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent(Event.onTextChanged);
         this.startListeningEvent(Event.onToggleChanged);
         this.startListeningEvent(Event.onVideoPrepared);
-        this.startListeningEvent(Event.onColorSelected);
     }
 
     startListeningEvent(eventName) {
@@ -113,8 +111,6 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnToggleChangedEventHandler(elementId);
         } else if (name === Event.onVideoPrepared) {
             this.componentManager.addOnVideoPreparedEventHandler(elementId);
-        } else if (name === Event.onColorSelected) {
-            this.componentManager.addOnColorSelectedEventHandler(elementId);
         }
 
         const pair = { name, handler };

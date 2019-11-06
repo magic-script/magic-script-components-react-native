@@ -31,7 +31,9 @@ open class ColorPickerDialog(context: Context) : Dialog(context) {
     }
 
     var initialColor: Int = 0
-    var onResult: ((Int) -> Unit)? = null
+    var onConfirm: ((Int) -> Unit)? = null
+    var onCanceled: (() -> Unit)? = null
+    var onChanged: ((Int) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,14 +55,16 @@ open class ColorPickerDialog(context: Context) : Dialog(context) {
         picker.onColorChangedListener =
             ColorPicker.OnColorChangedListener { color ->
                 updateColorText(color)
+                onChanged?.invoke(color)
             }
 
         confirm.setOnClickListener {
-            onResult?.invoke(picker.color)
+            onConfirm?.invoke(picker.color)
             dismiss()
         }
 
         cancel.setOnClickListener {
+            onCanceled?.invoke()
             dismiss()
         }
     }

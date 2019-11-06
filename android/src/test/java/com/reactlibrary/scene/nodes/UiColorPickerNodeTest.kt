@@ -43,7 +43,6 @@ class UiColorPickerNodeTest {
     lateinit var tested: UiColorPickerNode
     lateinit var context: Context
     val selectedColorFrame = mock<FrameLayout>()
-    val onColorSelected: ((color: Array<Double>) -> Unit)? = mock()
     lateinit var colorPickerDialog: ColorPickerDialog
 
     @Before
@@ -76,18 +75,17 @@ class UiColorPickerNodeTest {
 
     @Test
     fun `should attach listeners into dialog`() {
-        colorPickerDialog.onResult.shouldNotBeNull()
+        colorPickerDialog.onConfirm.shouldNotBeNull()
     }
 
     @Test
     fun `should update selectedColorFrameLayout background`() {
         val color = Color.DKGRAY
 
-        colorPickerDialog.onResult?.invoke(color)
+        colorPickerDialog.onConfirm?.invoke(color)
 
         verify(selectedColorFrame).setBackgroundColor(eq(color))
     }
-
 
     fun createNodeWithViewSpy(
         props: ReadableMap = JavaOnlyMap()
@@ -97,7 +95,9 @@ class UiColorPickerNodeTest {
                 return containerSpy
             }
         }.apply {
-            onColorSelected = this@UiColorPickerNodeTest.onColorSelected
+            onColorConfirmed = mock()
+            onColorCanceled = mock()
+            onColorChanged = mock()
             build()
         }
     }

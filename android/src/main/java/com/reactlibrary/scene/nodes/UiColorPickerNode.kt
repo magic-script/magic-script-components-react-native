@@ -46,13 +46,23 @@ open class UiColorPickerNode @JvmOverloads constructor(
             putDefaultDouble(PROP_HEIGHT, 1.0)
         }
 
-        colorPickerDialog.onResult = { result ->
-            selectedColor = result
-            onColorSelected?.invoke(result.toJsColorArray())
+        colorPickerDialog.apply {
+            onConfirm = { color ->
+                selectedColor = color
+                this@UiColorPickerNode.onColorConfirmed?.invoke(color.toJsColorArray())
+            }
+            onCanceled = {
+                this@UiColorPickerNode.onColorCanceled?.invoke()
+            }
+            onChanged = { color ->
+                this@UiColorPickerNode.onColorChanged?.invoke(color.toJsColorArray())
+            }
         }
     }
 
-    var onColorSelected: ((color: Array<Double>) -> Unit)? = null
+    var onColorConfirmed: ((color: Array<Double>) -> Unit)? = null
+    var onColorCanceled: (() -> Unit)? = null
+    var onColorChanged: ((color: Array<Double>) -> Unit)? = null
 
     private var selectedColor = 0
         set(value) {

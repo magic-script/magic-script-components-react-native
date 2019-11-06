@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
+import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.icons.IconsRepository
@@ -84,7 +85,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
         }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(com.reactlibrary.R.layout.color_picker, null)
+        return LayoutInflater.from(context).inflate(R.layout.color_picker, null)
     }
 
     override fun setupView() {

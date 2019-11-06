@@ -38,6 +38,8 @@ class ViewController: UIViewController {
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
 //        setupUiColorPickerNodeTest()
+//        setupTextEditTest()
+        UiNodesManager.instance.updateLayout()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -129,8 +131,7 @@ class ViewController: UIViewController {
 
         // Group
         let groupId: String = "group"
-        let q = SCNQuaternion.fromAxis(SCNVector3(0,1,0), andAngle: Float(45.0.toRadians))
-        let _: UiGroupNode = createComponent(["localRotation": [q.x, q.y, q.z, q.w], "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 
         // Toggle
         let toggle: UiToggleNode = createComponent([
@@ -156,13 +157,9 @@ class ViewController: UIViewController {
             "debug": false,
             "height": 0.04,
         ], nodeId: scrollBarId, parentId: scrollViewId)
-//        createGridWithIcons(parentId: scrollViewId)
 
         // Linear
         linearLayout = createLinearLayoutWithImages(imageSize, parentId: scrollViewId)
-
-//        let slider: UiSliderNode = createComponent(["width" : 0.7, "height": 0.04, "localPosition": [0, -0.5, 0]], nodeId: "slider", parentId: groupId)
-
         onOrientationChange(true)
     }
 
@@ -174,8 +171,8 @@ class ViewController: UIViewController {
         scrollBar.scrollOrientation = orientation
         linearLayout.layoutOrientation = orientation
 
-        scrollView.scrollBounds = (min: SCNVector3(-0*0.5 * size.width, -0.5 * size.height, -0.1),
-                                   max: SCNVector3(2*0.5 * size.width, 0.5 * size.height, 0.1))
+        scrollView.scrollBounds = (min: SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1),
+                                   max: SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1))
         scrollBar.width = 1.25 * contentSize
         let bounds: CGRect = scrollView.getBounds()
         if orientation == .vertical {
@@ -188,27 +185,10 @@ class ViewController: UIViewController {
         UiNodesManager.instance.updateLayout()
     }
 
-    fileprivate func createGridWithIcons(parentId: String? = nil) {
-        let gridId = "grid"
-        let grid: UiGridLayoutNode = createComponent([
-            "columns": 14,
-            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "center-center"
-        ], nodeId: gridId, parentId: parentId)
-
-        SystemIcon.names.enumerated().forEach { (index, name) in
-            let nodeId: String = "icon_\(index)"
-            let _: UiImageNode = createComponent(["icon": name, "height": 0.04, "skipRaycast": false], nodeId: nodeId, parentId: gridId)
-        }
-
-        grid.layoutIfNeeded()
-    }
-
     fileprivate func createLinearLayoutWithImages(_ imageSize: CGSize, parentId: String? = nil) -> UiLinearLayoutNode {
         let linearId = "linear"
         let linear: UiLinearLayoutNode = createComponent([
-//            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "top-left"
+            "alignment": "center-center"
         ], nodeId: linearId, parentId: parentId)
 
         let alpha: CGFloat = 0.2
@@ -229,6 +209,24 @@ class ViewController: UIViewController {
         }
 
         return linear
+    }
+
+    fileprivate func setupTextEditTest() {
+        // Group
+        let groupId: String = "group"
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+
+        // TextEdit
+        let textEditId: String = "text_edit"
+        let _ : UiTextEditNode = createComponent([
+            "alignment": "center-center",
+            "debug": true,
+            "multiline": true,
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "textSize": 0.08,
+            "width": 1.0,
+            "height": 1.0,
+        ], nodeId: textEditId, parentId: groupId)
     }
 
     @discardableResult

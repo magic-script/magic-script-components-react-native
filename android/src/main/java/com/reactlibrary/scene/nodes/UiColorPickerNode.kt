@@ -16,6 +16,7 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,8 +26,8 @@ import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.ColorPickerDialog
+import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.*
-import kotlinx.android.synthetic.main.color_picker.view.*
 
 open class UiColorPickerNode @JvmOverloads constructor(
     initProps: ReadableMap,
@@ -67,7 +68,11 @@ open class UiColorPickerNode @JvmOverloads constructor(
     private var selectedColor = 0
         set(value) {
             field = value
-            view.selectedColor.setBackgroundColor(value)
+            (view as CustomButton).apply {
+                setIcon(ColorDrawable(value))
+                text = "#${value.toString(16)}"
+            }
+
         }
 
     override fun provideView(context: Context): View {

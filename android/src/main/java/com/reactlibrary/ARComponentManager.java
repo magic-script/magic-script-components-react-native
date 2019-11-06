@@ -324,7 +324,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createUiListViewItemNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, cubeRenderableBuilder), nodeId));
+        mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod

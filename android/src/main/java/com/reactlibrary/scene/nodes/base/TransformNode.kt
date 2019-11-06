@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes.base
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
@@ -26,9 +25,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.logMessage
+import com.reactlibrary.utils.*
 
 /**
  * Base node.
@@ -102,41 +99,6 @@ abstract class TransformNode(
     }
 
     /**
-     * Adds [child] to [contentNode]
-     *
-     * To manage alignment correctly, we should use this method instead of
-     * attaching a child directly.
-     */
-    open fun addContent(child: Node) {
-        contentNode.addChild(child)
-    }
-
-    open fun removeContent(child: Node) {
-        contentNode.removeChild(child)
-    }
-
-    /**
-     * Returns 2D bounding of the node (the minimum rectangle
-     * that includes the node).
-     */
-    fun getBounding(): Bounding {
-        val contentBounding = getContentBounding()
-        return Bounding(
-                left = contentBounding.left * localScale.x + localPosition.x,
-                bottom = contentBounding.bottom * localScale.y + localPosition.y,
-                right = contentBounding.right * localScale.x + localPosition.x,
-                top = contentBounding.top * localScale.y + localPosition.y)
-    }
-
-    /**
-     * Should return 2D bounding of the [contentNode] (relative to
-     * the parent node position).
-     */
-    protected open fun getContentBounding(): Bounding {
-        return Utils.calculateBoundsOfNode(contentNode)
-    }
-
-    /**
      * Builds the node by calling [applyProperties] with all initial properties
      */
     open fun build() {
@@ -170,6 +132,50 @@ abstract class TransformNode(
     }
 
     /**
+     * Adds [child] to [contentNode]
+     *
+     * To manage alignment correctly, we should use this method instead of
+     * attaching a child directly.
+     */
+    open fun addContent(child: Node) {
+        contentNode.addChild(child)
+    }
+
+    open fun removeContent(child: Node) {
+        contentNode.removeChild(child)
+    }
+
+    /**
+     * Returns 2D bounding of the node (the minimum rectangle
+     * that includes the node).
+     */
+    fun getBounding(): Bounding {
+        val contentBounds = getContentBounding()
+
+        // bounding vertices
+        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
+        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+
+        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
+
+        return Bounding(
+                left = minimumBounds.left * localScale.x + localPosition.x,
+                bottom = minimumBounds.bottom * localScale.y + localPosition.y,
+                right = minimumBounds.right * localScale.x + localPosition.x,
+                top = minimumBounds.top * localScale.y + localPosition.y)
+    }
+
+    /**
+     * Should return 2D bounding of the [contentNode] (relative to
+     * the parent node position).
+     */
+    open fun getContentBounding(): Bounding {
+        return Utils.calculateBoundsOfNode(contentNode)
+    }
+
+    /**
      * Returns the value for a given [propertyName]
      */
     fun getProperty(propertyName: String): Any? {
@@ -180,6 +186,19 @@ abstract class TransformNode(
      * Should clear all node's resources (if any)
      */
     open fun onDestroy() {}
+
+    /**
+     * Should return position of the content (relative to this node's parent)
+     */
+    open fun getContentPosition(): Vector2 {
+        val position = localPosition + contentNode.localPosition
+        return Vector2(position.x, position.y)
+    }
+
+    /**
+     * Should hide this part of node that is outside [clipBounds]
+     */
+    open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

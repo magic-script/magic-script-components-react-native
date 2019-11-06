@@ -95,5 +95,16 @@
     return [[UiDropdownListItemNode alloc] initWithProps:json];
 }
 
-@end
++ (UiDatePickerNode *)UiDatePickerNode:(id)json {
+    return [[UiDatePickerNode alloc] initWithProps: json];
+}
 
++ (UiTimePickerNode *)UiTimePickerNode:(id)json {
+    return [[UiTimePickerNode alloc] initWithProps: json];
+}
+
++ (UiColorPickerNode *)UiColorPickerNode:(id)json {
+    return [[UiColorPickerNode alloc] initWithProps: json];
+}
+
+@end

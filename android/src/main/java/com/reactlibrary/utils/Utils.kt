@@ -19,8 +19,13 @@ package com.reactlibrary.utils
 import android.content.Context
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Material
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Bounding
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Class containing general purpose utility functions
@@ -40,6 +45,11 @@ class Utils {
         // One dp is a virtual pixel unit that's roughly equal to one pixel on a medium-density screen
         // 160dpi is the "baseline" density
         const val BASELINE_DENSITY = 160F
+
+        private const val CLIP_LEFT_PARAM = "left"
+        private const val CLIP_RIGHT_PARAM = "right"
+        private const val CLIP_TOP_PARAM = "top"
+        private const val CLIP_BOTTOM_PARAM = "bottom"
 
         /**
          *  Converts ARCore's meters to pixels
@@ -103,41 +113,98 @@ class Utils {
          */
         fun calculateSumBounds(nodes: List<Node>): Bounding {
             if (nodes.isEmpty()) {
-                return Bounding(0F, 0F, 0F, 0F)
+                return Bounding()
             }
 
-            val firstNode = nodes[0]
-            val firstChildBounds = if (firstNode is TransformNode) {
-                firstNode.getBounding()
-            } else {
-                calculateBoundsOfNode(firstNode)
-            }
+            val sumBounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
-            val sumBounds = firstChildBounds.copy()
-
-            for (i in 1 until nodes.size) {
-                val node = nodes[i]
+            for (node in nodes) {
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
                 } else {
                     calculateBoundsOfNode(node)
                 }
 
-                if (childBounds.left < sumBounds.left) {
-                    sumBounds.left = childBounds.left
-                }
-                if (childBounds.right > sumBounds.right) {
-                    sumBounds.right = childBounds.right
-                }
-                if (childBounds.top > sumBounds.top) {
-                    sumBounds.top = childBounds.top
-                }
-                if (childBounds.bottom < sumBounds.bottom) {
-                    sumBounds.bottom = childBounds.bottom
-                }
+                sumBounds.left = min(childBounds.left, sumBounds.left)
+                sumBounds.right = max(childBounds.right, sumBounds.right)
+                sumBounds.top = max(childBounds.top, sumBounds.top)
+                sumBounds.bottom = min(childBounds.bottom, sumBounds.bottom)
             }
 
             return sumBounds
+        }
+
+        fun findMinimumBounding(points: List<Vector3>): Bounding {
+            if (points.isEmpty()) {
+                return Bounding()
+            }
+
+            val bounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+
+            for (point in points) {
+                bounds.left = min(point.x, bounds.left)
+                bounds.right = max(point.x, bounds.right)
+                bounds.top = max(point.y, bounds.top)
+                bounds.bottom = min(point.y, bounds.bottom)
+            }
+            return bounds
+        }
+
+        /**
+         * Rotates vector by a quaternion
+         */
+        fun rotateVector(v: Vector3, quat: Quaternion): Vector3 {
+            val u = Vector3(quat.x, quat.y, quat.z)
+            val s = quat.w
+
+            val a = 2.0f * Vector3.dot(u, v)
+            val p1 = Vector3(u.x * a, u.y * a, u.z * a)
+
+            val b = s * s - Vector3.dot(u, u)
+            val p2 = Vector3(v.x * b, v.y * b, v.z * b)
+
+            val c = 2.0f * s
+            val cross = Vector3.cross(u, v)
+            val p3 = Vector3(cross.x * c, cross.y * c, cross.z * c)
+
+            val sum1 = Vector3.add(p1, p2)
+            return Vector3.add(sum1, p3)
+        }
+
+        fun calculateMaterialClipping(clipBounds: Bounding, nodeBounds: Bounding): Bounding {
+            val materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+            val sizeX = nodeBounds.size().x
+            val sizeY = nodeBounds.size().y
+
+            if (sizeX > 0) {
+                val offsetLeft = nodeBounds.left - clipBounds.left
+                materialClip.left = java.lang.Float.max(-0.5f - offsetLeft / sizeX, -0.5f)
+
+                val offsetRight = nodeBounds.right - clipBounds.right
+                materialClip.right = java.lang.Float.min(0.5f - offsetRight / sizeX, 0.5f)
+            }
+
+            if (sizeY > 0) {
+                val offsetBottom = nodeBounds.bottom - clipBounds.bottom
+                materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+
+                val offsetTop = nodeBounds.top - clipBounds.top
+                materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+            }
+            return materialClip
+        }
+
+        /**
+         * Clips the material with the [materialClip] bounds (relative to model size,
+         * with the origin at bottom-center)
+         */
+        fun applyMaterialClipping(material: Material, materialClip: Bounding) {
+            material.apply {
+                setFloat(CLIP_LEFT_PARAM, materialClip.left)
+                setFloat(CLIP_RIGHT_PARAM, materialClip.right)
+                setFloat(CLIP_TOP_PARAM, materialClip.top)
+                setFloat(CLIP_BOTTOM_PARAM, materialClip.bottom)
+            }
         }
 
     }

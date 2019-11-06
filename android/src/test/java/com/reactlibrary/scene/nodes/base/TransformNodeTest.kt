@@ -35,31 +35,34 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {
 
+    // epsilon
+    private val eps = 1e-5f
+
     @Test
-    fun shouldBeLocatedAtZeroPositionByDefault() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+    fun `should be located at zero position by default`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
 
         assertEquals(Vector3.zero(), node.localPosition)
     }
 
     @Test
-    fun shouldContainInitialProperties() {
+    fun `should contain initial properties`() {
         val property = "key"
         val propsMap = JavaOnlyMap()
         propsMap.putString(property, "value")
 
-        val node = object : TransformNode(propsMap, false, true) {}
+        val node = createNode(propsMap)
 
         assertNotNull(node.getProperty(property))
     }
 
     @Test
-    fun shouldAddNewPropertyWhenPassedInUpdate() {
+    fun `should add new property when passed in update`() {
         val initialProperty = "initialProp"
         val initialProps = JavaOnlyMap()
         initialProps.putString(initialProperty, "value")
-        val node = object : TransformNode(initialProps, false, true) {}
+        val node = createNode(initialProps)
 
         val newProps = JavaOnlyMap()
         val propertyToAdd = "propToAdd"
@@ -71,12 +74,12 @@ class TransformNodeTest {
     }
 
     @Test
-    fun shouldSaveNewPropertyValueWhenUpdated() {
+    fun `should save new property value when updated`() {
         val propKey = "key"
         val initialValue = "value"
         val initialProps = JavaOnlyMap()
         initialProps.putString(propKey, initialValue)
-        val node = object : TransformNode(initialProps, false, true) {}
+        val node = createNode(initialProps)
 
         val updatedValue = "updated value"
         val propsToChange = JavaOnlyMap()
@@ -88,14 +91,14 @@ class TransformNodeTest {
     }
 
     @Test
-    fun shouldApplyAllPropertiesOnBuild() {
+    fun `should apply all properties on build`() {
         val positionArray = arrayOf(4.0, 2.0, -5.0)
         val scaleArray = arrayOf(2.0, 2.0, 2.0)
         val properties = JavaOnlyMap.of(
                 TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(*positionArray),
                 TransformNode.PROP_LOCAL_SCALE, JavaOnlyArray.of(*scaleArray)
         )
-        val node = object : TransformNode(properties, false, true) {}
+        val node = createNode(properties)
 
         node.build()
 
@@ -104,8 +107,8 @@ class TransformNodeTest {
     }
 
     @Test
-    fun shouldApplyNewPropertiesOnUpdate() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+    fun `should apply new properties on update`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
         val alignment = "bottom-right"
         val propsToUpdate = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
@@ -117,42 +120,107 @@ class TransformNodeTest {
     }
 
     @Test
-    fun getBoundingShouldReturnContentBoundingWithPositionOffset() {
+    fun `get bounding should return content bounding with position offset`() {
         val positionProp = JavaOnlyArray.of(2.0, 5.0, 0.0)
         val props = JavaOnlyMap.of(TransformNode.PROP_LOCAL_POSITION, positionProp)
         val bounds = Bounding(-2F, -2F, 2F, 2F)
-        val node = createNodeWithBounding(props, bounds, useContentNodeAlignment = true)
+        val node = createNodeWithContentBounding(props, bounds)
         node.build()
-        val expected = Bounding(
-                node.localPosition.x + bounds.left,
-                node.localPosition.y + bounds.bottom,
-                node.localPosition.x + bounds.right,
-                node.localPosition.y + bounds.top
-        )
+        val expected = Bounding(0F, 3F, 4F, 7F)
 
         val result = node.getBounding()
 
-        assertEquals(expected, result)
+        assertTrue(Bounding.equalInexact(expected, result))
     }
 
     @Test
-    fun shouldAlignContentNodeWhenUsingContentNodeAlignment() {
+    fun `should return correct bounding when rotated 90 degrees around Z`() {
+        val position = JavaOnlyArray.of(0.0, 0.0, 0.0)
+        val rotation = JavaOnlyArray.of(0.0, 0.0, 0.7071068, 0.7071068)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, position,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+        )
+        val bounds = Bounding(0F, 0F, 2F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+        val expected = Bounding(-1F, 0F, 0F, 2F)
+
+        val result = node.getBounding()
+
+        assertTrue(Bounding.equalInexact(expected, result))
+    }
+
+    @Test
+    fun `should return zero-width bounding when rotated 90 degrees around Y`() {
+        val position = JavaOnlyArray.of(0.0, 0.0, 0.0)
+        val rotation = JavaOnlyArray.of(0, 0.7071068, 0, 0.7071068)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, position,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+        )
+        val bounds = Bounding(-1F, -1F, 1F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+        val expected = Bounding(0F, -1F, 0F, 1F)
+
+        val result = node.getBounding()
+
+        assertTrue(Bounding.equalInexact(expected, result))
+    }
+
+    @Test
+    fun `should return zero-height bounding when rotated 90 degrees around X`() {
+        val position = JavaOnlyArray.of(0.0, 0.0, 0.0)
+        val rotation = JavaOnlyArray.of(0.7071068, 0, 0, 0.7071068)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, position,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+        )
+        val bounds = Bounding(-1F, -1F, 1F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+        val expected = Bounding(-1F, 0F, 1F, 0F)
+
+        val result = node.getBounding()
+
+        assertTrue(Bounding.equalInexact(expected, result))
+    }
+
+    @Test
+    fun `should align content node when using content node alignment`() {
         val alignment = "top-right"
         val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
         val bounds = Bounding(-2F, -5F, 2F, 5F)
-        val node = createNodeWithBounding(props, bounds, useContentNodeAlignment = true)
+        val node = createNodeWithContentBounding(props, bounds)
 
         node.build()
 
-        val epsilon = 0.0001F
-        assertEquals(-2.0F, node.contentNode.localPosition.x, epsilon)
-        assertEquals(-5.0F, node.contentNode.localPosition.y, epsilon)
+        assertEquals(-2.0F, node.contentNode.localPosition.x, eps)
+        assertEquals(-5.0F, node.contentNode.localPosition.y, eps)
         assertEquals(Vector3.zero(), node.localPosition)
     }
 
     @Test
-    fun shouldChildrenBeAddedToContentNode() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+    fun `should return proper content position`() {
+        val localPosition = JavaOnlyArray.of(5.0, 3.0, 0.0)
+        val props = JavaOnlyMap.of(
+                TransformNode.PROP_LOCAL_POSITION, localPosition,
+                TransformNode.PROP_ALIGNMENT, "bottom-right"
+        )
+        val bounds = Bounding(-2F, -1F, 2F, 1F)
+        val node = createNodeWithContentBounding(props, bounds)
+        node.build()
+
+        val contentPosition = node.getContentPosition()
+
+        assertEquals(3f, contentPosition.x, eps)
+        assertEquals(4f, contentPosition.y, eps)
+    }
+
+    @Test
+    fun `children should be added to content node`() {
+        val node = createNode(JavaOnlyMap())
         val child1 = Node()
         val child2 = Node()
 
@@ -164,26 +232,26 @@ class TransformNodeTest {
     }
 
     @Test
-    fun shouldRenderableRequestedBeTrueAfterAttachingRenderable() {
-        val node = object : TransformNode(JavaOnlyMap(), false, true) {}
+    fun `renderableRequested should be true after attaching renderable`() {
+        val node = createNode(JavaOnlyMap())
         node.attachRenderable()
         assertTrue(node.renderableRequested)
     }
 
-    private fun Array<Double>.toVector3(): Vector3 {
-        return Vector3(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
-    }
-
-    private fun createNodeWithBounding(
-            properties: ReadableMap,
-            bounding: Bounding,
-            useContentNodeAlignment: Boolean): TransformNode {
-
-        return object : TransformNode(properties, false, useContentNodeAlignment) {
+    private fun createNodeWithContentBounding(properties: ReadableMap, bounding: Bounding): TransformNode {
+        return object : TransformNode(properties, false, true) {
             override fun getContentBounding(): Bounding {
                 return bounding
             }
         }
+    }
+
+    private fun createNode(properties: ReadableMap): TransformNode {
+        return object : TransformNode(properties, false, true) {}
+    }
+
+    private fun Array<Double>.toVector3(): Vector3 {
+        return Vector3(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
     }
 
 }

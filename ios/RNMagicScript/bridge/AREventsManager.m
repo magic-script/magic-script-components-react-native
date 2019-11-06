@@ -63,7 +63,14 @@ RCT_EXPORT_MODULE();
              @"onSliderChanged",
              @"onTextChanged",
              @"onToggleChanged",
-             @"onVideoPrepared"
+             @"onVideoPrepared",
+             @"onDateChanged",
+             @"onDateConfirmed",
+             @"onTimeChanged",
+             @"onTimeConfirmed",
+             @"onColorChanged",
+             @"onConfirm",
+             @"onCancel"
              ];
 }
 
@@ -86,7 +93,7 @@ RCT_EXPORT_MODULE();
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"value": @(value) }];
+            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"ScrollValue": @(value) }];
         });
     }
 }
@@ -127,6 +134,62 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onSliderChanged" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
+        });
+    }
+}
+
+- (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onDateChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onDateConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onTimeChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onTimeConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onColorChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onConfirmEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirm" body:@{ @"nodeId": sender.name, @"Value": value }];
+        });
+    }
+}
+
+- (void)onCancelEventReceived:(UiColorPickerNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onCancel" body:@{ @"nodeId": sender.name }];
         });
     }
 }

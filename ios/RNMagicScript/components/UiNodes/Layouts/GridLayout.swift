@@ -19,19 +19,19 @@ import SceneKit
 
 @objc open class GridLayout: NSObject {
     @objc var columns: Int = 0 {
-        didSet { gridDescriptor = nil }
+        didSet { invalidate() }
     }
     @objc var rows: Int = 0 {
-        didSet { gridDescriptor = nil }
+        didSet { invalidate() }
     }
     @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
-        didSet { gridDescriptor = nil }
+        didSet { invalidate() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { gridDescriptor = nil }
+        didSet { invalidate() }
     }
     @objc var skipInvisibleItems: Bool = false {
-        didSet { gridDescriptor = nil }
+        didSet { invalidate() }
     }
 
     var itemsCount: Int {
@@ -48,12 +48,16 @@ import SceneKit
         container.removeFromParentNode()
     }
 
+    @objc func invalidate() {
+        gridDescriptor = nil
+    }
+
     @objc func addItem(_ item: TransformNode) {
         let proxyNode = SCNNode()
         proxyNode.name = item.name
         container.addChildNode(proxyNode)
         proxyNode.addChildNode(item)
-        gridDescriptor = nil
+        invalidate()
     }
 
     @discardableResult
@@ -62,7 +66,7 @@ import SceneKit
             let parent = proxyNode.parent, parent == container {
             proxyNode.removeFromParentNode()
             item.removeFromParentNode()
-            gridDescriptor = nil
+            invalidate()
             return true
         }
 
@@ -97,7 +101,8 @@ import SceneKit
         }
 
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
-        return gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
+        let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
+        return hitNode?.hitTest(ray: ray) ?? node
     }
 
     @objc func recalculate() {

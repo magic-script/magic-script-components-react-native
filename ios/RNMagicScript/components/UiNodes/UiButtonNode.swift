@@ -86,19 +86,6 @@ import SceneKit
         leaveFocus()
     }
 
-    @objc func simulateTap() {
-        assert(enabled, "Button must be enabled in order to tap it!")
-        onTap?(self)
-        let initialPosition = contentNode.position
-        let animation = CABasicAnimation(keyPath: "position.z")
-        animation.fromValue = initialPosition.z
-        animation.toValue = initialPosition.z - 0.05
-        animation.duration = 0.1
-        animation.autoreverses = true
-        animation.repeatCount = 1
-        contentNode.addAnimation(animation, forKey: "button_tap")
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 
@@ -188,3 +175,5 @@ import SceneKit
         contentNode.addChildNode(outlineNode)
     }
 }
+
+extension UiButtonNode: TapSimulating { }

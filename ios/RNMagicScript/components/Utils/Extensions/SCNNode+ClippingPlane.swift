@@ -47,6 +47,7 @@ extension SCNNode {
         enumerateHierarchy { (node, result) in
             node.geometry?.shaderModifiers = modifiers
             for (index, plane) in planes.enumerated() {
+                guard index < 6 else { break }
                 let value = NSValue(scnVector4: plane)
                 node.geometry?.setValue(value, forKey: "clippingPlane\(index + 1)")
             }

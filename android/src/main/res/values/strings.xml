@@ -16,4 +16,10 @@
 
 <resources>
     <string name="input_title_default">Input</string>
+
+    <string name="color_picker_dialog_title">Change my color</string>
+    <string name="luminosity">Luminosity</string>
+    <string name="opacity">Opacity</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -68,7 +68,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         setLayoutSize(props)
     }
 
-    private fun setLayoutSize(props: Bundle) {
+    protected open fun setLayoutSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             if (props.containsKey(PROP_WIDTH)) {
                 width = props.getDouble(PROP_WIDTH).toFloat()
@@ -97,6 +97,13 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
         childrenBounds.clear() // indexes changed
         redrawRequested = true
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        val localBounds = clipBounds.translate(-getContentPosition())
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.setClipBounds(localBounds, clipNativeView) }
     }
 
     override fun onDestroy() {
@@ -177,6 +184,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                 } else {
                     node.localScale
                 }
+
             }
         }
     }

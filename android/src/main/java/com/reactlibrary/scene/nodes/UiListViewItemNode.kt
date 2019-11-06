@@ -11,6 +11,7 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.Layoutable
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultSerializable
@@ -22,13 +23,20 @@ class UiListViewItemNode(initProps: ReadableMap,
 
     companion object {
         const val PROP_BACKGROUND_COLOR = "backgroundColor"
-        const val CONTENT_Z_OFFSET = 0.01f
+        const val CONTENT_Z_OFFSET = 1e-5f
+        const val RENDER_PRIORITY = 3 // 4 is default, 3 means we draw background firstly
 
         val DEFAULT_BACKGROUND_COLOR = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
+    private var lastContentBounds = Bounding()
+
     init {
         properties.putDefaultSerializable(PROP_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR)
+
+        onViewLoadedListener = { renderable ->
+            renderable.renderPriority = RENDER_PRIORITY
+        }
     }
 
     override fun provideView(context: Context): View {
@@ -36,9 +44,7 @@ class UiListViewItemNode(initProps: ReadableMap,
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val content = contentNode.children.firstOrNull() as? TransformNode
-        return content?.getBounding()?.size()
-                ?: Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+        return lastContentBounds.size()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -54,8 +60,16 @@ class UiListViewItemNode(initProps: ReadableMap,
         // only one child can be added
         if (contentNode.children.isEmpty()) {
             super.addContent(child)
-            setNeedsRebuild(true) // need to create a new background
         }
+    }
+
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        super.setClipBounds(clipBounds, clipNativeView)
+        // clip child item
+        val localBounds = clipBounds.translate(-getContentPosition())
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.setClipBounds(localBounds, clipNativeView) }
     }
 
     override fun onUpdate(frameTime: FrameTime) {
@@ -64,9 +78,13 @@ class UiListViewItemNode(initProps: ReadableMap,
         val content = contentNode.children.firstOrNull() as? TransformNode
         if (content != null) {
             val contentBounds = content.getBounding()
-            val offsetX = content.localPosition.x - contentBounds.center().x
-            val offsetY = content.localPosition.y - contentBounds.center().y
-            content.localPosition = Vector3(offsetX, offsetY, CONTENT_Z_OFFSET)
+            if (!Bounding.equalInexact(contentBounds, lastContentBounds)) {
+                val offsetX = content.localPosition.x - contentBounds.center().x
+                val offsetY = content.localPosition.y - contentBounds.center().y
+                content.localPosition = Vector3(offsetX, offsetY, CONTENT_Z_OFFSET)
+                lastContentBounds = contentBounds
+                setNeedsRebuild(true) // need to create a new background
+            }
         }
     }
 

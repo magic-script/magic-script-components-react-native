@@ -224,7 +224,7 @@ import SceneKit
 }
 
 extension UiTimePickerNode: TimePickerDataProviding {
-    var aMpMFormat: Bool {
+    var amPmFormat: Bool {
         get {
             return timeFormat.contains("p")
         }

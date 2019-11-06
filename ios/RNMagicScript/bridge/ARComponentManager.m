@@ -392,9 +392,9 @@ RCT_EXPORT_METHOD(addOnColorCanceledEventReceivedHandler:(NSString *)nodeId) {
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
-        colorPickerNode.onColorCanceled = ^(UiColorPickerNode *sender) {
+        colorPickerNode.onColorCanceled = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker canceled: %@");
-            [[AREventsManager instance] onColorCanceledEventReceived:sender];
+            [[AREventsManager instance] onColorCanceledEventReceived:sender value:value];
         };
     }
 }

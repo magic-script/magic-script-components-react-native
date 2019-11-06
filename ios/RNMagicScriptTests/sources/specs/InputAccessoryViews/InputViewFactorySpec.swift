@@ -76,7 +76,7 @@ fileprivate struct SimpleDatePickerDataProvider: DatePickerDataProviding {
     func dateConfirmed() { }
 }
 fileprivate struct SimpleTimePickerDataProvider: TimePickerDataProviding {
-    var aMpMFormat: Bool = true
+    var amPmFormat: Bool = true
     var timePickerValue: Date = Date()
     func timeChanged() { }
     func timeConfirmed() { }

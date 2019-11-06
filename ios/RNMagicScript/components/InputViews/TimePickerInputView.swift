@@ -20,7 +20,7 @@ class TimePickerInputView: UIView {
     var pickerData: TimePickerDataProviding? {
         didSet {
             if let pickerData = pickerData {
-                dateTimePicker.locale = pickerData.aMpMFormat ? Locale(identifier: "en_US") : Locale(identifier: "en_GB")
+                dateTimePicker.locale = pickerData.amPmFormat ? Locale(identifier: "en_US") : Locale(identifier: "en_GB")
             } else {
                 dateTimePicker.locale = Locale(identifier: "en_GB")
             }

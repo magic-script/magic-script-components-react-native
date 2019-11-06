@@ -86,7 +86,7 @@ class ViewController: UIViewController {
             print("\(sender) confirmed \(value)")
         }
 
-        uiColorPickerNode.onColorCanceled = { sender in
+        uiColorPickerNode.onColorCanceled = { sender, value in
             print("\(sender) canceled ")
         }
 

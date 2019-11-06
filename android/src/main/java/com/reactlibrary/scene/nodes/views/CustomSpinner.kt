@@ -76,6 +76,7 @@ class CustomSpinner @JvmOverloads constructor(
     private val spinnerRect = RectF()
     private val animator: ValueAnimator
     private var animationAngle = START_ANGLE // for indeterminate mode
+    private var attached = false
 
     init {
         // disabling hardware acceleration to make blur effect working
@@ -88,8 +89,37 @@ class CustomSpinner @JvmOverloads constructor(
         animator.duration = INDETERMNATE_ROTATION_TIME
         animator.addUpdateListener {
             this.animationAngle = it.animatedValue as Float
-            invalidate()
+            if (attached) {
+                invalidate()
+            }
         }
+    }
+
+    // e.g. when activity was resumed
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        attached = true
+        if (type == Type.INDETERMINATE) {
+            if (!animator.isStarted) {
+                animator.start()
+            } else if (animator.isPaused) {
+                animator.resume()
+            }
+        }
+    }
+
+    // Called e.g. when activity was paused. In that case we should pause animation,
+    // because otherwise the invalidate() queue will overflow and animation may hung.
+    // See: https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/ProgressBar.java
+    override fun onDetachedFromWindow() {
+        attached = false
+        if (type == Type.INDETERMINATE && animator.isStarted) {
+            animator.pause()
+        }
+
+        // This should come after stopping animation, otherwise an invalidate message remains in the
+        // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
+        super.onDetachedFromWindow()
     }
 
     private val paint = Paint(ANTI_ALIAS_FLAG).apply {

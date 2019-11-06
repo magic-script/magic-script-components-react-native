@@ -24,7 +24,9 @@ import com.google.ar.sceneform.rendering.ExternalTexture
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.VideoRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultDouble
 
@@ -57,6 +59,12 @@ class VideoNode(initProps: ReadableMap,
     private val initialWidth = 1F // meters
     private val initialHeight = 1F // meters
 
+    /**
+     * Set default clipping (all renderable visible).
+     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
+     */
+    private var materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+
     init {
         // set default values of properties
         properties.putDefaultDouble(PROP_VOLUME, DEFAULT_VOLUME)
@@ -83,10 +91,21 @@ class VideoNode(initProps: ReadableMap,
         loadVideo()
     }
 
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
+        applyMaterialClipping()
+    }
+
     // destroying media player when node is detached (e.g. on scene change)
     override fun onDestroy() {
         super.onDestroy()
         videoPlayer.release()
+    }
+
+    private fun applyMaterialClipping() {
+        contentNode.renderable?.material?.let { material ->
+            Utils.applyMaterialClipping(material, materialClip)
+        }
     }
 
     private fun loadVideo() {
@@ -105,6 +124,7 @@ class VideoNode(initProps: ReadableMap,
                 if (result is RenderableResult.Success) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
                     contentNode.renderable = result.renderable
+                    applyMaterialClipping()
                 }
             }
         }

@@ -17,8 +17,27 @@ material {
         {
             "type" : "bool",
             "name" : "disableChromaKey",
+        },
+        {
+            "type" : "float",
+            "name" : "top"
+        },
+        {
+           "type" : "float",
+           "name" : "bottom"
+        },
+        {
+            "type" : "float",
+            "name" : "left"
+        },
+        {
+            "type" : "float",
+            "name" : "right"
         }
     ],
+    variables : [
+            myPos
+        ],
     "requires" : [
         "position",
         "uv0"
@@ -27,7 +46,14 @@ material {
     // Blending is "masked" instead of "transparent" so that the shadows account for the
     // transparent regions of the video instead of just the shape of the mesh.
     "blending" : "masked",
-    "doubleSided" : false
+    "doubleSided" : false,
+    "vertexDomain" : object
+}
+
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+         material.myPos.xyz = getPosition().xyz; // float3
+    }
 }
 
 fragment {
@@ -67,5 +93,15 @@ fragment {
         } else {
             material.baseColor = color;
         }
+
+        // (0, 0) at bottom-center
+        if(variable_myPos.x < materialParams.left
+            || variable_myPos.x > materialParams.right
+            || variable_myPos.y > materialParams.top
+            || variable_myPos.y < materialParams.bottom
+        ) {
+            discard;
+        }
+
     }
 }

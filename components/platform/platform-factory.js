@@ -22,6 +22,8 @@ const Event = {
     onSelectionChanged: 'onSelectionChanged',
     onSliderChanged: 'onSliderChanged',
     onTextChanged: 'onTextChanged',
+    onTimeChanged: 'onTimeChanged',
+    onTimeConfirmed: 'onTimeConfirmed',
     onToggleChanged: 'onToggleChanged',
     onVideoPrepared: 'onVideoPrepared',
 };
@@ -59,6 +61,8 @@ export class PlatformFactory extends NativeFactory {
         this.startListeningEvent(Event.onScrollChanged);
         this.startListeningEvent(Event.onSelectionChanged);
         this.startListeningEvent(Event.onSliderChanged);
+        this.startListeningEvent(Event.onTimeChanged);
+        this.startListeningEvent(Event.onTimeConfirmed);
         this.startListeningEvent(Event.onTextChanged);
         this.startListeningEvent(Event.onToggleChanged);
         this.startListeningEvent(Event.onVideoPrepared);
@@ -107,6 +111,10 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnSliderChangedEventHandler(elementId);
         } else if (name === Event.onTextChanged) {
             this.componentManager.addOnTextChangedEventHandler(elementId);
+        } else if (name === Event.onTimeChanged) {
+            this.componentManager.addOnTimeChangedEventHandler(elementId);
+        } else if (name === Event.onTimeConfirmed) {
+            this.componentManager.addOnTimeConfirmedEventHandler(elementId);
         } else if (name === Event.onToggleChanged) {
             this.componentManager.addOnToggleChangedEventHandler(elementId);
         } else if (name === Event.onVideoPrepared) {

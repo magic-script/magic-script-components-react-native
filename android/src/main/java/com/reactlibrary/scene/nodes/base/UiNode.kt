@@ -23,12 +23,18 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.views.ViewWrapper
 import com.reactlibrary.utils.*
+import com.reactlibrary.utils.Utils.Companion.metersToPx
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -49,12 +55,14 @@ abstract class UiNode(
     }
 
     /**
-     * Node width and height based on [view] size (in meters)
+     * Node width and height based on [view] size (in meters).
+     * It does not include the scale.
      *
      * Note that the size is known only after the node is built
      * (after all properties have been applied)
      */
-    private var size = Vector2(0F, 0F)
+    var size = Vector2(0F, 0F)
+        private set
 
     var clickListener: (() -> Unit)? = null
 
@@ -62,6 +70,7 @@ abstract class UiNode(
      * A view attached to the node
      */
     protected lateinit var view: View
+    private lateinit var viewWrapper: ViewWrapper
 
     private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
@@ -74,9 +83,30 @@ abstract class UiNode(
      */
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
 
+    /**
+     * Set default clipping (all renderable visible).
+     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
+     */
+    private var materialClipBounding = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+
     init {
         // set default values of properties
         properties.putDefaultBoolean(PROP_ENABLED, true)
+    }
+
+    /**
+     * Should be called when the size of the node may have changed,
+     * so we need to rebuild the native view (renderable)
+     * (resizing the current view does not work - ARCore bug?)
+     */
+    fun setNeedsRebuild() {
+        if (updatingProperties) {
+            shouldRebuild = true
+        }
+    }
+
+    open fun disallowInterceptTouchEvent(): Boolean {
+        return false
     }
 
     /**
@@ -125,20 +155,66 @@ abstract class UiNode(
         return Bounding(left, bottom, right, top)
     }
 
+    /*
+     * Setting clip bounds at a shader level (shader is contained inside material
+     * from which android_view.sfb is built)
+     *
+     * https://google.github.io/filament/Materials.md.html
+     * By default getPosition() returns NDC - Normalized Device Coordinates;
+     * for "vertexDomain" : object it means that coordinates are normalized relative
+     * to a model size (0 - 1), origin (0, 0) is at bottom-center.
+     */
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        if (!clipNativeView) {
+            return
+        }
+
+        // clipping a texture
+        materialClipBounding = Utils.calculateMaterialClipping(clipBounds, getBounding())
+        applyMaterialClipping()
+
+        // clipping collision shape (regarding click events)
+        val pivotCenterOffset = Vector2(
+                -horizontalAlignment.centerOffset * size.x,
+                -verticalAlignment.centerOffset * size.y
+        )
+
+        val nodeCollisionShape = Bounding(
+                -size.x / 2 * localScale.x,
+                -size.y / 2 * localScale.y,
+                size.x / 2 * localScale.x,
+                size.y / 2 * localScale.y
+        ).translate(pivotCenterOffset)
+
+        val clipCollisionShape = clipBounds.translate(-getContentPosition())
+
+        var intersection = Bounding(
+                max(nodeCollisionShape.left, clipCollisionShape.left),
+                max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
+                min(nodeCollisionShape.right, clipCollisionShape.right),
+                min(nodeCollisionShape.top, clipCollisionShape.top)
+        )
+        if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
+            intersection = Bounding()
+        }
+
+        // collision shape is not aware of scale, we need to scale to original position
+        val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
+        val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
+        val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
+
+        val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
+        val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
+        val collisionShapeCenter = Vector3(centerX, centerY, 0F)
+
+        val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
+
+        contentNode.collisionShape = collisionShape
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null) //stop the loop
-    }
-
-    /**
-     * Should be called when the size of the node may have changed,
-     * so we need to rebuild the native view (renderable)
-     * (resizing the current view does not work - ARCore bug?)
-     */
-    fun setNeedsRebuild() {
-        if (updatingProperties) {
-            shouldRebuild = true
-        }
     }
 
     protected abstract fun provideView(context: Context): View
@@ -159,13 +235,13 @@ abstract class UiNode(
         val widthPx = if (width == WRAP_CONTENT_DIMENSION) {
             ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
-            Utils.metersToPx(width, context)
+            metersToPx(width, context)
         }
 
         val heightPx = if (height == WRAP_CONTENT_DIMENSION) {
             ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
-            Utils.metersToPx(height, context)
+            metersToPx(height, context)
         }
         // we have to set layout params before attaching view to the node
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
@@ -181,6 +257,7 @@ abstract class UiNode(
 
     // build calls applyProperties, so we need to initialize the view before
     private fun initView() {
+        viewWrapper = ViewWrapper(context, this)
         this.view = provideView(context)
         this.view.setOnClickListener {
             onViewClick()
@@ -202,16 +279,19 @@ abstract class UiNode(
     private fun attachView() {
         loadingView = true
 
+        viewWrapper.addView(view)
+
         val alignHorizontal = if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
         val alignVertical = if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
         val config = ViewRenderableLoader.Config(
-                view = view,
+                view = viewWrapper,
                 horizontalAlignment = alignHorizontal,
                 verticalAlignment = alignVertical
         )
         viewRenderableLoader.loadRenderable(config) { result ->
             if (result is RenderableResult.Success) {
                 contentNode.renderable = result.renderable
+                applyMaterialClipping()
             }
             loadingView = false
         }
@@ -239,10 +319,15 @@ abstract class UiNode(
         handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
+    private fun applyMaterialClipping() {
+        contentNode.renderable?.material?.let { material ->
+            Utils.applyMaterialClipping(material, materialClipBounding)
+        }
+    }
+
     private fun setEnabled(props: Bundle) {
         if (props.containsKey(PROP_ENABLED)) {
             view.isEnabled = props.getBoolean(PROP_ENABLED)
         }
     }
-
 }

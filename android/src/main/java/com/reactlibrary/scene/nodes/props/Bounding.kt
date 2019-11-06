@@ -16,6 +16,7 @@
 
 package com.reactlibrary.scene.nodes.props
 
+import com.reactlibrary.utils.Vector2
 import kotlin.math.abs
 
 /**
@@ -44,4 +45,25 @@ data class Bounding(
         }
     }
 
+    fun size(): Vector2 {
+        val width = right - left
+        val height = top - bottom
+        return Vector2(width, height)
+    }
+
+    fun center(): Vector2 {
+        val x = (right + left) / 2F
+        val y = (top + bottom) / 2F
+        return Vector2(x, y)
+    }
+
+    // Get new Bounding equal to this translated by 2D vector.
+    fun translate(translation: Vector2): Bounding {
+        return Bounding(
+                left + translation.x,
+                bottom + translation.y,
+                right + translation.x,
+                top + translation.y
+        )
+    }
 }

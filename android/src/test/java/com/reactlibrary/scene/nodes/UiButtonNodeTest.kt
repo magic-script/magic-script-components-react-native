@@ -23,21 +23,24 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
+import com.reactlibrary.R
 import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyString
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -51,6 +54,7 @@ class UiButtonNodeTest {
     private lateinit var viewSpy: CustomButton
     private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
+    private lateinit var iconsRepo: IconsRepository
 
     @Before
     fun setUp() {
@@ -62,6 +66,9 @@ class UiButtonNodeTest {
                 return providerTypeface
             }
         }
+        this.iconsRepo = mock()
+        val sampleIcon = context.getDrawable(R.drawable.add)
+        whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
     }
 
     @Test
@@ -90,7 +97,6 @@ class UiButtonNodeTest {
 
         assertEquals(UiButtonNode.DEFAULT_ROUNDNESS, roundness)
     }
-
 
     @Test
     fun shouldApplyTextWhenTextPropertyPresent() {
@@ -138,6 +144,46 @@ class UiButtonNodeTest {
     }
 
     @Test
+    fun shouldSetIconWhenIconPropertyPresent() {
+        val props = JavaOnlyMap.of(UiButtonNode.PROP_ICON, "magic-icon")
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).setIcon(any())
+    }
+
+    @Test
+    fun shouldSetIconColorWhenIconColorPropertyPresent() {
+        val color = JavaOnlyArray.of(0.1, 0.2, 0.3, 0.4)
+        val props = JavaOnlyMap.of(
+                UiButtonNode.PROP_ICON, "magic-icon",
+                UiButtonNode.PROP_ICON_COLOR, color
+        )
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).setIconColor(any())
+    }
+
+    @Test
+    fun shouldSetIconSizeWhenIconSizePropertyPresent() {
+        val sizeInMeters = 0.1
+        val iconSize = JavaOnlyArray.of(sizeInMeters, sizeInMeters)
+        val props = JavaOnlyMap.of(
+                UiButtonNode.PROP_ICON, "magic-icon",
+                UiButtonNode.PROP_ICON_SIZE, iconSize
+        )
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        val sizeInPixels = Utils.metersToPx(sizeInMeters.toFloat(), context).toFloat()
+        verify(viewSpy).iconSize = Vector2(sizeInPixels, sizeInPixels)
+    }
+
+    @Test
     fun shouldNotChangeHardcodedAlignment() {
         val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "bottom-right")
         val node = createNodeWithViewSpy(props)
@@ -178,7 +224,7 @@ class UiButtonNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock(), fontProvider) {
+        return object : UiButtonNode(props, context, mock(), fontProvider, iconsRepo) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

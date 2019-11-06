@@ -7,15 +7,43 @@ material {
         {
            "type" : "samplerExternal",
            "name" : "viewTexture"
+        },
+        {
+            "type" : "float",
+            "name" : "top"
+        },
+        {
+            "type" : "float",
+            "name" : "bottom"
+        },
+        {
+             "type" : "float",
+             "name" : "left"
+        },
+        {
+            "type" : "float",
+            "name" : "right"
         }
     ],
+    variables : [
+             myPos
+    ],
+
     "requires" : [
         "position",
         "uv0"
     ],
     "shadingModel" : "unlit",
     "blending" : "transparent",
-    "doubleSided" : false
+    "doubleSided" : false,
+    "vertexDomain" : object
+}
+
+
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+         material.myPos.xyz = getPosition().xyz; // float3
+    }
 }
 
 fragment {
@@ -30,5 +58,15 @@ fragment {
 
         material.baseColor = texture(materialParams_viewTexture, uv);
         material.baseColor.rgb = inverseTonemapSRGB(material.baseColor.rgb);
+
+        // (0, 0) at bottom-center
+        if(variable_myPos.x < materialParams.left
+            || variable_myPos.x > materialParams.right
+            || variable_myPos.y > materialParams.top
+            || variable_myPos.y < materialParams.bottom
+        ) {
+            discard;
+        }
+
     }
 }

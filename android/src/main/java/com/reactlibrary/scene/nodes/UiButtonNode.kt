@@ -26,6 +26,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.PropertiesReader
@@ -36,7 +37,8 @@ import com.reactlibrary.utils.putDefaultDouble
 open class UiButtonNode(initProps: ReadableMap,
                         context: Context,
                         viewRenderableLoader: ViewRenderableLoader,
-                        private val fontProvider: FontProvider
+                        private val fontProvider: FontProvider,
+                        private val iconsRepo: IconsRepository
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -47,6 +49,9 @@ open class UiButtonNode(initProps: ReadableMap,
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_ROUNDNESS = "roundness"
+        const val PROP_ICON = "icon"
+        const val PROP_ICON_COLOR = "iconColor"
+        const val PROP_ICON_SIZE = "iconSize"
 
         const val DEFAULT_ROUNDNESS = 1.0
         const val DEFAULT_TEXT_SIZE = 0.0167
@@ -114,6 +119,9 @@ open class UiButtonNode(initProps: ReadableMap,
         setTextSize(props)
         setTextColor(props)
         setRoundness(props)
+        setIcon(props)
+        setIconColor(props)
+        setIconSize(props)
     }
 
     override fun setAlignment(props: Bundle) {
@@ -174,6 +182,32 @@ open class UiButtonNode(initProps: ReadableMap,
         if (props.containsKey(PROP_ROUNDNESS)) {
             val roundness = props.getDouble(PROP_ROUNDNESS).toFloat()
             (view as CustomButton).roundnessFactor = roundness
+        }
+    }
+
+    private fun setIcon(props: Bundle) {
+        val iconName = props.getString(PROP_ICON)
+        if (iconName != null) {
+            val icon = iconsRepo.getIcon(iconName, false)
+            if (icon != null) {
+                (view as CustomButton).setIcon(icon)
+            }
+        }
+    }
+
+    private fun setIconColor(props: Bundle) {
+        val color = PropertiesReader.readColor(props, PROP_ICON_COLOR)
+        if (color != null) {
+            (view as CustomButton).setIconColor(color)
+        }
+    }
+
+    private fun setIconSize(props: Bundle) {
+        val size = PropertiesReader.readVector2(props, PROP_ICON_SIZE)
+        if (size != null) {
+            val widthPx = Utils.metersToPx(size.x, view.context).toFloat()
+            val heightPx = Utils.metersToPx(size.y, view.context).toFloat()
+            (view as CustomButton).iconSize = Vector2(widthPx, heightPx)
         }
     }
 

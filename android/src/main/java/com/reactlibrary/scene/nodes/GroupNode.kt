@@ -32,6 +32,13 @@ import com.reactlibrary.utils.Utils
 class GroupNode(initProps: ReadableMap) :
         TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
+    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+        val localBounds = clipBounds.translate(-getContentPosition())
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.setClipBounds(localBounds, clipNativeView) }
+    }
+
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         return Bounding(
@@ -41,6 +48,5 @@ class GroupNode(initProps: ReadableMap) :
                 childBounds.top + contentNode.localPosition.y
         )
     }
-
 }
 

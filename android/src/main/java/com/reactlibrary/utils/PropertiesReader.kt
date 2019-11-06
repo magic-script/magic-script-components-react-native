@@ -22,6 +22,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.props.AABB
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Padding
 
@@ -40,6 +41,16 @@ class PropertiesReader {
 
         fun readFilePath(props: Bundle, propertyName: String, context: Context): Uri? {
             return getFileUri(props, propertyName, context, "raw")
+        }
+
+        fun readVector2(props: Bundle, propertyName: String): Vector2? {
+            val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
+            if (vector.size == 2) {
+                val x = vector[0].toFloat()
+                val y = vector[1].toFloat()
+                return Vector2(x, y)
+            }
+            return null
         }
 
         fun readVector3(props: Bundle, propertyName: String): Vector3? {
@@ -124,6 +135,17 @@ class PropertiesReader {
             val verticalAlign = Alignment.VerticalAlignment.valueOf(alignmentArray[0].toUpperCase())
             val horizontalAlign = Alignment.HorizontalAlignment.valueOf(alignmentArray[1].toUpperCase())
             return Alignment(verticalAlign, horizontalAlign)
+        }
+
+        /**
+         * Returns [AABB] or null if [props] do not contain the property
+         * data for a given [propertyName]
+         */
+        fun readAABB(props: Bundle, propertyName: String): AABB? {
+            val data = props.getBundle(propertyName) ?: return null
+            val min = readVector3(data, "min") ?: return null
+            val max = readVector3(data, "max") ?: return null
+            return AABB(min, max)
         }
 
         private fun getFileUri(props: Bundle, propertyName: String, context: Context, resType: String): Uri? {

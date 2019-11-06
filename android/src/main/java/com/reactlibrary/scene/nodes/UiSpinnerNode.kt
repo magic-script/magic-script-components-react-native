@@ -21,9 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -43,11 +40,7 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
 
         const val DEFAULT_HEIGHT = 0.07
         const val DEFAULT_DETERMINATE = false
-        const val INDETERMINATE_VALUE = 0.25F // 45 degrees
     }
-
-    private val rotationSpeed = 360f // angle per second
-    private var currentAngle = 0f
 
     init {
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
@@ -62,15 +55,6 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
         val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         val width = height
         return Vector2(width.toFloat(), height.toFloat())
-    }
-
-    override fun onUpdate(frameTime: FrameTime) {
-        super.onUpdate(frameTime)
-        if (!properties.getBoolean(PROP_DETERMINATE)) {
-            // View animation is buggy, so we rotate the Node
-            currentAngle -= rotationSpeed * frameTime.deltaSeconds
-            contentNode.localRotation = Quaternion.axisAngle(Vector3(0f, 0f, 1f), currentAngle)
-        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -90,8 +74,11 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
 
     private fun setDeterminate(props: Bundle) {
         if (props.containsKey(PROP_DETERMINATE)) {
-            if (!props.getBoolean(PROP_DETERMINATE)) {
-                (view as CustomSpinner).value = INDETERMINATE_VALUE
+            val isDeterminate = props.getBoolean(PROP_DETERMINATE)
+            (view as CustomSpinner).type = if (isDeterminate) {
+                CustomSpinner.Type.DETERMINATE
+            } else {
+                CustomSpinner.Type.INDETERMINATE
             }
         }
     }

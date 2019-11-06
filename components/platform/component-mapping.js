@@ -23,6 +23,7 @@ import TimePickerBuilder from "./elements/builders/time-picker-builder.js";
 import ToggleBuilder from "./elements/builders/toggle-builder.js";
 import VideoBuilder from "./elements/builders/video-builder.js";
 import WebViewBuilder from "./elements/builders/webview-builder.js";
+import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
 
 export default {
   version: "1.0",
@@ -59,6 +60,7 @@ export default {
     line: componentManager => new LineBuilder(componentManager),
     model: componentManager => new ModelBuilder(componentManager),
     video: componentManager => new VideoBuilder(componentManager),
-    webView: componentManager => new WebViewBuilder(componentManager)
+    webView: componentManager => new WebViewBuilder(componentManager),
+    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager)
   }
 };

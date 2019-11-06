@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.ViewRenderableLoader
@@ -70,8 +71,9 @@ abstract class UiNode(
      * A view attached to the node
      */
     protected lateinit var view: View
-    private lateinit var viewWrapper: ViewWrapper
+    protected var onViewLoadedListener: ((renderable: Renderable) -> Unit)? = null
 
+    private lateinit var viewWrapper: ViewWrapper
     private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
     private var loadingView = false
@@ -98,9 +100,12 @@ abstract class UiNode(
      * Should be called when the size of the node may have changed,
      * so we need to rebuild the native view (renderable)
      * (resizing the current view does not work - ARCore bug?)
+     *
+     * @param force whether to force the rebuild. Use this flag with caution
+     * in particular during [applyProperties] execution (the rebuild may loop)
      */
-    fun setNeedsRebuild() {
-        if (updatingProperties) {
+    fun setNeedsRebuild(force: Boolean = false) {
+        if (updatingProperties || force) {
             shouldRebuild = true
         }
     }
@@ -289,11 +294,12 @@ abstract class UiNode(
                 verticalAlignment = alignVertical
         )
         viewRenderableLoader.loadRenderable(config) { result ->
+            loadingView = false
             if (result is RenderableResult.Success) {
                 contentNode.renderable = result.renderable
                 applyMaterialClipping()
+                onViewLoadedListener?.invoke(result.renderable)
             }
-            loadingView = false
         }
     }
 

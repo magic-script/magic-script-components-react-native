@@ -34,10 +34,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setupARView()
-//        setupScrollViewTest()
+        setupScrollViewTest()
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
-        setupUiColorPickerNodeTest()
+//        setupUiColorPickerNodeTest()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -72,7 +72,7 @@ class ViewController: UIViewController {
     fileprivate var scrollBarSize: CGFloat = 0.1
 
     fileprivate var linearLayout: UiLinearLayoutNode!
-    fileprivate let contentSize: CGFloat = 0.5
+    fileprivate let contentSize: CGFloat = 1
     fileprivate func setupUiColorPickerNodeTest() {
         let uiColorPickerNodeId: String = "uiColorPickerNodeId"
         let uiColorPickerNode: UiColorPickerNode = createComponent(["color": [0.95, 0.85, 0.75, 1]], nodeId: uiColorPickerNodeId)
@@ -129,13 +129,14 @@ class ViewController: UIViewController {
 
         // Group
         let groupId: String = "group"
-        let _: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
+        let q = SCNQuaternion.fromAxis(SCNVector3(0,1,0), andAngle: Float(45.0.toRadians))
+        let _: UiGroupNode = createComponent(["localRotation": [q.x, q.y, q.z, q.w], "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 
         // Toggle
         let toggle: UiToggleNode = createComponent([
-            "localPosition": [0.15, 0.4, 0],
-            "height": 0.04,
-            "textSize": 0.04,
+            "localPosition": [0.2, 0.8, 0],
+            "height": 0.08,
+            "textSize": 0.08,
             "on": true,
             "text": "Vertical scroll"
         ], nodeId: "toggle", parentId: groupId)
@@ -153,14 +154,14 @@ class ViewController: UIViewController {
         let scrollBarId: String = "scroll_bar"
         scrollBar = createComponent([
             "debug": false,
-            "height": 0.02,
+            "height": 0.04,
         ], nodeId: scrollBarId, parentId: scrollViewId)
 //        createGridWithIcons(parentId: scrollViewId)
 
         // Linear
         linearLayout = createLinearLayoutWithImages(imageSize, parentId: scrollViewId)
 
-        let slider: UiSliderNode = createComponent(["width" : 0.7, "height": 0.04, "localPosition": [0, -0.5, 0]], nodeId: "slider", parentId: groupId)
+//        let slider: UiSliderNode = createComponent(["width" : 0.7, "height": 0.04, "localPosition": [0, -0.5, 0]], nodeId: "slider", parentId: groupId)
 
         onOrientationChange(true)
     }
@@ -173,8 +174,8 @@ class ViewController: UIViewController {
         scrollBar.scrollOrientation = orientation
         linearLayout.layoutOrientation = orientation
 
-        scrollView.scrollBounds = (min: SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1),
-                                   max: SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1))
+        scrollView.scrollBounds = (min: SCNVector3(-0*0.5 * size.width, -0.5 * size.height, -0.1),
+                                   max: SCNVector3(2*0.5 * size.width, 0.5 * size.height, 0.1))
         scrollBar.width = 1.25 * contentSize
         let bounds: CGRect = scrollView.getBounds()
         if orientation == .vertical {
@@ -207,7 +208,7 @@ class ViewController: UIViewController {
         let linearId = "linear"
         let linear: UiLinearLayoutNode = createComponent([
 //            "defaultItemPadding": [0.015, 0.005, 0.015, 0.005],
-            "alignment": "center-center"
+            "alignment": "top-left"
         ], nodeId: linearId, parentId: parentId)
 
         let alpha: CGFloat = 0.2

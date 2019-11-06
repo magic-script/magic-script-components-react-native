@@ -80,11 +80,9 @@ import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
-import com.reactlibrary.utils.ExtensionsKt;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.security.cert.Extension;
 import java.util.Collections;
 import java.util.Map;
 
@@ -110,7 +108,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
     private static final String EVENT_DROPDOWN_SELECTION_CHANGED = "onSelectionChanged";
     private static final String EVENT_SLIDER_VALUE_CHANGED = "onSliderChanged";
-    private static final String EVENT_COLOR_SELECTED = "onColorSelected";
+    private static final String EVENT_COLOR_CONFIRMED = "onColorConfirmed";
+    private static final String EVENT_COLOR_CANCELLED = "onColorCanceled";
+    private static final String EVENT_COLOR_CHANGED = "onColorChanged";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -301,7 +301,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader);
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -472,11 +472,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorSelectedEventHandler(final String nodeId) {
+    public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if(node instanceof UiColorPickerNode) {
-                ((UiColorPickerNode) node).setOnColorSelected((colors) -> {
+                ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     WritableArray selectedItems = Arguments.createArray();
@@ -484,7 +484,42 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                         selectedItems.pushDouble(color);
                     }
                     params.putArray(EVENT_ARG_COLOR, selectedItems);
-                    sendEvent(EVENT_COLOR_SELECTED, params);
+                    sendEvent(EVENT_COLOR_CONFIRMED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiColorPickerNode) {
+                ((UiColorPickerNode) node).setOnColorCanceled(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_COLOR_CANCELLED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnColorChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiColorPickerNode) {
+                ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    WritableArray selectedItems = Arguments.createArray();
+                    for (final Double color : colors) {
+                        selectedItems.pushDouble(color);
+                    }
+                    params.putArray(EVENT_ARG_COLOR, selectedItems);
+                    sendEvent(EVENT_COLOR_CHANGED, params);
                     return Unit.INSTANCE;
                 });
             }

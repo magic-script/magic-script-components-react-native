@@ -111,7 +111,7 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnToggleChangedEventHandler(elementId);
         } else if (name === Event.onVideoPrepared) {
             this.componentManager.addOnVideoPreparedEventHandler(elementId);
-        }
+        } 
 
         const pair = { name, handler };
         var events = this.eventsByElementId[elementId];

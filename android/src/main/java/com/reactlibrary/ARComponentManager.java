@@ -300,7 +300,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader);
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }

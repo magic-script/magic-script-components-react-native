@@ -16,35 +16,42 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
-import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.views.ColorPickerDialog
 import com.reactlibrary.scene.nodes.views.CustomButton
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.toJsColorArray
+
 
 open class UiColorPickerNode @JvmOverloads constructor(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    private val fontProvider: FontProvider,
+    private val iconsRepo: IconsRepository,
     private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo) {
 
     companion object {
         const val PROP_COLOR = "color"
+        const val PROP_STARTING_COLOR = "startingColor"
         const val PROP_HEIGHT = "height"
+        const val PROP_WIDTH = "width"
     }
 
     init {
         properties.apply {
-            putDefaultString(PROP_COLOR, "[1.0, 1.0, 1.0, 1.0]")
-            putDefaultDouble(PROP_HEIGHT, 1.0)
+            putDefaultString(PROP_STARTING_COLOR, "[1.0, 1.0, 1.0, 1.0]")
         }
 
         colorPickerDialog.apply {
@@ -69,20 +76,21 @@ open class UiColorPickerNode @JvmOverloads constructor(
         set(value) {
             field = value
             (view as CustomButton).apply {
-                setIcon(ColorDrawable(value))
-                text = "#${value.toString(16)}"
+                val hexColor = Integer.toHexString(value)
+                setIconColor(value)
+                text = "#$hexColor"
             }
 
         }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.color_picker, null)
+        return LayoutInflater.from(context).inflate(com.reactlibrary.R.layout.color_picker, null)
     }
 
-    override fun provideDesiredSize(): Vector2 {
-        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble()).toFloat()
+    override fun setupView() {
+        super.setupView()
 
-        return Vector2(height * 3, height)
+        (view as CustomButton).setIcon(ColorDrawable(Color.WHITE))
     }
 
     override fun applyProperties(props: Bundle) {
@@ -96,8 +104,11 @@ open class UiColorPickerNode @JvmOverloads constructor(
 
     private fun setColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_COLOR)
+        val startingColor = PropertiesReader.readColor(props, PROP_STARTING_COLOR)
         if (color != null) {
             selectedColor = color
+        } else if (startingColor != null) {
+            selectedColor = startingColor
         }
     }
 

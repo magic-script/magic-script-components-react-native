@@ -49,7 +49,6 @@ export class PlatformFactory extends NativeFactory {
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
         this.startListeningEvent(Event.onClick);
         this.startListeningEvent(Event.onColorCanceled);
-        this.startListeningEvent(Event.onColorCanceled);
         this.startListeningEvent(Event.onColorChanged);
         this.startListeningEvent(Event.onColorConfirmed);
         this.startListeningEvent(Event.onDateChanged);
@@ -90,12 +89,8 @@ export class PlatformFactory extends NativeFactory {
             this.componentManager.addOnColorConfirmedEventReceivedHandler(elementId);
         } else if (name === Event.onColorCanceled) {
             this.componentManager.addOnColorCanceledEventReceivedHandler(elementId);
-        } else if (name === Event.onColorCanceled) {
-            this.componentManager.addOnColorCanceledEventHandler(elementId);
-        }else if (name === Event.onColorChanged) {
+        } else if (name === Event.onColorChanged) {
             this.componentManager.addOnColorChangedEventHandler(elementId);
-        }else if (name === Event.onColorConfirmed) {
-            this.componentManager.addOnColorConfirmedEventHandler(elementId);
         } else if (name === Event.onDateChanged) {
             this.componentManager.addOnDateChangedEventHandler(elementId);
         } else if (name === Event.onDateConfirmed) {

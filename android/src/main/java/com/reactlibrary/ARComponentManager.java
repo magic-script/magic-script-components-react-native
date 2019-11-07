@@ -57,6 +57,7 @@ import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiListViewItemNode;
+import com.reactlibrary.scene.nodes.UiListViewNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
 import com.reactlibrary.scene.nodes.UiScrollViewNode;
@@ -328,6 +329,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createUiListViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiListViewNode(props, context, viewRenderableLoader), nodeId));
+    }
+
+    @ReactMethod
     public void addChildNode(final String nodeId, final String parentId) {
         mainHandler.post(() -> UiNodesManager.addNodeToParent(nodeId, parentId));
     }
@@ -475,7 +481,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -495,7 +501,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorCanceled(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -510,7 +516,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorChangedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -554,5 +560,5 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void onHostDestroy() {
         MediaPlayerPool.INSTANCE.destroy();
     }
-    
+
 }

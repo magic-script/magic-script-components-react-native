@@ -24,6 +24,7 @@ import ToggleBuilder from "./elements/builders/toggle-builder.js";
 import VideoBuilder from "./elements/builders/video-builder.js";
 import WebViewBuilder from "./elements/builders/webview-builder.js";
 import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
+import ListViewBuilder from './elements/builders/listview-builder.js';
 
 export default {
   version: "1.0",
@@ -50,6 +51,8 @@ export default {
     timePicker: componentManager => new TimePickerBuilder(componentManager),
     toggle: componentManager => new ToggleBuilder(componentManager),
     view: componentManager => new GroupBuilder(componentManager),
+    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
+    listView: (componentManager) => new ListViewBuilder(componentManager),
 
     // layouts
     gridLayout: componentManager => new GridLayoutBuilder(componentManager),
@@ -60,7 +63,6 @@ export default {
     line: componentManager => new LineBuilder(componentManager),
     model: componentManager => new ModelBuilder(componentManager),
     video: componentManager => new VideoBuilder(componentManager),
-    webView: componentManager => new WebViewBuilder(componentManager),
-    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager)
+    webView: componentManager => new WebViewBuilder(componentManager)
   }
 };

@@ -38,7 +38,7 @@ import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.onDrawListener
 import com.reactlibrary.utils.putDefaultString
 
-class UiScrollViewNode(
+open class UiScrollViewNode(
         initProps: ReadableMap,
         context: Context,
         viewRenderableLoader: ViewRenderableLoader) :

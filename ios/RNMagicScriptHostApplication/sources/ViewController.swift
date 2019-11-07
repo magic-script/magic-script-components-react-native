@@ -171,8 +171,8 @@ class ViewController: UIViewController {
         scrollBar.scrollOrientation = orientation
         linearLayout.layoutOrientation = orientation
 
-        scrollView.scrollBounds = (min: SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1),
-                                   max: SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1))
+        scrollView.scrollBounds = (min: SCNVector3(-0.25 * size.width, -0.5 * size.height, -0.1),
+                                   max: SCNVector3(0.75 * size.width, 0.5 * size.height, 0.1))
         scrollBar.width = 1.25 * contentSize
         let bounds: CGRect = scrollView.getBounds()
         if orientation == .vertical {
@@ -181,14 +181,14 @@ class ViewController: UIViewController {
             scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.height, 0)
         }
 
-        scrollView.scrollValue = 0.1
+        scrollView.scrollValue = 0
         UiNodesManager.instance.updateLayout()
     }
 
     fileprivate func createLinearLayoutWithImages(_ imageSize: CGSize, parentId: String? = nil) -> UiLinearLayoutNode {
         let linearId = "linear"
         let linear: UiLinearLayoutNode = createComponent([
-            "alignment": "center-center"
+            "alignment": "top-right"
         ], nodeId: linearId, parentId: parentId)
 
         let alpha: CGFloat = 0.2

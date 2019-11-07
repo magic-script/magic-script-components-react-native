@@ -172,11 +172,11 @@ import SceneKit
                 y: 0.5 * (contentSize.height - scrollSize.height)
             )
 
-//            if let uiNode = scrollContent as? UiNode {
-//                let alignOffset = uiNode.alignment.shiftDirection
-//                offset.x -= alignOffset.x * contentSize.width
-//                offset.y -= alignOffset.y * contentSize.height
-//            }
+            if let uiNode = scrollContent as? UiNode {
+                let alignOffset = uiNode.alignment.shiftDirection
+                offset.x -= alignOffset.x * contentSize.width
+                offset.y -= alignOffset.y * contentSize.height
+            }
             proxyNode.position = contentPositionNegated + SCNVector3(offset.x, offset.y, 0)
         } else {
             contentSize = CGSize.zero

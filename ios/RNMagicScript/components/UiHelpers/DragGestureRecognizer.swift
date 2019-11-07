@@ -19,17 +19,17 @@ import UIKit
 import SceneKit
 
 @objc class DragGestureRecognizer: UIGestureRecognizer {
-    fileprivate let cameraNode: SCNNode
     fileprivate let nodeSelector: UiNodeSelector
     fileprivate var trackedTouch: UITouch?
     fileprivate var initialRay: Ray?
     fileprivate(set) var dragNode: Dragging?
     fileprivate var beginPoint: SCNVector3 = SCNVector3Zero
+    fileprivate(set) var dragAxis: Ray?
     fileprivate(set) var beginDragValue: CGFloat = 0
     fileprivate(set) var dragDelta: CGFloat = 0
+    var getCameraNode: (() -> SCNNode?)?
 
-    init(cameraNode: SCNNode, nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
-        self.cameraNode = cameraNode
+    init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         super.init(target: target, action: action)
     }
@@ -42,13 +42,15 @@ import SceneKit
         // Capture the first touch and store some information about it.
         if trackedTouch == nil {
             if let firstTouch = touches.first,
+               let cameraNode = getCameraNode?(),
                let ray = Ray(gesture: self, cameraNode: cameraNode),
                let node = nodeSelector.draggingHitTest(ray: ray),
-               let dragAxis = node.dragAxis,
-               let point = dragAxis.getClosestPointTo(ray: ray) {
+               let axis = node.dragAxis,
+               let point = axis.getClosestPointTo(ray: ray) {
                 trackedTouch = firstTouch
                 initialRay = ray
                 dragNode = node
+                dragAxis = axis
                 beginPoint = point
                 beginDragValue = node.dragValue
                 dragDelta = 0
@@ -67,7 +69,8 @@ import SceneKit
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let ray = Ray(gesture: self, cameraNode: cameraNode),
+        if let cameraNode = getCameraNode?(),
+            let ray = Ray(gesture: self, cameraNode: cameraNode),
             let dragRange = dragNode?.dragRange, dragRange > 0 {
             let delta = calculateDelta(for: ray)
             dragDelta = delta / dragRange
@@ -87,13 +90,14 @@ import SceneKit
         trackedTouch = nil
         initialRay = nil
         dragNode = nil
+        dragAxis = nil
         beginPoint = SCNVector3Zero
         beginDragValue = 0
         dragDelta = 0
     }
 
     fileprivate func calculateDelta(for ray: Ray) -> CGFloat {
-        guard let dragAxis = dragNode?.dragAxis,
+        guard let dragAxis = dragAxis,
             let point = dragAxis.getClosestPointTo(ray: ray) else { return 0 }
 
         let dir = (point - beginPoint).normalized()

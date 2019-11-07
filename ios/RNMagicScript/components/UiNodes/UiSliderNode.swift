@@ -234,7 +234,7 @@ extension UiSliderNode: SliderDataProviding {
             if value != newValue {
                 value = newValue
                 layoutIfNeeded()
-                onSliderChanged?(self, value);
+                onSliderChanged?(self, value)
             }
         }
     }

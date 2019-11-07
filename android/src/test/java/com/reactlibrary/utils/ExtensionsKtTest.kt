@@ -16,11 +16,18 @@
 
 package com.reactlibrary.utils
 
+import android.app.DatePickerDialog
 import android.graphics.Color
+import android.widget.DatePicker
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
+import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 class ExtensionsKtTest {
@@ -36,5 +43,31 @@ class ExtensionsKtTest {
             get(2) shouldEqual Color.blue(color).toDouble() / 255
             get(3) shouldEqual Color.alpha(color).toDouble() / 255
         }
+    }
+
+    @Test
+    fun `DatePickerDialog should update date from Date`() {
+        val tested = mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS)
+
+        val nov8_2019 = Date(1573205438928)
+
+        tested.updateDate(nov8_2019)
+        verify(tested).updateDate(2019, Calendar.NOVEMBER, 8)
+    }
+
+    @Test
+    fun `DatePickerDialog should update min and max year`() {
+        val datePicker: DatePicker = mock()
+        val tested = mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS).also {
+            whenever(it.datePicker).thenReturn(datePicker)
+        }
+
+        val dec_31_2000 = 978220800000L
+        val dec_31_2030 = 1924905600000L
+
+        tested.updateMinMaxYear(2000, 2030)
+        verify(datePicker).minDate = dec_31_2000
+        verify(datePicker).maxDate = dec_31_2030
+
     }
 }

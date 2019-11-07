@@ -148,7 +148,7 @@ class ViewController: UIViewController {
         scrollView = createComponent([
             "alignment": "center-center",
             "debug": true,
-            "scrollBarVisibility": "always",
+            "scrollBarVisibility": "auto",
         ], nodeId: scrollViewId, parentId: groupId)
 
         // Scroll bar
@@ -176,9 +176,9 @@ class ViewController: UIViewController {
         scrollBar.width = 1.25 * contentSize
         let bounds: CGRect = scrollView.getBounds()
         if orientation == .vertical {
-            scrollBar.localPosition = SCNVector3(bounds.maxX, bounds.midY, 0)
+            scrollBar.localPosition = SCNVector3(bounds.maxX - 0.5 * scrollBar.height, bounds.midY, 0)
         } else {
-            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY, 0)
+            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.height, 0)
         }
 
         scrollView.scrollValue = 0.1

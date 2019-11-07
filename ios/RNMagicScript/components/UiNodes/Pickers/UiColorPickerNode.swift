@@ -46,8 +46,8 @@ import SceneKit
 
     @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onColorChanged: ((_ sender: UiColorPickerNode, _ selected: [CGFloat]) -> (Void))?
-    @objc public var onConfirm: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
-    @objc public var onCancel: ((_ sender: UiColorPickerNode) -> (Void))?
+    @objc public var onColorConfirmed: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
+    @objc public var onColorCanceled: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
 
     fileprivate var roundness: CGFloat = 1.0
 
@@ -182,11 +182,11 @@ extension UiColorPickerNode: ColorPickerDataProviding {
     }
 
     func colorConfirmed() {
-        onConfirm?(self, color.toArrayOfCGFloat)
+        onColorConfirmed?(self, color.toArrayOfCGFloat)
     }
 
     func colorCanceled() {
-        onCancel?(self)
+        onColorCanceled?(self, color.toArrayOfCGFloat)
     }
 }
 

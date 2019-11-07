@@ -17,7 +17,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 13 | ProgressBar | UiProgressBar | 👍 | 👍 | 👍 | [link](coverage/ProgressBar.md)
 14 | GridLayout | UiGridLayout | 👍 | 👍 | 👍 | [link](coverage/GridLayout.md)
 15 | LinearLayout | UiLinearLayout | 👍 | 👍 | 🚧 | [link](coverage/LinearLayout.md)
-16 | RectLayout | UiRectLayout | 👍 | 👍 | 👍 |
+16 | RectLayout | UiRectLayout | 👍 | 👍 | 👍 | [link](coverage/RectLayout.md)
 17 | DropdownList | UiDropDownList | 👍 | 👍 | 🚧 | [link](coverage/DropdownList.md)
 18 | DropdownListItem | DropDownListItem | 👍 | 👍 | 👍 | [link](coverage/DropdownListItem.md)
 19 | Toggle | UiToggle | 👍 | 👍 | 👍 | [link](coverage/Toggle.md)
@@ -28,10 +28,10 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 24 | Dialog | UiDialog | 👍 | 4 D | 3 D |
 25 | Tab | UiTab | 👍 | ? | 3 D |
 26 | PageView | UiPageView | 👍 | ? | 2.5 D |
-27 | WebView | UiWebView | 👍 | 3 D | 👍|
-28 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 |
-29 | TimePicker | UiTimePicker | 👍 | 👍 | 4 D |
-30 | DatePicker | UiDatePicker | 👍 | 👍 | 4 D |
+27 | WebView | UiWebView | 👍 | 3 D | 👍|  [link](coverage/WebView.md)
+28 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
+29 | TimePicker | UiTimePicker | 👍 | 👍 | 4 D | [link](coverage/TimePicker.md)
+30 | DatePicker | UiDatePicker | 👍 | 👍 | 4 D | [link](coverage/DatePicker.md)
 31 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |
 32 | CircleConfirmation | UiCircleConfirmation | 👍 | 5 D | 2 D
 33 | Line | LineNode | 👍 | 👍 | 👍 | [link](coverage/Line.md)

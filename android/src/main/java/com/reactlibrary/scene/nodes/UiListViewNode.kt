@@ -17,15 +17,96 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
+import android.os.Bundle
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.Node
 import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.logMessage
 
 class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
     : UiScrollViewNode(initProps, context, viewRenderableLoader) {
 
+    private val containerNode: UiLinearLayout
+
     companion object {
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+
+        const val DEFAULT_ORIENTATION = "vertical"
+        const val DEFAULT_ITEM_ALIGNMENT = "top-left"
     }
-    
+
+    private var contentAdded = false
+    private var contentSize = Vector2()
+
+    init {
+        val listProps = JavaOnlyMap()
+        listProps.putString(UiLinearLayout.PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        containerNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
+
+        onContentSizeChangedListener = { contentSize ->
+            this.contentSize = contentSize
+
+            val size = readSize()
+
+            if (size.x == WRAP_CONTENT_DIMENSION || size.y == WRAP_CONTENT_DIMENSION) {
+                logMessage("content size change, rebuilding")
+                setNeedsRebuild(true)
+            }
+        }
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+    }
+
+    override fun provideDesiredSize(): Vector2 {
+        val size = readSize()
+
+        val width = if (size.x != WRAP_CONTENT_DIMENSION) {
+            size.x
+        } else {
+            contentSize.x
+        }
+
+        val height = if (size.y != WRAP_CONTENT_DIMENSION) {
+            size.y
+        } else {
+            contentSize.y
+        }
+
+        logMessage("setting size: $width, $height")
+        return Vector2(width, height)
+    }
+
+    override fun build() {
+        super.build()
+        // in case of rebuild, we don't want to attach again the content
+        if (!contentAdded) {
+            containerNode.build()
+            addContent(containerNode)
+            contentAdded = true
+        }
+    }
+
+    override fun addContent(child: Node) {
+        if (child is UiListViewItemNode) {
+            containerNode.addContent(child)
+        } else super.addContent(child)
+    }
+
+    private fun readSize(): Vector2 {
+        val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
+        val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        return Vector2(width.toFloat(), height.toFloat())
+    }
 }

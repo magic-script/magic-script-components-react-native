@@ -6,6 +6,12 @@ export const Events = [
     }
   },
   {
+    name: "onPress",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnPressEventHandler(elementId);
+    }
+  },
+  {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
       componentManager.addOnColorConfirmedEventReceivedHandler(elementId);

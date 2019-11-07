@@ -19,9 +19,9 @@ package com.reactlibrary.scene.nodes.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.onLayoutListener
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
@@ -63,9 +63,12 @@ class CustomScrollView @JvmOverloads constructor(
     private var previousTouch = Vector2()
 
     init {
-        this.onLayoutListener {
-            updateScrollbars()
-        }
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                updateScrollbars()
+            }
+        })
     }
 
     override fun stopNestedScroll() {

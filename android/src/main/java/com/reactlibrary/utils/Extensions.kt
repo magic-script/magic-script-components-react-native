@@ -21,7 +21,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -92,18 +91,6 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
     if (!containsKey(key)) {
         putSerializable(key, value)
     }
-}
-
-/**
- * android.view.View
- */
-inline fun View.onLayoutListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
-            f()
-        }
-    })
 }
 
 /*

@@ -56,6 +56,8 @@ open class UiScrollViewNode(
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
 
+    private var nodeSize = Vector2()
+
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
@@ -198,20 +200,32 @@ open class UiScrollViewNode(
     private fun layoutLoop() {
         looperHandler.postDelayed({
             content?.let { it ->
-                val newBounds = it.getContentBounding()
-                if (!Bounding.equalInexact(contentBounds, newBounds)) {
-                    val scrollView = (view as CustomScrollView)
-                    contentBounds = newBounds
-                    val contentSize = contentBounds.size()
-                    scrollView.contentSize = Vector2(
-                            metersToPx(contentSize.x, context).toFloat(),
-                            metersToPx(contentSize.y, context).toFloat())
-                    update(scrollView.position)
-                    onContentSizeChangedListener?.invoke(contentSize)
+                val newContentBounds = it.getContentBounding()
+                // TODO reset new bounds on rebuild
+                if (!Bounding.equalInexact(contentBounds, newContentBounds)) {
+                    this.contentBounds = newContentBounds
+                    layout()
+                    onContentSizeChangedListener?.invoke(newContentBounds.size())
+                    return@let
+                } else {
+                    val newNodeSize = provideDesiredSize()
+                    if (newNodeSize != nodeSize) {
+                        this.nodeSize = newNodeSize
+                        layout()
+                    }
                 }
             }
             layoutLoop()
         }, LAYOUT_LOOP_DELAY)
+    }
+
+    private fun layout() {
+        val scrollView = (view as CustomScrollView)
+        val contentSize = contentBounds.size()
+        scrollView.contentSize = Vector2(
+                metersToPx(contentSize.x, context).toFloat(),
+                metersToPx(contentSize.y, context).toFloat())
+        update(scrollView.position)
     }
 
     private fun update(viewPosition: Vector2) {

@@ -33,7 +33,6 @@ import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils.Companion.metersToPx
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.onDrawListener
 import com.reactlibrary.utils.putDefaultString
 
 open class UiScrollViewNode(
@@ -106,22 +105,6 @@ open class UiScrollViewNode(
         // need to re-attach native views in case of rebuild
         setupVerticalBar()
         setupHorizontalBar()
-
-        view.onDrawListener {
-            if (scrollRequested) {
-                content?.let { content ->
-                    val viewBounds = getScrollBounds()
-                    val clipBounds = viewBounds.translate(-getContentPosition())
-                    content.setClipBounds(clipBounds, clipNativeView = false)
-                    content.localPosition = Vector3(
-                            requestedContentPosition.x,
-                            requestedContentPosition.y,
-                            Z_ORDER_OFFSET  // Moving content up in z-plane, so it'll receive touch events first.
-                    )
-                }
-                scrollRequested = false
-            }
-        }
 
         val scrollView = view as CustomScrollView
         scrollView.onScrollChangeListener = { position: Vector2 ->
@@ -218,7 +201,7 @@ open class UiScrollViewNode(
                     scrollView.contentSize = Vector2(
                             metersToPx(contentSize.x, context).toFloat(),
                             metersToPx(contentSize.y, context).toFloat())
-                    update(scrollView.position, true)
+                    update(scrollView.position)
                     onContentSizeChangedListener?.invoke(contentSize)
                 }
             }
@@ -226,12 +209,8 @@ open class UiScrollViewNode(
         }, LAYOUT_LOOP_DELAY)
     }
 
-    private fun update(viewPosition: Vector2, forceUpdate: Boolean = false) {
+    private fun update(viewPosition: Vector2) {
         content?.let { content ->
-            if (scrollRequested && !forceUpdate) {
-                return
-            }
-
             val contentBounds = content.getContentBounding()
             val viewBounds = getScrollBounds()
             val alignTopLeft = Vector2(
@@ -248,7 +227,14 @@ open class UiScrollViewNode(
             requestedContentPosition = alignTopLeft + travel
 
             val clipBounds = viewBounds.translate(-getContentPosition())
-            content.setClipBounds(clipBounds, clipNativeView = true)
+            content.setClipBounds(clipBounds)
+
+            // Moving content up in z-plane, so it'll receive touch events first.
+            content.localPosition = Vector3(
+                    requestedContentPosition.x,
+                    requestedContentPosition.y,
+                    Z_ORDER_OFFSET)
+
             view.invalidate()
 
             scrollRequested = true

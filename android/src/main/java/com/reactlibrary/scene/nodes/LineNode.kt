@@ -81,10 +81,7 @@ class LineNode(initProps: ReadableMap,
         )
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        if (clipNativeView) {
-            return
-        }
+    override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = clipBounds.translate(-getContentPosition())
 
         val center = localBounds.center().toVector3()

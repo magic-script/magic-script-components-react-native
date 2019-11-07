@@ -106,14 +106,6 @@ inline fun View.onLayoutListener(crossinline f: () -> Unit) {
     })
 }
 
-inline fun View.onDrawListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
-        override fun onDraw() {
-            f()
-        }
-    })
-}
-
 /*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end

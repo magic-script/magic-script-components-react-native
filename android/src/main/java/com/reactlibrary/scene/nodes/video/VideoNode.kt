@@ -91,7 +91,7 @@ class VideoNode(initProps: ReadableMap,
         loadVideo()
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+    override fun setClipBounds(clipBounds: Bounding) {
         materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
     }

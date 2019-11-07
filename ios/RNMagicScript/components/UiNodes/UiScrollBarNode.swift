@@ -70,10 +70,6 @@ import SceneKit
     fileprivate var backgroundNode: SCNNode!
     fileprivate var thumbNode: SCNNode!
 
-    deinit {
-        removeAllActions()
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 

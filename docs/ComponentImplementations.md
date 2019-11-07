@@ -8,9 +8,9 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
  4 | Button | UiButton | 👍 | 👍 | 👍 | [link](coverage/Button.md)
  5 | Image | UiImage | 👍 | 👍 | 👍 | [link](coverage/Image.md)
  6 | ScrollBar | UiScrollBar | 👍 | 👍 | 👍 | [link](coverage/ScrollBar.md)
- 7 | ScrollView | UiScrollView | 👍 | 🚧 | 🚧 |
- 8 | ListView | UiListView | 👍 | 8 D | 6 D |
- 9 | ListViewItem | UiListViewItem | 👍 | 3 D | 3 D |
+ 7 | ScrollView | UiScrollView | 👍 | 👍 | 🚧 |
+ 8 | ListView | UiListView | 👍 | 🚧 | 6 D |
+ 9 | ListViewItem | UiListViewItem | 👍 | 🚧 | 3 D |
 10 | Model | ModelNode | 👍 | 👍 | 👍 | [link](coverage/Model.md)
 11 | Spinner | UiLoadingSpinner | 👍 | 👍| 👍 | [link](coverage/Spinner.md)
 12 | Slider | UiSlider | 👍 | 👍 | 👍 | [link](coverage/Slider.md)

@@ -18,6 +18,10 @@ import SceneKit
 
 @objc open class UiScrollViewNode: UiNode {
 
+    @objc override var alignment: Alignment {
+        get { return .centerCenter }
+        set { }
+    }
     @objc var scrollDirection: ScrollDirection = .horizontal {
         didSet { setNeedsLayout() }
     }

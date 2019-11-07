@@ -75,13 +75,13 @@ import SceneKit
 
 extension SCNNode {
     func convertPlane(_ plane: Plane, to node: SCNNode?) -> Plane {
-        let center = convertVector(plane.center, to: node)
+        let center = convertPosition(plane.center, to: node)
         let normal = convertVector(plane.normal, to: node).normalized()
         return Plane(center: center, normal: normal)
     }
 
     func convertPlane(_ plane: Plane, from node: SCNNode?) -> Plane {
-        let center = convertVector(plane.center, from: node)
+        let center = convertPosition(plane.center, from: node)
         let normal = convertVector(plane.normal, from: node).normalized()
         return Plane(center: center, normal: normal)
     }

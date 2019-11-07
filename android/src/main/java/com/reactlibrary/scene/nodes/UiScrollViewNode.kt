@@ -63,7 +63,6 @@ open class UiScrollViewNode(
     private var hBar: UiScrollBarNode? = null
     private var vBar: UiScrollBarNode? = null
 
-    private var scrollRequested = false
     private var requestedContentPosition = Vector2()
 
     private var looperHandler = Handler(Looper.getMainLooper())
@@ -173,6 +172,12 @@ open class UiScrollViewNode(
         )
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // stop the layout loop
+        looperHandler.removeCallbacksAndMessages(null)
+    }
+
     private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
         val bar = scrollBarNode.getCustomScrollBar()
         if (bar.isVertical) {
@@ -235,9 +240,6 @@ open class UiScrollViewNode(
                     requestedContentPosition.y,
                     Z_ORDER_OFFSET)
 
-            view.invalidate()
-
-            scrollRequested = true
         }
     }
 

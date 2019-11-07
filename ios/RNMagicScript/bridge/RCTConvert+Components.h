@@ -16,6 +16,7 @@
 
 #import <React/RCTConvert.h>
 
+@class UiAudioNode;
 @class UiButtonNode;
 @class UiGridLayoutNode;
 @class UiGroupNode;
@@ -40,6 +41,7 @@
 @class UiColorPickerNode;
 
 @interface RCTConvert (Components)
++ (UiAudioNode *)UiAudioNode:(id)json;
 + (UiButtonNode *)UiButtonNode:(id)json;
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;

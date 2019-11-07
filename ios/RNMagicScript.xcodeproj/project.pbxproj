@@ -43,6 +43,10 @@
 		44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
 		44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
 		44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
+		447755382374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
+		447755392374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
+		447755592374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
+		4477555A2374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
 		447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		448586FB235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
 		448586FC235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
@@ -464,6 +468,8 @@
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
+		447755372374C15600E98F03 /* UiAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNode.swift; sourceTree = "<group>"; };
+		447755582374D37C00E98F03 /* AudioAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAction.swift; sourceTree = "<group>"; };
 		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		448586FA235DC1FD00D372CB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
@@ -953,6 +959,7 @@
 				4425EDFC2366052F0064A2EA /* Layouts */,
 				C4A12B142361B69B009B7083 /* Pickers */,
 				C465C25E234DC89200157AA6 /* UiDropdownList */,
+				447755372374C15600E98F03 /* UiAudioNode.swift */,
 				44AFAC0C232B9BCE005AC8EF /* UiButtonNode.swift */,
 				44AFAC05232B9BCE005AC8EF /* UiGroupNode.swift */,
 				44AFAC09232B9BCE005AC8EF /* UiImageNode.swift */,
@@ -976,6 +983,7 @@
 			isa = PBXGroup;
 			children = (
 				44AFAC15232B9BCF005AC8EF /* Alignment.swift */,
+				447755582374D37C00E98F03 /* AudioAction.swift */,
 				44AFAC13232B9BCF005AC8EF /* FontStyle.swift */,
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
@@ -1741,6 +1749,7 @@
 				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
+				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
@@ -1792,6 +1801,7 @@
 				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				C4A12B312361C85C009B7083 /* Side.swift in Sources */,
 				44AFAD23232BCAE3005AC8EF /* UiVideoNode.swift in Sources */,
+				4477555A2374D37C00E98F03 /* AudioAction.swift in Sources */,
 				441FC16D2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				C4A12B2E2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
 				44F596432355C5B500C60F4C /* Orientation.swift in Sources */,
@@ -1935,10 +1945,12 @@
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,
 				C4A12B2D2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
 				448586FE235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
+				447755382374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,
+				447755592374D37C00E98F03 /* AudioAction.swift in Sources */,
 				C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
 				44A59E8B233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */,
 				C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */,

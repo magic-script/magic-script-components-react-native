@@ -19,6 +19,10 @@
 
 @implementation RCTConvert (AR)
 
++ (UiAudioNode *)UiAudioNode:(id)json {
+    return [[UiAudioNode alloc] initWithProps:json];
+}
+
 + (UiButtonNode *)UiButtonNode:(id)json {
     return [[UiButtonNode alloc] initWithProps:json];
 }

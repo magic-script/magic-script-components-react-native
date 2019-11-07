@@ -228,6 +228,12 @@
 		C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
+		C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7A237420BB000E88C1 /* UiListViewNode.swift */; };
+		C4596A7C237420BB000E88C1 /* UiListViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7A237420BB000E88C1 /* UiListViewNode.swift */; };
+		C4596A7E237420CA000E88C1 /* UiListViewItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */; };
+		C4596A7F237420CA000E88C1 /* UiListViewItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */; };
+		C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A82237421A4000E88C1 /* UiListViewNodeSpec.swift */; };
+		C4596A85237421B0000E88C1 /* UiListViewItemNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A84237421B0000E88C1 /* UiListViewItemNodeSpec.swift */; };
 		C465C260234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */; };
 		C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */; };
 		C465C263234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C262234DDC3300157AA6 /* UiDropdownListItemNode.swift */; };
@@ -606,6 +612,10 @@
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
 		C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfigurationSpec.swift; sourceTree = "<group>"; };
 		C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownListItemTapHandling.swift; sourceTree = "<group>"; };
+		C4596A7A237420BB000E88C1 /* UiListViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewNode.swift; sourceTree = "<group>"; };
+		C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewItemNode.swift; sourceTree = "<group>"; };
+		C4596A82237421A4000E88C1 /* UiListViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewNodeSpec.swift; sourceTree = "<group>"; };
+		C4596A84237421B0000E88C1 /* UiListViewItemNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewItemNodeSpec.swift; sourceTree = "<group>"; };
 		C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListNode.swift; sourceTree = "<group>"; };
 		C465C262234DDC3300157AA6 /* UiDropdownListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListItemNode.swift; sourceTree = "<group>"; };
 		C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListItemNodeSpec.swift; sourceTree = "<group>"; };
@@ -950,6 +960,7 @@
 		44AFAC04232B9BCE005AC8EF /* UiNodes */ = {
 			isa = PBXGroup;
 			children = (
+				C4596A692374209D000E88C1 /* UiListView */,
 				4425EDFC2366052F0064A2EA /* Layouts */,
 				C4A12B142361B69B009B7083 /* Pickers */,
 				C465C25E234DC89200157AA6 /* UiDropdownList */,
@@ -1113,11 +1124,11 @@
 		44F0930B232D985A0081FF14 /* UiNodes */ = {
 			isa = PBXGroup;
 			children = (
+				C4596A8123742189000E88C1 /* List */,
+				C4596A802374217D000E88C1 /* Dropdown */,
 				44A3FCFF2366254600402912 /* Layouts */,
 				C4A12B152361B6AC009B7083 /* Pickers */,
 				44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */,
-				C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */,
-				C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */,
 				C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */,
 				44F09314232D985A0081FF14 /* UiImageNodeSpec.swift */,
 				C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */,
@@ -1241,6 +1252,33 @@
 				7D4DF31E22FCA7D700407B0B /* libjsiexecutor-tvOS.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C4596A692374209D000E88C1 /* UiListView */ = {
+			isa = PBXGroup;
+			children = (
+				C4596A7A237420BB000E88C1 /* UiListViewNode.swift */,
+				C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */,
+			);
+			path = UiListView;
+			sourceTree = "<group>";
+		};
+		C4596A802374217D000E88C1 /* Dropdown */ = {
+			isa = PBXGroup;
+			children = (
+				C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */,
+				C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */,
+			);
+			path = Dropdown;
+			sourceTree = "<group>";
+		};
+		C4596A8123742189000E88C1 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				C4596A82237421A4000E88C1 /* UiListViewNodeSpec.swift */,
+				C4596A84237421B0000E88C1 /* UiListViewItemNodeSpec.swift */,
+			);
+			path = List;
 			sourceTree = "<group>";
 		};
 		C465C25E234DC89200157AA6 /* UiDropdownList */ = {
@@ -1732,6 +1770,7 @@
 				44AFAD1A232BCAE3005AC8EF /* UiImageNode.swift in Sources */,
 				C4FB475B234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAD20232BCAE3005AC8EF /* UiTextNode.swift in Sources */,
+				C4596A7F237420CA000E88C1 /* UiListViewItemNode.swift in Sources */,
 				C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */,
 				44AFAD16232BCAE3005AC8EF /* Measures.swift in Sources */,
 				44AFAD18232BCAE3005AC8EF /* UiGridLayoutNode.swift in Sources */,
@@ -1791,6 +1830,7 @@
 				44AFAD1D232BCAE3005AC8EF /* UiProgressBarNode.swift in Sources */,
 				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				C4A12B312361C85C009B7083 /* Side.swift in Sources */,
+				C4596A7C237420BB000E88C1 /* UiListViewNode.swift in Sources */,
 				44AFAD23232BCAE3005AC8EF /* UiVideoNode.swift in Sources */,
 				441FC16D2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				C4A12B2E2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
@@ -1813,6 +1853,7 @@
 				44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */,
 				44D8FE95233B9A2E007FD766 /* UiTextEditNodeSpec.swift in Sources */,
 				44F0933A232D9E2E0081FF14 /* FontStyleSpec.swift in Sources */,
+				C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */,
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */,
@@ -1845,6 +1886,7 @@
 				44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */,
 				44F0932E232D985A0081FF14 /* ConvertSpec.swift in Sources */,
 				44F09327232D985A0081FF14 /* UiButtonNodeSpec.swift in Sources */,
+				C4596A85237421B0000E88C1 /* UiListViewItemNodeSpec.swift in Sources */,
 				44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */,
 				44F0932F232D985A0081FF14 /* beCloseTo.swift in Sources */,
 				44F09324232D985A0081FF14 /* UiSpinnerNodeSpec.swift in Sources */,
@@ -1887,6 +1929,7 @@
 				44AFAC4F232B9BCF005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44AFAC49232B9BCF005AC8EF /* FontStyle.swift in Sources */,
+				C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */,
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
@@ -1940,6 +1983,7 @@
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,
 				C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
+				C4596A7E237420CA000E88C1 /* UiListViewItemNode.swift in Sources */,
 				44A59E8B233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */,
 				C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */,
 				44AFAC3A232B9BCF005AC8EF /* TransformNode.swift in Sources */,

@@ -24,7 +24,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 20 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 2 D |
 21 | Panel | UiPanel | 👍 | ? | 2 D |
 22 | Video | VideoNode | 👍 | 👍 | 👍 | [link](coverage/Video.md)
-23 | Audio | AudioNode | 👍 | 3 D | 4 D |
+23 | Audio | AudioNode | 👍 | 🚧 | 4 D |
 24 | Dialog | UiDialog | 👍 | 4 D | 3 D |
 25 | Tab | UiTab | 👍 | ? | 3 D |
 26 | PageView | UiPageView | 👍 | ? | 2.5 D |

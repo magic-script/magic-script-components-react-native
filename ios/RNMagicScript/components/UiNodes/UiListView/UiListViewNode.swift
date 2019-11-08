@@ -101,13 +101,14 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let linearLayoutSize = linearLayout.getSize()
-        return CGSize(width: linearLayoutSize.width, height: linearLayoutSize.height/4)
+        print("getSize: \(linearLayoutSize)")
+        return CGSize(width: linearLayoutSize.width, height: linearLayoutSize.height)
     }
 
     @objc override func updateLayout() {
         let size = getSize()
-        let min = SCNVector3(-0.5 * size.width, -0.125 * size.height, -0.1)
-        let max = SCNVector3(0.5 * size.width, 0.125 * size.height, 0.1)
+        let min = SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1)
+        let max = SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1)
         scrollView.scrollBounds = (min: min, max: max)
         scrollView.layoutIfNeeded()
     }
@@ -131,13 +132,13 @@ import SceneKit
         setNeedsLayout()
     }
 
-    @objc override func setDebugMode(_ debug: Bool) {
+//    @objc override func setDebugMode(_ debug: Bool) {
 //        super.setDebugMode(debug)
-//        scrollBar.setDebugMode(debug)
-        scrollView.setDebugMode(debug)
-//        linearLayout.setDebugMode(debug)
-//        items.forEach { $0.setDebugMode(debug) }
-    }
+////        scrollBar.setDebugMode(debug)
+////        scrollView.setDebugMode(debug)
+////        linearLayout.setDebugMode(debug)
+////        items.forEach { $0.setDebugMode(debug) }
+//    }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
         return scrollView.hitTest(ray: ray)

@@ -34,11 +34,18 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setupARView()
+        setupScene()
+    }
+
+    let groupId: String = "group"
+    fileprivate func setupScene() {
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 //        setupScrollViewTest()
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
 //        setupUiColorPickerNodeTest()
         setupUiListViewNodeTest()
+        UiNodesManager.instance.updateLayout()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -72,28 +79,23 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
 
-    fileprivate var uiListViewNode: UiListViewNode!
-    fileprivate var uiListViewItemNode: UiListViewItemNode!
-    fileprivate var uiButtonNode: UiButtonNode!
-
     fileprivate var linearLayout: UiLinearLayoutNode!
     fileprivate let contentSize: CGFloat = 0.5
 
     fileprivate func setupUiListViewNodeTest() {
-        let uiListViewNodeId: String = "uiListViewNodeId"
-        uiListViewNode = createComponent(["defaultItemAlignment": "center-right", "defaultItemPadding": [0, 0.07, 0, 0.07]], nodeId: uiListViewNodeId)
-        uiListViewNode.position = SCNVector3(0.0, 0.250, 0.0)
+        let listViewId: String = "listView"
+        let listView: UiListViewNode = createComponent(["debug": true, "defaultItemAlignment": "center-right", "defaultItemPadding": [0, 0.07, 0, 0.07]], nodeId: listViewId, parentId: groupId)
+        listView.position = SCNVector3(0, 0.25, 0)
 
-        let uiListViewItemNodeId: String = "uiListViewItemNodeId"
-        uiListViewItemNode = createComponent([:], nodeId: uiListViewItemNodeId, parentId: uiListViewNodeId)
+        let animals = ["bear", "sheep", "pig", "cat", "tiger", "snake", "dog", "rat", "octopus"]
+        for (index, animal) in animals.enumerated() {
+            let itemNodeId: String = "listViewItem_\(index)"
+            let _: UiListViewItemNode = createComponent([:], nodeId: itemNodeId, parentId: listViewId)
+            let buttonId: String = "button_\(index)"
+            let _: UiButtonNode = createComponent(["text": animal, "textSize": 0.35], nodeId: buttonId, parentId: itemNodeId)
+        }
 
-        let uiButtonNodeId: String = "uiButtonNodeId"
-        uiButtonNode = createComponent(["text": "Text 1", "textSize": 0.35], nodeId: uiButtonNodeId)
-
-        uiListViewItemNode.addChild(uiButtonNode)
-
-        uiListViewNode.setDebugMode(true)
-        uiListViewNode.layoutIfNeeded()
+//        uiListViewNode.setDebugMode(true)
     }
 
     fileprivate func setupUiColorPickerNodeTest() {
@@ -113,13 +115,13 @@ class ViewController: UIViewController {
             print("\(sender) canceled ")
         }
 
-//        uiColorPickerNode.setDebugMode(true)
         uiColorPickerNode.layoutIfNeeded()
     }
 
     fileprivate func setupUiDatePickerNodeTest() {
+
         let uiDatePickerNodeId: String = "uiDatePickerNodeId"
-        let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId)
+        let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId, parentId: groupId)
         uiDatePickerNode.position = SCNVector3(-0.125, 0.250, 0.0)
 
         uiDatePickerNode.onDateConfirmed = { sender, value in
@@ -149,10 +151,6 @@ class ViewController: UIViewController {
 
     fileprivate func setupScrollViewTest() {
         let imageSize = CGSize(width: contentSize, height: contentSize)
-
-        // Group
-        let groupId: String = "group"
-        let _: UiGroupNode = createComponent(["debug": true], nodeId: groupId)
 
         // Toggle
         let toggle: UiToggleNode = createComponent([

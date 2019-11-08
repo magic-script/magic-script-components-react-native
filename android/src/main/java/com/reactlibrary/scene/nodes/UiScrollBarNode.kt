@@ -43,14 +43,16 @@ open class UiScrollBarNode(initProps: ReadableMap, context: Context, viewRendera
 
         const val DEFAULT_WIDTH = 0.04
         const val DEFAULT_HEIGHT = 1.2
+        const val DEFAULT_THUMB_SIZE = 0.0
+        const val DEFAULT_THUMB_POSITION = 0.0
     }
 
     init {
         // set default properties values
         properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
         properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        properties.putDefaultDouble(PROP_THUMB_POSITION, 0.0)
-        properties.putDefaultDouble(PROP_THUMB_SIZE, 0.0)
+        properties.putDefaultDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION)
+        properties.putDefaultDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
         properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 

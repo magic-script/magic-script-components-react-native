@@ -25,7 +25,6 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.logMessage
 
 class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
     : UiScrollViewNode(initProps, context, viewRenderableLoader) {
@@ -35,6 +34,7 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
     companion object {
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+        const val PROP_ORIENTATION = "orientation"
 
         const val DEFAULT_ORIENTATION = "vertical"
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
@@ -44,10 +44,11 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
     private var contentSize = Vector2()
 
     init {
-        val listProps = JavaOnlyMap()
-        listProps.putString(UiLinearLayout.PROP_ORIENTATION, DEFAULT_ORIENTATION)
-        listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
-        containerNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
+        val containerProps = JavaOnlyMap()
+        val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
+        containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        containerNode = UiLinearLayout(containerProps, LinearLayoutManagerImpl())
 
         onContentSizeChangedListener = { contentSize ->
             this.contentSize = contentSize
@@ -55,13 +56,15 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
             val size = readSize()
 
             if (size.x == WRAP_CONTENT_DIMENSION || size.y == WRAP_CONTENT_DIMENSION) {
-                logMessage("content size change, rebuilding")
                 setNeedsRebuild(true)
             }
         }
     }
 
     override fun applyProperties(props: Bundle) {
+        if (props.containsKey(PROP_ORIENTATION)) {
+            props.putString(PROP_SCROLL_DIRECTION, props.getString(PROP_ORIENTATION))
+        }
         super.applyProperties(props)
 
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
@@ -83,8 +86,6 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
         } else {
             contentSize.y
         }
-
-        logMessage("setting size: $width, $height")
         return Vector2(width, height)
     }
 

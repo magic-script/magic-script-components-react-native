@@ -39,7 +39,7 @@ class ViewController: UIViewController {
 
     let groupId: String = "group"
     fileprivate func setupScene() {
-        let _: UiGroupNode = createComponent(["localScale": [0.25, 0.25, 0.25]], nodeId: groupId)
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 //        setupScrollViewTest()
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
@@ -77,17 +77,16 @@ class ViewController: UIViewController {
 
     fileprivate func setupUiListViewNodeTest() {
         let listViewId: String = "listView"
-        let listView: UiListViewNode = createComponent(["debug": true, "defaultItemAlignment": "center-right", "defaultItemPadding": [0, 0.07, 0, 0.07]], nodeId: listViewId, parentId: groupId)
+        let listView: UiListViewNode = createComponent(["debug": true, "defaultItemAlignment": "center-left", "defaultItemPadding": [0, 0.04, 0, 0.0]], nodeId: listViewId, parentId: groupId)
         listView.width = 0
-        listView.height = 3
-//        listView.position = SCNVector3(0, 0.25, 0)
+        listView.height = 1.0
 
         let animals = ["bear", "sheep", "pig", "cat", "tiger", "snake", "dog", "rat", "octopus"]
         for (index, animal) in animals.enumerated() {
             let itemNodeId: String = "listViewItem_\(index)"
             let _: UiListViewItemNode = createComponent([:], nodeId: itemNodeId, parentId: listViewId)
             let buttonId: String = "button_\(index)"
-            let _: UiButtonNode = createComponent(["text": animal, "textSize": 0.35], nodeId: buttonId, parentId: itemNodeId)
+            let _: UiButtonNode = createComponent(["text": animal, "textSize": 0.08], nodeId: buttonId, parentId: itemNodeId)
         }
     }
 

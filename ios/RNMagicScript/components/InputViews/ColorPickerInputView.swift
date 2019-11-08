@@ -55,7 +55,7 @@ class ColorPickerInputView: UIView {
             doneButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
             doneButton.heightAnchor.constraint(equalToConstant: 20),
             doneButton.widthAnchor.constraint(equalToConstant: 100),
-            doneButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+            doneButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: margin),
         ])
 
 
@@ -69,10 +69,11 @@ class ColorPickerInputView: UIView {
             cancelButton.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: margin),
             cancelButton.heightAnchor.constraint(equalToConstant: 20),
             cancelButton.widthAnchor.constraint(equalToConstant: 100),
-            cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: margin),
+            cancelButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: margin),
         ])
 
-        neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        let colorPickerSize = CGSize(width: frame.height - 40.0, height: frame.height - 40.0)
+        neatColorPicker = ChromaColorPicker(frame: CGRect(x: 0, y: 0, width: colorPickerSize.width, height: colorPickerSize.height))
         neatColorPicker.delegate = self //ChromaColorPickerDelegate
         neatColorPicker.padding = 1
         neatColorPicker.stroke = 10
@@ -81,10 +82,10 @@ class ColorPickerInputView: UIView {
         addSubview(neatColorPicker)
 
         NSLayoutConstraint.activate([
-            neatColorPicker.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
-            neatColorPicker.topAnchor.constraint(equalTo: doneButton.bottomAnchor, constant: margin),
-            neatColorPicker.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
-            neatColorPicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            neatColorPicker.heightAnchor.constraint(equalToConstant: colorPickerSize.height),
+            neatColorPicker.widthAnchor.constraint(equalToConstant: colorPickerSize.width),
+            neatColorPicker.centerXAnchor.constraint(equalTo: centerXAnchor),
+            neatColorPicker.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: margin)
         ])
     }
 }

@@ -22,6 +22,83 @@ import Nimble
 class UiListViewNodeSpec: QuickSpec {
     override func spec() {
         describe("UiListViewNode") {
+            var node: UiListViewNode!
+
+            context("initial properties") {
+                it("should have set default values") {
+                    node = UiListViewNode(props: [:])
+                    expect(node.width).to(beCloseTo(0))
+                    expect(node.height).to(beCloseTo(0))
+                    expect(node.layoutOrientation).to(equal(Orientation.vertical))
+                    expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.itemAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
+                    expect(node.itemPadding).to(beCloseTo(UIEdgeInsets.zero))
+                    expect(node.scrollingEnabled).to(beTrue())
+                }
+            }
+
+            context("update properties") {
+                it("should update 'width' prop") {
+                    let referenceWidth = 2.75
+                    node.update(["width" : referenceWidth])
+                    expect(node.width).to(beCloseTo(referenceWidth))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'height' prop") {
+                    let referenceHeight = 3.85
+                    node.update(["height" : referenceHeight])
+                    expect(node.height).to(beCloseTo(referenceHeight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'orientation' prop") {
+                    node = UiListViewNode(props: ["orientation": "horizontal"])
+                    expect(node.layoutOrientation).to(equal(Orientation.horizontal))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'defaultItemAlignment' prop") {
+                    node = UiListViewNode(props: ["defaultItemAlignment": "top-right"])
+                    expect(node.defaultItemAlignment).to(equal(Alignment.topRight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                    node.layoutIfNeeded()
+                    node.update(["defaultItemAlignment" : "bottom-left"])
+                    expect(node.defaultItemAlignment).to(equal(Alignment.bottomLeft))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'itemAlignment' prop") {
+                    node = UiListViewNode(props: ["itemAlignment": "top-right"])
+                    expect(node.itemAlignment).to(equal(Alignment.topRight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                    node.layoutIfNeeded()
+                    node.update(["itemAlignment" : "bottom-left"])
+                    expect(node.itemAlignment).to(equal(Alignment.bottomLeft))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'defaultItemPadding' prop") {
+                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
+                    node = UiListViewNode(props: ["defaultItemPadding": referencePadding.toArrayOfFloat])
+                    expect(node.defaultItemPadding).to(beCloseTo(referencePadding))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'itemPadding' prop") {
+                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
+                    node = UiListViewNode(props: ["itemPadding": referencePadding.toArrayOfFloat])
+                    expect(node.itemPadding).to(beCloseTo(referencePadding))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'scrollingEnabled' prop") {
+                    node = UiListViewNode(props: ["scrollingEnabled": false])
+                    expect(node.scrollingEnabled).to(beFalse())
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+            }
         }
     }
 }

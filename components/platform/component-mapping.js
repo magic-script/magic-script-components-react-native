@@ -24,6 +24,7 @@ import ToggleBuilder from "./elements/builders/toggle-builder.js";
 import VideoBuilder from "./elements/builders/video-builder.js";
 import WebViewBuilder from "./elements/builders/webview-builder.js";
 import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
+import ListViewBuilder from './elements/builders/listview-builder.js';
 
 export default {
   version: "1.0",
@@ -61,6 +62,7 @@ export default {
     model: componentManager => new ModelBuilder(componentManager),
     video: componentManager => new VideoBuilder(componentManager),
     webView: componentManager => new WebViewBuilder(componentManager),
-    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager)
+    listView: (componentManager) => new ListViewBuilder(componentManager),
+    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
   }
 };

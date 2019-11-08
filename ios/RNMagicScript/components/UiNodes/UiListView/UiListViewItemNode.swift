@@ -17,5 +17,40 @@
 import SceneKit
 
 @objc open class UiListViewItemNode: UiNode {
+    @objc var backgroundColor: UIColor = UIColor.clear {
+        didSet {
+            contentNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        }
+    }
 
+    @objc override func setupNode() {
+        super.setupNode()
+    }
+
+    fileprivate var childNode: TransformNode? = nil
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let backgroundColor = Convert.toColor(props["backgroundColor"]) {
+            self.backgroundColor = backgroundColor
+        }
+    }
+
+    @objc override func addChild(_ child: TransformNode) {
+        super.addChild(child)
+        childNode = child
+        setNeedsLayout()
+    }
+
+    @objc override func removeChild(_ child: TransformNode) {
+        super.removeChild(child)
+        childNode = nil
+        setNeedsLayout()
+    }
+
+    override func _calculateSize() -> CGSize {
+        let childSize = childNode?.getSize() ?? CGSize.zero
+        return CGSize(width: childSize.width + 0.025, height: childSize.height + 0.025)
+    }
 }

@@ -37,7 +37,8 @@ class ViewController: UIViewController {
 //        setupScrollViewTest()
 //        setupDropdownListTest()
 //        setupUiDatePickerNodeTest()
-        setupUiColorPickerNodeTest()
+//        setupUiColorPickerNodeTest()
+        setupUiListViewNodeTest()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -71,8 +72,30 @@ class ViewController: UIViewController {
     fileprivate var scrollBarPosition: CGFloat = 0.0
     fileprivate var scrollBarSize: CGFloat = 0.1
 
+    fileprivate var uiListViewNode: UiListViewNode!
+    fileprivate var uiListViewItemNode: UiListViewItemNode!
+    fileprivate var uiButtonNode: UiButtonNode!
+
     fileprivate var linearLayout: UiLinearLayoutNode!
     fileprivate let contentSize: CGFloat = 0.5
+
+    fileprivate func setupUiListViewNodeTest() {
+        let uiListViewNodeId: String = "uiListViewNodeId"
+        uiListViewNode = createComponent(["defaultItemAlignment": "center-right", "defaultItemPadding": [0, 0.07, 0, 0.07]], nodeId: uiListViewNodeId)
+        uiListViewNode.position = SCNVector3(0.0, 0.250, 0.0)
+
+        let uiListViewItemNodeId: String = "uiListViewItemNodeId"
+        uiListViewItemNode = createComponent([:], nodeId: uiListViewItemNodeId, parentId: uiListViewNodeId)
+
+        let uiButtonNodeId: String = "uiButtonNodeId"
+        uiButtonNode = createComponent(["text": "Text 1", "textSize": 0.35], nodeId: uiButtonNodeId)
+
+        uiListViewItemNode.addChild(uiButtonNode)
+
+        uiListViewNode.setDebugMode(true)
+        uiListViewNode.layoutIfNeeded()
+    }
+
     fileprivate func setupUiColorPickerNodeTest() {
         let uiColorPickerNodeId: String = "uiColorPickerNodeId"
         let uiColorPickerNode: UiColorPickerNode = createComponent(["color": [0.95, 0.85, 0.75, 1]], nodeId: uiColorPickerNodeId)

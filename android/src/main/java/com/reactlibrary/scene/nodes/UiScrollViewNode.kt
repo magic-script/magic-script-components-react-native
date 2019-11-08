@@ -56,8 +56,6 @@ open class UiScrollViewNode(
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
 
-    private var nodeSize = Vector2()
-
     // Non-transform nodes aren't currently supported.
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
@@ -174,6 +172,7 @@ open class UiScrollViewNode(
         )
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         // stop the layout loop
@@ -200,20 +199,13 @@ open class UiScrollViewNode(
     private fun layoutLoop() {
         looperHandler.postDelayed({
             content?.let { it ->
+                // check if content bounds changed
                 val newContentBounds = it.getContentBounding()
-                // TODO reset new bounds on rebuild
                 if (!Bounding.equalInexact(contentBounds, newContentBounds)) {
                     this.contentBounds = newContentBounds
-                    layout()
                     onContentSizeChangedListener?.invoke(newContentBounds.size())
-                    return@let
-                } else {
-                    val newNodeSize = provideDesiredSize()
-                    if (newNodeSize != nodeSize) {
-                        this.nodeSize = newNodeSize
-                        layout()
-                    }
                 }
+                layout()
             }
             layoutLoop()
         }, LAYOUT_LOOP_DELAY)

@@ -16,12 +16,12 @@
 
 <com.reactlibrary.scene.nodes.views.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="200dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <com.reactlibrary.scene.nodes.views.CustomScrollBar
         android:id="@+id/bar_vertical"
-        android:layout_width="20dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         app:orientation="vertical" />
@@ -29,7 +29,7 @@
     <com.reactlibrary.scene.nodes.views.CustomScrollBar
         android:id="@+id/bar_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="0dp"
         android:layout_gravity="bottom"
         android:orientation="horizontal" />
 

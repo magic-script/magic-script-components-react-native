@@ -22,8 +22,10 @@ import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
@@ -42,9 +44,13 @@ class CustomScrollBar @JvmOverloads constructor(
 
     fun setThickness(thickness: Int) {
         layoutParams = if (isVertical) {
-            FrameLayout.LayoutParams(thickness, height)
+            FrameLayout.LayoutParams(thickness, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+                gravity = Gravity.RIGHT
+            }
         } else {
-            FrameLayout.LayoutParams(width, thickness)
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, thickness).apply {
+                gravity = Gravity.BOTTOM
+            }
         }
     }
 

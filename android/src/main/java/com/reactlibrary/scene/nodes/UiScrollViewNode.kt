@@ -36,7 +36,6 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils.Companion.metersToPx
 import com.reactlibrary.utils.Utils.Companion.pxToMeters
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultString
 
 open class UiScrollViewNode(
@@ -56,6 +55,8 @@ open class UiScrollViewNode(
 
         const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
+
+        const val SCROLLBAR_THICKESS_RATIO = 0.06F // relative to its length
     }
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
@@ -130,8 +131,7 @@ open class UiScrollViewNode(
     // only after content was delivered.
     override fun addContent(child: Node) {
         if (child is UiScrollBarNode) {
-            logMessage("scroll add bar")
-            // addScrollBar(child)
+            addScrollBar(child)
             return
         }
 
@@ -274,22 +274,16 @@ open class UiScrollViewNode(
     }
 
     private fun setupVerticalBar() {
-        vBarNode?.let { barNode ->
-            val barWidth = metersToPx(barNode.getWidth(), context)
-            val barHeight = metersToPx(barNode.getHeight(), context)
-            // (view as CustomScrollView).vBar?.layoutParams = FrameLayout.LayoutParams(barWidth, barHeight)
-
-            // TODO set visibility or size to show the bar
+        if (vBarNode != null) {
+            val thickness = metersToPx(size.y * SCROLLBAR_THICKESS_RATIO, context)
+            (view as CustomScrollView).vBar?.setThickness(thickness)
         }
     }
 
     private fun setupHorizontalBar() {
-        hBarNode?.let { barNode ->
-            val barWidth = metersToPx(barNode.getWidth(), context)
-            val barHeight = metersToPx(barNode.getHeight(), context)
-            // (view as CustomScrollView).hBar?.layoutParams = FrameLayout.LayoutParams(barWidth, barHeight)
-
-            // TODO set visibility or size to show the bar
+        if (hBarNode != null) {
+            val thickness = metersToPx(size.x * SCROLLBAR_THICKESS_RATIO, context)
+            (view as CustomScrollView).hBar?.setThickness(thickness)
         }
     }
 }

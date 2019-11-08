@@ -16,6 +16,7 @@
 
 package com.reactlibrary.utils
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
+import java.util.*
 
 /**
  * ==========Extension methods============
@@ -159,4 +161,37 @@ fun Int.toJsColorArray(): Array<Double> {
     val alpha = Color.alpha(this).toDouble() / 255
 
     return arrayOf(red, green, blue, alpha)
+}
+
+fun DatePickerDialog.updateDate(date: Date) =
+    Calendar.getInstance().apply {
+        time = date
+    }.also { calendar ->
+        updateDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+fun DatePickerDialog.updateMinMaxYear(minYear: Int, maxYear: Int) {
+    if (minYear > 0) {
+        datePicker.minDate =
+            Calendar.getInstance().apply {
+                timeInMillis = 0
+                set(Calendar.MONTH, getActualMaximum(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                set(Calendar.YEAR, minYear)
+            }.timeInMillis
+    }
+
+    if (maxYear > 0) {
+        datePicker.maxDate =
+            Calendar.getInstance().apply {
+                timeInMillis = 0
+                set(Calendar.MONTH, getActualMaximum(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                set(Calendar.YEAR, maxYear)
+            }.timeInMillis
+    }
 }

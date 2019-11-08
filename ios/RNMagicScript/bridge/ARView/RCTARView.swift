@@ -126,23 +126,32 @@ import SceneKit
             self?.dismissInput()
         }
 
-        // Add gesture recognizers
+        setupGestureRecognizers(view)
+
+        return view
+    }
+
+    fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
+        // Add tap gesture
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         addGestureRecognizer(tapGestureRecognizer)
 
-        if let cameraNode = view.pointOfView {
-            let dragGestureRecognizer = DragGestureRecognizer(cameraNode: cameraNode, nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
-            addGestureRecognizer(dragGestureRecognizer)
-
-            // Set dependencies between drag gesture and debug camera pan gesture
-            // so that both gestures can be used in debug mode.
-            view.gestureRecognizers?
-                .filter { $0 is UIPanGestureRecognizer }
-                .forEach{ $0.require(toFail: dragGestureRecognizer) }
+        // Add drag gesture
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
+        dragGestureRecognizer.getCameraNode = { [weak self] in
+            return self?.arView.pointOfView
         }
+        addGestureRecognizer(dragGestureRecognizer)
 
-        return view
+        // Set dependencies between drag gesture and debug camera pan gesture
+        // so that both gestures can be used in debug mode.
+        view.gestureRecognizers?
+            .filter { $0 is UIPanGestureRecognizer }
+            .forEach{ $0.require(toFail: dragGestureRecognizer) }
+
+        // Allow tapping components that are embedded in scrollable content
+        dragGestureRecognizer.require(toFail: tapGestureRecognizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {

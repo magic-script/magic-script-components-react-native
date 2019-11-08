@@ -17,29 +17,24 @@
 import SceneKit
 
 @objc open class UiListViewNode: UiNode {
+    @objc override var alignment: Alignment {
+        get { return .centerCenter }
+        set { }
+    }
     @objc var width: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
     @objc var height: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
-
     @objc var layoutOrientation: Orientation = Orientation.vertical {
-        didSet { setNeedsLayout() }
+        didSet { updateLayoutOrientation(layoutOrientation) }
     }
     @objc var defaultItemAlignment: Alignment {
         get { return linearLayout.defaultItemAlignment }
         set { linearLayout.defaultItemAlignment = newValue; setNeedsLayout() }
     }
-    @objc var itemAlignment: Alignment {
-        get { return linearLayout.defaultItemAlignment }
-        set { linearLayout.defaultItemAlignment = newValue; setNeedsLayout() }
-    }
     @objc var defaultItemPadding: UIEdgeInsets {
-        get { return linearLayout.defaultItemPadding }
-        set { linearLayout.defaultItemPadding = newValue; setNeedsLayout() }
-    }
-    @objc var itemPadding: UIEdgeInsets {
         get { return linearLayout.defaultItemPadding }
         set { linearLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
@@ -54,13 +49,21 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
-        linearLayout = UiLinearLayoutNode(props: ["alignment": "center-center"])
-        scrollBar = UiScrollBarNode(props: [:])
-        scrollView = UiScrollViewNode(props: ["alignment": "center-center", "scrollBarVisibility": "always"])
+        linearLayout = UiLinearLayoutNode()
+        linearLayout.alignment = .centerCenter
+        linearLayout.debug = true
+
+        scrollBar = UiScrollBarNode()
+        scrollBar.height = 0.04
+
+        scrollView = UiScrollViewNode()
+        scrollView.debug = true
+        scrollView.scrollBarVisibility = .always
         scrollView.addChild(scrollBar)
         scrollView.addChild(linearLayout)
         contentNode.addChildNode(scrollView)
-        layoutIfNeeded()
+
+        updateLayoutOrientation(layoutOrientation)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -82,16 +85,8 @@ import SceneKit
             self.defaultItemAlignment = defaultItemAlignment
         }
 
-        if let itemAlignment = Convert.toAlignment(props["itemAlignment"]) {
-            self.itemAlignment = itemAlignment
-        }
-
         if let defaultItemPadding = Convert.toPadding(props["defaultItemPadding"]) {
             self.defaultItemPadding = defaultItemPadding
-        }
-
-        if let itemPadding = Convert.toPadding(props["itemPadding"]) {
-            self.itemPadding = itemPadding
         }
 
         if let scrollingEnabled = Convert.toBool(props["scrollingEnabled"]) {
@@ -101,21 +96,37 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let linearLayoutSize = linearLayout.getSize()
-        print("getSize: \(linearLayoutSize)")
-        return CGSize(width: linearLayoutSize.width, height: linearLayoutSize.height)
+        print("linearLayoutSize: \(linearLayoutSize)")
+        let outputWidth = (width > 0) ? width : linearLayoutSize.width
+        let outputHeight = (height > 0) ? height : linearLayoutSize.height
+        print("getSize: \(CGSize(width: outputWidth, height: outputHeight))")
+        return CGSize(width: outputWidth, height: outputHeight)
     }
 
     @objc override func updateLayout() {
+        linearLayout.layoutIfNeeded()
+
         let size = getSize()
         let min = SCNVector3(-0.5 * size.width, -0.5 * size.height, -0.1)
         let max = SCNVector3(0.5 * size.width, 0.5 * size.height, 0.1)
         scrollView.scrollBounds = (min: min, max: max)
         scrollView.layoutIfNeeded()
+
+        scrollBar.width = (layoutOrientation == .vertical) ? size.height : size.width
+        let bounds: CGRect = scrollView.getBounds()
+        if layoutOrientation == .vertical {
+            scrollBar.localPosition = SCNVector3(bounds.maxX - 0.5 * scrollBar.height, bounds.midY, 0)
+        } else {
+            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.height, 0)
+        }
+        scrollBar.layoutIfNeeded()
     }
 
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
+        scrollBar.setNeedsLayout()
         scrollView.setNeedsLayout()
+        linearLayout.setNeedsLayout()
     }
 
     @objc override func addChild(_ child: TransformNode) {
@@ -132,16 +143,16 @@ import SceneKit
         setNeedsLayout()
     }
 
-//    @objc override func setDebugMode(_ debug: Bool) {
-//        super.setDebugMode(debug)
-////        scrollBar.setDebugMode(debug)
-////        scrollView.setDebugMode(debug)
-////        linearLayout.setDebugMode(debug)
-////        items.forEach { $0.setDebugMode(debug) }
-//    }
-
     @objc override func hitTest(ray: Ray) -> TransformNode? {
-        return scrollView.hitTest(ray: ray)
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        return scrollView.hitTest(ray: ray) ?? self
+    }
+
+    fileprivate func updateLayoutOrientation(_ orientation: Orientation) {
+        scrollBar.scrollOrientation = orientation
+        scrollView.scrollDirection = (orientation == .vertical) ? ScrollDirection.vertical : ScrollDirection.horizontal
+        linearLayout.layoutOrientation = orientation
+        setNeedsLayout()
     }
 }
 

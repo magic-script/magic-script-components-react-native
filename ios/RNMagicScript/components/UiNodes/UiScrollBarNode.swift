@@ -152,4 +152,21 @@ import SceneKit
         let angle: Float = (scrollOrientation == Orientation.vertical) ? -0.5 * Float.pi : 0
         backgroundNode.transform = SCNMatrix4MakeRotation(angle, 0, 0, 1)
     }
+
+    func setVisible(_ visible: Bool, animated: Bool = false, delay: Double = 0, onComplete: (() -> Void)? = nil) {
+        var actions: [SCNAction] = []
+        if (delay > 0) {
+            actions.append(SCNAction.wait(duration: delay))
+        }
+        let duration: TimeInterval = animated ? 0.3 : 0
+        let opacityAction = visible ? SCNAction.fadeIn(duration: duration) : SCNAction.fadeOut(duration: duration)
+        let visibleAction = visible ? SCNAction.unhide() : SCNAction.hide()
+        actions.append(contentsOf: [SCNAction.unhide(), opacityAction, visibleAction])
+        let mainAction = SCNAction.sequence(actions)
+
+        DispatchQueue.main.async { [weak self] in
+            self?.removeAllActions()
+            self?.runAction(mainAction, completionHandler: onComplete)
+        }
+    }
 }

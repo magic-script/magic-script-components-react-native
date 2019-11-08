@@ -53,4 +53,9 @@ import SceneKit
         let childSize = childNode?.getSize() ?? CGSize.zero
         return CGSize(width: childSize.width + 0.025, height: childSize.height + 0.025)
     }
+
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        return childNode
+    }
 }

@@ -20,11 +20,13 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
@@ -32,7 +34,9 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.views.CustomScrollView
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils.Companion.metersToPx
+import com.reactlibrary.utils.Utils.Companion.pxToMeters
 import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefaultString
 
 open class UiScrollViewNode(
@@ -60,8 +64,8 @@ open class UiScrollViewNode(
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
 
-    private var hBar: UiScrollBarNode? = null
-    private var vBar: UiScrollBarNode? = null
+    private var hBarNode: UiScrollBarNode? = null
+    private var vBarNode: UiScrollBarNode? = null
 
     private var requestedContentPosition = Vector2()
 
@@ -86,7 +90,7 @@ open class UiScrollViewNode(
     }
 
     override fun provideView(context: Context): View {
-        return CustomScrollView(context)
+        return LayoutInflater.from(context).inflate(R.layout.scroll_view, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -106,6 +110,7 @@ open class UiScrollViewNode(
         setupHorizontalBar()
 
         val scrollView = view as CustomScrollView
+
         scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
         }
@@ -125,7 +130,8 @@ open class UiScrollViewNode(
     // only after content was delivered.
     override fun addContent(child: Node) {
         if (child is UiScrollBarNode) {
-            addScrollBar(child)
+            logMessage("scroll add bar")
+            // addScrollBar(child)
             return
         }
 
@@ -144,13 +150,11 @@ open class UiScrollViewNode(
         super.removeContent(child)
         when (child) {
             content -> content = null
-            hBar -> {
-                hBar = null
-                (view as CustomScrollView).hBar = null
+            hBarNode -> {
+                // TODO hide bar
             }
-            vBar -> {
-                vBar = null
-                (view as CustomScrollView).vBar = null
+            vBarNode -> {
+                // TODO hide bar
             }
         }
     }
@@ -180,17 +184,16 @@ open class UiScrollViewNode(
     }
 
     private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
-        val bar = scrollBarNode.getCustomScrollBar()
-        if (bar.isVertical) {
-            if (vBar == null) {
+        if (scrollBarNode.getOrientation() == UiScrollBarNode.ORIENTATION_VERTICAL) {
+            if (vBarNode == null) {
                 super.addContent(scrollBarNode)
-                vBar = scrollBarNode
+                vBarNode = scrollBarNode
                 setupVerticalBar()
             }
         } else {
-            if (hBar == null) {
+            if (hBarNode == null) {
                 super.addContent(scrollBarNode)
-                hBar = scrollBarNode
+                hBarNode = scrollBarNode
                 setupHorizontalBar()
             }
         }
@@ -250,10 +253,16 @@ open class UiScrollViewNode(
     }
 
     private fun getScrollBounds(): Bounding {
+        val hBarHeightPx = (view as CustomScrollView).hBar?.height?.toFloat() ?: 0F
+        val vBarWidthPx = (view as CustomScrollView).vBar?.width?.toFloat() ?: 0F
+
+        val hBarHeightMeters = pxToMeters(hBarHeightPx, context)
+        val vBarWidthPxMeters = pxToMeters(vBarWidthPx, context)
+
         return Bounding(
                 -size.x / 2F,
-                -size.y / 2F + (hBar?.size?.y ?: 0F),
-                size.x / 2F - (vBar?.size?.x ?: 0F),
+                -size.y / 2F + hBarHeightMeters,
+                size.x / 2F - vBarWidthPxMeters,
                 size.y / 2F)
     }
 
@@ -265,22 +274,22 @@ open class UiScrollViewNode(
     }
 
     private fun setupVerticalBar() {
-        vBar?.let { barNode ->
-            val posX = (barNode.size.x - size.x) / -2F
-            barNode.localPosition = Vector3(posX, 0F, 0F)
-            val barView = barNode.getCustomScrollBar()
-            barView.layoutParams.height = metersToPx(size.y, context)
-            (view as CustomScrollView).vBar = barView
+        vBarNode?.let { barNode ->
+            val barWidth = metersToPx(barNode.getWidth(), context)
+            val barHeight = metersToPx(barNode.getHeight(), context)
+            // (view as CustomScrollView).vBar?.layoutParams = FrameLayout.LayoutParams(barWidth, barHeight)
+
+            // TODO set visibility or size to show the bar
         }
     }
 
     private fun setupHorizontalBar() {
-        hBar?.let { barNode ->
-            val posY = (barNode.size.y - size.y) / 2F
-            barNode.localPosition = Vector3(0F, posY, 0F)
-            val barView = barNode.getCustomScrollBar()
-            barView.layoutParams.width = metersToPx(size.x, context)
-            (view as CustomScrollView).hBar = barView
+        hBarNode?.let { barNode ->
+            val barWidth = metersToPx(barNode.getWidth(), context)
+            val barHeight = metersToPx(barNode.getHeight(), context)
+            // (view as CustomScrollView).hBar?.layoutParams = FrameLayout.LayoutParams(barWidth, barHeight)
+
+            // TODO set visibility or size to show the bar
         }
     }
 }

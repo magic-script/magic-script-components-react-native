@@ -229,7 +229,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScrollBarNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiScrollBarNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> addNode(new UiScrollBarNode(props), nodeId));
     }
 
     @ReactMethod

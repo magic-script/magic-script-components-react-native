@@ -20,18 +20,21 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewTreeObserver
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
+import com.reactlibrary.R
 import com.reactlibrary.utils.Vector2
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     companion object {
         const val SCROLL_VERTICAL = "vertical"
         const val SCROLL_HORIZONTAL = "horizontal"
+
+        const val SCROLL_DIRECTION_UNSPECIFIED = ""
     }
 
     var contentSize = Vector2()
@@ -42,22 +45,22 @@ class CustomScrollView @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: Vector2) -> Unit)? = null
 
+    var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
+
+    var position = Vector2()
+        private set
+
     var hBar: CustomScrollBar? = null
-        set(value) {
+        private set(value) {
             field = value
             updateScrollbars()
         }
 
     var vBar: CustomScrollBar? = null
-        set(value) {
+        private set(value) {
             field = value
             updateScrollbars()
         }
-
-    var scrollDirection = ""
-
-    var position = Vector2()
-        private set
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
@@ -69,6 +72,12 @@ class CustomScrollView @JvmOverloads constructor(
                 updateScrollbars()
             }
         })
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        this.vBar = findViewById(R.id.bar_vertical)
+        this.hBar = findViewById(R.id.bar_horizontal)
     }
 
     override fun stopNestedScroll() {

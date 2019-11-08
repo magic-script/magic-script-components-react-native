@@ -24,6 +24,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
 
@@ -33,7 +34,19 @@ class CustomScrollBar @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    companion object {
+        const val ORIENTATION_VERTICAL = "vertical"
+    }
+
     private val backgroundSizeRatio = 0.66F
+
+    fun setThickness(thickness: Int) {
+        layoutParams = if (isVertical) {
+            FrameLayout.LayoutParams(thickness, height)
+        } else {
+            FrameLayout.LayoutParams(width, thickness)
+        }
+    }
 
     var thumbPosition = 0F
         set(value) {
@@ -47,11 +60,19 @@ class CustomScrollBar @JvmOverloads constructor(
             invalidate()
         }
 
-    var isVertical = true
+    var isVertical: Boolean
+        private set
 
     private var touchOffset = 0F
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
+
+    init {
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.CustomScrollBar)
+        val orientation = attributes.getString(R.styleable.CustomScrollBar_orientation)
+        isVertical = orientation == ORIENTATION_VERTICAL
+        attributes.recycle()
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked

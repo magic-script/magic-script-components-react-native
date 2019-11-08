@@ -24,23 +24,23 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.*
+import com.reactlibrary.createProperty
 import com.reactlibrary.formatter.VerySimpleDateFormat
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.DATE_FORMAT_DEFAULT
-import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.LABEL_SIDE_LEFT
-import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.LABEL_SIDE_TOP
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_DATE
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_DATE_FORMAT
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_DEFAULT_DATE
-import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_LABEL
-import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_LABEL_SIDE
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_YEAM_MAX
 import com.reactlibrary.scene.nodes.UiDatePickerNode.Companion.PROP_YEAR_MIN
-import com.reactlibrary.scene.nodes.views.DatePickerDialogProvider
+import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.LABEL_SIDE_LEFT
+import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.LABEL_SIDE_TOP
+import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
+import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
+import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
 import com.reactlibrary.utils.updateDate
-import kotlinx.android.synthetic.main.date_picker.view.*
+import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
 import org.junit.After
 import org.junit.Test
@@ -59,7 +59,7 @@ class UiDatePickerNodeTest {
     val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    val datePickerDialogProvider = mock<DatePickerDialogProvider>().apply {
+    val datePickerDialogProvider = mock<DateTimePickerDialogProvider>().apply {
         whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
     }
     var tested: TestableUiDatePickerNode = TestableUiDatePickerNode(datePickerDialogProvider)
@@ -216,11 +216,8 @@ class UiDatePickerNodeTest {
         verify(tested.dateText).setText(eq(dateFormat.format(2019, 11, 12)), any())
     }
 
-    fun createProperty(vararg keysAndValues: Any): Bundle =
-        Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
-
     class TestableUiDatePickerNode(
-        datePickerDialogProvider: DatePickerDialogProvider
+        datePickerDialogProvider: DateTimePickerDialogProvider
     ) : UiDatePickerNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
@@ -232,8 +229,8 @@ class UiDatePickerNodeTest {
         val dateText: EditText = mock()
         val mainView = mock<LinearLayout>().also {
             this.view = it
-            whenever(it.date_title).doReturn(titleText)
-            whenever(it.date_value).doReturn(dateText)
+            whenever(it.title).doReturn(titleText)
+            whenever(it.value).doReturn(dateText)
         }
 
         fun updateProperties(props: Bundle) {

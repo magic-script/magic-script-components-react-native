@@ -174,3 +174,11 @@ fun DatePickerDialog.updateMinMaxYear(minYear: Int, maxYear: Int) {
             }.timeInMillis
     }
 }
+
+fun Date.getHour() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.HOUR_OF_DAY)
+
+fun Date.getMinute() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.MINUTE)

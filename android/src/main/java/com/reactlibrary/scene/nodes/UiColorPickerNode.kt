@@ -80,6 +80,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
                 val hexColor = Integer.toHexString(value)
                 setIconColor(value)
                 text = "#$hexColor"
+                setNeedsRebuild()
             }
 
         }

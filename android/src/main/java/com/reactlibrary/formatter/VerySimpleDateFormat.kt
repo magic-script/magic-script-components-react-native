@@ -13,14 +13,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
 package com.reactlibrary.formatter
 
 import java.text.SimpleDateFormat
 import java.util.*
 
-class VerySimpleDateFormat(format: String?, locale: Locale) :
-    SimpleDateFormat(format.simplify(), locale) {
+class VerySimpleDateFormat(
+    pattern: String?,
+    locale: Locale,
+    val is24h: Boolean = is24hours(pattern)
+) : SimpleDateFormat(pattern.simplify(), locale) {
 
     fun format(year: Int, month: Int, day: Int): String =
         format(
@@ -30,6 +32,23 @@ class VerySimpleDateFormat(format: String?, locale: Locale) :
                 set(Calendar.DAY_OF_MONTH, day)
             }.time
         )
+
+    fun format(hourOfDay: Int, minute: Int): String = format(
+        Calendar.getInstance().apply {
+            set(Calendar.SECOND, 0)
+            set(Calendar.HOUR_OF_DAY, hourOfDay)
+            set(Calendar.MINUTE, minute)
+        }.time
+    )
 }
 
-private fun String?.simplify(): String? = this?.replace("D", "d")
+private fun String?.simplify(): String? =
+    this?.replace("HH", if (is24hours(this)) "kk" else "HH", false)
+        ?.replace("D", "d", false)
+        ?.replace("p", "a")
+        ?.replace("SS", "ss", false)
+        ?.replace("MM", if (contains("H") || contains("K") || contains("s")) "mm" else "MM", false)
+
+private fun is24hours(pattern: String?) = pattern?.containsAmPmSign() != true
+
+private fun String?.containsAmPmSign() = this?.contains("p") ?: false

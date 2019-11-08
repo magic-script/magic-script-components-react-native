@@ -14,11 +14,11 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes.views
+package com.reactlibrary
 
-import android.app.DatePickerDialog
-import android.content.Context
+import android.os.Bundle
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyMap
 
-class DatePickerDialogProvider {
-    fun provideDatePickerDialog(context: Context) = DatePickerDialog(context)
-}
+fun createProperty(vararg keysAndValues: Any): Bundle =
+    Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()

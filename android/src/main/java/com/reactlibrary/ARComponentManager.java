@@ -66,6 +66,7 @@ import com.reactlibrary.scene.nodes.UiSliderNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
+import com.reactlibrary.scene.nodes.UiTimePickerNode;
 import com.reactlibrary.scene.nodes.UiToggleNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
@@ -80,7 +81,7 @@ import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
-import com.reactlibrary.scene.nodes.views.DatePickerDialogProvider;
+import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -114,6 +115,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_COLOR_CHANGED = "onColorChanged";
     private static final String EVENT_DATE_CHANGED = "onDateChanged";
     private static final String EVENT_DATE_CONFIRMED = "onDateConfirmed";
+    private static final String EVENT_TIME_CHANGED = "onTimeChanged";
+    private static final String EVENT_TIME_CONFIRMED = "onTimeConfirmed";
     private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
 
     // Supported events arguments
@@ -124,6 +127,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_SLIDER_VALUE = "Value";
     private static final String EVENT_ARG_COLOR = "color";
     private static final String EVENT_ARG_DATE = "date";
+    private static final String EVENT_ARG_TIME = "time";
     private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
 
     // All code inside react method must be called from main thread
@@ -338,7 +342,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDatePickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDatePickerNode datePickerNode = new UiDatePickerNode(props, context, viewRenderableLoader, new DatePickerDialogProvider());
+            UiDatePickerNode datePickerNode = new UiDatePickerNode(props, context, viewRenderableLoader, new DateTimePickerDialogProvider());
+            addNode(datePickerNode, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createTimePickerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiTimePickerNode datePickerNode = new UiTimePickerNode(props, context, viewRenderableLoader, new DateTimePickerDialogProvider());
             addNode(datePickerNode, nodeId);
         });
     }
@@ -585,6 +597,40 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     params.putDouble(EVENT_ARG_SCROLL_VALUE, position.getX());
                     sendEvent(EVENT_SCROLL_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+
+    @ReactMethod
+    public void addOnTimeChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiTimePickerNode) {
+                ((UiTimePickerNode) node).setOnTimeChanged((time) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putString(EVENT_ARG_TIME, time);
+                    sendEvent(EVENT_TEXT_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+
+    @ReactMethod
+    public void addOnTimeConfirmedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if(node instanceof UiTimePickerNode) {
+                ((UiTimePickerNode) node).setOnTimeConfirmed((time) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putString(EVENT_ARG_TIME, time);
+                    sendEvent(EVENT_TIME_CONFIRMED, params);
                     return Unit.INSTANCE;
                 });
             }

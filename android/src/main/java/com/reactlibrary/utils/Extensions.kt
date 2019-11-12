@@ -126,8 +126,8 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     }
 
     measure(widthMeasureSpec, heightMeasureSpec)
-    val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
-    val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    val width = Utils.pxToMeters(measuredWidth, context)
+    val height = Utils.pxToMeters(measuredHeight, context)
     return Vector2(width, height)
 }
 

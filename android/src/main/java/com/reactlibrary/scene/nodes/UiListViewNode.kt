@@ -78,13 +78,15 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
         val width = if (size.x != WRAP_CONTENT_DIMENSION) {
             size.x
         } else {
-            contentSize.x
+            val vBarThickness = if (vBarNode != null) calculateBarThickness(contentSize) else 0F
+            contentSize.x + vBarThickness
         }
 
         val height = if (size.y != WRAP_CONTENT_DIMENSION) {
             size.y
         } else {
-            contentSize.y
+            val hBarThickness = if (hBarNode != null) calculateBarThickness(contentSize) else 0F
+            contentSize.y + hBarThickness
         }
         return Vector2(width, height)
     }
@@ -100,9 +102,14 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
     }
 
     override fun addContent(child: Node) {
-        if (child is UiListViewItemNode) {
-            containerNode.addContent(child)
-        } else super.addContent(child)
+        when (child) {
+            is UiListViewItemNode -> containerNode.addContent(child)
+            is UiScrollBarNode -> {
+                super.addContent(child)
+                setNeedsRebuild(true) // we may need to update the size
+            }
+            else -> super.addContent(child)
+        }
     }
 
     private fun readSize(): Vector2 {

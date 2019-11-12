@@ -65,12 +65,14 @@ open class UiScrollViewNode(
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
 
-    // Non-transform nodes aren't currently supported.
+    protected var vBarNode: UiScrollBarNode? = null
+        private set
+
+    protected var hBarNode: UiScrollBarNode? = null
+        private set
+
     private var content: TransformNode? = null
     private var contentBounds = Bounding()
-
-    private var hBarNode: UiScrollBarNode? = null
-    private var vBarNode: UiScrollBarNode? = null
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
@@ -110,13 +112,15 @@ open class UiScrollViewNode(
         super.setupView()
 
         if (vBarNode != null) {
-            val thickness = calculateScrollBarThickness()
-            (view as CustomScrollView).vBar?.setThickness(thickness)
+            val thickness = calculateBarThickness(size)
+            val thicknessPx = metersToPx(thickness, context)
+            (view as CustomScrollView).vBar?.setThickness(thicknessPx)
         }
 
         if (hBarNode != null) {
-            val thickness = calculateScrollBarThickness()
-            (view as CustomScrollView).hBar?.setThickness(thickness)
+            val thickness = calculateBarThickness(size)
+            val thicknessPx = metersToPx(thickness, context)
+            (view as CustomScrollView).hBar?.setThickness(thicknessPx)
         }
 
         val scrollView = view as CustomScrollView
@@ -135,8 +139,6 @@ open class UiScrollViewNode(
         setScrollDirection(props)
     }
 
-    // Starting loops and registering listeners
-    // only after content was delivered.
     override fun addContent(child: Node) {
         if (child is UiScrollBarNode) {
             addScrollBar(child)
@@ -186,27 +188,32 @@ open class UiScrollViewNode(
         )
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         // stop the layout loop
         looperHandler.removeCallbacksAndMessages(null)
     }
 
+    protected fun calculateBarThickness(containerSize: Vector2): Float {
+        val parentBasedThickness = min(containerSize.x, containerSize.y) * BAR_THICKNESS_RATIO
+        return max(parentBasedThickness, BAR_MINIMUM_THICKNESS)
+    }
+
     private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
-        val thickness = calculateScrollBarThickness()
+        val thickness = calculateBarThickness(size)
+        val thicknessPx = metersToPx(thickness, context)
 
         if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
             if (vBarNode == null) {
                 super.addContent(scrollBarNode)
                 vBarNode = scrollBarNode
-                (view as CustomScrollView).vBar?.setThickness(thickness)
+                (view as CustomScrollView).vBar?.setThickness(thicknessPx)
             }
         } else {
             if (hBarNode == null) {
                 super.addContent(scrollBarNode)
                 hBarNode = scrollBarNode
-                (view as CustomScrollView).hBar?.setThickness(thickness)
+                (view as CustomScrollView).hBar?.setThickness(thicknessPx)
             }
         }
     }
@@ -265,8 +272,8 @@ open class UiScrollViewNode(
     }
 
     private fun getScrollBounds(): Bounding {
-        val hBarHeightPx = (view as CustomScrollView).hBar?.height?.toFloat() ?: 0F
-        val vBarWidthPx = (view as CustomScrollView).vBar?.width?.toFloat() ?: 0F
+        val hBarHeightPx = (view as CustomScrollView).hBar?.height ?: 0
+        val vBarWidthPx = (view as CustomScrollView).vBar?.width ?: 0
 
         val hBarHeightMeters = pxToMeters(hBarHeightPx, context)
         val vBarWidthPxMeters = pxToMeters(vBarWidthPx, context)
@@ -285,10 +292,5 @@ open class UiScrollViewNode(
         }
     }
 
-    private fun calculateScrollBarThickness(): Int {
-        val parentBasedThickness = min(size.x, size.y) * BAR_THICKNESS_RATIO
-        val thickness = max(parentBasedThickness, BAR_MINIMUM_THICKNESS)
-        return metersToPx(thickness, context)
-    }
 
 }

@@ -186,8 +186,8 @@ open class UiScrollViewNode(
         // requestedContentPosition.
         val position = content?.localPosition ?: Vector3()
         return Vector2(
-                localPosition.x + requestedContentPosition.x - position.x,
-                localPosition.y + requestedContentPosition.y - position.y
+                requestedContentPosition.x - position.x,
+                requestedContentPosition.y - position.y
         )
     }
 

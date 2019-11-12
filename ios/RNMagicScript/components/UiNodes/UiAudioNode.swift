@@ -18,17 +18,30 @@ import SceneKit
 
 @objc open class UiAudioNode: TransformNode {
 
+    @objc var fileName: URL? {
+        didSet { reloadAudio(); setNeedsLayout() }
+    }
     @objc var action: AudioAction = .stop
-    @objc var soundLooping: Bool = false
-    @objc var soundMute: Bool = false
+    @objc var soundLooping: Bool = false {
+        didSet { audioSource?.loops = soundLooping }
+    }
+    @objc var soundMute: Bool = false {
+        didSet { audioSource?.volume = soundMute ? 0.0 : Float(soundVolumeLinear / 8.0) }
+    }
     // The range of the pitch is 0.5 to 2.0, with 0.5 being one octave down
     // and 2.0 being one octave up (i.e., the pitch is a frequency multiple).
     // A pitch of 1.0 is the default and means no change.
-    @objc var soundPitch: CGFloat = 1
+    @objc var soundPitch: CGFloat = 1 {
+        didSet { setNeedsLayout() }
+    }
     // The range of the volume is 0 to 8, with 0 for silence, 1 for unity gain,
     // and 8 for 8x gain.
-    @objc var soundVolumeLinear: CGFloat = 0
-    @objc var spatialSoundEnable: Bool = false
+    @objc var soundVolumeLinear: CGFloat = 1.0 {
+        didSet { audioSource?.volume = Float(soundVolumeLinear / 8.0) }
+    }
+    @objc var spatialSoundEnable: Bool = false {
+        didSet { audioSource?.isPositional = spatialSoundEnable }
+    }
     @objc var streamedFileOffset: CGFloat = 0
 
 //    @objc var spatialSoundPosition: SCNVector3 = SCNVector3Zero
@@ -38,12 +51,31 @@ import SceneKit
 //    SpatialSoundDirectSendLevels: SpatialSoundSendLevels
 //    SpatialSoundRoomSendLevels: SpatialSoundSendLevels
 
+    fileprivate var audioNode: SCNNode!
+    fileprivate var audioPlayer: SCNAudioPlayer? {
+        return audioNode.audioPlayers.first
+    }
+
+    fileprivate var audioSource: SCNAudioSource? {
+        return audioNode.audioPlayers.first?.audioSource
+    }
+
+    deinit {
+        audioNode.removeAllAudioPlayers()
+    }
+
     @objc override func setupNode() {
         super.setupNode()
+        audioNode = SCNNode()
+        contentNode.addChildNode(audioNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        if let fileName = Convert.toFileURL(props["fileName"]) {
+            self.fileName = fileName
+        }
 
         if let action = Convert.toAudioAction(props["action"]) {
             self.action = action
@@ -77,5 +109,27 @@ import SceneKit
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
 
+    }
+
+    @objc func updateAudio() {
+        audioSource?.loops = soundLooping
+        audioSource?.volume = soundMute ? 0.0 : Float(soundVolumeLinear / 8.0)
+        audioSource?.isPositional = spatialSoundEnable
+    }
+
+    fileprivate func unloadAudio() {
+        audioNode.removeAllAudioPlayers()
+    }
+
+    fileprivate func reloadAudio() {
+        unloadAudio()
+
+        guard let url = fileName else { return }
+        if let audioSource = SCNAudioSource(url: url) {
+            let player = SCNAudioPlayer(source: audioSource)
+            audioSource.load()
+            audioNode.addAudioPlayer(player)
+            updateAudio()
+        }
     }
 }

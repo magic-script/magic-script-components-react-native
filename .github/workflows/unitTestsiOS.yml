@@ -18,7 +18,7 @@ jobs:
       - name: Build and test
         run: |
           cd ios
-          xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES
+          xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
         env:
          destination: ${{ matrix.destination }}
       - name: Code Coverage
@@ -28,13 +28,15 @@ jobs:
         run: |
           gem install slather
           cd ios
-          slather coverage --html --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
+          slather
+          slather coverage -g --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
+          slather coverage --json --output-directory coverage_report --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
+          mv .gutter.json coverage_report/gutter.json
       - uses: actions/upload-artifact@master
         with:
           name: code-coverage-artifact-ios
-          path: ios/html
+          path: ios/coverage_report
       - name: Codecov update
         run: |
           cd ios
-          slather coverage -x --output-directory xml --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
-          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -f xml/covertura.xml
+          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -f coverage_report/covertura.xml

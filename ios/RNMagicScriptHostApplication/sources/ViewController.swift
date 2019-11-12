@@ -256,7 +256,6 @@ class ViewController: UIViewController {
         let audioNodeId: String = "audio"
 //        let audioURL: URL = Bundle.main.url(forResource: "shopping_mall_mono", withExtension: "mp3")!
         let audioURL: URL = URL(string: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3")!
-//        let audioURL: URL = URL(string: "http://www.music.helsinki.fi/tmt/opetus/uusmedia/esim/a2002011001-e02.wav")!
         print("audioURL: \(audioURL.absoluteString)")
         let audioNode : UiAudioNode = createComponent([
             "fileName": audioURL.absoluteString,

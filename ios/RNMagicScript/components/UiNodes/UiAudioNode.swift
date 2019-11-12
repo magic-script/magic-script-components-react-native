@@ -19,7 +19,12 @@ import SceneKit
 @objc open class UiAudioNode: TransformNode {
 
     @objc var fileName: URL? {
-        didSet { reloadAudio(); setNeedsLayout() }
+        didSet {
+            guard let url = fileName else { unloadAudio(); return }
+            downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
+                self?.loadAudio(localURL: localURL)
+            }
+        }
     }
     @objc var action: AudioAction = .stop {
         didSet { performAction() }
@@ -52,6 +57,8 @@ import SceneKit
 //    SpatialSoundRadiationProperties: SpatialSoundRadiationProperties
 //    SpatialSoundDirectSendLevels: SpatialSoundSendLevels
 //    SpatialSoundRoomSendLevels: SpatialSoundSendLevels
+
+    var downloader: Downloading = FileDownloader()
 
     fileprivate var audioNode: SCNNode!
     fileprivate var audioPlayer: SCNAudioPlayer?
@@ -152,10 +159,10 @@ import SceneKit
         audioPlayer = nil
     }
 
-    fileprivate func reloadAudio() {
+    fileprivate func loadAudio(localURL: URL?) {
         unloadAudio()
+        guard let url = localURL else { return }
 
-        guard let url = fileName else { return }
         if let audioSource = SCNAudioSource(url: url) {
 //            audioSource.shouldStream = true
             updateAudio()
@@ -167,6 +174,8 @@ import SceneKit
             audioPlayer!.didFinishPlayback = {
                 print("didFinishPlayback")
             }
+
+            play()
         }
     }
 }

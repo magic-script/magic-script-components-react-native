@@ -191,6 +191,11 @@ open class UiScrollViewNode(
         )
     }
 
+    override fun setAlignment(props: Bundle) {
+        // Alignment cannot be changed for scroll view according to Lumin.
+        // It is hardcoded to center-center
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // stop the layout loop

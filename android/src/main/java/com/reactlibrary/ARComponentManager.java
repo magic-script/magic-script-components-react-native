@@ -74,8 +74,6 @@ import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
 import com.reactlibrary.scene.nodes.layouts.UiRectLayout;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
-import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
-import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
@@ -282,10 +280,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> {
-            LinearLayoutManager layoutManager = new LinearLayoutManagerImpl();
-            addNode(new UiLinearLayout(props, layoutManager), nodeId);
-        });
+        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
     }
 
 

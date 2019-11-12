@@ -23,10 +23,10 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout
-import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.reactlibrary.scene.nodes.props.ORIENTATION_VERTICAL
 import com.reactlibrary.utils.Vector2
 
-class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
+open class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
     : UiScrollViewNode(initProps, context, viewRenderableLoader) {
 
     private val containerNode: UiLinearLayout
@@ -36,7 +36,7 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
         const val PROP_HEIGHT = "height"
         const val PROP_ORIENTATION = "orientation"
 
-        const val DEFAULT_ORIENTATION = "vertical"
+        const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
     }
 
@@ -48,7 +48,7 @@ class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoa
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
         containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
         containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
-        containerNode = UiLinearLayout(containerProps, LinearLayoutManagerImpl())
+        containerNode = UiLinearLayout(containerProps)
 
         onContentSizeChangedListener = { contentSize ->
             this.contentSize = contentSize

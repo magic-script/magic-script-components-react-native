@@ -25,10 +25,11 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
+import com.reactlibrary.scene.nodes.props.ORIENTATION_VERTICAL
 
 class CustomScrollBar @JvmOverloads constructor(
         context: Context,
@@ -36,19 +37,15 @@ class CustomScrollBar @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    companion object {
-        const val ORIENTATION_VERTICAL = "vertical"
-    }
-
-    private val backgroundSizeRatio = 0.66F
+    var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
     fun setThickness(thickness: Int) {
         layoutParams = if (isVertical) {
-            FrameLayout.LayoutParams(thickness, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+            FrameLayout.LayoutParams(thickness, LayoutParams.MATCH_PARENT).apply {
                 gravity = Gravity.RIGHT
             }
         } else {
-            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, thickness).apply {
+            FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, thickness).apply {
                 gravity = Gravity.BOTTOM
             }
         }
@@ -69,9 +66,8 @@ class CustomScrollBar @JvmOverloads constructor(
     var isVertical: Boolean
         private set
 
+    private val backgroundSizeRatio = 0.66F
     private var touchOffset = 0F
-
-    var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CustomScrollBar)

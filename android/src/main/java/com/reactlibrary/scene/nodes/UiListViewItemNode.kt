@@ -16,9 +16,9 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultSerializable
 
-class UiListViewItemNode(initProps: ReadableMap,
-                         context: Context,
-                         viewRenderableLoader: ViewRenderableLoader)
+open class UiListViewItemNode(initProps: ReadableMap,
+                              context: Context,
+                              viewRenderableLoader: ViewRenderableLoader)
     : UiNode(initProps, context, viewRenderableLoader), Layoutable {
 
     companion object {

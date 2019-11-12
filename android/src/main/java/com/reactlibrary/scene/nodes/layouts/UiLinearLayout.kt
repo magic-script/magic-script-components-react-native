@@ -20,11 +20,13 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager
+import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl
 import com.reactlibrary.scene.nodes.props.Bounding
+import com.reactlibrary.scene.nodes.props.ORIENTATION_VERTICAL
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.*
 
-class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
+class UiLinearLayout @JvmOverloads constructor(props: ReadableMap, layoutManager: LinearLayoutManager = LinearLayoutManagerImpl())
     : UiLayout(props, layoutManager) {
 
     companion object {
@@ -32,9 +34,6 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LinearLayoutManager)
         const val PROP_ORIENTATION = "orientation"
         const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
-
-        const val ORIENTATION_VERTICAL = "vertical"
-        const val ORIENTATION_HORIZONTAL = "horizontal"
 
         // default values
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL

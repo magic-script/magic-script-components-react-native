@@ -28,12 +28,11 @@ class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
-        const val SCROLL_VERTICAL = "vertical"
-        const val SCROLL_HORIZONTAL = "horizontal"
-
+        const val SCROLL_DIRECTION_VERTICAL = "vertical"
+        const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
         const val SCROLL_DIRECTION_UNSPECIFIED = ""
     }
 
@@ -66,12 +65,7 @@ class CustomScrollView @JvmOverloads constructor(
     private var previousTouch = Vector2()
 
     init {
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                updateScrollbars()
-            }
-        })
+        viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     override fun onFinishInflate() {
@@ -82,6 +76,11 @@ class CustomScrollView @JvmOverloads constructor(
 
     override fun stopNestedScroll() {
         isBeingDragged = false
+    }
+
+    override fun onGlobalLayout() {
+        viewTreeObserver.removeOnGlobalLayoutListener(this)
+        updateScrollbars()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -104,8 +103,8 @@ class CustomScrollView @JvmOverloads constructor(
             val move = movePx / maxTravel
 
             when (scrollDirection) {
-                SCROLL_VERTICAL -> move.x = 0F
-                SCROLL_HORIZONTAL -> move.y = 0F
+                SCROLL_DIRECTION_VERTICAL -> move.x = 0F
+                SCROLL_DIRECTION_HORIZONTAL -> move.y = 0F
             }
 
             position = (position + move).coerceIn(0F, 1F)

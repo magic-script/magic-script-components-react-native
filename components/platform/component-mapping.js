@@ -51,8 +51,6 @@ export default {
     timePicker: componentManager => new TimePickerBuilder(componentManager),
     toggle: componentManager => new ToggleBuilder(componentManager),
     view: componentManager => new GroupBuilder(componentManager),
-    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
-    listView: (componentManager) => new ListViewBuilder(componentManager),
 
     // layouts
     gridLayout: componentManager => new GridLayoutBuilder(componentManager),
@@ -63,6 +61,8 @@ export default {
     line: componentManager => new LineBuilder(componentManager),
     model: componentManager => new ModelBuilder(componentManager),
     video: componentManager => new VideoBuilder(componentManager),
-    webView: componentManager => new WebViewBuilder(componentManager)
+    webView: componentManager => new WebViewBuilder(componentManager),
+    listView: (componentManager) => new ListViewBuilder(componentManager),
+    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
   }
 };

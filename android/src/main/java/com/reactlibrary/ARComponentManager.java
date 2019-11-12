@@ -326,12 +326,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void createUiListViewItemNode(final ReadableMap props, final String nodeId) {
+    public void createListViewItemNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
-    public void createUiListViewNode(final ReadableMap props, final String nodeId) {
+    public void createListViewNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiListViewNode(props, context, viewRenderableLoader), nodeId));
     }
 

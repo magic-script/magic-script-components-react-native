@@ -20,7 +20,6 @@ import SceneKit
     @objc var backgroundColor: UIColor = UIColor.clear {
         didSet {
             backgroundNode.geometry?.firstMaterial?.diffuse.contents = backgroundColor
-            setNeedsLayout()
         }
     }
 
@@ -59,8 +58,7 @@ import SceneKit
     }
 
     override func _calculateSize() -> CGSize {
-        let childSize = childNode?.getSize() ?? CGSize.zero
-        return CGSize(width: childSize.width, height: childSize.height)
+        return childNode?.getSize() ?? CGSize.zero
     }
 
     override func updateLayout() {
@@ -72,7 +70,6 @@ import SceneKit
             plane.height = size.height
             plane.firstMaterial?.diffuse.contents = backgroundColor
         }
-        backgroundNode.position = position
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {

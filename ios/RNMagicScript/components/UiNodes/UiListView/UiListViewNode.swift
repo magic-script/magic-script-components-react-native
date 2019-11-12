@@ -39,7 +39,7 @@ import SceneKit
         set { linearLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
     @objc var scrollingEnabled: Bool = true {
-        didSet { setNeedsLayout() }
+        didSet { scrollView.enabled = scrollingEnabled; setNeedsLayout() }
     }
 
     fileprivate var linearLayout: UiLinearLayoutNode!

@@ -37,6 +37,8 @@ import com.reactlibrary.utils.Utils.Companion.metersToPx
 import com.reactlibrary.utils.Utils.Companion.pxToMeters
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultString
+import kotlin.math.max
+import kotlin.math.min
 
 open class UiScrollViewNode(
         initProps: ReadableMap,
@@ -53,10 +55,12 @@ open class UiScrollViewNode(
         const val DEFAULT_HEIGHT = 1.0F
         const val DEFAULT_SCROLL_DIRECTION = "vertical"
 
+        const val BAR_THICKNESS_RATIO = 0.03F // relative to min (width, height)
+        const val BAR_MINIMUM_THICKNESS = 0.05F // in meters
+        const val HIDDEN_BAR_THICKNESS = 0
+
         const val LAYOUT_LOOP_DELAY = 50L
         const val Z_ORDER_OFFSET = 1e-5F
-
-        const val SCROLLBAR_THICKESS_RATIO = 0.06F // relative to its length
     }
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
@@ -69,7 +73,6 @@ open class UiScrollViewNode(
     private var vBarNode: UiScrollBarNode? = null
 
     private var requestedContentPosition = Vector2()
-
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
@@ -106,12 +109,17 @@ open class UiScrollViewNode(
     override fun setupView() {
         super.setupView()
 
-        // need to re-attach native views in case of rebuild
-        setupVerticalBar()
-        setupHorizontalBar()
+        if (vBarNode != null) {
+            val thickness = calculateScrollBarThickness()
+            (view as CustomScrollView).vBar?.setThickness(thickness)
+        }
+
+        if (hBarNode != null) {
+            val thickness = calculateScrollBarThickness()
+            (view as CustomScrollView).hBar?.setThickness(thickness)
+        }
 
         val scrollView = view as CustomScrollView
-
         scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
         }
@@ -151,10 +159,12 @@ open class UiScrollViewNode(
         when (child) {
             content -> content = null
             hBarNode -> {
-                // TODO hide bar
+                (view as CustomScrollView).hBar?.setThickness(HIDDEN_BAR_THICKNESS)
+                hBarNode = null
             }
             vBarNode -> {
-                // TODO hide bar
+                (view as CustomScrollView).vBar?.setThickness(HIDDEN_BAR_THICKNESS)
+                vBarNode = null
             }
         }
     }
@@ -184,17 +194,19 @@ open class UiScrollViewNode(
     }
 
     private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
-        if (scrollBarNode.getOrientation() == UiScrollBarNode.ORIENTATION_VERTICAL) {
+        val thickness = calculateScrollBarThickness()
+
+        if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
             if (vBarNode == null) {
                 super.addContent(scrollBarNode)
                 vBarNode = scrollBarNode
-                setupVerticalBar()
+                (view as CustomScrollView).vBar?.setThickness(thickness)
             }
         } else {
             if (hBarNode == null) {
                 super.addContent(scrollBarNode)
                 hBarNode = scrollBarNode
-                setupHorizontalBar()
+                (view as CustomScrollView).hBar?.setThickness(thickness)
             }
         }
     }
@@ -273,17 +285,10 @@ open class UiScrollViewNode(
         }
     }
 
-    private fun setupVerticalBar() {
-        if (vBarNode != null) {
-            val thickness = metersToPx(size.y * SCROLLBAR_THICKESS_RATIO, context)
-            (view as CustomScrollView).vBar?.setThickness(thickness)
-        }
+    private fun calculateScrollBarThickness(): Int {
+        val parentBasedThickness = min(size.x, size.y) * BAR_THICKNESS_RATIO
+        val thickness = max(parentBasedThickness, BAR_MINIMUM_THICKNESS)
+        return metersToPx(thickness, context)
     }
 
-    private fun setupHorizontalBar() {
-        if (hBarNode != null) {
-            val thickness = metersToPx(size.x * SCROLLBAR_THICKESS_RATIO, context)
-            (view as CustomScrollView).hBar?.setThickness(thickness)
-        }
-    }
 }

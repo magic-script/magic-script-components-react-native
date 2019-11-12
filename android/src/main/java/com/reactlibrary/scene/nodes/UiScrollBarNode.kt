@@ -22,7 +22,7 @@ import com.reactlibrary.utils.putDefaultDouble
 import com.reactlibrary.utils.putDefaultString
 
 /**
- * It is only a node that hold information needed by ScrollViewNode
+ * This node only holds information needed by ScrollViewNode
  * (it's mapped to a native scroll bar view)
  */
 class UiScrollBarNode(initProps: ReadableMap) :
@@ -46,25 +46,20 @@ class UiScrollBarNode(initProps: ReadableMap) :
         const val DEFAULT_THUMB_POSITION = 0.0
     }
 
-    fun getWidth(): Float {
-        return properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH).toFloat()
-    }
+    val width: Float
+        get() = properties.getDouble(PROP_WIDTH, DEFAULT_WIDTH).toFloat()
 
-    fun getHeight(): Float {
-        return properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
-    }
+    val height: Float
+        get() = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
 
-    fun getThumbPosition(): Float {
-        return properties.getDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION).toFloat()
-    }
+    val thumbPosition: Float
+        get() = properties.getDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION).toFloat()
 
-    fun getThumbSize(): Float {
-        return properties.getDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE).toFloat()
-    }
+    val thumbSize: Float
+        get() = properties.getDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE).toFloat()
 
-    fun getOrientation(): String {
-        return properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
-    }
+    val orientation: String
+        get() = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
 
     init {
         // set default properties values

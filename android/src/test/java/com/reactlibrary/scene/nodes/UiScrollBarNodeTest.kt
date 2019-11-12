@@ -17,13 +17,11 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.reactlibrary.scene.nodes.views.CustomScrollBar
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,41 +42,52 @@ class UiScrollBarNodeTest {
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.viewSpy = spy(CustomScrollBar(context))
-        this.node = object : UiScrollBarNode(JavaOnlyMap(), context, mock()) {
-            override fun provideView(context: Context): View {
-                return viewSpy
-            }
-        }
+        this.node = UiScrollBarNode(JavaOnlyMap())
         node.build()
     }
 
     @Test
-    fun shouldApplyThumbPositionWhenThumbPositionPropertyUpdated() {
+    fun `should update size`() {
+        val width = 0.6
+        val height = 0.02
+        val props = JavaOnlyMap.of(
+                UiScrollBarNode.PROP_WIDTH, width,
+                UiScrollBarNode.PROP_HEIGHT, height
+        )
+
+        node.update(props)
+
+        node.width shouldEqual width.toFloat()
+        node.height shouldEqual height.toFloat()
+    }
+
+    @Test
+    fun `should update thumb position`() {
         val thumbPosition = 0.43
         val props = JavaOnlyMap.of(UiScrollBarNode.PROP_THUMB_POSITION, thumbPosition)
 
         node.update(props)
 
-        verify(viewSpy).thumbPosition = thumbPosition.toFloat()
+        node.thumbPosition shouldEqual thumbPosition.toFloat()
     }
 
     @Test
-    fun shouldApplyThumbSizeWhenThumbSizePropertyUpdated() {
+    fun `should update thumb size`() {
         val thumbSize = 0.77
         val props = JavaOnlyMap.of(UiScrollBarNode.PROP_THUMB_SIZE, thumbSize)
 
         node.update(props)
 
-        verify(viewSpy).thumbSize = thumbSize.toFloat()
+        node.thumbSize shouldEqual thumbSize.toFloat()
     }
 
     @Test
-    fun shouldApplyHorizontalOrientationWhenUpdated() {
+    fun `should update orientation`() {
         val props = JavaOnlyMap.of(UiScrollBarNode.PROP_ORIENTATION, UiScrollBarNode.ORIENTATION_HORIZONTAL)
 
         node.update(props)
 
-        verify(viewSpy).isVertical = false
+        node.orientation shouldEqual UiScrollBarNode.ORIENTATION_HORIZONTAL
     }
 
 }

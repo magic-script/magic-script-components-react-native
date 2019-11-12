@@ -42,7 +42,7 @@ class UiListViewItemNodeSpec: QuickSpec {
                     let referenceBackgroundColor = UIColor(white: 0.5, alpha: 0.5)
                     node.update(["backgroundColor" : referenceBackgroundColor.toArrayOfFloat])
                     expect(node.backgroundColor).to(beCloseTo(referenceBackgroundColor))
-                    expect(node.isLayoutNeeded).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
             

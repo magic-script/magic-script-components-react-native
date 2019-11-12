@@ -58,6 +58,7 @@ import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
 import com.reactlibrary.scene.nodes.UiListViewItemNode;
+import com.reactlibrary.scene.nodes.UiListViewNode;
 import com.reactlibrary.scene.nodes.UiProgressBarNode;
 import com.reactlibrary.scene.nodes.UiScrollBarNode;
 import com.reactlibrary.scene.nodes.UiScrollViewNode;
@@ -73,8 +74,6 @@ import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
 import com.reactlibrary.scene.nodes.layouts.UiRectLayout;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
-import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManager;
-import com.reactlibrary.scene.nodes.layouts.manager.LinearLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
@@ -115,6 +114,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_COLOR_CHANGED = "onColorChanged";
     private static final String EVENT_DATE_CHANGED = "onDateChanged";
     private static final String EVENT_DATE_CONFIRMED = "onDateConfirmed";
+    private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -124,6 +124,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_SLIDER_VALUE = "Value";
     private static final String EVENT_ARG_COLOR = "color";
     private static final String EVENT_ARG_DATE = "date";
+    private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -233,7 +234,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScrollBarNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiScrollBarNode(props, context, viewRenderableLoader), nodeId));
+        mainHandler.post(() -> addNode(new UiScrollBarNode(props), nodeId));
     }
 
     @ReactMethod
@@ -279,10 +280,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> {
-            LinearLayoutManager layoutManager = new LinearLayoutManagerImpl();
-            addNode(new UiLinearLayout(props, layoutManager), nodeId);
-        });
+        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
     }
 
 
@@ -328,8 +326,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void createUiListViewItemNode(final ReadableMap props, final String nodeId) {
+    public void createListViewItemNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, viewRenderableLoader), nodeId));
+    }
+
+    @ReactMethod
+    public void createListViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiListViewNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
@@ -488,7 +491,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -508,7 +511,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorCanceled(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -523,7 +526,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnColorChangedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiColorPickerNode) {
+            if (node instanceof UiColorPickerNode) {
                 ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -543,7 +546,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnDateChangedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiDatePickerNode) {
+            if (node instanceof UiDatePickerNode) {
                 ((UiDatePickerNode) node).setOnDateChanged((date) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -560,12 +563,28 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnDateConfirmedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiDatePickerNode) {
+            if (node instanceof UiDatePickerNode) {
                 ((UiDatePickerNode) node).setOnDateConfirmed((date) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     params.putString(EVENT_ARG_DATE, date);
                     sendEvent(EVENT_DATE_CONFIRMED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnScrollChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiScrollViewNode) {
+                ((UiScrollViewNode) node).setOnScrollChangeListener((position) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putDouble(EVENT_ARG_SCROLL_VALUE, position.getX());
+                    sendEvent(EVENT_SCROLL_CHANGED, params);
                     return Unit.INSTANCE;
                 });
             }
@@ -600,5 +619,5 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void onHostDestroy() {
         MediaPlayerPool.INSTANCE.destroy();
     }
-    
+
 }

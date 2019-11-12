@@ -22,7 +22,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -96,26 +95,6 @@ fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
     }
 }
 
-/**
- * android.view.View
- */
-inline fun View.onLayoutListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
-            f()
-        }
-    })
-}
-
-inline fun View.onDrawListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
-        override fun onDraw() {
-            f()
-        }
-    })
-}
-
 /*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end
@@ -149,8 +128,8 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     }
 
     measure(widthMeasureSpec, heightMeasureSpec)
-    val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
-    val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    val width = Utils.pxToMeters(measuredWidth, context)
+    val height = Utils.pxToMeters(measuredHeight, context)
     return Vector2(width, height)
 }
 

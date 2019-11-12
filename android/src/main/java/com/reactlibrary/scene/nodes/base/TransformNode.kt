@@ -198,7 +198,7 @@ abstract class TransformNode(
     /**
      * Should hide this part of node that is outside [clipBounds]
      */
-    open fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {}
+    open fun setClipBounds(clipBounds: Bounding) {}
 
     override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)

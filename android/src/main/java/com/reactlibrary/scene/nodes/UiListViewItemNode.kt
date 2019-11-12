@@ -16,9 +16,9 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefaultSerializable
 
-class UiListViewItemNode(initProps: ReadableMap,
-                         context: Context,
-                         viewRenderableLoader: ViewRenderableLoader)
+open class UiListViewItemNode(initProps: ReadableMap,
+                              context: Context,
+                              viewRenderableLoader: ViewRenderableLoader)
     : UiNode(initProps, context, viewRenderableLoader), Layoutable {
 
     companion object {
@@ -63,13 +63,13 @@ class UiListViewItemNode(initProps: ReadableMap,
         }
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        super.setClipBounds(clipBounds, clipNativeView)
+    override fun setClipBounds(clipBounds: Bounding) {
+        super.setClipBounds(clipBounds)
         // clip child item
         val localBounds = clipBounds.translate(-getContentPosition())
         contentNode.children
                 .filterIsInstance<TransformNode>()
-                .forEach { it.setClipBounds(localBounds, clipNativeView) }
+                .forEach { it.setClipBounds(localBounds) }
     }
 
     override fun onUpdate(frameTime: FrameTime) {

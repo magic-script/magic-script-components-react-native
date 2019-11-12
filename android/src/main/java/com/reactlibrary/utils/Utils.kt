@@ -69,7 +69,7 @@ class Utils {
          *  (Uses an average of horizontal and vertical density -
          *  usually they are almost the same)
          */
-        fun pxToMeters(px: Float, context: Context): Float {
+        fun pxToMeters(px: Int, context: Context): Float {
             val xdpi = context.resources.displayMetrics.xdpi
             val ydpi = context.resources.displayMetrics.ydpi
             val averageDensity = (xdpi + ydpi) / 2

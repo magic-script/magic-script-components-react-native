@@ -22,6 +22,64 @@ import Nimble
 class UiListViewItemNodeSpec: QuickSpec {
     override func spec() {
         describe("UiListViewItemNode") {
+            var node: UiListViewItemNode!
+            
+            beforeEach {
+                node = UiListViewItemNode(props: [:])
+                node.layoutIfNeeded()
+            }
+            
+            context("initial properties") {
+                it("should have set default values") {
+                    let referenceBackgroundColor = UIColor.clear
+                    expect(node.backgroundColor).to(equal(referenceBackgroundColor))
+                    expect(node.childNode).to(beNil())
+                }
+            }
+            
+            context("update properties") {
+                it("should update 'backgroundColor' prop") {
+                    let referenceBackgroundColor = UIColor(white: 0.5, alpha: 0.5)
+                    node.update(["backgroundColor" : referenceBackgroundColor.toArrayOfFloat])
+                    expect(node.backgroundColor).to(beCloseTo(referenceBackgroundColor))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+            }
+            
+            context("when item added") {
+                it("should store it internally") {
+                    let referenceNode = UiButtonNode(props: [:])
+                    node.addChild(referenceNode)
+                    node.layoutIfNeeded()
+                    
+                    expect(node.childNode).to(equal(referenceNode))
+                }
+            }
+            
+            context("when item removed") {
+                it("should remove it from the list node") {
+                    let referenceNode = UiButtonNode(props: [:])
+                    node.addChild(referenceNode)
+                    node.layoutIfNeeded()
+                    
+                    expect(node.childNode).to(equal(referenceNode))
+                    
+                    node.removeChild(referenceNode)
+                    expect(node.childNode).to(beNil())
+                }
+            }
+            
+            context("when asked for size") {
+                it("should calculate it according to childNode size") {
+                    let referenceNode = UiButtonNode(props: ["width": 1.0, "height": 1.0])
+                    referenceNode.text = "Text"
+                    referenceNode.layoutIfNeeded()
+                    node.addChild(referenceNode)
+                    node.layoutIfNeeded()
+                    
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1.0, height: 1.0)))
+                }
+            }
         }
     }
 }

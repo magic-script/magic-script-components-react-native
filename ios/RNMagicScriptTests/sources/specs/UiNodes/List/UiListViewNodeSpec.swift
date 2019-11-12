@@ -24,21 +24,32 @@ class UiListViewNodeSpec: QuickSpec {
         describe("UiListViewNode") {
             var node: UiListViewNode!
 
+            beforeEach {
+                node = UiListViewNode(props: [:])
+                node.layoutIfNeeded()
+            }
+
             context("initial properties") {
                 it("should have set default values") {
-                    node = UiListViewNode(props: [:])
+                    expect(node.alignment).to(equal(Alignment.centerCenter))
                     expect(node.width).to(beCloseTo(0))
                     expect(node.height).to(beCloseTo(0))
                     expect(node.layoutOrientation).to(equal(Orientation.vertical))
                     expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
-                    expect(node.itemAlignment).to(equal(Alignment.centerCenter))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
-                    expect(node.itemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.scrollingEnabled).to(beTrue())
                 }
             }
 
             context("update properties") {
+                it("should not update 'alignment' prop") {
+                    let referenceAlignment = Alignment.bottomRight
+                    node.update(["alignment" : referenceAlignment.rawValue])
+                    expect(node.alignment).notTo(equal(referenceAlignment))
+                    expect(node.alignment).to(equal(Alignment.centerCenter))
+                    expect(node.isLayoutNeeded).to(beFalse())
+                }
+
                 it("should update 'width' prop") {
                     let referenceWidth = 2.75
                     node.update(["width" : referenceWidth])
@@ -69,16 +80,6 @@ class UiListViewNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'itemAlignment' prop") {
-                    node = UiListViewNode(props: ["itemAlignment": "top-right"])
-                    expect(node.itemAlignment).to(equal(Alignment.topRight))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                    node.layoutIfNeeded()
-                    node.update(["itemAlignment" : "bottom-left"])
-                    expect(node.itemAlignment).to(equal(Alignment.bottomLeft))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                }
-
                 it("should update 'defaultItemPadding' prop") {
                     let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
                     node = UiListViewNode(props: ["defaultItemPadding": referencePadding.toArrayOfFloat])
@@ -86,17 +87,39 @@ class UiListViewNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'itemPadding' prop") {
-                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
-                    node = UiListViewNode(props: ["itemPadding": referencePadding.toArrayOfFloat])
-                    expect(node.itemPadding).to(beCloseTo(referencePadding))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                }
-
                 it("should update 'scrollingEnabled' prop") {
                     node = UiListViewNode(props: ["scrollingEnabled": false])
                     expect(node.scrollingEnabled).to(beFalse())
                     expect(node.isLayoutNeeded).to(beTrue())
+                }
+            }
+
+            context("when item added") {
+                context("when item is ListView item") {
+                    it("should add it to the list node") {
+                        let itemNode = UiListViewItemNode(props: [:])
+                        node.addChild(itemNode)
+                        expect(node.items.count).to(equal(1))
+
+                        let otherNode = TransformNode(props: [:])
+                        node.addChild(otherNode)
+                        expect(node.items.count).to(equal(1))
+                    }
+                }
+            }
+
+            context("when item removed") {
+                it("should remove it from the list node") {
+                    let itemNode = UiListViewItemNode(props: [:])
+                    node.addChild(itemNode)
+                    expect(node.items.count).to(equal(1))
+
+                    let otherNode = TransformNode(props: [:])
+                    node.removeChild(otherNode)
+                    expect(node.items.count).to(equal(1))
+
+                    node.removeChild(itemNode)
+                    expect(node.items.count).to(equal(0))
                 }
             }
         }

@@ -19,15 +19,23 @@ import SceneKit
 @objc open class UiListViewItemNode: UiNode {
     @objc var backgroundColor: UIColor = UIColor.clear {
         didSet {
-            contentNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+            backgroundNode.geometry?.firstMaterial?.diffuse.contents = backgroundColor
+            setNeedsLayout()
         }
     }
 
+    fileprivate var backgroundNode: SCNNode!
+
     @objc override func setupNode() {
         super.setupNode()
+
+        backgroundNode = NodesFactory.createPlaneNode(width: 0.0, height: 0.0, color: backgroundColor)
+        backgroundNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        backgroundNode.renderingOrder = 0
+        contentNode.addChildNode(backgroundNode)
     }
 
-    fileprivate var childNode: TransformNode? = nil
+    fileprivate(set) var childNode: TransformNode? = nil
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
@@ -40,6 +48,7 @@ import SceneKit
     @objc override func addChild(_ child: TransformNode) {
         super.addChild(child)
         childNode = child
+        child.renderingOrder = 1
         setNeedsLayout()
     }
 
@@ -51,7 +60,19 @@ import SceneKit
 
     override func _calculateSize() -> CGSize {
         let childSize = childNode?.getSize() ?? CGSize.zero
-        return CGSize(width: childSize.width + 0.025, height: childSize.height + 0.025)
+        return CGSize(width: childSize.width, height: childSize.height)
+    }
+
+    override func updateLayout() {
+        super.updateLayout()
+        let size = getSize()
+
+        if let plane = backgroundNode.geometry as? SCNPlane {
+            plane.width = size.width
+            plane.height = size.height
+            plane.firstMaterial?.diffuse.contents = backgroundColor
+        }
+        backgroundNode.position = position
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {

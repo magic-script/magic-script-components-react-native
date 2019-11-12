@@ -84,7 +84,7 @@ class ViewController: UIViewController {
         let animals = ["bear", "sheep", "pig", "cat", "tiger", "snake", "dog", "rat", "octopus"]
         for (index, animal) in animals.enumerated() {
             let itemNodeId: String = "listViewItem_\(index)"
-            let _: UiListViewItemNode = createComponent([:], nodeId: itemNodeId, parentId: listViewId)
+            let _: UiListViewItemNode = createComponent(["backgroundColor": [0.95, 0.85, 0.75, 0.25]], nodeId: itemNodeId, parentId: listViewId)
             let buttonId: String = "button_\(index)"
             let _: UiButtonNode = createComponent(["text": animal, "textSize": 0.08], nodeId: buttonId, parentId: itemNodeId)
         }

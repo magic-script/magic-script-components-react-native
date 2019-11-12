@@ -45,19 +45,17 @@ import SceneKit
     fileprivate var linearLayout: UiLinearLayoutNode!
     fileprivate var scrollView: UiScrollViewNode!
     fileprivate var scrollBar: UiScrollBarNode!
-    fileprivate var items: [UiListViewItemNode] = []
+    fileprivate(set) var items: [UiListViewItemNode] = []
 
     @objc override func setupNode() {
         super.setupNode()
         linearLayout = UiLinearLayoutNode()
         linearLayout.alignment = .centerCenter
-        linearLayout.debug = true
 
         scrollBar = UiScrollBarNode()
         scrollBar.height = 0.04
 
         scrollView = UiScrollViewNode()
-        scrollView.debug = true
         scrollView.scrollBarVisibility = .always
         scrollView.addChild(scrollBar)
         scrollView.addChild(linearLayout)
@@ -96,10 +94,8 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let linearLayoutSize = linearLayout.getSize()
-        print("linearLayoutSize: \(linearLayoutSize)")
         let outputWidth = (width > 0) ? width : linearLayoutSize.width
         let outputHeight = (height > 0) ? height : linearLayoutSize.height
-        print("getSize: \(CGSize(width: outputWidth, height: outputHeight))")
         return CGSize(width: outputWidth, height: outputHeight)
     }
 

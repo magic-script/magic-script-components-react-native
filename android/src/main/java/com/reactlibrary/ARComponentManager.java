@@ -116,6 +116,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_COLOR_CHANGED = "onColorChanged";
     private static final String EVENT_DATE_CHANGED = "onDateChanged";
     private static final String EVENT_DATE_CONFIRMED = "onDateConfirmed";
+    private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -125,6 +126,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_SLIDER_VALUE = "Value";
     private static final String EVENT_ARG_COLOR = "color";
     private static final String EVENT_ARG_DATE = "date";
+    private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -572,6 +574,22 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     params.putString(EVENT_ARG_DATE, date);
                     sendEvent(EVENT_DATE_CONFIRMED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnScrollChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiScrollViewNode) {
+                ((UiScrollViewNode) node).setOnScrollChangeListener((position) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putDouble(EVENT_ARG_SCROLL_VALUE, position.getX());
+                    sendEvent(EVENT_SCROLL_CHANGED, params);
                     return Unit.INSTANCE;
                 });
             }

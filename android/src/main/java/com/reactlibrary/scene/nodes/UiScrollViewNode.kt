@@ -63,6 +63,8 @@ open class UiScrollViewNode(
         const val Z_ORDER_OFFSET = 1e-5F
     }
 
+    var onScrollChangeListener: ((position: Vector2) -> Unit)? = null
+
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
 
     protected var vBarNode: UiScrollBarNode? = null
@@ -126,6 +128,7 @@ open class UiScrollViewNode(
         val scrollView = view as CustomScrollView
         scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
+            this.onScrollChangeListener?.invoke(position)
         }
     }
 

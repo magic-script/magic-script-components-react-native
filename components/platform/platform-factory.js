@@ -6,25 +6,7 @@ import generateId from '../utils/generateId';
 import { Log } from '../utils/logger';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
-
-// Events names
-const Event = {
-    onClick: 'onClick',
-    onColorCanceled: 'onColorCanceled',
-    onColorChanged: 'onColorChanged',
-    onColorConfirmed: 'onColorConfirmed',
-    onDateChanged: 'onDateChanged',
-    onDateConfirmed: 'onDateConfirmed',
-    onPress: 'onPress',
-    onScrollChanged: 'onScrollChanged',
-    onSelectionChanged: 'onSelectionChanged',
-    onSliderChanged: 'onSliderChanged',
-    onTextChanged: 'onTextChanged',
-    onTimeChanged: 'onTimeChanged',
-    onTimeConfirmed: 'onTimeConfirmed',
-    onToggleChanged: 'onToggleChanged',
-    onVideoPrepared: 'onVideoPrepared',
-};
+import { Events } from './platform-events';
 
 export class PlatformFactory extends NativeFactory {
 
@@ -47,21 +29,10 @@ export class PlatformFactory extends NativeFactory {
         this.eventsByElementId = {};
 
         this.eventsManager = new NativeEventEmitter(NativeModules.AREventsManager);
-        this.startListeningEvent(Event.onClick);
-        this.startListeningEvent(Event.onColorCanceled);
-        this.startListeningEvent(Event.onColorChanged);
-        this.startListeningEvent(Event.onColorConfirmed);
-        this.startListeningEvent(Event.onDateChanged);
-        this.startListeningEvent(Event.onDateConfirmed);
-        this.startListeningEvent(Event.onPress);
-        this.startListeningEvent(Event.onScrollChanged);
-        this.startListeningEvent(Event.onSelectionChanged);
-        this.startListeningEvent(Event.onSliderChanged);
-        this.startListeningEvent(Event.onTextChanged);
-        this.startListeningEvent(Event.onTimeChanged);
-        this.startListeningEvent(Event.onTimeConfirmed);
-        this.startListeningEvent(Event.onToggleChanged);
-        this.startListeningEvent(Event.onVideoPrepared);
+
+        Events.forEach(event => { 
+            this.startListeningEvent(event.name); 
+        });
     }
 
     startListeningEvent(eventName) {
@@ -83,35 +54,11 @@ export class PlatformFactory extends NativeFactory {
     registerEvent(elementId, name, handler) {
         if (elementId === undefined) { return; }
 
-        if (name === Event.onClick || name === Event.onPress) {
-            this.componentManager.addOnPressEventHandler(elementId);
-        } else if (name === Event.onColorConfirmed) {
-            this.componentManager.addOnColorConfirmedEventReceivedHandler(elementId);
-        } else if (name === Event.onColorCanceled) {
-            this.componentManager.addOnColorCanceledEventReceivedHandler(elementId);
-        } else if (name === Event.onColorChanged) {
-            this.componentManager.addOnColorChangedEventHandler(elementId);
-        } else if (name === Event.onDateChanged) {
-            this.componentManager.addOnDateChangedEventHandler(elementId);
-        } else if (name === Event.onDateConfirmed) {
-            this.componentManager.addOnDateConfirmedEventHandler(elementId);
-        } else if (name === Event.onScrollChanged) {
-            this.componentManager.addOnScrollChangedEventHandler(elementId);
-        } else if (name === Event.onSelectionChanged) {
-            this.componentManager.addOnSelectionChangedEventHandler(elementId);
-        } else if (name === Event.onSliderChanged) {
-            this.componentManager.addOnSliderChangedEventHandler(elementId);
-        } else if (name === Event.onTextChanged) {
-            this.componentManager.addOnTextChangedEventHandler(elementId);
-        } else if (name === Event.onTimeChanged) {
-            this.componentManager.addOnTimeChangedEventHandler(elementId);
-        } else if (name === Event.onTimeConfirmed) {
-            this.componentManager.addOnTimeConfirmedEventHandler(elementId);
-        } else if (name === Event.onToggleChanged) {
-            this.componentManager.addOnToggleChangedEventHandler(elementId);
-        } else if (name === Event.onVideoPrepared) {
-            this.componentManager.addOnVideoPreparedEventHandler(elementId);
-        } 
+        Events.forEach(event => { 
+            if (event.name === name) {
+                event.handler(this.componentManager, elementId);
+            } 
+        });
 
         const pair = { name, handler };
         var events = this.eventsByElementId[elementId];

@@ -62,8 +62,7 @@ class InputViewFactory {
     }
 
     static func createView(for input: ColorPickerDataProviding, onFinish: (() -> Void)?) -> UIView? {
-        let width = UIScreen.main.bounds.width
-        let rect = CGRect(x: 0, y: 0, width: width, height: width + 52)
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 220.0)
         let colorPickerInputView = ColorPickerInputView(frame: rect)
         colorPickerInputView.pickerData = input
         colorPickerInputView.onFinish = onFinish

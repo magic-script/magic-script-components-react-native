@@ -53,6 +53,7 @@ import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiColorPickerNode;
+import com.reactlibrary.scene.nodes.UiDatePickerNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
 import com.reactlibrary.scene.nodes.UiDropdownListNode;
 import com.reactlibrary.scene.nodes.UiImageNode;
@@ -81,6 +82,7 @@ import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
 import com.reactlibrary.scene.nodes.video.VideoPlayerImpl;
+import com.reactlibrary.scene.nodes.views.DatePickerDialogProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -112,6 +114,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_COLOR_CONFIRMED = "onColorConfirmed";
     private static final String EVENT_COLOR_CANCELLED = "onColorCanceled";
     private static final String EVENT_COLOR_CHANGED = "onColorChanged";
+    private static final String EVENT_DATE_CHANGED = "onDateChanged";
+    private static final String EVENT_DATE_CONFIRMED = "onDateConfirmed";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -120,6 +124,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
     private static final String EVENT_ARG_SLIDER_VALUE = "Value";
     private static final String EVENT_ARG_COLOR = "color";
+    private static final String EVENT_ARG_DATE = "date";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -334,6 +339,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createDatePickerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiDatePickerNode datePickerNode = new UiDatePickerNode(props, context, viewRenderableLoader, new DatePickerDialogProvider());
+            addNode(datePickerNode, nodeId);
+        });
+    }
+
+    @ReactMethod
     public void addChildNode(final String nodeId, final String parentId) {
         mainHandler.post(() -> UiNodesManager.addNodeToParent(nodeId, parentId));
     }
@@ -526,6 +539,39 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     }
                     params.putArray(EVENT_ARG_COLOR, selectedItems);
                     sendEvent(EVENT_COLOR_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnDateChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiDatePickerNode) {
+                ((UiDatePickerNode) node).setOnDateChanged((date) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putString(EVENT_ARG_DATE, date);
+                    sendEvent(EVENT_DATE_CHANGED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+
+    @ReactMethod
+    public void addOnDateConfirmedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiDatePickerNode) {
+                ((UiDatePickerNode) node).setOnDateConfirmed((date) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putString(EVENT_ARG_DATE, date);
+                    sendEvent(EVENT_DATE_CONFIRMED, params);
                     return Unit.INSTANCE;
                 });
             }

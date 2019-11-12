@@ -47,6 +47,8 @@
 		447755392374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
 		447755592374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
 		4477555A2374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
+		44775588237ADD6100E98F03 /* shopping_mall_mono.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */; };
+		44775589237ADD6100E98F03 /* shopping_mall_stereo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */; };
 		447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		448586FB235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
 		448586FC235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
@@ -470,6 +472,8 @@
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
 		447755372374C15600E98F03 /* UiAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNode.swift; sourceTree = "<group>"; };
 		447755582374D37C00E98F03 /* AudioAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAction.swift; sourceTree = "<group>"; };
+		44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shopping_mall_mono.mp3; sourceTree = "<group>"; };
+		44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shopping_mall_stereo.mp3; sourceTree = "<group>"; };
 		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		448586FA235DC1FD00D372CB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
@@ -742,6 +746,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		44775581237AC4DE00E98F03 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */,
+				44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */,
+			);
+			path = sounds;
+			sourceTree = "<group>";
+		};
 		44A3FCFF2366254600402912 /* Layouts */ = {
 			isa = PBXGroup;
 			children = (
@@ -824,6 +837,7 @@
 			children = (
 				44AFAB0A232B968C005AC8EF /* images */,
 				44AFAB17232B968C005AC8EF /* models */,
+				44775581237AC4DE00E98F03 /* sounds */,
 			);
 			path = assets;
 			sourceTree = "<group>";
@@ -1400,7 +1414,7 @@
 					};
 					44AFAAA6232B950A005AC8EF = {
 						CreatedOnToolsVersion = 10.3;
-						DevelopmentTeam = D2L5MHYLSX;
+						DevelopmentTeam = DEURTTZ5DW;
 						ProvisioningStyle = Automatic;
 					};
 					44AFAACA232B9533005AC8EF = {
@@ -1580,6 +1594,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44AFAB2E232B968C005AC8EF /* DemoPicture2.png in Resources */,
+				44775588237ADD6100E98F03 /* shopping_mall_mono.mp3 in Resources */,
 				44AFAB2B232B968C005AC8EF /* DemoPicture4.png in Resources */,
 				44AFAB2C232B968C005AC8EF /* DemoPicture5.png in Resources */,
 				44AFAB3B232B968C005AC8EF /* hedra_05.bin in Resources */,
@@ -1601,6 +1616,7 @@
 				44AFAB3C232B968C005AC8EF /* hedra_06.gltf in Resources */,
 				44AFAB33232B968C005AC8EF /* DemoPicture2.jpg in Resources */,
 				44AFAB34232B968C005AC8EF /* DemoPicture3.jpg in Resources */,
+				44775589237ADD6100E98F03 /* shopping_mall_stereo.mp3 in Resources */,
 				44AFAB95232B99D9005AC8EF /* RNMagicScriptResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2100,7 +2116,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = D2L5MHYLSX;
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";
@@ -2129,7 +2145,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D2L5MHYLSX;
+				DEVELOPMENT_TEAM = DEURTTZ5DW;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";

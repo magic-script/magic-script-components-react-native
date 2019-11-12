@@ -39,6 +39,7 @@ class ViewController: UIViewController {
 //        setupUiDatePickerNodeTest()
 //        setupUiColorPickerNodeTest()
 //        setupTextEditTest()
+        setupAudioNodeTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -227,6 +228,25 @@ class ViewController: UIViewController {
             "width": 1.0,
             "height": 1.0,
         ], nodeId: textEditId, parentId: groupId)
+    }
+
+    fileprivate func setupAudioNodeTest() {
+        // Group
+        let groupId: String = "group"
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+
+        // Audio node
+        let audioNodeId: String = "audio"
+//        let audioURL: URL = Bundle.main.url(forResource: "shopping_mall_mono", withExtension: "mp3")!
+        let audioURL: URL = URL(string: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3")!
+//        let audioURL: URL = URL(string: "http://www.music.helsinki.fi/tmt/opetus/uusmedia/esim/a2002011001-e02.wav")!
+        print("audioURL: \(audioURL.absoluteString)")
+        let audioNode : UiAudioNode = createComponent([
+            "fileName": audioURL.absoluteString,
+            "debug": true,
+            "soundLooping": true
+        ], nodeId: audioNodeId, parentId: groupId)
+        audioNode.play()
     }
 
     @discardableResult

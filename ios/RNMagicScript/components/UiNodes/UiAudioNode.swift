@@ -21,7 +21,9 @@ import SceneKit
     @objc var fileName: URL? {
         didSet { reloadAudio(); setNeedsLayout() }
     }
-    @objc var action: AudioAction = .stop
+    @objc var action: AudioAction = .stop {
+        didSet { performAction() }
+    }
     @objc var soundLooping: Bool = false {
         didSet { audioSource?.loops = soundLooping }
     }
@@ -36,7 +38,7 @@ import SceneKit
     }
     // The range of the volume is 0 to 8, with 0 for silence, 1 for unity gain,
     // and 8 for 8x gain.
-    @objc var soundVolumeLinear: CGFloat = 1.0 {
+    @objc var soundVolumeLinear: CGFloat = 8.0 {
         didSet { audioSource?.volume = Float(soundVolumeLinear / 8.0) }
     }
     @objc var spatialSoundEnable: Bool = false {
@@ -52,16 +54,13 @@ import SceneKit
 //    SpatialSoundRoomSendLevels: SpatialSoundSendLevels
 
     fileprivate var audioNode: SCNNode!
-    fileprivate var audioPlayer: SCNAudioPlayer? {
-        return audioNode.audioPlayers.first
-    }
-
+    fileprivate var audioPlayer: SCNAudioPlayer?
     fileprivate var audioSource: SCNAudioSource? {
-        return audioNode.audioPlayers.first?.audioSource
+        return audioPlayer?.audioSource
     }
 
     deinit {
-        audioNode.removeAllAudioPlayers()
+        unloadAudio()
     }
 
     @objc override func setupNode() {
@@ -75,10 +74,6 @@ import SceneKit
 
         if let fileName = Convert.toFileURL(props["fileName"]) {
             self.fileName = fileName
-        }
-
-        if let action = Convert.toAudioAction(props["action"]) {
-            self.action = action
         }
 
         if let soundLooping = Convert.toBool(props["soundLooping"]) {
@@ -104,11 +99,44 @@ import SceneKit
         if let streamedFileOffset = Convert.toCGFloat(props["streamedFileOffset"]) {
             self.streamedFileOffset = streamedFileOffset
         }
+
+        if let action = Convert.toAudioAction(props["action"]) {
+            self.action = action
+        }
     }
 
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
+    }
 
+    fileprivate func performAction() {
+        switch action {
+        case .start:
+            break
+        case .pause:
+            break
+        case .resume:
+            break
+        case .stop:
+            break
+        }
+    }
+
+    func play() {
+        guard let player = audioPlayer else { return }
+        audioNode.isHidden = false
+        audioNode.addAudioPlayer(player)
+    }
+
+    func pause() {
+        audioNode.isHidden = true
+    }
+
+    func stop() {
+        if let player = audioPlayer {
+            audioNode.removeAudioPlayer(player)
+        }
+        audioPlayer = nil
     }
 
     @objc func updateAudio() {
@@ -118,7 +146,10 @@ import SceneKit
     }
 
     fileprivate func unloadAudio() {
-        audioNode.removeAllAudioPlayers()
+        if let player = audioPlayer {
+            audioNode.removeAudioPlayer(player)
+        }
+        audioPlayer = nil
     }
 
     fileprivate func reloadAudio() {
@@ -126,10 +157,16 @@ import SceneKit
 
         guard let url = fileName else { return }
         if let audioSource = SCNAudioSource(url: url) {
-            let player = SCNAudioPlayer(source: audioSource)
-            audioSource.load()
-            audioNode.addAudioPlayer(player)
+//            audioSource.shouldStream = true
             updateAudio()
+            audioSource.load()
+            audioPlayer = SCNAudioPlayer(source: audioSource)
+            audioPlayer!.willStartPlayback = {
+                print("willStartPlayback")
+            }
+            audioPlayer!.didFinishPlayback = {
+                print("didFinishPlayback")
+            }
         }
     }
 }

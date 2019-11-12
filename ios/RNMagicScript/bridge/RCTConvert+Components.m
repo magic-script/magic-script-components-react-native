@@ -111,4 +111,12 @@
     return [[UiColorPickerNode alloc] initWithProps: json];
 }
 
++ (UiListViewNode *)UiListViewNode:(id)json {
+    return [[UiListViewNode alloc] initWithProps: json];
+}
+
++ (UiListViewItemNode *)UiListViewItemNode:(id)json {
+    return [[UiListViewItemNode alloc] initWithProps: json];
+}
+
 @end

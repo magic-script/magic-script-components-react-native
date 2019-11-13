@@ -17,6 +17,8 @@
 import Foundation
 import SceneKit
 
+// Spatial audio setup:
+// https://stackoverflow.com/questions/58044242/arkit-spatial-audio-barely-changes-the-volume-over-distance
 @objc class SoundNode: SCNNode {
     @objc var url: URL? {
         didSet {
@@ -114,6 +116,8 @@ import SceneKit
         audioSource?.isPositional = spatial
         audioSource?.load()
         soundLoaded?()
+
+        debugNode?.isHidden = !spatial
     }
 
     fileprivate func unloadAudio() {
@@ -122,12 +126,11 @@ import SceneKit
         audioSource = nil
     }
 
-    fileprivate func hasDebugNode() -> Bool {
-        return !childNodes.isEmpty
-    }
+    fileprivate var debugNode: SCNNode? { return childNodes.first }
 
     @objc func setDebugMode(_ debug: Bool) {
-        guard debug != hasDebugNode() else { return }
+        let hasDebugNode = (debugNode != nil)
+        guard debug != hasDebugNode else { return }
 
         childNodes.first?.removeFromParentNode()
         if debug {
@@ -136,6 +139,7 @@ import SceneKit
                 SCNVector3(0, 0, spatialMaxDistance),
             ]
             let line = NodesFactory.createLinesNode(vertices: vertices, color: UIColor.green)
+            line.isHidden = !spatial
             addChildNode(line)
         }
     }

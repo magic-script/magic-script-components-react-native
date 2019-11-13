@@ -119,8 +119,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_TIME_CHANGED = "onTimeChanged";
     private static final String EVENT_TIME_CONFIRMED = "onTimeConfirmed";
     private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
-    private static final String EVENT_DIALOG_CONFIRM = "onDialogConfirm";
-    private static final String EVENT_DIALOG_CANCEL = "onDialogCancel";
+    private static final String EVENT_DIALOG_CONFIRM = "onDialogConfirmed";
+    private static final String EVENT_DIALOG_CANCEL = "onDialogCanceled";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";

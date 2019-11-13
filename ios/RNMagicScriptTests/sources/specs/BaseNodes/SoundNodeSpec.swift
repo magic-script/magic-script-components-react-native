@@ -43,7 +43,7 @@ class SoundNodeSpec: QuickSpec {
                     expect(node.spatialMaxDistance).to(beCloseTo(1))
                     expect(node.direction).to(beCloseTo(SCNQuaternionIdentity))
 
-                    expect(node.soundLoader).to(beNil())
+                    expect(node.soundLoaded).to(beNil())
 
                     expect(node.isLoaded).to(beFalse())
                     expect(node.isPlaying).to(beFalse())
@@ -54,6 +54,9 @@ class SoundNodeSpec: QuickSpec {
                 it("should load local audio file") {
                     expect(node.isLoaded).to(beFalse())
                     node.url = urlForRelativePath(mp3AudioPath)
+//                    waitUntil(timeout: 0.1) { done in
+//                        done()
+//                    }
                     expect(node.isLoaded).to(beTrue())
                 }
 
@@ -71,37 +74,17 @@ class SoundNodeSpec: QuickSpec {
                     node.stop()
                     expect(node.isPlaying).to(beFalse())
                 }
+
+                it("should pause/resume playing audio file") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.pause()
+                    expect(node.isPlaying).to(beFalse())
+                    node.resume()
+                    expect(node.isPlaying).to(beFalse())
+                }
             }
         }
     }
-}
-
-fileprivate var audioPlayer: SCNAudioPlayer?
-fileprivate var audioSource: SCNAudioSource?
-fileprivate var needsReloadPlayer: Bool = false
-
-func start() {
-    // audio must be loaded
-    guard let source = audioSource else { return }
-    // and must be stopped
-    guard audioPlayer == nil else { return }
-
-    audioPlayer = SCNAudioPlayer(source: source)
-    isHidden = false
-    addAudioPlayer(audioPlayer!)
-}
-
-func pause() {
-    isHidden = true
-}
-
-func resume() {
-    isHidden = false
-}
-
-func stop() {
-    if let player = audioPlayer {
-        removeAudioPlayer(player)
-    }
-    audioPlayer = nil
 }

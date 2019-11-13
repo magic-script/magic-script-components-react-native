@@ -15,7 +15,7 @@
     "ar"
   ],
   "author": "Magic Leap",
-  "license": "",
+  "license": "Apache-2.0",
   "dependencies": {
     "react": "16.8.6",
     "react-reconciler": "^0.20.4"

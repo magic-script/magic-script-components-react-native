@@ -262,7 +262,7 @@ class ViewController: UIViewController {
             "debug": true,
             "soundLooping": true
         ], nodeId: audioNodeId, parentId: groupId)
-        audioNode.play()
+        audioNode.action = .start
     }
 
     @discardableResult

@@ -19,61 +19,59 @@ import SceneKit
 @objc open class UiAudioNode: TransformNode {
 
     @objc var fileName: URL? {
-        didSet {
-            guard let url = fileName else { unloadAudio(); return }
-            downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
-                self?.loadAudio(localURL: localURL)
-            }
-        }
+        get { return soundNode.url }
+        set { soundNode.url = newValue }
     }
     @objc var action: AudioAction = .stop {
         didSet { performAction() }
     }
-    @objc var soundLooping: Bool = false {
-        didSet { audioSource?.loops = soundLooping }
+    @objc var soundLooping: Bool {
+        get { return soundNode.loop }
+        set { soundNode.loop = newValue }
     }
-    @objc var soundMute: Bool = false {
-        didSet { audioSource?.volume = soundMute ? 0.0 : Float(soundVolumeLinear / 8.0) }
+    @objc var soundMute: Bool {
+        get { return soundNode.mute }
+        set { soundNode.mute = newValue }
     }
     // The range of the pitch is 0.5 to 2.0, with 0.5 being one octave down
     // and 2.0 being one octave up (i.e., the pitch is a frequency multiple).
     // A pitch of 1.0 is the default and means no change.
-    @objc var soundPitch: CGFloat = 1 {
-        didSet { setNeedsLayout() }
+    @objc var soundPitch: CGFloat {
+        get { return soundNode.pitch }
+        set { soundNode.pitch = newValue }
     }
     // The range of the volume is 0 to 8, with 0 for silence, 1 for unity gain,
     // and 8 for 8x gain.
-    @objc var soundVolumeLinear: CGFloat = 8.0 {
-        didSet { audioSource?.volume = Float(soundVolumeLinear / 8.0) }
+    @objc var soundVolumeLinear: CGFloat {
+        get { return soundNode.volume * 8.0 }
+        set { soundNode.volume = newValue / 8.0 }
     }
-    @objc var spatialSoundEnable: Bool = false {
-        didSet { audioSource?.isPositional = spatialSoundEnable }
+    @objc var spatialSoundEnable: Bool {
+        get { return soundNode.spatial }
+        set { soundNode.spatial = newValue }
     }
     @objc var streamedFileOffset: CGFloat = 0
 
-//    @objc var spatialSoundPosition: SCNVector3 = SCNVector3Zero
-//    @objc var spatialSoundDirection: SCNVector3 = SCNVector3Zero
-//    @objc var spatialSoundDistanceProperties: SpatialSoundDistanceProperties
-//    SpatialSoundRadiationProperties: SpatialSoundRadiationProperties
-//    SpatialSoundDirectSendLevels: SpatialSoundSendLevels
-//    SpatialSoundRoomSendLevels: SpatialSoundSendLevels
-
-    var downloader: Downloading = FileDownloader()
-
-    fileprivate var audioNode: SCNNode!
-    fileprivate var audioPlayer: SCNAudioPlayer?
-    fileprivate var audioSource: SCNAudioSource? {
-        return audioPlayer?.audioSource
+    var spatialSoundPosition: SpatialSoundPosition? {
+        didSet { soundNode.position = spatialSoundPosition?.position ?? SCNVector3Zero }
     }
-
-    deinit {
-        unloadAudio()
+    var spatialSoundDirection: SpatialSoundDirection? {
+        didSet { soundNode.direction = spatialSoundDirection?.direction ?? SCNQuaternionIdentity }
     }
+    //var spatialSoundDistance: SpatialSoundDistance?
+    //var spatialSoundRadiation: SpatialSoundRadiation?
+    //var spatialSoundDirectSendLevels: SpatialSoundSendLevels?
+    //var spatialSoundRoomSendLevels: SpatialSoundSendLevels?
+
+    fileprivate var soundNode: SoundNode!
 
     @objc override func setupNode() {
         super.setupNode()
-        audioNode = SCNNode()
-        contentNode.addChildNode(audioNode)
+        soundNode = SoundNode()
+        soundNode.soundLoaded = { [weak self] in
+            self?.performAction()
+        }
+        contentNode.addChildNode(soundNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -107,6 +105,20 @@ import SceneKit
             self.streamedFileOffset = streamedFileOffset
         }
 
+        if let spatialSoundPositionParams = props["spatialSoundPosition"] as? [String: Any] {
+            if let channel = Convert.toInt(spatialSoundPositionParams["channel"]),
+                let position = Convert.toVector3(spatialSoundPositionParams["channelPosition"]) {
+                spatialSoundPosition = SpatialSoundPosition(channel: channel, position: position)
+            }
+        }
+
+        if let spatialSoundDirectionParams = props["spatialSoundDirection"] as? [String: Any] {
+            if let channel = Convert.toInt(spatialSoundDirectionParams["channel"]),
+                let direction = Convert.toQuaternion(spatialSoundDirectionParams["channelDirection"]) {
+                spatialSoundDirection = SpatialSoundDirection(channel: channel, direction: direction)
+            }
+        }
+
         if let action = Convert.toAudioAction(props["action"]) {
             self.action = action
         }
@@ -119,63 +131,49 @@ import SceneKit
     fileprivate func performAction() {
         switch action {
         case .start:
-            break
+            soundNode.start()
         case .pause:
-            break
+            soundNode.pause()
         case .resume:
-            break
+            soundNode.resume()
         case .stop:
-            break
+            soundNode.stop()
         }
     }
+}
 
-    func play() {
-        guard let player = audioPlayer else { return }
-        audioNode.isHidden = false
-        audioNode.addAudioPlayer(player)
+// MARK: - Internal sctructures
+extension UiAudioNode {
+    struct SpatialSoundPosition {
+        let channel: Int
+        let position: SCNVector3
     }
 
-    func pause() {
-        audioNode.isHidden = true
+    struct SpatialSoundDirection {
+        let channel: Int
+        let direction: SCNQuaternion
     }
 
-    func stop() {
-        if let player = audioPlayer {
-            audioNode.removeAudioPlayer(player)
-        }
-        audioPlayer = nil
+    struct SpatialSoundDistance {
+        let channel: Int
+        let minDistance: CGFloat
+        let maxDistance: CGFloat
+        let rolloffFactor: CGFloat
     }
 
-    @objc func updateAudio() {
-        audioSource?.loops = soundLooping
-        audioSource?.volume = soundMute ? 0.0 : Float(soundVolumeLinear / 8.0)
-        audioSource?.isPositional = spatialSoundEnable
+    struct SpatialSoundRadiation {
+        let channel: Int
+        let innerAngle: CGFloat
+        let outerAngle: CGFloat
+        let outerGain: CGFloat
+        let outerGainHf: CGFloat
     }
 
-    fileprivate func unloadAudio() {
-        if let player = audioPlayer {
-            audioNode.removeAudioPlayer(player)
-        }
-        audioPlayer = nil
-    }
-
-    fileprivate func loadAudio(localURL: URL?) {
-        unloadAudio()
-        guard let url = localURL else { return }
-
-        if let audioSource = SCNAudioSource(url: url) {
-//            audioSource.shouldStream = true
-            updateAudio()
-            audioSource.load()
-            audioPlayer = SCNAudioPlayer(source: audioSource)
-            audioPlayer!.willStartPlayback = {
-                print("willStartPlayback")
-            }
-            audioPlayer!.didFinishPlayback = {
-                print("didFinishPlayback")
-            }
-
-            play()
-        }
+    struct SpatialSoundSendLevels {
+        let channel: Int
+        let gain: CGFloat
+        let gainHf: CGFloat
+        let gainLf: CGFloat
+        let gainMf: CGFloat
     }
 }

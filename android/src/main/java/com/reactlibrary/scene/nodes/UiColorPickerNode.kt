@@ -30,7 +30,7 @@ import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.views.ColorPickerDialog
 import com.reactlibrary.scene.nodes.views.CustomButton
 import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 import com.reactlibrary.utils.toJsColorArray
 
 
@@ -52,7 +52,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
 
     init {
         properties.apply {
-            putDefaultString(PROP_STARTING_COLOR, "[1.0, 1.0, 1.0, 1.0]")
+            putDefault(PROP_STARTING_COLOR, "[1.0, 1.0, 1.0, 1.0]")
         }
 
         colorPickerDialog.apply {

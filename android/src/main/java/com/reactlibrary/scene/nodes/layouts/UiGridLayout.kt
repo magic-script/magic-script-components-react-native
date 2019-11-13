@@ -47,11 +47,11 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
         // set default values of properties
 
         // alignment of the grid itself (pivot)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefaultDouble(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble())
-        properties.putDefaultDouble(PROP_ROWS, ROWS_DEFAULT.toDouble())
-        properties.putDefaultString(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
-        properties.putDefaultSerializable(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble())
+        properties.putDefault(PROP_ROWS, ROWS_DEFAULT.toDouble())
+        properties.putDefault(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        properties.putDefault(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {

@@ -28,7 +28,7 @@ import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode
 import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
 import com.reactlibrary.utils.getHour
 import com.reactlibrary.utils.getMinute
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import java.util.*
 
@@ -69,7 +69,7 @@ open class UiTimePickerNode(
 
 
     init {
-        properties.putDefaultString(PROP_TIME_FORMAT, TIME_FORMAT_DEFAULT)
+        properties.putDefault(PROP_TIME_FORMAT, TIME_FORMAT_DEFAULT)
     }
 
     override fun applyProperties(props: Bundle) {

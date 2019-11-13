@@ -13,9 +13,9 @@ import com.reactlibrary.utils.putDefaultSerializable
 import com.reactlibrary.utils.putDefaultString
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
-: UiLayout(initProps, layoutManager) {
+    : UiLayout(initProps, layoutManager) {
 
-    private var padding: Padding = Padding(0f,0f,0f,0f)
+    private var padding: Padding = Padding(0f, 0f, 0f, 0f)
 
     companion object {
         // properties
@@ -44,40 +44,27 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         setContentAlignment(props)
         val paddingHorizontal = padding.left + padding.right
         val paddingVertical = padding.top + padding.bottom
-        maxChildHeight = height - paddingVertical
-        maxChildWidth = width - paddingHorizontal
+        if (width != WRAP_CONTENT_DIMENSION) {
+            maxChildWidth = width - paddingHorizontal
+        }
+        if (height != WRAP_CONTENT_DIMENSION) {
+            maxChildHeight = height - paddingVertical
+        }
     }
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
-        val parentBounding = if (isSizeSet()) {
-            Bounding(
-                    contentNode.localPosition.x - width / 2,
-                    contentNode.localPosition.y - height / 2,
-                    contentNode.localPosition.x + width / 2,
-                    contentNode.localPosition.y + height / 2
-            )
-        } else {
-            Bounding(
-                    childBounds.left + contentNode.localPosition.x - itemPadding.left,
-                    childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
-                    childBounds.right + contentNode.localPosition.x + itemPadding.right,
-                    childBounds.top + contentNode.localPosition.y + itemPadding.top
-            )
-        }
-        if(isSizeSet()) {
-            if(layoutManager.parentBounds == null || !Bounding.equalInexact(layoutManager.parentBounds!!,parentBounding)) {
-                layoutManager.parentBounds = parentBounding
-                requestLayout()
-            }
-        } else {
-            if(layoutManager.parentBounds != null) {
-                layoutManager.parentBounds = null
-                requestLayout()
-            }
-        }
-        return parentBounding
+        val sizeX = if (width != WRAP_CONTENT_DIMENSION) width else childBounds.size().x
+        val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
+
+        return Bounding(
+                -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
+                -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
+                sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
+                sizeY / 2 + contentNode.localPosition.y + itemPadding.top
+        )
+
     }
 
     private fun setItemPadding(props: Bundle) {

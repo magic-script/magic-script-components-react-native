@@ -31,17 +31,19 @@ import java.lang.Float.min
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
     : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
-    protected var width: Float = 0f
-    protected var height: Float = 0f
-
-    protected var maxChildHeight: Float = 0f
-    protected var maxChildWidth: Float = 0f
-
     companion object {
+        const val WRAP_CONTENT_DIMENSION = 0F
+
         private const val MEASURE_INTERVAL = 50L // in milliseconds
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
     }
+
+    protected var width: Float = WRAP_CONTENT_DIMENSION
+    protected var height: Float = WRAP_CONTENT_DIMENSION
+
+    protected var maxChildWidth: Float = Float.MAX_VALUE
+    protected var maxChildHeight: Float = Float.MAX_VALUE
 
     // we should re-draw the grid after adding / removing a child
     var redrawRequested = false
@@ -79,10 +81,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             }
             requestLayout()
         }
-    }
-
-    protected fun isSizeSet(): Boolean {
-        return (width > 0 && height > 0)
     }
 
     override fun addContent(child: Node) {
@@ -125,6 +123,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * at any time: we need to re-draw the layout in such case.
      */
     private fun layoutLoop() {
+        layoutManager.parentWidth = width
+        layoutManager.parentHeight = height
         measureChildren()
         rescaleChildren(childrenList)
         if (redrawRequested) {

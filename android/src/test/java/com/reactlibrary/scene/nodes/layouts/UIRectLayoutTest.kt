@@ -47,16 +47,15 @@ class UIRectLayoutTest {
     }
 
     @Test
-    fun `should return correct bounds and set parent bounding in manager when size is specified`() {
+    fun `should return correct bounds`() {
         val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = UiRectLayout(props, rectLayoutManager)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
-        node.build()
+        node.build() // invokes the layout loop
 
         val bounds = node.getBounding()
 
         assertTrue(Bounding.equalInexact(expectedBounds, bounds))
-        verify(rectLayoutManager).parentBounds = expectedBounds
     }
 
     @Test

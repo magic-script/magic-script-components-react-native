@@ -9,8 +9,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
  5 | Image | UiImage | 👍 | 👍 | 👍 | [link](coverage/Image.md)
  6 | ScrollBar | UiScrollBar | 👍 | 👍 | 👍 | [link](coverage/ScrollBar.md)
  7 | ScrollView | UiScrollView | 👍 | 👍 | 👍 |
- 8 | ListView | UiListView | 👍 | 🚧 | 👍 |
- 9 | ListViewItem | UiListViewItem | 👍 | 🚧 | 👍 |
+ 8 | ListView | UiListView | 👍 | 👍 | 👍 |
+ 9 | ListViewItem | UiListViewItem | 👍 | 👍 | 👍 |
 10 | Model | ModelNode | 👍 | 👍 | 👍 | [link](coverage/Model.md)
 11 | Spinner | UiLoadingSpinner | 👍 | 👍| 👍 | [link](coverage/Spinner.md)
 12 | Slider | UiSlider | 👍 | 👍 | 👍 | [link](coverage/Slider.md)
@@ -23,7 +23,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 19 | Toggle | UiToggle | 👍 | 👍 | 👍 | [link](coverage/Toggle.md)
 20 | Video | VideoNode | 👍 | 👍 | 👍 | [link](coverage/Video.md)
 21 | Audio | AudioNode | 👍 | 🚧 | 🚧 |
-22 | Dialog | UiDialog | 👍 | 4 D | 🚧 |
+22 | Dialog | UiDialog | 👍 | 🚧 | 🚧 |
 23 | WebView | UiWebView | 👍 | 3 D | 👍|  [link](coverage/WebView.md)
 24 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
 25 | TimePicker | UiTimePicker | 👍 | 👍 | 👍 | [link](coverage/TimePicker.md)

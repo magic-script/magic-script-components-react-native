@@ -22,8 +22,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 18 | DropdownListItem | DropDownListItem | 👍 | 👍 | 👍 | [link](coverage/DropdownListItem.md)
 19 | Toggle | UiToggle | 👍 | 👍 | 👍 | [link](coverage/Toggle.md)
 20 | Video | VideoNode | 👍 | 👍 | 👍 | [link](coverage/Video.md)
-21 | Audio | AudioNode | 👍 | 🚧 | 4 D |
-22 | Dialog | UiDialog | 👍 | 4 D | 3 D |
+21 | Audio | AudioNode | 👍 | 🚧 | 🚧 |
+22 | Dialog | UiDialog | 👍 | 4 D | 🚧 |
 23 | WebView | UiWebView | 👍 | 3 D | 👍|  [link](coverage/WebView.md)
 24 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
 25 | TimePicker | UiTimePicker | 👍 | 👍 | 👍 | [link](coverage/TimePicker.md)

@@ -49,7 +49,7 @@ open class UiDateTimePickerBaseNode(
     }
 
     init {
-        properties.putDefaultString(PROP_LABEL_SIDE, LABEL_SIDE_TOP)
+        properties.putDefault(PROP_LABEL_SIDE, LABEL_SIDE_TOP)
     }
 
     override fun applyProperties(props: Bundle) {

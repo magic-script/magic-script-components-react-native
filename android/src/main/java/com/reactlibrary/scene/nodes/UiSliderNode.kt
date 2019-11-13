@@ -26,7 +26,7 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSlider
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefault
 
 open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
     : UiNode(initProps, context, viewRenderableLoader) {
@@ -44,8 +44,8 @@ open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderable
     }
 
     init {
-        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
     fun setOnSliderChangedListener(listener: (value: Float) -> Unit) {

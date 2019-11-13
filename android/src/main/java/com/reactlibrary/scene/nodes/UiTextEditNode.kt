@@ -103,11 +103,11 @@ open class UiTextEditNode(initProps: ReadableMap,
 
     init {
         // set default values of properties
-        properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        properties.putDefaultSerializable(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefaultString(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
-        properties.putDefaultDouble(PROP_CHARACTERS_SPACING, DEFAULT_CHARACTERS_SPACING)
+        properties.putDefault(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        properties.putDefault(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
+        properties.putDefault(PROP_CHARACTERS_SPACING, DEFAULT_CHARACTERS_SPACING)
     }
 
     override fun provideView(context: Context): View {

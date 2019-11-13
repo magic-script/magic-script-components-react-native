@@ -25,7 +25,7 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.video.VideoNode
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefault
 
 open class UIWebViewNode(
     initProps: ReadableMap,
@@ -48,8 +48,8 @@ open class UIWebViewNode(
 
     init {
         properties.apply {
-            putDefaultDouble(PROP_WIDTH, 1.0)
-            putDefaultDouble(PROP_HEIGHT, 1.0)
+            putDefault(PROP_WIDTH, 1.0)
+            putDefault(PROP_HEIGHT, 1.0)
         }
     }
 

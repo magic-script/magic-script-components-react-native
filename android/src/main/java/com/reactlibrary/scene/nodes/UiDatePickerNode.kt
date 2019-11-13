@@ -74,9 +74,9 @@ open class UiDatePickerNode(
         }
 
     init {
-        properties.putDefaultDouble(PROP_YEAR_MIN, DEFAULT_MAX_MIN_YEAR)
-        properties.putDefaultDouble(PROP_YEAM_MAX, DEFAULT_MAX_MIN_YEAR)
-        properties.putDefaultString(PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT)
+        properties.putDefault(PROP_YEAR_MIN, DEFAULT_MAX_MIN_YEAR)
+        properties.putDefault(PROP_YEAM_MAX, DEFAULT_MAX_MIN_YEAR)
+        properties.putDefault(PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT)
     }
 
     override fun applyProperties(props: Bundle) {

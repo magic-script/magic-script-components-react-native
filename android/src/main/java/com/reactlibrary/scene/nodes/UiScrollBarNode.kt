@@ -18,15 +18,14 @@ package com.reactlibrary.scene.nodes
 
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.utils.putDefaultDouble
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 
 /**
  * This node only holds information needed by ScrollViewNode
  * (it's mapped to a native scroll bar view)
  */
 class UiScrollBarNode(initProps: ReadableMap) :
-        TransformNode(initProps, false, useContentNodeAlignment = false) {
+    TransformNode(initProps, false, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -63,11 +62,11 @@ class UiScrollBarNode(initProps: ReadableMap) :
 
     init {
         // set default properties values
-        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        properties.putDefaultDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION)
-        properties.putDefaultDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
-        properties.putDefaultString(PROP_ORIENTATION, ORIENTATION_VERTICAL)
+        properties.putDefault(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION)
+        properties.putDefault(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
+        properties.putDefault(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
 }

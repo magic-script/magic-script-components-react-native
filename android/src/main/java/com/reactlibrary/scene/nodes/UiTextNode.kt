@@ -53,8 +53,8 @@ open class UiTextNode(initProps: ReadableMap,
 
     init {
         // set default values of properties
-        properties.putDefaultDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
     }
 
     override fun provideView(context: Context): View {

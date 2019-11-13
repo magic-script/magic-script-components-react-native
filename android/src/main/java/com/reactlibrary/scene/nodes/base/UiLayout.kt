@@ -24,7 +24,8 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.logMessage
+import java.lang.Float.min
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
@@ -47,7 +48,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         private set
 
     // "backed" children
-    private val childrenList = mutableListOf<Node>()
+    private val childrenList = mutableListOf<TransformNode>()
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
@@ -85,9 +86,12 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     override fun addContent(child: Node) {
-        //contentNode.addChild(child)
-        childrenList.add(child)
-        redrawRequested = true
+        if (child is TransformNode) {
+            childrenList.add(child)
+            redrawRequested = true
+        } else {
+            logMessage("Non transform nodes are not supported in layouts", true)
+        }
     }
 
     override fun removeContent(child: Node) {
@@ -116,10 +120,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     /**
-     * Loop that requests re-drawing the grid if needed.
-     * It measures the children, because the nodes' view size is not known
-     * from the beginning, also a client may change the view size at any time: we need to
-     * re-draw the layout in such case.
+     * Loop that requests re-drawing the layout if needed.
+     * It measures the children, because a client may change the layout's (or child) size
+     * at any time: we need to re-draw the layout in such case.
      */
     private fun layoutLoop() {
         measureChildren()
@@ -150,43 +153,36 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         for (i in 0 until childrenList.size) {
             val node = childrenList[i]
             val oldBounds = childrenBounds[i] ?: Bounding()
-            childrenBounds[i] = if (node is TransformNode) {
-                node.getBounding()
-            } else {
-                Utils.calculateBoundsOfNode(node)
-            }
+            childrenBounds[i] = node.getBounding()
+
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 redrawRequested = true
             }
         }
     }
 
-    private fun rescaleChildren(nodes: List<Node>) {
-        for (i in 0 until nodes.size) {
-            val node = nodes[i]
-            val nodeBounds = childrenBounds[i] ?: Bounding()
-            val nodeWidth = nodeBounds.right - nodeBounds.left
-            val nodeHeight = nodeBounds.top - nodeBounds.bottom
-            if (width > 0 || height > 0) {
-                node.localScale = if (maxChildWidth < nodeWidth && maxChildHeight < nodeHeight) {
-                    val scale = if (nodeWidth > nodeHeight) {
-                        maxChildWidth / nodeWidth
-                    } else {
-                        maxChildHeight / nodeHeight
-                    }
-                    Vector3(scale, scale, node.localScale.z)
-                } else if (maxChildWidth < nodeWidth) {
-                    val scale = maxChildWidth / nodeWidth
-                    Vector3(scale, scale, node.localScale.z)
-                } else if (maxChildHeight < nodeHeight) {
-                    val scale = maxChildHeight / nodeHeight
-                    Vector3(scale, scale, node.localScale.z)
-                } else {
-                    node.localScale
+    private fun rescaleChildren(children: List<TransformNode>) {
+        for (i in children.indices) {
+            val child = children[i]
+            val childSize = (childrenBounds[i] ?: Bounding()).size()
+            if (child.localScale.x > 0 && child.localScale.y > 0) {
+                val childWidth = childSize.x / child.localScale.x
+                val childHeight = childSize.y / child.localScale.y
+                if (childWidth > 0 && childHeight > 0) {
+                    val userSpecifiedScale = readUserSpecifiedScale(child)
+                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
+                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
+                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
+                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
                 }
-
             }
         }
+    }
+
+    private fun readUserSpecifiedScale(node: TransformNode): Vector3 {
+        val scale = node.getProperty(PROP_LOCAL_SCALE) as? ArrayList<Double>
+                ?: return Vector3.one()
+        return Vector3(scale[0].toFloat(), scale[1].toFloat(), scale[2].toFloat())
     }
 
 }

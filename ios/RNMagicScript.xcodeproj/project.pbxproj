@@ -39,6 +39,7 @@
 		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
 		44489F0B237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
+		44489F11237C2B130046F16B /* SoundNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F10237C2B130046F16B /* SoundNodeSpec.swift */; };
 		4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4455654D234C996600301AB3 /* UiScrollBarNode.swift */; };
 		44556551234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
@@ -49,8 +50,8 @@
 		447755392374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
 		447755592374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
 		4477555A2374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
-		44775588237ADD6100E98F03 /* shopping_mall_mono.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */; };
-		44775589237ADD6100E98F03 /* shopping_mall_stereo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */; };
+		44775588237ADD6100E98F03 /* bg_mono.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775586237ADD6100E98F03 /* bg_mono.mp3 */; };
+		44775589237ADD6100E98F03 /* bg_stereo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 44775587237ADD6100E98F03 /* bg_stereo.mp3 */; };
 		447B01BE234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		448586FB235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
 		448586FC235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
@@ -476,13 +477,14 @@
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44444718236AFD5A00665D31 /* Dragging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dragging.swift; sourceTree = "<group>"; };
 		44489F09237BF2E70046F16B /* SoundNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundNode.swift; sourceTree = "<group>"; };
+		44489F10237C2B130046F16B /* SoundNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundNodeSpec.swift; sourceTree = "<group>"; };
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
 		447755372374C15600E98F03 /* UiAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNode.swift; sourceTree = "<group>"; };
 		447755582374D37C00E98F03 /* AudioAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAction.swift; sourceTree = "<group>"; };
-		44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shopping_mall_mono.mp3; sourceTree = "<group>"; };
-		44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shopping_mall_stereo.mp3; sourceTree = "<group>"; };
+		44775586237ADD6100E98F03 /* bg_mono.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bg_mono.mp3; sourceTree = "<group>"; };
+		44775587237ADD6100E98F03 /* bg_stereo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bg_stereo.mp3; sourceTree = "<group>"; };
 		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		448586FA235DC1FD00D372CB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
@@ -762,8 +764,8 @@
 		44775581237AC4DE00E98F03 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
-				44775586237ADD6100E98F03 /* shopping_mall_mono.mp3 */,
-				44775587237ADD6100E98F03 /* shopping_mall_stereo.mp3 */,
+				44775586237ADD6100E98F03 /* bg_mono.mp3 */,
+				44775587237ADD6100E98F03 /* bg_stereo.mp3 */,
 			);
 			path = sounds;
 			sourceTree = "<group>";
@@ -1141,6 +1143,7 @@
 			children = (
 				44F09309232D985A0081FF14 /* LabelNodeSpec.swift */,
 				44F0930A232D985A0081FF14 /* RenderNodeSpec.swift */,
+				44489F10237C2B130046F16B /* SoundNodeSpec.swift */,
 				44F09308232D985A0081FF14 /* TransformNodeSpec.swift */,
 				44F09307232D985A0081FF14 /* UiNodeSpec.swift */,
 			);
@@ -1636,7 +1639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44AFAB2E232B968C005AC8EF /* DemoPicture2.png in Resources */,
-				44775588237ADD6100E98F03 /* shopping_mall_mono.mp3 in Resources */,
+				44775588237ADD6100E98F03 /* bg_mono.mp3 in Resources */,
 				44AFAB2B232B968C005AC8EF /* DemoPicture4.png in Resources */,
 				44AFAB2C232B968C005AC8EF /* DemoPicture5.png in Resources */,
 				44AFAB3B232B968C005AC8EF /* hedra_05.bin in Resources */,
@@ -1658,7 +1661,7 @@
 				44AFAB3C232B968C005AC8EF /* hedra_06.gltf in Resources */,
 				44AFAB33232B968C005AC8EF /* DemoPicture2.jpg in Resources */,
 				44AFAB34232B968C005AC8EF /* DemoPicture3.jpg in Resources */,
-				44775589237ADD6100E98F03 /* shopping_mall_stereo.mp3 in Resources */,
+				44775589237ADD6100E98F03 /* bg_stereo.mp3 in Resources */,
 				44AFAB95232B99D9005AC8EF /* RNMagicScriptResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1899,6 +1902,7 @@
 				C465C268234DE34600157AA6 /* UiDropdownListNodeSpec.swift in Sources */,
 				C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */,
 				C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */,
+				44489F11237C2B130046F16B /* SoundNodeSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
 				C487A5B423309990002B4D36 /* UiGroupNodeSpec.swift in Sources */,

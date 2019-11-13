@@ -1,0 +1,11 @@
+# .slather.yml
+
+coverage_service: cobertura_xml
+xcodeproj: ./RNMagicScript.xcodeproj
+xcworkspace: ./RNMagicScript.xcworkspace
+scheme: RNMagicScriptHostApplication
+source_directory: ./RNMagicScript
+build_directory: ./Build
+output_directory: ./coverage_report
+ignore:
+  - ./RNMagicScript/*.{h,m}

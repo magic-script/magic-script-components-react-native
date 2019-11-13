@@ -20,35 +20,35 @@ import SceneKit
 
     @objc var fileName: URL? {
         get { return soundNode.url }
-        set { soundNode.url = newValue }
+        set { soundNode.url = newValue; setNeedsLayout() }
     }
     @objc var action: AudioAction = .stop {
         didSet { performAction() }
     }
     @objc var soundLooping: Bool {
         get { return soundNode.loop }
-        set { soundNode.loop = newValue }
+        set { soundNode.loop = newValue; setNeedsLayout() }
     }
     @objc var soundMute: Bool {
         get { return soundNode.mute }
-        set { soundNode.mute = newValue }
+        set { soundNode.mute = newValue; setNeedsLayout() }
     }
     // The range of the pitch is 0.5 to 2.0, with 0.5 being one octave down
     // and 2.0 being one octave up (i.e., the pitch is a frequency multiple).
     // A pitch of 1.0 is the default and means no change.
     @objc var soundPitch: CGFloat {
         get { return soundNode.pitch }
-        set { soundNode.pitch = newValue }
+        set { soundNode.pitch = newValue; setNeedsLayout() }
     }
     // The range of the volume is 0 to 8, with 0 for silence, 1 for unity gain,
     // and 8 for 8x gain.
     @objc var soundVolumeLinear: CGFloat {
         get { return soundNode.volume * 8.0 }
-        set { soundNode.volume = newValue / 8.0 }
+        set { soundNode.volume = newValue / 8.0; setNeedsLayout() }
     }
     @objc var spatialSoundEnable: Bool {
         get { return soundNode.spatial }
-        set { soundNode.spatial = newValue }
+        set { soundNode.spatial = newValue; setNeedsLayout() }
     }
     @objc var streamedFileOffset: CGFloat = 0
 
@@ -124,8 +124,13 @@ import SceneKit
         }
     }
 
+    @objc override func updateLayout() {
+        soundNode.reloadPlayerIfNeeded()
+    }
+
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
+        soundNode.setDebugMode(debug)
     }
 
     fileprivate func performAction() {

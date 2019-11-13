@@ -27,23 +27,25 @@ import SceneKit
         }
     }
     @objc var stream: Bool = false {
-        didSet { audioSource?.shouldStream = stream }
+        didSet { audioSource?.shouldStream = stream; needsReloadPlayer = true }
     }
     @objc var volume: CGFloat = 1 {
-        didSet { audioSource?.volume = Float(volume) }
+        didSet { audioSource?.volume = Float(volume); needsReloadPlayer = true }
     }
     @objc var pitch: CGFloat = 1 {
-        didSet { audioSource?.rate = Float(pitch) }
+        didSet { audioSource?.rate = Float(pitch); needsReloadPlayer = true }
     }
     @objc var mute: Bool = false {
-           didSet { audioSource?.volume = mute ? 0.0 : Float(volume) }
+        didSet { audioSource?.volume = mute ? 0.0 : Float(volume); needsReloadPlayer = true }
     }
     @objc var loop: Bool = false {
-        didSet { audioSource?.loops = loop }
+        didSet { audioSource?.loops = loop; needsReloadPlayer = true }
     }
     @objc var spatial: Bool = false {
-        didSet { audioSource?.isPositional = spatial }
+        didSet { audioSource?.isPositional = spatial; needsReloadPlayer = true }
     }
+    @objc var spatialMinDistance: CGFloat = 0
+    @objc var spatialMaxDistance: CGFloat = 1.0
     @objc var direction: SCNQuaternion {
         get { return orientation }
         set { orientation = newValue }
@@ -54,6 +56,7 @@ import SceneKit
 
     fileprivate var audioPlayer: SCNAudioPlayer?
     fileprivate var audioSource: SCNAudioSource?
+    fileprivate var needsReloadPlayer: Bool = false
 
     deinit {
         unloadAudio()
@@ -88,6 +91,17 @@ import SceneKit
         audioPlayer = nil
     }
 
+    func reloadPlayerIfNeeded() {
+        guard needsReloadPlayer else { return }
+        needsReloadPlayer = false
+        guard audioPlayer != nil else { return }
+
+        let wasPaused = isHidden
+        stop()
+        start()
+        isHidden = wasPaused
+    }
+
     fileprivate func loadAudio(localURL: URL?) {
         unloadAudio()
         guard let url = localURL else { return }
@@ -106,5 +120,23 @@ import SceneKit
         removeAllAudioPlayers()
         audioPlayer = nil
         audioSource = nil
+    }
+
+    fileprivate func hasDebugNode() -> Bool {
+        return !childNodes.isEmpty
+    }
+
+    @objc func setDebugMode(_ debug: Bool) {
+        guard debug != hasDebugNode() else { return }
+
+        childNodes.first?.removeFromParentNode()
+        if debug {
+            let vertices: [SCNVector3] = [
+                SCNVector3(0, 0, spatialMinDistance),
+                SCNVector3(0, 0, spatialMaxDistance),
+            ]
+            let line = NodesFactory.createLinesNode(vertices: vertices, color: UIColor.green)
+            addChildNode(line)
+        }
     }
 }

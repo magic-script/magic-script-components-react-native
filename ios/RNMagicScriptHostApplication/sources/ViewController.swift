@@ -144,8 +144,8 @@ class ViewController: UIViewController {
 
     fileprivate var scrollView: UiScrollViewNode!
     fileprivate var scrollBar: UiScrollBarNode!
-    fileprivate var scrollBarPosition: CGFloat = 0.0
-    fileprivate var scrollBarSize: CGFloat = 0.1
+    fileprivate var value1: CGFloat = 0.0
+    fileprivate var value2: CGFloat = 0.0
     fileprivate var linearLayout: UiLinearLayoutNode!
     fileprivate let contentSize: CGFloat = 1
     fileprivate func setupScrollViewTest() {
@@ -247,6 +247,8 @@ class ViewController: UIViewController {
         ], nodeId: textEditId, parentId: groupId)
     }
 
+    fileprivate var audioNode : UiAudioNode!
+    fileprivate var sliderNode : UiSliderNode!
     fileprivate func setupAudioNodeTest() {
         // Group
         let groupId: String = "group"
@@ -254,15 +256,28 @@ class ViewController: UIViewController {
 
         // Audio node
         let audioNodeId: String = "audio"
-//        let audioURL: URL = Bundle.main.url(forResource: "shopping_mall_mono", withExtension: "mp3")!
-        let audioURL: URL = URL(string: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3")!
+        let audioURL: URL = Bundle.main.url(forResource: "shopping_mall_mono", withExtension: "mp3")!
+//        let audioURL: URL = URL(string: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3")!
         print("audioURL: \(audioURL.absoluteString)")
-        let audioNode : UiAudioNode = createComponent([
+        audioNode = createComponent([
             "fileName": audioURL.absoluteString,
             "debug": true,
-            "soundLooping": true
+            "soundLooping": true,
+            "soundVolumeLinear": 5.0,
+            "spatialSoundEnable": true
         ], nodeId: audioNodeId, parentId: groupId)
         audioNode.action = .start
+
+        sliderNode = createComponent([
+            "localPosition": [0,-0.5,0],
+            "height": 0.05,
+            "width": 1,
+            "max": 2.0,
+        ], nodeId: "slider", parentId: groupId)
+        sliderNode.onSliderChanged = { [weak self] sender, value in
+            self?.value1 = value
+            self?.audioNode.layoutIfNeeded()
+        }
     }
 
     @discardableResult
@@ -284,21 +299,30 @@ extension ViewController: ARSCNViewDelegate {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        scrollBarPosition += 0.4 * CGFloat(deltaTime)
-        if scrollBarPosition > 1.0 {
-            scrollBarPosition -= 2.0
+        value1 += 0.4 * CGFloat(deltaTime)
+        if value1 > CGFloat.pi {
+            value1 -= 2.0 * CGFloat.pi
         }
+//
+//        value2 += CGFloat(deltaTime * 0.1)
+//        if value2 > 1.0 {
+//            value2 -= 2.0
+//        }
 
-        scrollBarSize += CGFloat(deltaTime * 0.1)
-        if scrollBarSize > 1.0 {
-            scrollBarSize -= 2.0
-        }
-
-//        DispatchQueue.main.async() { [weak self] in
-//            guard let strongSelf = self else { return }
+        DispatchQueue.main.async() { [weak self] in
+            guard let strongSelf = self else { return }
 //            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
 //            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
-//            UiNodesManager.instance.updateLayout()
-//        }
+
+            let radius: CGFloat = 1
+            let angle: CGFloat = strongSelf.value1
+            let x: CGFloat = radius * sin(angle)
+            let y: CGFloat = 0
+            let z: CGFloat = radius * cos(angle)
+            let quat = SCNQuaternion.fromAxis(SCNVector3(0,1,0), andAngle: Float(angle))
+//            strongSelf.audioNode.position = SCNVector3(x, y, z)
+            strongSelf.audioNode.spatialSoundDirection = UiAudioNode.SpatialSoundDirection(channel: 0, direction: quat)
+            UiNodesManager.instance.updateLayout()
+        }
     }
 }

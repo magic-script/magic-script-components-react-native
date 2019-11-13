@@ -18,8 +18,6 @@ package com.reactlibrary.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.ViewRenderable
-import com.reactlibrary.scene.nodes.layouts.LayoutManager
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
@@ -29,11 +27,9 @@ import com.reactlibrary.scene.nodes.props.Padding
  * column or row will grow to fit the bounding (+ padding) of a child.
  */
 class LinearLayoutManagerImpl : LinearLayoutManager {
-    /*
-     *  TODO if parent bounding is not null, use it to layout children
-     *   relatively to maximum width and height the node can be
-     */
-    override var parentBounds: Bounding? = null
+    override var parentWidth: Float = 0F
+
+    override var parentHeight: Float = 0F
 
     override var itemPadding = Padding(0F, 0F, 0F, 0F)
 

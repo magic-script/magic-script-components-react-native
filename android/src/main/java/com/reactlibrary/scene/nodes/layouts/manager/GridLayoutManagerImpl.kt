@@ -27,11 +27,10 @@ import com.reactlibrary.scene.nodes.props.Padding
  * column and row will grow to fit the bounding (+ padding) of a child.
  */
 class GridLayoutManagerImpl : GridLayoutManager {
-    /*
-     *  TODO if parent bounding is not null, use it to layout children
-     *   relatively to maximum width and height the node can be
-     */
-    override var parentBounds: Bounding? = null
+
+    override var parentWidth: Float = 0F
+
+    override var parentHeight: Float = 0F
 
     override var columns: Int = 1
         set(value) {

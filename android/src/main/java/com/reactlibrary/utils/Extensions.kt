@@ -22,7 +22,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
@@ -69,51 +68,33 @@ fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
 }
 
-/**
- * android.os.Bundle
- */
-fun Bundle.putDefaultDouble(name: String, value: Double) {
-    if (!containsKey(name)) {
-        putDouble(name, value)
-    }
-}
-
-fun Bundle.putDefaultString(key: String, value: String) {
-    if (!containsKey(key)) {
-        putString(key, value)
-    }
-}
-
-fun Bundle.putDefaultBoolean(key: String, value: Boolean) {
-    if (!containsKey(key)) {
-        putBoolean(key, value)
-    }
-}
-
-fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
-    if (!containsKey(key)) {
-        putSerializable(key, value)
-    }
-}
-
-/**
- * android.view.View
- */
-inline fun View.onLayoutListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
-            f()
+fun <T>Bundle.putDefault(key: String, value: T) {
+    if(!containsKey(key)) {
+        when (value) {
+            is Boolean -> putBoolean(key, value)
+            is Double -> putDouble(key, value)
+            is String -> putString(key, value)
+            is Serializable -> putSerializable(key, value)
         }
-    })
+    }
 }
 
-inline fun View.onDrawListener(crossinline f: () -> Unit) {
-    viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
-        override fun onDraw() {
-            f()
-        }
-    })
+inline fun Bundle.ifContainsString(key: String, result: (String?) -> Unit) {
+    if (containsKey(key)) {
+        result(getString(key))
+    }
+}
+
+inline fun Bundle.ifContainsDouble(key: String, result: (Double) -> Unit) {
+    if (containsKey(key)) {
+        result(getDouble(key))
+    }
+}
+
+inline fun Bundle.ifContainsBoolean(key: String, result: (Boolean) -> Unit) {
+    if (containsKey(key)) {
+        result(getBoolean(key))
+    }
 }
 
 /*
@@ -149,8 +130,8 @@ fun View.getSizeInMeters(context: Context, desiredWidth: Float, desiredHeight: F
     }
 
     measure(widthMeasureSpec, heightMeasureSpec)
-    val width = Utils.pxToMeters(measuredWidth.toFloat(), context)
-    val height = Utils.pxToMeters(measuredHeight.toFloat(), context)
+    val width = Utils.pxToMeters(measuredWidth, context)
+    val height = Utils.pxToMeters(measuredHeight, context)
     return Vector2(width, height)
 }
 
@@ -195,3 +176,11 @@ fun DatePickerDialog.updateMinMaxYear(minYear: Int, maxYear: Int) {
             }.timeInMillis
     }
 }
+
+fun Date.getHour() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.HOUR_OF_DAY)
+
+fun Date.getMinute() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.MINUTE)

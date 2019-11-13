@@ -28,7 +28,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.logMessage
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefault
 
 class VideoNode(initProps: ReadableMap,
                 private val context: Context,
@@ -67,7 +67,7 @@ class VideoNode(initProps: ReadableMap,
 
     init {
         // set default values of properties
-        properties.putDefaultDouble(PROP_VOLUME, DEFAULT_VOLUME)
+        properties.putDefault(PROP_VOLUME, DEFAULT_VOLUME)
     }
 
     override fun applyProperties(props: Bundle) {
@@ -91,7 +91,7 @@ class VideoNode(initProps: ReadableMap,
         loadVideo()
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+    override fun setClipBounds(clipBounds: Bounding) {
         materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
     }

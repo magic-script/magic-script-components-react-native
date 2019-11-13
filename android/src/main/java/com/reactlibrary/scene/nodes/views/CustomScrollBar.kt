@@ -22,10 +22,14 @@ import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.R
+import com.reactlibrary.scene.nodes.props.ORIENTATION_VERTICAL
 
 class CustomScrollBar @JvmOverloads constructor(
         context: Context,
@@ -33,7 +37,19 @@ class CustomScrollBar @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val backgroundSizeRatio = 0.66F
+    var onScrollChangeListener: ((on: Float) -> Unit)? = null
+
+    fun setThickness(thickness: Int) {
+        layoutParams = if (isVertical) {
+            FrameLayout.LayoutParams(thickness, LayoutParams.MATCH_PARENT).apply {
+                gravity = Gravity.RIGHT
+            }
+        } else {
+            FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, thickness).apply {
+                gravity = Gravity.BOTTOM
+            }
+        }
+    }
 
     var thumbPosition = 0F
         set(value) {
@@ -47,11 +63,18 @@ class CustomScrollBar @JvmOverloads constructor(
             invalidate()
         }
 
-    var isVertical = true
+    var isVertical: Boolean
+        private set
 
+    private val backgroundSizeRatio = 0.66F
     private var touchOffset = 0F
 
-    var onScrollChangeListener: ((on: Float) -> Unit)? = null
+    init {
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.CustomScrollBar)
+        val orientation = attributes.getString(R.styleable.CustomScrollBar_orientation)
+        isVertical = orientation == ORIENTATION_VERTICAL
+        attributes.recycle()
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked

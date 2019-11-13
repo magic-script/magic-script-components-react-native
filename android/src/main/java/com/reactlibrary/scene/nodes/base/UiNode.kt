@@ -93,7 +93,7 @@ abstract class UiNode(
 
     init {
         // set default values of properties
-        properties.putDefaultBoolean(PROP_ENABLED, true)
+        properties.putDefault(PROP_ENABLED, true)
     }
 
     /**
@@ -169,11 +169,7 @@ abstract class UiNode(
      * for "vertexDomain" : object it means that coordinates are normalized relative
      * to a model size (0 - 1), origin (0, 0) is at bottom-center.
      */
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
-        if (!clipNativeView) {
-            return
-        }
-
+    override fun setClipBounds(clipBounds: Bounding) {
         // clipping a texture
         materialClipBounding = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()

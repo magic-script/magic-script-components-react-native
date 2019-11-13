@@ -61,7 +61,7 @@ class ModelNode(initProps: ReadableMap,
         // according to Lumin we cannot change alignment for Model
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+    override fun setClipBounds(clipBounds: Bounding) {
         val contentPosition = getContentPosition()
         if (contentPosition.x in clipBounds.left..clipBounds.right
                 && contentPosition.y in clipBounds.bottom..clipBounds.top) {

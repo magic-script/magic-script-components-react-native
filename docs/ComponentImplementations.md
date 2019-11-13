@@ -8,8 +8,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
  4 | Button | UiButton | 👍 | 👍 | 👍 | [link](coverage/Button.md)
  5 | Image | UiImage | 👍 | 👍 | 👍 | [link](coverage/Image.md)
  6 | ScrollBar | UiScrollBar | 👍 | 👍 | 👍 | [link](coverage/ScrollBar.md)
- 7 | ScrollView | UiScrollView | 👍 | 👍 | 🚧 |
- 8 | ListView | UiListView | 👍 | 🚧 | 6 D |
+ 7 | ScrollView | UiScrollView | 👍 | 👍 | 👍 |
+ 8 | ListView | UiListView | 👍 | 🚧 | 👍 |
  9 | ListViewItem | UiListViewItem | 👍 | 🚧 | 👍 |
 10 | Model | ModelNode | 👍 | 👍 | 👍 | [link](coverage/Model.md)
 11 | Spinner | UiLoadingSpinner | 👍 | 👍| 👍 | [link](coverage/Spinner.md)
@@ -26,7 +26,7 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 22 | Dialog | UiDialog | 👍 | 4 D | 3 D |
 23 | WebView | UiWebView | 👍 | 3 D | 👍|  [link](coverage/WebView.md)
 24 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
-25 | TimePicker | UiTimePicker | 👍 | 👍 | 4 D | [link](coverage/TimePicker.md)
+25 | TimePicker | UiTimePicker | 👍 | 👍 | 👍 | [link](coverage/TimePicker.md)
 26 | DatePicker | UiDatePicker | 👍 | 👍 | 👍 | [link](coverage/DatePicker.md)
 27 | CircleConfirmation | UiCircleConfirmation | 👍 | 5 D | 2 D
 28 | Line | LineNode | 👍 | 👍 | 👍 | [link](coverage/Line.md)

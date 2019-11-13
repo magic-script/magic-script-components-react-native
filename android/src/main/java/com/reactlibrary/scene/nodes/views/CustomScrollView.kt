@@ -19,19 +19,21 @@ package com.reactlibrary.scene.nodes.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.RelativeLayout
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import com.reactlibrary.R
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.onLayoutListener
 
 class CustomScrollView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
-        const val SCROLL_VERTICAL = "vertical"
-        const val SCROLL_HORIZONTAL = "horizontal"
+        const val SCROLL_DIRECTION_VERTICAL = "vertical"
+        const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
+        const val SCROLL_DIRECTION_UNSPECIFIED = ""
     }
 
     var contentSize = Vector2()
@@ -42,34 +44,43 @@ class CustomScrollView @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: Vector2) -> Unit)? = null
 
+    var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
+
+    var position = Vector2()
+        private set
+
     var hBar: CustomScrollBar? = null
-        set(value) {
+        private set(value) {
             field = value
             updateScrollbars()
         }
 
     var vBar: CustomScrollBar? = null
-        set(value) {
+        private set(value) {
             field = value
             updateScrollbars()
         }
-
-    var scrollDirection = ""
-
-    var position = Vector2()
-        private set
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
 
     init {
-        this.onLayoutListener {
-            updateScrollbars()
-        }
+        viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        this.vBar = findViewById(R.id.bar_vertical)
+        this.hBar = findViewById(R.id.bar_horizontal)
     }
 
     override fun stopNestedScroll() {
         isBeingDragged = false
+    }
+
+    override fun onGlobalLayout() {
+        viewTreeObserver.removeOnGlobalLayoutListener(this)
+        updateScrollbars()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -92,8 +103,8 @@ class CustomScrollView @JvmOverloads constructor(
             val move = movePx / maxTravel
 
             when (scrollDirection) {
-                SCROLL_VERTICAL -> move.x = 0F
-                SCROLL_HORIZONTAL -> move.y = 0F
+                SCROLL_DIRECTION_VERTICAL -> move.x = 0F
+                SCROLL_DIRECTION_HORIZONTAL -> move.y = 0F
             }
 
             position = (position + move).coerceIn(0F, 1F)
@@ -108,7 +119,11 @@ class CustomScrollView @JvmOverloads constructor(
 
     // Update scrollbars when content size has changed.
     private fun updateScrollbars() {
-        this.hBar?.thumbSize = width.toFloat() / contentSize.x
-        this.vBar?.thumbSize = height.toFloat() / contentSize.y
+        if (contentSize.x > 0) {
+            this.hBar?.thumbSize = width.toFloat() / contentSize.x
+        }
+        if (contentSize.y > 0) {
+            this.vBar?.thumbSize = height.toFloat() / contentSize.y
+        }
     }
 }

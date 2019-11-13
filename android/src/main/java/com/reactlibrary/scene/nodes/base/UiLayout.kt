@@ -99,11 +99,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         redrawRequested = true
     }
 
-    override fun setClipBounds(clipBounds: Bounding, clipNativeView: Boolean) {
+    override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = clipBounds.translate(-getContentPosition())
         contentNode.children
                 .filterIsInstance<TransformNode>()
-                .forEach { it.setClipBounds(localBounds, clipNativeView) }
+                .forEach { it.setClipBounds(localBounds) }
     }
 
     override fun onDestroy() {

@@ -1,7 +1,6 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
@@ -9,13 +8,12 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.putDefaultSerializable
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 
-class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
-: UiLayout(initProps, layoutManager) {
+class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
+    UiLayout(initProps, layoutManager) {
 
-    private var padding: Padding = Padding(0f,0f,0f,0f)
+    private var padding: Padding = Padding(0f, 0f, 0f, 0f)
 
     companion object {
         // properties
@@ -33,9 +31,9 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         // set default values of properties
 
         // alignment of the grid itself (pivot)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefaultString(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
-        properties.putDefaultSerializable(PROP_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
+        properties.putDefault(PROP_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {
@@ -53,26 +51,30 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
         val parentBounding = if (isSizeSet()) {
             Bounding(
-                    contentNode.localPosition.x - width / 2,
-                    contentNode.localPosition.y - height / 2,
-                    contentNode.localPosition.x + width / 2,
-                    contentNode.localPosition.y + height / 2
+                contentNode.localPosition.x - width / 2,
+                contentNode.localPosition.y - height / 2,
+                contentNode.localPosition.x + width / 2,
+                contentNode.localPosition.y + height / 2
             )
         } else {
             Bounding(
-                    childBounds.left + contentNode.localPosition.x - itemPadding.left,
-                    childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
-                    childBounds.right + contentNode.localPosition.x + itemPadding.right,
-                    childBounds.top + contentNode.localPosition.y + itemPadding.top
+                childBounds.left + contentNode.localPosition.x - itemPadding.left,
+                childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
+                childBounds.right + contentNode.localPosition.x + itemPadding.right,
+                childBounds.top + contentNode.localPosition.y + itemPadding.top
             )
         }
-        if(isSizeSet()) {
-            if(layoutManager.parentBounds == null || !Bounding.equalInexact(layoutManager.parentBounds!!,parentBounding)) {
+        if (isSizeSet()) {
+            if (layoutManager.parentBounds == null || !Bounding.equalInexact(
+                    layoutManager.parentBounds!!,
+                    parentBounding
+                )
+            ) {
                 layoutManager.parentBounds = parentBounding
                 requestLayout()
             }
         } else {
-            if(layoutManager.parentBounds != null) {
+            if (layoutManager.parentBounds != null) {
                 layoutManager.parentBounds = null
                 requestLayout()
             }

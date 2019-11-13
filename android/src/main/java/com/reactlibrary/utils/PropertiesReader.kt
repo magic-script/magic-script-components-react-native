@@ -33,6 +33,9 @@ class PropertiesReader {
 
     companion object {
 
+        const val PROP_SCROLL_BOUNDS_MIN = "min"
+        const val PROP_SCROLL_BOUNDS_MAX = "max"
+
         private const val FILE_URI_PROPERTY = "uri"
 
         fun readImagePath(props: Bundle, propertyName: String, context: Context): Uri? {
@@ -143,8 +146,8 @@ class PropertiesReader {
          */
         fun readAABB(props: Bundle, propertyName: String): AABB? {
             val data = props.getBundle(propertyName) ?: return null
-            val min = readVector3(data, "min") ?: return null
-            val max = readVector3(data, "max") ?: return null
+            val min = readVector3(data, PROP_SCROLL_BOUNDS_MIN) ?: return null
+            val max = readVector3(data, PROP_SCROLL_BOUNDS_MAX) ?: return null
             return AABB(min, max)
         }
 

@@ -39,4 +39,4 @@ jobs:
       - name: Codecov update
         run: |
           cd ios
-          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -f coverage_report/covertura.xml
+          bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -f coverage_report/cobertura.xml

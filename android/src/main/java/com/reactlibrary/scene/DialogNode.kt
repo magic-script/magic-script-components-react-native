@@ -75,12 +75,12 @@ class DialogNode(initProps: ReadableMap) : TransformNode(initProps, false, false
                 val confirmText = properties.getString(PROP_CONFIRM_TEXT)
                 setPositiveButton(confirmText, onConfirm)
             } else {
-                setNegativeButton(android.R.string.ok, onConfirm)
+                setPositiveButton(android.R.string.ok, onConfirm)
             }
 
             if (properties.containsKey(PROP_CANCEL_TEXT)) {
                 val confirmText = properties.getString(PROP_CANCEL_TEXT)
-                setPositiveButton(confirmText, onCancel)
+                setNegativeButton(confirmText, onCancel)
             } else {
                 setNegativeButton(android.R.string.cancel, onCancel)
             }

@@ -27,7 +27,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomProgressBar
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefault
 
 open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
     : UiNode(initProps, context, viewRenderableLoader) {
@@ -49,8 +49,8 @@ open class UiProgressBarNode(initProps: ReadableMap, context: Context, viewRende
 
     init {
         // set default values of properties
-        properties.putDefaultDouble(PROP_WIDTH, DEFAULT_WIDTH)
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_WIDTH, DEFAULT_WIDTH)
+        properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
     override fun provideView(context: Context): View {

@@ -47,10 +47,10 @@ class UiLinearLayout @JvmOverloads constructor(props: ReadableMap, layoutManager
         // set default values of properties
 
         // alignment of the layout itself (pivot)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefaultString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
-        properties.putDefaultString(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
-        properties.putDefaultSerializable(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        properties.putDefault(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        properties.putDefault(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {

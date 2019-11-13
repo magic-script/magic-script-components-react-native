@@ -14,7 +14,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultSerializable
+import com.reactlibrary.utils.putDefault
 
 open class UiListViewItemNode(initProps: ReadableMap,
                               context: Context,
@@ -32,7 +32,7 @@ open class UiListViewItemNode(initProps: ReadableMap,
     private var lastContentBounds = Bounding()
 
     init {
-        properties.putDefaultSerializable(PROP_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR)
+        properties.putDefault(PROP_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR)
 
         onViewLoadedListener = { renderable ->
             renderable.renderPriority = RENDER_PRIORITY

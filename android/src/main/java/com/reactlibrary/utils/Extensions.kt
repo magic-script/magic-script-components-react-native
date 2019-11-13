@@ -68,30 +68,32 @@ fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
 }
 
-/**
- * android.os.Bundle
- */
-fun Bundle.putDefaultDouble(name: String, value: Double) {
-    if (!containsKey(name)) {
-        putDouble(name, value)
+fun <T>Bundle.putDefault(key: String, value: T) {
+    if(!containsKey(key)) {
+        when (value) {
+            is Boolean -> putBoolean(key, value)
+            is Double -> putDouble(key, value)
+            is String -> putString(key, value)
+            is Serializable -> putSerializable(key, value)
+        }
     }
 }
 
-fun Bundle.putDefaultString(key: String, value: String) {
-    if (!containsKey(key)) {
-        putString(key, value)
+inline fun Bundle.ifContainsString(key: String, result: (String?) -> Unit) {
+    if (containsKey(key)) {
+        result(getString(key))
     }
 }
 
-fun Bundle.putDefaultBoolean(key: String, value: Boolean) {
-    if (!containsKey(key)) {
-        putBoolean(key, value)
+inline fun Bundle.ifContainsDouble(key: String, result: (Double) -> Unit) {
+    if (containsKey(key)) {
+        result(getDouble(key))
     }
 }
 
-fun Bundle.putDefaultSerializable(key: String, value: Serializable) {
-    if (!containsKey(key)) {
-        putSerializable(key, value)
+inline fun Bundle.ifContainsBoolean(key: String, result: (Boolean) -> Unit) {
+    if (containsKey(key)) {
+        result(getBoolean(key))
     }
 }
 
@@ -174,3 +176,11 @@ fun DatePickerDialog.updateMinMaxYear(minYear: Int, maxYear: Int) {
             }.timeInMillis
     }
 }
+
+fun Date.getHour() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.HOUR_OF_DAY)
+
+fun Date.getMinute() = Calendar.getInstance().also {
+    it.time = this
+}.get(Calendar.MINUTE)

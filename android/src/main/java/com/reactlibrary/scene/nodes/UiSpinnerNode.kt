@@ -26,11 +26,13 @@ import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CustomSpinner
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultBoolean
-import com.reactlibrary.utils.putDefaultDouble
+import com.reactlibrary.utils.putDefault
 
-open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
+open class UiSpinnerNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader
+) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
         // properties
@@ -43,8 +45,8 @@ open class UiSpinnerNode(initProps: ReadableMap, context: Context, viewRenderabl
     }
 
     init {
-        properties.putDefaultDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
-        properties.putDefaultBoolean(PROP_DETERMINATE, DEFAULT_DETERMINATE)
+        properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_DETERMINATE, DEFAULT_DETERMINATE)
     }
 
     override fun provideView(context: Context): View {

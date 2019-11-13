@@ -36,7 +36,7 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils.Companion.metersToPx
 import com.reactlibrary.utils.Utils.Companion.pxToMeters
 import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 import kotlin.math.max
 import kotlin.math.min
 
@@ -80,7 +80,7 @@ open class UiScrollViewNode(
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
-        properties.putDefaultString(PROP_SCROLL_DIRECTION, DEFAULT_SCROLL_DIRECTION)
+        properties.putDefault(PROP_SCROLL_DIRECTION, DEFAULT_SCROLL_DIRECTION)
         layoutLoop()
     }
 

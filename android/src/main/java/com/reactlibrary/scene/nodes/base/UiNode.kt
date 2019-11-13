@@ -93,7 +93,7 @@ abstract class UiNode(
 
     init {
         // set default values of properties
-        properties.putDefaultBoolean(PROP_ENABLED, true)
+        properties.putDefault(PROP_ENABLED, true)
     }
 
     /**

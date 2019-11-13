@@ -70,4 +70,22 @@ class ExtensionsKtTest {
         verify(datePicker).maxDate = dec_31_2030
 
     }
+
+    @Test
+    fun `should return hour from Date`() {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 14)
+        }.time
+
+        date.getHour() shouldEqual 14
+    }
+
+    @Test
+    fun `should return minutes from Date`() {
+        val date = Calendar.getInstance().apply {
+            set(Calendar.MINUTE, 55)
+        }.time
+
+        date.getMinute() shouldEqual 55
+    }
 }

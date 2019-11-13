@@ -1,7 +1,6 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
@@ -9,8 +8,7 @@ import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.putDefaultSerializable
-import com.reactlibrary.utils.putDefaultString
+import com.reactlibrary.utils.putDefault
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
     : UiLayout(initProps, layoutManager) {
@@ -25,17 +23,15 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_CONTENT_ALIGNMENT = "center-center"
-        // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
     init {
         // set default values of properties
 
-        // alignment of the grid itself (pivot)
-        properties.putDefaultString(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefaultString(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
-        properties.putDefaultSerializable(PROP_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
+        properties.putDefault(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
+        properties.putDefault(PROP_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {

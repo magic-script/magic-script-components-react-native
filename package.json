@@ -5,7 +5,7 @@
   "description": "Magic Script Components package for React Native.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "keywords": [
     "react-native",

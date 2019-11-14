@@ -23,11 +23,10 @@ class SoundNodeSpec: QuickSpec {
     override func spec() {
         describe("SoundNode") {
             var node: SoundNode!
-            let mp3AudioPath = "resources/assets/sounds/bg_sound_mono.mp3"
+            let mp3AudioPath = "resources/assets/sounds/bg_mono.mp3"
 
             beforeEach {
                 node = SoundNode()
-//                node.downloader = DownloadingMock()
             }
 
             context("initial properties") {
@@ -43,8 +42,6 @@ class SoundNodeSpec: QuickSpec {
                     expect(node.spatialMaxDistance).to(beCloseTo(1))
                     expect(node.direction).to(beCloseTo(SCNQuaternionIdentity))
 
-                    expect(node.soundLoaded).to(beNil())
-
                     expect(node.isLoaded).to(beFalse())
                     expect(node.isPlaying).to(beFalse())
                 }
@@ -54,36 +51,37 @@ class SoundNodeSpec: QuickSpec {
                 it("should load local audio file") {
                     expect(node.isLoaded).to(beFalse())
                     node.url = urlForRelativePath(mp3AudioPath)
-//                    waitUntil(timeout: 0.1) { done in
-//                        done()
-//                    }
                     expect(node.isLoaded).to(beTrue())
                 }
 
                 it("should start playing audio file") {
                     node.url = urlForRelativePath(mp3AudioPath)
                     expect(node.isPlaying).to(beFalse())
-                    node.start()
+                    node.action = .start
                     expect(node.isPlaying).to(beTrue())
                 }
-
-                it("should stop playing audio file") {
-                    node.url = urlForRelativePath(mp3AudioPath)
-                    node.start()
-                    expect(node.isPlaying).to(beTrue())
-                    node.stop()
-                    expect(node.isPlaying).to(beFalse())
-                }
-
-                it("should pause/resume playing audio file") {
-                    node.url = urlForRelativePath(mp3AudioPath)
-                    node.start()
-                    expect(node.isPlaying).to(beTrue())
-                    node.pause()
-                    expect(node.isPlaying).to(beFalse())
-                    node.resume()
-                    expect(node.isPlaying).to(beFalse())
-                }
+//
+//                it("should stop playing audio file") {
+//                    node.soundLoaded = {
+//                        node.start()
+//                        expect(node.isPlaying).to(beTrue())
+//                        node.stop()
+//                        expect(node.isPlaying).to(beFalse())
+//                    }
+//                    node.url = urlForRelativePath(mp3AudioPath)
+//                }
+//
+//                it("should pause/resume playing audio file") {
+//                    node.soundLoaded = {
+//                        node.start()
+//                        expect(node.isPlaying).to(beTrue())
+//                        node.pause()
+//                        expect(node.isPlaying).to(beFalse())
+//                        node.resume()
+//                        expect(node.isPlaying).to(beFalse())
+//                    }
+//                    node.url = urlForRelativePath(mp3AudioPath)
+//                }
             }
         }
     }

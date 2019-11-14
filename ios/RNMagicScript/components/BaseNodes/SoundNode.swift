@@ -28,6 +28,9 @@ import SceneKit
             }
         }
     }
+    @objc var action: AudioAction = .stop {
+        didSet { performAction() }
+    }
     @objc var stream: Bool = false {
         didSet { audioSource?.shouldStream = stream; needsReloadPlayer = true }
     }
@@ -54,7 +57,7 @@ import SceneKit
     }
 
     var downloader: Downloading = FileDownloader()
-    var soundLoaded: (() -> Void)?
+//    var soundLoaded: (() -> Void)?
 
     fileprivate var audioPlayer: SCNAudioPlayer?
     fileprivate var audioSource: SCNAudioSource?
@@ -67,7 +70,7 @@ import SceneKit
     @objc var isLoaded: Bool { return audioSource != nil }
     @objc var isPlaying: Bool { return audioPlayer != nil && !isHidden }
 
-    func start() {
+    fileprivate func start() {
         // audio must be loaded
         guard let source = audioSource else { return }
         // and must be stopped
@@ -78,15 +81,15 @@ import SceneKit
         addAudioPlayer(audioPlayer!)
     }
 
-    func pause() {
+    fileprivate func pause() {
         isHidden = true
     }
 
-    func resume() {
+    fileprivate func resume() {
         isHidden = false
     }
 
-    func stop() {
+    fileprivate func stop() {
         if let player = audioPlayer {
             removeAudioPlayer(player)
         }
@@ -115,7 +118,7 @@ import SceneKit
         audioSource?.loops = loop
         audioSource?.isPositional = spatial
         audioSource?.load()
-        soundLoaded?()
+        performAction()
 
         debugNode?.isHidden = !spatial
     }
@@ -124,6 +127,16 @@ import SceneKit
         removeAllAudioPlayers()
         audioPlayer = nil
         audioSource = nil
+    }
+
+    fileprivate func performAction() {
+        guard isLoaded else { return }
+        switch action {
+        case .start: start()
+        case .pause: pause()
+        case .resume: resume()
+        case .stop: stop()
+        }
     }
 
     fileprivate var debugNode: SCNNode? { return childNodes.first }

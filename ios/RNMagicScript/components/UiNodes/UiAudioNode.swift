@@ -22,8 +22,9 @@ import SceneKit
         get { return soundNode.url }
         set { soundNode.url = newValue; setNeedsLayout() }
     }
-    @objc var action: AudioAction = .stop {
-        didSet { performAction() }
+    @objc var action: AudioAction {
+        get { return soundNode.action }
+        set { soundNode.action = newValue; setNeedsLayout() }
     }
     @objc var soundLooping: Bool {
         get { return soundNode.loop }
@@ -68,9 +69,9 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
         soundNode = SoundNode()
-        soundNode.soundLoaded = { [weak self] in
-            self?.performAction()
-        }
+//        soundNode.soundLoaded = { [weak self] in
+//            self?.performAction()
+//        }
         contentNode.addChildNode(soundNode)
     }
 
@@ -133,18 +134,18 @@ import SceneKit
         soundNode.setDebugMode(debug)
     }
 
-    fileprivate func performAction() {
-        switch action {
-        case .start:
-            soundNode.start()
-        case .pause:
-            soundNode.pause()
-        case .resume:
-            soundNode.resume()
-        case .stop:
-            soundNode.stop()
-        }
-    }
+//    fileprivate func performAction() {
+//        switch action {
+//        case .start:
+//            soundNode.start()
+//        case .pause:
+//            soundNode.pause()
+//        case .resume:
+//            soundNode.resume()
+//        case .stop:
+//            soundNode.stop()
+//        }
+//    }
 }
 
 // MARK: - Internal sctructures

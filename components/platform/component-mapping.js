@@ -26,6 +26,7 @@ import WebViewBuilder from "./elements/builders/webview-builder.js";
 import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
 import ListViewBuilder from './elements/builders/listview-builder.js';
 import DialogBuilder from './elements/builders/dialog-builder.js';
+import AudioBuilder from './elements/builders/audio-builder.js';
 
 export default {
   version: "1.0",
@@ -53,7 +54,8 @@ export default {
     toggle: componentManager => new ToggleBuilder(componentManager),
     view: componentManager => new GroupBuilder(componentManager),
     dialog: (componentManager) => new DialogBuilder(componentManager),
-
+    audio: (componentManager) => new AudioBuilder(componentManager),
+    
     // layouts
     gridLayout: componentManager => new GridLayoutBuilder(componentManager),
     linearLayout: componentManager => new LinearLayoutBuilder(componentManager),
@@ -65,6 +67,6 @@ export default {
     video: componentManager => new VideoBuilder(componentManager),
     webView: componentManager => new WebViewBuilder(componentManager),
     listView: (componentManager) => new ListViewBuilder(componentManager),
-    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager)
-  }
+    listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
+    }
 };

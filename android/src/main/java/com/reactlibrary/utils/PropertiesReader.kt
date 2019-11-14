@@ -171,6 +171,7 @@ class PropertiesReader {
                         // here fileUri is in format: 'resources_demopicture1'
                         val packageName = context.packageName
                         val basePath = "android.resource://$packageName/$resType/"
+
                         return Uri.parse(basePath + fileUri)
                     }
                 }

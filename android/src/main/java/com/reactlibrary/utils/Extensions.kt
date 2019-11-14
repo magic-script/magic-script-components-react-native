@@ -25,6 +25,8 @@ import android.view.View
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.google.gson.JsonObject
+import com.reactlibrary.converter.GsonProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 import java.util.*
@@ -184,3 +186,6 @@ fun Date.getHour() = Calendar.getInstance().also {
 fun Date.getMinute() = Calendar.getInstance().also {
     it.time = this
 }.get(Calendar.MINUTE)
+
+fun <T> JsonObject.extract(key: String, clazz: Class<T>) =
+    GsonProvider.gson.fromJson<T>(getAsJsonObject(key), clazz)

@@ -14,13 +14,13 @@ export const Events = [
   {
     name: "onDialogConfirmed",
     handler: (componentManager, elementId) => {
-      componentManager.addOnDialogConfirmedEventHandler(elementId);
+      componentManager.addOnDialogConfirmedEventReceivedHandler(elementId);
     }
   },
   {
     name: "onDialogCanceled",
     handler: (componentManager, elementId) => {
-      componentManager.addOnDialogCanceledEventHandler(elementId);
+      componentManager.addOnDialogCanceledEventReceivedHandler(elementId);
     }
   },
   {

@@ -84,6 +84,7 @@ import SceneKit
     public init() {
         super.init(frame: CGRect.zero)
         self.arView = createARView()
+        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: self.arView)
         RCTARView.instance = self
         resume()
     }

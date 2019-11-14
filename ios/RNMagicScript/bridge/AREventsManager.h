@@ -26,6 +26,7 @@
 @class UiDatePickerNode;
 @class UiTimePickerNode;
 @class UiColorPickerNode;
+@class UiDialogNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -45,5 +46,8 @@
 - (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
 - (void)onColorConfirmedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
 - (void)onColorCanceledEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onDialogConfirmedEventReceived:(UiDialogNode *)sender;
+- (void)onDialogCanceledEventReceived:(UiDialogNode *)sender;
+- (void)onDialogTimeExpiredEventReceived:(UiDialogNode *)sender;
 
 @end

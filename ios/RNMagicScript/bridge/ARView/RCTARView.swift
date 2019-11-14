@@ -26,6 +26,11 @@ import SceneKit
     fileprivate var rayCastNode: SCNNode?
 #endif
 
+    static fileprivate var instance: RCTARView!
+    @objc static public var arSession: ARSession {
+        return instance.arView.session
+    }
+
     public var scene: SCNScene {
         return arView.scene
     }
@@ -79,6 +84,7 @@ import SceneKit
     public init() {
         super.init(frame: CGRect.zero)
         self.arView = createARView()
+        RCTARView.instance = self
         resume()
     }
 

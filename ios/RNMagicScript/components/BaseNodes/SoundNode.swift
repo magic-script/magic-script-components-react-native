@@ -124,7 +124,7 @@ import SceneKit
     }
 
     fileprivate func unloadAudio() {
-        removeAllAudioPlayers()
+//        removeAllAudioPlayers()
         audioPlayer = nil
         audioSource = nil
     }

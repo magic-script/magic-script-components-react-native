@@ -17,16 +17,20 @@
 import Quick
 import Nimble
 import SceneKit
+import SwiftyMocky
 @testable import RNMagicScriptHostApplication
 
 class SoundNodeSpec: QuickSpec {
     override func spec() {
         describe("SoundNode") {
             var node: SoundNode!
+            var downloaderMock: DownloadingMock!
             let mp3AudioPath = "resources/assets/sounds/bg_mono.mp3"
 
             beforeEach {
                 node = SoundNode()
+                downloaderMock = DownloadingMock()
+                node.downloader = downloaderMock
             }
 
             context("initial properties") {
@@ -49,12 +53,20 @@ class SoundNodeSpec: QuickSpec {
 
             context("actions") {
                 it("should load local audio file") {
+                    downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
+                        completion(inputURL)
+                    }))
+
                     expect(node.isLoaded).to(beFalse())
                     node.url = urlForRelativePath(mp3AudioPath)
                     expect(node.isLoaded).to(beTrue())
                 }
 
                 it("should start playing audio file") {
+                    downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
+                        completion(inputURL)
+                    }))
+                    
                     node.url = urlForRelativePath(mp3AudioPath)
                     expect(node.isPlaying).to(beFalse())
                     node.action = .start

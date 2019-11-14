@@ -46,7 +46,7 @@ class ViewController: UIViewController {
 //        setupUiColorPickerNodeTest()
 //        setupTextEditTest()
 //        setupUiListViewNodeTest()
-        setupAudioNodeTest()
+//        setupAudioNodeTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -320,7 +320,7 @@ extension ViewController: ARSCNViewDelegate {
             let y: CGFloat = 0
             let z: CGFloat = radius * cos(angle)
 //            let quat = SCNQuaternion.fromAxis(SCNVector3(0,1,0), andAngle: Float(angle))
-            strongSelf.audioNode.spatialSoundPosition = UiAudioNode.SpatialSoundPosition(channel: 0, position: SCNVector3(x, y, z))
+//            strongSelf.audioNode.spatialSoundPosition = UiAudioNode.SpatialSoundPosition(channel: 0, position: SCNVector3(x, y, z))
 //            strongSelf.audioNode.spatialSoundDirection = UiAudioNode.SpatialSoundDirection(channel: 0, direction: quat)
             UiNodesManager.instance.updateLayout()
         }

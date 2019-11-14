@@ -551,7 +551,14 @@ class ConvertSpec: QuickSpec {
 
             context("toSystemIcon") {
                 it("should convert to SystemIcon value") {
-//                    let icon: SystemIcon = SystemIcon.
+                    let referenceName: String = "address-book"
+                    let referenceImageName: String = "AddressBook"
+                    let icon: SystemIcon = Convert.toSystemIcon(referenceName)!
+                    expect(icon.getImage()).notTo(beNil())
+                    expect(icon.getImage(forceDefaultImage: false)).notTo(beNil())
+                    expect(icon.getImage(forceDefaultImage: true)).notTo(beNil())
+                    expect(icon.name).to(equal(referenceName))
+                    expect(icon.imageName).to(equal(referenceImageName))
 
                     expect(Convert.toSystemIcon(nil)).to(beNil())
                     expect(Convert.toSystemIcon(any_bool)).to(beNil())

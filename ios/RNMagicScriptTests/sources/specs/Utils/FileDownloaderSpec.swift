@@ -18,17 +18,17 @@ import Quick
 import Nimble
 @testable import RNMagicScriptHostApplication
 
-class ModelDownloaderSpec: QuickSpec {
+class FileDownloaderSpec: QuickSpec {
     override func spec() {
-        describe("ModelDownloader") {
+        describe("FileDownloader") {
             var fileManagerMock: FileManagingMock!
             var urlSessionMock: URLSessioningMock!
-            var sut: ModelDownloader!
+            var sut: FileDownloader!
 
             beforeEach {
                 fileManagerMock = FileManagingMock()
                 urlSessionMock = URLSessioningMock()
-                sut = ModelDownloader()
+                sut = FileDownloader()
                 sut.fileManager = fileManagerMock
                 sut.urlSession = urlSessionMock
             }
@@ -36,7 +36,7 @@ class ModelDownloaderSpec: QuickSpec {
             context("when file URL provided") {
                 it("should return it (should don't download anything)") {
                     let url: URL = URL(fileURLWithPath: "./pathToFile")
-                    sut.downloadModel(modelURL: url) { inputURL -> (Void) in
+                    sut.download(remoteURL: url) { inputURL -> (Void) in
                         expect(inputURL).to(equal(url))
                     }
                     fileManagerMock.verify(.urls(for: .any, in: .any), count: 0)
@@ -60,7 +60,7 @@ class ModelDownloaderSpec: QuickSpec {
 
                     fileManagerMock.given(.urls(for: .any, in: .any, willReturn: [localURL]))
 
-                    sut.downloadModel(modelURL: url) { inputURL -> (Void) in }
+                    sut.download(remoteURL: url) { inputURL -> (Void) in }
                     urlSessionMock.verify(.downloadTask_(with: .any, completionHandler: .any), count: 1)
 
                     fileManagerMock.verify(.urls(for: .any, in: .any), count: 1)

@@ -18,25 +18,25 @@ import Foundation
 
 //sourcery: AutoMockable
 protocol Downloading {
-    func downloadModel(modelURL: URL, completion: @escaping (_ localURL: URL?) -> (Void))
+    func download(remoteURL: URL, completion: @escaping (_ localURL: URL?) -> (Void))
 }
 
-class ModelDownloader: Downloading {
+class FileDownloader: Downloading {
 
     var fileManager: FileManaging! = FileManager.default
     var urlSession: URLSessioning! = URLSession.shared
     fileprivate var downloadTask: URLSessionDownloadingTask?
     fileprivate var dataTask: URLSessionDataTask?
 
-    func downloadModel(modelURL: URL, completion: @escaping (_ localURL: URL?) -> (Void)) {
+    func download(remoteURL: URL, completion: @escaping (_ localURL: URL?) -> (Void)) {
         downloadTask?.cancel()
 
-        if modelURL.isFileURL {
-            completion(modelURL)
+        if remoteURL.isFileURL {
+            completion(remoteURL)
             return
         }
 
-        downloadTask = urlSession.downloadTask_(with: modelURL) { [weak self] (tmpURL, response, error) in
+        downloadTask = urlSession.downloadTask_(with: remoteURL) { [weak self] (tmpURL, response, error) in
             self?.downloadTask = nil
             guard let tmpURL = tmpURL else {
                 DispatchQueue.main.async() { completion(nil) }
@@ -46,7 +46,7 @@ class ModelDownloader: Downloading {
             do {
                 guard let strongSelf = self else { return }
                 let documentsURL = strongSelf.fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
-                let localURL: URL = documentsURL.appendingPathComponent(modelURL.lastPathComponent)
+                let localURL: URL = documentsURL.appendingPathComponent(remoteURL.lastPathComponent)
                 try? strongSelf.fileManager.removeItem(at: localURL)
                 try strongSelf.fileManager.copyItem(at: tmpURL, to: localURL)
                 DispatchQueue.main.async() { completion(localURL) }

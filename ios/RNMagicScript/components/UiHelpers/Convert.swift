@@ -184,6 +184,11 @@ class Convert {
         return SystemIcon(icon)
     }
 
+    static func toAudioAction(_ value: Any?) -> AudioAction? {
+        guard let action = value as? String else { return nil }
+        return AudioAction(rawValue: action)
+    }
+
     static func toVideoAction(_ value: Any?) -> VideoAction? {
         guard let action = value as? String else { return nil }
         return VideoAction(rawValue: action)

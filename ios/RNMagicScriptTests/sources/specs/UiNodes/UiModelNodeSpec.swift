@@ -51,7 +51,7 @@ class UiModelNodeSpec: QuickSpec {
             }
 
             func prepareMocksExpectations() {
-                downloaderMock.perform(.downloadModel(modelURL: .any, completion: .any, perform: { (inputURL, completion) in
+                downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
                     completion(inputURL)
                 }))
                 sceneBuilderMock.given(.build(path: .any, options: .any, extensions: .any, willReturn: sceneMock))
@@ -113,7 +113,7 @@ class UiModelNodeSpec: QuickSpec {
                     let url: URL? = urlForRelativePath(objModelPath)
                     validateInitialExpectation(url, node)
 
-                    downloaderMock.perform(.downloadModel(modelURL: .any, completion: .any, perform: { (inputURL, completion) in
+                    downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
                         completion(inputURL)
                     }))
 

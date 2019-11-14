@@ -12,38 +12,38 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import Foundation
 
-@objc public enum Side: Int {
-    case top, right, bottom, left
+@objc enum AudioAction: Int {
+    case pause, start, stop, resume
 
     public typealias RawValue = String
 
     public var rawValue: RawValue {
         switch self {
-        case .top:
-            return "top"
-        case .right:
-            return "right"
-        case .bottom:
-            return "bottom"
-        case .left:
-            return "left"
+        case .pause:
+            return "pause"
+        case .start:
+            return "start"
+        case .stop:
+            return "stop"
+        case .resume:
+            return "resume"
         }
     }
 
     public init?(rawValue: RawValue) {
         switch rawValue {
-        case "top":
-            self = .top
-        case "right":
-            self = .right
-        case "bottom":
-            self = .bottom
-        case "left":
-            self = .left
+        case "pause":
+            self = .pause
+        case "start":
+            self = .start
+        case "stop":
+            self = .stop
+        case "resume":
+            self = .resume
         default:
             return nil
         }

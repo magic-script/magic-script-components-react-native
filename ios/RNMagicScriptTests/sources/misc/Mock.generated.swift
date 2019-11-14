@@ -1059,20 +1059,20 @@ open class DownloadingMock: Downloading, Mock {
 
 
 
-    open func downloadModel(modelURL: URL, completion: @escaping (_ localURL: URL?) -> (Void)) {
-        addInvocation(.m_downloadModel__modelURL_modelURLcompletion_completion(Parameter<URL>.value(`modelURL`), Parameter<(_ localURL: URL?) -> (Void)>.value(`completion`)))
-		let perform = methodPerformValue(.m_downloadModel__modelURL_modelURLcompletion_completion(Parameter<URL>.value(`modelURL`), Parameter<(_ localURL: URL?) -> (Void)>.value(`completion`))) as? (URL, @escaping (_ localURL: URL?) -> (Void)) -> Void
-		perform?(`modelURL`, `completion`)
+    open func download(remoteURL: URL, completion: @escaping (_ localURL: URL?) -> (Void)) {
+        addInvocation(.m_download__remoteURL_remoteURLcompletion_completion(Parameter<URL>.value(`remoteURL`), Parameter<(_ localURL: URL?) -> (Void)>.value(`completion`)))
+		let perform = methodPerformValue(.m_download__remoteURL_remoteURLcompletion_completion(Parameter<URL>.value(`remoteURL`), Parameter<(_ localURL: URL?) -> (Void)>.value(`completion`))) as? (URL, @escaping (_ localURL: URL?) -> (Void)) -> Void
+		perform?(`remoteURL`, `completion`)
     }
 
 
     fileprivate enum MethodType {
-        case m_downloadModel__modelURL_modelURLcompletion_completion(Parameter<URL>, Parameter<(_ localURL: URL?) -> (Void)>)
+        case m_download__remoteURL_remoteURLcompletion_completion(Parameter<URL>, Parameter<(_ localURL: URL?) -> (Void)>)
 
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
-            case (.m_downloadModel__modelURL_modelURLcompletion_completion(let lhsModelurl, let lhsCompletion), .m_downloadModel__modelURL_modelURLcompletion_completion(let rhsModelurl, let rhsCompletion)):
-                guard Parameter.compare(lhs: lhsModelurl, rhs: rhsModelurl, with: matcher) else { return false } 
+            case (.m_download__remoteURL_remoteURLcompletion_completion(let lhsRemoteurl, let lhsCompletion), .m_download__remoteURL_remoteURLcompletion_completion(let rhsRemoteurl, let rhsCompletion)):
+                guard Parameter.compare(lhs: lhsRemoteurl, rhs: rhsRemoteurl, with: matcher) else { return false } 
                 guard Parameter.compare(lhs: lhsCompletion, rhs: rhsCompletion, with: matcher) else { return false } 
                 return true 
             }
@@ -1080,7 +1080,7 @@ open class DownloadingMock: Downloading, Mock {
 
         func intValue() -> Int {
             switch self {
-            case let .m_downloadModel__modelURL_modelURLcompletion_completion(p0, p1): return p0.intValue + p1.intValue
+            case let .m_download__remoteURL_remoteURLcompletion_completion(p0, p1): return p0.intValue + p1.intValue
             }
         }
     }
@@ -1099,15 +1099,15 @@ open class DownloadingMock: Downloading, Mock {
     public struct Verify {
         fileprivate var method: MethodType
 
-        public static func downloadModel(modelURL: Parameter<URL>, completion: Parameter<(_ localURL: URL?) -> (Void)>) -> Verify { return Verify(method: .m_downloadModel__modelURL_modelURLcompletion_completion(`modelURL`, `completion`))}
+        public static func download(remoteURL: Parameter<URL>, completion: Parameter<(_ localURL: URL?) -> (Void)>) -> Verify { return Verify(method: .m_download__remoteURL_remoteURLcompletion_completion(`remoteURL`, `completion`))}
     }
 
     public struct Perform {
         fileprivate var method: MethodType
         var performs: Any
 
-        public static func downloadModel(modelURL: Parameter<URL>, completion: Parameter<(_ localURL: URL?) -> (Void)>, perform: @escaping (URL, @escaping (_ localURL: URL?) -> (Void)) -> Void) -> Perform {
-            return Perform(method: .m_downloadModel__modelURL_modelURLcompletion_completion(`modelURL`, `completion`), performs: perform)
+        public static func download(remoteURL: Parameter<URL>, completion: Parameter<(_ localURL: URL?) -> (Void)>, perform: @escaping (URL, @escaping (_ localURL: URL?) -> (Void)) -> Void) -> Perform {
+            return Perform(method: .m_download__remoteURL_remoteURLcompletion_completion(`remoteURL`, `completion`), performs: perform)
         }
     }
 

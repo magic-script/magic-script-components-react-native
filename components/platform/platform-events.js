@@ -12,6 +12,18 @@ export const Events = [
     }
   },
   {
+    name: "onDialogConfirmed",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnDialogConfirmedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onDialogCanceled",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnDialogCanceledEventHandler(elementId);
+    }
+  },
+  {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
       componentManager.addOnColorConfirmedEventReceivedHandler(elementId);

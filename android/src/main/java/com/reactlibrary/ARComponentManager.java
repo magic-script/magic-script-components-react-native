@@ -46,6 +46,7 @@ import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.icons.IconsRepositoryImpl;
+import com.reactlibrary.scene.DialogNode;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -118,6 +119,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_TIME_CHANGED = "onTimeChanged";
     private static final String EVENT_TIME_CONFIRMED = "onTimeConfirmed";
     private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
+    private static final String EVENT_DIALOG_CONFIRM = "onDialogConfirmed";
+    private static final String EVENT_DIALOG_CANCEL = "onDialogCanceled";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -352,6 +355,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             UiTimePickerNode datePickerNode = new UiTimePickerNode(props, context, viewRenderableLoader, new DateTimePickerDialogProvider());
             addNode(datePickerNode, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createDialogNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            DialogNode node = new DialogNode(props);
+            addNode(node, nodeId);
         });
     }
 
@@ -608,7 +619,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnTimeChangedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiTimePickerNode) {
+            if (node instanceof UiTimePickerNode) {
                 ((UiTimePickerNode) node).setOnTimeChanged((time) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
@@ -625,12 +636,42 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnTimeConfirmedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if(node instanceof UiTimePickerNode) {
+            if (node instanceof UiTimePickerNode) {
                 ((UiTimePickerNode) node).setOnTimeConfirmed((time) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     params.putString(EVENT_ARG_TIME, time);
                     sendEvent(EVENT_TIME_CONFIRMED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnDialogConfirmedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof DialogNode) {
+                ((DialogNode) node).setOnDialogConfirmListener(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_DIALOG_CONFIRM, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnDialogCanceledEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof DialogNode) {
+                ((DialogNode) node).setOnDialogCancelListener(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_DIALOG_CANCEL, params);
                     return Unit.INSTANCE;
                 });
             }

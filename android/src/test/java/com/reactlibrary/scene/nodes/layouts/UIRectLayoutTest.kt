@@ -1,28 +1,20 @@
 package com.reactlibrary.scene.nodes.layouts
 
-import android.content.Context
-import android.view.View
-import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import com.reactlibrary.ar.ViewRenderableLoader
+import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiLayout
-import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
-import com.reactlibrary.utils.Vector2
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.math.exp
 
 @RunWith(RobolectricTestRunner::class)
 class UIRectLayoutTest {
@@ -35,7 +27,7 @@ class UIRectLayoutTest {
     }
 
     @Test
-    fun shoulSetCenterCenterAlignmentWhenNoAlignmentIsPassed() {
+    fun `should set center-center alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
         val node = UiRectLayout(props, rectLayoutManager)
         node.build()
@@ -45,7 +37,7 @@ class UIRectLayoutTest {
     }
 
     @Test
-    fun shouldSetCorrespondingAlignmentWhenContentAlignmentIsPassed() {
+    fun `should set passed alignment`() {
         val props = JavaOnlyMap.of(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = UiRectLayout(props, rectLayoutManager)
         node.build()
@@ -55,41 +47,30 @@ class UIRectLayoutTest {
     }
 
     @Test
-    fun shouldReturnCorrectBoundingAndSetParentBoundingInManagerWhenSizeIsSpecified() {
+    fun `should return correct bounds`() {
         val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = UiRectLayout(props, rectLayoutManager)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
-        node.build()
+        node.build() // invokes the layout loop
 
         val bounds = node.getBounding()
 
         assertTrue(Bounding.equalInexact(expectedBounds, bounds))
-        verify(rectLayoutManager).parentBounds = expectedBounds
     }
 
     @Test
-    fun shouldRescaleChildIfChildHasBiggerSizeThanMax() {
+    fun `should rescale child if bigger than layout size`() {
         val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = UiRectLayout(props, rectLayoutManager)
-        val context: Context = ApplicationProvider.getApplicationContext()
-        val viewRenderableLoader: ViewRenderableLoader = mock()
-        val childNode = object : UiNode(JavaOnlyMap(), context, viewRenderableLoader) {
-            override fun provideView(context: Context): View {
-                return mock()
-            }
 
-            override fun provideDesiredSize(): Vector2 {
-                return Vector2(2f, 1F)
-            }
-
+        val childNode = object : TransformNode(JavaOnlyMap(), false, false) {
             override fun getContentBounding(): Bounding {
                 return Bounding(0f, 0f, 2f, 1f)
             }
         }
         childNode.build()
-        node.contentNode.addChild(childNode)
         node.addContent(childNode)
-        node.build()
+        node.build() // invokes the layout loop
 
         assertEquals(Vector3(0.5f, 0.5f, 1f), childNode.localScale)
     }

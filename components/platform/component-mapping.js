@@ -4,6 +4,7 @@ import AudioBuilder from "./elements/builders/audio-builder.js";
 import ButtonBuilder from "./elements/builders/button-builder.js";
 import ColorPickerBuilder from "./elements/builders/color-picker-builder.js";
 import DatePickerBuilder from "./elements/builders/date-picker-builder.js";
+import DialogBuilder from './elements/builders/dialog-builder.js';
 import DropdownListBuilder from "./elements/builders/dropdown-list-builder.js";
 import DropdownListItemBuilder from "./elements/builders/dropdown-list-item-builder.js";
 import GridLayoutBuilder from "./elements/builders/grid-layout-builder.js";
@@ -38,6 +39,7 @@ export default {
     button: componentManager => new ButtonBuilder(componentManager),
     colorPicker: componentManager => new ColorPickerBuilder(componentManager),
     datePicker: componentManager => new DatePickerBuilder(componentManager),
+    dialog: (componentManager) => new DialogBuilder(componentManager),
     dropdownList: componentManager => new DropdownListBuilder(componentManager),
     dropdownListItem: componentManager => new DropdownListItemBuilder(componentManager),
     image: componentManager => new ImageBuilder(componentManager),

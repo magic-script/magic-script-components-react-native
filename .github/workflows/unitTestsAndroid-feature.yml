@@ -1,0 +1,32 @@
+name: UTs_Android_feature
+on:
+  push:
+    branches-ignore:
+      - master
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Node configuration
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Prepare env
+      run: |
+        cd android
+        chmod u+x gradlew
+        mkdir node_modules
+        cd node_modules
+        npm install react-native
+    - name: Build and test
+      run: |
+        cd android
+        ./gradlew jacocoTestReport
+        cat build/reports/jacoco/jacocoTestReport/html/index.html | grep -oEi '(\d\d*%)' | head -2 | sed '1 s/^.*$/Total coverage & (instructions)/' | sed '2 s/^.*$/Total coverage & (branches)/' | tee -a testReport.txt
+    - name: Code coverage
+      run: |
+        cd android
+        cat testReport.txt

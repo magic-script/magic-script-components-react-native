@@ -61,7 +61,6 @@
 		44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09314232D985A0081FF14 /* UiImageNodeSpec.swift */; };
 		44931E06237D898C00E11972 /* UiLabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */; };
 		44931E07237D898C00E11972 /* UiLineNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0930D232D985A0081FF14 /* UiLineNodeSpec.swift */; };
-		44931E08237D898C00E11972 /* UiModelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */; };
 		44931E09237D898C00E11972 /* UiProgressBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09312232D985A0081FF14 /* UiProgressBarNodeSpec.swift */; };
 		44931E0A237D898C00E11972 /* UiScrollBarNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */; };
 		44931E0B237D898C00E11972 /* UiSpinnerNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0930C232D985A0081FF14 /* UiSpinnerNodeSpec.swift */; };
@@ -70,6 +69,7 @@
 		44931E0E237D898C00E11972 /* UiToggleNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0930E232D985A0081FF14 /* UiToggleNodeSpec.swift */; };
 		44931E0F237D898C00E11972 /* UiVideoNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */; };
 		44931E10237D898C00E11972 /* UiSliderNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */; };
+		44931E12237D999B00E11972 /* UiModelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */; };
 		44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD002366258400402912 /* GridLayoutSpec.swift */; };
 		44A3FD032366364900402912 /* UiLinearLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */; };
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
@@ -1931,10 +1931,10 @@
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
 				44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */,
 				C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */,
-				44931E08237D898C00E11972 /* UiModelNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
 				44931E06237D898C00E11972 /* UiLabelNodeSpec.swift in Sources */,
+				44931E12237D999B00E11972 /* UiModelNodeSpec.swift in Sources */,
 				44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,

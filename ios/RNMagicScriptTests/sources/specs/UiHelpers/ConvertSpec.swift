@@ -548,6 +548,138 @@ class ConvertSpec: QuickSpec {
                     expect(Convert.toFileURL(any_arrayOfInts)).to(beNil())
                 }
             }
+
+            context("toSystemIcon") {
+                it("should convert to SystemIcon value") {
+//                    let icon: SystemIcon = SystemIcon.
+
+                    expect(Convert.toSystemIcon(nil)).to(beNil())
+                    expect(Convert.toSystemIcon(any_bool)).to(beNil())
+                    expect(Convert.toSystemIcon(any_int)).to(beNil())
+                    expect(Convert.toSystemIcon(any_cgFloat)).to(beNil())
+                    expect(Convert.toSystemIcon(any_float)).to(beNil())
+                    expect(Convert.toSystemIcon(any_double)).to(beNil())
+                    expect(Convert.toSystemIcon(any_vec3)).to(beNil())
+                    expect(Convert.toSystemIcon(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toAudioAction") {
+                it("should convert to AudioAction value") {
+                    let start: AudioAction = .start
+                    let stop: AudioAction = .stop
+                    let pause: AudioAction = .pause
+                    let resume: AudioAction = .resume
+
+                    let startAudioActionString: String = "start"
+                    let stopAudioActionString: String = "stop"
+                    let pauseAudioActionString: String = "pause"
+                    let resumeAudioActionString: String = "resume"
+
+                    expect(Convert.toAudioAction(startAudioActionString)).to(equal(start))
+                    expect(Convert.toAudioAction(stopAudioActionString)).to(equal(stop))
+                    expect(Convert.toAudioAction(pauseAudioActionString)).to(equal(pause))
+                    expect(Convert.toAudioAction(resumeAudioActionString)).to(equal(resume))
+
+                    expect(Convert.toAudioAction(startAudioActionString)).notTo(equal(stop))
+                    expect(Convert.toAudioAction(startAudioActionString)).notTo(equal(pause))
+                    expect(Convert.toAudioAction(startAudioActionString)).notTo(equal(resume))
+
+                    expect(Convert.toAudioAction(nil)).to(beNil())
+                    expect(Convert.toAudioAction(any_bool)).to(beNil())
+                    expect(Convert.toAudioAction(any_int)).to(beNil())
+                    expect(Convert.toAudioAction(any_cgFloat)).to(beNil())
+                    expect(Convert.toAudioAction(any_float)).to(beNil())
+                    expect(Convert.toAudioAction(any_double)).to(beNil())
+                    expect(Convert.toAudioAction(any_vec3)).to(beNil())
+                    expect(Convert.toAudioAction(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toVideoAction") {
+                it("should convert to VideoAction value") {
+                    let start: VideoAction = .start
+                    let pause: VideoAction = .pause
+                    let stop: VideoAction = .stop
+
+                    let startVideoActionString: String = "start"
+                    let pauseVideoActionString: String = "pause"
+                    let stopVideoActionString: String = "stop"
+
+                    expect(Convert.toVideoAction(startVideoActionString)).to(equal(start))
+                    expect(Convert.toVideoAction(stopVideoActionString)).to(equal(stop))
+                    expect(Convert.toVideoAction(pauseVideoActionString)).to(equal(pause))
+
+                    expect(Convert.toVideoAction(startVideoActionString)).notTo(equal(stop))
+                    expect(Convert.toVideoAction(startVideoActionString)).notTo(equal(pause))
+
+                    expect(Convert.toVideoAction(nil)).to(beNil())
+                    expect(Convert.toVideoAction(any_bool)).to(beNil())
+                    expect(Convert.toVideoAction(any_int)).to(beNil())
+                    expect(Convert.toVideoAction(any_cgFloat)).to(beNil())
+                    expect(Convert.toVideoAction(any_float)).to(beNil())
+                    expect(Convert.toVideoAction(any_double)).to(beNil())
+                    expect(Convert.toVideoAction(any_vec3)).to(beNil())
+                    expect(Convert.toVideoAction(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toVideoViewMode") {
+                it("should convert to VideoViewMode value") {
+                    let fullArea: VideoViewMode = .fullArea
+                    let leftRight: VideoViewMode = .leftRight
+
+                    let fullAreaVideoViewModeString: String = "full-area"
+                    let leftRightVideoViewModeString: String = "left-right"
+
+                    expect(Convert.toVideoViewMode(fullAreaVideoViewModeString)).to(equal(fullArea))
+                    expect(Convert.toVideoViewMode(leftRightVideoViewModeString)).to(equal(leftRight))
+
+                    expect(Convert.toVideoViewMode(fullAreaVideoViewModeString)).notTo(equal(leftRight))
+                    expect(Convert.toVideoViewMode(leftRightVideoViewModeString)).notTo(equal(fullArea))
+
+                    expect(Convert.toVideoViewMode(nil)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_bool)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_int)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_cgFloat)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_float)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_double)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_vec3)).to(beNil())
+                    expect(Convert.toVideoViewMode(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toSide") {
+                it("should convert to Side value") {
+                    let top: Side = .top
+                    let right: Side = .right
+                    let bottom: Side = .bottom
+                    let left: Side = .left
+
+                    let topSideString: String = "top"
+                    let rightSideString: String = "right"
+                    let bottomSideString: String = "bottom"
+                    let leftSideString: String = "left"
+
+                    expect(Convert.toSide(topSideString)).to(equal(top))
+                    expect(Convert.toSide(rightSideString)).to(equal(right))
+                    expect(Convert.toSide(bottomSideString)).to(equal(bottom))
+                    expect(Convert.toSide(leftSideString)).to(equal(left))
+
+                    expect(Convert.toSide(topSideString)).notTo(equal(right))
+                    expect(Convert.toSide(topSideString)).notTo(equal(bottom))
+                    expect(Convert.toSide(topSideString)).notTo(equal(left))
+
+                    expect(Convert.toSide(nil)).to(beNil())
+                    expect(Convert.toSide(any_bool)).to(beNil())
+                    expect(Convert.toSide(any_int)).to(beNil())
+                    expect(Convert.toSide(any_cgFloat)).to(beNil())
+                    expect(Convert.toSide(any_float)).to(beNil())
+                    expect(Convert.toSide(any_double)).to(beNil())
+                    expect(Convert.toSide(any_vec3)).to(beNil())
+                    expect(Convert.toSide(any_arrayOfInts)).to(beNil())
+                }
+            }
         }
     }
 }

@@ -57,20 +57,20 @@ import SceneKit
     }
 
     var downloader: Downloading = FileDownloader()
-//    var soundLoaded: (() -> Void)?
 
     fileprivate var audioPlayer: SCNAudioPlayer?
     fileprivate var audioSource: SCNAudioSource?
     fileprivate var needsReloadPlayer: Bool = false
 
-    deinit {
-        unloadAudio()
-    }
-
     @objc var isLoaded: Bool { return audioSource != nil }
     @objc var isPlaying: Bool { return audioPlayer != nil && !isHidden }
 
-    fileprivate func start() {
+    @objc func start() { action = .start }
+    @objc func pause() { action = .pause }
+    @objc func resume() { action = .resume }
+    @objc func stop() { action = .stop }
+
+    fileprivate func internalStart() {
         // audio must be loaded
         guard let source = audioSource else { return }
         // and must be stopped
@@ -81,15 +81,15 @@ import SceneKit
         addAudioPlayer(audioPlayer!)
     }
 
-    fileprivate func pause() {
+    fileprivate func internalPause() {
         isHidden = true
     }
 
-    fileprivate func resume() {
+    fileprivate func internalResume() {
         isHidden = false
     }
 
-    fileprivate func stop() {
+    fileprivate func internalStop() {
         if let player = audioPlayer {
             removeAudioPlayer(player)
         }
@@ -124,7 +124,7 @@ import SceneKit
     }
 
     fileprivate func unloadAudio() {
-//        removeAllAudioPlayers()
+        removeAllAudioPlayers()
         audioPlayer = nil
         audioSource = nil
     }
@@ -132,10 +132,10 @@ import SceneKit
     fileprivate func performAction() {
         guard isLoaded else { return }
         switch action {
-        case .start: start()
-        case .pause: pause()
-        case .resume: resume()
-        case .stop: stop()
+        case .start: internalStart()
+        case .pause: internalPause()
+        case .resume: internalResume()
+        case .stop: internalStop()
         }
     }
 

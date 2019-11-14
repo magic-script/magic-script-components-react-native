@@ -30,15 +30,19 @@ class SoundNodeSpec: QuickSpec {
             beforeEach {
                 node = SoundNode()
                 downloaderMock = DownloadingMock()
+                downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
+                    completion(inputURL)
+                }))
                 node.downloader = downloaderMock
             }
 
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.url).to(beNil())
+                    expect(node.action).to(equal(AudioAction.stop))
                     expect(node.stream).to(beFalse())
                     expect(node.volume).to(beCloseTo(1))
-                    expect(node.pitch).to(beCloseTo(1)) // defined as defaultTextSizeInMeters: CGFloat = 0.015
+                    expect(node.pitch).to(beCloseTo(1))
                     expect(node.mute).to(beFalse())
                     expect(node.loop).to(beFalse())
                     expect(node.spatial).to(beFalse())
@@ -51,49 +55,153 @@ class SoundNodeSpec: QuickSpec {
                 }
             }
 
+            context("update properties") {
+                it("should update url value") {
+                    let referenceValue: URL = urlForRelativePath(mp3AudioPath)!
+                    node.url = referenceValue
+                    expect(node.url).to(beIdenticalTo(referenceValue))
+                }
+                it("should update action value") {
+                    let referenceValue: AudioAction = .pause
+                    node.action = referenceValue
+                    expect(node.action).to(equal(referenceValue))
+                }
+                it("should update stream value") {
+                    let referenceValue: Bool = true
+                    node.stream = referenceValue
+                    expect(node.stream).to(equal(referenceValue))
+                }
+                it("should update volume value") {
+                    let referenceValue: CGFloat = 0.7
+                    node.volume = referenceValue
+                    expect(node.volume).to(beCloseTo(referenceValue))
+                }
+                it("should update pitch value") {
+                    let referenceValue: CGFloat = 1.4
+                    node.pitch = referenceValue
+                    expect(node.pitch).to(beCloseTo(referenceValue))
+                }
+                it("should update mute value") {
+                    let referenceValue: Bool = true
+                    node.mute = referenceValue
+                    expect(node.mute).to(equal(referenceValue))
+                }
+                it("should update loop value") {
+                    let referenceValue: Bool = true
+                    node.loop = referenceValue
+                    expect(node.loop).to(equal(referenceValue))
+                }
+                it("should update spatial value") {
+                    let referenceValue: Bool = true
+                    node.spatial = referenceValue
+                    expect(node.spatial).to(equal(referenceValue))
+                }
+                it("should update spatialMinDistance value") {
+                    let referenceValue: CGFloat = 0.3
+                    node.spatialMinDistance = referenceValue
+                    expect(node.spatialMinDistance).to(beCloseTo(referenceValue))
+                }
+                it("should update spatialMaxDistance value") {
+                    let referenceValue: CGFloat = 3.7
+                    node.spatialMaxDistance = referenceValue
+                    expect(node.spatialMaxDistance).to(beCloseTo(referenceValue))
+                }
+
+                it("should update direction value") {
+                    let referenceValue: SCNQuaternion = SCNQuaternion.fromAxis(SCNVector3(0, 1, 0), andAngle: 0.5 * Float.pi)
+                    node.direction = referenceValue
+                    expect(node.direction).to(beCloseTo(referenceValue))
+                }
+            }
+
             context("actions") {
                 it("should load local audio file") {
-                    downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
-                        completion(inputURL)
-                    }))
-
                     expect(node.isLoaded).to(beFalse())
                     node.url = urlForRelativePath(mp3AudioPath)
                     expect(node.isLoaded).to(beTrue())
                 }
 
                 it("should start playing audio file") {
-                    downloaderMock.perform(.download(remoteURL: .any, completion: .any, perform: { (inputURL, completion) in
-                        completion(inputURL)
-                    }))
-                    
                     node.url = urlForRelativePath(mp3AudioPath)
                     expect(node.isPlaying).to(beFalse())
-                    node.action = .start
+                    node.start()
                     expect(node.isPlaying).to(beTrue())
                 }
-//
-//                it("should stop playing audio file") {
-//                    node.soundLoaded = {
-//                        node.start()
-//                        expect(node.isPlaying).to(beTrue())
-//                        node.stop()
-//                        expect(node.isPlaying).to(beFalse())
-//                    }
-//                    node.url = urlForRelativePath(mp3AudioPath)
-//                }
-//
-//                it("should pause/resume playing audio file") {
-//                    node.soundLoaded = {
-//                        node.start()
-//                        expect(node.isPlaying).to(beTrue())
-//                        node.pause()
-//                        expect(node.isPlaying).to(beFalse())
-//                        node.resume()
-//                        expect(node.isPlaying).to(beFalse())
-//                    }
-//                    node.url = urlForRelativePath(mp3AudioPath)
-//                }
+
+                it("should stop playing audio file") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.stop()
+                    expect(node.isPlaying).to(beFalse())
+                }
+
+                it("should pause/resume playing audio file") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.pause()
+                    expect(node.isPlaying).to(beFalse())
+                    node.resume()
+                    expect(node.isPlaying).to(beTrue())
+                }
+            }
+
+            context("reloadPlayerIfNeeded") {
+                it("should reload a stopped player") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.loop = !node.loop // force sound node to set needsReloadPlayer flag
+                    expect(node.isPlaying).to(beFalse())
+                    node.stop()
+                    expect(node.isPlaying).to(beFalse())
+                    node.reloadPlayerIfNeeded()
+                    expect(node.isPlaying).to(beFalse())
+                }
+
+                it("should reload a paused player") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.loop = !node.loop // force sound node to set needsReloadPlayer flag
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.pause()
+                    expect(node.isPlaying).to(beFalse())
+                    node.reloadPlayerIfNeeded()
+                    expect(node.isPlaying).to(beFalse())
+                }
+
+                it("should reload a resumed player") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.loop = !node.loop // force sound node to set needsReloadPlayer flag
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.pause()
+                    expect(node.isPlaying).to(beFalse())
+                    node.resume()
+                    expect(node.isPlaying).to(beTrue())
+                    node.reloadPlayerIfNeeded()
+                    expect(node.isPlaying).to(beTrue())
+                }
+
+                it("should reload a started player") {
+                    node.url = urlForRelativePath(mp3AudioPath)
+                    node.loop = !node.loop // force sound node to set needsReloadPlayer flag
+                    node.start()
+                    expect(node.isPlaying).to(beTrue())
+                    node.reloadPlayerIfNeeded()
+                    expect(node.isPlaying).to(beTrue())
+                }
+            }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    expect(node.childNodes.isEmpty).to(beTrue())
+                    node.setDebugMode(true)
+                    expect(node.childNodes.count).to(equal(1))
+                    node.setDebugMode(true)
+                    expect(node.childNodes.count).to(equal(1))
+                    node.setDebugMode(false)
+                    expect(node.childNodes.count).to(equal(0))
+                }
             }
         }
     }

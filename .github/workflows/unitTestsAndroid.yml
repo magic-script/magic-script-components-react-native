@@ -25,7 +25,7 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: code-coverage-artifact-android
-        path: android/build/reports/jacoco/jacocoTestReport/html
+        path: android/build/reports/jacoco/jacocoTestReport
     - name: Codecov update
       run: |
         bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -cF kotlin

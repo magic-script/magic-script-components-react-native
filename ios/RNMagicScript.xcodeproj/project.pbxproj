@@ -75,6 +75,10 @@
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
 		44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */; };
 		44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */; };
+		44A5893B237E8FA800934E5E /* UiAudioNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */; };
+		44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893C237EB34B00934E5E /* AudioActionSpec.swift */; };
+		44A5893F237EB3A800934E5E /* SideSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893E237EB3A800934E5E /* SideSpec.swift */; };
+		44A58941237EB4E400934E5E /* UiScrollViewNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A58940237EB4E400934E5E /* UiScrollViewNodeSpec.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -493,6 +497,10 @@
 		44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLayoutNodeSpec.swift; sourceTree = "<group>"; };
 		44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelectorSpec.swift; sourceTree = "<group>"; };
+		44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNodeSpec.swift; sourceTree = "<group>"; };
+		44A5893C237EB34B00934E5E /* AudioActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioActionSpec.swift; sourceTree = "<group>"; };
+		44A5893E237EB3A800934E5E /* SideSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideSpec.swift; sourceTree = "<group>"; };
+		44A58940237EB4E400934E5E /* UiScrollViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNodeSpec.swift; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
@@ -1157,6 +1165,7 @@
 				C4596A802374217D000E88C1 /* Dropdown */,
 				44A3FCFF2366254600402912 /* Layouts */,
 				C4A12B152361B6AC009B7083 /* Pickers */,
+				44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */,
 				44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */,
 				C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */,
 				44F09314232D985A0081FF14 /* UiImageNodeSpec.swift */,
@@ -1165,6 +1174,7 @@
 				44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */,
 				44F09312232D985A0081FF14 /* UiProgressBarNodeSpec.swift */,
 				447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */,
+				44A58940237EB4E400934E5E /* UiScrollViewNodeSpec.swift */,
 				44F0930C232D985A0081FF14 /* UiSpinnerNodeSpec.swift */,
 				44F09313232D985A0081FF14 /* UiTextNodeSpec.swift */,
 				44D8FE94233B9A2E007FD766 /* UiTextEditNodeSpec.swift */,
@@ -1179,12 +1189,14 @@
 			isa = PBXGroup;
 			children = (
 				44F0933D232D9FDE0081FF14 /* AlignmentSpec.swift */,
+				44A5893C237EB34B00934E5E /* AudioActionSpec.swift */,
 				44F09339232D9E2E0081FF14 /* FontStyleSpec.swift */,
 				44F0933B232D9E3B0081FF14 /* FontWeightSpec.swift */,
 				44F09337232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift */,
 				44F596442355C5FF00C60F4C /* OrientationSpec.swift */,
 				44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */,
 				44F596462355C62700C60F4C /* ScrollDirectionSpec.swift */,
+				44A5893E237EB3A800934E5E /* SideSpec.swift */,
 				44F5964C235729BB00C60F4C /* SystemIconSpec.swift */,
 				44D8FE90233B8D32007FD766 /* TextEntryModeSpec.swift */,
 				44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */,
@@ -1891,6 +1903,7 @@
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */,
 				44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */,
+				44A5893F237EB3A800934E5E /* SideSpec.swift in Sources */,
 				44F09323232D985A0081FF14 /* RenderNodeSpec.swift in Sources */,
 				44F0932D232D985A0081FF14 /* FileDownloaderSpec.swift in Sources */,
 				44931E0A237D898C00E11972 /* UiScrollBarNodeSpec.swift in Sources */,
@@ -1907,6 +1920,7 @@
 				44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
+				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
 				44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */,
 				441FC1712362F19B0004DBF1 /* CGPointExtensionSpec.swift in Sources */,
@@ -1926,6 +1940,7 @@
 				44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */,
 				44F0932F232D985A0081FF14 /* beCloseTo.swift in Sources */,
 				C4A12B1B2361B708009B7083 /* UiColorPickerNodeSpec.swift in Sources */,
+				44A58941237EB4E400934E5E /* UiScrollViewNodeSpec.swift in Sources */,
 				44F596452355C5FF00C60F4C /* OrientationSpec.swift in Sources */,
 				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
@@ -1939,6 +1954,7 @@
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,
 				44931E0B237D898C00E11972 /* UiSpinnerNodeSpec.swift in Sources */,
+				44A5893B237E8FA800934E5E /* UiAudioNodeSpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
 				44931E0D237D898C00E11972 /* UiTextEditNodeSpec.swift in Sources */,
 				44F09338232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift in Sources */,

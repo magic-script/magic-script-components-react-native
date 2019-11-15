@@ -27,7 +27,7 @@ import SceneKit
     }
     // Scroll speed in scene units per second.
     @objc var scrollSpeed: CGFloat = 0.1
-    @objc var scrollOffset: SCNVector3 = SCNVector3() {
+    @objc var scrollOffset: SCNVector3 = SCNVector3Zero {
         didSet { setNeedsLayout() }
     }
     fileprivate var _scrollValue: CGFloat = 0

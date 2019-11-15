@@ -51,8 +51,9 @@ import SceneKit
         get { return soundNode.spatial }
         set { soundNode.spatial = newValue; setNeedsLayout() }
     }
-    @objc var streamedFileOffset: CGFloat = 0
-
+    @objc var streamedFileOffset: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
     var spatialSoundPosition: SpatialSoundPosition? {
         didSet { soundNode.position = spatialSoundPosition?.position ?? SCNVector3Zero }
     }
@@ -69,9 +70,6 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
         soundNode = SoundNode()
-//        soundNode.soundLoaded = { [weak self] in
-//            self?.performAction()
-//        }
         contentNode.addChildNode(soundNode)
     }
 
@@ -133,19 +131,6 @@ import SceneKit
         super.setDebugMode(debug)
         soundNode.setDebugMode(debug)
     }
-
-//    fileprivate func performAction() {
-//        switch action {
-//        case .start:
-//            soundNode.start()
-//        case .pause:
-//            soundNode.pause()
-//        case .resume:
-//            soundNode.resume()
-//        case .stop:
-//            soundNode.stop()
-//        }
-//    }
 }
 
 // MARK: - Internal sctructures

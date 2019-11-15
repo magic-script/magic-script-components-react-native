@@ -361,7 +361,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDialogNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            DialogNode node = new DialogNode(props);
+            DialogNode node = new DialogNode(props, iconsRepo);
             addNode(node, nodeId);
         });
     }

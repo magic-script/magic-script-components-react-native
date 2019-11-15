@@ -21,16 +21,23 @@ import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
+import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.ifContainsString
+import kotlinx.android.synthetic.main.color_picker_dialog.*
 
-class DialogNode(initProps: ReadableMap) : TransformNode(initProps, false, false) {
+class DialogNode(
+        initProps: ReadableMap,
+        private val iconsRepository: IconsRepository
+) : TransformNode(initProps, false, false) {
 
     companion object {
         const val PROP_TITLE = "title"
         const val PROP_TEXT = "text"
         const val PROP_CONFIRM_TEXT = "confirmText"
+        const val PROP_CONFIRM_ICON = "confirmIcon"
         const val PROP_CANCEL_TEXT = "cancelText"
+        const val PROP_CANCEL_ICON = "cancelIcon"
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
@@ -86,7 +93,24 @@ class DialogNode(initProps: ReadableMap) : TransformNode(initProps, false, false
             }
         }
 
-        this.dialog = dialogBuilder.show()
-    }
 
+        this.dialog = dialogBuilder.create()
+        this.dialog?.apply {
+            this.setOnShowListener {
+                properties.ifContainsString(PROP_CONFIRM_ICON) { iconRes ->
+                    if(iconRes != null) {
+                        val icon = iconsRepository.getIcon(iconRes, false)
+                        getButton(AlertDialog.BUTTON_POSITIVE).setCompoundDrawables(icon, null, null, null)
+                    }
+                }
+                properties.ifContainsString(PROP_CANCEL_ICON) { iconRes ->
+                    if(iconRes != null) {
+                        val icon = iconsRepository.getIcon(iconRes, false)
+                        getButton(AlertDialog.BUTTON_NEGATIVE).setCompoundDrawables(icon, null, null, null)
+                    }
+                }
+            }
+        }
+        this.dialog?.show()
+    }
 }

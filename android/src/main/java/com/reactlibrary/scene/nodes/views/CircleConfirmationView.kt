@@ -32,7 +32,7 @@ class CircleConfirmationView @JvmOverloads constructor(
 
     companion object {
         private const val START_ANGLE = 270F // degrees
-        private const val STROKE_SIZE_TO_HEIGHT_RATIO = 0.04F
+        private const val STROKE_SIZE_TO_HEIGHT_RATIO = 0.03F
     }
 
     /**
@@ -56,7 +56,12 @@ class CircleConfirmationView @JvmOverloads constructor(
         color = getColor(context, R.color.circle_confirmation_color)
     }
 
-    private val gradientColors = intArrayOf(Color.BLUE, Color.MAGENTA, Color.WHITE)
+    private val gradientColors = intArrayOf(
+            Color.rgb(106, 0, 255),
+            Color.rgb(3, 219, 252),
+            Color.rgb(223, 3, 252),
+            Color.WHITE
+    )
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

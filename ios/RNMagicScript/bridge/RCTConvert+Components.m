@@ -27,6 +27,26 @@
     return [[UiButtonNode alloc] initWithProps:json];
 }
 
++ (UiColorPickerNode *)UiColorPickerNode:(id)json {
+    return [[UiColorPickerNode alloc] initWithProps: json];
+}
+
++ (UiDatePickerNode *)UiDatePickerNode:(id)json {
+    return [[UiDatePickerNode alloc] initWithProps: json];
+}
+
++ (UiDialogNode *)UiDialogNode:(id)json {
+    return [[UiDialogNode alloc] initWithProps: json];
+}
+
++ (UiDropdownListNode *)UiDropdownListNode:(id)json {
+    return [[UiDropdownListNode alloc] initWithProps:json];
+}
+
++ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json {
+    return [[UiDropdownListItemNode alloc] initWithProps:json];
+}
+
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json {
     return [[UiGridLayoutNode alloc] initWithProps:json];
 }
@@ -39,12 +59,20 @@
     return [[UiImageNode alloc] initWithProps:json];
 }
 
++ (UiLineNode *)UiLineNode:(id)json {
+    return [[UiLineNode alloc] initWithProps:json];
+}
+
 + (UiLinearLayoutNode *)UiLinearLayoutNode:(id)json {
     return [[UiLinearLayoutNode alloc] initWithProps:json];
 }
 
-+ (UiLineNode *)UiLineNode:(id)json {
-    return [[UiLineNode alloc] initWithProps:json];
++ (UiListViewNode *)UiListViewNode:(id)json {
+    return [[UiListViewNode alloc] initWithProps: json];
+}
+
++ (UiListViewItemNode *)UiListViewItemNode:(id)json {
+    return [[UiListViewItemNode alloc] initWithProps: json];
 }
 
 + (UiModelNode *)UiModelNode:(id)json {
@@ -83,6 +111,10 @@
     return [[UiTextEditNode alloc] initWithProps:json];
 }
 
++ (UiTimePickerNode *)UiTimePickerNode:(id)json {
+    return [[UiTimePickerNode alloc] initWithProps: json];
+}
+
 + (UiToggleNode *)UiToggleNode:(id)json {
     return [[UiToggleNode alloc] initWithProps:json];
 }
@@ -91,36 +123,8 @@
     return [[UiVideoNode alloc] initWithProps:json];
 }
 
-+ (UiDropdownListNode *)UiDropdownListNode:(id)json {
-    return [[UiDropdownListNode alloc] initWithProps:json];
-}
-
-+ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json {
-    return [[UiDropdownListItemNode alloc] initWithProps:json];
-}
-
-+ (UiDatePickerNode *)UiDatePickerNode:(id)json {
-    return [[UiDatePickerNode alloc] initWithProps: json];
-}
-
-+ (UiTimePickerNode *)UiTimePickerNode:(id)json {
-    return [[UiTimePickerNode alloc] initWithProps: json];
-}
-
-+ (UiColorPickerNode *)UiColorPickerNode:(id)json {
-    return [[UiColorPickerNode alloc] initWithProps: json];
-}
-
-+ (UiListViewNode *)UiListViewNode:(id)json {
-    return [[UiListViewNode alloc] initWithProps: json];
-}
-
-+ (UiListViewItemNode *)UiListViewItemNode:(id)json {
-    return [[UiListViewItemNode alloc] initWithProps: json];
-}
-
-+ (UiDialogNode *)UiDialogNode:(id)json {
-    return [[UiDialogNode alloc] initWithProps: json];
++ (UiWebViewNode *)UiWebViewNode:(id)json {
+    return [[UiWebViewNode alloc] initWithProps:json];
 }
 
 @end

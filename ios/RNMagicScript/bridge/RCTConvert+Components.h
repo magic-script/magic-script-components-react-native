@@ -18,11 +18,18 @@
 
 @class UiAudioNode;
 @class UiButtonNode;
+@class UiColorPickerNode;
+@class UiDatePickerNode;
+@class UiDialogNode;
+@class UiDropdownListNode;
+@class UiDropdownListItemNode;
 @class UiGridLayoutNode;
 @class UiGroupNode;
 @class UiImageNode;
-@class UiLinearLayoutNode;
 @class UiLineNode;
+@class UiLinearLayoutNode;
+@class UiListViewNode;
+@class UiListViewItemNode;
 @class UiModelNode;
 @class UiProgressBarNode;
 @class UiRectLayoutNode;
@@ -32,25 +39,26 @@
 @class UiSpinnerNode;
 @class UiTextNode;
 @class UiTextEditNode;
+@class UiTimePickerNode;
 @class UiToggleNode;
 @class UiVideoNode;
-@class UiDropdownListNode;
-@class UiDropdownListItemNode;
-@class UiDatePickerNode;
-@class UiTimePickerNode;
-@class UiColorPickerNode;
-@class UiListViewNode;
-@class UiListViewItemNode;
-@class UiDialogNode;
+@class UiWebViewNode;
 
 @interface RCTConvert (Components)
 + (UiAudioNode *)UiAudioNode:(id)json;
 + (UiButtonNode *)UiButtonNode:(id)json;
++ (UiColorPickerNode *)UiColorPickerNode:(id)json;
++ (UiDatePickerNode *)UiDatePickerNode:(id)json;
++ (UiDialogNode *)UiDialogNode:(id)json;
++ (UiDropdownListNode *)UiDropdownListNode:(id)json;
++ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json;
 + (UiGridLayoutNode *)UiGridLayoutNode:(id)json;
 + (UiGroupNode *)UiGroupNode:(id)json;
 + (UiImageNode *)UiImageNode:(id)json;
-+ (UiLinearLayoutNode *)UiLinearLayoutNode:(id)json;
 + (UiLineNode *)UiLineNode:(id)json;
++ (UiLinearLayoutNode *)UiLinearLayoutNode:(id)json;
++ (UiListViewNode *)UiListViewNode:(id)json;
++ (UiListViewItemNode *)UiListViewItemNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
 + (UiRectLayoutNode *)UiRectLayoutNode:(id)json;
@@ -60,14 +68,8 @@
 + (UiSpinnerNode *)UiSpinnerNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
 + (UiTextEditNode *)UiTextEditNode:(id)json;
++ (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
-+ (UiDropdownListNode *)UiDropdownListNode:(id)json;
-+ (UiDropdownListItemNode *)UiDropdownListItemNode:(id)json;
-+ (UiDatePickerNode *)UiDatePickerNode:(id)json;
-+ (UiTimePickerNode *)UiTimePickerNode:(id)json;
-+ (UiColorPickerNode *)UiColorPickerNode:(id)json;
-+ (UiListViewNode *)UiListViewNode:(id)json;
-+ (UiListViewItemNode *)UiListViewItemNode:(id)json;
-+ (UiDialogNode *)UiDialogNode:(id)json;
++ (UiWebViewNode *)UiDialogNode:(id)json;
 @end

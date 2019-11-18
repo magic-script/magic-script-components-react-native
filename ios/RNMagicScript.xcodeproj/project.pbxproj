@@ -79,6 +79,8 @@
 		44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893C237EB34B00934E5E /* AudioActionSpec.swift */; };
 		44A5893F237EB3A800934E5E /* SideSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893E237EB3A800934E5E /* SideSpec.swift */; };
 		44A58941237EB4E400934E5E /* UiScrollViewNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A58940237EB4E400934E5E /* UiScrollViewNodeSpec.swift */; };
+		44A589692382EF1A00934E5E /* UiWebViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A589682382EF1A00934E5E /* UiWebViewNode.swift */; };
+		44A5896A2382EF1A00934E5E /* UiWebViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A589682382EF1A00934E5E /* UiWebViewNode.swift */; };
 		44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */; };
 		44A59E88233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
@@ -514,6 +516,7 @@
 		44A5893C237EB34B00934E5E /* AudioActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioActionSpec.swift; sourceTree = "<group>"; };
 		44A5893E237EB3A800934E5E /* SideSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideSpec.swift; sourceTree = "<group>"; };
 		44A58940237EB4E400934E5E /* UiScrollViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNodeSpec.swift; sourceTree = "<group>"; };
+		44A589682382EF1A00934E5E /* UiWebViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiWebViewNode.swift; sourceTree = "<group>"; };
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
@@ -1034,6 +1037,7 @@
 				44AFAC0E232B9BCE005AC8EF /* UiTextEditNode.swift */,
 				44AFAC0A232B9BCE005AC8EF /* UiToggleNode.swift */,
 				44AFAC0D232B9BCE005AC8EF /* UiVideoNode.swift */,
+				44A589682382EF1A00934E5E /* UiWebViewNode.swift */,
 				C4809BB1234F57A600C4D22E /* UiLabelNode.swift */,
 			);
 			path = UiNodes;
@@ -1892,6 +1896,7 @@
 				44AFAD11232BCAE3005AC8EF /* Alignment.swift in Sources */,
 				C4C114D32347375D00E80044 /* SliderInputView.swift in Sources */,
 				44AFAD14232BCAE3005AC8EF /* HorizontalTextAlignment.swift in Sources */,
+				44A5896A2382EF1A00934E5E /* UiWebViewNode.swift in Sources */,
 				448586FF235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
 				44AFAD0E232BCAE3005AC8EF /* RenderNode.swift in Sources */,
 				4425EDFF2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
@@ -2084,6 +2089,7 @@
 				448586FE235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
 				447755382374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
+				44A589692382EF1A00934E5E /* UiWebViewNode.swift in Sources */,
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,

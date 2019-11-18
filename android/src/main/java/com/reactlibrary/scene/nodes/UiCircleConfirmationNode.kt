@@ -29,10 +29,10 @@ import com.reactlibrary.scene.nodes.views.CircleConfirmationView
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefault
 
-class UiCircleConfirmationNode(initProps: ReadableMap,
-                               context: Context,
-                               viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
+open class UiCircleConfirmationNode(initProps: ReadableMap,
+                                    context: Context,
+                                    viewRenderableLoader: ViewRenderableLoader)
+    : UiNode(initProps, context, viewRenderableLoader) {
 
     var onConfirmationCompletedListener: (() -> Unit)? = null
     var onConfirmationCanceledListener: (() -> Unit)? = null

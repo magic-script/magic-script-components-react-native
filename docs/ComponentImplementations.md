@@ -30,8 +30,8 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 26 | DatePicker | UiDatePicker | 👍 | 👍 | 👍 | [link](coverage/DatePicker.md)
 27 | CircleConfirmation | UiCircleConfirmation | 👍 | 5 D | 2 D
 28 | Line | LineNode | 👍 | 👍 | 👍 | [link](coverage/Line.md)
-29 | Tab | UiTab | 👍 | ? | 3 D |
-30 | PageView | UiPageView | 👍 | ? | 2.5 D |
-21 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 2 D |
-22 | Panel | UiPanel | 👍 | ? | 2 D |
+29 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 2 D |
+30 | Tab | UiTab | 👍 | ? | 3 D |
+31 | PageView | UiPageView | 👍 | ? | 2.5 D |
+32 | Panel | UiPanel | 👍 | ? | 2 D |
 33 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

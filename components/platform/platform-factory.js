@@ -131,6 +131,7 @@ export class PlatformFactory extends NativeFactory {
             ...(properties.modelPath ? { modelPath: this._processAssetSource(properties.modelPath) } : {}),
             ...(properties.filePath ? { filePath: this._processAssetSource(properties.filePath) } : {}),
             ...(properties.videoPath ? { videoPath: this._processAssetSource(properties.videoPath) } : {}),
+            ...(properties.fileName ? { fileName: this._processAssetSource(properties.fileName) } : {}),
         });
     }
 

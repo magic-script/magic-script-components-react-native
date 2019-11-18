@@ -17,12 +17,15 @@
 package com.reactlibrary.scene.nodes
 
 import android.content.Context
-import android.view.LayoutInflater
+import android.os.Bundle
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.reactlibrary.R
+import com.google.ar.sceneform.FrameTime
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
+import com.reactlibrary.scene.nodes.views.CircleConfirmationView
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefault
 
@@ -40,20 +43,83 @@ class UiCircleConfirmationNode(initProps: ReadableMap,
         const val PROP_HEIGHT = "height" // radius of a circle
 
         const val DEFAULT_HEIGHT = 0.1
+        const val TIME_TO_COMPLETE = 3F // in seconds
     }
+
+    private var touching = false
+    private var timeProgress = 0F
+    private var completed = false
 
     init {
         properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.spinner, null)
+        return CircleConfirmationView(context)
     }
 
     override fun provideDesiredSize(): Vector2 {
         val radius = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         val height = (radius * 2).toFloat()
         return Vector2(height, height)
+    }
+
+    override fun setupView() {
+        super.setupView()
+
+        view.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                ACTION_DOWN -> {
+                    touching = true
+                    return@setOnTouchListener true
+                }
+                ACTION_UP -> {
+                    touching = false
+                    completed = false
+                    return@setOnTouchListener true
+                }
+            }
+            return@setOnTouchListener false
+        }
+    }
+
+    override fun applyProperties(props: Bundle) {
+        super.applyProperties(props)
+
+        if (props.containsKey(PROP_HEIGHT)) {
+            setNeedsRebuild()
+        }
+    }
+
+    override fun onUpdate(frameTime: FrameTime) {
+        super.onUpdate(frameTime)
+
+        if (completed) {
+            return
+        }
+
+        if (timeProgress >= TIME_TO_COMPLETE && !completed) {
+            onConfirmationCompletedListener?.invoke()
+            completed = true
+            return
+        }
+
+        if (touching) {
+            if (timeProgress < TIME_TO_COMPLETE) {
+                timeProgress += frameTime.deltaSeconds
+                updateProgress()
+            }
+        } else if (timeProgress > 0F) {
+            timeProgress -= frameTime.deltaSeconds
+            updateProgress()
+        }
+    }
+
+    private fun updateProgress() {
+        val normalizedTime = timeProgress.coerceIn(0F, TIME_TO_COMPLETE)
+        val progressValue = normalizedTime / TIME_TO_COMPLETE
+        (view as CircleConfirmationView).value = progressValue
+        onConfirmationUpdatedListener?.invoke(progressValue)
     }
 
 }

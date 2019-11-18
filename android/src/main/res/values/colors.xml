@@ -29,4 +29,6 @@
     <color name="slider_inactive_part">#BF9C9C9C</color>
     <color name="color_spinner">#c6d8e5</color>
     <color name="input_dialog_background">#FFF</color>
+    <color name="circle_confirmation_background">#BF9C9C9C</color>
+    <color name="circle_confirmation_color">#c6d8e5</color>
 </resources>

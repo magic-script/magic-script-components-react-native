@@ -26,13 +26,13 @@ export const Events = [
   {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
-      componentManager.addOnColorConfirmedEventReceivedHandler(elementId);
+      componentManager.addOnColorConfirmedEventHandler(elementId);
     }
   },
   {
     name: "onColorChanged",
     handler: (componentManager, elementId) => {
-      componentManager.addOnColorCanceledEventReceivedHandler(elementId);
+      componentManager.addOnColorCanceledEventHandler(elementId);
     }
   },
   {

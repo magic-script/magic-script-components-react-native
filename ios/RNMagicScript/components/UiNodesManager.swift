@@ -28,6 +28,7 @@ import SceneKit
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
+    var dialogPresenter: DialogPresenting?
 
     init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
@@ -96,6 +97,7 @@ import SceneKit
         if let node = nodesById[nodeId],
            let parentNode = nodesById[parentId] {
             parentNode.addChild(node)
+            if let dialog = node as? DialogDataProviding { dialogPresenter?.present(dialog) }
         }
     }
 
@@ -110,6 +112,7 @@ import SceneKit
             let parentNode = nodesById[parentId] {
             parentNode.removeChild(node)
             removeNodeWithDescendants(node)
+            if let dialog = node as? DialogDataProviding { dialogPresenter?.dismiss(dialog) }
         }
     }
 

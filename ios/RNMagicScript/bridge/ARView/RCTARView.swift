@@ -84,6 +84,8 @@ import SceneKit
     public init() {
         super.init(frame: CGRect.zero)
         self.arView = createARView()
+        setupNodesManager(self.arView)
+        setupGestureRecognizers(self.arView)
         RCTARView.instance = self
         resume()
     }
@@ -123,6 +125,10 @@ import SceneKit
         view.pointOfView?.camera?.zNear = 0.001
         view.pointOfView?.camera?.zFar = 10
 
+        return view
+    }
+
+    fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
@@ -132,9 +138,7 @@ import SceneKit
             self?.dismissInput()
         }
 
-        setupGestureRecognizers(view)
-
-        return view
+        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: view)
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {

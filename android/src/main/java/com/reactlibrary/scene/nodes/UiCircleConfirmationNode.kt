@@ -43,7 +43,7 @@ open class UiCircleConfirmationNode(initProps: ReadableMap,
         const val PROP_HEIGHT = "height" // radius of a circle
 
         const val DEFAULT_HEIGHT = 0.1
-        const val TIME_TO_COMPLETE = 3F // in seconds
+        const val TIME_TO_COMPLETE = 2F // in seconds
     }
 
     private var touching = false

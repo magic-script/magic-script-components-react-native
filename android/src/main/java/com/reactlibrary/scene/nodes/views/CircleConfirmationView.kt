@@ -17,10 +17,8 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
@@ -46,7 +44,7 @@ class CircleConfirmationView @JvmOverloads constructor(
             invalidate()
         }
 
-    private val circleRect = RectF()
+    private val circleBounds = RectF()
 
     private val backgroundPaint = Paint(ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -58,24 +56,39 @@ class CircleConfirmationView @JvmOverloads constructor(
         color = getColor(context, R.color.circle_confirmation_color)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+    private val gradientColors = intArrayOf(Color.BLUE, Color.MAGENTA, Color.WHITE)
 
-        val strokeWidth = STROKE_SIZE_TO_HEIGHT_RATIO * height
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+
+        val strokeWidth = STROKE_SIZE_TO_HEIGHT_RATIO * h
+        circleBounds.left = strokeWidth / 2
+        circleBounds.top = strokeWidth / 2
+        circleBounds.right = w - strokeWidth / 2
+        circleBounds.bottom = h - strokeWidth / 2
+
         backgroundPaint.strokeWidth = strokeWidth
         paint.strokeWidth = strokeWidth
 
-        circleRect.left = strokeWidth / 2
-        circleRect.top = strokeWidth / 2
-        circleRect.right = width.toFloat() - strokeWidth / 2
-        circleRect.bottom = height.toFloat() - strokeWidth / 2
+        val gradientMatrix = Matrix()
+        val cX = w / 2f
+        val cY = h / 2f
+        gradientMatrix.postRotate(-90f, cX, cY)
+
+        val gradient = SweepGradient(w / 2f, h / 2f, gradientColors, null)
+        gradient.setLocalMatrix(gradientMatrix)
+        paint.shader = gradient
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
 
         // draw background
-        canvas.drawArc(circleRect, 0F, 360F, false, backgroundPaint)
+        canvas.drawArc(circleBounds, 0F, 360F, false, backgroundPaint)
 
         // draw progress
         val sweepAngle = value * 360F
-        canvas.drawArc(circleRect, START_ANGLE, sweepAngle, false, paint)
+        canvas.drawArc(circleBounds, START_ANGLE, sweepAngle, false, paint)
     }
 
 }

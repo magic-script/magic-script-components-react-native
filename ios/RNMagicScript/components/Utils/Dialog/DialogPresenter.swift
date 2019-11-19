@@ -19,26 +19,54 @@ import UIKit
 class DialogPresenter: DialogPresenting {
 
     fileprivate(set) var parentView: UIView
+    fileprivate(set) var backgroundView: UIView!
+    fileprivate(set) var presentedDialogs: [String : UIView] = [:]
 
     init(parentView: UIView) {
         self.parentView = parentView
     }
 
+    fileprivate func addBackgroudView() {
+        backgroundView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.width, height: UIScreen.height))
+        backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.35)
+        parentView.addSubview(backgroundView)
+        NSLayoutConstraint.activate([
+            backgroundView.leftAnchor.constraint(lessThanOrEqualTo: parentView.leftAnchor),
+            backgroundView.rightAnchor.constraint(lessThanOrEqualTo: parentView.rightAnchor),
+            backgroundView.topAnchor.constraint(lessThanOrEqualTo: parentView.topAnchor),
+            backgroundView.bottomAnchor.constraint(lessThanOrEqualTo: parentView.bottomAnchor)
+        ])
+    }
+
+    fileprivate func removeBackgroundView() {
+        backgroundView.removeFromSuperview()
+    }
+
     func present(_ dialog: DialogDataProviding) {
-        if let dialogView = DialogFactory.createDialog(for: dialog, onConfirm: dialog.dialogConfirmed, onCancel: dialog.dialogCanceled, onExpire: dialog.dialogTimeExpired) {
+        if let dialogView = DialogFactory.createDialog(for: dialog) {
             dialogView.translatesAutoresizingMaskIntoConstraints = false
-            parentView.addSubview(dialogView)
+
+            if presentedDialogs.count == 0 { addBackgroudView() }
+
+            backgroundView.addSubview(dialogView)
+
             NSLayoutConstraint.activate([
-                dialogView.widthAnchor.constraint(equalToConstant: 350.0),
-                dialogView.heightAnchor.constraint(equalToConstant: 200.0),
-                dialogView.centerXAnchor.constraint(lessThanOrEqualTo: parentView.centerXAnchor),
-                dialogView.centerYAnchor.constraint(lessThanOrEqualTo: parentView.centerYAnchor)
+                dialogView.widthAnchor.constraint(equalToConstant: DialogView.width),
+                dialogView.heightAnchor.constraint(lessThanOrEqualToConstant: DialogView.height > dialogView.frame.height ? dialogView.frame.height : DialogView.height),
+                dialogView.centerXAnchor.constraint(lessThanOrEqualTo: backgroundView.centerXAnchor),
+                dialogView.centerYAnchor.constraint(lessThanOrEqualTo: backgroundView.centerYAnchor)
             ])
+            presentedDialogs[dialog.id] = dialogView
         }
     }
 
     func dismiss(_ dialog: DialogDataProviding) {
+        if let dialogView = presentedDialogs[dialog.id] {
+            dialogView.removeFromSuperview()
+            presentedDialogs.removeValue(forKey: dialog.id)
+        }
 
+        if presentedDialogs.count == 0 { removeBackgroundView() }
     }
 }
 

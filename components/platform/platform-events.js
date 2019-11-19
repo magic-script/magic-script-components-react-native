@@ -72,6 +72,24 @@ export const Events = [
     }
   },
   {
+    name: "onConfirmationCompleted",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCompletedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationUpdated",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationUpdatedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationCanceled",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCanceledEventHandler(elementId);
+    }
+  },
+  {
     name: "onTextChanged",
     handler: (componentManager, elementId) => {
       componentManager.addOnTextChangedEventHandler(elementId);

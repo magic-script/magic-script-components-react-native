@@ -5,6 +5,7 @@ import ButtonBuilder from "./elements/builders/button-builder.js";
 import ColorPickerBuilder from "./elements/builders/color-picker-builder.js";
 import DatePickerBuilder from "./elements/builders/date-picker-builder.js";
 import DialogBuilder from './elements/builders/dialog-builder.js';
+import CircleConfirmationBuilder from './elements/builders/circle-confirmation-builder';
 import DropdownListBuilder from "./elements/builders/dropdown-list-builder.js";
 import DropdownListItemBuilder from "./elements/builders/dropdown-list-item-builder.js";
 import GridLayoutBuilder from "./elements/builders/grid-layout-builder.js";
@@ -40,6 +41,7 @@ export default {
     colorPicker: componentManager => new ColorPickerBuilder(componentManager),
     datePicker: componentManager => new DatePickerBuilder(componentManager),
     dialog: (componentManager) => new DialogBuilder(componentManager),
+    circleConfirmation: (componentManager) => new CircleConfirmationBuilder(componentManager),
     dropdownList: componentManager => new DropdownListBuilder(componentManager),
     dropdownListItem: componentManager => new DropdownListItemBuilder(componentManager),
     image: componentManager => new ImageBuilder(componentManager),

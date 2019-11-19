@@ -52,11 +52,17 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setConfirmationText(text: String?): AlertDialog.Builder {
+        if(confirmLayout?.visibility == View.GONE) {
+            confirmLayout?.visibility = View.VISIBLE
+        }
         confirmTextView?.text = text
         return this
     }
 
     fun setConfirmationIcon(icon: Drawable?): AlertDialog.Builder {
+        if(confirmLayout?.visibility == View.GONE) {
+            confirmLayout?.visibility = View.VISIBLE
+        }
         confirmIconView?.let {
             Glide.with(context).load(icon).into(it)
         }
@@ -64,11 +70,17 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setCancelText(text: String?): AlertDialog.Builder {
+        if(cancelLayout?.visibility == View.GONE) {
+            cancelLayout?.visibility = View.VISIBLE
+        }
         cancelTextView?.text = text
         return this
     }
 
     fun setCancelIcon(icon: Drawable?): AlertDialog.Builder {
+        if(cancelLayout?.visibility == View.GONE) {
+            cancelLayout?.visibility = View.VISIBLE
+        }
         cancelIconView?.let {
             Glide.with(context).load(icon).into(it)
         }
@@ -76,7 +88,6 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setOnDialogConfirmClick(onDialogConfirmListener: (() -> Unit)? = null): AlertDialog.Builder {
-        Log.d("DialogNode", "onDialogConfirmListener: $onDialogConfirmListener")
         this.onDialogConfirmListener = onDialogConfirmListener
         return this
     }

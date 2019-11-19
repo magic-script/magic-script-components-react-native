@@ -46,7 +46,8 @@
             android:background="@drawable/dialog_button_background"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/confirm_icon"
@@ -55,8 +56,7 @@
                 android:layout_marginEnd="2dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
-                android:src="@drawable/thumbs_up" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/confirm_text"
@@ -66,8 +66,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:gravity="center|start"
-                android:textColor="@color/text_color_default"
-                android:text="OK" />
+                android:textColor="@color/text_color_default" />
 
         </LinearLayout>
 
@@ -80,7 +79,8 @@
             android:layout_gravity="end"
             android:gravity="center"
             android:minWidth="64dp"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/cancel_icon"
@@ -88,8 +88,7 @@
                 android:layout_height="12dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginStart="8dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/close" />
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/cancel_text"
@@ -98,8 +97,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:textColor="@color/text_color_default"
-                android:text="Cancel" />
+                android:textColor="@color/text_color_default" />
 
         </LinearLayout>
 

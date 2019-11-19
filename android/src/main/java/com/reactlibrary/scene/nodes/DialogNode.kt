@@ -14,27 +14,31 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.scene
+package com.reactlibrary.scene.nodes
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Handler
 import android.os.Message
 import android.view.View
+import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
+import com.reactlibrary.R
 import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.views.CustomAlertDialogBuilder
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
+import com.reactlibrary.utils.DialogProvider
 import com.reactlibrary.utils.ifContainsDouble
 import com.reactlibrary.utils.ifContainsString
-import com.reactlibrary.utils.logMessage
 import java.lang.ref.WeakReference
 
 class DialogNode(
         initProps: ReadableMap,
-        private val iconsRepository: IconsRepository
+        private val context: Context,
+        private val iconsRepository: IconsRepository,
+        private val dialogProvider: DialogProvider
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -46,7 +50,6 @@ class DialogNode(
         const val PROP_CANCEL_ICON = "cancelIcon"
         const val PROP_EXPIRATION_TIME = "expireTime"
         const val TIMER_HANDLER_EVENT = 1
-
     }
 
     class TimerHandler(private val dialogNode: WeakReference<DialogNode>) : Handler() {
@@ -64,19 +67,26 @@ class DialogNode(
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
+        set(value) {
+            dialog?.findViewById<LinearLayout>(R.id.confirm_layout)?.setOnClickListener {
+                value?.invoke()
+                dialog?.dismiss()
+            }
+            field = value
+        }
+
     var onDialogCancelListener: (() -> Unit)? = null
+        set(value) {
+            dialog?.findViewById<LinearLayout>(R.id.cancel_layout)?.setOnClickListener {
+                value?.invoke()
+                dialog?.dismiss()
+            }
+            field = value
+        }
 
     private var dialog: AlertDialog? = null
 
     private val timerHandler = TimerHandler(WeakReference(this))
-
-//    private val onConfirm = DialogInterface.OnClickListener { _, _ ->
-//        onDialogConfirmListener?.invoke()
-//    }
-//
-//    private val onCancel = DialogInterface.OnClickListener { _, _ ->
-//        onDialogCancelListener?.invoke()
-//    }
 
     override fun build() {
         super.build()
@@ -89,11 +99,8 @@ class DialogNode(
     }
 
     private fun showDialog() {
-        logMessage("Show dialog")
-        logMessage("props: $properties")
-        val activityContext = ArViewManager.getActivityRef().get() as Context
-        val dialog = CustomAlertDialogBuilder(activityContext)
-        dialog.apply {
+        val dialogBuilder = dialogProvider.provideCustomAlertDialogBuilder(context)
+        dialogBuilder.apply {
             properties.ifContainsString(PROP_TITLE) { title ->
                 setTitle(title)
             }
@@ -111,7 +118,6 @@ class DialogNode(
                     setConfirmationIcon(icon)
                 }
             }
-
             properties.ifContainsString(PROP_CANCEL_TEXT) { text ->
                 setCancelText(text)
                 setOnDialogCancelClick(onDialogCancelListener)
@@ -123,7 +129,7 @@ class DialogNode(
                 }
             }
         }
-        this.dialog = dialog.create()
+        this.dialog = dialogBuilder.create()
         this.dialog?.show()
         this.dialog?.window?.setBackgroundDrawable(null)
         this.dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN

@@ -33,5 +33,5 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 29 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 🚧 |
 30 | Tab | UiTab | 👍 | ? | 3 D |
 31 | PageView | UiPageView | 👍 | ? | 2.5 D |
-32 | Panel | UiPanel | 👍 | ? | 2 D |
+32 | Panel | UiPanel | 👍 | 🚧 | 2 D |
 33 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

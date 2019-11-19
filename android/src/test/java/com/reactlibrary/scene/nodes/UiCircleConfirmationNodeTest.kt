@@ -23,6 +23,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
+import com.reactlibrary.createActionDownEvent
 import com.reactlibrary.scene.nodes.views.CircleConfirmationView
 import junit.framework.Assert.assertEquals
 import org.amshove.kluent.shouldEqual
@@ -30,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -67,7 +69,42 @@ class UiCircleConfirmationNodeTest {
 
         val height = node.getBounding().size().y
 
+        // real height = 2 * circle radius
         assertEquals(0.44F, height, epsilon)
+    }
+
+    @Test
+    fun `should notify correct progress when half of required time passed`() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
+        var progress = 0f
+        node.onConfirmationUpdatedListener = { it ->
+            progress = it
+        }
+
+        // simulate click and time passed
+        val event = viewSpy.createActionDownEvent()
+        shadowOf(viewSpy).onTouchListener.onTouch(viewSpy, event)
+        node.forceUpdate(UiCircleConfirmationNode.TIME_TO_COMPLETE / 2)
+
+        assertEquals(0.5f, progress, epsilon)
+    }
+
+    @Test
+    fun `should notify the confirmation`() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+        node.build()
+        var notified = false
+        node.onConfirmationCompletedListener = {
+            notified = true
+        }
+
+        // simulate click and time passed
+        val event = viewSpy.createActionDownEvent()
+        shadowOf(viewSpy).onTouchListener.onTouch(viewSpy, event)
+        node.forceUpdate(UiCircleConfirmationNode.TIME_TO_COMPLETE)
+
+        notified shouldEqual true
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiCircleConfirmationNode {

@@ -22,7 +22,6 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.FrameTime
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CircleConfirmationView
@@ -59,7 +58,7 @@ open class UiCircleConfirmationNode(initProps: ReadableMap,
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val radius = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
+        val radius = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         val height = (radius * 2).toFloat()
         return Vector2(height, height)
     }
@@ -75,7 +74,6 @@ open class UiCircleConfirmationNode(initProps: ReadableMap,
                 }
                 ACTION_UP -> {
                     touching = false
-                    completed = false
                     return@setOnTouchListener true
                 }
             }
@@ -91,28 +89,28 @@ open class UiCircleConfirmationNode(initProps: ReadableMap,
         }
     }
 
-    override fun onUpdate(frameTime: FrameTime) {
-        super.onUpdate(frameTime)
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
 
         if (completed) {
             return
         }
 
-        if (timeProgress >= TIME_TO_COMPLETE && !completed) {
-            onConfirmationCompletedListener?.invoke()
-            completed = true
-            return
-        }
-
         if (touching) {
             if (timeProgress < TIME_TO_COMPLETE) {
-                timeProgress += frameTime.deltaSeconds
+                timeProgress += deltaSeconds
                 updateProgress()
+                if (timeProgress >= TIME_TO_COMPLETE) {
+                    onConfirmationCompletedListener?.invoke()
+                    completed = true
+                    return
+                }
             }
         } else if (timeProgress > 0F) {
-            timeProgress -= frameTime.deltaSeconds
+            timeProgress -= deltaSeconds
             updateProgress()
         }
+
     }
 
     private fun updateProgress() {

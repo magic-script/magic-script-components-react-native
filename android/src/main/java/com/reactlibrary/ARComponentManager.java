@@ -16,6 +16,7 @@
 
 package com.reactlibrary;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -362,7 +363,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDialogNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            DialogNode node = new DialogNode(props, context, iconsRepo, new DialogProviderImpl());
+            DialogNode node = new DialogNode(props, ArViewManager.getActivityRef().get(), iconsRepo, new DialogProviderImpl());
             addNode(node, nodeId);
         });
     }

@@ -28,6 +28,7 @@ class DialogNodeTest {
     fun setUp() {
         iconsRepository = mock()
         testDialogProvider = mock()
+
         context = ApplicationProvider.getApplicationContext()
     }
 

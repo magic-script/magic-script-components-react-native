@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dialog_background"
     android:orientation="vertical">
 
@@ -16,10 +17,11 @@
         android:textStyle="bold"
         android:text="Title Text"/>
 
-    <ScrollView
+    <com.reactlibrary.scene.nodes.views.MaxHeightScrollView
         android:layout_width="match_parent"
-        android:layout_height="126dp"
+        android:layout_height="wrap_content"
         android:scrollbars="vertical"
+        app:maxHeight="126dp"
         android:scrollbarThumbVertical="@color/text_color_default">
 
         <TextView
@@ -32,7 +34,7 @@
             android:gravity="center"
             android:text="@string/lorem_ipsum"/>
 
-    </ScrollView>
+    </com.reactlibrary.scene.nodes.views.MaxHeightScrollView>
 
     <FrameLayout
         android:layout_width="match_parent"

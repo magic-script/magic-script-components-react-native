@@ -251,6 +251,7 @@ class ViewController: UIViewController {
             "debug": true,
             "width": 1.0,
             "height": 1.0,
+            "url": "https://www.apple.com"
         ], nodeId: webViewId, parentId: groupId)
     }
 

@@ -73,7 +73,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldUseTypefaceFromProvider() {
+    fun `should use typeface from provider`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         node.build()
@@ -82,7 +82,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultHeight() {
+    fun `should have default height`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
@@ -91,7 +91,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun defaultTextSizeShouldBeEqualToHeight() {
+    fun `default text size should be equal to height`() {
         val height: Double = 0.1
         val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
         val node = createNodeWithViewSpy(props)
@@ -102,7 +102,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+    fun `should apply text size when text size property present`() {
         val textSize = 0.2
         val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_SIZE, textSize)
@@ -114,7 +114,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextWhenTextPropertyPresent() {
+    fun `should apply text when text property present`() {
         val text = "QWERTY"
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
@@ -125,7 +125,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresent() {
+    fun `should apply text color when color property present`() {
         val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_COLOR, textColor)
         val node = createNodeWithViewSpy(props)
@@ -136,7 +136,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldCheckTheSwitchWhenCheckPropertyIsTrue() {
+    fun `should check the switch when check property is true`() {
         val props = JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true)
         val node = createNodeWithViewSpy(props)
 

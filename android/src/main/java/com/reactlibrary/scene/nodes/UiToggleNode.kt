@@ -28,17 +28,16 @@ import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.PropertiesReader
-import com.reactlibrary.utils.Utils
-import com.reactlibrary.utils.Vector2
-import com.reactlibrary.utils.putDefault
+import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
                         context: Context,
                         viewRenderableLoader: ViewRenderableLoader,
-                        private val fontProvider: FontProvider
+                        private val fontProvider: FontProvider,
+                        private val toggleIconsProvider: ToggleIconsProvider
 ) :
         UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
@@ -47,11 +46,15 @@ open class UiToggleNode(initProps: ReadableMap,
         const val PROP_HEIGHT = "height"
         const val PROP_CHECKED = "on"
         const val PROP_TEXT = "text"
+        const val PROP_TYPE = "type"
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_COLOR = "textColor"
 
         const val DEFAULT_HEIGHT = 0.03359 // in meters
         const val SWITCH_WIDTH_TO_HEIGHT_RATIO = 2
+        const val TYPE_DEFAULT = "default" // switch
+        const val TYPE_CHECKBOX = "checkbox"
+        const val TYPE_RADIO = "radio"
     }
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
@@ -102,6 +105,7 @@ open class UiToggleNode(initProps: ReadableMap,
             setNeedsRebuild()
         }
 
+        setType(props)
         setIsChecked(props)
         setText(props)
         setTextSize(props)
@@ -128,10 +132,18 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     private fun refreshImage() {
+        val iconType = properties.getString(PROP_TYPE, TYPE_DEFAULT)
+        val iconId = toggleIconsProvider.provideIconId(iconType, isOn)
         if (isOn) {
-            view.iv_toggle.setImageResource(R.drawable.toggle_on)
+            view.iv_toggle.setImageResource(iconId)
         } else {
-            view.iv_toggle.setImageResource(R.drawable.toggle_off)
+            view.iv_toggle.setImageResource(iconId)
+        }
+    }
+
+    private fun setType(props: Bundle) {
+        props.ifContainsString(PROP_TYPE) {
+            refreshImage()
         }
     }
 

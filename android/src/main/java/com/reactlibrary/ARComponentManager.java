@@ -16,10 +16,8 @@
 
 package com.reactlibrary;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -48,8 +46,8 @@ import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.icons.IconsRepositoryImpl;
-import com.reactlibrary.scene.nodes.DialogNode;
 import com.reactlibrary.scene.UiNodesManager;
+import com.reactlibrary.scene.nodes.DialogNode;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;

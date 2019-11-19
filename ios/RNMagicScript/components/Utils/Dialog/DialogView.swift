@@ -23,7 +23,7 @@ class DialogView: UIView {
 
     static var width: CGFloat {
         let margin: CGFloat = 16.0
-        return UIScreen.width > UIScreen.height ? UIScreen.height - 2 * margin : UIScreen.width - 2 * margin
+        return min(UIScreen.height, UIScreen.width) - 2 * margin
     }
 
     static var height: CGFloat {

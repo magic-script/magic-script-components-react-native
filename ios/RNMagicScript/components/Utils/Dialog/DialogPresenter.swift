@@ -53,7 +53,7 @@ class DialogPresenter: DialogPresenting {
 
             NSLayoutConstraint.activate([
                 dialogView.widthAnchor.constraint(equalToConstant: DialogView.width),
-                dialogView.heightAnchor.constraint(lessThanOrEqualToConstant: DialogView.height > dialogView.frame.height ? dialogView.frame.height : DialogView.height),
+                dialogView.heightAnchor.constraint(lessThanOrEqualToConstant: min(dialogView.frame.height, DialogView.height)),
                 dialogView.centerXAnchor.constraint(lessThanOrEqualTo: backgroundView.centerXAnchor),
                 dialogView.centerYAnchor.constraint(lessThanOrEqualTo: backgroundView.centerYAnchor)
             ])
@@ -65,9 +65,8 @@ class DialogPresenter: DialogPresenting {
         if let dialogView = presentedDialogs[dialog.id] {
             dialogView.removeFromSuperview()
             presentedDialogs.removeValue(forKey: dialog.id)
+            if presentedDialogs.count == 0 { removeBackgroundView() }
         }
-
-        if presentedDialogs.count == 0 { removeBackgroundView() }
     }
 }
 

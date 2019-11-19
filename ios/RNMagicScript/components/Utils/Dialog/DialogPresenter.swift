@@ -40,6 +40,7 @@ class DialogPresenter: DialogPresenting {
 
     fileprivate func removeBackgroundView() {
         backgroundView.removeFromSuperview()
+        backgroundView = nil
     }
 
     func present(_ dialog: DialogDataProviding) {

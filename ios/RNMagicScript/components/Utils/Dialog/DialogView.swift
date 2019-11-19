@@ -34,6 +34,7 @@ class DialogView: UIView {
         didSet {
             titleLabel.text = dialogData?.title
             messageTextView.text = dialogData?.message
+            messageTextView.isScrollEnabled = dialogData?.scrolling ?? false
             confirmButton.setTitle(dialogData?.confirmText, for: UIControl.State.normal)
             confirmButton.update(image: dialogData?.confirmIcon?.image)
             cancelButton.setTitle(dialogData?.cancelText, for: UIControl.State.normal)
@@ -71,6 +72,7 @@ class DialogView: UIView {
         messageTextView = GrowingTextView()
         messageTextView.isEditable = false
         messageTextView.isSelectable = false
+        messageTextView.isScrollEnabled = dialogData?.scrolling ?? false
         messageTextView.maxHeight = 140.0
         messageTextView.text = dialogData?.message
         messageTextView.textColor = .black

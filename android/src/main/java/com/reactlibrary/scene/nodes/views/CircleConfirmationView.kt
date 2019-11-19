@@ -56,12 +56,9 @@ class CircleConfirmationView @JvmOverloads constructor(
         color = getColor(context, R.color.circle_confirmation_color)
     }
 
-    private val gradientColors = intArrayOf(
-            Color.rgb(106, 0, 255),
-            Color.rgb(3, 219, 252),
-            Color.rgb(223, 3, 252),
-            Color.WHITE
-    )
+    private val gradientColors = context.resources.getStringArray(R.array.circe_confirmation_colors)
+            .map { Color.parseColor(it) }
+            .toIntArray()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

@@ -30,5 +30,13 @@
     <color name="color_spinner">#c6d8e5</color>
     <color name="input_dialog_background">#FFF</color>
     <color name="circle_confirmation_background">#BF9C9C9C</color>
-    <color name="circle_confirmation_color">#c6d8e5</color>
+    <color name="circle_confirmation_color">#FFC6D8E5</color>
+
+    <!-- The order matters (colors appear clockwise) -->
+    <string-array name="circe_confirmation_colors">
+        <item>#FF6A00FF</item>
+        <item>#FF03DBFC</item>
+        <item>#FFDF03FC</item>
+        <item>#FFFFFFFF</item>
+    </string-array>
 </resources>

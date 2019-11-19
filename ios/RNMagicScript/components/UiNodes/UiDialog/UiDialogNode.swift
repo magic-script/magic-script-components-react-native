@@ -78,6 +78,10 @@ import SceneKit
 }
 
 extension UiDialogNode: DialogDataProviding {
+    var id: String {
+        return self.name ?? "UnidentifiedObject"
+    }
+
     func dialogConfirmed() {
         onDialogConfirmed?(self)
     }

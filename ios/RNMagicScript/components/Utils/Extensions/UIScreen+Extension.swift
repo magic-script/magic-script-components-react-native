@@ -12,14 +12,16 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import UIKit
 
-class DialogFactory {
-    static func createDialog(for dialogData: DialogDataProviding) -> UIView? {
-        let dialog = DialogView(frame: CGRect(x: 0.0, y: 0.0, width: DialogView.width, height: DialogView.height), dialogData: dialogData)
-        dialog.dialogData = dialogData
-        return dialog
+extension UIScreen {
+    static var width: CGFloat {
+        return UIScreen.main.bounds.width
+    }
+
+    static var height: CGFloat {
+        return UIScreen.main.bounds.height
     }
 }

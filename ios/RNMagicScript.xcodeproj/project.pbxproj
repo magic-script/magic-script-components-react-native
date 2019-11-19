@@ -252,6 +252,8 @@
 		C435F90523829C000060F956 /* DialogFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90323829C000060F956 /* DialogFactory.swift */; };
 		C435F90723829F050060F956 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90623829F050060F956 /* UIButton+Extension.swift */; };
 		C435F90823829F050060F956 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90623829F050060F956 /* UIButton+Extension.swift */; };
+		C435F90E2382FA630060F956 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90D2382FA630060F956 /* DialogView.swift */; };
+		C435F90F2382FA630060F956 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90D2382FA630060F956 /* DialogView.swift */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4596A7A237420BB000E88C1 /* UiListViewNode.swift */; };
@@ -303,6 +305,10 @@
 		C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */; };
 		C4C114D22347375D00E80044 /* SliderInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C114D12347375D00E80044 /* SliderInputView.swift */; };
 		C4C114D32347375D00E80044 /* SliderInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C114D12347375D00E80044 /* SliderInputView.swift */; };
+		C4C1D4742383F9CD00437249 /* UIScreen+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */; };
+		C4C1D4752383F9CD00437249 /* UIScreen+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */; };
+		C4C1D47823840CB500437249 /* DialogFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C1D47723840CB500437249 /* DialogFactorySpec.swift */; };
+		C4C1D47A2384109D00437249 /* DialogPresenterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C1D4792384109D00437249 /* DialogPresenterSpec.swift */; };
 		C4C3D7492355D3E500ECEEDA /* TapSimulating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */; };
 		C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */; };
 		C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417A23338D20008D5124 /* VideoAction.swift */; };
@@ -652,6 +658,7 @@
 		C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogDataProviding.swift; sourceTree = "<group>"; };
 		C435F90323829C000060F956 /* DialogFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogFactory.swift; sourceTree = "<group>"; };
 		C435F90623829F050060F956 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
+		C435F90D2382FA630060F956 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownListItemTapHandling.swift; sourceTree = "<group>"; };
 		C4596A7A237420BB000E88C1 /* UiListViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewNode.swift; sourceTree = "<group>"; };
 		C4596A7D237420CA000E88C1 /* UiListViewItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiListViewItemNode.swift; sourceTree = "<group>"; };
@@ -684,6 +691,9 @@
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
 		C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVPlayer+Extension.swift"; sourceTree = "<group>"; };
 		C4C114D12347375D00E80044 /* SliderInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderInputView.swift; sourceTree = "<group>"; };
+		C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extension.swift"; sourceTree = "<group>"; };
+		C4C1D47723840CB500437249 /* DialogFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogFactorySpec.swift; sourceTree = "<group>"; };
+		C4C1D4792384109D00437249 /* DialogPresenterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenterSpec.swift; sourceTree = "<group>"; };
 		C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapSimulating.swift; sourceTree = "<group>"; };
 		C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNodeSpec.swift; sourceTree = "<group>"; };
 		C4D5417A23338D20008D5124 /* VideoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAction.swift; sourceTree = "<group>"; };
@@ -1098,6 +1108,7 @@
 				C4A12B322361D19B009B7083 /* Date+Extension.swift */,
 				C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */,
 				C435F90623829F050060F956 /* UIButton+Extension.swift */,
+				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1184,6 +1195,7 @@
 		44F0930B232D985A0081FF14 /* UiNodes */ = {
 			isa = PBXGroup;
 			children = (
+				C4C1D47623840C9500437249 /* Dialog */,
 				C4596A8123742189000E88C1 /* List */,
 				C4596A802374217D000E88C1 /* Dropdown */,
 				44A3FCFF2366254600402912 /* Layouts */,
@@ -1204,7 +1216,6 @@
 				44F0930E232D985A0081FF14 /* UiToggleNodeSpec.swift */,
 				C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */,
 				C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */,
-				C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -1397,12 +1408,23 @@
 			path = InputViews;
 			sourceTree = "<group>";
 		};
+		C4C1D47623840C9500437249 /* Dialog */ = {
+			isa = PBXGroup;
+			children = (
+				C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */,
+				C4C1D47723840CB500437249 /* DialogFactorySpec.swift */,
+				C4C1D4792384109D00437249 /* DialogPresenterSpec.swift */,
+			);
+			path = Dialog;
+			sourceTree = "<group>";
+		};
 		C4EFE260237ED72400C70001 /* Dialog */ = {
 			isa = PBXGroup;
 			children = (
 				C4EFE25D237ED71000C70001 /* DialogPresenter.swift */,
 				C4EFE261237ED74100C70001 /* DialogPresenting.swift */,
 				C435F90323829C000060F956 /* DialogFactory.swift */,
+				C435F90D2382FA630060F956 /* DialogView.swift */,
 			);
 			path = Dialog;
 			sourceTree = "<group>";
@@ -1863,6 +1885,7 @@
 				C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */,
 				44AFAD16232BCAE3005AC8EF /* Measures.swift in Sources */,
 				C435F90823829F050060F956 /* UIButton+Extension.swift in Sources */,
+				C435F90F2382FA630060F956 /* DialogView.swift in Sources */,
 				44AFAD18232BCAE3005AC8EF /* UiGridLayoutNode.swift in Sources */,
 				44A59E8C233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */,
 				C465C264234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */,
@@ -1873,6 +1896,7 @@
 				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
+				C4C1D4752383F9CD00437249 /* UIScreen+Extension.swift in Sources */,
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */,
 				C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */,
@@ -1946,6 +1970,7 @@
 				441FC1762362F4540004DBF1 /* SCNNodeOrientationSpec.swift in Sources */,
 				44F0933E232D9FDE0081FF14 /* AlignmentSpec.swift in Sources */,
 				44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */,
+				C4C1D47A2384109D00437249 /* DialogPresenterSpec.swift in Sources */,
 				44F0933A232D9E2E0081FF14 /* FontStyleSpec.swift in Sources */,
 				C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */,
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
@@ -1984,6 +2009,7 @@
 				44F0932E232D985A0081FF14 /* ConvertSpec.swift in Sources */,
 				44931E0C237D898C00E11972 /* UiTextNodeSpec.swift in Sources */,
 				44931E0E237D898C00E11972 /* UiToggleNodeSpec.swift in Sources */,
+				C4C1D47823840CB500437249 /* DialogFactorySpec.swift in Sources */,
 				44931E07237D898C00E11972 /* UiLineNodeSpec.swift in Sources */,
 				44931E09237D898C00E11972 /* UiProgressBarNodeSpec.swift in Sources */,
 				C4596A85237421B0000E88C1 /* UiListViewItemNodeSpec.swift in Sources */,
@@ -2027,6 +2053,7 @@
 				C4C3D7492355D3E500ECEEDA /* TapSimulating.swift in Sources */,
 				44AFAC47232B9BCF005AC8EF /* UiSpinnerNode.swift in Sources */,
 				44AFAC5C232B9BCF005AC8EF /* Convert.swift in Sources */,
+				C435F90E2382FA630060F956 /* DialogView.swift in Sources */,
 				44AFAC4F232B9BCF005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44AFAC49232B9BCF005AC8EF /* FontStyle.swift in Sources */,
@@ -2118,6 +2145,7 @@
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44F596422355C5B500C60F4C /* Orientation.swift in Sources */,
+				C4C1D4742383F9CD00437249 /* UIScreen+Extension.swift in Sources */,
 				44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				C4A12B372361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,

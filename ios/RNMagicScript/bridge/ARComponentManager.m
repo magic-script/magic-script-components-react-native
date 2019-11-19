@@ -447,8 +447,8 @@ RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnDialogExpiredEventHandler:(NSString *)nodeId) {
-    ARLog(@"addOnDialogExpiredEventHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogTimeExpiredEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDialogNode class]]) {
         UiDialogNode *dialogNode = (UiDialogNode *)node;

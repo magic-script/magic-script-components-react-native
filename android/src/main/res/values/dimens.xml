@@ -20,4 +20,8 @@
     <dimen name="textedit_border_padding_horiz_big">4dp</dimen>
     <dimen name="textedit_border_padding_vertical">2dp</dimen>
     <dimen name="textedit_border_padding_vertical_big">3dp</dimen>
+    <dimen name="dialog_title">16sp</dimen>
+    <dimen name="dialog_title_padding">8dp</dimen>
+    <dimen name="dialog_description">14sp</dimen>
+    <dimen name="dialog_button_min_width">48dp</dimen>
 </resources>

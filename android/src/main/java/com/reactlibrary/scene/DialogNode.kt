@@ -16,15 +16,21 @@
 
 package com.reactlibrary.scene
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import androidx.appcompat.app.AlertDialog
+import android.os.Handler
+import android.os.Message
+import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
+import com.reactlibrary.scene.nodes.views.CustomAlertDialogBuilder
+import com.reactlibrary.utils.ifContainsDouble
 import com.reactlibrary.utils.ifContainsString
-import kotlinx.android.synthetic.main.color_picker_dialog.*
+import com.reactlibrary.utils.logMessage
+import java.lang.ref.WeakReference
 
 class DialogNode(
         initProps: ReadableMap,
@@ -38,6 +44,23 @@ class DialogNode(
         const val PROP_CONFIRM_ICON = "confirmIcon"
         const val PROP_CANCEL_TEXT = "cancelText"
         const val PROP_CANCEL_ICON = "cancelIcon"
+        const val PROP_EXPIRATION_TIME = "expireTime"
+        const val TIMER_HANDLER_EVENT = 1
+
+    }
+
+    class TimerHandler(private val dialogNode: WeakReference<DialogNode>) : Handler() {
+
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                TIMER_HANDLER_EVENT -> {
+                    val dialog = dialogNode.get()?.dialog
+                    if (dialog != null && dialog.isShowing) {
+                        dialog.dismiss()
+                    }
+                }
+            }
+        }
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
@@ -45,17 +68,18 @@ class DialogNode(
 
     private var dialog: AlertDialog? = null
 
-    private val onConfirm = DialogInterface.OnClickListener { _, _ ->
-        onDialogConfirmListener?.invoke()
-    }
+    private val timerHandler = TimerHandler(WeakReference(this))
 
-    private val onCancel = DialogInterface.OnClickListener { _, _ ->
-        onDialogCancelListener?.invoke()
-    }
+//    private val onConfirm = DialogInterface.OnClickListener { _, _ ->
+//        onDialogConfirmListener?.invoke()
+//    }
+//
+//    private val onCancel = DialogInterface.OnClickListener { _, _ ->
+//        onDialogCancelListener?.invoke()
+//    }
 
     override fun build() {
         super.build()
-
         showDialog()
     }
 
@@ -65,52 +89,48 @@ class DialogNode(
     }
 
     private fun showDialog() {
+        logMessage("Show dialog")
+        logMessage("props: $properties")
         val activityContext = ArViewManager.getActivityRef().get() as Context
-        val dialogBuilder = AlertDialog.Builder(activityContext)
-
-        dialogBuilder.apply {
-            setCancelable(false)
-
+        val dialog = CustomAlertDialogBuilder(activityContext)
+        dialog.apply {
             properties.ifContainsString(PROP_TITLE) { title ->
                 setTitle(title)
             }
             properties.ifContainsString(PROP_TEXT) { text ->
-                setMessage(text)
+                setDescription(text)
             }
 
-            if (properties.containsKey(PROP_CONFIRM_TEXT)) {
-                val confirmText = properties.getString(PROP_CONFIRM_TEXT)
-                setPositiveButton(confirmText, onConfirm)
-            } else {
-                setPositiveButton(android.R.string.ok, onConfirm)
+            properties.ifContainsString(PROP_CONFIRM_TEXT) { text ->
+                setConfirmationText(text)
+                setOnDialogConfirmClick(onDialogConfirmListener)
             }
-
-            if (properties.containsKey(PROP_CANCEL_TEXT)) {
-                val confirmText = properties.getString(PROP_CANCEL_TEXT)
-                setNegativeButton(confirmText, onCancel)
-            } else {
-                setNegativeButton(android.R.string.cancel, onCancel)
-            }
-        }
-
-
-        this.dialog = dialogBuilder.create()
-        this.dialog?.apply {
-            this.setOnShowListener {
-                properties.ifContainsString(PROP_CONFIRM_ICON) { iconRes ->
-                    if(iconRes != null) {
-                        val icon = iconsRepository.getIcon(iconRes, false)
-                        getButton(AlertDialog.BUTTON_POSITIVE).setCompoundDrawables(icon, null, null, null)
-                    }
+            properties.ifContainsString(PROP_CONFIRM_ICON) { iconRes ->
+                if (iconRes != null) {
+                    val icon = iconsRepository.getIcon(iconRes, false)
+                    setConfirmationIcon(icon)
                 }
-                properties.ifContainsString(PROP_CANCEL_ICON) { iconRes ->
-                    if(iconRes != null) {
-                        val icon = iconsRepository.getIcon(iconRes, false)
-                        getButton(AlertDialog.BUTTON_NEGATIVE).setCompoundDrawables(icon, null, null, null)
-                    }
+            }
+
+            properties.ifContainsString(PROP_CANCEL_TEXT) { text ->
+                setCancelText(text)
+                setOnDialogCancelClick(onDialogCancelListener)
+            }
+            properties.ifContainsString(PROP_CANCEL_ICON) { iconRes ->
+                if (iconRes != null) {
+                    val icon = iconsRepository.getIcon(iconRes, false)
+                    setCancelIcon(icon)
                 }
             }
         }
+        this.dialog = dialog.create()
         this.dialog?.show()
+        this.dialog?.window?.setBackgroundDrawable(null)
+        this.dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        properties.ifContainsDouble(PROP_EXPIRATION_TIME) { time: Double ->
+            val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
+            val timeInMillis = (time * 1000).toLong()
+            timerHandler.sendMessageDelayed(msg, timeInMillis)
+        }
     }
 }

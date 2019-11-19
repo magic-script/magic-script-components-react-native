@@ -18,6 +18,7 @@ package com.reactlibrary;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -656,6 +657,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                 ((DialogNode) node).setOnDialogConfirmListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    Log.d("DialogNode", "send OnDialogConfirm event");
                     sendEvent(EVENT_DIALOG_CONFIRM, params);
                     return Unit.INSTANCE;
                 });
@@ -671,6 +673,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                 ((DialogNode) node).setOnDialogCancelListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    Log.d("DialogNode", "send OnDialogConfirm event");
                     sendEvent(EVENT_DIALOG_CANCEL, params);
                     return Unit.INSTANCE;
                 });

@@ -3,6 +3,7 @@ package com.reactlibrary.scene.nodes.views
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -12,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.reactlibrary.R
 import kotlinx.android.synthetic.main.dialog.view.*
 
-class CustomAlertDialog(context: Context) : AlertDialog.Builder(context) {
+class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) {
 
     private var cancelIconView: ImageView?
     private var cancelTextView: TextView?
@@ -75,6 +76,7 @@ class CustomAlertDialog(context: Context) : AlertDialog.Builder(context) {
     }
 
     fun setOnDialogConfirmClick(onDialogConfirmListener: (() -> Unit)? = null): AlertDialog.Builder {
+        Log.d("DialogNode", "onDialogConfirmListener: $onDialogConfirmListener")
         this.onDialogConfirmListener = onDialogConfirmListener
         return this
     }
@@ -86,16 +88,13 @@ class CustomAlertDialog(context: Context) : AlertDialog.Builder(context) {
 
     override fun create(): AlertDialog {
         val dialog = super.create()
-        dialog.setOnShowListener {
-            dialog.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        }
         confirmLayout?.setOnClickListener {
             onDialogConfirmListener?.invoke()
-            dialog.dismiss()
+            dialog.cancel()
         }
         cancelLayout?.setOnClickListener {
             onDialogCancelListener?.invoke()
-            dialog.dismiss()
+            dialog.cancel()
         }
         return dialog
     }

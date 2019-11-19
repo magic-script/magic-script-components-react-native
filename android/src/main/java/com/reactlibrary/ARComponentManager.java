@@ -55,6 +55,7 @@ import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
+import com.reactlibrary.scene.nodes.UiCircleConfirmationNode;
 import com.reactlibrary.scene.nodes.UiColorPickerNode;
 import com.reactlibrary.scene.nodes.UiDatePickerNode;
 import com.reactlibrary.scene.nodes.UiDropdownListItemNode;
@@ -121,8 +122,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_TIME_CHANGED = "onTimeChanged";
     private static final String EVENT_TIME_CONFIRMED = "onTimeConfirmed";
     private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
-    private static final String EVENT_DIALOG_CONFIRM = "onDialogConfirmed";
-    private static final String EVENT_DIALOG_CANCEL = "onDialogCanceled";
+    private static final String EVENT_DIALOG_CONFIRMED = "onDialogConfirmed";
+    private static final String EVENT_DIALOG_CANCELED = "onDialogCanceled";
+    private static final String EVENT_CONFIRMATION_COMPLETED = "onConfirmationCompleted";
+    private static final String EVENT_CONFIRMATION_UPDATED = "onConfirmationUpdated";
+    private static final String EVENT_CONFIRMATION_CANCELED = "onConfirmationCanceled";
 
     // Supported events arguments
     private static final String EVENT_ARG_NODE_ID = "nodeId";
@@ -134,6 +138,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_DATE = "date";
     private static final String EVENT_ARG_TIME = "time";
     private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
+    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Value";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -259,6 +264,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createSpinnerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new UiSpinnerNode(props, context, viewRenderableLoader), nodeId));
+    }
+
+    @ReactMethod
+    public void createCircleConfirmationNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new UiCircleConfirmationNode(props, context, viewRenderableLoader), nodeId));
     }
 
     @ReactMethod
@@ -658,8 +668,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                 ((DialogNode) node).setOnDialogConfirmListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    Log.d("DialogNode", "send OnDialogConfirm event");
-                    sendEvent(EVENT_DIALOG_CONFIRM, params);
+                    sendEvent(EVENT_DIALOG_CONFIRMED, params);
                     return Unit.INSTANCE;
                 });
             }
@@ -674,8 +683,53 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                 ((DialogNode) node).setOnDialogCancelListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    Log.d("DialogNode", "send OnDialogConfirm event");
-                    sendEvent(EVENT_DIALOG_CANCEL, params);
+                    sendEvent(EVENT_DIALOG_CANCELED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnConfirmationCompletedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiCircleConfirmationNode) {
+                ((UiCircleConfirmationNode) node).setOnConfirmationCompletedListener(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_CONFIRMATION_COMPLETED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnConfirmationUpdatedEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiCircleConfirmationNode) {
+                ((UiCircleConfirmationNode) node).setOnConfirmationUpdatedListener((value) -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    params.putDouble(EVENT_ARG_CONFIRMATION_UPDATED_VALUE, value);
+                    sendEvent(EVENT_CONFIRMATION_UPDATED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnConfirmationCanceledEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof UiCircleConfirmationNode) {
+                ((UiCircleConfirmationNode) node).setOnConfirmationCanceledListener(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_CONFIRMATION_CANCELED, params);
                     return Unit.INSTANCE;
                 });
             }

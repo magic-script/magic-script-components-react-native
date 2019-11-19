@@ -16,7 +16,7 @@ jobs:
         yarn
     - name: Build and test
       run: |
-        yarn test --coverage
+        npm run test --coverage
     - uses: actions/upload-artifact@master
       with:
         name: code-coverage-artifact-js

@@ -17,8 +17,23 @@
 package com.reactlibrary
 
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.MotionEvent
+import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 
 fun createProperty(vararg keysAndValues: Any): Bundle =
-    Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
+        Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
+
+fun View.createActionDownEvent(): MotionEvent {
+    val coordinates = IntArray(2)
+    getLocationOnScreen(coordinates)
+    return MotionEvent.obtain(
+            SystemClock.uptimeMillis(),
+            SystemClock.uptimeMillis(),
+            MotionEvent.ACTION_DOWN,
+            coordinates[0].toFloat(),
+            coordinates[1].toFloat(),
+            0)
+}

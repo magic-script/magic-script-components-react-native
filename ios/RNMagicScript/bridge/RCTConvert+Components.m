@@ -119,4 +119,8 @@
     return [[UiListViewItemNode alloc] initWithProps: json];
 }
 
++ (UiDialogNode *)UiDialogNode:(id)json {
+    return [[UiDialogNode alloc] initWithProps: json];
+}
+
 @end

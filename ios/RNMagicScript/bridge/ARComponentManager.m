@@ -68,6 +68,12 @@ RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createDialogNode:(UiDialogNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createDialogNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createDropdownListNode:(UiDropdownListNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createDropdownListNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -393,8 +399,8 @@ RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnColorConfirmedEventReceivedHandler:(NSString *)nodeId) {
-    ARLog(@"addOnColorConfirmedEventReceivedHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnColorConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorConfirmedEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
@@ -405,14 +411,50 @@ RCT_EXPORT_METHOD(addOnColorConfirmedEventReceivedHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnColorCanceledEventReceivedHandler:(NSString *)nodeId) {
-    ARLog(@"addOnColorCanceledEventReceivedHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnColorCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorCanceledEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
         colorPickerNode.onColorCanceled = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker canceled: %@");
             [[AREventsManager instance] onColorCanceledEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogConfirmed = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode confirmed: %@");
+            [[AREventsManager instance] onDialogConfirmedEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogCanceledEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogCanceled = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode canceled: %@");
+            [[AREventsManager instance] onDialogCanceledEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogExpiredEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogExpiredEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogTimeExpired = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode timeExpired: %@");
+            [[AREventsManager instance] onDialogTimeExpiredEventReceived:sender];
         };
     }
 }

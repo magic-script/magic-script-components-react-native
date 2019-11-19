@@ -26,13 +26,13 @@ export const Events = [
   {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
-      componentManager.addOnColorConfirmedEventReceivedHandler(elementId);
+      componentManager.addOnColorConfirmedEventHandler(elementId);
     }
   },
   {
     name: "onColorChanged",
     handler: (componentManager, elementId) => {
-      componentManager.addOnColorCanceledEventReceivedHandler(elementId);
+      componentManager.addOnColorCanceledEventHandler(elementId);
     }
   },
   {
@@ -69,6 +69,24 @@ export const Events = [
     name: "onSliderChanged",
     handler: (componentManager, elementId) => {
       componentManager.addOnSliderChangedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationCompleted",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCompletedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationUpdated",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationUpdatedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationCanceled",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCanceledEventHandler(elementId);
     }
   },
   {

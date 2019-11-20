@@ -72,20 +72,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    /**
-     * For layouts we should add children by this method, not directly using [addContent]
-     * because children may be added with delay (after position for it is calculated)
-     */
-    fun addToLayout(child: Node) {
-        if (child is TransformNode) {
-            mChildrenList.add(child)
-            onAddedToLayoutListener?.invoke(child)
-            redrawRequested = true
-        } else {
-            logMessage("Non transform nodes are not supported in layouts", true)
-        }
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setLayoutSize(props)
@@ -103,10 +89,24 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
+    /**
+     * For layouts child is actually added with delay,
+     * after position for it is calculated.
+     */
+    override fun addContent(child: Node) {
+        if (child is TransformNode) {
+            mChildrenList.add(child)
+            onAddedToLayoutListener?.invoke(child)
+            redrawRequested = true
+        } else {
+            logMessage("Non transform nodes are not supported in layouts", true)
+        }
+    }
+
     override fun removeContent(child: Node) {
         mChildrenList.remove(child)
         if (contentNode.children.contains(child)) {
-            removeContent(child)
+            contentNode.removeChild(child)
             onRemovedFromLayoutListener?.invoke(child)
         }
         childrenBounds.clear() // indexes changed
@@ -147,7 +147,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             // Attach the child after position is calculated
             mChildrenList.forEach { child ->
                 if (!contentNode.children.contains(child)) {
-                    addContent(child)
+                    contentNode.addChild(child)
                 }
             }
         }

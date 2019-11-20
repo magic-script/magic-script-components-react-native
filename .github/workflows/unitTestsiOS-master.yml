@@ -1,4 +1,4 @@
-name: UTs_iOS_master
+name: Unit Tests iOS
 on:
   push:
     branches:
@@ -31,6 +31,7 @@ jobs:
         run: |
           gem install slather
           cd ios
+          slather coverage -x --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build -output-directory coverage_report ./RNMagicScript.xcodeproj
           slather coverage -g --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
           slather coverage --json --output-directory coverage_report --scheme RNMagicScriptHostApplication  --workspace ./RNMagicScript.xcworkspace --build-directory Build ./RNMagicScript.xcodeproj
           mv .gutter.json coverage_report/gutter.json

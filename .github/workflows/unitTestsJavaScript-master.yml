@@ -1,4 +1,4 @@
-name: UTs_JSX_master
+name: Unit Tests JavaScript
 on:
   push:
     branches:

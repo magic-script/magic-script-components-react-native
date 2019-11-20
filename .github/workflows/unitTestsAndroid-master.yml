@@ -1,4 +1,4 @@
-name: UTs_Android_master
+name: Unit Tests Android
 on:
   push:
     branches:

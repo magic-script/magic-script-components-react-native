@@ -50,19 +50,24 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
         super.addContent(child)
 
         if (child is UiLayout) {
+            child.childrenList
+                    .filterIsInstance<UiToggleNode>()
+                    .forEach { toggle -> togglesList.add(toggle) }
+
             child.onAddedToLayoutListener = { node ->
                 if (node is UiToggleNode) {
                     togglesList.add(node)
                     refreshTogglesState()
                 }
             }
-
             child.onRemovedFromLayoutListener = { node ->
                 if (node is UiToggleNode) {
                     togglesList.remove(node)
                     refreshTogglesState()
                 }
             }
+            refreshTogglesState()
+
         } else if (child is UiToggleNode) {
             togglesList.add(child)
             refreshTogglesState()
@@ -85,16 +90,6 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
                     toggle.update(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, false))
                 }
             }
-        }
-    }
-
-    // find all descendant toggles
-    private fun getToggles(node: Node, childrenList: MutableList<UiToggleNode>) {
-        if (node is UiToggleNode) {
-            childrenList.add(node)
-        }
-        node.children.forEach { child ->
-            getToggles(child, childrenList)
         }
     }
 }

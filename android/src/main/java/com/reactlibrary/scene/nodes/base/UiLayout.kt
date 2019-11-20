@@ -39,6 +39,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         const val PROP_HEIGHT = "height"
     }
 
+    // "backed" children list, it may differ from [contentNode.children] because we
+    // actually attach children with delay (when position for them is calculated)
+    private val mChildrenList = mutableListOf<TransformNode>()
+    val childrenList: List<TransformNode> = mChildrenList // expose immutable list
+
     var onAddedToLayoutListener: ((node: Node) -> Unit)? = null
     var onRemovedFromLayoutListener: ((node: Node) -> Unit)? = null
 
@@ -52,8 +57,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     var redrawRequested = false
         private set
 
-    // "backed" children
-    private val childrenList = mutableListOf<TransformNode>()
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
@@ -75,7 +78,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      */
     fun addToLayout(child: Node) {
         if (child is TransformNode) {
-            childrenList.add(child)
+            mChildrenList.add(child)
             onAddedToLayoutListener?.invoke(child)
             redrawRequested = true
         } else {
@@ -101,7 +104,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     override fun removeContent(child: Node) {
-        childrenList.remove(child)
+        mChildrenList.remove(child)
         if (contentNode.children.contains(child)) {
             removeContent(child)
             onRemovedFromLayoutListener?.invoke(child)
@@ -135,14 +138,14 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         layoutManager.parentWidth = width
         layoutManager.parentHeight = height
         measureChildren()
-        rescaleChildren(childrenList)
+        rescaleChildren(mChildrenList)
         if (redrawRequested) {
-            layoutManager.layoutChildren(childrenList, childrenBounds)
+            layoutManager.layoutChildren(mChildrenList, childrenBounds)
             // applyAlignment()
             redrawRequested = false
 
             // Attach the child after position is calculated
-            childrenList.forEach { child ->
+            mChildrenList.forEach { child ->
                 if (!contentNode.children.contains(child)) {
                     addContent(child)
                 }
@@ -159,8 +162,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * it sets the [redrawRequested] flag to true.
      */
     private fun measureChildren() {
-        for (i in 0 until childrenList.size) {
-            val node = childrenList[i]
+        for (i in 0 until mChildrenList.size) {
+            val node = mChildrenList[i]
             val oldBounds = childrenBounds[i] ?: Bounding()
             childrenBounds[i] = node.getBounding()
 

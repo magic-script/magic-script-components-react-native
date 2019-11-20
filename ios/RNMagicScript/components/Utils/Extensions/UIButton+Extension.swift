@@ -17,18 +17,26 @@
 import UIKit
 
 extension UIButton {
-    private func actionHandler(action:(() -> Void)? = nil) {
-        struct __ { static var action :(() -> Void)? }
-        if action != nil { __.action = action }
-        else { __.action?() }
+    static func createDialogButton(text: String?, image: UIImage?, target: Any?, action: Selector) -> UIButton {
+        let button: UIButton = UIButton(type: .system)
+        button.setTitle(text, for: UIControl.State.normal)
+        button.update(image: image)
+        button.addTarget(target, action: action, for: .touchUpInside)
+        button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
+        button.layer.borderWidth = 1.0
+        button.layer.cornerRadius = 10;
+        button.clipsToBounds = true
+        button.titleEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }
 
-    @objc private func triggerActionHandler() {
-        self.actionHandler()
-    }
-
-    func actionHandler(controlEvents control: UIControl.Event, for action: @escaping () -> Void) {
-        self.actionHandler(action: action)
-        self.addTarget(self, action: #selector(triggerActionHandler), for: control)
+    func update(image: UIImage?) {
+        if let buttonImage = image {
+            self.setImage(UIImage.image(with: buttonImage, scaledToSize: CGSize(width: 32.0, height: 32.0)), for: UIControl.State.normal)
+            self.imageView?.contentMode = .scaleAspectFit
+            self.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+        }
     }
 }

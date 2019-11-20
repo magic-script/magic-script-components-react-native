@@ -29,10 +29,10 @@ import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefault
 
 open class UiSpinnerNode(
-    initProps: ReadableMap,
-    context: Context,
-    viewRenderableLoader: ViewRenderableLoader
-) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
+        initProps: ReadableMap,
+        context: Context,
+        viewRenderableLoader: ViewRenderableLoader
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

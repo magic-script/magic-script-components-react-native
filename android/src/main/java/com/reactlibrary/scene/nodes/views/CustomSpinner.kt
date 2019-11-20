@@ -75,8 +75,17 @@ class CustomSpinner @JvmOverloads constructor(
 
     private val spinnerRect = RectF()
     private val animator: ValueAnimator
+
     private var animationAngle = START_ANGLE // for indeterminate mode
     private var attached = false
+
+    private var innerBlurMaskFilter = BlurMaskFilter(1f, BlurMaskFilter.Blur.NORMAL)
+    private var outerBlurMaskFilter = BlurMaskFilter(1f, BlurMaskFilter.Blur.NORMAL)
+
+    private var innerStrokeWidth = 0f
+    private var innerBlurRadius = 0f
+    private var outStrokeWidth = 0f
+    private var outBlurRadius = 0f
 
     init {
         // disabling hardware acceleration to make blur effect working
@@ -122,6 +131,27 @@ class CustomSpinner @JvmOverloads constructor(
         super.onDetachedFromWindow()
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+
+        innerStrokeWidth = STROKE_SIZE_TO_HEIGHT_RATIO * h
+        innerBlurRadius = innerStrokeWidth / 2
+        outStrokeWidth = innerStrokeWidth / 2
+        outBlurRadius = innerStrokeWidth + innerBlurRadius
+
+        innerBlurMaskFilter = BlurMaskFilter(innerBlurRadius, BlurMaskFilter.Blur.NORMAL)
+        outerBlurMaskFilter = BlurMaskFilter(outBlurRadius, BlurMaskFilter.Blur.NORMAL)
+
+        paint.shader = RadialGradient(
+                w / 2F,
+                h / 2F,
+                h / 2F,
+                intArrayOf(paint.color, paint.color, Color.TRANSPARENT),
+                floatArrayOf(0F, 0.85F, 1F),
+                Shader.TileMode.MIRROR
+        )
+    }
+
     private val paint = Paint(ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = getColor(context, R.color.color_spinner)
@@ -130,25 +160,12 @@ class CustomSpinner @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // drawing inner circle
         val startAngle = if (type == Type.DETERMINATE) START_ANGLE else animationAngle
         val sweepAngle = if (type == Type.DETERMINATE) value * 360F else INDETERMINATE_SWEEP_ANGLE
 
-        val innerStrokeWidth = STROKE_SIZE_TO_HEIGHT_RATIO * height
-        val innerBlurRadius = innerStrokeWidth / 2
-        val outStrokeWidth = innerStrokeWidth / 2
-        val outBlurRadius = innerStrokeWidth + innerBlurRadius
-
-        // drawing inner circle
         paint.strokeWidth = innerStrokeWidth
-        paint.maskFilter = BlurMaskFilter(innerBlurRadius, BlurMaskFilter.Blur.NORMAL)
-        paint.shader = RadialGradient(
-                width / 2F,
-                height / 2F,
-                height / 2F,
-                intArrayOf(paint.color, paint.color, Color.TRANSPARENT),
-                floatArrayOf(0F, 0.85F, 1F),
-                Shader.TileMode.MIRROR
-        )
+        paint.maskFilter = innerBlurMaskFilter
 
         spinnerRect.left =
                 innerStrokeWidth / 2 + innerBlurRadius + outStrokeWidth + outBlurRadius
@@ -163,7 +180,7 @@ class CustomSpinner @JvmOverloads constructor(
 
         // drawing out circle (with stronger blur effect)
         paint.strokeWidth = outStrokeWidth
-        paint.maskFilter = BlurMaskFilter(outBlurRadius, BlurMaskFilter.Blur.NORMAL)
+        paint.maskFilter = outerBlurMaskFilter
 
         spinnerRect.left = spinnerRect.left - outStrokeWidth / 2 - outBlurRadius
         spinnerRect.top = spinnerRect.top - outStrokeWidth / 2 - outBlurRadius

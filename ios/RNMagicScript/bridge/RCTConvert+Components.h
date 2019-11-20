@@ -31,6 +31,7 @@
 @class UiListViewNode;
 @class UiListViewItemNode;
 @class UiModelNode;
+@class UiPanelNode;
 @class UiProgressBarNode;
 @class UiRectLayoutNode;
 @class UiScrollBarNode;
@@ -60,6 +61,7 @@
 + (UiListViewNode *)UiListViewNode:(id)json;
 + (UiListViewItemNode *)UiListViewItemNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
++ (UiPanelNode *)UiPanelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
 + (UiRectLayoutNode *)UiRectLayoutNode:(id)json;
 + (UiScrollBarNode *)UiScrollBarNode:(id)json;
@@ -71,5 +73,5 @@
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
-+ (UiWebViewNode *)UiDialogNode:(id)json;
++ (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

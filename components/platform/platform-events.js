@@ -24,6 +24,12 @@ export const Events = [
     }
   },
   {
+    name: "onDialogTimeExpired",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnDialogTimeExpiredEventHandler(elementId);
+    }
+  },
+  {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
       componentManager.addOnColorConfirmedEventHandler(elementId);
@@ -69,6 +75,24 @@ export const Events = [
     name: "onSliderChanged",
     handler: (componentManager, elementId) => {
       componentManager.addOnSliderChangedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationCompleted",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCompletedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationUpdated",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationUpdatedEventHandler(elementId);
+    }
+  },
+  {
+    name: "onConfirmationCanceled",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnConfirmationCanceledEventHandler(elementId);
     }
   },
   {

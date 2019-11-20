@@ -73,7 +73,10 @@ RCT_EXPORT_MODULE();
              @"onColorCanceled",
              @"onDialogConfirmed",
              @"onDialogCanceled",
-             @"onDialogTimeExpired"
+             @"onDialogTimeExpired",
+             @"onConfirmationCompleted",
+             @"onConfirmationUpdated",
+             @"onConfirmationCanceled"
              ];
 }
 

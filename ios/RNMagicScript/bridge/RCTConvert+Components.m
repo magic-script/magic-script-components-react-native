@@ -79,6 +79,10 @@
     return [[UiModelNode alloc] initWithProps:json];
 }
 
++ (UiPanelNode *)UiPanelNode:(id)json {
+    return [[UiPanelNode alloc] initWithProps:json];
+}
+
 + (UiProgressBarNode *)UiProgressBarNode:(id)json {
     return [[UiProgressBarNode alloc] initWithProps:json];
 }

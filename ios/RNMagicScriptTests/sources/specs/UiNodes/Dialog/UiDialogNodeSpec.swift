@@ -86,6 +86,42 @@ class UiDialogNodeSpec: QuickSpec {
                     expect(node.expireTime).to(beCloseTo(referenceExpireTime))
                 }
             }
+
+            context("when dialog confirmed") {
+                it("should trigger onDialogConfirmed event") {
+                    var result = false
+                    node.onDialogConfirmed = { dialogNode in
+                        expect(dialogNode).to(beIdenticalTo(node))
+                        result = true
+                    }
+                    node.dialogConfirmed()
+                    expect(result).toEventually(beTrue())
+                }
+            }
+
+            context("when dialog canceled") {
+                it("should trigger onDialogCanceled event") {
+                    var result = false
+                    node.onDialogCanceled = { dialogNode in
+                        expect(dialogNode).to(beIdenticalTo(node))
+                        result = true
+                    }
+                    node.dialogCanceled()
+                    expect(result).toEventually(beTrue())
+                }
+            }
+
+            context("when time expired for dialog") {
+                it("should trigger onDialogTimeExpired event") {
+                    var result = false
+                    node.onDialogTimeExpired = { dialogNode in
+                        expect(dialogNode).to(beIdenticalTo(node))
+                        result = true
+                    }
+                    node.dialogTimeExpired()
+                    expect(result).toEventually(beTrue())
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import ButtonBuilder from "./elements/builders/button-builder.js";
 import ColorPickerBuilder from "./elements/builders/color-picker-builder.js";
 import DatePickerBuilder from "./elements/builders/date-picker-builder.js";
 import DialogBuilder from './elements/builders/dialog-builder.js';
+import CircleConfirmationBuilder from './elements/builders/circle-confirmation-builder';
 import DropdownListBuilder from "./elements/builders/dropdown-list-builder.js";
 import DropdownListItemBuilder from "./elements/builders/dropdown-list-item-builder.js";
 import GridLayoutBuilder from "./elements/builders/grid-layout-builder.js";
@@ -13,8 +14,9 @@ import ImageBuilder from "./elements/builders/image-builder.js";
 import LinearLayoutBuilder from "./elements/builders/linear-layout-builder.js";
 import LineBuilder from "./elements/builders/line-builder.js";
 import ListViewBuilder from './elements/builders/listview-builder.js';
-import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
+import ListViewItemBuilder from './elements/builders/listview-item-builder.js';
 import ModelBuilder from "./elements/builders/model-builder.js";
+import PanelBuilder from "./elements/builders/panel-builder.js";
 import ProgressBarBuilder from "./elements/builders/progress-bar-builder.js";
 import RectLayoutBuilder from "./elements/builders/rect-layout-builder.js";
 import ScrollBarBuilder from "./elements/builders/scroll-bar-builder.js";
@@ -40,11 +42,13 @@ export default {
     colorPicker: componentManager => new ColorPickerBuilder(componentManager),
     datePicker: componentManager => new DatePickerBuilder(componentManager),
     dialog: (componentManager) => new DialogBuilder(componentManager),
+    circleConfirmation: (componentManager) => new CircleConfirmationBuilder(componentManager),
     dropdownList: componentManager => new DropdownListBuilder(componentManager),
     dropdownListItem: componentManager => new DropdownListItemBuilder(componentManager),
     image: componentManager => new ImageBuilder(componentManager),
     listView: (componentManager) => new ListViewBuilder(componentManager),
     listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
+    panel: componentManager => new PanelBuilder(componentManager),
     progressBar: componentManager => new ProgressBarBuilder(componentManager),
     scrollBar: componentManager => new ScrollBarBuilder(componentManager),
     scrollView: componentManager => new ScrollViewBuilder(componentManager),

@@ -20,6 +20,7 @@ import UIKit
 import WebKit
 
 @objc open class UiWebViewNode: UiNode {
+    static fileprivate let maxSnaptshotSize: CGFloat = 1024
     @objc override var alignment: Alignment {
         get { return .centerCenter }
         set { }
@@ -34,14 +35,15 @@ import WebKit
         }
     }
     @objc var width: CGFloat = 0.0 {
-        didSet { setNeedsLayout() }
+        didSet { updateWebViewFrame(); setNeedsLayout() }
     }
     @objc var height: CGFloat = 0.0 {
-        didSet { setNeedsLayout() }
+        didSet { updateWebViewFrame(); setNeedsLayout() }
     }
 
     fileprivate var webView: WKWebView!
     fileprivate var webNode: SCNNode!
+    fileprivate var lastScreenshot: UIImage?
 
     @objc override func setupNode() {
         super.setupNode()
@@ -54,17 +56,8 @@ import WebKit
         webNode = SCNNode(geometry: planeGeometry)
         contentNode.addChildNode(webNode)
 
-        self.webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 480, height: 480))
+        self.webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         self.webView.navigationDelegate = self
-
-//        DispatchQueue.main.async {
-//            let view = UIWebView(frame: CGRect(x: 0, y: 0, width: 640, height: 480))
-//            let request = URLRequest(url: URL(string: "https://www.apple.com")!)
-//
-//            view.loadRequest(request)
-//            planeGeometry.firstMaterial?.diffuse.contents = view
-//            self.webView = view
-//        }
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -89,24 +82,56 @@ import WebKit
 
     @objc override func updateLayout() {
         if let planeGeometry = webNode.geometry as? SCNPlane {
-//            let layer = self.webView?.layer
-//            let image = self.webView.takeScreenshot()
-            DispatchQueue.main.async() {
-                planeGeometry.firstMaterial?.diffuse.contents = self.webView?.layer
-            }
+            planeGeometry.width = width
+            planeGeometry.height = height
+            planeGeometry.firstMaterial?.diffuse.contents = lastScreenshot
         }
+    }
+
+    fileprivate func updateWebViewFrame() {
+        guard width > 0, height > 0 else { return }
+        let factor: CGFloat = UiWebViewNode.maxSnaptshotSize / max(width, height)
+        webView.frame = CGRect(x: 0, y: 0, width: round(factor * width), height: round(factor * height))
+        print("updateWebViewFrame: \(webView.frame.size)")
+    }
+
+    fileprivate func updateScreenshot() {
+        updateWebViewFrame()
+        lastScreenshot = (width > 0 && height > 0) ? webView.takeScreenshot() : nil
+        print("Screenshot taken: \(lastScreenshot)")
     }
 }
 
 extension UiWebViewNode: UIWebViewDelegate, WKNavigationDelegate {
-//    public func webViewDidFinishLoad(_ webView: UIWebView) {
-//        setNeedsLayout()
-//        layoutIfNeeded()
-//    }
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        print("webView:didStartProvisionalNavigation")
+    }
+
+    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        print("webView:didReceiveServerRedirectForProvisionalNavigation")
+    }
+
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        print("webView:didCommit:navigation")
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        print("webView:didFailProvisionalNavigation:withError: \(error)")
+    }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        updateScreenshot()
         setNeedsLayout()
         layoutIfNeeded()
+        print("webView:didFinish:navigation")
+    }
+
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        print("webView:didFail:navigation:withError: \(error)")
+    }
+
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        print("webViewWebContentProcessDidTerminate")
     }
 }
 

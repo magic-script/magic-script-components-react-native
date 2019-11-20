@@ -249,9 +249,9 @@ class ViewController: UIViewController {
         let _ : UiWebViewNode = createComponent([
             "alignment": "center-center",
             "debug": true,
-            "width": 1.0,
+            "width": 0.7,
             "height": 1.0,
-            "url": "https://www.apple.com"
+            "url": "https://www.onet.pl"
         ], nodeId: webViewId, parentId: groupId)
     }
 

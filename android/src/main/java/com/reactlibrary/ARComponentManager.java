@@ -46,6 +46,7 @@ import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.icons.IconsRepositoryImpl;
+import com.reactlibrary.icons.ToggleIconsProviderImpl;
 import com.reactlibrary.scene.DialogNode;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
@@ -272,7 +273,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createToggleNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider);
+            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider, new ToggleIconsProviderImpl());
             addNode(node, nodeId);
         });
     }

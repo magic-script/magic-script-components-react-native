@@ -39,6 +39,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         const val PROP_HEIGHT = "height"
     }
 
+    var onAddedToLayoutListener: ((node: Node) -> Unit)? = null
+    var onRemovedFromLayoutListener: ((node: Node) -> Unit)? = null
+
     protected var width: Float = WRAP_CONTENT_DIMENSION
     protected var height: Float = WRAP_CONTENT_DIMENSION
 
@@ -66,6 +69,20 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
+    /**
+     * For layouts we should add children by this method, not directly using [addContent]
+     * because children may be added with delay (after position for it is calculated)
+     */
+    fun addToLayout(child: Node) {
+        if (child is TransformNode) {
+            childrenList.add(child)
+            onAddedToLayoutListener?.invoke(child)
+            redrawRequested = true
+        } else {
+            logMessage("Non transform nodes are not supported in layouts", true)
+        }
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setLayoutSize(props)
@@ -83,19 +100,11 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         }
     }
 
-    override fun addContent(child: Node) {
-        if (child is TransformNode) {
-            childrenList.add(child)
-            redrawRequested = true
-        } else {
-            logMessage("Non transform nodes are not supported in layouts", true)
-        }
-    }
-
     override fun removeContent(child: Node) {
         childrenList.remove(child)
         if (contentNode.children.contains(child)) {
-            contentNode.removeChild(child)
+            removeContent(child)
+            onRemovedFromLayoutListener?.invoke(child)
         }
         childrenBounds.clear() // indexes changed
         redrawRequested = true
@@ -135,7 +144,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             // Attach the child after position is calculated
             childrenList.forEach { child ->
                 if (!contentNode.children.contains(child)) {
-                    contentNode.addChild(child)
+                    addContent(child)
                 }
             }
         }

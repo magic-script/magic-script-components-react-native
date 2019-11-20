@@ -27,6 +27,7 @@ import TextBuilder from "./elements/builders/text-builder.js";
 import TextEditBuilder from "./elements/builders/text-edit-builder.js";
 import TimePickerBuilder from "./elements/builders/time-picker-builder.js";
 import ToggleBuilder from "./elements/builders/toggle-builder.js";
+import ToggleGroupBuilder from "./elements/builders/toggle-group-builder.js";
 import VideoBuilder from "./elements/builders/video-builder.js";
 import WebViewBuilder from "./elements/builders/webview-builder.js";
 
@@ -58,6 +59,7 @@ export default {
     textEdit: componentManager => new TextEditBuilder(componentManager),
     timePicker: componentManager => new TimePickerBuilder(componentManager),
     toggle: componentManager => new ToggleBuilder(componentManager),
+    toggleGroup: componentManager => new ToggleGroupBuilder(componentManager),
     view: componentManager => new GroupBuilder(componentManager),
     webView: componentManager => new WebViewBuilder(componentManager),
 

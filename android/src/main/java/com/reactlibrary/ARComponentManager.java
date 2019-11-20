@@ -51,6 +51,7 @@ import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
+import com.reactlibrary.scene.nodes.ToggleGroupNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiCircleConfirmationNode;
@@ -275,6 +276,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider);
             addNode(node, nodeId);
         });
+    }
+
+    @ReactMethod
+    public void createToggleGroupNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new ToggleGroupNode(props), nodeId));
     }
 
     @ReactMethod

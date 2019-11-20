@@ -56,6 +56,12 @@ RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createButtonNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createColorPickerNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -461,6 +467,42 @@ RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
         dialogNode.onDialogTimeExpired = ^(UiDialogNode *sender) {
             ARLog(@"dialogNode timeExpired: %@");
             [[AREventsManager instance] onDialogTimeExpiredEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCompletedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCompletedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCompleted = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationCompletedEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationUpdatedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationUpdatedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationUpdated = ^(UiCircleConfirmationNode *sender, CGFloat value) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationUpdatedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCanceledEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCanceled = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode canceled: %@");
+            [[AREventsManager instance] onConfirmationCanceledEventReceived:sender];
         };
     }
 }

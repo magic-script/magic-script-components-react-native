@@ -245,6 +245,8 @@
 		C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */; };
+		C41BF27523853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */; };
+		C41BF27623853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */; };
 		C428C0A8237D560500771FBC /* UiDialogNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0A7237D560500771FBC /* UiDialogNode.swift */; };
 		C428C0A9237D560500771FBC /* UiDialogNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0A7237D560500771FBC /* UiDialogNode.swift */; };
 		C428C0AB237D562000771FBC /* UiDialogNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */; };
@@ -299,6 +301,7 @@
 		C4A12B342361D19B009B7083 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B322361D19B009B7083 /* Date+Extension.swift */; };
 		C4A12B372361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */; };
 		C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */; };
+		C4AF1947238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AF1946238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift */; };
 		C4B82C5F236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
 		C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
 		C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */; };
@@ -656,6 +659,7 @@
 		8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.release.xcconfig"; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
 		C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfigurationSpec.swift; sourceTree = "<group>"; };
+		C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiCircleConfirmationNode.swift; sourceTree = "<group>"; };
 		C428C0A7237D560500771FBC /* UiDialogNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDialogNode.swift; sourceTree = "<group>"; };
 		C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDialogNodeSpec.swift; sourceTree = "<group>"; };
 		C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogDataProviding.swift; sourceTree = "<group>"; };
@@ -689,6 +693,7 @@
 		C4A12B2F2361C85C009B7083 /* Side.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Side.swift; sourceTree = "<group>"; };
 		C4A12B322361D19B009B7083 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+Extension.swift"; sourceTree = "<group>"; };
+		C4AF1946238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiCircleConfirmationNodeSpec.swift; sourceTree = "<group>"; };
 		C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiSliderNodeSpec.swift; sourceTree = "<group>"; };
 		C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerInputView.swift; sourceTree = "<group>"; };
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
@@ -1049,6 +1054,7 @@
 				44AFAC0A232B9BCE005AC8EF /* UiToggleNode.swift */,
 				44AFAC0D232B9BCE005AC8EF /* UiVideoNode.swift */,
 				C4809BB1234F57A600C4D22E /* UiLabelNode.swift */,
+				C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -1220,6 +1226,7 @@
 				44F0930E232D985A0081FF14 /* UiToggleNodeSpec.swift */,
 				C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */,
 				C4B4B66A234618390029E59C /* UiSliderNodeSpec.swift */,
+				C4AF1946238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift */,
 			);
 			path = UiNodes;
 			sourceTree = "<group>";
@@ -1875,6 +1882,7 @@
 				C4A12B282361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */,
 				C4A12B0D2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */,
+				C41BF27623853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */,
 				44AFAD10232BCAE3005AC8EF /* UiNode.swift in Sources */,
 				C4EFE263237ED74100C70001 /* DialogPresenting.swift in Sources */,
 				C4A12B242361BA06009B7083 /* ColorPickerInputView.swift in Sources */,
@@ -2003,6 +2011,7 @@
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
 				44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */,
+				C4AF1947238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift in Sources */,
 				441FC1712362F19B0004DBF1 /* CGPointExtensionSpec.swift in Sources */,
 				44F09331232D985A0081FF14 /* Mock.generated.swift in Sources */,
 				44F0933C232D9E3B0081FF14 /* FontWeightSpec.swift in Sources */,
@@ -2148,6 +2157,7 @@
 				C4A12B332361D19B009B7083 /* Date+Extension.swift in Sources */,
 				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,
+				C41BF27523853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */,
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44F596422355C5B500C60F4C /* Orientation.swift in Sources */,

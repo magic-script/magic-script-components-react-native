@@ -18,6 +18,7 @@
 
 @class UiAudioNode;
 @class UiButtonNode;
+@class UiCircleConfirmationNode;
 @class UiColorPickerNode;
 @class UiDatePickerNode;
 @class UiDialogNode;
@@ -47,6 +48,7 @@
 @interface RCTConvert (Components)
 + (UiAudioNode *)UiAudioNode:(id)json;
 + (UiButtonNode *)UiButtonNode:(id)json;
++ (UiCircleConfirmationNode *)UiCircleConfirmationNode:(id)json;
 + (UiColorPickerNode *)UiColorPickerNode:(id)json;
 + (UiDatePickerNode *)UiDatePickerNode:(id)json;
 + (UiDialogNode *)UiDialogNode:(id)json;

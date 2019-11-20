@@ -46,7 +46,7 @@ import com.reactlibrary.icons.DefaultIconsProvider;
 import com.reactlibrary.icons.ExternalIconsProvider;
 import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.icons.IconsRepositoryImpl;
-import com.reactlibrary.scene.DialogNode;
+import com.reactlibrary.scene.nodes.DialogNode;
 import com.reactlibrary.scene.UiNodesManager;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;

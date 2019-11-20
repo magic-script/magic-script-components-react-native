@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.scene
+package com.reactlibrary.scene.nodes
 
 import android.content.Context
 import android.content.DialogInterface

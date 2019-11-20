@@ -1,5 +1,8 @@
-name: Unit tests Android
-on: [push]
+name: UTs_Android_master
+on:
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test
@@ -16,8 +19,8 @@ jobs:
         cd android
         chmod u+x gradlew
         mkdir node_modules
-        cd node_modules 
-        yarn add react-native
+        cd node_modules
+        npm install react-native
     - name: Build and test
       run: |
         cd android

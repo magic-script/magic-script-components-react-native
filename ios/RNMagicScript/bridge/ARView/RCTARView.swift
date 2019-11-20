@@ -18,7 +18,7 @@ import UIKit
 import ARKit
 import SceneKit
 
-@objc public class RCTARView: UIView {
+@objc public class RCTARView: UIView, ARSCNViewDelegate {
 
     fileprivate(set) var arView: ARSCNView!
     fileprivate var inputResponder: UITextField?
@@ -101,7 +101,8 @@ import SceneKit
         view.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
         view.rendersContinuously = true
         view.scene.rootNode.name = "root"
-
+        view.delegate = self
+        
         // Add AR view as a child
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
@@ -210,6 +211,10 @@ import SceneKit
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
+    }
+
+    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        return UiNodesManager.instance.findNodeWithAnchorUuid(anchor.name!)
     }
 }
 

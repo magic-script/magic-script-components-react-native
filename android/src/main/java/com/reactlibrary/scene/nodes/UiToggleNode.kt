@@ -52,6 +52,7 @@ open class UiToggleNode(initProps: ReadableMap,
 
         const val DEFAULT_HEIGHT = 0.03359 // in meters
         const val SWITCH_WIDTH_TO_HEIGHT_RATIO = 2
+        const val SWITCH_SPACING_RATIO = 0.75F // spacing from text (relative to switch width)
         const val TYPE_DEFAULT = "default" // switch
         const val TYPE_CHECKBOX = "checkbox"
         const val TYPE_RADIO = "radio"
@@ -64,6 +65,7 @@ open class UiToggleNode(initProps: ReadableMap,
     init {
         // set default properties values
         properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_TYPE, TYPE_DEFAULT)
         val height = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
         properties.putDefault(PROP_TEXT_SIZE, height)
     }
@@ -86,7 +88,7 @@ open class UiToggleNode(initProps: ReadableMap,
         val switchWidthPx = switchHeightPx * SWITCH_WIDTH_TO_HEIGHT_RATIO
 
         val switchParams = LinearLayout.LayoutParams(switchWidthPx, switchHeightPx)
-        switchParams.leftMargin = (0.75 * switchWidthPx).toInt()
+        switchParams.leftMargin = (SWITCH_SPACING_RATIO * switchWidthPx).toInt()
         view.iv_toggle.layoutParams = switchParams
 
         view.layoutParams = ViewGroup.LayoutParams(
@@ -134,11 +136,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun refreshImage() {
         val iconType = properties.getString(PROP_TYPE, TYPE_DEFAULT)
         val iconId = toggleIconsProvider.provideIconId(iconType, isOn)
-        if (isOn) {
-            view.iv_toggle.setImageResource(iconId)
-        } else {
-            view.iv_toggle.setImageResource(iconId)
-        }
+        view.iv_toggle.setImageResource(iconId)
     }
 
     private fun setType(props: Bundle) {

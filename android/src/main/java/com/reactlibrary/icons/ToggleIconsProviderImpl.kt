@@ -19,7 +19,7 @@ package com.reactlibrary.icons
 import com.reactlibrary.R
 import com.reactlibrary.scene.nodes.UiToggleNode
 
-class ToggleIconsPrividerImpl : ToggleIconsProvider {
+class ToggleIconsProviderImpl : ToggleIconsProvider {
 
     override fun provideIconId(toggleType: String, checked: Boolean): Int {
         return when (toggleType) {
@@ -30,7 +30,7 @@ class ToggleIconsPrividerImpl : ToggleIconsProvider {
                 if (checked) R.drawable.checkbox_on else R.drawable.checkbox_off
             }
             else -> {
-                if (checked) R.drawable.toggle_on else R.drawable.toggle_off
+                if (checked) R.drawable.switch_on else R.drawable.switch_off
             }
         }
     }

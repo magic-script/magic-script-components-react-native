@@ -14,12 +14,18 @@
 //  limitations under the License.
 // 
 
-import UIKit
+import SceneKit
 
-class DialogFactory {
-    static func createDialog(for dialogData: DialogDataProviding) -> UIView? {
-        let dialog = DialogView(frame: CGRect(x: 0.0, y: 0.0, width: DialogView.width, height: DialogView.height), dialogData: dialogData)
-        dialog.dialogData = dialogData
-        return dialog
-    }
+///
+/// UiPanel - Represents an area to group elements and to confine cursor interactions within a shaped boundary.
+///
+/// The boundary shape is a rounded rectangular area, from sharp corner to circular,
+/// where the cursor can be restricted within or provide means to move between
+/// different UiPanel areas.
+///
+
+@objc open class UiPanelNode: UiGroupNode {
+
+/// Since we don't have cursor in iOS, the functionality of panel boils down to the functionality of group.
+    
 }

@@ -24,6 +24,12 @@ export const Events = [
     }
   },
   {
+    name: "onDialogTimeExpired",
+    handler: (componentManager, elementId) => {
+      componentManager.addOnDialogTimeExpiredEventHandler(elementId);
+    }
+  },
+  {
     name: "onColorCanceled",
     handler: (componentManager, elementId) => {
       componentManager.addOnColorConfirmedEventHandler(elementId);

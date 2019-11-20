@@ -19,7 +19,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
 import com.reactlibrary.R
-import com.reactlibrary.utils.dp
 
 class MaxHeightScrollView(context: Context, attrs: AttributeSet) : ScrollView(context, attrs) {
 

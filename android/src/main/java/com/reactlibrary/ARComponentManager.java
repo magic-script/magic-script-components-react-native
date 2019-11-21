@@ -52,6 +52,7 @@ import com.reactlibrary.scene.nodes.DialogNode;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
+import com.reactlibrary.scene.nodes.PanelNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiCircleConfirmationNode;
@@ -374,6 +375,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             DialogNode node = new DialogNode(props, ArViewManager.getActivityRef().get(), iconsRepo, new DialogProviderImpl());
             addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createPanelNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            addNode(new PanelNode(props), nodeId);
         });
     }
 

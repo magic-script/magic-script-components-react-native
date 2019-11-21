@@ -49,7 +49,7 @@ class DialogNodeTest {
         iconsRepository = mock()
         testDialogProvider = mock()
         context = ApplicationProvider.getApplicationContext()
-
+        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
     }
 
     @Test
@@ -59,7 +59,6 @@ class DialogNodeTest {
                 DialogNode.PROP_CONFIRM_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
-        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -76,7 +75,6 @@ class DialogNodeTest {
                 DialogNode.PROP_CANCEL_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
-        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -93,7 +91,6 @@ class DialogNodeTest {
                 DialogNode.PROP_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
-        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
 
         node.build()
 

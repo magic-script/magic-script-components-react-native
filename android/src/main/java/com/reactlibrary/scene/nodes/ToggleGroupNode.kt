@@ -22,7 +22,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.ifContainsBoolean
-import com.reactlibrary.utils.logMessage
 import com.reactlibrary.utils.putDefault
 
 class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
@@ -36,9 +35,30 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
     init {
         properties.putDefault(PROP_ALLOW_MULTIPLE_ON, false)
         properties.putDefault(PROP_ALLOW_ALL_OFF, false)
+        properties.putDefault(PROP_FORCE_ALL_OFF, false)
     }
 
     private var togglesList = mutableListOf<UiToggleNode>()
+
+    fun onToggleClick(toggleNode: UiToggleNode) {
+        if (toggleNode.isOn) {
+            if (allOffAllowed()) {
+                toggleNode.toggle()
+            } else {
+                val inactiveToggles = togglesList.count { !it.isOn }
+                if (inactiveToggles < togglesList.size - 1) {
+                    toggleNode.toggle()
+                }
+            }
+        } else { // toggle is off
+            if (multiSelectAllowed()) {
+                toggleNode.toggle()
+            } else {
+                togglesList.firstOrNull { it.isOn }?.toggle() // deactivate already selected node
+                toggleNode.toggle()
+            }
+        }
+    }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -82,8 +102,6 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
     }
 
     private fun refreshTogglesState() {
-        logMessage("refresh toggles=${togglesList.size}")
-
         properties.ifContainsBoolean(PROP_FORCE_ALL_OFF) { forceAllOff ->
             if (forceAllOff) {
                 togglesList.forEach { toggle ->
@@ -92,4 +110,9 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
             }
         }
     }
+
+    private fun multiSelectAllowed(): Boolean = properties.getBoolean(PROP_ALLOW_MULTIPLE_ON)
+
+    private fun allOffAllowed(): Boolean = properties.getBoolean(PROP_ALLOW_ALL_OFF)
+
 }

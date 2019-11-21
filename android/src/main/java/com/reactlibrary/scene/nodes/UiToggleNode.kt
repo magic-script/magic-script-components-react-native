@@ -56,7 +56,14 @@ open class UiToggleNode(initProps: ReadableMap,
 
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
-    private var isOn = false
+    var isOn = false
+        private set
+
+    fun toggle() {
+        isOn = !isOn
+        refreshImage()
+        toggleChangedListener?.invoke(isOn)
+    }
 
     init {
         // set default properties values
@@ -127,6 +134,17 @@ open class UiToggleNode(initProps: ReadableMap,
         // cannot override hardcoded alignment
     }
 
+    private fun findToggleGroupParent(): ToggleGroupNode? {
+        var parentNode = parent
+        while (parentNode != null) {
+            if (parentNode is ToggleGroupNode) {
+                return parentNode
+            }
+            parentNode = parentNode.parent
+        }
+        return null
+    }
+
     private fun refreshImage() {
         if (isOn) {
             view.iv_toggle.setImageResource(R.drawable.toggle_on)
@@ -172,9 +190,12 @@ open class UiToggleNode(initProps: ReadableMap,
             if (!properties.getBoolean(PROP_ENABLED)) {
                 return@setOnClickListener
             }
-            isOn = !isOn
-            refreshImage()
-            toggleChangedListener?.invoke(isOn)
+            val toggleGroup = findToggleGroupParent()
+            if (toggleGroup == null) {
+                toggle()
+            } else {
+                toggleGroup.onToggleClick(this)
+            }
         }
     }
 

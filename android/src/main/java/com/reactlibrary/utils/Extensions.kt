@@ -25,8 +25,6 @@ import android.view.View
 import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.gson.JsonObject
-import com.reactlibrary.converter.GsonProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import java.io.Serializable
 import java.util.*
@@ -70,8 +68,8 @@ fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
 }
 
-fun <T>Bundle.putDefault(key: String, value: T) {
-    if(!containsKey(key)) {
+fun <T> Bundle.putDefault(key: String, value: T) {
+    if (!containsKey(key)) {
         when (value) {
             is Boolean -> putBoolean(key, value)
             is Double -> putDouble(key, value)
@@ -186,6 +184,3 @@ fun Date.getHour() = Calendar.getInstance().also {
 fun Date.getMinute() = Calendar.getInstance().also {
     it.time = this
 }.get(Calendar.MINUTE)
-
-fun <T> JsonObject.extract(key: String, clazz: Class<T>) =
-    GsonProvider.gson.fromJson<T>(getAsJsonObject(key), clazz)

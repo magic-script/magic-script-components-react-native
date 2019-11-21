@@ -23,7 +23,6 @@ import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.gson.JsonObject
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.*
@@ -59,7 +58,6 @@ abstract class TransformNode(
         private const val ALIGNMENT_INTERVAL = 0.05F // in seconds
     }
 
-    protected var jsonProps: JsonObject
     /**
      * Used as content node for alignment purpose.
      * Renderable and / or child nodes should be added to it.
@@ -98,7 +96,6 @@ abstract class TransformNode(
     init {
         addChild(contentNode)
         logMessage("initial properties = ${this.properties}")
-        jsonProps = initProps.convertMapToJson()
     }
 
     /**
@@ -125,7 +122,6 @@ abstract class TransformNode(
      * @param props properties to change or new properties to apply
      */
     fun update(props: ReadableMap) {
-        jsonProps = props.convertMapToJson()
         updatingProperties = true
         val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
         this.properties.putAll(propsToUpdate) // save new props

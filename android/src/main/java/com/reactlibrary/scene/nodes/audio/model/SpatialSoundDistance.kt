@@ -18,7 +18,7 @@ package com.reactlibrary.scene.nodes.audio.model
 
 data class SpatialSoundDistance(
     val channel: Double,
-    val minDistance: Double,
-    val maxDistance: Double,
-    val rolloffFactor: Double
+    val minDistance: Float,
+    val maxDistance: Float,
+    val rolloffFactor: Int
 )

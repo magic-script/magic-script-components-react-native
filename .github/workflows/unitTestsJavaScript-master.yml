@@ -1,5 +1,8 @@
-name: Unit tests JavaScript
-on: [push]
+name: Unit Tests JavaScript
+on:
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test
@@ -13,7 +16,7 @@ jobs:
         node-version: '12.x'
     - name: Prepare env
       run: |
-        yarn
+        npm install
     - name: Build and test
       run: |
         npm run test --coverage

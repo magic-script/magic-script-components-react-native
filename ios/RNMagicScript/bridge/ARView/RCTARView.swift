@@ -101,7 +101,8 @@ import SceneKit
         view.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
         view.rendersContinuously = true
         view.scene.rootNode.name = "root"
-
+        view.delegate = self // ARSCNViewDelegate
+        
         // Add AR view as a child
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
@@ -239,5 +240,13 @@ extension RCTARView {
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
+    }
+}
+
+// MARK: - ARSCNViewDelegate
+extension RCTARView: ARSCNViewDelegate {
+    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        guard let anchorName = anchor.name else { return nil }
+        return UiNodesManager.instance.findNodeWithAnchorUuid(anchorName)
     }
 }

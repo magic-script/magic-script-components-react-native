@@ -27,6 +27,7 @@ import SceneKit
     fileprivate var nodesById: [String: TransformNode]
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
+    fileprivate var longPressedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
     var dialogPresenter: DialogPresenting?
 
@@ -56,6 +57,15 @@ import SceneKit
         }
     }
 
+    @objc public func handleLongPressAction(ray: Ray?, state: UIGestureRecognizer.State) {
+        if let ray = ray {
+            let hitNode = nodeSelector?.hitTest(ray: ray)
+            handleNodeLongPress(hitNode, state)
+        } else {
+            handleNodeLongPress(nil, state)
+        }
+    }
+
     @objc public func handleNodeTap(_ node: TransformNode?) {
 
         focusedNode?.leaveFocus()
@@ -67,6 +77,19 @@ import SceneKit
         focusedNode?.enterFocus()
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
+        }
+    }
+
+    @objc public func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
+        switch state {
+        case .changed, .began:
+            longPressedNode = node as? UiNode
+            longPressedNode?.longPressStarted()
+        case .ended, .cancelled:
+            longPressedNode?.longPressEnded()
+            longPressedNode = nil
+        default:
+            print("LongPressGesture strange state.")
         }
     }
     

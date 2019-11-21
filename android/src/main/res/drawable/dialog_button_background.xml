@@ -15,14 +15,11 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <dimen name="textedit_border_padding_horiz">3dp</dimen>
-    <dimen name="textedit_border_padding_horiz_big">4dp</dimen>
-    <dimen name="textedit_border_padding_vertical">2dp</dimen>
-    <dimen name="textedit_border_padding_vertical_big">3dp</dimen>
-    <dimen name="dialog_title">16sp</dimen>
-    <dimen name="dialog_title_padding">8dp</dimen>
-    <dimen name="dialog_description">14sp</dimen>
-    <dimen name="dialog_button_min_width">48dp</dimen>
-    <dimen name="default_scroll_dialog_max_height">126dp</dimen>
-</resources>
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="16dp" />
+
+    <stroke android:color="@color/text_color_default" android:width="1dp" />
+
+    <solid android:color="@color/dialog_background" />
+</shape>

@@ -1,0 +1,31 @@
+name: UTs_iOS_feature
+on:
+  push:
+    branches-ignore:
+      - master
+jobs:
+  test:
+    name: Test
+    runs-on: macOS-latest
+    strategy:
+        matrix:
+          destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 11 Pro']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Prepare env
+        run: |
+          pwd
+          cd ios
+          pod install
+          gem install slather
+      - name: Build and test
+        run: |
+          cd ios
+          xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
+        env:
+         destination: ${{ matrix.destination }}
+      - name: Code Coverage
+        run: |
+          cd ios
+          slather coverage --scheme RNMagicScriptHostApplication --workspace ./RNMagicScript.xcworkspace --build-directory Build -s ./RNMagicScript.xcodeproj | grep "Test Coverage:"

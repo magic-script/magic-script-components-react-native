@@ -27,6 +27,7 @@
 @class UiTimePickerNode;
 @class UiColorPickerNode;
 @class UiDialogNode;
+@class UiCircleConfirmationNode;
 
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
@@ -49,5 +50,7 @@
 - (void)onDialogConfirmedEventReceived:(UiDialogNode *)sender;
 - (void)onDialogCanceledEventReceived:(UiDialogNode *)sender;
 - (void)onDialogTimeExpiredEventReceived:(UiDialogNode *)sender;
-
+- (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender;
+- (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value;
+- (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender;
 @end

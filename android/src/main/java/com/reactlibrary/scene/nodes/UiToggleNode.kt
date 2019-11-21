@@ -57,13 +57,13 @@ open class UiToggleNode(initProps: ReadableMap,
     var toggleChangedListener: ((on: Boolean) -> Unit)? = null
 
     var isOn = false
-        private set
-
-    fun toggle() {
-        isOn = !isOn
-        refreshImage()
-        toggleChangedListener?.invoke(isOn)
-    }
+        set(value) {
+            if (value != field) {
+                toggleChangedListener?.invoke(value)
+            }
+            field = value
+            refreshImage()
+        }
 
     init {
         // set default properties values
@@ -155,8 +155,13 @@ open class UiToggleNode(initProps: ReadableMap,
 
     private fun setIsChecked(props: Bundle) {
         if (props.containsKey(PROP_CHECKED)) {
-            isOn = props.getBoolean(PROP_CHECKED)
-            refreshImage()
+            val value = props.getBoolean(PROP_CHECKED)
+            val toggleGroup = findToggleGroupParent()
+            if (toggleGroup == null) {
+                isOn = value
+            } else {
+                toggleGroup.setupToggle(this, wantBeActive = value)
+            }
         }
     }
 
@@ -192,9 +197,9 @@ open class UiToggleNode(initProps: ReadableMap,
             }
             val toggleGroup = findToggleGroupParent()
             if (toggleGroup == null) {
-                toggle()
+                isOn = !isOn
             } else {
-                toggleGroup.onToggleClick(this)
+                toggleGroup.setupToggle(this, wantBeActive = !isOn)
             }
         }
     }

@@ -17,7 +17,6 @@
 package com.reactlibrary.scene.nodes
 
 import android.os.Bundle
-import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.base.UiLayout
@@ -40,22 +39,25 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
 
     private var togglesList = mutableListOf<UiToggleNode>()
 
-    fun onToggleClick(toggleNode: UiToggleNode) {
-        if (toggleNode.isOn) {
+    fun setupToggle(toggleNode: UiToggleNode, wantBeActive: Boolean) {
+        if (wantBeActive) {
+            if (multiSelectAllowed()) {
+                toggleNode.isOn = true
+            } else {
+                // deactivate other active nodes
+                togglesList.filter { it.isOn && it != toggleNode }.forEach { activeToggle ->
+                    activeToggle.isOn = false
+                }
+                toggleNode.isOn = true
+            }
+        } else { // want be off
             if (allOffAllowed()) {
-                toggleNode.toggle()
+                toggleNode.isOn = false
             } else {
                 val inactiveToggles = togglesList.count { !it.isOn }
                 if (inactiveToggles < togglesList.size - 1) {
-                    toggleNode.toggle()
+                    toggleNode.isOn = false
                 }
-            }
-        } else { // toggle is off
-            if (multiSelectAllowed()) {
-                toggleNode.toggle()
-            } else {
-                togglesList.firstOrNull { it.isOn }?.toggle() // deactivate already selected node
-                toggleNode.toggle()
             }
         }
     }
@@ -63,7 +65,12 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        refreshTogglesState()
+        if (props.containsKey(PROP_ALLOW_MULTIPLE_ON) || props.containsKey(PROP_ALLOW_ALL_OFF)) {
+            togglesList.forEach { toggle ->
+                setupToggle(toggle, toggle.isOn)
+            }
+        }
+        setForceAllOff(props)
     }
 
     override fun addContent(child: Node) {
@@ -72,26 +79,28 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
         if (child is UiLayout) {
             child.childrenList
                     .filterIsInstance<UiToggleNode>()
-                    .forEach { toggle -> togglesList.add(toggle) }
+                    .forEach { toggle ->
+                        togglesList.add(toggle)
+                        setupToggle(toggle, toggle.isOn)
+                    }
 
             child.onAddedToLayoutListener = { node ->
                 if (node is UiToggleNode) {
                     togglesList.add(node)
-                    refreshTogglesState()
+                    setupToggle(node, node.isOn)
                 }
             }
             child.onRemovedFromLayoutListener = { node ->
                 if (node is UiToggleNode) {
                     togglesList.remove(node)
-                    refreshTogglesState()
                 }
             }
-            refreshTogglesState()
-
         } else if (child is UiToggleNode) {
             togglesList.add(child)
-            refreshTogglesState()
+            setupToggle(child, child.isOn)
         }
+
+        setForceAllOff(properties)
     }
 
     override fun removeContent(child: Node) {
@@ -101,11 +110,11 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
         }
     }
 
-    private fun refreshTogglesState() {
-        properties.ifContainsBoolean(PROP_FORCE_ALL_OFF) { forceAllOff ->
+    private fun setForceAllOff(props: Bundle) {
+        props.ifContainsBoolean(PROP_FORCE_ALL_OFF) { forceAllOff ->
             if (forceAllOff) {
                 togglesList.forEach { toggle ->
-                    toggle.update(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, false))
+                    toggle.isOn = false
                 }
             }
         }

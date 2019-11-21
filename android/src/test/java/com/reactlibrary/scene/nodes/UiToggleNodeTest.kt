@@ -35,6 +35,7 @@ import com.reactlibrary.R
 import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.utils.Utils
+import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -67,8 +68,8 @@ class UiToggleNodeTest {
                 return providerTypeface
             }
         }
-        whenever(containerSpy.findViewById<TextView>(R.id.tv_toggle)).thenReturn(textViewSpy)
-        whenever(containerSpy.findViewById<ImageView>(R.id.iv_toggle)).thenReturn(switchSpy)
+        whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
+        whenever(containerSpy.iv_toggle).thenReturn(switchSpy)
     }
 
     @Test

@@ -22,7 +22,9 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
@@ -33,7 +35,6 @@ import com.reactlibrary.utils.PropertiesReader
 import com.reactlibrary.utils.Utils
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefault
-import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
                         context: Context,
@@ -65,6 +66,9 @@ open class UiToggleNode(initProps: ReadableMap,
             refreshImage()
         }
 
+    private lateinit var textView: TextView
+    private lateinit var imageView: ImageView
+
     init {
         // set default properties values
         properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
@@ -73,7 +77,7 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.toggle, null)
+        return LayoutInflater.from(context).inflate(R.layout.toggle_right, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -82,6 +86,9 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     override fun setupView() {
+        this.textView = view.findViewById<TextView>(R.id.tv_toggle)
+        this.imageView = view.findViewById<ImageView>(R.id.iv_toggle)
+
         var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
         if (heightMeters == WRAP_CONTENT_DIMENSION) {
             heightMeters = DEFAULT_HEIGHT.toFloat()
@@ -91,14 +98,14 @@ open class UiToggleNode(initProps: ReadableMap,
 
         val switchParams = LinearLayout.LayoutParams(switchWidthPx, switchHeightPx)
         switchParams.leftMargin = (0.75 * switchWidthPx).toInt()
-        view.iv_toggle.layoutParams = switchParams
+        imageView.layoutParams = switchParams
 
         view.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        view.tv_toggle.typeface = fontProvider.provideFont()
+        textView.typeface = fontProvider.provideFont()
         setupClickListener()
     }
 
@@ -117,7 +124,7 @@ open class UiToggleNode(initProps: ReadableMap,
 
     override fun applyAlignment() {
         // hardcoding the "pivot" point at the center of switch;
-        // alignment cannot be changed for toggle according to Lumin implementation
+        // alignment cannot be changed for toggle_text according to Lumin implementation
         val bounds = getContentBounding()
         val nodeWidth = bounds.size().x
         val pivotOffsetX = -bounds.center().x // aligning according to center
@@ -146,11 +153,12 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     private fun refreshImage() {
-        if (isOn) {
-            view.iv_toggle.setImageResource(R.drawable.toggle_on)
+        val image = if (isOn) {
+            R.drawable.toggle_on
         } else {
-            view.iv_toggle.setImageResource(R.drawable.toggle_off)
+            R.drawable.toggle_off
         }
+        imageView.setImageResource(image)
     }
 
     private fun setIsChecked(props: Bundle) {
@@ -168,7 +176,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            view.tv_toggle.text = text
+            textView.text = text
             setNeedsRebuild()
         }
     }
@@ -177,7 +185,7 @@ open class UiToggleNode(initProps: ReadableMap,
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
-            view.tv_toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
             setNeedsRebuild()
         }
     }
@@ -185,12 +193,12 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setTextColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
-            view.tv_toggle.setTextColor(color)
+            textView.setTextColor(color)
         }
     }
 
     private fun setupClickListener() {
-        view.iv_toggle.setOnClickListener {
+        imageView.setOnClickListener {
             // disabling parent view is not sufficient
             if (!properties.getBoolean(PROP_ENABLED)) {
                 return@setOnClickListener

@@ -47,6 +47,7 @@ class ViewController: UIViewController {
 //        setupTextEditTest()
 //        setupUiListViewNodeTest()
 //        setupAudioNodeTest()
+        setupUiCircleConfirmationNodeTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -74,6 +75,14 @@ class ViewController: UIViewController {
         ])
 
         arView.delegate = self
+    }
+
+    fileprivate func setupUiCircleConfirmationNodeTest() {
+        let circleConfirmationNodeId = "circleConfirmationNodeId"
+        let circleConfirmationNode: UiCircleConfirmationNode = createComponent(["value": 0.0], nodeId: circleConfirmationNodeId, parentId: groupId)
+
+        circleConfirmationNode.setNeedsLayout()
+        circleConfirmationNode.layoutIfNeeded()
     }
 
     fileprivate func setupUiListViewNodeTest() {

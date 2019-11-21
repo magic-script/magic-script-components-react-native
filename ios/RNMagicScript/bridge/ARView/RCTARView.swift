@@ -155,6 +155,11 @@ import SceneKit
         }
         addGestureRecognizer(dragGestureRecognizer)
 
+        let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.minimumPressDuration = 0.5
+        addGestureRecognizer(longPressGestureRecogrnizer)
+
+
         // Set dependencies between drag gesture and debug camera pan gesture
         // so that both gestures can be used in debug mode.
         view.gestureRecognizers?
@@ -240,6 +245,12 @@ extension RCTARView {
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
+    }
+
+    @objc fileprivate func handleLongPressAction(_ sender: UILongPressGestureRecognizer) {
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+        UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
     }
 }
 

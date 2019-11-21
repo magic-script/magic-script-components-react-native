@@ -89,7 +89,7 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                             reportedNode = circleConfirmationNode
                         }
                         node.longPressStarted()
-                        for _ in 0...20 { node.expirationTimer.fire() }
+                        for _ in 0...20 { node.expirationTimer?.fire() }
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))
                     }

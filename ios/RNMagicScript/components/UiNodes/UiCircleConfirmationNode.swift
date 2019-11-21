@@ -45,6 +45,7 @@ import SceneKit
     fileprivate var circleGeometry: SCNSpinnerCircle!
     fileprivate var backgroundNode: SCNNode!
     fileprivate var spinnerNode: SCNNode!
+    fileprivate(set) var expirationTimer: Timer?
 
     deinit {
         stopAnimation()
@@ -96,25 +97,23 @@ import SceneKit
         spinnerNode = SCNNode(geometry: circleGeometry)
         contentNode.addChildNode(spinnerNode)
     }
-
-    fileprivate(set) var expirationTimer: Timer!
     
     fileprivate func startAnimation() {
-        if expirationTimer != nil { expirationTimer.invalidate() }
+        expirationTimer?.invalidate()
         expirationTimer = Timer.scheduledTimer(timeInterval: 0.100, target: self, selector: #selector(timerExpirationAction(_:)), userInfo: nil, repeats: true)
     }
 
     @objc fileprivate func timerExpirationAction(_ sender: Timer) {
         value += 0.05
         onConfirmationUpdated?(self, value)
-        if value == 1 {
-            expirationTimer.invalidate()
+        if value >= 1 {
+            expirationTimer?.invalidate()
             onConfirmationCompleted?(self)
         }
     }
 
     fileprivate func stopAnimation() {
-        if expirationTimer != nil { expirationTimer.invalidate() }
+        expirationTimer?.invalidate()
     }
 
     @objc override var canBeLongPressed: Bool {

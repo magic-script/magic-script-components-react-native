@@ -28,7 +28,7 @@ import com.nhaarman.mockitokotlin2.*
 import com.reactlibrary.createProperty
 import com.reactlibrary.formatter.VerySimpleDateFormat
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode
-import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.scene.nodes.views.NotifiableTimePickerDialog
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
@@ -37,13 +37,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import java.text.SimpleDateFormat
 import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 class UiTimePickerNodeTest {
     val timePickerDialog = mock<NotifiableTimePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS)
-    val datePickerDialogProvider = mock<DateTimePickerDialogProvider>().apply {
+    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideTimePickerDialog(any(), any(), any())).doReturn(timePickerDialog)
     }
     var tested: TestableUiTimePickerNode = TestableUiTimePickerNode(datePickerDialogProvider)
@@ -179,7 +178,7 @@ class UiTimePickerNodeTest {
     }
 
     class TestableUiTimePickerNode(
-        datePickerDialogProvider: DateTimePickerDialogProvider
+        datePickerDialogProvider: DialogProviderImpl
     ) : UiTimePickerNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),

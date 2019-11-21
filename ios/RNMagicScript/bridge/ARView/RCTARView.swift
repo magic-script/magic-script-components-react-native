@@ -101,7 +101,8 @@ import SceneKit
         view.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
         view.rendersContinuously = true
         view.scene.rootNode.name = "root"
-
+        view.delegate = self // ARSCNViewDelegate
+        
         // Add AR view as a child
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
@@ -138,7 +139,7 @@ import SceneKit
             self?.dismissInput()
         }
 
-        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: view)
+        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: self)
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
@@ -153,6 +154,11 @@ import SceneKit
             return self?.arView.pointOfView
         }
         addGestureRecognizer(dragGestureRecognizer)
+
+        let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.minimumPressDuration = 0.5
+        addGestureRecognizer(longPressGestureRecogrnizer)
+
 
         // Set dependencies between drag gesture and debug camera pan gesture
         // so that both gestures can be used in debug mode.
@@ -239,5 +245,19 @@ extension RCTARView {
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
+    }
+
+    @objc fileprivate func handleLongPressAction(_ sender: UILongPressGestureRecognizer) {
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+        UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
+    }
+}
+
+// MARK: - ARSCNViewDelegate
+extension RCTARView: ARSCNViewDelegate {
+    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        guard let anchorName = anchor.name else { return nil }
+        return UiNodesManager.instance.findNodeWithAnchorUuid(anchorName)
     }
 }

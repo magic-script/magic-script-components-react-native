@@ -73,7 +73,10 @@ RCT_EXPORT_MODULE();
              @"onColorCanceled",
              @"onDialogConfirmed",
              @"onDialogCanceled",
-             @"onDialogTimeExpired"
+             @"onDialogTimeExpired",
+             @"onConfirmationCompleted",
+             @"onConfirmationUpdated",
+             @"onConfirmationCanceled"
              ];
 }
 
@@ -221,5 +224,28 @@ RCT_EXPORT_MODULE();
     }
 }
 
+- (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationCompleted" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationUpdated" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
+        });
+    }
+}
+
+- (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationCanceled" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
 
 @end

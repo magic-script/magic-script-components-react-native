@@ -35,6 +35,15 @@
     "clearMocks": true,
     "modulePaths": [
       "components/utils"
+    ],
+    "collectCoverageFrom": [
+      "components/**/*.{js,jsx}"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "text-summary"
     ]
   }
 }

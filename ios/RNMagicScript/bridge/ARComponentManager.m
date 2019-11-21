@@ -56,6 +56,12 @@ RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeI
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createCircleConfirmationNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createColorPickerNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
@@ -104,14 +110,14 @@ RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId 
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLinearLayoutNode: %@", nodeId);
+RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createLineNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLineNode: %@", nodeId);
+RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createLinearLayoutNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -130,6 +136,12 @@ RCT_EXPORT_METHOD(createListViewItemNode:(UiListViewItemNode *)node nodeId:(NSSt
 
 RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createModelNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createPanelNode:(UiPanelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createPanelNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -447,14 +459,50 @@ RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnDialogExpiredEventHandler:(NSString *)nodeId) {
-    ARLog(@"addOnDialogExpiredEventHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogTimeExpiredEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDialogNode class]]) {
         UiDialogNode *dialogNode = (UiDialogNode *)node;
         dialogNode.onDialogTimeExpired = ^(UiDialogNode *sender) {
             ARLog(@"dialogNode timeExpired: %@");
             [[AREventsManager instance] onDialogTimeExpiredEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCompletedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCompletedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCompleted = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationCompletedEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationUpdatedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationUpdatedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationUpdated = ^(UiCircleConfirmationNode *sender, CGFloat value) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationUpdatedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCanceledEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCanceled = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode canceled: %@");
+            [[AREventsManager instance] onConfirmationCanceledEventReceived:sender];
         };
     }
 }

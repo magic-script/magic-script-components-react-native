@@ -26,7 +26,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.*
 import com.reactlibrary.createProperty
-import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
 import org.junit.After
@@ -41,7 +41,7 @@ class UiDateTimePickerBaseNodeTest {
     val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    val datePickerDialogProvider = mock<DateTimePickerDialogProvider>().apply {
+    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
     }
     var tested: TestableUiDateTimePickerBaseNode =
@@ -90,7 +90,7 @@ class UiDateTimePickerBaseNodeTest {
     }
 
     class TestableUiDateTimePickerBaseNode(
-        datePickerDialogProvider: DateTimePickerDialogProvider
+        datePickerDialogProvider: DialogProviderImpl
     ) : UiDateTimePickerBaseNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),

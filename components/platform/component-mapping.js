@@ -14,8 +14,9 @@ import ImageBuilder from "./elements/builders/image-builder.js";
 import LinearLayoutBuilder from "./elements/builders/linear-layout-builder.js";
 import LineBuilder from "./elements/builders/line-builder.js";
 import ListViewBuilder from './elements/builders/listview-builder.js';
-import ListViewItemBuilder from './elements/builders/listviewitem-builder.js';
+import ListViewItemBuilder from './elements/builders/listview-item-builder.js';
 import ModelBuilder from "./elements/builders/model-builder.js";
+import PanelBuilder from "./elements/builders/panel-builder.js";
 import ProgressBarBuilder from "./elements/builders/progress-bar-builder.js";
 import RectLayoutBuilder from "./elements/builders/rect-layout-builder.js";
 import ScrollBarBuilder from "./elements/builders/scroll-bar-builder.js";
@@ -48,6 +49,7 @@ export default {
     image: componentManager => new ImageBuilder(componentManager),
     listView: (componentManager) => new ListViewBuilder(componentManager),
     listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
+    panel: componentManager => new PanelBuilder(componentManager),
     progressBar: componentManager => new ProgressBarBuilder(componentManager),
     scrollBar: componentManager => new ScrollBarBuilder(componentManager),
     scrollView: componentManager => new ScrollViewBuilder(componentManager),

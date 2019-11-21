@@ -780,5 +780,4 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void onHostDestroy() {
         MediaPlayerPool.INSTANCE.destroy();
     }
-
 }

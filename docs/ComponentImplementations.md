@@ -34,4 +34,3 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 30 | Tab | UiTab | 👍 | ? | 👍 |
 31 | PageView | UiPageView | 👍 | ? | 2.5 D |
 32 | Panel | UiPanel | 👍 | 👍 | 👍 |
-33 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

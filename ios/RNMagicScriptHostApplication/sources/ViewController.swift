@@ -261,7 +261,7 @@ class ViewController: UIViewController {
             "debug": true,
             "width": 0.7,
             "height": 1.0,
-            "url": "https://www.apple.com"
+            "url": "https://www.magicleap.com"
         ], nodeId: webViewId, parentId: groupId)
     }
 

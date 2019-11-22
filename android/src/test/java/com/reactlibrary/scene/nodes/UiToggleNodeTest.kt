@@ -19,7 +19,7 @@ package com.reactlibrary.scene.nodes
 import android.content.Context
 import android.graphics.Typeface
 import android.util.TypedValue
-import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -30,14 +30,12 @@ import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.R
 import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.icons.ToggleIconsProviderImpl
 import com.reactlibrary.utils.Utils
-import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -54,7 +52,7 @@ class UiToggleNodeTest {
     private lateinit var context: Context
     private lateinit var containerSpy: LinearLayout
     private lateinit var textViewSpy: TextView
-    private lateinit var toggleSpy: ImageView
+    private lateinit var imageViewSpy: ImageView
     private lateinit var fontProvider: FontProvider
     private lateinit var providerTypeface: Typeface
     private lateinit var toggleIconsProvider: ToggleIconsProvider
@@ -64,10 +62,7 @@ class UiToggleNodeTest {
         this.context = ApplicationProvider.getApplicationContext()
         this.containerSpy = spy(LinearLayout(context))
         this.textViewSpy = spy(TextView(context))
-        this.toggleSpy = spy(ImageView(context))
-        whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
-        whenever(containerSpy.iv_toggle).thenReturn(toggleSpy)
-
+        this.imageViewSpy = spy(ImageView(context))
         this.providerTypeface = Typeface.DEFAULT_BOLD
         this.fontProvider = object : FontProvider {
             override fun provideFont(fontParams: FontParams?): Typeface {
@@ -146,7 +141,7 @@ class UiToggleNodeTest {
 
         node.build()
 
-        verify(toggleSpy).setImageResource(R.drawable.switch_off)
+        verify(imageViewSpy).setImageResource(R.drawable.switch_off)
     }
 
     @Test
@@ -156,7 +151,7 @@ class UiToggleNodeTest {
 
         node.build()
 
-        verify(toggleSpy).setImageResource(R.drawable.checkbox_off)
+        verify(imageViewSpy).setImageResource(R.drawable.checkbox_off)
     }
 
     @Test
@@ -169,13 +164,22 @@ class UiToggleNodeTest {
 
         node.build()
 
-        verify(toggleSpy).setImageResource(R.drawable.radio_on)
+        verify(imageViewSpy).setImageResource(R.drawable.radio_on)
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
         return object : UiToggleNode(props, context, mock(), fontProvider, toggleIconsProvider) {
-            override fun provideView(context: Context): View {
+
+            override fun provideView(context: Context): ViewGroup {
                 return containerSpy
+            }
+
+            override fun provideTextView(): TextView {
+                return textViewSpy
+            }
+
+            override fun provideImageView(): ImageView {
+                return imageViewSpy
             }
         }
     }

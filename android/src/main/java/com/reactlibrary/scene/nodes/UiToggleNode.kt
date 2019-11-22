@@ -20,9 +20,10 @@ import android.content.Context
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
@@ -31,15 +32,13 @@ import com.reactlibrary.font.FontProvider
 import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.utils.*
-import kotlinx.android.synthetic.main.toggle.view.*
 
 open class UiToggleNode(initProps: ReadableMap,
                         context: Context,
                         viewRenderableLoader: ViewRenderableLoader,
                         private val fontProvider: FontProvider,
                         private val toggleIconsProvider: ToggleIconsProvider
-) :
-        UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
+) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
         // properties
@@ -69,6 +68,9 @@ open class UiToggleNode(initProps: ReadableMap,
             refreshImage()
         }
 
+    private lateinit var textView: TextView
+    private lateinit var imageView: ImageView
+
     init {
         // set default properties values
         properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
@@ -77,8 +79,17 @@ open class UiToggleNode(initProps: ReadableMap,
         properties.putDefault(PROP_TEXT_SIZE, height)
     }
 
-    override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.toggle, null)
+    // container
+    override fun provideView(context: Context): ViewGroup {
+        return LinearLayout(context)
+    }
+
+    open fun provideTextView(): TextView {
+        return LayoutInflater.from(context).inflate(R.layout.toggle_text, null) as TextView
+    }
+
+    open fun provideImageView(): ImageView {
+        return LayoutInflater.from(context).inflate(R.layout.toggle_switch, null) as ImageView
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -87,23 +98,42 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     override fun setupView() {
+        this.textView = provideTextView()
+        this.imageView = provideImageView()
+        val type = properties.getString(PROP_TYPE, TYPE_DEFAULT)
+
+        if (type == TYPE_DEFAULT) {
+            (view as ViewGroup).addView(textView)
+            (view as ViewGroup).addView(imageView)
+        } else {
+            (view as ViewGroup).addView(imageView)
+            (view as ViewGroup).addView(textView)
+        }
+
         var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
         if (heightMeters == WRAP_CONTENT_DIMENSION) {
             heightMeters = DEFAULT_HEIGHT.toFloat()
         }
-        val switchHeightPx = Utils.metersToPx(heightMeters, context)
-        val switchWidthPx = switchHeightPx * SWITCH_WIDTH_TO_HEIGHT_RATIO
+        val iconHeightPx = Utils.metersToPx(heightMeters, context)
+        val iconWidthPx = iconHeightPx * SWITCH_WIDTH_TO_HEIGHT_RATIO
 
-        val switchParams = LinearLayout.LayoutParams(switchWidthPx, switchHeightPx)
-        switchParams.leftMargin = (SWITCH_SPACING_RATIO * switchWidthPx).toInt()
-        view.iv_toggle.layoutParams = switchParams
+        val imageViewParams = LinearLayout.LayoutParams(iconWidthPx, iconHeightPx)
+        val spacing = (SWITCH_SPACING_RATIO * iconWidthPx).toInt()
+        if (type == TYPE_DEFAULT) {
+            imageViewParams.leftMargin = spacing
+        } else {
+            imageViewParams.rightMargin = spacing
+        }
+
+        imageView.layoutParams = imageViewParams
 
         view.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
+        (view as LinearLayout).orientation = LinearLayout.HORIZONTAL
 
-        view.tv_toggle.typeface = fontProvider.provideFont()
+        textView.typeface = fontProvider.provideFont()
         setupClickListener()
     }
 
@@ -154,7 +184,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun refreshImage() {
         val iconType = properties.getString(PROP_TYPE, TYPE_DEFAULT)
         val iconId = toggleIconsProvider.provideIconId(iconType, isOn)
-        view.iv_toggle.setImageResource(iconId)
+        imageView.setImageResource(iconId)
     }
 
     private fun setType(props: Bundle) {
@@ -178,7 +208,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            view.tv_toggle.text = text
+            textView.text = text
             setNeedsRebuild()
         }
     }
@@ -187,7 +217,7 @@ open class UiToggleNode(initProps: ReadableMap,
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
             val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
-            view.tv_toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
             setNeedsRebuild()
         }
     }
@@ -195,12 +225,12 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setTextColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
-            view.tv_toggle.setTextColor(color)
+            textView.setTextColor(color)
         }
     }
 
     private fun setupClickListener() {
-        view.iv_toggle.setOnClickListener {
+        imageView.setOnClickListener {
             // disabling parent view is not sufficient
             if (!properties.getBoolean(PROP_ENABLED)) {
                 return@setOnClickListener

@@ -261,7 +261,7 @@ class ViewController: UIViewController {
             "debug": true,
             "width": 0.7,
             "height": 1.0,
-            "url": "https://www.onet.pl"
+            "url": "https://www.apple.com"
         ], nodeId: webViewId, parentId: groupId)
     }
 
@@ -295,7 +295,7 @@ extension ViewController: ARSCNViewDelegate {
 //        }
 
         DispatchQueue.main.async() { [weak self] in
-            guard let strongSelf = self else { return }
+//            guard let strongSelf = self else { return }
 //            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
 //            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
             UiNodesManager.instance.updateLayout()

@@ -72,6 +72,10 @@
 		44931E12237D999B00E11972 /* UiModelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09310232D985A0081FF14 /* UiModelNodeSpec.swift */; };
 		449B5483238524F400D839CC /* UiPanelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B5482238524F400D839CC /* UiPanelNode.swift */; };
 		449B5484238524F400D839CC /* UiPanelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B5482238524F400D839CC /* UiPanelNode.swift */; };
+		449B54932387FA3A00D839CC /* WebViewAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54922387FA3A00D839CC /* WebViewAction.swift */; };
+		449B54942387FA3A00D839CC /* WebViewAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54922387FA3A00D839CC /* WebViewAction.swift */; };
+		449B54962387FF5300D839CC /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54952387FF5300D839CC /* UIView+Screenshot.swift */; };
+		449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54952387FF5300D839CC /* UIView+Screenshot.swift */; };
 		44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD002366258400402912 /* GridLayoutSpec.swift */; };
 		44A3FD032366364900402912 /* UiLinearLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */; };
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
@@ -519,6 +523,8 @@
 		448586FA235DC1FD00D372CB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
 		449B5482238524F400D839CC /* UiPanelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiPanelNode.swift; sourceTree = "<group>"; };
+		449B54922387FA3A00D839CC /* WebViewAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAction.swift; sourceTree = "<group>"; };
+		449B54952387FF5300D839CC /* UIView+Screenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		44A3FD002366258400402912 /* GridLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLinearLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutSpec.swift; sourceTree = "<group>"; };
@@ -1079,6 +1085,7 @@
 				44D8FE672336B1A0007FD766 /* TextEntryMode.swift */,
 				C4D5417A23338D20008D5124 /* VideoAction.swift */,
 				C4D5417D23338E05008D5124 /* VideoViewMode.swift */,
+				449B54922387FA3A00D839CC /* WebViewAction.swift */,
 				C4A12B2F2361C85C009B7083 /* Side.swift */,
 			);
 			path = Enums;
@@ -1108,21 +1115,22 @@
 				C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */,
 				441FC16B2362E9590004DBF1 /* CGPoint+Extension.swift */,
 				44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */,
+				C4A12B322361D19B009B7083 /* Date+Extension.swift */,
 				44AFAC22232B9BCF005AC8EF /* FileManager+Extension.swift */,
 				44AFAC1C232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift */,
 				44AFAC1D232B9BCF005AC8EF /* Maths+Extension.swift */,
-				44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */,
-				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
+				C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */,
 				44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */,
 				44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */,
 				448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */,
 				44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */,
 				44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */,
-				44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */,
-				C4A12B322361D19B009B7083 /* Date+Extension.swift */,
-				C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */,
 				C435F90623829F050060F956 /* UIButton+Extension.swift */,
+				44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */,
+				44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */,
 				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
+				449B54952387FF5300D839CC /* UIView+Screenshot.swift */,
+				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1917,6 +1925,7 @@
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */,
 				C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */,
+				449B54942387FA3A00D839CC /* WebViewAction.swift in Sources */,
 				44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44D8FE6C2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */,
@@ -1953,6 +1962,7 @@
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
+				449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
 				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */,
@@ -2099,6 +2109,7 @@
 				44AFAC4D232B9BCF005AC8EF /* SCNRectangle.swift in Sources */,
 				44AFAC62232B9BCF005AC8EF /* RCTARViewManager.m in Sources */,
 				44D8FE8023391261007FD766 /* RCTARView.swift in Sources */,
+				449B54932387FA3A00D839CC /* WebViewAction.swift in Sources */,
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
@@ -2167,6 +2178,7 @@
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44F596422355C5B500C60F4C /* Orientation.swift in Sources */,
+				449B54962387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
 				C4C1D4742383F9CD00437249 /* UIScreen+Extension.swift in Sources */,
 				44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,

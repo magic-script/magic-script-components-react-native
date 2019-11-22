@@ -17,13 +17,20 @@
 package com.reactlibrary.scene.nodes.toggle
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.utils.Utils
 
-class LinearToggleViewManager(private val fontProvider: FontProvider) : ToggleViewManager {
+class LinearToggleViewManager(
+        private val fontProvider: FontProvider,
+        private val toggleIconsProvider: ToggleIconsProvider
+) : ToggleViewManager {
 
     companion object {
         const val DEFAULT_WIDTH_TO_HEIGHT_RATIO = 2F
@@ -34,7 +41,16 @@ class LinearToggleViewManager(private val fontProvider: FontProvider) : ToggleVi
         const val SWITCH_SPACING_RATIO = 0.75F
     }
 
+    private var isActive = false
+    private var toggleType: String = UiToggleNode.TYPE_DEFAULT
+    private var textView: TextView? = null
+    private var imageView: ImageView? = null
+
     override fun setupToggleView(context: Context, toggleConfig: ToggleViewManager.ToggleConfig) {
+        this.toggleType = toggleConfig.toggleType
+        this.textView = toggleConfig.textView
+        this.imageView = toggleConfig.imageView
+
         toggleConfig.container.apply {
             layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -43,29 +59,51 @@ class LinearToggleViewManager(private val fontProvider: FontProvider) : ToggleVi
             (this as LinearLayout).orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
 
-            if (toggleConfig.toggleType == UiToggleNode.TYPE_DEFAULT) {
-                addView(toggleConfig.textView)
-                addView(toggleConfig.imageView)
+            if (toggleType == UiToggleNode.TYPE_DEFAULT) {
+                addView(textView)
+                addView(imageView)
             } else {
-                addView(toggleConfig.imageView)
-                addView(toggleConfig.textView)
+                addView(imageView)
+                addView(textView)
             }
         }
 
         val iconHeightPx = Utils.metersToPx(toggleConfig.toggleHeight, context)
-        val iconWidthPx = iconHeightPx * getWidthToHeightRatio(toggleConfig.toggleType).toInt()
+        val iconWidthPx = iconHeightPx * getWidthToHeightRatio(toggleType).toInt()
         // text to toggle spacing
         val spacing = (SWITCH_SPACING_RATIO * iconWidthPx).toInt()
 
         toggleConfig.imageView.layoutParams = LinearLayout.LayoutParams(iconWidthPx, iconHeightPx).apply {
-            if (toggleConfig.toggleType == UiToggleNode.TYPE_DEFAULT) {
+            if (toggleType == UiToggleNode.TYPE_DEFAULT) {
                 leftMargin = spacing
             } else {
                 rightMargin = spacing
             }
         }
 
+        toggleConfig.imageView.setOnClickListener {
+            toggleConfig.onToggleClickListener()
+        }
+        refreshImage()
+
         toggleConfig.textView.typeface = fontProvider.provideFont()
+    }
+
+    override fun setActive(active: Boolean) {
+        isActive = active
+        refreshImage()
+    }
+
+    override fun setText(text: String) {
+        textView?.text = text
+    }
+
+    override fun setTextSize(textSizePx: Int) {
+        textView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx.toFloat())
+    }
+
+    override fun setTextColor(color: Int) {
+        textView?.setTextColor(color)
     }
 
     override fun getToggleWidth(toggleType: String, toggleHeight: Float): Float {
@@ -78,6 +116,11 @@ class LinearToggleViewManager(private val fontProvider: FontProvider) : ToggleVi
             UiToggleNode.TYPE_CHECKBOX -> CHECKBOX_WIDTH_TO_HEIGHT_RATIO
             else -> DEFAULT_WIDTH_TO_HEIGHT_RATIO
         }
+    }
+
+    private fun refreshImage() {
+        val iconId = toggleIconsProvider.provideIconId(toggleType, isActive)
+        imageView?.setImageResource(iconId)
     }
 
 }

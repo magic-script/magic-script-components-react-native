@@ -28,13 +28,22 @@ interface ToggleViewManager {
             val toggleHeight: Float,
             val container: ViewGroup,
             val imageView: ImageView,
-            val textView: TextView
+            val textView: TextView,
+            val onToggleClickListener: () -> Unit
     )
 
     /**
      * Should layout the toggle's switch and text view inside the container
      */
     fun setupToggleView(context: Context, toggleConfig: ToggleConfig)
+
+    fun setActive(active: Boolean)
+
+    fun setText(text: String)
+
+    fun setTextSize(textSizePx: Int)
+
+    fun setTextColor(color: Int)
 
     /**
      * Should calculate the switch width in meters for the given height

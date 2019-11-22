@@ -18,8 +18,8 @@ package com.reactlibrary.scene.nodes.toggle
 
 import android.content.Context
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -28,14 +28,15 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.scene.nodes.base.UiNode
-import com.reactlibrary.utils.*
+import com.reactlibrary.utils.PropertiesReader
+import com.reactlibrary.utils.Utils
+import com.reactlibrary.utils.Vector2
+import com.reactlibrary.utils.putDefault
 
 open class UiToggleNode(initProps: ReadableMap,
                         context: Context,
                         viewRenderableLoader: ViewRenderableLoader,
-                        private val toggleIconsProvider: ToggleIconsProvider,
                         private val toggleViewManager: ToggleViewManager
 ) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
@@ -63,11 +64,20 @@ open class UiToggleNode(initProps: ReadableMap,
                 toggleChangedListener?.invoke(value)
             }
             field = value
-            refreshImage()
+            toggleViewManager.setActive(value)
         }
 
-    private lateinit var textView: TextView
-    private lateinit var imageView: ImageView
+    private val toggleClickListener = {
+        // disabling parent view is not sufficient
+        if (properties.getBoolean(PROP_ENABLED)) {
+            val toggleGroup = findToggleGroupParent()
+            if (toggleGroup == null) {
+                isOn = !isOn
+            } else {
+                toggleGroup.setupToggle(this, wantBeActive = !isOn)
+            }
+        }
+    }
 
     init {
         // set default properties values
@@ -78,16 +88,8 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     // container
-    override fun provideView(context: Context): ViewGroup {
+    override fun provideView(context: Context): View {
         return LinearLayout(context)
-    }
-
-    open fun provideTextView(): TextView {
-        return LayoutInflater.from(context).inflate(R.layout.toggle_text, null) as TextView
-    }
-
-    open fun provideImageView(): ImageView {
-        return LayoutInflater.from(context).inflate(R.layout.toggle_switch, null) as ImageView
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -96,8 +98,8 @@ open class UiToggleNode(initProps: ReadableMap,
     }
 
     override fun setupView() {
-        this.textView = provideTextView()
-        this.imageView = provideImageView()
+        val textView = LayoutInflater.from(context).inflate(R.layout.toggle_text, null) as TextView
+        val imageView = LayoutInflater.from(context).inflate(R.layout.toggle_switch, null) as ImageView
         val type = properties.getString(PROP_TYPE, TYPE_DEFAULT)
 
         var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
@@ -110,21 +112,18 @@ open class UiToggleNode(initProps: ReadableMap,
                 toggleHeight = heightMeters,
                 container = view as ViewGroup,
                 imageView = imageView,
-                textView = textView
+                textView = textView,
+                onToggleClickListener = this.toggleClickListener
         )
         toggleViewManager.setupToggleView(context, toggleConfig)
-
-        setupClickListener()
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (props.containsKey(PROP_HEIGHT)) {
+        if (props.containsKey(PROP_HEIGHT) || props.containsKey(PROP_TYPE)) {
             setNeedsRebuild()
         }
-
-        setType(props)
         setIsChecked(props)
         setText(props)
         setTextSize(props)
@@ -162,18 +161,6 @@ open class UiToggleNode(initProps: ReadableMap,
         return null
     }
 
-    private fun refreshImage() {
-        val iconType = properties.getString(PROP_TYPE, TYPE_DEFAULT)
-        val iconId = toggleIconsProvider.provideIconId(iconType, isOn)
-        imageView.setImageResource(iconId)
-    }
-
-    private fun setType(props: Bundle) {
-        props.ifContainsString(PROP_TYPE) {
-            refreshImage()
-        }
-    }
-
     private fun setIsChecked(props: Bundle) {
         if (props.containsKey(PROP_CHECKED)) {
             val value = props.getBoolean(PROP_CHECKED)
@@ -189,7 +176,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setText(properties: Bundle) {
         val text = properties.getString(PROP_TEXT)
         if (text != null) {
-            textView.text = text
+            toggleViewManager.setText(text)
             setNeedsRebuild()
         }
     }
@@ -197,8 +184,8 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            val size = Utils.metersToFontPx(sizeMeters, view.context)
+            toggleViewManager.setTextSize(size)
             setNeedsRebuild()
         }
     }
@@ -206,22 +193,7 @@ open class UiToggleNode(initProps: ReadableMap,
     private fun setTextColor(props: Bundle) {
         val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
         if (color != null) {
-            textView.setTextColor(color)
-        }
-    }
-
-    private fun setupClickListener() {
-        imageView.setOnClickListener {
-            // disabling parent view is not sufficient
-            if (!properties.getBoolean(PROP_ENABLED)) {
-                return@setOnClickListener
-            }
-            val toggleGroup = findToggleGroupParent()
-            if (toggleGroup == null) {
-                isOn = !isOn
-            } else {
-                toggleGroup.setupToggle(this, wantBeActive = !isOn)
-            }
+            toggleViewManager.setTextColor(color)
         }
     }
 

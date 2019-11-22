@@ -57,6 +57,20 @@ class UiWebViewNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
+                it("should update 'width' prop") {
+                    let referenceWidth = 1.1
+                    node.update(["width" : referenceWidth])
+                    expect(node.width).to(beCloseTo(referenceWidth))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'height' prop") {
+                    let referenceHeight = 0.7
+                    node.update(["height" : referenceHeight])
+                    expect(node.height).to(beCloseTo(referenceHeight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
                 it("should update 'action' prop") {
                     let referenceActions: [WebViewAction] = [.back, .forward, .reload]
                     for action in referenceActions {
@@ -64,6 +78,13 @@ class UiWebViewNodeSpec: QuickSpec {
                         expect(node.action).to(equal(action))
                         expect(node.isLayoutNeeded).to(beFalse())
                     }
+                }
+
+                it("should update 'scrollBy' prop") {
+                    let referenceScrollBy = CGSize(width: 1.2, height: 2.3)
+                    node.update(["scrollBy" : [referenceScrollBy.width, referenceScrollBy.height]])
+                    expect(node.scrollBy).to(beCloseTo(referenceScrollBy))
+                    expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
         }

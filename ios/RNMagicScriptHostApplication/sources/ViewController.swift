@@ -46,8 +46,9 @@ class ViewController: UIViewController {
 //        setupUiColorPickerNodeTest()
 //        setupTextEditTest()
 //        setupUiListViewNodeTest()
+        setupWebViewTest()
 //        setupAudioNodeTest()
-        setupUiCircleConfirmationNodeTest()
+//        setupUiCircleConfirmationNodeTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -239,10 +240,6 @@ class ViewController: UIViewController {
     }
 
     fileprivate func setupTextEditTest() {
-        // Group
-        let groupId: String = "group"
-        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-
         // TextEdit
         let textEditId: String = "text_edit"
         let _ : UiTextEditNode = createComponent([
@@ -256,37 +253,16 @@ class ViewController: UIViewController {
         ], nodeId: textEditId, parentId: groupId)
     }
 
-    fileprivate var audioNode : UiAudioNode!
-    fileprivate var sliderNode : UiSliderNode!
-    fileprivate func setupAudioNodeTest() {
-        // Group
-        let groupId: String = "group"
-        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-
-        // Audio node
-        let audioNodeId: String = "audio"
-        let audioURL: URL = Bundle.main.url(forResource: "bg_mono", withExtension: "mp3")!
-//        let audioURL: URL = URL(string: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3")!
-        print("audioURL: \(audioURL.absoluteString)")
-        audioNode = createComponent([
-            "fileName": audioURL.absoluteString,
+    fileprivate func setupWebViewTest() {
+        // WebView
+        let webViewId: String = "web_view"
+        let _ : UiWebViewNode = createComponent([
+            "alignment": "center-center",
             "debug": true,
-            "soundLooping": true,
-            "soundVolumeLinear": 5.0,
-            "spatialSoundEnable": true
-        ], nodeId: audioNodeId, parentId: groupId)
-        audioNode.action = .start
-
-        sliderNode = createComponent([
-            "localPosition": [0,-0.5,0],
-            "height": 0.05,
-            "width": 1,
-            "max": 2.0,
-        ], nodeId: "slider", parentId: groupId)
-        sliderNode.onSliderChanged = { [weak self] sender, value in
-            self?.value1 = value
-            self?.audioNode.layoutIfNeeded()
-        }
+            "width": 0.7,
+            "height": 1.0,
+            "url": "https://www.magicleap.com"
+        ], nodeId: webViewId, parentId: groupId)
     }
 
     @discardableResult
@@ -319,18 +295,9 @@ extension ViewController: ARSCNViewDelegate {
 //        }
 
         DispatchQueue.main.async() { [weak self] in
-            guard let strongSelf = self else { return }
+//            guard let strongSelf = self else { return }
 //            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
 //            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
-
-            let radius: CGFloat = 1
-            let angle: CGFloat = strongSelf.value1
-            let x: CGFloat = radius * sin(angle)
-            let y: CGFloat = 0
-            let z: CGFloat = radius * cos(angle)
-//            let quat = SCNQuaternion.fromAxis(SCNVector3(0,1,0), andAngle: Float(angle))
-//            strongSelf.audioNode.spatialSoundPosition = UiAudioNode.SpatialSoundPosition(channel: 0, position: SCNVector3(x, y, z))
-//            strongSelf.audioNode.spatialSoundDirection = UiAudioNode.SpatialSoundDirection(channel: 0, direction: quat)
             UiNodesManager.instance.updateLayout()
         }
     }

@@ -15,7 +15,6 @@
 //
 
 import SceneKit
-import SpriteKit
 
 @objc open class UiTextEditNode: UiNode {
     fileprivate var _text: String?

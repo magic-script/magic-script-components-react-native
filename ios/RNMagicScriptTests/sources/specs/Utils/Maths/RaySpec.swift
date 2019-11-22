@@ -71,6 +71,18 @@ class RaySpec: QuickSpec {
                     expect(ray!.length).to(beCloseTo(CGFloat(camera.zFar - camera.zNear)))
                 }
             }
+
+            context("getClosestPointTo") {
+                it("should return the closest point to another ray") {
+                    let ray1 = Ray(begin: SCNVector3(0, 0, 0), direction: SCNVector3(0, 1, 0), length: 5)
+                    let ray2 = Ray(begin: SCNVector3(1, 1, 1), direction: SCNVector3(0, 0, -1), length: 5)
+                    let result1 = ray1.getClosestPointTo(ray: ray2)
+                    expect(result1).to(beCloseTo(SCNVector3(0, 1, 0)))
+
+                    let result2 = ray2.getClosestPointTo(ray: ray1)
+                    expect(result2).to(beCloseTo(SCNVector3(1, 1, 0)))
+                }
+            }
         }
     }
 }

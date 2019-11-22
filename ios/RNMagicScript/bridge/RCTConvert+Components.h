@@ -44,6 +44,7 @@
 @class UiTimePickerNode;
 @class UiToggleNode;
 @class UiVideoNode;
+@class UiWebViewNode;
 
 @interface RCTConvert (Components)
 + (UiAudioNode *)UiAudioNode:(id)json;
@@ -74,4 +75,5 @@
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
++ (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

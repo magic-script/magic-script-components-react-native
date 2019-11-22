@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import SpriteKit
 import SceneKit
 import ARKit
 import AVKit

@@ -25,6 +25,7 @@ import com.google.ar.sceneform.collision.RayHit
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.ar.CubeRenderableBuilder
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -50,8 +51,19 @@ class LineNode(initProps: ReadableMap,
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
+    private var renderableCopy: Renderable? = null
     private var linesBounding = Bounding()
     private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
+
+    init {
+        visibilityObservers.add {
+            if(isVisible) {
+                contentNode.renderable = renderableCopy
+            } else {
+                contentNode.renderable = null
+            }
+        }
+    }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -153,7 +165,12 @@ class LineNode(initProps: ReadableMap,
         cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
             if (result is RenderableResult.Success) {
                 contentNode.addChild(lineSegment)
-                lineSegment.renderable = result.renderable
+                if(isVisible) {
+                    lineSegment.renderable = result.renderable
+                    renderableCopy = result.renderable
+                } else {
+                    renderableCopy = result.renderable
+                }
                 lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
                 lineSegment.localRotation = rotation
             }

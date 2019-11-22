@@ -28,6 +28,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.views.CustomAlertDialogBuilder
 import com.reactlibrary.utils.DialogProvider
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,6 +52,8 @@ class DialogNodeTest {
         context = ApplicationProvider.getApplicationContext()
         whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
     }
+
+
 
     @Test
     fun `should set confirm icon and text if props are passed`() {

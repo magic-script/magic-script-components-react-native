@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
+import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.ar.RenderableResult
 import com.reactlibrary.ar.VideoRenderableLoader
 import com.reactlibrary.scene.nodes.base.TransformNode
@@ -52,8 +53,18 @@ class VideoNode(initProps: ReadableMap,
         const val DEFAULT_VOLUME = 1.0
     }
 
-    var onVideoPreparedListener: (() -> Unit)? = null
+    init {
+        visibilityObservers.add {
+            if(isVisible) {
+                contentNode.renderable = renderableCopy
+            } else {
+                contentNode.renderable = null
+            }
+        }
+    }
 
+    var onVideoPreparedListener: (() -> Unit)? = null
+    private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
     private val initialWidth = 1F // meters
@@ -123,7 +134,12 @@ class VideoNode(initProps: ReadableMap,
             videoRenderableLoader.loadRenderable { result ->
                 if (result is RenderableResult.Success) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
-                    contentNode.renderable = result.renderable
+                    if(isVisible) {
+                        contentNode.renderable = result.renderable
+                        renderableCopy = result.renderable
+                    } else {
+                        renderableCopy = result.renderable
+                    }
                     applyMaterialClipping()
                 }
             }

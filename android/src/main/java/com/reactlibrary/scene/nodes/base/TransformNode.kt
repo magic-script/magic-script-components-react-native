@@ -23,9 +23,11 @@ import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Renderable
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.utils.*
+import kotlin.properties.Delegates
 
 /**
  * Base node.
@@ -85,6 +87,12 @@ abstract class TransformNode(
      * exceptions when reading from [ReadableMap])
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
+
+    protected val visibilityObservers = mutableListOf<(() -> Unit)>()
+
+    protected var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
+        visibilityObservers.forEach { it.invoke() }
+    }
 
     protected var updatingProperties = false
         private set
@@ -379,5 +387,12 @@ abstract class TransformNode(
         }
     }
 
+    open fun hide() {
+        isVisible = false
+    }
+
+    open fun show() {
+        isVisible = true
+    }
 
 }

@@ -78,6 +78,7 @@ abstract class UiNode(
     private var shouldRebuild = false
     private var loadingView = false
     private var rebuildLoopStarted = false
+    private var renderableCopy: Renderable? = null
 
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
@@ -119,6 +120,13 @@ abstract class UiNode(
      * with all initial properties
      */
     override fun build() {
+        visibilityObservers.add {
+            if(isVisible) {
+                contentNode.renderable = renderableCopy
+            } else {
+                contentNode.renderable = null
+            }
+        }
         initView()
         setup()
         if (!rebuildLoopStarted) {
@@ -292,7 +300,12 @@ abstract class UiNode(
         viewRenderableLoader.loadRenderable(config) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
-                contentNode.renderable = result.renderable
+                if(isVisible) {
+                    contentNode.renderable = result.renderable
+                    renderableCopy = result.renderable
+                } else {
+                    renderableCopy = result.renderable
+                }
                 applyMaterialClipping()
                 onViewLoadedListener?.invoke(result.renderable)
             }

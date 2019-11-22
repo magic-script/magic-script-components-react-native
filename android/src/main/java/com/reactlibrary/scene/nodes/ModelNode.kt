@@ -41,6 +41,16 @@ class ModelNode(initProps: ReadableMap,
         const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
+    init {
+        visibilityObservers.add {
+            if(isVisible) {
+                contentNode.renderable = renderableCopy
+            } else {
+                contentNode.renderable = null
+            }
+        }
+    }
+
     // localScale without importScale correction
     private var scale = localScale
     private var renderableCopy: Renderable? = null

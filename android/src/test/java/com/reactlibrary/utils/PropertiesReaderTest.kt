@@ -20,9 +20,14 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
+import com.facebook.react.bridge.JavaOnlyArray
+import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.createProperty
 import com.reactlibrary.scene.nodes.props.Padding
+import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -146,10 +151,10 @@ class PropertiesReaderTest {
         val bundle = Bundle()
         val prop = "PROP_NAME"
         val list = arrayListOf(
-                1.0, 2.0, 3.0, 4.0,
-                5.0, 6.0, 7.0, 8.0,
-                9.0, 10.0, 11.0, 12.0,
-                13.0, 14.0, 15.0, 16.0
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0
         )
         bundle.putSerializable(prop, list)
 
@@ -195,6 +200,49 @@ class PropertiesReaderTest {
 
         assertNotNull(padding)
         assertTrue(padding is Padding)
+    }
+
+    @Test
+    fun `should read SpatialSoundPosition`() {
+        val key = "spatialSoundPosition"
+        val spatialBundle = createProperty(
+            key, JavaOnlyMap.of(
+                "channel", 4.0,
+                "channelPosition", JavaOnlyArray.of(.1f, 1.1f, 2.1f)
+            )
+        )
+
+        val spatialSoundPosition = PropertiesReader.readSpatialSoundPosition(spatialBundle, key)
+
+        spatialSoundPosition.shouldNotBeNull()
+        spatialSoundPosition.channel shouldEqual 4.0
+        spatialSoundPosition.channelPosition.shouldNotBeNull()
+        spatialSoundPosition.channelPosition!!.run {
+            x shouldEqual .1f
+            y shouldEqual 1.1f
+            z shouldEqual 2.1f
+        }
+    }
+
+    @Test
+    fun `should read SpatialSoundDistance`() {
+        val key = "spatialSoundDistance"
+        val spatialBundle = createProperty(
+            key, JavaOnlyMap.of(
+                "channel", 4.0,
+                "minDistance", 1.0,
+                "maxDistance", 3.0,
+                "rolloffFactor", 2
+            )
+        )
+
+        val spatialSoundDistance = PropertiesReader.readSpatialSoundDistance(spatialBundle, key)
+
+        spatialSoundDistance.shouldNotBeNull()
+        spatialSoundDistance.channel shouldEqual 4.0
+        spatialSoundDistance.minDistance shouldEqual 1f
+        spatialSoundDistance.maxDistance shouldEqual 3f
+        spatialSoundDistance.rolloffFactor shouldEqual 2
     }
 
 }

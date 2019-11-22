@@ -65,11 +65,19 @@ open class AudioNode @JvmOverloads constructor(
         }
     }
 
+    private var audioThread: Thread? = Thread(
+        Runnable {
+            setupAudioEngine()
+        }
+    )
+
+    private var audioEngineSet: Boolean = false
     private var file: File? = null
     private var looping: Boolean = DEFAULT_SOUND_LOOPING
     private var sourceId: Int = GvrAudioEngine.INVALID_ID
     private var spatialSoundEnabled = DEFAULT_SPATIAL_SOUND_ENABLE
     private var volume = 0f
+    private var action: String = AudioAction.START
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -91,26 +99,35 @@ open class AudioNode @JvmOverloads constructor(
             audioEngine.unloadSoundFile(file.path)
         }
 
+        audioThread?.interrupt()
+        audioThread = null
+        audioEngineSet = false
+
+        fileDownloader.onDestroy()
+
         super.onDestroy()
     }
 
     private fun applyValues(props: Bundle) {
         props.run {
-            val filePath = readFilePath(this, PROP_FILE_NAME, context)
-            if (filePath != null) {
-                fileDownloader.downloadFile(filePath.toString()) { file ->
-                    this@AudioNode.file = file
-                    setupAudioEngine()
-                }
-            }
-
             ifContains(PROP_SOUND_LOOPING) { isLooping: Boolean ->
                 looping = isLooping
             }
 
+            val filePath = readFilePath(this, PROP_FILE_NAME, context)
+            if (filePath != null) {
+                fileDownloader.downloadFile(filePath.toString()) { file ->
+                    this@AudioNode.file = file
+                    audioThread?.start()
+                }
+            }
+
             ifContains(PROP_SPATIAL_SOUND_ENABLE) { isSpatialSoundEnabled: Boolean ->
                 spatialSoundEnabled = isSpatialSoundEnabled
-                setupAudioEngine()
+
+                if (audioThread?.isAlive == true) {
+                    setupAudioEngine()
+                }
             }
 
             ifContains(PROP_SOUND_VOLUME_LINEAR) { volume: Double ->
@@ -124,37 +141,47 @@ open class AudioNode @JvmOverloads constructor(
                 } else {
                     audioEngine.setSoundVolume(sourceId, volume)
                 }
-
             }
         }
     }
 
     private fun setupAudioEngine() {
-        Thread(
-            Runnable {
-                file?.let { file ->
-                    if (sourceId != GvrAudioEngine.INVALID_ID) {
-                        audioEngine.stopSound(sourceId)
-                        audioEngine.unloadSoundFile(file.path)
-                    }
-                    audioEngine.preloadSoundFile(file.path)
-                    sourceId = if (spatialSoundEnabled) {
-                        audioEngine.createSoundObject(file.path)
-                    } else {
-                        audioEngine.createStereoSound(file.path)
-                    }
-                    audioEngine.setRoomProperties(
-                        15f,
-                        15f,
-                        15f,
-                        PLASTER_SMOOTH,
-                        PLASTER_SMOOTH,
-                        CURTAIN_HEAVY
-                    )
-                    audioEngine.playSound(sourceId, looping)
-                }
-            }
-        ).start()
+        file?.let { file ->
+            unloadSoundFile(file)
+            audioEngine.preloadSoundFile(file.path)
+            createAudioSource(file)
+            audioEngine.setRoomProperties(
+                15f,
+                15f,
+                15f,
+                PLASTER_SMOOTH,
+                PLASTER_SMOOTH,
+                CURTAIN_HEAVY
+            )
+            autoplayAudio()
+            audioEngineSet = true
+        }
+    }
+
+    private fun unloadSoundFile(file: File) {
+        if (sourceId != GvrAudioEngine.INVALID_ID) {
+            audioEngine.stopSound(sourceId)
+            audioEngine.unloadSoundFile(file.path)
+        }
+    }
+
+    private fun createAudioSource(file: File) {
+        sourceId = if (spatialSoundEnabled) {
+            audioEngine.createSoundObject(file.path)
+        } else {
+            audioEngine.createStereoSound(file.path)
+        }
+    }
+
+    private fun autoplayAudio() {
+        if (AudioAction.shouldPlay(action)) {
+            audioEngine.playSound(sourceId, looping)
+        }
     }
 
     private fun applyActions(props: Bundle) {
@@ -165,6 +192,7 @@ open class AudioNode @JvmOverloads constructor(
                 AudioAction.RESUME -> audioEngine.resume()
                 AudioAction.START -> audioEngine.playSound(sourceId, looping)
             }
+            this@AudioNode.action = action
         }
     }
 

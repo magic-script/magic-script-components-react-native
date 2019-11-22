@@ -22,5 +22,7 @@ class AudioAction {
         const val STOP = "stop"
         const val PAUSE = "pause"
         const val RESUME = "resume"
+
+        fun shouldPlay(action: String) = action == START || action == RESUME
     }
 }

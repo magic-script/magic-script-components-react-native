@@ -19,6 +19,11 @@ package com.reactlibrary
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
+import com.reactlibrary.scene.nodes.base.TransformNode
 
 fun createProperty(vararg keysAndValues: Any): Bundle =
     Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
+
+fun <T: TransformNode> T.update(vararg keysAndValues: Any) {
+    update(JavaOnlyMap.of(*keysAndValues))
+}

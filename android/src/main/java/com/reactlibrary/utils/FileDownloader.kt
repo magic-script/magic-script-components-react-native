@@ -26,14 +26,16 @@ import java.net.URL
 
 class FileDownloader(private val context: Context) {
 
+    private val threads = mutableMapOf<String, Thread>()
+
     fun downloadFile(path: String?, result: (File) -> Unit): Boolean {
         try {
-            if(path == null) {
+            if (path == null) {
                 return false
             }
             val url = URL(path)
 
-            Thread(
+            val thread = Thread(
                 Runnable {
                     val ucon = url.openConnection().apply {
                         readTimeout = 5000
@@ -55,9 +57,11 @@ class FileDownloader(private val context: Context) {
                     file.copyInputStreamToFile(bufferedInputStream)
 
                     bufferedInputStream.close()
-                    result(file)
+                    fileDownloaded(path, result, file)
                 }
-            ).start()
+            )
+            threads[path] = thread
+            thread.start()
 
         } catch (e: Exception) {
             logMessage(e.localizedMessage, true)
@@ -67,11 +71,26 @@ class FileDownloader(private val context: Context) {
         return true
     }
 
+    fun onDestroy() {
+        threads.values.forEach { it.interrupt() }
+        threads.clear()
+    }
+
     private fun File.copyInputStreamToFile(inputStream: InputStream) {
         inputStream.use { input ->
             this.outputStream().use { fileOut ->
                 input.copyTo(fileOut)
             }
         }
+    }
+
+    private fun fileDownloaded(
+        path: String,
+        result: (File) -> Unit,
+        file: File
+    ) {
+        result(file)
+        threads[path]?.interrupt()
+        threads.remove(path)
     }
 }

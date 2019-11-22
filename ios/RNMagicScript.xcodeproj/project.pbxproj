@@ -78,6 +78,7 @@
 		449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54952387FF5300D839CC /* UIView+Screenshot.swift */; };
 		449B54992388017700D839CC /* WebViewActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54982388017700D839CC /* WebViewActionSpec.swift */; };
 		449B549B2388021C00D839CC /* UiWebViewNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B549A2388021C00D839CC /* UiWebViewNodeSpec.swift */; };
+		449B54A423889F4B00D839CC /* UIFontLominoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */; };
 		44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD002366258400402912 /* GridLayoutSpec.swift */; };
 		44A3FD032366364900402912 /* UiLinearLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */; };
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
@@ -529,6 +530,7 @@
 		449B54952387FF5300D839CC /* UIView+Screenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		449B54982388017700D839CC /* WebViewActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewActionSpec.swift; sourceTree = "<group>"; };
 		449B549A2388021C00D839CC /* UiWebViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiWebViewNodeSpec.swift; sourceTree = "<group>"; };
+		449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontLominoSpec.swift; sourceTree = "<group>"; };
 		44A3FD002366258400402912 /* GridLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLinearLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutSpec.swift; sourceTree = "<group>"; };
@@ -1316,6 +1318,7 @@
 				441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */,
 				44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */,
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
+				449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2062,6 +2065,7 @@
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
 				44931E06237D898C00E11972 /* UiLabelNodeSpec.swift in Sources */,
 				44931E12237D999B00E11972 /* UiModelNodeSpec.swift in Sources */,
+				449B54A423889F4B00D839CC /* UIFontLominoSpec.swift in Sources */,
 				44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,

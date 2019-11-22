@@ -20,4 +20,4 @@ package com.reactlibrary.scene.nodes
 import com.facebook.react.bridge.ReadableMap
 
 // Container class for
-class ContainerNode(props: ReadableMap): GroupNode(props)
+class ContentNode(props: ReadableMap): GroupNode(props)

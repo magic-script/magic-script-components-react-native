@@ -48,6 +48,7 @@ import com.reactlibrary.icons.IconsRepository;
 import com.reactlibrary.icons.IconsRepositoryImpl;
 import com.reactlibrary.icons.ToggleIconsProviderImpl;
 import com.reactlibrary.scene.UiNodesManager;
+import com.reactlibrary.scene.nodes.ContentNode;
 import com.reactlibrary.scene.nodes.DialogNode;
 import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
@@ -380,9 +381,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPanelNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> {
-            addNode(new PanelNode(props), nodeId);
-        });
+        mainHandler.post(() -> addNode(new PanelNode(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createContentNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new ContentNode(props), nodeId));
     }
 
     @ReactMethod

@@ -23,6 +23,7 @@ import ScrollBarBuilder from "./elements/builders/scroll-bar-builder.js";
 import ScrollViewBuilder from "./elements/builders/scroll-view-builder.js";
 import SliderBuilder from "./elements/builders/slider-builder.js";
 import SpinnerBuilder from "./elements/builders/spinner-builder.js";
+import TabBuilder from "./elements/builders/tab-builder.js"
 import TextBuilder from "./elements/builders/text-builder.js";
 import TextEditBuilder from "./elements/builders/text-edit-builder.js";
 import TimePickerBuilder from "./elements/builders/time-picker-builder.js";
@@ -55,6 +56,7 @@ export default {
     scrollView: componentManager => new ScrollViewBuilder(componentManager),
     slider: componentManager => new SliderBuilder(componentManager),
     spinner: componentManager => new SpinnerBuilder(componentManager),
+    tab: componentManager => new TabBuilder(componentManager),
     text: componentManager => new TextBuilder(componentManager),
     textEdit: componentManager => new TextEditBuilder(componentManager),
     timePicker: componentManager => new TimePickerBuilder(componentManager),

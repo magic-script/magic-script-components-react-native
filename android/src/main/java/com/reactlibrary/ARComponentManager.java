@@ -69,6 +69,7 @@ import com.reactlibrary.scene.nodes.UiScrollBarNode;
 import com.reactlibrary.scene.nodes.UiScrollViewNode;
 import com.reactlibrary.scene.nodes.UiSliderNode;
 import com.reactlibrary.scene.nodes.UiSpinnerNode;
+import com.reactlibrary.scene.nodes.UiTabNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.UiTimePickerNode;
@@ -384,6 +385,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         });
     }
 
+    @ReactMethod
+    public void createTabNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+           addNode(node, nodeId);
+        });
+    }
+    
     @ReactMethod
     public void createPanelNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
@@ -777,5 +786,4 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void onHostDestroy() {
         MediaPlayerPool.INSTANCE.destroy();
     }
-
 }

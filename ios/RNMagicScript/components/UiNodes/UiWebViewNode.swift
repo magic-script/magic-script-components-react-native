@@ -103,6 +103,24 @@ import WebKit
 }
 
 extension UiWebViewNode: UIWebViewDelegate, WKNavigationDelegate {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        print("webView:decidePolicyForNavigationAction:decisionHandler")
+        decisionHandler(.allow)
+    }
+
+    @available(iOS 13.0, *)
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+        print("webView:decidePolicyFor:preferences")
+        let preferences = WKWebpagePreferences()
+        preferences.preferredContentMode = .recommended
+        decisionHandler(.allow, preferences)
+    }
+
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        print("webView:decidePolicyForNavigationResponse:decisionHandler")
+        decisionHandler(.allow)
+    }
+
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         print("webView:didStartProvisionalNavigation")
     }

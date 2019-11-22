@@ -14,11 +14,12 @@
  *   limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes
+package com.reactlibrary.scene.nodes.toggle
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.reactlibrary.scene.nodes.GroupNode
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.utils.ifContainsBoolean
 import com.reactlibrary.utils.putDefault

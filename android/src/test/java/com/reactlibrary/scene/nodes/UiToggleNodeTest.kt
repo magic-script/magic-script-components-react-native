@@ -35,6 +35,8 @@ import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
 import com.reactlibrary.icons.ToggleIconsProvider
 import com.reactlibrary.icons.ToggleIconsProviderImpl
+import com.reactlibrary.scene.nodes.toggle.LinearToggleViewManager
+import com.reactlibrary.scene.nodes.toggle.UiToggleNode
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -168,7 +170,7 @@ class UiToggleNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context, mock(), fontProvider, toggleIconsProvider) {
+        return object : UiToggleNode(props, context, mock(), toggleIconsProvider, LinearToggleViewManager(fontProvider)) {
 
             override fun provideView(context: Context): ViewGroup {
                 return containerSpy

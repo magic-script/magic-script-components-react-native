@@ -53,7 +53,7 @@ import com.reactlibrary.scene.nodes.GroupNode;
 import com.reactlibrary.scene.nodes.LineNode;
 import com.reactlibrary.scene.nodes.ModelNode;
 import com.reactlibrary.scene.nodes.PanelNode;
-import com.reactlibrary.scene.nodes.ToggleGroupNode;
+import com.reactlibrary.scene.nodes.toggle.ToggleGroupNode;
 import com.reactlibrary.scene.nodes.UIWebViewNode;
 import com.reactlibrary.scene.nodes.UiButtonNode;
 import com.reactlibrary.scene.nodes.UiCircleConfirmationNode;
@@ -73,7 +73,6 @@ import com.reactlibrary.scene.nodes.UiTabNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.UiTimePickerNode;
-import com.reactlibrary.scene.nodes.UiToggleNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
@@ -83,6 +82,8 @@ import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.toggle.LinearToggleViewManager;
+import com.reactlibrary.scene.nodes.toggle.UiToggleNode;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
 import com.reactlibrary.scene.nodes.video.VideoNode;
 import com.reactlibrary.scene.nodes.video.VideoPlayer;
@@ -276,7 +277,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createToggleNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, fontProvider, new ToggleIconsProviderImpl());
+            UiToggleNode node = new UiToggleNode(
+                    props,
+                    context,
+                    viewRenderableLoader,
+                    new ToggleIconsProviderImpl(),
+                    new LinearToggleViewManager(fontProvider)
+            );
             addNode(node, nodeId);
         });
     }
@@ -389,10 +396,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
-           addNode(node, nodeId);
+            addNode(node, nodeId);
         });
     }
-    
+
     @ReactMethod
     public void createPanelNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {

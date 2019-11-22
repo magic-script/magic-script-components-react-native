@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.scene.nodes
+package com.reactlibrary.scene.nodes.toggle
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider

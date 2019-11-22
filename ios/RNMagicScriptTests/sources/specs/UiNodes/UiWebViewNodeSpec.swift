@@ -41,6 +41,12 @@ class UiWebViewNodeSpec: QuickSpec {
                 }
             }
 
+            context("initialization") {
+                it("should throw exception if 'setupNode' has been called more than once") {
+                    expect(node.setupNode()).to(throwAssertion())
+                }
+            }
+
             context("update properties") {
                 it("should not update 'alignment' prop") {
                     let referenceAlignment = Alignment.bottomRight
@@ -85,6 +91,33 @@ class UiWebViewNodeSpec: QuickSpec {
                     node.update(["scrollBy" : [referenceScrollBy.width, referenceScrollBy.height]])
                     expect(node.scrollBy).to(beCloseTo(referenceScrollBy))
                     expect(node.isLayoutNeeded).to(beFalse())
+                }
+            }
+
+            context("focus") {
+                it("should canHaveFocus if url is defined") {
+                    expect(node.canHaveFocus).to(beFalse())
+                    node.url = URL(string: "https://www.magicleap.com")!
+                    expect(node.canHaveFocus).to(beTrue())
+                }
+
+                it("should not canHaveFocus if enabled is set to false") {
+                    node.url = URL(string: "https://www.magicleap.com")!
+                    expect(node.canHaveFocus).to(beTrue())
+                    node.enabled = false
+                    expect(node.canHaveFocus).to(beFalse())
+                }
+
+                it("should present SFSafariViewController when component gets focus") {
+                    let rootVC: UIViewController! = UIApplication.shared.keyWindow?.rootViewController!
+                    expect(rootVC).notTo(beNil())
+                    expect(rootVC?.presentedViewController).to(beNil())
+                    node.enterFocus()
+                    expect(rootVC?.presentedViewController).to(beNil())
+
+                    node.url = URL(string: "https://www.magicleap.com")!
+                    node.enterFocus()
+                    expect(rootVC?.presentedViewController).notTo(beNil())
                 }
             }
         }

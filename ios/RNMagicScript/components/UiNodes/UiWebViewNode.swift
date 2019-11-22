@@ -53,6 +53,7 @@ import SafariServices
             }
         }
     }
+    // Due to limitations of current implementation of webView, the scrollBy property is not supported
     @objc var scrollBy: CGSize = CGSize.zero
 
     fileprivate var webView: WKWebView!
@@ -60,18 +61,14 @@ import SafariServices
     fileprivate var lastScreenshot: UIImage?
 
     @objc override var canHaveFocus: Bool {
-        return enabled
+        return enabled && url != nil
     }
 
     @objc override func enterFocus() {
         super.enterFocus()
         guard hasFocus else { return }
 
-        presentSafariViewController()
-    }
-
-    deinit {
-        removeWebViewFromHierarchy()
+        presentSafariViewController(url: url!)
     }
 
     @objc override func setupNode() {
@@ -130,6 +127,8 @@ import SafariServices
         guard width > 0, height > 0 else { return }
         let factor: CGFloat = UiWebViewNode.maxSnaptshotSize / max(width, height)
         webView.frame = CGRect(x: 0, y: 0, width: round(factor * width), height: round(factor * height))
+        webView.setNeedsLayout()
+        webView.layoutIfNeeded()
     }
 
     fileprivate func updateScreenshot() {
@@ -137,92 +136,48 @@ import SafariServices
         lastScreenshot = (width > 0 && height > 0) ? webView.takeScreenshot() : nil
     }
 
-    fileprivate func presentSafariViewController() {
-        guard let url = url else { return }
+    fileprivate func presentSafariViewController(url: URL) {
         let safariVC = SFSafariViewController(url: url)
         safariVC.dismissButtonStyle = .close
         safariVC.delegate = self
         UIApplication.shared.keyWindow?.rootViewController?.present(safariVC, animated: true, completion: nil)
     }
 
-    fileprivate func addWebViewToHierarchy() {
-//        if let rootView = UIApplication.shared.keyWindow?.rootViewController?.view, webView.superview == nil {
-//            rootView.addSubview(webView)
-//            rootView.sendSubviewToBack(webView)
-//            webView.setNeedsLayout()
-//            webView.layoutIfNeeded()
-//        }
-    }
-
-    fileprivate func removeWebViewFromHierarchy() {
-//        webView.removeFromSuperview()
-    }
-
-    @objc fileprivate func reloadScreenshot(after delay: TimeInterval, removeFromHierarchy: Bool = false) {
+    @objc fileprivate func reloadScreenshot(after delay: TimeInterval) {
         let deadlineTime = DispatchTime.now() + .milliseconds(Int(delay * 1000))
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) { [weak self] in
             self?.updateScreenshot()
             self?.setNeedsLayout()
             self?.layoutIfNeeded()
-            if removeFromHierarchy {
-                self?.removeWebViewFromHierarchy()
-            }
         }
     }
 }
 
 extension UiWebViewNode: WKNavigationDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        print("webView:decidePolicyForNavigationAction:decisionHandler")
-        decisionHandler(.allow)
-    }
-
-    @available(iOS 13.0, *)
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-        print("webView:decidePolicyFor:preferences")
-        let preferences = WKWebpagePreferences()
-        preferences.preferredContentMode = .recommended
-        decisionHandler(.allow, preferences)
-    }
-
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-        print("webView:decidePolicyForNavigationResponse:decisionHandler")
-        decisionHandler(.allow)
-    }
-
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         print("webView:didStartProvisionalNavigation")
-        addWebViewToHierarchy()
-        updateWebViewFrame()
-    }
-
-    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        print("webView:didReceiveServerRedirectForProvisionalNavigation")
-    }
-
-    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        print("webView:didCommit:navigation")
+        reloadScreenshot(after: 0.1)
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        reloadScreenshot(after: 0.1, removeFromHierarchy: true)
+        reloadScreenshot(after: 0.1)
         print("webView:didFailProvisionalNavigation:withError: \(error)")
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         reloadScreenshot(after: 0.1)
         reloadScreenshot(after: 1.5)
-        reloadScreenshot(after: 3.0, removeFromHierarchy: true)
+        reloadScreenshot(after: 3.0)
         print("webView:didFinish:navigation")
     }
 
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        reloadScreenshot(after: 0.1, removeFromHierarchy: true)
+        reloadScreenshot(after: 0.1)
         print("webView:didFail:navigation:withError: \(error)")
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        reloadScreenshot(after: 0.1, removeFromHierarchy: true)
+        reloadScreenshot(after: 0.1)
         print("webViewWebContentProcessDidTerminate")
     }
 }

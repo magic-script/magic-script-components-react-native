@@ -26,7 +26,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.formatter.VerySimpleDateFormat
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode
-import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import java.util.*
@@ -36,7 +36,7 @@ open class UiDatePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    datePickerDialogProvider: DateTimePickerDialogProvider
+    datePickerDialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(initProps, context, viewRenderableLoader, datePickerDialogProvider) {
 
     companion object {

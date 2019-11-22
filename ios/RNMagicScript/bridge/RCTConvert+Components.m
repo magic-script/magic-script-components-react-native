@@ -27,6 +27,10 @@
     return [[UiButtonNode alloc] initWithProps:json];
 }
 
++ (UiCircleConfirmationNode *)UiCircleConfirmationNode:(id)json {
+    return [[UiCircleConfirmationNode alloc] initWithProps:json];
+}
+
 + (UiColorPickerNode *)UiColorPickerNode:(id)json {
     return [[UiColorPickerNode alloc] initWithProps: json];
 }

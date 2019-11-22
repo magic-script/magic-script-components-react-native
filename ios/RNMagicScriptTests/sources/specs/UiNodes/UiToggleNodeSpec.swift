@@ -44,7 +44,7 @@ class UiToggleNodeSpec: QuickSpec {
                 }
 
                 it("should have set default size") {
-                    expect(node.getSize()).to(beCloseTo(UiToggleNode.defaultSize))
+                    expect(node.getSize()).to(beCloseTo(UiToggleNode.defaultRectangleSize))
                 }
             }
 

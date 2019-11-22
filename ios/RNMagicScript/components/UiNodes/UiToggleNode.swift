@@ -18,7 +18,8 @@ import SceneKit
 
 @objc open class UiToggleNode: UiNode {
 
-    static let defaultSize: CGSize = CGSize(width: 0.07337, height: 0.03359)
+    static let defaultRectangleSize: CGSize = CGSize(width: 0.07337, height: 0.03359)
+    static let defaultSquareSize: CGSize = CGSize(width: 0.03359, height: 0.03359) // Checkbox & Radio
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
@@ -26,7 +27,7 @@ import SceneKit
     }
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue; setNeedsLayout() }
+        set { labelNode.text = newValue; labelNode.reload(); setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor }
@@ -39,7 +40,11 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
     @objc var on: Bool = false {
-        didSet { toggleGeometry.firstMaterial?.diffuse.contents = on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image }
+        didSet { toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset() }
+    }
+
+    @objc var type: ToggleType = .default {
+        didSet { setNeedsLayout() }
     }
 
     @objc public var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
@@ -73,7 +78,6 @@ import SceneKit
         let toggleSize = getToggleSize()
         toggleGeometry = SCNPlane(width: toggleSize.width, height: toggleSize.height)
         toggleGeometry.firstMaterial?.lightingModel = .constant
-        toggleGeometry.firstMaterial?.diffuse.contents = ImageAsset.toggleOff.image
         toggleGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         toggleNode = SCNNode(geometry: toggleGeometry)
         contentNode.addChildNode(toggleNode)
@@ -101,12 +105,16 @@ import SceneKit
         if let on = Convert.toBool(props["on"]) {
             self.on = on
         }
+
+        if let type = Convert.toToggleType(props["type"]) {
+            self.type = type
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
-        let textToggleGap: CGFloat = 0.75 * toggleSize.width
+        let textToggleGap: CGFloat = 0.5 * toggleSize.width
         let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? textToggleGap : 0
 
         let heightContent: CGFloat = max(toggleSize.height, labelSize.height)
@@ -116,23 +124,34 @@ import SceneKit
 
     @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
-        let toggleSize = getToggleSize()
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
-        let offset = CGPoint(x: -size.width + 0.5 * toggleSize.width, y: -0.5 * size.height)
+        let offset = getOffset()
         return CGRect(origin: origin + offset, size: size)
+    }
+
+    fileprivate func getOffset() -> CGPoint {
+        let size = getSize()
+        let toggleSize = getToggleSize()
+        return type == ToggleType.default ? CGPoint(x: -size.width + 0.5 * toggleSize.width, y: -0.5 * size.height) : CGPoint(x: -0.5 * toggleSize.width, y: -0.5 * size.height)
     }
 
     @objc override func updateLayout() {
         labelNode.reload()
 
-        let size = getSize()
-        let labelSize = labelNode.getSize()
+        toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset()
+
         let toggleSize = getToggleSize()
         toggleGeometry.width = toggleSize.width
         toggleGeometry.height = toggleSize.height
 
-        let x: Float = -Float(size.width - 0.5 * (labelSize.width + toggleSize.width))
-        labelNode.position = SCNVector3(x, 0, 0)
+        labelNode.position = SCNVector3(getLabelXPosition(), 0, 0)
+    }
+
+    fileprivate func getLabelXPosition() -> Float {
+        let size = getSize()
+        let labelSize = labelNode.getSize()
+        let toggleSize = getToggleSize()
+        return type == ToggleType.default ? -Float(size.width - 0.5 * (labelSize.width + toggleSize.width)) : Float(size.width - 0.5 * (labelSize.width + toggleSize.width))
     }
 
     @objc override func setDebugMode(_ debug: Bool) {
@@ -141,8 +160,24 @@ import SceneKit
     }
 
     fileprivate func getToggleSize() -> CGSize {
-        let toggleHeight: CGFloat = (height > 0) ? height : UiToggleNode.defaultSize.height
-        let toggleWidth: CGFloat = (UiToggleNode.defaultSize.width / UiToggleNode.defaultSize.height) * toggleHeight
+        let defaultSize = getDefaultSize()
+        let toggleHeight: CGFloat = (height > 0) ? height : defaultSize.height
+        let toggleWidth: CGFloat = (defaultSize.width / defaultSize.height) * toggleHeight
         return CGSize(width: toggleWidth, height: toggleHeight)
+    }
+
+    fileprivate func getDefaultSize() -> CGSize {
+        return type == ToggleType.default ? UiToggleNode.defaultRectangleSize : UiToggleNode.defaultSquareSize
+    }
+
+    fileprivate func getToggleAsset() -> UIImage {
+        switch type {
+        case .checkbox:
+            return on ? ImageAsset.checkboxChecked.image : ImageAsset.checkboxUnchecked.image
+        case .radio:
+                return on ? ImageAsset.radioChecked.image : ImageAsset.radioUnchecked.image
+        default:
+            return on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image
+        }
     }
 }

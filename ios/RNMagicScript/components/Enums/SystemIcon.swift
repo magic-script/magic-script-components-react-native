@@ -45,6 +45,15 @@ import UIKit
     }
 }
 
+extension SystemIcon {
+    override open func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? SystemIcon {
+            return self.name == object.name && self.imageName == object.imageName
+        }
+        return false
+    }
+}
+
 // MARK: - Bundle
 extension SystemIcon {
     fileprivate static func getImageName(_ text: String) -> String {

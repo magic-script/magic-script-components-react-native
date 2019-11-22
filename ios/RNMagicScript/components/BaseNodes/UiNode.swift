@@ -78,4 +78,19 @@ import SceneKit
     @objc func leaveFocus() {
         hasFocus = false
     }
+
+    @objc var canBeLongPressed: Bool {
+        return false
+    }
+
+    @objc private(set) var isLongPressed: Bool = false
+
+    @objc func longPressStarted() {
+        guard canBeLongPressed else { return }
+        isLongPressed = true
+    }
+
+    @objc func longPressEnded() {
+        isLongPressed = false
+    }
 }

@@ -72,8 +72,9 @@ open class UiListViewItemNode(initProps: ReadableMap,
                 .forEach { it.setClipBounds(localBounds) }
     }
 
-    override fun onUpdate(frameTime: FrameTime) {
-        super.onUpdate(frameTime)
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
+
         // align the content node
         val content = contentNode.children.firstOrNull() as? TransformNode
         if (content != null) {

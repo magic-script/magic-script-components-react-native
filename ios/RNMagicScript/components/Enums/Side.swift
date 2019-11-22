@@ -17,10 +17,7 @@
 import Foundation
 
 @objc public enum Side: Int {
-    case top
-    case right
-    case bottom
-    case left
+    case top, right, bottom, left
 
     public typealias RawValue = String
 

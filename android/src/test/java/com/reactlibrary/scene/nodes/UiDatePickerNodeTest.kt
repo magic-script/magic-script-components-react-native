@@ -38,7 +38,7 @@ import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.LABE
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.LABEL_SIDE_TOP
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
-import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.utils.updateDate
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
@@ -59,7 +59,7 @@ class UiDatePickerNodeTest {
     val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    val datePickerDialogProvider = mock<DateTimePickerDialogProvider>().apply {
+    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
     }
     var tested: TestableUiDatePickerNode = TestableUiDatePickerNode(datePickerDialogProvider)
@@ -217,7 +217,7 @@ class UiDatePickerNodeTest {
     }
 
     class TestableUiDatePickerNode(
-        datePickerDialogProvider: DateTimePickerDialogProvider
+        datePickerDialogProvider: DialogProviderImpl
     ) : UiDatePickerNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),

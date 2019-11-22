@@ -17,9 +17,11 @@
 package com.reactlibrary.scene.nodes.views
 
 import android.content.Context
-import android.view.MotionEvent
 import androidx.test.core.app.ApplicationProvider
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.createActionDownEvent
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,21 +40,19 @@ class CustomScrollBarTest {
     }
 
     @Test
-    fun touchCallbackShouldSetThumbPosition() {
-        val event: MotionEvent = mock()
-        whenever(event.getActionMasked()).thenReturn(MotionEvent.ACTION_DOWN)
-        scrollBar.onTouchEvent(event)
+    fun `touch callback should set thumb position`() {
+        scrollBar.onTouchEvent(scrollBar.createActionDownEvent())
         verify(scrollBar).thumbPosition = any()
     }
 
     @Test
-    fun shouldRedrawAfterSettingThumbPosition() {
+    fun `should redraw after setting thumb position`() {
         scrollBar.thumbPosition = 99F
         verify(scrollBar).invalidate()
     }
 
     @Test
-    fun shouldRedrawAfterSettingThumbSize() {
+    fun `should redraw after setting thumb size`() {
         scrollBar.thumbSize = 99F
         verify(scrollBar).invalidate()
     }

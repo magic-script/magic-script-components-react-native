@@ -72,7 +72,11 @@ RCT_EXPORT_MODULE();
              @"onColorConfirmed",
              @"onColorCanceled",
              @"onDialogConfirmed",
-             @"onDialogCanceled"
+             @"onDialogCanceled",
+             @"onDialogTimeExpired",
+             @"onConfirmationCompleted",
+             @"onConfirmationUpdated",
+             @"onConfirmationCanceled"
              ];
 }
 
@@ -192,6 +196,54 @@ RCT_EXPORT_MODULE();
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self sendEventWithName:@"onColorCanceled" body:@{ @"nodeId": sender.name, @"Color": value }];
+        });
+    }
+}
+
+- (void)onDialogConfirmedEventReceived:(UiDialogNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onDialogConfirmed" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onDialogCanceledEventReceived:(UiDialogNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onDialogCanceled" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onDialogTimeExpiredEventReceived:(UiDialogNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onDialogTimeExpired" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationCompleted" body:@{ @"nodeId": sender.name }];
+        });
+    }
+}
+
+- (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationUpdated" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
+        });
+    }
+}
+
+- (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {
+    if (hasListeners) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendEventWithName:@"onConfirmationCanceled" body:@{ @"nodeId": sender.name }];
         });
     }
 }

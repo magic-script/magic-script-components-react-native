@@ -18,16 +18,25 @@ package com.reactlibrary.scene.nodes.views
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
+import com.nhaarman.mockitokotlin2.mock
+import org.amshove.kluent.shouldBeInstanceOf
+import org.junit.Test
 
-class DateTimePickerDialogProvider {
-    fun provideDatePickerDialog(
-        context: Context
-    ) = DatePickerDialog(context)
+class DialogProviderImplTest {
 
-    fun provideTimePickerDialog(
-        context: Context,
-        onTimeSetListener: TimePickerDialog.OnTimeSetListener,
-        is24HourView: Boolean
-    ) = NotifiableTimePickerDialog(context, onTimeSetListener, is24HourView)
+    val tested = DialogProviderImpl()
+
+    @Test
+    fun `should provide DatePickerDialog`() {
+        val datePickerDialog = tested.provideDatePickerDialog(mock())
+
+        datePickerDialog shouldBeInstanceOf DatePickerDialog::class
+    }
+
+    @Test
+    fun `should provide TimePickerDialog`() {
+        val timePickerDialog = tested.provideTimePickerDialog(mock(), mock(), false)
+
+        timePickerDialog shouldBeInstanceOf TimePickerDialog::class
+    }
 }

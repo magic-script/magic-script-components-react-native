@@ -40,7 +40,7 @@
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/toggle_off"
+        android:src="@drawable/switch_off"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
 </LinearLayout>

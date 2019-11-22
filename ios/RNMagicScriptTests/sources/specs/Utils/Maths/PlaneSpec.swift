@@ -24,12 +24,25 @@ class PlaneSpec: QuickSpec {
     override func spec() {
         describe("Plane") {
             context("init") {
-                it("should init Plane object") {
+                it("should init Plane from center and normal") {
                     let referenceCenter = SCNVector3(0.3, 0.22, 0.45)
                     let referenceNormal = SCNVector3(1, 1, 0).normalized()
                     let plane = Plane(center: referenceCenter, normal: referenceNormal)
                     expect(plane.center).to(beCloseTo(referenceCenter))
                     expect(plane.normal).to(beCloseTo(referenceNormal))
+                }
+
+                it("should init Plane from vec4") {
+                    let referenceVector = SCNVector4(1, 0, 0, 2.0)
+                    let plane = Plane(vector: referenceVector)
+                    expect(plane.toVector4()).to(beCloseTo(referenceVector))
+                    expect(plane.center).to(beCloseTo(SCNVector3(-referenceVector.w, 0, 0)))
+                    expect(plane.normal).to(beCloseTo(SCNVector3(referenceVector.x, referenceVector.y, referenceVector.z)))
+                }
+
+                it("should invoke assert for wrong vec4") {
+                    let referenceVector = SCNVector4(0, 0, 0, 2.0)
+                    expect { _ = Plane(vector: referenceVector) }.to(throwAssertion())
                 }
             }
 
@@ -79,37 +92,36 @@ class PlaneSpec: QuickSpec {
                 }
             }
         }
+
+        describe("SCNNode") {
+            context("convertPlane:to") {
+                it("should convert plane to node space") {
+                    let rootNode = SCNNode()
+                    rootNode.position = SCNVector3(3.4, -5.6, 7.8)
+                    let childNode = SCNNode()
+                    childNode.position = SCNVector3(1, 2, 3)
+                    let originalPlane = Plane(center: SCNVector3Zero, normal: SCNVector3(0, 1, 0))
+                    let convertedPlane = rootNode.convertPlane(originalPlane, to: childNode)
+                    expect(convertedPlane.normal).to(beCloseTo(originalPlane.normal))
+                    expect(convertedPlane.center).to(beCloseTo(rootNode.position - childNode.position))
+                }
+            }
+
+            context("convertPlane:from node:") {
+                it("should convert plane from node space") {
+                    let angle: Float = 0.5 * Float.pi
+                    let originalNormal = SCNVector3(0, 0, 1)
+                    let convertedNormal = SCNVector3(-1, 0, 0)
+                    let rootNode = SCNNode()
+                    rootNode.orientation = SCNQuaternion.fromAxis(SCNVector3(0, 1, 0), andAngle: angle)
+                    let childNode = SCNNode()
+                    childNode.orientation = SCNQuaternionIdentity
+                    let originalPlane = Plane(center: SCNVector3Zero, normal: originalNormal)
+                    let convertedPlane = rootNode.convertPlane(originalPlane, from: childNode)
+                    expect(convertedPlane.center).to(beCloseTo(SCNVector3Zero))
+                    expect(convertedPlane.normal).to(beCloseTo(convertedNormal))
+                }
+            }
+        }
     }
 }
-
-
-
-//@objc open class Plane: NSObject {
-//    let center: SCNVector3
-//    let normal: SCNVector3
-//
-//
-//    func isPointInFront(_ point: SCNVector3) -> Bool {
-//        return distanceToPoint(point) > 0
-//    }
-//
-//    func intersectRay(_ ray: Ray) -> SCNVector3? {
-//        // http://geomalgorithms.com/a05-_intersect-1.html
-//        let u: SCNVector3 = ray.end - ray.begin
-//        let w: SCNVector3 = ray.begin - center
-//
-//        let D: Float = normal.dot(u)
-//        let N: Float = -normal.dot(w)
-//
-//        guard abs(D) > 0.0001 else {
-//            // ray is parallel to the plane
-//            // if N == 0 => ray lies in the plane
-//            return nil
-//        }
-//
-//        let sI: Float = N / D
-//        guard sI >= 0 && sI <= 1.0 else { return nil }
-//
-//        return ray.begin + sI * u
-//    }
-//}

@@ -1,5 +1,8 @@
-name: Unit tests JavaScript
-on: [push]
+name: Unit Tests JavaScript
+on:
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test
@@ -13,10 +16,10 @@ jobs:
         node-version: '12.x'
     - name: Prepare env
       run: |
-        yarn
+        npm install
     - name: Build and test
       run: |
-        yarn test --coverage
+        npm run test --coverage
     - uses: actions/upload-artifact@master
       with:
         name: code-coverage-artifact-js

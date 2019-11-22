@@ -25,7 +25,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ar.ViewRenderableLoader
 import com.reactlibrary.formatter.VerySimpleDateFormat
 import com.reactlibrary.scene.nodes.base.UiDateTimePickerBaseNode
-import com.reactlibrary.scene.nodes.views.DateTimePickerDialogProvider
+import com.reactlibrary.scene.nodes.views.DialogProviderImpl
+import com.reactlibrary.utils.DialogProvider
 import com.reactlibrary.utils.getHour
 import com.reactlibrary.utils.getMinute
 import com.reactlibrary.utils.putDefault
@@ -36,7 +37,7 @@ open class UiTimePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    dialogProvider: DateTimePickerDialogProvider
+    dialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(initProps, context, viewRenderableLoader, dialogProvider) {
 
     companion object {

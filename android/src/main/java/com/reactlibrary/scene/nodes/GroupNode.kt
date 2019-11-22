@@ -29,7 +29,7 @@ import com.reactlibrary.utils.Utils
  * the bounding calculation method [Utils.calculateSumBounds],
  * so that it would take into account the local position of GroupNode itself.
  */
-class GroupNode(initProps: ReadableMap) :
+open class GroupNode(initProps: ReadableMap) :
         TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
     override fun setClipBounds(clipBounds: Bounding) {

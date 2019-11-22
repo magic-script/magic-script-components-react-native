@@ -115,8 +115,8 @@ class UiDropdownListNode(initProps: ReadableMap,
         }
     }
 
-    override fun onUpdate(frameTime: FrameTime) {
-        super.onUpdate(frameTime)
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
 
         val bounding = getContentBounding()
         val listX = bounding.left

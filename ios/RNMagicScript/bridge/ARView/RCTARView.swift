@@ -26,6 +26,11 @@ import SceneKit
     fileprivate var rayCastNode: SCNNode?
 #endif
 
+    static fileprivate var instance: RCTARView!
+    @objc static public var arSession: ARSession {
+        return instance.arView.session
+    }
+
     public var scene: SCNScene {
         return arView.scene
     }
@@ -79,6 +84,9 @@ import SceneKit
     public init() {
         super.init(frame: CGRect.zero)
         self.arView = createARView()
+        setupNodesManager(self.arView)
+        setupGestureRecognizers(self.arView)
+        RCTARView.instance = self
         resume()
     }
 
@@ -93,7 +101,8 @@ import SceneKit
         view.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)
         view.rendersContinuously = true
         view.scene.rootNode.name = "root"
-
+        view.delegate = self // ARSCNViewDelegate
+        
         // Add AR view as a child
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
@@ -117,6 +126,10 @@ import SceneKit
         view.pointOfView?.camera?.zNear = 0.001
         view.pointOfView?.camera?.zFar = 10
 
+        return view
+    }
+
+    fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
         UiNodesManager.instance.registerScene(view.scene)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
@@ -126,9 +139,7 @@ import SceneKit
             self?.dismissInput()
         }
 
-        setupGestureRecognizers(view)
-
-        return view
+        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: self)
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
@@ -143,6 +154,11 @@ import SceneKit
             return self?.arView.pointOfView
         }
         addGestureRecognizer(dragGestureRecognizer)
+
+        let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.minimumPressDuration = 0.5
+        addGestureRecognizer(longPressGestureRecogrnizer)
+
 
         // Set dependencies between drag gesture and debug camera pan gesture
         // so that both gestures can be used in debug mode.
@@ -229,5 +245,19 @@ extension RCTARView {
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
+    }
+
+    @objc fileprivate func handleLongPressAction(_ sender: UILongPressGestureRecognizer) {
+        guard let cameraNode = cameraNode,
+            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+        UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
+    }
+}
+
+// MARK: - ARSCNViewDelegate
+extension RCTARView: ARSCNViewDelegate {
+    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        guard let anchorName = anchor.name else { return nil }
+        return UiNodesManager.instance.findNodeWithAnchorUuid(anchorName)
     }
 }

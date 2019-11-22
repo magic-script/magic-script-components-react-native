@@ -22,16 +22,16 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 18 | DropdownListItem | DropDownListItem | 👍 | 👍 | 👍 | [link](coverage/DropdownListItem.md)
 19 | Toggle | UiToggle | 👍 | 👍 | 👍 | [link](coverage/Toggle.md)
 20 | Video | VideoNode | 👍 | 👍 | 👍 | [link](coverage/Video.md)
-21 | Audio | AudioNode | 👍 | 🚧 | 🚧 |
-22 | Dialog | UiDialog | 👍 | 🚧 | 🚧 |
-23 | WebView | UiWebView | 👍 | 3 D | 👍|  [link](coverage/WebView.md)
+21 | Audio | AudioNode | 👍 | 👍 | 🚧 |
+22 | Dialog | UiDialog | 👍 | 👍 | 👍 |
+23 | WebView | UiWebView | 👍 | 🚧 | 👍|  [link](coverage/WebView.md)
 24 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
 25 | TimePicker | UiTimePicker | 👍 | 👍 | 👍 | [link](coverage/TimePicker.md)
 26 | DatePicker | UiDatePicker | 👍 | 👍 | 👍 | [link](coverage/DatePicker.md)
-27 | CircleConfirmation | UiCircleConfirmation | 👍 | 5 D | 2 D
+27 | CircleConfirmation | UiCircleConfirmation | 👍 | 🚧 | 👍
 28 | Line | LineNode | 👍 | 👍 | 👍 | [link](coverage/Line.md)
-29 | Tab | UiTab | 👍 | ? | 3 D |
-30 | PageView | UiPageView | 👍 | ? | 2.5 D |
-21 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 2 D |
-22 | Panel | UiPanel | 👍 | ? | 2 D |
+29 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 🚧 |
+30 | Tab | UiTab | 👍 | ? | 👍 |
+31 | PageView | UiPageView | 👍 | ? | 2.5 D |
+32 | Panel | UiPanel | 👍 | 👍 | 👍 |
 33 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

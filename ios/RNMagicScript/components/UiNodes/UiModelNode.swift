@@ -18,21 +18,14 @@ import SceneKit
 import GLTFSceneKit
 
 @objc open class UiModelNode: RenderNode {
-    fileprivate var downloadTask: URLSessionDownloadTask?
-    fileprivate var dataTask: URLSessionDataTask?
 
-    var downloader: Downloading = ModelDownloader()
+    var downloader: Downloading = FileDownloader()
     var sceneBuilder: GLTFSceneSourceBuilding = GLTFSceneSourceBuilder()
-
-    deinit {
-        downloadTask?.cancel()
-        dataTask?.cancel()
-    }
 
     @objc var url: URL? {
         didSet {
             guard let url = url else { cleanNode(); return }
-            downloader.downloadModel(modelURL: url) { [weak self] (localURL) -> (Void) in
+            downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
             }
         }

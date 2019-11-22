@@ -50,4 +50,12 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image!
     }
+
+    static func image(with image: UIImage, scaledToSize newSize: CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
 }

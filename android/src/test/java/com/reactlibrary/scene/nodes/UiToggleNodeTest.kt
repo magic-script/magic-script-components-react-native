@@ -34,6 +34,8 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.reactlibrary.R
 import com.reactlibrary.font.FontParams
 import com.reactlibrary.font.FontProvider
+import com.reactlibrary.icons.ToggleIconsProvider
+import com.reactlibrary.icons.ToggleIconsProviderImpl
 import com.reactlibrary.utils.Utils
 import kotlinx.android.synthetic.main.toggle.view.*
 import org.junit.Assert.assertEquals
@@ -52,28 +54,31 @@ class UiToggleNodeTest {
     private lateinit var context: Context
     private lateinit var containerSpy: LinearLayout
     private lateinit var textViewSpy: TextView
-    private lateinit var switchSpy: ImageView
+    private lateinit var toggleSpy: ImageView
     private lateinit var fontProvider: FontProvider
     private lateinit var providerTypeface: Typeface
+    private lateinit var toggleIconsProvider: ToggleIconsProvider
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.containerSpy = spy(LinearLayout(context))
         this.textViewSpy = spy(TextView(context))
-        this.switchSpy = spy(ImageView(context))
+        this.toggleSpy = spy(ImageView(context))
+        whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
+        whenever(containerSpy.iv_toggle).thenReturn(toggleSpy)
+
         this.providerTypeface = Typeface.DEFAULT_BOLD
         this.fontProvider = object : FontProvider {
             override fun provideFont(fontParams: FontParams?): Typeface {
                 return providerTypeface
             }
         }
-        whenever(containerSpy.tv_toggle).thenReturn(textViewSpy)
-        whenever(containerSpy.iv_toggle).thenReturn(switchSpy)
+        this.toggleIconsProvider = ToggleIconsProviderImpl()
     }
 
     @Test
-    fun shouldUseTypefaceFromProvider() {
+    fun `should use typeface from provider`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         node.build()
@@ -82,7 +87,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultHeight() {
+    fun `should have default height`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
@@ -91,7 +96,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun defaultTextSizeShouldBeEqualToHeight() {
+    fun `default text size should be equal to height`() {
         val height: Double = 0.1
         val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
         val node = createNodeWithViewSpy(props)
@@ -102,7 +107,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+    fun `should apply text size when text size property present`() {
         val textSize = 0.2
         val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_SIZE, textSize)
@@ -114,7 +119,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextWhenTextPropertyPresent() {
+    fun `should apply text when text property present`() {
         val text = "QWERTY"
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
@@ -125,7 +130,7 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresent() {
+    fun `should apply text color when color property present`() {
         val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
         val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_COLOR, textColor)
         val node = createNodeWithViewSpy(props)
@@ -136,17 +141,39 @@ class UiToggleNodeTest {
     }
 
     @Test
-    fun shouldCheckTheSwitchWhenCheckPropertyIsTrue() {
-        val props = JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true)
+    fun `should set switch icon when type not specified`() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(toggleSpy).setImageResource(R.drawable.switch_off)
+    }
+
+    @Test
+    fun `should set checkbox icon when checkbox property present`() {
+        val props = JavaOnlyMap.of(UiToggleNode.PROP_TYPE, UiToggleNode.TYPE_CHECKBOX)
         val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(switchSpy).setImageResource(R.drawable.toggle_on)
+        verify(toggleSpy).setImageResource(R.drawable.checkbox_off)
+    }
+
+    @Test
+    fun `should set checked radio icon when type is radio and checked`() {
+        val props = JavaOnlyMap.of(
+                UiToggleNode.PROP_TYPE, UiToggleNode.TYPE_RADIO,
+                UiToggleNode.PROP_CHECKED, true
+        )
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(toggleSpy).setImageResource(R.drawable.radio_on)
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiToggleNode {
-        return object : UiToggleNode(props, context, mock(), fontProvider) {
+        return object : UiToggleNode(props, context, mock(), fontProvider, toggleIconsProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

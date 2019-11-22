@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dialog_title_padding"
+        android:textColor="@color/text_color_default"
+        android:textSize="@dimen/dialog_title"
+        android:textStyle="bold"/>
+
+    <com.reactlibrary.scene.nodes.views.MaxHeightScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        app:maxHeight="126dp"
+        android:scrollbarThumbVertical="@color/text_color_default">
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dialog_title_padding"
+            android:textColor="@color/text_color_default"
+            android:textSize="@dimen/dialog_description"
+            android:gravity="center" />
+
+    </com.reactlibrary.scene.nodes.views.MaxHeightScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dialog_title_padding">
+
+        <LinearLayout
+            android:id="@+id/confirm_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_button_background"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/confirm_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/confirm_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:gravity="center|start"
+                android:textColor="@color/text_color_default" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cancel_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_button_background"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:minWidth="64dp"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/cancel_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/cancel_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_color_default" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+</LinearLayout>

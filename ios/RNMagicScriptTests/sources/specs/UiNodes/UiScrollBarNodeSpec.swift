@@ -143,6 +143,14 @@ class UiScrollBarNodeSpec: QuickSpec {
                     expect(bgNode.transform).to(beCloseTo(SCNMatrix4MakeRotation(-0.5 * Float.pi, 0, 0, 1)))
                 }
             }
+
+            context("setVisible") {
+                it("should show/hide scroll bar node") {
+                    expect(node.hasActions).to(beFalse())
+                    node.setVisible(true, animated: false, delay: 0.01)
+                    expect(node.hasActions).toEventually(beTrue())
+                }
+            }
         }
     }
 }

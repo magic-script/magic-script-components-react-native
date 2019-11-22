@@ -44,8 +44,20 @@ void ARLog(NSString *format, ...) {
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(createAudioNode:(UiAudioNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createAudioNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createButtonNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createCircleConfirmationNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -58,6 +70,12 @@ RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSStri
 
 RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createDatePickerNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createDialogNode:(UiDialogNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createDialogNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -92,14 +110,14 @@ RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId 
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLinearLayoutNode: %@", nodeId);
+RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createLineNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
 
-RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLineNode: %@", nodeId);
+RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createLinearLayoutNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -118,6 +136,12 @@ RCT_EXPORT_METHOD(createListViewItemNode:(UiListViewItemNode *)node nodeId:(NSSt
 
 RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"createModelNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
+RCT_EXPORT_METHOD(createPanelNode:(UiPanelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createPanelNode: %@", nodeId);
     [UiNodesManager.instance registerNode: node nodeId: nodeId];
     resolve(nil);
 }
@@ -387,8 +411,8 @@ RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnColorConfirmedEventReceivedHandler:(NSString *)nodeId) {
-    ARLog(@"addOnColorConfirmedEventReceivedHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnColorConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorConfirmedEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
@@ -399,14 +423,86 @@ RCT_EXPORT_METHOD(addOnColorConfirmedEventReceivedHandler:(NSString *)nodeId) {
     }
 }
 
-RCT_EXPORT_METHOD(addOnColorCanceledEventReceivedHandler:(NSString *)nodeId) {
-    ARLog(@"addOnColorCanceledEventReceivedHandler: %@", nodeId);
+RCT_EXPORT_METHOD(addOnColorCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnColorCanceledEventHandler: %@", nodeId);
     SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         UiColorPickerNode *colorPickerNode = (UiColorPickerNode *)node;
         colorPickerNode.onColorCanceled = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker canceled: %@");
             [[AREventsManager instance] onColorCanceledEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogConfirmedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogConfirmedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogConfirmed = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode confirmed: %@");
+            [[AREventsManager instance] onDialogConfirmedEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogCanceledEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogCanceled = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode canceled: %@");
+            [[AREventsManager instance] onDialogCanceledEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnDialogTimeExpiredEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiDialogNode class]]) {
+        UiDialogNode *dialogNode = (UiDialogNode *)node;
+        dialogNode.onDialogTimeExpired = ^(UiDialogNode *sender) {
+            ARLog(@"dialogNode timeExpired: %@");
+            [[AREventsManager instance] onDialogTimeExpiredEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCompletedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCompletedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCompleted = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationCompletedEventReceived:sender];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationUpdatedEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationUpdatedEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationUpdated = ^(UiCircleConfirmationNode *sender, CGFloat value) {
+            ARLog(@"circleConfirmationNode completed: %@");
+            [[AREventsManager instance] onConfirmationUpdatedEventReceived:sender value:value];
+        };
+    }
+}
+
+RCT_EXPORT_METHOD(addOnConfirmationCanceledEventHandler:(NSString *)nodeId) {
+    ARLog(@"addOnConfirmationCanceledEventHandler: %@", nodeId);
+    SCNNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
+        UiCircleConfirmationNode *circleConfirmationNode = (UiCircleConfirmationNode *)node;
+        circleConfirmationNode.onConfirmationCanceled = ^(UiCircleConfirmationNode *sender) {
+            ARLog(@"circleConfirmationNode canceled: %@");
+            [[AREventsManager instance] onConfirmationCanceledEventReceived:sender];
         };
     }
 }

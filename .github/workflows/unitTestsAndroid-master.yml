@@ -1,5 +1,8 @@
-name: Unit tests Android
-on: [push]
+name: Unit Tests Android
+on:
+  push:
+    branches:
+      - master
 jobs:
   test:
     name: Test
@@ -16,8 +19,8 @@ jobs:
         cd android
         chmod u+x gradlew
         mkdir node_modules
-        cd node_modules 
-        yarn add react-native
+        cd node_modules
+        npm install react-native
     - name: Build and test
       run: |
         cd android
@@ -25,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: code-coverage-artifact-android
-        path: android/build/reports/jacoco/jacocoTestReport/html
+        path: android/build/reports/jacoco/jacocoTestReport
     - name: Codecov update
       run: |
         bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}} -cF kotlin

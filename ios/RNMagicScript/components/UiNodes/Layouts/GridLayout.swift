@@ -40,6 +40,10 @@ import SceneKit
         didSet { invalidate() }
     }
 
+    var items: [TransformNode] {
+        return container.childNodes.compactMap { $0 as? TransformNode }
+    }
+
     var itemsCount: Int {
         return container.childNodes.count
     }

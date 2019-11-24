@@ -169,6 +169,12 @@ RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeI
     [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
+RCT_EXPORT_METHOD(createToggleGroupNode:(UiToggleGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    ARLog(@"createToggleGroupNode: %@", nodeId);
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }

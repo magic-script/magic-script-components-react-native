@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import Quick
 import Nimble
@@ -62,7 +62,7 @@ class UiToggleNodeSpec: QuickSpec {
                     expect(node.alignment).to(equal(Alignment.centerCenter))
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
-                
+
                 it("should update 'text' prop") {
                     node.update(["text" : referenceText])
                     expect(node.text).to(equal(referenceText))

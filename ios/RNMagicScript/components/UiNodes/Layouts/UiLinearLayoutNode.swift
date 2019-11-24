@@ -34,6 +34,7 @@ import SceneKit
         set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
     }
 
+    var items: [TransformNode] { return gridLayout.items }
     var itemsCount: Int { return gridLayout.itemsCount }
     fileprivate var gridLayout = GridLayout()
 

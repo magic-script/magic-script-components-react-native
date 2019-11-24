@@ -46,6 +46,7 @@
 @class UiTextEditNode;
 @class UiTimePickerNode;
 @class UiToggleNode;
+@class UiToggleGroupNode;
 @class UiVideoNode;
 @class UiWebViewNode;
 
@@ -80,6 +81,7 @@
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
++ (UiToggleNode *)UiToggleGroupNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
 + (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

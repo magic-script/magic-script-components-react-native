@@ -33,6 +33,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if ProcessInfo.processInfo.isRunningUnitTests {
+            return
+        }
+
         setupARView()
         setupScene()
     }
@@ -54,12 +58,12 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        arView.reset()
+        arView?.reset()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        arView.pause()
+        arView?.pause()
     }
 
     fileprivate func setupARView() {

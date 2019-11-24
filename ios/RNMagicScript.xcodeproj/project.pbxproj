@@ -45,6 +45,8 @@
 		44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556550234C997300301AB3 /* UiScrollViewNode.swift */; };
 		44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
 		44556555234C9FF800301AB3 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44556553234C9FF800301AB3 /* ScrollDirection.swift */; };
+		4474A06123896AC2001BE61E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4474A06023896AC2001BE61E /* UIColor+Extension.swift */; };
+		4474A06223896AC2001BE61E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4474A06023896AC2001BE61E /* UIColor+Extension.swift */; };
 		447755382374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
 		447755392374C15600E98F03 /* UiAudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755372374C15600E98F03 /* UiAudioNode.swift */; };
 		447755592374D37C00E98F03 /* AudioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447755582374D37C00E98F03 /* AudioAction.swift */; };
@@ -78,6 +80,7 @@
 		449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54952387FF5300D839CC /* UIView+Screenshot.swift */; };
 		449B54992388017700D839CC /* WebViewActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54982388017700D839CC /* WebViewActionSpec.swift */; };
 		449B549B2388021C00D839CC /* UiWebViewNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B549A2388021C00D839CC /* UiWebViewNodeSpec.swift */; };
+		449B54A423889F4B00D839CC /* UIFontLominoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */; };
 		44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD002366258400402912 /* GridLayoutSpec.swift */; };
 		44A3FD032366364900402912 /* UiLinearLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */; };
 		44A3FD052366365D00402912 /* UiRectLayoutSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */; };
@@ -95,6 +98,7 @@
 		44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */; };
 		44A59E8B233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */; };
 		44A59E8C233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */; };
+		44AB3967238A838B0002DF14 /* ProcessInfo+UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB3966238A838B0002DF14 /* ProcessInfo+UnitTests.swift */; };
 		44AFAAA2232B949D005AC8EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44AFAAA1232B949D005AC8EF /* Images.xcassets */; };
 		44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB02232B968C005AC8EF /* ViewController.swift */; };
 		44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB03232B968C005AC8EF /* AppDelegate.swift */; };
@@ -517,6 +521,7 @@
 		4455654D234C996600301AB3 /* UiScrollBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNode.swift; sourceTree = "<group>"; };
 		44556550234C997300301AB3 /* UiScrollViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollViewNode.swift; sourceTree = "<group>"; };
 		44556553234C9FF800301AB3 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
+		4474A06023896AC2001BE61E /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		447755372374C15600E98F03 /* UiAudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNode.swift; sourceTree = "<group>"; };
 		447755582374D37C00E98F03 /* AudioAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAction.swift; sourceTree = "<group>"; };
 		44775586237ADD6100E98F03 /* bg_mono.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bg_mono.mp3; sourceTree = "<group>"; };
@@ -529,6 +534,7 @@
 		449B54952387FF5300D839CC /* UIView+Screenshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Screenshot.swift"; sourceTree = "<group>"; };
 		449B54982388017700D839CC /* WebViewActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewActionSpec.swift; sourceTree = "<group>"; };
 		449B549A2388021C00D839CC /* UiWebViewNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiWebViewNodeSpec.swift; sourceTree = "<group>"; };
+		449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontLominoSpec.swift; sourceTree = "<group>"; };
 		44A3FD002366258400402912 /* GridLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD022366364900402912 /* UiLinearLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLinearLayoutSpec.swift; sourceTree = "<group>"; };
 		44A3FD042366365D00402912 /* UiRectLayoutSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutSpec.swift; sourceTree = "<group>"; };
@@ -542,6 +548,7 @@
 		44A59E84233DF870006A15D0 /* SingleLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E87233DF884006A15D0 /* MultiLineTextAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextAccessoryView.swift; sourceTree = "<group>"; };
 		44A59E8A233E161A006A15D0 /* InputAccessoryViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactory.swift; sourceTree = "<group>"; };
+		44AB3966238A838B0002DF14 /* ProcessInfo+UnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+UnitTests.swift"; sourceTree = "<group>"; };
 		44AFAAA1232B949D005AC8EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44AFAAA7232B950A005AC8EF /* RNMagicScriptHostApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNMagicScriptHostApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44AFAACB232B9533005AC8EF /* RNMagicScriptTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -890,6 +897,7 @@
 			isa = PBXGroup;
 			children = (
 				44AFAB03232B968C005AC8EF /* AppDelegate.swift */,
+				44AB3966238A838B0002DF14 /* ProcessInfo+UnitTests.swift */,
 				44AFAB02232B968C005AC8EF /* ViewController.swift */,
 			);
 			path = sources;
@@ -1130,6 +1138,7 @@
 				44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */,
 				44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */,
 				C435F90623829F050060F956 /* UIButton+Extension.swift */,
+				4474A06023896AC2001BE61E /* UIColor+Extension.swift */,
 				44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */,
 				44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */,
 				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
@@ -1316,6 +1325,7 @@
 				441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */,
 				44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */,
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
+				449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1418,9 +1428,9 @@
 		C4A12B152361B6AC009B7083 /* Pickers */ = {
 			isa = PBXGroup;
 			children = (
-				C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */,
-				C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */,
 				C4A12B1A2361B708009B7083 /* UiColorPickerNodeSpec.swift */,
+				C4A12B182361B6F9009B7083 /* UiDatePickerNodeSpec.swift */,
+				C4A12B162361B6E0009B7083 /* UiTimePickerNodeSpec.swift */,
 			);
 			path = Pickers;
 			sourceTree = "<group>";
@@ -1953,6 +1963,7 @@
 				44AFAD0E232BCAE3005AC8EF /* RenderNode.swift in Sources */,
 				4425EDFF2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
+				4474A06223896AC2001BE61E /* UIColor+Extension.swift in Sources */,
 				44AFAD26232BCAE3005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAD1F232BCAE3005AC8EF /* UiSpinnerNode.swift in Sources */,
 				44AFAD27232BCAE3005AC8EF /* Maths+Extension.swift in Sources */,
@@ -1970,6 +1981,7 @@
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
 				449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
 				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
+				44AB3967238A838B0002DF14 /* ProcessInfo+UnitTests.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */,
 				441EA5A32347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
@@ -2062,6 +2074,7 @@
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,
 				44931E06237D898C00E11972 /* UiLabelNodeSpec.swift in Sources */,
 				44931E12237D999B00E11972 /* UiModelNodeSpec.swift in Sources */,
+				449B54A423889F4B00D839CC /* UIFontLominoSpec.swift in Sources */,
 				44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */,
 				442AED512344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift in Sources */,
 				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,
@@ -2135,6 +2148,7 @@
 				C4A12B2A2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */,
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
 				C4EFE262237ED74100C70001 /* DialogPresenting.swift in Sources */,
+				4474A06123896AC2001BE61E /* UIColor+Extension.swift in Sources */,
 				C4A12B202361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */,
 				4425EE04236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,

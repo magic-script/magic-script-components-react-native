@@ -14,11 +14,20 @@
 //  limitations under the License.
 // 
 
-import Foundation
+import UIKit
 
-extension ProcessInfo {
-    static var isRunningUnitTests: Bool {
-        let value = ProcessInfo.processInfo.environment["APP_RUNNING_UNIT_TESTS"]
-        return (value == "YES")
+/// The TestsAppDelegate used when the app is run in the test environment
+/// This AppDelegate usage is determined in the main.swift file in the main app target
+class TestsAppDelegate: NSObject {
+
+    var window: UIWindow?
+    /// This constructor is called at the start of the tests and is a good point for test wide customization
+    override init() {
+        super.init()
+        // Customize any TestsAppDelegate logic here
+
+        window = UIWindow()
+        window?.makeKeyAndVisible()
+        window?.rootViewController = UIViewController()
     }
 }

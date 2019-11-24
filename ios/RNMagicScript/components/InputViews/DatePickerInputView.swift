@@ -90,17 +90,17 @@ class DatePickerInputView: UIView {
 
 // MARK: - Event handlers
 extension DatePickerInputView {
-    @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
+    @objc func valueChanged(_ sender: UIDatePicker) {
         pickerData?.datePickerValue = sender.date
         pickerData?.dateChanged()
     }
 
-    @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+    @objc func doneButtonAction(_ sender: UIButton) {
         pickerData?.dateConfirmed()
         onFinish?()
     }
 
-    @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
+    @objc func cancelButtonAction(_ sender: UIButton) {
         onFinish?()
     }
 }

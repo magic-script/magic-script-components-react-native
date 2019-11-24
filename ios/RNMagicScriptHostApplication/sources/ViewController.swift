@@ -33,8 +33,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupARView()
-
-        guard !ProcessInfo.isRunningUnitTests else { return }
         setupScene()
     }
 

@@ -39,7 +39,7 @@ class TimePickerInputView: UIView {
         setupView()
     }
 
-    fileprivate var dateTimePicker: UIDatePicker!
+    fileprivate(set) var dateTimePicker: UIDatePicker!
 
     fileprivate func setupView() {
         backgroundColor = .white
@@ -93,17 +93,17 @@ class TimePickerInputView: UIView {
 
 // MARK: - Event handlers
 extension TimePickerInputView {
-    @objc fileprivate func valueChanged(_ sender: UIDatePicker) {
+    @objc func valueChanged(_ sender: UIDatePicker) {
         pickerData?.timePickerValue = sender.date
         pickerData?.timeChanged()
     }
 
-    @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+    @objc func doneButtonAction(_ sender: UIButton) {
         pickerData?.timeConfirmed()
         onFinish?()
     }
 
-    @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
+    @objc func cancelButtonAction(_ sender: UIButton) {
         onFinish?()
     }
 }

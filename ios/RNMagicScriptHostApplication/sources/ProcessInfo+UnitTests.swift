@@ -17,8 +17,8 @@
 import Foundation
 
 extension ProcessInfo {
-    var isRunningUnitTests: Bool {
-        let value = environment["APP_RUNNING_UNIT_TESTS"]
+    static var isRunningUnitTests: Bool {
+        let value = ProcessInfo.processInfo.environment["APP_RUNNING_UNIT_TESTS"]
         return (value == "YES")
     }
 }

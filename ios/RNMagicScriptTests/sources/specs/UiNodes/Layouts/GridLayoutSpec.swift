@@ -119,26 +119,42 @@ class GridLayoutSpec: QuickSpec {
             }
 
             context("hitTest") {
+
+                it("should return nil if layout is invalidated") {
+                    let referenceSize: CGFloat = 0.1
+                    let nodes = self.prepare2x2GridLayout(layout, childSize: referenceSize)
+                    layout.invalidate()
+
+                    let ray = Ray(begin: SCNVector3(-0.5 * referenceSize, 0, 0.5 * referenceSize), direction: SCNVector3(0, 0, -1), length: 3)
+                    let result = layout.hitTest(ray: ray, node: nodes[0])
+                    expect(result).to(beNil())
+                }
+
                 it("should return nil if ray does not hit the area of layout") {
-                    let referenceSize: CGFloat = 0.08
-                    let referenceNode = UiImageNode(props: ["alignment": "center-center", "icon": "address-book", "height": referenceSize])
-                    layout.addItem(referenceNode)
-                    layout.recalculate()
+                    let referenceSize: CGFloat = 0.1
+                    let nodes = self.prepare2x2GridLayout(layout, childSize: referenceSize)
 
                     let ray = Ray(begin: SCNVector3(-1, 0, 1), direction: SCNVector3(0, 0, -1), length: 3)
-                    let result = layout.hitTest(ray: ray, node: referenceNode)
+                    let result = layout.hitTest(ray: ray, node: nodes[0])
                     expect(result).to(beNil())
                 }
 
                 it("should return hit node if ray hits the area of layout") {
-                    let referenceSize: CGFloat = 0.08
-                    let referenceNode = UiImageNode(props: ["alignment": "center-center", "icon": "address-book", "height": referenceSize])
-                    layout.addItem(referenceNode)
-                    layout.recalculate()
+                    let referenceSize: CGFloat = 0.1
+                    let nodes = self.prepare2x2GridLayout(layout, childSize: referenceSize)
+                    (nodes.last as? UiImageNode)?.height = 0.5 * referenceSize
 
-                    let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 3)
-                    let result = layout.hitTest(ray: ray, node: referenceNode)
-                    expect(result).to(beIdenticalTo(referenceNode))
+                    let begins: [SCNVector3] = [
+                        SCNVector3(-0.5 * referenceSize, 0.5 * referenceSize, 0),
+                        SCNVector3( 0.5 * referenceSize, 0.5 * referenceSize, 0),
+                        SCNVector3(-0.5 * referenceSize, -0.5 * referenceSize, 0),
+                        SCNVector3( 0.5 * referenceSize, -0.5 * referenceSize, 0)
+                    ]
+                    for i in 0..<4 {
+                        let ray = Ray(begin: begins[i], direction: SCNVector3(0, 0, -1), length: 3)
+                        let result = layout.hitTest(ray: ray, node: nodes[i])
+                        expect(result).to(beIdenticalTo(nodes[i]))
+                    }
                 }
             }
 
@@ -219,5 +235,20 @@ class GridLayoutSpec: QuickSpec {
                 }
             }
         }
+    }
+
+    @discardableResult
+    func prepare2x2GridLayout(_ gridLayout: GridLayout, childSize: CGFloat = 0.1) -> [UiNode] {
+        let icons = ["eject", "emoji", "enter", "exit"]
+        var nodes: [UiNode] = []
+        for icon in icons {
+            let node = UiImageNode(props: ["alignment": "center-center", "icon": icon, "height": childSize])
+            nodes.append(node)
+            gridLayout.addItem(node)
+        }
+        gridLayout.columns = 2
+        gridLayout.recalculate()
+        gridLayout.updateLayout()
+        return nodes
     }
 }

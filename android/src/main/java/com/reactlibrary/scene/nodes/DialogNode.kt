@@ -23,15 +23,13 @@ import android.os.Message
 import android.view.View
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.scene.nodes.views.CustomAlertDialogBuilder
-import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.utils.DialogProvider
 import com.reactlibrary.utils.ifContainsDouble
 import com.reactlibrary.utils.ifContainsString
+import com.reactlibrary.utils.putDefault
 import java.lang.ref.WeakReference
 
 class DialogNode(
@@ -43,27 +41,13 @@ class DialogNode(
 
     companion object {
         const val PROP_TITLE = "title"
-        const val PROP_TEXT = "text"
+        const val PROP_TEXT = "message"
         const val PROP_CONFIRM_TEXT = "confirmText"
         const val PROP_CONFIRM_ICON = "confirmIcon"
         const val PROP_CANCEL_TEXT = "cancelText"
         const val PROP_CANCEL_ICON = "cancelIcon"
         const val PROP_EXPIRATION_TIME = "expireTime"
         const val TIMER_HANDLER_EVENT = 1
-    }
-
-    class TimerHandler(private val dialogNode: WeakReference<DialogNode>) : Handler() {
-
-        override fun handleMessage(msg: Message?) {
-            when (msg?.what) {
-                TIMER_HANDLER_EVENT -> {
-                    val dialog = dialogNode.get()?.dialog
-                    if (dialog != null && dialog.isShowing) {
-                        dialog.dismiss()
-                    }
-                }
-            }
-        }
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
@@ -84,9 +68,18 @@ class DialogNode(
             field = value
         }
 
+    var onDialogExpiredListener: (() -> Unit)? = null
+
     private var dialog: AlertDialog? = null
 
     private val timerHandler = TimerHandler(WeakReference(this))
+
+    init {
+        properties.apply {
+            putDefault(PROP_CONFIRM_TEXT, context.getString(R.string.confirm))
+            putDefault(PROP_CANCEL_TEXT, context.getString(R.string.cancel))
+        }
+    }
 
     override fun build() {
         super.build()
@@ -137,6 +130,21 @@ class DialogNode(
             val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
             val timeInMillis = (time * 1000).toLong()
             timerHandler.sendMessageDelayed(msg, timeInMillis)
+        }
+    }
+
+    class TimerHandler(private val dialogNodeRef: WeakReference<DialogNode>) : Handler() {
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                TIMER_HANDLER_EVENT -> {
+                    val dialogNode = dialogNodeRef.get()
+                    val dialog = dialogNode?.dialog
+                    if (dialog != null && dialog.isShowing) {
+                        dialog.dismiss()
+                        dialogNode.onDialogExpiredListener?.invoke()
+                    }
+                }
+            }
         }
     }
 }

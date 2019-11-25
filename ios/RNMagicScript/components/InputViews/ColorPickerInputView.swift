@@ -93,14 +93,15 @@ class ColorPickerInputView: UIView {
 extension ColorPickerInputView: ChromaColorPickerDelegate {
     func colorPickerDidChooseColor(_ colorPicker: ChromaColorPicker, color: UIColor) {
         pickerData?.colorPickerValue = color
+        pickerData?.colorChanged()
     }
 
-    @objc fileprivate func doneButtonAction(_ sender: UIButton) {
+    @objc func doneButtonAction(_ sender: UIButton) {
         pickerData?.colorConfirmed()
         onFinish?()
     }
 
-    @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
+    @objc func cancelButtonAction(_ sender: UIButton) {
         pickerData?.colorCanceled()
         onFinish?()
     }

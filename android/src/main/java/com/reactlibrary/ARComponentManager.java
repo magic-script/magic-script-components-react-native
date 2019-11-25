@@ -139,7 +139,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_DATE = "date";
     private static final String EVENT_ARG_TIME = "time";
     private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
-    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Value";
+    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -383,7 +383,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
-           addNode(node, nodeId);
+            addNode(node, nodeId);
         });
     }
 
@@ -547,7 +547,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
+    public void addOnColorConfirmedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof UiColorPickerNode) {
@@ -567,7 +567,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
+    public void addOnColorCanceledEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof UiColorPickerNode) {

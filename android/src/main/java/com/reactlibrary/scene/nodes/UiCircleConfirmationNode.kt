@@ -27,6 +27,7 @@ import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.views.CircleConfirmationView
 import com.reactlibrary.utils.Vector2
 import com.reactlibrary.utils.putDefault
+import kotlin.math.PI
 
 open class UiCircleConfirmationNode(initProps: ReadableMap,
                                     context: Context,
@@ -117,7 +118,8 @@ open class UiCircleConfirmationNode(initProps: ReadableMap,
         val normalizedTime = timeProgress.coerceIn(0F, TIME_TO_COMPLETE)
         val progressValue = normalizedTime / TIME_TO_COMPLETE
         (view as CircleConfirmationView).value = progressValue
-        onConfirmationUpdatedListener?.invoke(progressValue)
+        val angle = (progressValue * 2 * PI).toFloat()
+        onConfirmationUpdatedListener?.invoke(angle)
     }
 
 }

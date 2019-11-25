@@ -22,19 +22,19 @@ class DatePickerInputViewSpec: QuickSpec {
     override func spec() {
         describe("DatePickerInputView") {
             var inputView: DatePickerInputView!
+            var simpleDatePickerDataProviding: SimpleDatePickerDataProviding!
 
             beforeEach() {
                 inputView = DatePickerInputView()
+                simpleDatePickerDataProviding = SimpleDatePickerDataProviding()
+                inputView.pickerData = simpleDatePickerDataProviding
             }
 
             context("when user select value") {
                 let referenceDate = Date.fromTime(string: "13/06/1983", format: "dd/MM/yyyy")
                 var datePicker: UIDatePicker!
-                var simpleDatePickerDataProviding: SimpleDatePickerDataProviding!
 
                 beforeEach {
-                    simpleDatePickerDataProviding = SimpleDatePickerDataProviding()
-                    inputView.pickerData = simpleDatePickerDataProviding
                     datePicker = UIDatePicker()
                     datePicker.date = referenceDate
                 }
@@ -52,8 +52,6 @@ class DatePickerInputViewSpec: QuickSpec {
 
             context("when user confirm selected value") {
                 it("should notify with callback (dateConfirmed)") {
-                    let simpleDatePickerDataProviding = SimpleDatePickerDataProviding()
-                    inputView.pickerData = simpleDatePickerDataProviding
                     inputView.doneButtonAction(UIButton())
                     expect(simpleDatePickerDataProviding.dateConfirmedTriggered).to(beTrue())
                 }

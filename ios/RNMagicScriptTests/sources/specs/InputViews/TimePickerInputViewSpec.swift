@@ -22,14 +22,15 @@ class TimePickerInputViewSpec: QuickSpec {
     override func spec() {
         describe("TimePickerInputView") {
             var inputView: TimePickerInputView!
+            var simpleTimePickerDataProviding: SimpleTimePickerDataProviding!
 
             beforeEach() {
                 inputView = TimePickerInputView()
+                simpleTimePickerDataProviding = SimpleTimePickerDataProviding()
             }
 
             context("when 12 hours format set") {
                 it("should set Locale to en_US") {
-                    let simpleTimePickerDataProviding = SimpleTimePickerDataProviding()
                     simpleTimePickerDataProviding.amPmFormat = true
                     inputView.pickerData = simpleTimePickerDataProviding
                     expect(inputView.dateTimePicker.locale).to(equal(Locale(identifier: "en_US")))
@@ -38,7 +39,6 @@ class TimePickerInputViewSpec: QuickSpec {
 
             context("when 24 hours format set") {
                 it("should set Locale to en_GB") {
-                    let simpleTimePickerDataProviding = SimpleTimePickerDataProviding()
                     simpleTimePickerDataProviding.amPmFormat = false
                     inputView.pickerData = simpleTimePickerDataProviding
                     expect(inputView.dateTimePicker.locale).to(equal(Locale(identifier: "en_GB")))
@@ -48,10 +48,8 @@ class TimePickerInputViewSpec: QuickSpec {
             context("when user select value") {
                 let referenceTime = Date.fromTime(string: "13:13:13", format: "HH:mm:ss")
                 var datePicker: UIDatePicker!
-                var simpleTimePickerDataProviding: SimpleTimePickerDataProviding!
 
                 beforeEach {
-                    simpleTimePickerDataProviding = SimpleTimePickerDataProviding()
                     inputView.pickerData = simpleTimePickerDataProviding
                     datePicker = UIDatePicker()
                     datePicker.date = referenceTime
@@ -70,7 +68,6 @@ class TimePickerInputViewSpec: QuickSpec {
 
             context("when user confirm selected value") {
                 it("should notify with callback (timeConfirmed)") {
-                    let simpleTimePickerDataProviding = SimpleTimePickerDataProviding()
                     inputView.pickerData = simpleTimePickerDataProviding
                     inputView.doneButtonAction(UIButton())
                     expect(simpleTimePickerDataProviding.timeConfirmedTriggered).to(beTrue())

@@ -25,48 +25,41 @@ class ColorPickerInputViewSpec: QuickSpec {
     override func spec() {
         describe("ColorPickerInputView") {
             var inputView: ColorPickerInputView!
-
+            var simpleColorPickerDataProviding: SimpleColorPickerDataProviding!
+            
             beforeEach() {
                 inputView = ColorPickerInputView()
+                simpleColorPickerDataProviding = SimpleColorPickerDataProviding()
+                inputView.pickerData = simpleColorPickerDataProviding
             }
-
+            
             context("when user select value") {
                 let referenceColor = UIColor.lightGray
-                var simpleColorPickerDataProviding: SimpleColorPickerDataProviding!
-
-                beforeEach {
-                    simpleColorPickerDataProviding = SimpleColorPickerDataProviding()
-                    inputView.pickerData = simpleColorPickerDataProviding
-                }
-
+                
                 it("should update pickerData") {
                     inputView.colorPickerDidChooseColor(ChromaColorPicker(frame: CGRect.zero), color: referenceColor)
                     expect(simpleColorPickerDataProviding.colorPickerValue).to(beCloseTo(referenceColor))
                 }
-
+                
                 it("should notify with callback (colorChanged)") {
                     inputView.colorPickerDidChooseColor(ChromaColorPicker(frame: CGRect.zero), color: referenceColor)
                     expect(simpleColorPickerDataProviding.colorChangedTriggered).to(beTrue())
                 }
             }
-
+            
             context("when user confirm selected value") {
                 it("should notify with callback (colorConfirmed)") {
-                    let simpleColorPickerDataProviding = SimpleColorPickerDataProviding()
-                    inputView.pickerData = simpleColorPickerDataProviding
                     inputView.doneButtonAction(UIButton())
                     expect(simpleColorPickerDataProviding.colorConfirmedTriggered).to(beTrue())
                 }
             }
-
+            
             context("when user cancel selecting") {
                 it("should notify with callback (colorCanceled)") {
-                    let simpleColorPickerDataProviding = SimpleColorPickerDataProviding()
-                    inputView.pickerData = simpleColorPickerDataProviding
                     inputView.cancelButtonAction(UIButton())
                     expect(simpleColorPickerDataProviding.colorCanceledTriggered).to(beTrue())
                 }
-
+                
                 it("should notify with callback (onFinish)") {
                     var result = false
                     inputView.onFinish = {
@@ -82,13 +75,13 @@ class ColorPickerInputViewSpec: QuickSpec {
 
 fileprivate class SimpleColorPickerDataProviding: ColorPickerDataProviding {
     var colorPickerValue: UIColor = .red
-
+    
     func colorChanged() { colorChangedTriggered = true }
-
+    
     func colorConfirmed() { colorConfirmedTriggered = true }
-
+    
     func colorCanceled() { colorCanceledTriggered = true }
-
+    
     var colorChangedTriggered = false
     var colorConfirmedTriggered = false
     var colorCanceledTriggered = false

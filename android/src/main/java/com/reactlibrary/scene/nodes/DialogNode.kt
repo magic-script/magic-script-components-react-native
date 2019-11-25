@@ -29,6 +29,7 @@ import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.utils.DialogProvider
 import com.reactlibrary.utils.ifContainsDouble
 import com.reactlibrary.utils.ifContainsString
+import com.reactlibrary.utils.putDefault
 import java.lang.ref.WeakReference
 
 class DialogNode(
@@ -40,7 +41,7 @@ class DialogNode(
 
     companion object {
         const val PROP_TITLE = "title"
-        const val PROP_TEXT = "text"
+        const val PROP_TEXT = "message"
         const val PROP_CONFIRM_TEXT = "confirmText"
         const val PROP_CONFIRM_ICON = "confirmIcon"
         const val PROP_CANCEL_TEXT = "cancelText"
@@ -72,6 +73,13 @@ class DialogNode(
     private var dialog: AlertDialog? = null
 
     private val timerHandler = TimerHandler(WeakReference(this))
+
+    init {
+        properties.apply {
+            putDefault(PROP_CONFIRM_TEXT, context.getString(R.string.confirm))
+            putDefault(PROP_CANCEL_TEXT, context.getString(R.string.cancel))
+        }
+    }
 
     override fun build() {
         super.build()

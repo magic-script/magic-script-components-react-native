@@ -19,6 +19,8 @@ package com.reactlibrary;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.Nullable;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -95,7 +97,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
 import kotlin.Unit;
 
 /**
@@ -128,6 +129,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
     private static final String EVENT_DIALOG_CONFIRMED = "onDialogConfirmed";
     private static final String EVENT_DIALOG_CANCELED = "onDialogCanceled";
+    private static final String EVENT_DIALOG_EXPIRED = "onDialogTimeExpired";
     private static final String EVENT_CONFIRMATION_COMPLETED = "onConfirmationCompleted";
     private static final String EVENT_CONFIRMATION_UPDATED = "onConfirmationUpdated";
     private static final String EVENT_CONFIRMATION_CANCELED = "onConfirmationCanceled";
@@ -717,6 +719,21 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     sendEvent(EVENT_DIALOG_CANCELED, params);
+                    return Unit.INSTANCE;
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addOnDialogTimeExpiredEventHandler(final String nodeId) {
+        mainHandler.post(() -> {
+            final Node node = UiNodesManager.findNodeWithId(nodeId);
+            if (node instanceof DialogNode) {
+                ((DialogNode) node).setOnDialogCancelListener(() -> {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(EVENT_ARG_NODE_ID, nodeId);
+                    sendEvent(EVENT_DIALOG_EXPIRED, params);
                     return Unit.INSTANCE;
                 });
             }

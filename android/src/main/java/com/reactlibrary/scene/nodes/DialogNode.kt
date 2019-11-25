@@ -23,12 +23,9 @@ import android.os.Message
 import android.view.View
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.icons.IconsRepository
 import com.reactlibrary.scene.nodes.base.TransformNode
-import com.reactlibrary.scene.nodes.views.CustomAlertDialogBuilder
-import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.utils.DialogProvider
 import com.reactlibrary.utils.ifContainsDouble
 import com.reactlibrary.utils.ifContainsString
@@ -52,20 +49,6 @@ class DialogNode(
         const val TIMER_HANDLER_EVENT = 1
     }
 
-    class TimerHandler(private val dialogNode: WeakReference<DialogNode>) : Handler() {
-
-        override fun handleMessage(msg: Message?) {
-            when (msg?.what) {
-                TIMER_HANDLER_EVENT -> {
-                    val dialog = dialogNode.get()?.dialog
-                    if (dialog != null && dialog.isShowing) {
-                        dialog.dismiss()
-                    }
-                }
-            }
-        }
-    }
-
     var onDialogConfirmListener: (() -> Unit)? = null
         set(value) {
             dialog?.findViewById<LinearLayout>(R.id.confirm_layout)?.setOnClickListener {
@@ -83,6 +66,8 @@ class DialogNode(
             }
             field = value
         }
+
+    var onDialogExpiredListener: (() -> Unit)? = null
 
     private var dialog: AlertDialog? = null
 
@@ -137,6 +122,21 @@ class DialogNode(
             val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
             val timeInMillis = (time * 1000).toLong()
             timerHandler.sendMessageDelayed(msg, timeInMillis)
+        }
+    }
+
+    class TimerHandler(private val dialogNodeRef: WeakReference<DialogNode>) : Handler() {
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                TIMER_HANDLER_EVENT -> {
+                    val dialogNode = dialogNodeRef.get()
+                    val dialog = dialogNode?.dialog
+                    if (dialog != null && dialog.isShowing) {
+                        dialog.dismiss()
+                        dialogNode.onDialogExpiredListener?.invoke()
+                    }
+                }
+            }
         }
     }
 }

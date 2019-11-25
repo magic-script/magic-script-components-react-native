@@ -22,6 +22,8 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
+import com.reactlibrary.scene.nodes.audio.model.SpatialSoundDistance
+import com.reactlibrary.scene.nodes.audio.model.SpatialSoundPosition
 import com.reactlibrary.scene.nodes.props.AABB
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Padding
@@ -74,7 +76,8 @@ class PropertiesReader {
                 pointsArray.forEach {
                     if (it is ArrayList<*> && it.size == 3) {
                         val point = it as ArrayList<Double>
-                        val vector = Vector3(point[0].toFloat(), point[1].toFloat(), point[2].toFloat())
+                        val vector =
+                            Vector3(point[0].toFloat(), point[1].toFloat(), point[2].toFloat())
                         vectorsList.add(vector)
                     }
                 }
@@ -118,7 +121,7 @@ class PropertiesReader {
          */
         fun readPadding(props: Bundle, propertyName: String): Padding? {
             val paddingData = props.getSerializable(propertyName) as? ArrayList<Double>
-                    ?: return null
+                ?: return null
             if (paddingData.size == 4) {
                 val top: Float = paddingData[0].toFloat()
                 val right: Float = paddingData[1].toFloat()
@@ -136,7 +139,8 @@ class PropertiesReader {
                 return null
             }
             val verticalAlign = Alignment.VerticalAlignment.valueOf(alignmentArray[0].toUpperCase())
-            val horizontalAlign = Alignment.HorizontalAlignment.valueOf(alignmentArray[1].toUpperCase())
+            val horizontalAlign =
+                Alignment.HorizontalAlignment.valueOf(alignmentArray[1].toUpperCase())
             return Alignment(verticalAlign, horizontalAlign)
         }
 
@@ -151,7 +155,12 @@ class PropertiesReader {
             return AABB(min, max)
         }
 
-        private fun getFileUri(props: Bundle, propertyName: String, context: Context, resType: String): Uri? {
+        private fun getFileUri(
+            props: Bundle,
+            propertyName: String,
+            context: Context,
+            resType: String
+        ): Uri? {
             // If the path is a string, we treat it as a remote URL
             val remoteUrl = props.getString(propertyName)
             if (remoteUrl != null) {
@@ -171,6 +180,7 @@ class PropertiesReader {
                         // here fileUri is in format: 'resources_demopicture1'
                         val packageName = context.packageName
                         val basePath = "android.resource://$packageName/$resType/"
+
                         return Uri.parse(basePath + fileUri)
                     }
                 }
@@ -178,5 +188,57 @@ class PropertiesReader {
             return null
         }
 
+        fun readSpatialSoundPosition(props: Bundle, propertyName: String): SpatialSoundPosition? {
+            val spatialSoundPositionBundle = props.getBundle(propertyName) ?: return null
+
+            return SpatialSoundPosition(
+                channel = spatialSoundPositionBundle.getDouble(SpatialSoundPosition::channel.name),
+                channelPosition = spatialSoundPositionBundle.read(SpatialSoundPosition::channelPosition.name)
+            )
+        }
+
+        fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundDistance? {
+            val spatialSoundDistance = props.getBundle(propertyName) ?: return null
+
+            return SpatialSoundDistance(
+                channel = spatialSoundDistance.getDouble(SpatialSoundDistance::channel.name),
+                maxDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::maxDistance.name).toFloat(),
+                minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
+                rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
+            )
+        }
+    }
+}
+
+inline fun <reified T : Any> Bundle.read(key: String): T? =
+    if (containsKey(key))
+        when (T::class.java) {
+            java.lang.Boolean::class.java -> getBoolean(key) as T
+            Boolean::class.java -> getBoolean(key) as T
+            java.lang.Double::class.java -> getDouble(key) as T
+            Double::class.java -> getDouble(key) as T
+            java.lang.String::class.java -> getString(key) as T?
+            String::class.java -> getString(key) as T?
+            AABB::class.java -> PropertiesReader.readAABB(this, key) as T?
+            Vector2::class.java -> PropertiesReader.readVector2(this, key) as T?
+            Vector3::class.java -> PropertiesReader.readVector3(this, key) as T?
+            Matrix::class.java -> PropertiesReader.readMatrix(this, key) as T?
+            Padding::class.java -> PropertiesReader.readPadding(this, key) as T?
+            Alignment::class.java -> PropertiesReader.readAlignment(this, key) as T?
+            SpatialSoundPosition::class.java ->
+                PropertiesReader.readSpatialSoundPosition(this, key) as T?
+            SpatialSoundDistance::class.java ->
+                PropertiesReader.readSpatialSoundDistance(this, key) as T?
+            else -> {
+                logMessage("Unknown class ${T::class.java.name}", true)
+                null
+            }
+        } else null
+
+inline fun <reified T : Any> Bundle.ifContains(key: String, result: (T) -> Unit) {
+    if (containsKey(key)) {
+        read<T>(key)?.let {
+            result(it)
+        }
     }
 }

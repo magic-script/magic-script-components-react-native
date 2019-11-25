@@ -119,6 +119,7 @@ dependencies {
     implementation 'com.larswerkman:HoloColorPicker:1.5' //color picker
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.google.vr:sdk-audio:1.190.0'
 
     //TESTING
     testImplementation 'junit:junit:4.12'

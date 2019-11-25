@@ -18,6 +18,12 @@ import Foundation
 import SceneKit
 
 @objc open class GridLayout: NSObject {
+    @objc var width: CGFloat = 0 {
+        didSet { invalidate() }
+    }
+    @objc var height: CGFloat = 0 {
+        didSet { invalidate() }
+    }
     @objc var columns: Int = 0 {
         didSet { invalidate() }
     }

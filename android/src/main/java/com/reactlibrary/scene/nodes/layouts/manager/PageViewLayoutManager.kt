@@ -15,13 +15,19 @@
  *
  */
 
-package com.reactlibrary.scene.nodes.views
+package com.reactlibrary.scene.nodes.layouts.manager
 
-import com.facebook.react.bridge.ReadableMap
-import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.LayoutManager
+import com.reactlibrary.scene.nodes.props.Alignment
+import com.reactlibrary.scene.nodes.props.Padding
 
-class PageViewNode(props: ReadableMap, layoutManager: LayoutManager): UiLayout(props, layoutManager) {
+interface PageViewLayoutManager : LayoutManager {
 
+    var visiblePage: Int
 
+    var itemPadding: Padding
+
+    var contentHorizontalAlignment: Alignment.HorizontalAlignment
+
+    var contentVerticalAlignment: Alignment.VerticalAlignment
 }

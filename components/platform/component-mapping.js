@@ -18,6 +18,7 @@ import ListViewBuilder from './elements/builders/listview-builder.js';
 import ListViewItemBuilder from './elements/builders/listview-item-builder.js';
 import ModelBuilder from "./elements/builders/model-builder.js";
 import PanelBuilder from "./elements/builders/panel-builder.js";
+import PageViewBuilder from "./elements/builders/page-view-builder.js";
 import ProgressBarBuilder from "./elements/builders/progress-bar-builder.js";
 import RectLayoutBuilder from "./elements/builders/rect-layout-builder.js";
 import ScrollBarBuilder from "./elements/builders/scroll-bar-builder.js";
@@ -51,6 +52,7 @@ export default {
     listView: (componentManager) => new ListViewBuilder(componentManager),
     listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
     panel: componentManager => new PanelBuilder(componentManager),
+    pageView: componentManager => new PageViewBuilder(componentManager),
     progressBar: componentManager => new ProgressBarBuilder(componentManager),
     scrollBar: componentManager => new ScrollBarBuilder(componentManager),
     scrollView: componentManager => new ScrollViewBuilder(componentManager),

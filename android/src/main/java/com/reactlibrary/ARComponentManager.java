@@ -75,11 +75,13 @@ import com.reactlibrary.scene.nodes.UiTimePickerNode;
 import com.reactlibrary.scene.nodes.UiToggleNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
+import com.reactlibrary.scene.nodes.layouts.PageViewNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
 import com.reactlibrary.scene.nodes.layouts.UiLinearLayout;
 import com.reactlibrary.scene.nodes.layouts.UiRectLayout;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.GridLayoutManagerImpl;
+import com.reactlibrary.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManager;
 import com.reactlibrary.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.reactlibrary.scene.nodes.video.MediaPlayerPool;
@@ -387,6 +389,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createContentNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> addNode(new ContentNode(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createPageViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManagerImpl()), nodeId));
     }
 
     @ReactMethod

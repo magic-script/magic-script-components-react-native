@@ -17,7 +17,7 @@
 package com.reactlibrary.icons
 
 import com.reactlibrary.R
-import com.reactlibrary.scene.nodes.UiToggleNode
+import com.reactlibrary.scene.nodes.toggle.UiToggleNode
 
 class ToggleIconsProviderImpl : ToggleIconsProvider {
 

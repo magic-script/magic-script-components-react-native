@@ -42,174 +42,139 @@ void ARLog(NSString *format, ...) {
     return dispatch_get_main_queue();
 }
 
+- (void)registerNode:(TransformNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    resolve(nil);
+}
+
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(createAudioNode:(UiAudioNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createAudioNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createButtonNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createCircleConfirmationNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
+}
+
+RCT_EXPORT_METHOD(createContentNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createColorPickerNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDatePickerNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createDialogNode:(UiDialogNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDialogNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createDropdownListNode:(UiDropdownListNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDropdownListNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createDropdownListItemNode:(UiDropdownListItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createDropdownListItemNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createGridLayoutNode:(UiGridLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createGridLayoutNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createGroupNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createImageNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLineNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createLinearLayoutNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createListViewNode:(UiListViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createListViewNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createListViewItemNode:(UiListViewItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createListViewItemNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createModelNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
+}
+
+RCT_EXPORT_METHOD(createPageViewNode:(UiPageViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createPanelNode:(UiPanelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createPanelNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createProgressBarNode:(UiProgressBarNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createProgressBarNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createRectLayoutNode:(UiRectLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createRectLayoutNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createScrollBarNode:(UiScrollBarNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createScrollBarNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createScrollViewNode:(UiScrollViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createScrollViewNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createSliderNode:(UiSliderNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createSliderNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createSpinnerNode:(UiSpinnerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createSpinnerNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
+}
+
+RCT_EXPORT_METHOD(createTabNode:(UiTabNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createTextNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createTextEditNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createTimePickerNode:(UiTimePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createTimePickerNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createToggleNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createVideoNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
+}
+
+RCT_EXPORT_METHOD(createWebViewNode:(UiWebViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [self registerNode: node nodeId: nodeId: resolve: resolve reject: reject]
 }
 
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {

@@ -35,6 +35,10 @@
     return [[UiColorPickerNode alloc] initWithProps: json];
 }
 
++ (UiContentNode *)UiContentNode:(id)json {
+    return [[UiContentNode alloc] initWithProps: json];
+}
+
 + (UiDatePickerNode *)UiDatePickerNode:(id)json {
     return [[UiDatePickerNode alloc] initWithProps: json];
 }
@@ -83,6 +87,10 @@
     return [[UiModelNode alloc] initWithProps:json];
 }
 
++ (UiPageViewNode *)UiPageViewNode:(id)json {
+    return [[UiPageViewNode alloc] initWithProps:json];
+}
+
 + (UiPanelNode *)UiPanelNode:(id)json {
     return [[UiPanelNode alloc] initWithProps:json];
 }
@@ -109,6 +117,10 @@
 
 + (UiSpinnerNode *)UiSpinnerNode:(id)json {
     return [[UiSpinnerNode alloc] initWithProps:json];
+}
+
++ (UiTabNode *)UiTabNode:(id)json {
+    return [[UiTabNode alloc] initWithProps:json];
 }
 
 + (UiTextNode *)UiTextNode:(id)json {

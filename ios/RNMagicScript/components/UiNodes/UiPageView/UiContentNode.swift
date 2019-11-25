@@ -12,19 +12,12 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
-import UIKit
+import SceneKit
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+@objc open class UiContentNode: UiGroupNode {
 
-    var window: UIWindow?
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window = UIWindow()
-        window?.makeKeyAndVisible()
-        window?.rootViewController = ViewController()
-        return true
-    }
+/// Content should behave exactly the same as a group.
+
 }
-

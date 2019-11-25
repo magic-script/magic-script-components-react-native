@@ -39,15 +39,7 @@ class ViewController: UIViewController {
     let groupId: String = "group"
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-//        setupScrollViewTest()
-//        setupDropdownListTest()
-//        setupUiDatePickerNodeTest()
-//        setupUiColorPickerNodeTest()
-//        setupTextEditTest()
-//        setupUiListViewNodeTest()
-        setupWebViewTest()
-//        setupAudioNodeTest()
-//        setupUiCircleConfirmationNodeTest()
+        setupPageViewTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -77,191 +69,40 @@ class ViewController: UIViewController {
         arView.delegate = self
     }
 
-    fileprivate func setupUiCircleConfirmationNodeTest() {
-        let circleConfirmationNodeId = "circleConfirmationNodeId"
-        let circleConfirmationNode: UiCircleConfirmationNode = createComponent(["value": 0.0], nodeId: circleConfirmationNodeId, parentId: groupId)
-
-        circleConfirmationNode.setNeedsLayout()
-        circleConfirmationNode.layoutIfNeeded()
-    }
-
-    fileprivate func setupUiListViewNodeTest() {
-        let listViewId: String = "listView"
-        let listView: UiListViewNode = createComponent(["debug": true, "defaultItemAlignment": "center-left", "defaultItemPadding": [0, 0.04, 0, 0.0]], nodeId: listViewId, parentId: groupId)
-        listView.width = 0
-        listView.height = 1.0
-
-        let animals = ["bear", "sheep", "pig", "cat", "tiger", "snake", "dog", "rat", "octopus"]
-        for (index, animal) in animals.enumerated() {
-            let itemNodeId: String = "listViewItem_\(index)"
-            let _: UiListViewItemNode = createComponent(["backgroundColor": [0.95, 0.85, 0.75, 0.25]], nodeId: itemNodeId, parentId: listViewId)
-            let buttonId: String = "button_\(index)"
-            let _: UiButtonNode = createComponent(["text": animal, "textSize": 0.08], nodeId: buttonId, parentId: itemNodeId)
-        }
-    }
-
-    fileprivate func setupUiColorPickerNodeTest() {
-        let uiColorPickerNodeId: String = "uiColorPickerNodeId"
-        let uiColorPickerNode: UiColorPickerNode = createComponent(["color": [0.95, 0.85, 0.75, 1]], nodeId: uiColorPickerNodeId)
-        uiColorPickerNode.position = SCNVector3(0.0, 0.250, 0.0)
-
-        uiColorPickerNode.onColorChanged = { sender, value in
-            print("\(sender) changed \(value)")
-        }
-
-        uiColorPickerNode.onColorConfirmed = { sender, value in
-            print("\(sender) confirmed \(value)")
-        }
-
-        uiColorPickerNode.onColorCanceled = { sender, value in
-            print("\(sender) canceled ")
-        }
-
-        uiColorPickerNode.layoutIfNeeded()
-    }
-
-    fileprivate func setupUiDatePickerNodeTest() {
-
-        let uiDatePickerNodeId: String = "uiDatePickerNodeId"
-        let uiDatePickerNode: UiDatePickerNode = createComponent(["defaultDate": "06/13/1983", "label": "Birth date", "dateFormat": "DD/YYYY"], nodeId: uiDatePickerNodeId, parentId: groupId)
-        uiDatePickerNode.position = SCNVector3(-0.125, 0.250, 0.0)
-
-        uiDatePickerNode.onDateConfirmed = { sender, value in
-            print("\(sender) confirmed \(value)")
-        }
-
-        uiDatePickerNode.onDateChanged = { sender, value in
-            print("\(sender) changed \(value)")
-        }
-
-        uiDatePickerNode.layoutIfNeeded()
-
-        let uiTimePickerNodeId: String = "uiTimePickerNodeId"
-        let uiTimePickerNode: UiTimePickerNode = createComponent(["label": "Current time", "timeFormat": "hh:mm:ss p", "time": "13:13:13"], nodeId: uiTimePickerNodeId)
-        uiTimePickerNode.position = SCNVector3(-0.125, 0.0, 0.0)
-
-        uiTimePickerNode.onTimeConfirmed = { sender, value in
-            print("\(sender) confirmed \(value)")
-        }
-
-        uiTimePickerNode.onTimeChanged = { sender, value in
-            print("\(sender) changed \(value)")
-        }
-
-        uiTimePickerNode.layoutIfNeeded()
-    }
-
-    fileprivate var scrollView: UiScrollViewNode!
-    fileprivate var scrollBar: UiScrollBarNode!
-    fileprivate var value1: CGFloat = 0.0
-    fileprivate var value2: CGFloat = 0.0
-    fileprivate var linearLayout: UiLinearLayoutNode!
-    fileprivate let contentSize: CGFloat = 1
-    fileprivate func setupScrollViewTest() {
-        let imageSize = CGSize(width: contentSize, height: contentSize)
-
-        // Toggle
-        let toggle: UiToggleNode = createComponent([
-            "localPosition": [0.2, 0.8, 0],
-            "height": 0.08,
-            "textSize": 0.08,
-            "on": true,
-            "text": "Vertical scroll"
-        ], nodeId: "toggle", parentId: groupId)
-        toggle.onChanged = { [weak self] sender, on in self?.onOrientationChange(on) }
-
-        // Scroll view
-        let scrollViewId: String = "scroll_view"
-        scrollView = createComponent([
-            "alignment": "center-center",
+    fileprivate var pageView: UiPageViewNode!
+    fileprivate func setupPageViewTest() {
+        // PageView
+        let localPosition: [CGFloat] = [0, 0.5, 0]
+        let pageSize = CGSize(width: 1.7, height: 1.5)
+        let pageViewId: String = "page_view"
+        pageView = createComponent([
+            "alignment": "top-center",
             "debug": true,
-            "scrollBarVisibility": "auto",
-        ], nodeId: scrollViewId, parentId: groupId)
+            "localPosition": localPosition,
+            "visiblePage": 0
+        ], nodeId: pageViewId, parentId: groupId)
 
-        // Scroll bar
-        let scrollBarId: String = "scroll_bar"
-        scrollBar = createComponent([
-            "debug": false,
-            "height": 0.04,
-        ], nodeId: scrollBarId, parentId: scrollViewId)
-
-        // Linear
-        linearLayout = createLinearLayoutWithImages(imageSize, parentId: scrollViewId)
-        onOrientationChange(true)
-    }
-
-    fileprivate func onOrientationChange(_ isVertical: Bool) {
-        let direction: ScrollDirection = isVertical ? .vertical : .horizontal
-        let orientation: Orientation = isVertical ? .vertical : .horizontal
-        let size: CGSize = isVertical ? CGSize(width: contentSize, height: 1.25 * contentSize) : CGSize(width: 1.25 * contentSize, height: contentSize)
-        scrollView.scrollDirection = direction
-        scrollBar.scrollOrientation = orientation
-        linearLayout.layoutOrientation = orientation
-
-        scrollView.scrollBounds = (min: SCNVector3(-0.25 * size.width, -0.5 * size.height, -0.1),
-                                   max: SCNVector3(0.75 * size.width, 0.5 * size.height, 0.1))
-        scrollBar.width = 1.25 * contentSize
-        let bounds: CGRect = scrollView.getBounds()
-        if orientation == .vertical {
-            scrollBar.localPosition = SCNVector3(bounds.maxX - 0.5 * scrollBar.height, bounds.midY, 0)
-        } else {
-            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.height, 0)
-        }
-
-        scrollView.scrollValue = 0
-        UiNodesManager.instance.updateLayout()
-    }
-
-    fileprivate func createLinearLayoutWithImages(_ imageSize: CGSize, parentId: String? = nil) -> UiLinearLayoutNode {
-        let linearId = "linear"
-        let linear: UiLinearLayoutNode = createComponent([
-            "alignment": "top-right"
-        ], nodeId: linearId, parentId: parentId)
-
-        let alpha: CGFloat = 0.2
-        let colors: [[CGFloat]] = [
-            [1,1,0.5,alpha],
-            [1,0.5,1,alpha],
-            [0.5,1,1,alpha],
-            [1,0.5,0.5,alpha],
-            [0.5,0.5,1,alpha],
-            [0.5,1,0.5,alpha],
-            [0.75,0.75,0.25,alpha],
-            [1,1,1,alpha]
+        // Pages
+        let colorByName: [String: UIColor] = [
+            "red": UIColor.red,
+            "green": UIColor.green,
+            "blue": UIColor.blue,
+            "brown": UIColor.brown,
+            "magenta": UIColor.magenta,
+            "cyan": UIColor.cyan,
+            "yellow": UIColor.yellow,
         ]
-        let _: UiButtonNode = createComponent(["textSize": 0.1, "text": "Button"], nodeId: "button", parentId: linearId)
-        colors.enumerated().forEach { (index, rgba) in
-            let nodeId: String = "image_\(index)"
-            let _: UiImageNode = createComponent(["skipRaycast": true, "color": rgba, "width": imageSize.width, "height": imageSize.height], nodeId: nodeId, parentId: linearId)
+
+        let linearLayoutId = "linearLayoutId"
+        let _: UiLinearLayoutNode = createComponent(["alignment": "bottom-center", "orientation": "horizontal", "localPosition": localPosition, "defaultItemPadding": [0.03, 0.03, 0.03, 0.03]], nodeId: linearLayoutId, parentId: groupId)
+        for (index, item) in colorByName.enumerated() {
+            let tab: UiTabNode = createComponent(["text": item.key, "textSize": 0.08], nodeId: "tab_" + item.key, parentId: linearLayoutId)
+            tab.onTap = { [weak self] sender in
+                self?.pageView.visiblePage = index
+                self?.pageView.layoutIfNeeded()
+            }
+            let _: UiImageNode = createComponent(["color": item.value.toArrayOfCGFloat, "height": pageSize.height, "width": pageSize.width], nodeId: "content_" + item.key, parentId: pageViewId)
         }
-
-        return linear
-    }
-
-    fileprivate func setupTextEditTest() {
-        // TextEdit
-        let textEditId: String = "text_edit"
-        let _ : UiTextEditNode = createComponent([
-            "alignment": "center-center",
-            "debug": true,
-            "multiline": true,
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            "textSize": 0.08,
-            "width": 1.0,
-            "height": 1.0,
-        ], nodeId: textEditId, parentId: groupId)
-    }
-
-    fileprivate func setupWebViewTest() {
-        // WebView
-        let webViewId: String = "web_view"
-        let _ : UiWebViewNode = createComponent([
-            "alignment": "center-center",
-            "debug": true,
-            "width": 0.7,
-            "height": 1.0,
-            "url": "https://www.magicleap.com"
-        ], nodeId: webViewId, parentId: groupId)
     }
 
     @discardableResult
@@ -283,21 +124,8 @@ extension ViewController: ARSCNViewDelegate {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        value1 += 0.4 * CGFloat(deltaTime)
-        if value1 > CGFloat.pi {
-            value1 -= 2.0 * CGFloat.pi
-        }
-//
-//        value2 += CGFloat(deltaTime * 0.1)
-//        if value2 > 1.0 {
-//            value2 -= 2.0
+//        DispatchQueue.main.async() { [weak self] in
+//            UiNodesManager.instance.updateLayout()
 //        }
-
-        DispatchQueue.main.async() { [weak self] in
-//            guard let strongSelf = self else { return }
-//            strongSelf.scrollView.scrollValue = abs(strongSelf.scrollBarPosition)
-//            strongSelf.scrollBar.thumbSize = max(0.1, abs(strongSelf.scrollBarSize))
-            UiNodesManager.instance.updateLayout()
-        }
     }
 }

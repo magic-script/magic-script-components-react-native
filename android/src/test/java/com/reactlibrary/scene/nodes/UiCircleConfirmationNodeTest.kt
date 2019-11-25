@@ -32,6 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import kotlin.math.PI
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -74,7 +75,7 @@ class UiCircleConfirmationNodeTest {
     }
 
     @Test
-    fun `should notify correct progress when half of required time passed`() {
+    fun `should notify correct progress angle when half of required time passed`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
         var progress = 0f
@@ -87,7 +88,7 @@ class UiCircleConfirmationNodeTest {
         shadowOf(viewSpy).onTouchListener.onTouch(viewSpy, event)
         node.forceUpdate(UiCircleConfirmationNode.TIME_TO_COMPLETE / 2)
 
-        assertEquals(0.5f, progress, epsilon)
+        assertEquals(PI.toFloat(), progress, epsilon)
     }
 
     @Test

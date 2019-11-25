@@ -146,10 +146,6 @@ import SceneKit
         labelNode.setDebugMode(debug)
     }
 
-    fileprivate func updateLabelTextSizeBasedOnHeight() {
-        labelNode.textSize = UiColorPickerNode.defaultTextSize
-    }
-
     fileprivate func reloadOutlineNode() {
         let size = getSize()
 
@@ -187,16 +183,5 @@ extension UiColorPickerNode: ColorPickerDataProviding {
 
     func colorCanceled() {
         onColorCanceled?(self, color.toArrayOfCGFloat)
-    }
-}
-
-extension UIColor {
-    var toArrayOfCGFloat: [CGFloat] {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        return [red, green, blue, alpha]
     }
 }

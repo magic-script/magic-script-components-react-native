@@ -22,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
+import com.reactlibrary.scene.nodes.base.TransformNode
 
 fun createProperty(vararg keysAndValues: Any): Bundle =
         Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
@@ -36,4 +37,8 @@ fun View.createActionDownEvent(): MotionEvent {
             coordinates[0].toFloat(),
             coordinates[1].toFloat(),
             0)
+}
+
+fun <T: TransformNode> T.update(vararg keysAndValues: Any) {
+    update(JavaOnlyMap.of(*keysAndValues))
 }

@@ -25,7 +25,7 @@ class UiGroupNodeSpec: QuickSpec {
             var node: UiGroupNode!
             
             beforeEach {
-                node = UiGroupNode(props: [:])
+                node = UiGroupNode()
             }
             
             context("initial properties") {
@@ -41,6 +41,37 @@ class UiGroupNodeSpec: QuickSpec {
                     expect(node.alignment).notTo(equal(referenceAlignment))
                     expect(node.alignment).to(equal(Alignment.centerCenter))
                     expect(node.isLayoutNeeded).to(beFalse())
+                }
+            }
+
+            context("hitTest") {
+                it("should return nil if ray does not hit the area of group") {
+                    let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 3)
+                    let result = node.hitTest(ray: ray)
+                    expect(result).to(beNil())
+                }
+
+                it("should return hit node") {
+                    let imageSize: CGFloat = 0.5
+                    let images = [
+                        UiImageNode(props: ["icon": "cut", "localPosition": [-0.25, 0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "copy", "localPosition": [0.25, 0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "edit", "localPosition": [0.25, -0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "paste", "localPosition": [-0.25, -0.25, 0], "width": imageSize, "height": imageSize])
+                    ]
+                    for image in images {
+                        node.addChild(image)
+                    }
+                    node.layoutIfNeeded()
+
+                    let beginOffset = SCNVector3(0, 0, 1)
+                    let direction = SCNVector3(0, 0, -1)
+                    for image in images {
+                        let pos = image.localPosition
+                        let ray = Ray(begin: pos + beginOffset, direction: direction, length: 3)
+                        let result = node.hitTest(ray: ray)
+                        expect(result).to(beIdenticalTo(image))
+                    }
                 }
             }
             
@@ -65,6 +96,29 @@ class UiGroupNodeSpec: QuickSpec {
             context("when no child nodes") {
                 it("should return zero size") {
                     expect(node.getSize()).to(beCloseTo(CGSize.zero))
+                }
+            }
+
+            context("getBounds") {
+                it("should return group's bounds") {
+                    let imageSize: CGFloat = 0.5
+                    let images = [
+                        UiImageNode(props: ["icon": "cut", "localPosition": [-0.25, 0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "copy", "localPosition": [0.25, 0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "edit", "localPosition": [0.25, -0.25, 0], "width": imageSize, "height": imageSize]),
+                        UiImageNode(props: ["icon": "paste", "localPosition": [-0.25, -0.25, 0], "width": imageSize, "height": imageSize])
+                    ]
+                    for image in images {
+                        node.addChild(image)
+                    }
+                    let offset = SCNVector3(7, 1, 3)
+                    node.localPosition = offset
+                    node.layoutIfNeeded()
+                    let localBounds = node.getBounds()
+                    expect(localBounds).to(beCloseTo(CGRect(x: -imageSize, y: -imageSize, width: 2 * imageSize, height: 2 * imageSize)))
+
+                    let parentBounds = node.getBounds(parentSpace: true)
+                    expect(parentBounds).to(beCloseTo(CGRect(x: -imageSize + CGFloat(offset.x), y: -imageSize + CGFloat(offset.y), width: 2 * imageSize, height: 2 * imageSize)))
                 }
             }
         }

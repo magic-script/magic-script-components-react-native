@@ -14,7 +14,7 @@
 //  limitations under the License.
 //
 
-import SpriteKit
+import SceneKit
 
 class UiLabelNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.0167

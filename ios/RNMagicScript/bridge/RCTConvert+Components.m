@@ -131,4 +131,8 @@
     return [[UiVideoNode alloc] initWithProps:json];
 }
 
++ (UiWebViewNode *)UiWebViewNode:(id)json {
+    return [[UiWebViewNode alloc] initWithProps:json];
+}
+
 @end

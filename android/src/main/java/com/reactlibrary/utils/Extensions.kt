@@ -69,8 +69,8 @@ fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
 }
 
-fun <T>Bundle.putDefault(key: String, value: T) {
-    if(!containsKey(key)) {
+fun <T> Bundle.putDefault(key: String, value: T) {
+    if (!containsKey(key)) {
         when (value) {
             is Boolean -> putBoolean(key, value)
             is Double -> putDouble(key, value)

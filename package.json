@@ -43,7 +43,8 @@
       "json",
       "lcov",
       "text",
-      "text-summary"
+      "text-summary",
+      "clover"
     ]
   }
 }

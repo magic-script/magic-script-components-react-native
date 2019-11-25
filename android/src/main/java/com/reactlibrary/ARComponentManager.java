@@ -19,8 +19,6 @@ package com.reactlibrary;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.annotation.Nullable;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -72,6 +70,7 @@ import com.reactlibrary.scene.nodes.UiTabNode;
 import com.reactlibrary.scene.nodes.UiTextEditNode;
 import com.reactlibrary.scene.nodes.UiTextNode;
 import com.reactlibrary.scene.nodes.UiTimePickerNode;
+import com.reactlibrary.scene.nodes.audio.AudioNode;
 import com.reactlibrary.scene.nodes.base.TransformNode;
 import com.reactlibrary.scene.nodes.base.UiNode;
 import com.reactlibrary.scene.nodes.layouts.UiGridLayout;
@@ -96,6 +95,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import kotlin.Unit;
 
 /**
@@ -142,7 +142,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private static final String EVENT_ARG_DATE = "date";
     private static final String EVENT_ARG_TIME = "time";
     private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
-    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Value";
+    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle";
 
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -404,6 +404,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void createAudioNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            AudioNode node = new AudioNode(props, context);
+            addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
     public void addChildNode(final String nodeId, final String parentId) {
         mainHandler.post(() -> UiNodesManager.addNodeToParent(nodeId, parentId));
     }
@@ -548,7 +556,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorConfirmedEventReceivedHandler(final String nodeId) {
+    public void addOnColorConfirmedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof UiColorPickerNode) {
@@ -568,7 +576,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnColorCanceledEventReceivedHandler(final String nodeId) {
+    public void addOnColorCanceledEventHandler(final String nodeId) {
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof UiColorPickerNode) {

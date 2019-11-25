@@ -12,16 +12,36 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
-import UIKit
+import Foundation
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+@objc enum WebViewAction: Int {
+    case back, forward, reload
 
-    var window: UIWindow?
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        return true
+    public typealias RawValue = String
+
+    public var rawValue: RawValue {
+        switch self {
+        case .back:
+            return "back"
+        case .forward:
+            return "forward"
+        case .reload:
+            return "reload"
+        }
+    }
+
+    public init?(rawValue: RawValue) {
+        switch rawValue {
+        case "back":
+            self = .back
+        case "forward":
+            self = .forward
+        case "reload":
+            self = .reload
+        default:
+            return nil
+        }
     }
 }
-

@@ -24,14 +24,13 @@ Order | Component | Lumin RT<br>native component | Lumin OS | iOS | Android | Te
 20 | Video | VideoNode | 👍 | 👍 | 👍 | [link](coverage/Video.md)
 21 | Audio | AudioNode | 👍 | 👍 | 🚧 |
 22 | Dialog | UiDialog | 👍 | 👍 | 👍 |
-23 | WebView | UiWebView | 👍 | 🚧 | 👍|  [link](coverage/WebView.md)
+23 | WebView | UiWebView | 👍 | 👍 | 👍|  [link](coverage/WebView.md)
 24 | ColorPicker | UiColorPicker | 👍 | 👍 | 👍 | [link](coverage/ColorPicker.md)
 25 | TimePicker | UiTimePicker | 👍 | 👍 | 👍 | [link](coverage/TimePicker.md)
 26 | DatePicker | UiDatePicker | 👍 | 👍 | 👍 | [link](coverage/DatePicker.md)
 27 | CircleConfirmation | UiCircleConfirmation | 👍 | 🚧 | 👍
 28 | Line | LineNode | 👍 | 👍 | 👍 | [link](coverage/Line.md)
 29 | ToggleGroup | UiToggleGroup | 👍 | 10 D | 🚧 |
-30 | Tab | UiTab | 👍 | ? | 👍 |
-31 | PageView | UiPageView | 👍 | ? | 2.5 D |
+30 | Tab | UiTab | 👍 | 🚧 | 👍 |
+31 | PageView | UiPageView | 👍 | 🚧 | 2.5 D |
 32 | Panel | UiPanel | 👍 | 👍 | 👍 |
-33 | PortalIcon | UiPortalIcon | 👍 | 3 D | ? |

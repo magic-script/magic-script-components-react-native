@@ -12,16 +12,22 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import UIKit
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+/// The TestsAppDelegate used when the app is run in the test environment
+/// This AppDelegate usage is determined in the main.swift file in the main app target
+class TestsAppDelegate: NSObject {
 
     var window: UIWindow?
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        return true
+    /// This constructor is called at the start of the tests and is a good point for test wide customization
+    override init() {
+        super.init()
+        // Customize any TestsAppDelegate logic here
+
+        window = UIWindow()
+        window?.makeKeyAndVisible()
+        window?.rootViewController = UIViewController()
     }
 }
-

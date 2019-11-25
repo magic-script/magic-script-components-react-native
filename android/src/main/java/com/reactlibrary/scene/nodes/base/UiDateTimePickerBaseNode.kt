@@ -25,7 +25,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.ArViewManager
 import com.reactlibrary.R
 import com.reactlibrary.ar.ViewRenderableLoader
-import com.reactlibrary.scene.nodes.views.DialogProviderImpl
 import com.reactlibrary.utils.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 
@@ -66,6 +65,7 @@ open class UiDateTimePickerBaseNode(
             Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
         view.value.textSize =
             Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
+        view.value.setOnClickListener { this.onViewClick() }
     }
 
     override fun provideView(context: Context): View {

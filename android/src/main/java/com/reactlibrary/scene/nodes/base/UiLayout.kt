@@ -141,15 +141,12 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         rescaleChildren(mChildrenList)
         if (redrawRequested) {
             layoutManager.layoutChildren(mChildrenList, childrenBounds)
-            // applyAlignment()
             redrawRequested = false
 
             // Attach the child after position is calculated
-            mChildrenList.forEach { child ->
-                if (!contentNode.children.contains(child)) {
-                    contentNode.addChild(child)
-                }
-            }
+            mChildrenList.filter { it !in contentNode.children }
+                    .forEach { contentNode.addChild(it) }
+
         }
 
         handler.postDelayed({

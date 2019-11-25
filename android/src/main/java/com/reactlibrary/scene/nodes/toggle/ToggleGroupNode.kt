@@ -21,7 +21,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.reactlibrary.scene.nodes.GroupNode
 import com.reactlibrary.scene.nodes.base.UiLayout
-import com.reactlibrary.utils.ifContainsBoolean
+import com.reactlibrary.utils.ifContains
 import com.reactlibrary.utils.putDefault
 
 class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
@@ -40,7 +40,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
 
     private var togglesList = mutableListOf<UiToggleNode>()
 
-    fun setupToggle(toggleNode: UiToggleNode, wantBeActive: Boolean) {
+    fun updateToggle(toggleNode: UiToggleNode, wantBeActive: Boolean) {
         if (wantBeActive) {
             if (multiSelectAllowed()) {
                 toggleNode.isOn = true
@@ -68,7 +68,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
 
         if (props.containsKey(PROP_ALLOW_MULTIPLE_ON) || props.containsKey(PROP_ALLOW_ALL_OFF)) {
             togglesList.forEach { toggle ->
-                setupToggle(toggle, toggle.isOn)
+                updateToggle(toggle, toggle.isOn)
             }
         }
         setForceAllOff(props)
@@ -82,13 +82,13 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
                     .filterIsInstance<UiToggleNode>()
                     .forEach { toggle ->
                         togglesList.add(toggle)
-                        setupToggle(toggle, toggle.isOn)
+                        updateToggle(toggle, toggle.isOn)
                     }
 
             child.onAddedToLayoutListener = { node ->
                 if (node is UiToggleNode) {
                     togglesList.add(node)
-                    setupToggle(node, node.isOn)
+                    updateToggle(node, node.isOn)
                 }
             }
             child.onRemovedFromLayoutListener = { node ->
@@ -98,7 +98,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
             }
         } else if (child is UiToggleNode) {
             togglesList.add(child)
-            setupToggle(child, child.isOn)
+            updateToggle(child, child.isOn)
         }
 
         setForceAllOff(properties)
@@ -112,7 +112,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
     }
 
     private fun setForceAllOff(props: Bundle) {
-        props.ifContainsBoolean(PROP_FORCE_ALL_OFF) { forceAllOff ->
+        props.ifContains<Boolean>(PROP_FORCE_ALL_OFF) { forceAllOff ->
             if (forceAllOff) {
                 togglesList.forEach { toggle ->
                     toggle.isOn = false

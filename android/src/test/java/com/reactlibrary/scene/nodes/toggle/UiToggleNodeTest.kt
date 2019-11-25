@@ -17,6 +17,7 @@
 package com.reactlibrary.scene.nodes.toggle
 
 import android.content.Context
+import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
@@ -24,11 +25,14 @@ import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import com.reactlibrary.update
 import com.reactlibrary.utils.Utils
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -38,70 +42,66 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiToggleNodeTest {
 
+    private lateinit var toggle: UiToggleNode
     private lateinit var context: Context
+
+    @Mock
     private lateinit var toggleViewManager: ToggleViewManager
 
     @Before
     fun setUp() {
-        this.context = ApplicationProvider.getApplicationContext()
-        this.toggleViewManager = mock()
+        MockitoAnnotations.initMocks(this)
+        context = ApplicationProvider.getApplicationContext()
+        toggle = createNode(JavaOnlyMap())
+        toggle.build()
     }
 
     @Test
     fun `should have default height`() {
-        val node = createNode(JavaOnlyMap())
-
-        val height = node.getProperty(UiToggleNode.PROP_HEIGHT)
+        val height = toggle.getProperty(UiToggleNode.PROP_HEIGHT)
 
         assertEquals(UiToggleNode.DEFAULT_HEIGHT, height)
     }
 
     @Test
     fun `default text size should be equal to height`() {
-        val height: Double = 0.1
-        val props = JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height)
-        val node = createNode(props)
+        val height = 0.1
+        val toggle = createNode(JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height))
 
-        val textSize = node.getProperty(UiToggleNode.PROP_TEXT_SIZE)
+        val textSize = toggle.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
         assertEquals(height, textSize)
     }
 
     @Test
-    fun `should apply text size when text size property present`() {
+    fun `should apply text size when text size property updated`() {
         val textSize = 0.2
         val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context)
-        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_SIZE, textSize)
-        val node = createNode(props)
 
-        node.build()
+        toggle.update(UiToggleNode.PROP_TEXT_SIZE, textSize)
 
         verify(toggleViewManager).setTextSize(sizeInPixels)
     }
 
     @Test
-    fun `should apply text when text property present`() {
+    fun `should apply text when text property updated`() {
         val text = "QWERTY"
-        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT, text)
-        val node = createNode(props)
 
-        node.build()
+        toggle.update(UiToggleNode.PROP_TEXT, text)
 
         verify(toggleViewManager).setText(eq(text))
     }
 
     @Test
-    fun `should apply text color when color property present`() {
+    fun `should apply text color when color property updated`() {
         val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
-        val props = JavaOnlyMap.of(UiToggleNode.PROP_TEXT_COLOR, textColor)
-        val node = createNode(props)
 
-        node.build()
+        toggle.update(UiToggleNode.PROP_TEXT_COLOR, textColor)
 
         verify(toggleViewManager).setTextColor(0xFFFFFFFF.toInt())
     }
 
-    private fun createNode(props: ReadableMap): UiToggleNode {
+    fun createNode(props: ReadableMap): UiToggleNode {
         return UiToggleNode(props, context, mock(), toggleViewManager)
     }
 

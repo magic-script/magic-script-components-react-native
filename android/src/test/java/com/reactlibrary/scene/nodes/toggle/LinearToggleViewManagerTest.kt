@@ -43,7 +43,7 @@ class LinearToggleViewManagerTest {
     private lateinit var providerTypeface: Typeface
     private lateinit var textViewSpy: TextView
     private lateinit var imageViewSpy: ImageView
-    private lateinit var toggleConfig: ToggleViewManager.ToggleConfig
+    private lateinit var toggleConfig: ToggleConfig
 
     @Before
     fun setUp() {
@@ -60,7 +60,7 @@ class LinearToggleViewManagerTest {
         }
         toggleViewManager = LinearToggleViewManager(fontProvider, ToggleIconsProviderImpl())
 
-        toggleConfig = ToggleViewManager.ToggleConfig(
+        toggleConfig = ToggleConfig(
                 toggleType = UiToggleNode.TYPE_DEFAULT,
                 toggleHeight = 0.1F,
                 container = mock<LinearLayout>(),

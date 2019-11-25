@@ -46,7 +46,7 @@ class LinearToggleViewManager(
     private var textView: TextView? = null
     private var imageView: ImageView? = null
 
-    override fun setupToggleView(context: Context, toggleConfig: ToggleViewManager.ToggleConfig) {
+    override fun setupToggleView(context: Context, toggleConfig: ToggleConfig) {
         this.toggleType = toggleConfig.toggleType
         this.textView = toggleConfig.textView
         this.imageView = toggleConfig.imageView

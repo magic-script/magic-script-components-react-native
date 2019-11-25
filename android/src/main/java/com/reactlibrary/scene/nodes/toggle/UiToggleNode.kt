@@ -74,7 +74,7 @@ open class UiToggleNode(initProps: ReadableMap,
             if (toggleGroup == null) {
                 isOn = !isOn
             } else {
-                toggleGroup.setupToggle(this, wantBeActive = !isOn)
+                toggleGroup.updateToggle(this, wantBeActive = !isOn)
             }
         }
     }
@@ -107,7 +107,7 @@ open class UiToggleNode(initProps: ReadableMap,
             heightMeters = DEFAULT_HEIGHT.toFloat()
         }
 
-        val toggleConfig = ToggleViewManager.ToggleConfig(
+        val toggleConfig = ToggleConfig(
                 toggleType = type,
                 toggleHeight = heightMeters,
                 container = view as ViewGroup,
@@ -168,7 +168,7 @@ open class UiToggleNode(initProps: ReadableMap,
             if (toggleGroup == null) {
                 isOn = value
             } else {
-                toggleGroup.setupToggle(this, wantBeActive = value)
+                toggleGroup.updateToggle(this, wantBeActive = value)
             }
         }
     }

@@ -96,7 +96,6 @@ object UiNodesManager {
             logMessage("cannot add node: parent not found")
             return
         }
-
         parentNode.addContent(node)
     }
 

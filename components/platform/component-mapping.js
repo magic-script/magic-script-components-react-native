@@ -43,7 +43,7 @@ export default {
   elements: {
     // ui nodes
     button: componentManager => new ButtonBuilder(componentManager),
-    contentPicker: componentManager => new ContentBuilder(componentManager),
+    content: componentManager => new ContentBuilder(componentManager),
     colorPicker: componentManager => new ColorPickerBuilder(componentManager),
     datePicker: componentManager => new DatePickerBuilder(componentManager),
     dialog: (componentManager) => new DialogBuilder(componentManager),

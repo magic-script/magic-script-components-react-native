@@ -730,7 +730,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             final Node node = UiNodesManager.findNodeWithId(nodeId);
             if (node instanceof DialogNode) {
-                ((DialogNode) node).setOnDialogCancelListener(() -> {
+                ((DialogNode) node).setOnDialogExpiredListener(() -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
                     sendEvent(EVENT_DIALOG_EXPIRED, params);

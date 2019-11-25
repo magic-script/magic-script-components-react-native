@@ -35,12 +35,12 @@ import com.reactlibrary.utils.toJsColorArray
 
 
 open class UiColorPickerNode @JvmOverloads constructor(
-    initProps: ReadableMap,
-    context: Context,
-    viewRenderableLoader: ViewRenderableLoader,
-    private val fontProvider: FontProvider,
-    private val iconsRepo: IconsRepository,
-    private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
+        initProps: ReadableMap,
+        context: Context,
+        viewRenderableLoader: ViewRenderableLoader,
+        private val fontProvider: FontProvider,
+        private val iconsRepo: IconsRepository,
+        private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
 ) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo) {
 
     companion object {
@@ -58,6 +58,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
         colorPickerDialog.apply {
             onConfirm = { color ->
                 selectedColor = color
+                setNeedsRebuild(force = true)
                 this@UiColorPickerNode.onColorConfirmed?.invoke(color.toJsColorArray())
             }
             onCanceled = {
@@ -73,17 +74,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     var onColorCanceled: (() -> Unit)? = null
     var onColorChanged: ((color: Array<Double>) -> Unit)? = null
 
-    private var selectedColor = 0
-        set(value) {
-            field = value
-            (view as CustomButton).apply {
-                val hexColor = Integer.toHexString(value)
-                setIconColor(value)
-                text = "#$hexColor"
-                setNeedsRebuild()
-            }
-
-        }
+    private var selectedColor = Color.WHITE
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.color_picker, null)
@@ -93,6 +84,12 @@ open class UiColorPickerNode @JvmOverloads constructor(
         super.setupView()
 
         (view as CustomButton).setIcon(ColorDrawable(Color.WHITE))
+
+        val hexColor = Integer.toHexString(selectedColor)
+        (view as CustomButton).apply {
+            setIconColor(selectedColor)
+            text = "#$hexColor"
+        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -109,8 +106,10 @@ open class UiColorPickerNode @JvmOverloads constructor(
         val startingColor = PropertiesReader.readColor(props, PROP_STARTING_COLOR)
         if (color != null) {
             selectedColor = color
+            setNeedsRebuild()
         } else if (startingColor != null) {
             selectedColor = startingColor
+            setNeedsRebuild()
         }
     }
 

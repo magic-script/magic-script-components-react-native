@@ -109,4 +109,18 @@ import SceneKit
     override func hitTest(ray: Ray) -> TransformNode? {
         return self.innerLayout?.hitTest(ray: ray)
     }
+
+    @objc override func _calculateSize() -> CGSize {
+        return innerLayout?.getSize() ?? CGSize.zero
+    }
+
+    @objc override func updateLayout() {
+        let _ = getSize()
+        innerLayout?.updateLayout()
+    }
+
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        innerLayout?.setNeedsLayout()
+    }
 }

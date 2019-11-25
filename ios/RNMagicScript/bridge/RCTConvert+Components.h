@@ -81,7 +81,7 @@
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
-+ (UiToggleNode *)UiToggleGroupNode:(id)json;
++ (UiToggleGroupNode *)UiToggleGroupNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
 + (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

@@ -139,7 +139,7 @@
     return [[UiToggleNode alloc] initWithProps:json];
 }
 
-+ (UiToggleNode *)UiToggleGroupNode:(id)json {
++ (UiToggleGroupNode *)UiToggleGroupNode:(id)json {
     return [[UiToggleGroupNode alloc] initWithProps:json];
 }
 

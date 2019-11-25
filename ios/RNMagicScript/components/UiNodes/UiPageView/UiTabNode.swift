@@ -83,11 +83,6 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         return labelNode.getSize()
-//        let labelSize = labelNode.getSize()
-//        let buttonToTextHeightMultiplier: CGFloat = 1.0
-//        let contentWidth: CGFloat = labelSize.width + buttonToTextHeightMultiplier * labelSize.height
-//        let contentHeight: CGFloat = buttonToTextHeightMultiplier * labelSize.height
-//        return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {

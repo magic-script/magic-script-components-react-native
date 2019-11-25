@@ -104,6 +104,8 @@
 		44AB3974238BCD1F0002DF14 /* UiTabNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB3972238BCD1F0002DF14 /* UiTabNode.swift */; };
 		44AB3976238BCD290002DF14 /* UiPageViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB3975238BCD290002DF14 /* UiPageViewNode.swift */; };
 		44AB3977238BCD290002DF14 /* UiPageViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB3975238BCD290002DF14 /* UiPageViewNode.swift */; };
+		44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB3979238C0D3F0002DF14 /* UiPageViewSpec.swift */; };
+		44AB397C238C0D4A0002DF14 /* UiTabSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AB397B238C0D4A0002DF14 /* UiTabSpec.swift */; };
 		44AFAAA2232B949D005AC8EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44AFAAA1232B949D005AC8EF /* Images.xcassets */; };
 		44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB02232B968C005AC8EF /* ViewController.swift */; };
 		44AFAB28232B968C005AC8EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAB03232B968C005AC8EF /* AppDelegate.swift */; };
@@ -562,6 +564,8 @@
 		44AB396F238BCD130002DF14 /* UiContentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiContentNode.swift; sourceTree = "<group>"; };
 		44AB3972238BCD1F0002DF14 /* UiTabNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTabNode.swift; sourceTree = "<group>"; };
 		44AB3975238BCD290002DF14 /* UiPageViewNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiPageViewNode.swift; sourceTree = "<group>"; };
+		44AB3979238C0D3F0002DF14 /* UiPageViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiPageViewSpec.swift; sourceTree = "<group>"; };
+		44AB397B238C0D4A0002DF14 /* UiTabSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTabSpec.swift; sourceTree = "<group>"; };
 		44AFAAA1232B949D005AC8EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		44AFAAA7232B950A005AC8EF /* RNMagicScriptHostApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNMagicScriptHostApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44AFAACB232B9533005AC8EF /* RNMagicScriptTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -884,6 +888,15 @@
 				44AB3972238BCD1F0002DF14 /* UiTabNode.swift */,
 			);
 			path = UiPageView;
+			sourceTree = "<group>";
+		};
+		44AB3978238C0D2A0002DF14 /* PageView */ = {
+			isa = PBXGroup;
+			children = (
+				44AB3979238C0D3F0002DF14 /* UiPageViewSpec.swift */,
+				44AB397B238C0D4A0002DF14 /* UiTabSpec.swift */,
+			);
+			path = PageView;
 			sourceTree = "<group>";
 		};
 		44AFAAA8232B950A005AC8EF /* RNMagicScriptHostApplication */ = {
@@ -1265,6 +1278,7 @@
 				C4596A802374217D000E88C1 /* Dropdown */,
 				44A3FCFF2366254600402912 /* Layouts */,
 				C4A12B152361B6AC009B7083 /* Pickers */,
+				44AB3978238C0D2A0002DF14 /* PageView */,
 				44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */,
 				44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */,
 				C4AF1946238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift */,
@@ -2086,6 +2100,7 @@
 				44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
+				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
 				449B54992388017700D839CC /* WebViewActionSpec.swift in Sources */,
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
@@ -2114,6 +2129,7 @@
 				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
 				44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */,
+				44AB397C238C0D4A0002DF14 /* UiTabSpec.swift in Sources */,
 				C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,
 				44D8FE9C233CA5CA007FD766 /* VideoActionSpec.swift in Sources */,

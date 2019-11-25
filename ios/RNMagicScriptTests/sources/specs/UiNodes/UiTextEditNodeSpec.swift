@@ -347,7 +347,6 @@ class UiTextEditNodeSpec: QuickSpec {
             context("focus") {
                 it("should be focusable") {
                     expect(node.canHaveFocus).to(beTrue())
-
                     node.enabled = false
                     expect(node.canHaveFocus).to(beFalse())
                 }

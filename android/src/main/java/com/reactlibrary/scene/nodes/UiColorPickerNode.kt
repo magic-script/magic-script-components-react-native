@@ -38,8 +38,8 @@ open class UiColorPickerNode @JvmOverloads constructor(
         initProps: ReadableMap,
         context: Context,
         viewRenderableLoader: ViewRenderableLoader,
-        private val fontProvider: FontProvider,
-        private val iconsRepo: IconsRepository,
+        fontProvider: FontProvider,
+        iconsRepo: IconsRepository,
         private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
 ) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo) {
 
@@ -74,7 +74,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     var onColorCanceled: (() -> Unit)? = null
     var onColorChanged: ((color: Array<Double>) -> Unit)? = null
 
-    private var selectedColor = Color.WHITE
+    private var selectedColor = readColor(properties)
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.color_picker, null)
@@ -102,13 +102,9 @@ open class UiColorPickerNode @JvmOverloads constructor(
     }
 
     private fun setColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_COLOR)
-        val startingColor = PropertiesReader.readColor(props, PROP_STARTING_COLOR)
-        if (color != null) {
+        val color = readColor(props)
+        if (color != selectedColor) {
             selectedColor = color
-            setNeedsRebuild()
-        } else if (startingColor != null) {
-            selectedColor = startingColor
             setNeedsRebuild()
         }
     }
@@ -117,5 +113,10 @@ open class UiColorPickerNode @JvmOverloads constructor(
         super.onViewClick()
         colorPickerDialog.initialColor = selectedColor
         colorPickerDialog.show()
+    }
+
+    fun readColor(props: Bundle): Int {
+        return PropertiesReader.readColor(props, PROP_COLOR)
+                ?: (PropertiesReader.readColor(props, PROP_STARTING_COLOR) ?: Color.WHITE)
     }
 }

@@ -31,6 +31,8 @@ class GridLayoutSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
+                    expect(layout.width).to(beCloseTo(0))
+                    expect(layout.height).to(beCloseTo(0))
                     expect(layout.columns).to(equal(0))
                     expect(layout.rows).to(equal(0))
                     expect(layout.defaultItemAlignment).to(equal(Alignment.centerCenter))
@@ -43,6 +45,20 @@ class GridLayoutSpec: QuickSpec {
             }
 
             context("update properties") {
+                it("should update 'width' prop") {
+                    let referenceWidth: CGFloat = 0.7
+                    layout.width = referenceWidth
+                    expect(layout.width).to(beCloseTo(referenceWidth))
+                    expect(layout.recalculateNeeded).to(beTrue())
+                }
+
+                it("should update 'height' prop") {
+                    let referenceHeight: CGFloat = 0.8
+                    layout.height = referenceHeight
+                    expect(layout.height).to(beCloseTo(referenceHeight))
+                    expect(layout.recalculateNeeded).to(beTrue())
+                }
+
                 it("should update 'columns' prop") {
                     layout.columns = 2
                     expect(layout.columns).to(equal(2))

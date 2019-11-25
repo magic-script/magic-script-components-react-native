@@ -37,13 +37,17 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
-    var itemsCount: Int { return pages.count }
+    var pagesCount: Int { return pages.count }
     fileprivate var pages: [TransformNode] = []
     fileprivate var pageLayout = GridLayout()
 
     @objc func getPage(at index: Int) -> TransformNode? {
         guard index >= 0 && index < pages.count else { return nil }
         return pages[index]
+    }
+
+    @objc func getVisiblePage() -> TransformNode? {
+        return getPage(at: visiblePage)
     }
 
     @objc override func setupNode() {
@@ -89,7 +93,6 @@ import SceneKit
     @objc override func removeChild(_ child: TransformNode) {
         if let index = pages.firstIndex(of: child) {
             pages.remove(at: index)
-//            updateVisiblePage(visiblePage)
             setNeedsLayout()
         }
     }

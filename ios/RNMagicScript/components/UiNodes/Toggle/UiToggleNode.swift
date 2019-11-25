@@ -48,6 +48,7 @@ import SceneKit
     }
 
     @objc public var onChanged: ((_ sender: UiNode, _ on: Bool) -> (Void))?
+    var onChangeGroup: ((_ sender: UiToggleNode) -> (Void))? = { sender in sender.on = !sender.on }
 
     fileprivate var labelNode: LabelNode!
 
@@ -62,7 +63,8 @@ import SceneKit
         super.enterFocus()
         guard hasFocus else { return }
 
-        on = !on
+        onChangeGroup?(self)
+
         leaveFocus()
         onChanged?(self, on)
     }
@@ -138,6 +140,10 @@ import SceneKit
     @objc override func updateLayout() {
         labelNode.reload()
 
+        if let toggleGroupNode = findToggleGroupParent(node: self) {
+            toggleGroupNode.childPresent(toggleNode: self)
+        }
+
         toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset()
 
         let toggleSize = getToggleSize()
@@ -145,6 +151,16 @@ import SceneKit
         toggleGeometry.height = toggleSize.height
 
         labelNode.position = SCNVector3(getLabelXPosition(), 0, 0)
+    }
+
+    fileprivate func findToggleGroupParent(node: SCNNode?) -> UiToggleGroupNode? {
+        if let parent = node?.parent {
+            if let toggleNodeGroup = parent as? UiToggleGroupNode {
+                return toggleNodeGroup
+            }
+            return findToggleGroupParent(node: parent)
+        }
+        return nil
     }
 
     fileprivate func getLabelXPosition() -> Float {

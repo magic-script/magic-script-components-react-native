@@ -330,6 +330,8 @@
 		C4B73CA4238AEA5C0080D3F3 /* TestsAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B73CA2238AE95A0080D3F3 /* TestsAppDelegate.swift */; };
 		C4B73CA6238B28550080D3F3 /* ColorPickerInputViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B73CA5238B28550080D3F3 /* ColorPickerInputViewSpec.swift */; };
 		C4B73CA8238B2D2A0080D3F3 /* DatePickerInputViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B73CA7238B2D2A0080D3F3 /* DatePickerInputViewSpec.swift */; };
+		C4B73CB3238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B73CB2238BAB610080D3F3 /* TransformNodeContainer.swift */; };
+		C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B73CB2238BAB610080D3F3 /* TransformNodeContainer.swift */; };
 		C4B82C5F236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
 		C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */; };
 		C4B91AC32386B8A6002A24D6 /* ToggleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B91AC22386B8A6002A24D6 /* ToggleType.swift */; };
@@ -744,6 +746,7 @@
 		C4B73CA2238AE95A0080D3F3 /* TestsAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsAppDelegate.swift; sourceTree = "<group>"; };
 		C4B73CA5238B28550080D3F3 /* ColorPickerInputViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerInputViewSpec.swift; sourceTree = "<group>"; };
 		C4B73CA7238B2D2A0080D3F3 /* DatePickerInputViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerInputViewSpec.swift; sourceTree = "<group>"; };
+		C4B73CB2238BAB610080D3F3 /* TransformNodeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformNodeContainer.swift; sourceTree = "<group>"; };
 		C4B82C5E236A3C2E0062B3D6 /* TimePickerInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerInputView.swift; sourceTree = "<group>"; };
 		C4B91AC22386B8A6002A24D6 /* ToggleType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleType.swift; sourceTree = "<group>"; };
 		C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderDataProviding.swift; sourceTree = "<group>"; };
@@ -824,6 +827,7 @@
 				4425EDFD2366056D0064A2EA /* UiLayoutNode.swift */,
 				4425EE03236605830064A2EA /* UiLinearLayoutNode.swift */,
 				4425EE00236605790064A2EA /* UiRectLayoutNode.swift */,
+				C4B73CB2238BAB610080D3F3 /* TransformNodeContainer.swift */,
 			);
 			path = Layouts;
 			sourceTree = "<group>";
@@ -1984,6 +1988,7 @@
 				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
+				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
@@ -2264,6 +2269,7 @@
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,
+				C4B73CB3238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
 				44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */,
 				447755592374D37C00E98F03 /* AudioAction.swift in Sources */,
 				C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,

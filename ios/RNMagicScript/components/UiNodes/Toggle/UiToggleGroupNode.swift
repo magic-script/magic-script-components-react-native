@@ -17,38 +17,15 @@
 import SceneKit
 
 @objc open class UiToggleGroupNode: UiNode {
-    @objc var allowMultipleOn: Bool = false {
-        didSet { }
-    }
+    @objc var allowMultipleOn: Bool = false
 
-    @objc var allowAllOff: Bool = false {
-        didSet { }
-    }
+    @objc var allowAllOff: Bool = false
 
-    @objc var allTogglesOff: Bool = false {
-        didSet { }
-    }
+    @objc var allTogglesOff: Bool = false // not implemented
 
-    fileprivate var linearLayout: UiLinearLayoutNode?
-    fileprivate var itemsList: Array<UiToggleNode> = []
-    fileprivate var listNode: SCNNode!
-    fileprivate(set) var listGridLayoutNode: UiGridLayoutNode!
+    fileprivate(set) var innerLayout: TransformNode?
+    fileprivate(set) var itemsList: Array<UiToggleNode> = []
 
-    override func setupNode() {
-        super.setupNode()
-
-        // List items node
-        listNode = SCNNode()
-        contentNode.addChildNode(listNode)
-
-        listGridLayoutNode = UiGridLayoutNode()
-        listGridLayoutNode.columns = 1
-        listGridLayoutNode.defaultItemPadding = UIEdgeInsets.zero
-        listGridLayoutNode.defaultItemAlignment = Alignment.centerLeft
-        listGridLayoutNode.alignment = Alignment.topCenter
-        listGridLayoutNode.renderingOrder = 1
-        listNode.addChildNode(listGridLayoutNode)
-    }
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
@@ -68,24 +45,46 @@ import SceneKit
 
     @objc override func addChild(_ child: TransformNode) {
         if let toggleNode = child as? UiToggleNode {
+            registerToggleGroupHandler(toggleNode)
             addToggleNode(toggleNode)
+            return
         }
 
-        if let linearLayout = child as? UiLinearLayoutNode {
-            for childNode in linearLayout.items {
-                if let toggleNode = childNode as? UiToggleNode {
-                    addToggleNode(toggleNode)
-                }
-            }
-            self.linearLayout = linearLayout
-            contentNode.addChildNode(linearLayout)
+        if let _ = child as? TransformNodeContainer {
+            self.innerLayout = child
+            contentNode.addChildNode(child)
             setNeedsLayout()
         }
     }
 
-    override func updateLayout() {
-        super.updateLayout()
+    func childPresent(toggleNode: UiToggleNode) {
+        if itemsList.contains(toggleNode) { return }
+        registerToggleGroupHandler(toggleNode)
+        addToggleNode(toggleNode)
+    }
 
+    fileprivate func registerToggleGroupHandler(_ node: UiToggleNode) {
+        node.onChangeGroup = { [weak self] node in
+            self?.toggleSelection(node)
+        }
+    }
+
+    func toggleSelection(_ node: UiToggleNode) {
+        if allowMultipleOn && allowAllOff {
+            node.on = !node.on
+        } else if allowMultipleOn && allowAllOff == false {
+            let filteredItems = itemsList.filter { $0.on }
+            if filteredItems.count == 1 && filteredItems.first == node { return }
+            node.on = !node.on
+        } else if allowMultipleOn == false && allowAllOff {
+            let filteredItems = itemsList.filter { $0.on }
+            if filteredItems.count >= 1 && filteredItems.contains { $0 != node }  { filteredItems.forEach { $0.on = false } }
+            node.on = !node.on
+        } else {
+            let filteredItems = itemsList.filter { $0 != node }
+            filteredItems.forEach { $0.on = false }
+            node.on = true
+        }
     }
 
     fileprivate func addToggleNode(_ toggleNode: UiToggleNode) {
@@ -93,15 +92,21 @@ import SceneKit
     }
 
     @objc override func removeChild(_ child: TransformNode) {
-        guard let toggleItem = child as? UiToggleNode else { return }
-        itemsList.removeAll { node -> Bool in
-            return node == toggleItem
+        if let toggleItem = child as? UiToggleNode {
+            itemsList.removeAll { node -> Bool in
+                return node == toggleItem
+            }
         }
-        listGridLayoutNode.removeChild(child)
+
+        if let storedInnerLayout = self.innerLayout, storedInnerLayout == child {
+            storedInnerLayout.removeFromParentNode()
+            self.innerLayout = nil
+        }
+
         setNeedsLayout()
     }
 
     override func hitTest(ray: Ray) -> TransformNode? {
-        return self.linearLayout?.hitTest(ray: ray)
+        return self.innerLayout?.hitTest(ray: ray)
     }
 }

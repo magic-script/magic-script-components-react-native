@@ -58,6 +58,181 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
+
+            context("when child added") {
+                context("when child is UiToggleNode") {
+                    it("should add it to the list") {
+                        let toggleNode = UiToggleNode(props: [:])
+                        node.addChild(toggleNode)
+                        expect(node.itemsList.count).to(equal(1))
+
+
+                        let otherNode = TransformNode(props: [:])
+                        node.addChild(otherNode)
+                        expect(node.itemsList.count).to(equal(1))
+                    }
+                }
+
+                context("when child is TransformNodeContainer (toggles container)") {
+                    it("should manage it internally") {
+                        let layoutNode = UiLinearLayoutNode(props: [:])
+                        node.addChild(layoutNode)
+                        expect(node.innerLayout).to(equal(layoutNode))
+                    }
+                }
+            }
+
+            context("when child register his presence") {
+                context("when it's managed by this toggle group") {
+                    it("should add it to the list") {
+                        let toggleNode = UiToggleNode(props: [:])
+                        node.childPresent(toggleNode: toggleNode)
+                        expect(node.itemsList.count).to(equal(1))
+                    }
+                }
+
+                context("when it's already managed by this toggle group") {
+                    it("should do nothing") {
+                        let toggleNode = UiToggleNode(props: [:])
+                        node.addChild(toggleNode)
+                        expect(node.itemsList.count).to(equal(1))
+
+                        node.childPresent(toggleNode: toggleNode)
+                        expect(node.itemsList.count).to(equal(1))
+                    }
+                }
+            }
+
+            context("when child removed") {
+                context("when child is UiToggleNode") {
+                    it("should remove it from the list") {
+                        let toggleNode = UiToggleNode(props: [:])
+                        node.addChild(toggleNode)
+                        expect(node.itemsList.count).to(equal(1))
+
+                        node.removeChild(toggleNode)
+                        expect(node.itemsList.count).to(equal(0))
+                    }
+                }
+
+                context("when child is TransformNodeContainer (toggles container)") {
+                    it("should manage it internally") {
+                        let layoutNode = UiLinearLayoutNode(props: [:])
+                        node.addChild(layoutNode)
+                        expect(node.innerLayout).to(equal(layoutNode))
+
+                        node.removeChild(layoutNode)
+                        expect(node.innerLayout).to(beNil())
+                    }
+                }
+            }
+
+            context("when toggle selection requested") {
+                context("when MultipleOn & AllOff allowed") {
+                    it("should toggle state") {
+                        node.allowAllOff = true
+                        node.allowMultipleOn = true
+
+                        let toggleNode = UiToggleNode(props: [:])
+                        toggleNode.on = true
+
+                        node.toggleSelection(toggleNode)
+                        expect(toggleNode.on).to(beFalse())
+
+                        node.toggleSelection(toggleNode)
+                        expect(toggleNode.on).to(beTrue())
+                    }
+                }
+
+                context("when MultipleOn allowed AllOff forbidden") {
+                    context("when requestes toggle is last selected") {
+                        it("should leave toggle selected") {
+                            node.allowAllOff = false
+                            node.allowMultipleOn = true
+
+                            let toggleNode1 = UiToggleNode(props: [:])
+                            toggleNode1.on = true
+
+                            let toggleNode2 = UiToggleNode(props: [:])
+                            toggleNode2.on = false
+
+                            node.childPresent(toggleNode: toggleNode1)
+                            node.childPresent(toggleNode: toggleNode2)
+
+                            node.toggleSelection(toggleNode1)
+                            expect(toggleNode1.on).to(beTrue())
+                            expect(toggleNode2.on).to(beFalse())
+                        }
+                    }
+
+                    context("when requestes toggle is NOT last selected") {
+                        it("should set toggle deselected") {
+                            node.allowAllOff = false
+                            node.allowMultipleOn = true
+
+                            let toggleNode1 = UiToggleNode(props: [:])
+                            toggleNode1.on = true
+
+                            let toggleNode2 = UiToggleNode(props: [:])
+                            toggleNode2.on = true
+
+                            node.childPresent(toggleNode: toggleNode1)
+                            node.childPresent(toggleNode: toggleNode2)
+
+                            node.toggleSelection(toggleNode1)
+                            expect(toggleNode1.on).to(beFalse())
+                            expect(toggleNode2.on).to(beTrue())
+                        }
+                    }
+                }
+
+                context("when MultipleOn forbidden AllOff allowed") {
+                    context("when requestes toggle is NOT selected (other is selected)") {
+                        it("should set toggle selected (deselect other)") {
+                            node.allowAllOff = true
+                            node.allowMultipleOn = false
+
+                            let toggleNode1 = UiToggleNode(props: [:])
+                            toggleNode1.on = false
+
+                            let toggleNode2 = UiToggleNode(props: [:])
+                            toggleNode2.on = true
+
+                            node.childPresent(toggleNode: toggleNode1)
+                            node.childPresent(toggleNode: toggleNode2)
+
+                            node.toggleSelection(toggleNode1)
+                            expect(toggleNode1.on).to(beTrue())
+                            expect(toggleNode2.on).to(beFalse())
+                        }
+                    }
+                }
+
+                context("when MultipleOn forbidden AllOff forbidden") {
+                    it("should set toggle to selected (other to deselected)") {
+                        node.allowAllOff = false
+                        node.allowMultipleOn = false
+
+                        let toggleNode1 = UiToggleNode(props: [:])
+                        toggleNode1.on = false
+
+                        let toggleNode2 = UiToggleNode(props: [:])
+                        toggleNode2.on = false
+
+                        let toggleNode3 = UiToggleNode(props: [:])
+                        toggleNode3.on = true
+
+                        node.childPresent(toggleNode: toggleNode1)
+                        node.childPresent(toggleNode: toggleNode2)
+                        node.childPresent(toggleNode: toggleNode3)
+
+                        node.toggleSelection(toggleNode1)
+                        expect(toggleNode1.on).to(beTrue())
+                        expect(toggleNode2.on).to(beFalse())
+                        expect(toggleNode3.on).to(beFalse())
+                    }
+                }
+            }
         }
     }
 }

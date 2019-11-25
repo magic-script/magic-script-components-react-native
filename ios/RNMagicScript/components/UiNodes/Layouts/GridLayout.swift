@@ -58,6 +58,11 @@ import SceneKit
         gridDescriptor = nil
     }
 
+    @objc func getItem(at index: Int) -> TransformNode? {
+        guard index >= 0 && index < container.childNodes.count else { return nil }
+        return container.childNodes[index].childNodes.first as? TransformNode
+    }
+
     @objc func addItem(_ item: TransformNode) {
         let proxyNode = SCNNode()
         proxyNode.name = item.name

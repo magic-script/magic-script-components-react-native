@@ -41,9 +41,16 @@ import SceneKit
     fileprivate var pages: [TransformNode] = []
     fileprivate var pageLayout = GridLayout()
 
+    @objc func getPage(at index: Int) -> TransformNode? {
+        guard index >= 0 && index < pages.count else { return nil }
+        return pages[index]
+    }
+
     @objc override func setupNode() {
         super.setupNode()
         contentNode.addChildNode(pageLayout.container)
+        pageLayout.columns = 1
+        pageLayout.rows = 1
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
@@ -75,18 +82,15 @@ import SceneKit
     }
 
     @objc override func addChild(_ child: TransformNode) {
-        if let content = child as? UiContentNode {
-            pages.append(content)
-            setNeedsLayout()
-        }
+        pages.append(child)
+        setNeedsLayout()
     }
 
     @objc override func removeChild(_ child: TransformNode) {
-        if let content = child as? UiContentNode {
-            if let index = pages.firstIndex(of: content) {
-                pages.remove(at: index)
-                setNeedsLayout()
-            }
+        if let index = pages.firstIndex(of: child) {
+            pages.remove(at: index)
+//            updateVisiblePage(visiblePage)
+            setNeedsLayout()
         }
     }
 
@@ -108,7 +112,7 @@ import SceneKit
     }
 
     fileprivate func updateVisiblePage(_ pageIndex: Int) {
-        if let currentPage = pageLayout.container.childNodes.first as? UiContentNode {
+        if let currentPage = pageLayout.getItem(at: 0) {
             if let currentPageIndex = pages.firstIndex(of: currentPage) {
                 if currentPageIndex == pageIndex {
                     // Do not change current page to the same page.

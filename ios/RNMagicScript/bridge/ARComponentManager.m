@@ -43,7 +43,7 @@ void ARLog(NSString *format, ...) {
 }
 
 - (void)registerNode:(TransformNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
+    [UiNodesManager.instance registerNode:node nodeId:nodeId];
     resolve(nil);
 }
 
@@ -58,152 +58,150 @@ RCT_EXPORT_METHOD(createButtonNode:(UiButtonNode *)node nodeId:(NSString *)nodeI
 }
 
 RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createContentNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createColorPickerNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createDatePickerNode:(UiDatePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createDialogNode:(UiDialogNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createDropdownListNode:(UiDropdownListNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createDropdownListItemNode:(UiDropdownListItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createGridLayoutNode:(UiGridLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createGroupNode:(UiGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createImageNode:(UiImageNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createLineNode:(UiLineNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createLinearLayoutNode:(UiLinearLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createListViewNode:(UiListViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createListViewItemNode:(UiListViewItemNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createModelNode:(UiModelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createPageViewNode:(UiPageViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createPanelNode:(UiPanelNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createProgressBarNode:(UiProgressBarNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createRectLayoutNode:(UiRectLayoutNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createScrollBarNode:(UiScrollBarNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createScrollViewNode:(UiScrollViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createSliderNode:(UiSliderNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createSpinnerNode:(UiSpinnerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createTabNode:(UiTabNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createTextNode:(UiTextNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createTextEditNode:(UiTextEditNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createTimePickerNode:(UiTimePickerNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createToggleNode:(UiToggleNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createToggleGroupNode:(UiToggleGroupNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    ARLog(@"createToggleGroupNode: %@", nodeId);
-    [UiNodesManager.instance registerNode: node nodeId: nodeId];
-    resolve(nil);
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createVideoNode:(UiVideoNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(createWebViewNode:(UiWebViewNode *)node nodeId:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
-    [self registerNode: node nodeId:nodeId resolve: resolve reject: reject];
+    [self registerNode:node nodeId:nodeId resolve:resolve reject:reject];
 }
 
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
-    [UiNodesManager.instance addNode: nodeId toParent: parentId];
+    [UiNodesManager.instance addNode:nodeId toParent:parentId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"addChildNodeToContainer: %@", nodeId);
-    [UiNodesManager.instance addNodeToRoot: nodeId];
+    [UiNodesManager.instance addNodeToRoot:nodeId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"removeChildNode: %@ fromParentNode: %@", nodeId, parentId);
-    [UiNodesManager.instance removeNode: nodeId fromParent: parentId];
+    [UiNodesManager.instance removeNode:nodeId fromParent:parentId];
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(removeChildNodeFromRoot:(NSString *)nodeId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"removeNodeFromRoot: %@", nodeId);
-    [UiNodesManager.instance removeNodeFromRoot: nodeId];
+    [UiNodesManager.instance removeNodeFromRoot:nodeId];
     resolve(nil);
 }
 
@@ -354,7 +352,7 @@ RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiVideoNode class]]) {
         ((UiVideoNode *)node).onVideoPrepared = ^(UiVideoNode *sender, NSString *videoURL) {
             ARLog(@"video onPrepared");
-            [[AREventsManager instance] onVideoPreparedEventReceived:sender videoURL: videoURL];
+            [[AREventsManager instance] onVideoPreparedEventReceived:sender videoURL:videoURL];
         };
     }
 }
@@ -365,7 +363,7 @@ RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
     if (node && [node isKindOfClass:[UiDropdownListNode class]]) {
         ((UiDropdownListNode *)node).onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<NSNumber *> *selectedItemsIndexes) {
             ARLog(@"DropdownList item selected");
-            [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItemsIndexes: selectedItemsIndexes];
+            [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItemsIndexes:selectedItemsIndexes];
         };
     }
 }

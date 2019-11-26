@@ -37,6 +37,7 @@ import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
 import com.magicleap.magicscript.utils.Utils.Companion.pxToMeters
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 import kotlin.math.max
 import kotlin.math.min
 
@@ -53,7 +54,7 @@ open class UiScrollViewNode(
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
-        const val DEFAULT_SCROLL_DIRECTION = "vertical"
+        const val SCROLL_DIRECTION_VERTICAL = "vertical"
 
         const val BAR_THICKNESS_RATIO = 0.03F // relative to min (width, height)
         const val BAR_MINIMUM_THICKNESS = 0.05F // in meters
@@ -63,7 +64,7 @@ open class UiScrollViewNode(
         const val Z_ORDER_OFFSET = 1e-5F
     }
 
-    var onScrollChangeListener: ((position: Vector2) -> Unit)? = null
+    var onScrollChangeListener: ((position: Float) -> Unit)? = null
 
     protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
 
@@ -80,7 +81,7 @@ open class UiScrollViewNode(
     private var looperHandler = Handler(Looper.getMainLooper())
 
     init {
-        properties.putDefault(PROP_SCROLL_DIRECTION, DEFAULT_SCROLL_DIRECTION)
+        properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
         layoutLoop()
     }
 
@@ -128,7 +129,12 @@ open class UiScrollViewNode(
         val scrollView = view as CustomScrollView
         scrollView.onScrollChangeListener = { position: Vector2 ->
             update(position)
-            this.onScrollChangeListener?.invoke(position)
+            val scrollDirection = properties.read<String>(PROP_SCROLL_DIRECTION)
+            if (scrollDirection == SCROLL_DIRECTION_VERTICAL) {
+                this.onScrollChangeListener?.invoke(position.y)
+            } else {
+                this.onScrollChangeListener?.invoke(position.x)
+            }
         }
     }
 
@@ -299,6 +305,5 @@ open class UiScrollViewNode(
             (view as CustomScrollView).scrollDirection = value
         }
     }
-
 
 }

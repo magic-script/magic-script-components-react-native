@@ -23,14 +23,15 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
+import com.magicleap.magicscript.update
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -47,47 +48,56 @@ class UiScrollViewNodeTest {
 
     private lateinit var context: Context
     private lateinit var viewSpy: CustomScrollView
+    private lateinit var tested: UiScrollViewNode
 
     @Before
     fun setUp() {
-        this.context = ApplicationProvider.getApplicationContext()
-        val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null) as CustomScrollView
-        this.viewSpy = spy(view)
+        context = ApplicationProvider.getApplicationContext()
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.scroll_view, null) as CustomScrollView
+        viewSpy = spy(view)
+        tested = createNodeWithViewSpy(JavaOnlyMap())
+        tested.build()
+    }
+
+    @Test
+    fun `should be vertical by default`() {
+        val scrollDirection = tested.getProperty(UiScrollViewNode.PROP_SCROLL_DIRECTION)
+
+        scrollDirection shouldEqual UiScrollViewNode.SCROLL_DIRECTION_VERTICAL
     }
 
     @Test
     fun `should return correct bounds`() {
         val scrollBoundsMap = JavaOnlyMap.of(
-                "min", JavaOnlyArray.of(-0.8, -0.2, 0.1),
-                "max", JavaOnlyArray.of(0.8, 0.2, 0.1)
+            "min", JavaOnlyArray.of(-0.8, -0.2, 0.1),
+            "max", JavaOnlyArray.of(0.8, 0.2, 0.1)
         )
-        val props = JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
-        val node = createNodeWithViewSpy(props)
-        node.build()
+        val tested = createNodeWithViewSpy(
+            JavaOnlyMap.of(
+                UiScrollViewNode.PROP_SCROLL_BOUNDS,
+                scrollBoundsMap
+            )
+        )
+        tested.build() // need to recreate the view
         val expectedBounds = Bounding(-0.8f, -0.2f, 0.8f, 0.2f)
 
-        val bounds = node.getBounding()
+        val bounds = tested.getBounding()
 
         assertTrue(Bounding.equalInexact(expectedBounds, bounds))
     }
 
     @Test
     fun `should not change the hardcoded center-center alignment`() {
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "bottom-left")
-        val node = createNodeWithViewSpy(props)
+        tested.update(TransformNode.PROP_ALIGNMENT, "bottom-left")
 
-        node.build()
-
-        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.CENTER
-        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.CENTER
+        tested.verticalAlignment shouldEqual Alignment.VerticalAlignment.CENTER
+        tested.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.CENTER
     }
 
     @Test
     fun `should apply scroll direction`() {
-        val props = JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_DIRECTION, "horizontal")
-        val node = createNodeWithViewSpy(props)
-
-        node.build()
+        tested.update(UiScrollViewNode.PROP_SCROLL_DIRECTION, "horizontal")
 
         verify(viewSpy).scrollDirection = "horizontal"
     }

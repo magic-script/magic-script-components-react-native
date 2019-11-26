@@ -28,19 +28,18 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.FileDownloader
 import com.magicleap.magicscript.utils.PropertiesReader.Companion.readFilePath
 import com.magicleap.magicscript.utils.ifContains
-import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 import java.io.File
 
 
 open class AudioNode @JvmOverloads constructor(
-        initProps: ReadableMap,
-        private val context: Context,
-        private val audioEngine: GvrAudioEngine = GvrAudioEngine(
-                context,
-                GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY
-        ),
-        private val fileDownloader: FileDownloader = FileDownloader(context)
+    initProps: ReadableMap,
+    private val context: Context,
+    private var audioEngine: GvrAudioEngine? = GvrAudioEngine(
+        context,
+        GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY
+    ),
+    private val fileDownloader: FileDownloader = FileDownloader(context)
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -93,18 +92,20 @@ open class AudioNode @JvmOverloads constructor(
     }
 
     override fun onDestroy() {
-        if (sourceId != GvrAudioEngine.INVALID_ID) {
-            audioEngine.stopSound(sourceId)
-        }
-        file?.let { file ->
-            audioEngine.unloadSoundFile(file.path)
-        }
+        fileDownloader.onDestroy()
 
         audioThread?.interrupt()
         audioThread = null
-        audioEngineSet = false
 
-        fileDownloader.onDestroy()
+        if (sourceId != GvrAudioEngine.INVALID_ID) {
+            audioEngine?.stopSound(sourceId)
+        }
+        file?.let { file ->
+            audioEngine?.unloadSoundFile(file.path)
+        }
+
+        audioEngineSet = false
+        audioEngine = null
 
         super.onDestroy()
     }
@@ -133,14 +134,14 @@ open class AudioNode @JvmOverloads constructor(
 
             ifContains(PROP_SOUND_VOLUME_LINEAR) { volume: Double ->
                 this@AudioNode.volume = volume.toFloat()
-                audioEngine.setSoundVolume(sourceId, this@AudioNode.volume)
+                audioEngine?.setSoundVolume(sourceId, this@AudioNode.volume)
             }
 
             ifContains(PROP_SOUND_MUTE) { isMuted: Boolean ->
                 if (isMuted) {
-                    audioEngine.setSoundVolume(sourceId, 0f)
+                    audioEngine?.setSoundVolume(sourceId, 0f)
                 } else {
-                    audioEngine.setSoundVolume(sourceId, volume)
+                    audioEngine?.setSoundVolume(sourceId, volume)
                 }
             }
         }
@@ -149,15 +150,15 @@ open class AudioNode @JvmOverloads constructor(
     private fun setupAudioEngine() {
         file?.let { file ->
             unloadSoundFile(file)
-            audioEngine.preloadSoundFile(file.path)
+            audioEngine?.preloadSoundFile(file.path)
             createAudioSource(file)
-            audioEngine.setRoomProperties(
-                    15f,
-                    15f,
-                    15f,
-                    PLASTER_SMOOTH,
-                    PLASTER_SMOOTH,
-                    CURTAIN_HEAVY
+            audioEngine?.setRoomProperties(
+                15f,
+                15f,
+                15f,
+                PLASTER_SMOOTH,
+                PLASTER_SMOOTH,
+                CURTAIN_HEAVY
             )
             autoplayAudio()
             audioEngineSet = true
@@ -166,32 +167,32 @@ open class AudioNode @JvmOverloads constructor(
 
     private fun unloadSoundFile(file: File) {
         if (sourceId != GvrAudioEngine.INVALID_ID) {
-            audioEngine.stopSound(sourceId)
-            audioEngine.unloadSoundFile(file.path)
+            audioEngine?.stopSound(sourceId)
+            audioEngine?.unloadSoundFile(file.path)
         }
     }
 
     private fun createAudioSource(file: File) {
         sourceId = if (spatialSoundEnabled) {
-            audioEngine.createSoundObject(file.path)
+            audioEngine?.createSoundObject(file.path)
         } else {
-            audioEngine.createStereoSound(file.path)
-        }
+            audioEngine?.createStereoSound(file.path)
+        } ?: GvrAudioEngine.INVALID_ID
     }
 
     private fun autoplayAudio() {
         if (AudioAction.shouldPlay(action)) {
-            audioEngine.playSound(sourceId, looping)
+            audioEngine?.playSound(sourceId, looping)
         }
     }
 
     private fun applyActions(props: Bundle) {
         props.ifContains(PROP_ACTION) { action: String ->
             when (action) {
-                AudioAction.STOP -> audioEngine.stopSound(sourceId)
-                AudioAction.PAUSE -> audioEngine.pause()
-                AudioAction.RESUME -> audioEngine.resume()
-                AudioAction.START -> audioEngine.playSound(sourceId, looping)
+                AudioAction.STOP -> audioEngine?.stopSound(sourceId)
+                AudioAction.PAUSE -> audioEngine?.pause()
+                AudioAction.RESUME -> audioEngine?.resume()
+                AudioAction.START -> audioEngine?.playSound(sourceId, looping)
             }
             this@AudioNode.action = action
         }
@@ -201,21 +202,21 @@ open class AudioNode @JvmOverloads constructor(
         props.ifContains(PROP_SPATIAL_SOUND_POSITION) { spatialSoundPosition: SpatialSoundPosition ->
             spatialSoundPosition.channelPosition?.let { channelPosition ->
 
-                audioEngine.setSoundObjectPosition(
-                        sourceId,
-                        channelPosition.x,
-                        channelPosition.y,
-                        channelPosition.z
+                audioEngine?.setSoundObjectPosition(
+                    sourceId,
+                    channelPosition.x,
+                    channelPosition.y,
+                    channelPosition.z
                 )
             }
         }
 
         props.ifContains(PROP_SPATIAL_SOUND_DISTANCE) { spatialSoundDistance: SpatialSoundDistance ->
-            audioEngine.setSoundObjectDistanceRolloffModel(
-                    sourceId,
-                    spatialSoundDistance.rolloffFactor,
-                    spatialSoundDistance.minDistance,
-                    spatialSoundDistance.maxDistance
+            audioEngine?.setSoundObjectDistanceRolloffModel(
+                sourceId,
+                spatialSoundDistance.rolloffFactor,
+                spatialSoundDistance.minDistance,
+                spatialSoundDistance.maxDistance
             )
         }
     }

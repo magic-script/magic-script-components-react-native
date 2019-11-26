@@ -19,9 +19,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.vr.sdk.audio.GvrAudioEngine
-import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.update
 import com.magicleap.magicscript.utils.FileDownloader
+import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.After
@@ -247,6 +247,19 @@ class AudioNodeTest {
         )
 
         verify(audioEngine).setSoundObjectDistanceRolloffModel(-1, 2, 1f, 3f)
+    }
+
+    @Test
+    fun `onDestroy should destroy file downloader and unload sound`() {
+        tested.update(
+            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_ACTION, AudioAction.START
+        )
+
+        tested.onDestroy()
+
+        verify(fileDownloader).onDestroy()
+        verify(audioEngine, timeout(200)).unloadSoundFile(any())
     }
 
 

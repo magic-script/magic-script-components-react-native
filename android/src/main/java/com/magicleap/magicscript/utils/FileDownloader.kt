@@ -76,11 +76,7 @@ class FileDownloader(private val context: Context) {
     }
 
     fun onDestroy() {
-        try {
-            threads.values.forEach { it.interrupt() }
-        } catch (e: SecurityException) {
-            logMessage(e.toString(), true)
-        }
+        threads.values.forEach { it.interrupt() }
         threads.clear()
     }
 
@@ -98,11 +94,7 @@ class FileDownloader(private val context: Context) {
             file: File
     ) {
         result(file)
-        try {
-            threads[path]?.interrupt()
-        } catch (e: SecurityException) {
-            logMessage(e.toString(), true)
-        }
+        threads[path]?.interrupt()
         threads.remove(path)
     }
 }

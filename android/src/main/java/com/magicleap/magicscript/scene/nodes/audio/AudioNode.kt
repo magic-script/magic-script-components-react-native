@@ -100,12 +100,7 @@ open class AudioNode @JvmOverloads constructor(
             audioEngine.unloadSoundFile(file.path)
         }
 
-        try {
-            audioThread?.interrupt()
-        } catch (e: SecurityException) {
-            logMessage(e.toString(), true)
-        }
-
+        audioThread?.interrupt()
         audioThread = null
         audioEngineSet = false
 

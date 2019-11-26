@@ -18,7 +18,7 @@ package com.magicleap.magicscript.scene.nodes.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
-import com.magicleap.R
+import com.magicleap.magicscript.R
 
 class MaxHeightScrollView(context: Context, attrs: AttributeSet) : ScrollView(context, attrs) {
 

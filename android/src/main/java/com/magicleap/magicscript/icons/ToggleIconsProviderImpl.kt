@@ -16,7 +16,7 @@
 
 package com.magicleap.magicscript.icons
 
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 
 class ToggleIconsProviderImpl : ToggleIconsProvider {

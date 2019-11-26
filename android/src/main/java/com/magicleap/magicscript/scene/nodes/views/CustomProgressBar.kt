@@ -25,7 +25,7 @@ import android.graphics.Shader
 import androidx.core.content.ContextCompat.getColor
 import android.util.AttributeSet
 import android.view.View
-import com.magicleap.R
+import com.magicleap.magicscript.R
 
 class CustomProgressBar @JvmOverloads constructor(
         context: Context,

@@ -23,7 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository

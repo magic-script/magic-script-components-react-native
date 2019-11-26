@@ -18,9 +18,9 @@ package com.magicleap.magicscript.icons
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.R
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import com.magicleap.R
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

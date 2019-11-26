@@ -26,7 +26,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.PropertiesReader

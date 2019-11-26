@@ -24,7 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode

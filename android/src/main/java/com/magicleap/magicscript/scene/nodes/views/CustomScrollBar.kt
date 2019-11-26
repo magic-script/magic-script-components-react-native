@@ -28,7 +28,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getColor
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 
 class CustomScrollBar @JvmOverloads constructor(

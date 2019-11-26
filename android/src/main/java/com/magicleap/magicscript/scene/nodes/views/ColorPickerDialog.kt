@@ -21,7 +21,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import com.larswerkman.holocolorpicker.ColorPicker
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import kotlinx.android.synthetic.main.color_picker_dialog.*
 
 open class ColorPickerDialog(context: Context) : Dialog(context) {

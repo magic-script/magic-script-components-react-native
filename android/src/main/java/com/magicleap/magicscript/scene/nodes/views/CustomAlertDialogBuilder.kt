@@ -24,7 +24,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.magicleap.R
+import com.magicleap.magicscript.R
+import kotlinx.android.synthetic.main.dialog.view.*
 
 class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) {
 
@@ -66,7 +67,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setConfirmationText(text: String?): AlertDialog.Builder {
-        if(confirmLayout?.visibility == View.GONE) {
+        if (confirmLayout?.visibility == View.GONE) {
             confirmLayout?.visibility = View.VISIBLE
         }
         confirmTextView?.text = text
@@ -74,7 +75,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setConfirmationIcon(icon: Drawable?): AlertDialog.Builder {
-        if(confirmLayout?.visibility == View.GONE) {
+        if (confirmLayout?.visibility == View.GONE) {
             confirmLayout?.visibility = View.VISIBLE
         }
         confirmIconView?.let {
@@ -84,7 +85,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setCancelText(text: String?): AlertDialog.Builder {
-        if(cancelLayout?.visibility == View.GONE) {
+        if (cancelLayout?.visibility == View.GONE) {
             cancelLayout?.visibility = View.VISIBLE
         }
         cancelTextView?.text = text
@@ -92,7 +93,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setCancelIcon(icon: Drawable?): AlertDialog.Builder {
-        if(cancelLayout?.visibility == View.GONE) {
+        if (cancelLayout?.visibility == View.GONE) {
             cancelLayout?.visibility = View.VISIBLE
         }
         cancelIconView?.let {

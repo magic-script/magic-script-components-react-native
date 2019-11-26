@@ -18,7 +18,7 @@ package com.magicleap.magicscript.ar
 
 import android.content.Context
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.R
+import com.magicleap.magicscript.R
 
 class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoader {
 

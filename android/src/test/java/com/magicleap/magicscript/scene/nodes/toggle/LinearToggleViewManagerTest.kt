@@ -25,7 +25,7 @@ import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl

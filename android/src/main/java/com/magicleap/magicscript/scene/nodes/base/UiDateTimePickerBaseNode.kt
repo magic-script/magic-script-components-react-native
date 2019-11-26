@@ -23,7 +23,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*

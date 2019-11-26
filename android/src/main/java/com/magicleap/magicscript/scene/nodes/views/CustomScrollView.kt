@@ -21,7 +21,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
 
 class CustomScrollView @JvmOverloads constructor(

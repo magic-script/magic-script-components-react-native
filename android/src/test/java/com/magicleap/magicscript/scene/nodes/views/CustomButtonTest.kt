@@ -21,7 +21,7 @@ import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

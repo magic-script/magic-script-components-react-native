@@ -24,7 +24,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat.getColor
-import com.magicleap.R
+import com.magicleap.magicscript.R
 
 class CustomSpinner @JvmOverloads constructor(
         context: Context,

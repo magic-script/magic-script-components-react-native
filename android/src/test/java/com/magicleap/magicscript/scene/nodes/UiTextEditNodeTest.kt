@@ -29,7 +29,7 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.*
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.TransformNode

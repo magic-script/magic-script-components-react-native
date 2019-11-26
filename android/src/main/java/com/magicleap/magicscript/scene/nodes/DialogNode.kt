@@ -23,7 +23,7 @@ import android.os.Message
 import android.view.View
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.R
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.DialogProvider

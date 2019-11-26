@@ -22,7 +22,7 @@ import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
-import com.magicleap.R
+import com.magicleap.magicscript.R
 
 class CircleConfirmationView @JvmOverloads constructor(
         context: Context,

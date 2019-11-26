@@ -23,7 +23,7 @@ import SceneKit
     }
     //var activateResponse: FocusRequest
     //var renderingLayer: RenderingLayer
-    @objc var enabled: Bool = false {
+    @objc var enabled: Bool = true {
         didSet { if oldValue != enabled { enabled ? onEnabled?(self) : onDisabled?(self) } }
     }
     //var eventPassThrough: Bool = true

@@ -211,6 +211,7 @@ import SceneKit
 
     @objc override func enterFocus() {
         super.enterFocus()
+        guard hasFocus else { return }
         isActive = hasFocus
     }
 

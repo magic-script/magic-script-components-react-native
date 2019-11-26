@@ -66,6 +66,7 @@ import SafariServices
 
     @objc override func enterFocus() {
         super.enterFocus()
+        guard hasFocus else { return }
         presentSafariViewController(url: url!)
     }
 

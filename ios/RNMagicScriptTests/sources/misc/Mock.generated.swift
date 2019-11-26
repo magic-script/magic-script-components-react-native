@@ -2527,12 +2527,6 @@ open class TapSimulatingMock: TapSimulating, Mock {
         if scopes.contains(.perform) { methodPerformValues = [] }
     }
 
-    public var onTap: ((_ sender: UiNode) -> (Void))? {
-		get {	invocations.append(.p_onTap_get); return __p_onTap ?? optionalGivenGetterValue(.p_onTap_get, "TapSimulatingMock - stub value for onTap was not defined") }
-		set {	invocations.append(.p_onTap_set(.value(newValue))); __p_onTap = newValue }
-	}
-	private var __p_onTap: ((_ sender: UiNode) -> (Void))?
-
 
 
 
@@ -2546,24 +2540,17 @@ open class TapSimulatingMock: TapSimulating, Mock {
 
     fileprivate enum MethodType {
         case m_simulateTap
-        case p_onTap_get
-		case p_onTap_set(Parameter<((_ sender: UiNode) -> (Void))?>)
 
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_simulateTap, .m_simulateTap):
                 return true 
-            case (.p_onTap_get,.p_onTap_get): return true
-			case (.p_onTap_set(let left),.p_onTap_set(let right)): return Parameter<((_ sender: UiNode) -> (Void))?>.compare(lhs: left, rhs: right, with: matcher)
-            default: return false
             }
         }
 
         func intValue() -> Int {
             switch self {
             case .m_simulateTap: return 0
-            case .p_onTap_get: return 0
-			case .p_onTap_set(let newValue): return newValue.intValue
             }
         }
     }
@@ -2576,9 +2563,6 @@ open class TapSimulatingMock: TapSimulating, Mock {
             super.init(products)
         }
 
-        public static func onTap(getter defaultValue: ((_ sender: UiNode) -> (Void))?...) -> PropertyStub {
-            return Given(method: .p_onTap_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
-        }
 
     }
 
@@ -2586,8 +2570,6 @@ open class TapSimulatingMock: TapSimulating, Mock {
         fileprivate var method: MethodType
 
         public static func simulateTap() -> Verify { return Verify(method: .m_simulateTap)}
-        public static var onTap: Verify { return Verify(method: .p_onTap_get) }
-		public static func onTap(set newValue: Parameter<((_ sender: UiNode) -> (Void))?>) -> Verify { return Verify(method: .p_onTap_set(newValue)) }
     }
 
     public struct Perform {

@@ -22,7 +22,6 @@
 @class UiVideoNode;
 @class UiSliderNode;
 @class UiDropdownListNode;
-@class UiDropdownListItemNode;
 @class UiDatePickerNode;
 @class UiTimePickerNode;
 @class UiColorPickerNode;
@@ -32,8 +31,14 @@
 @interface AREventsManager : RCTEventEmitter <RCTBridgeModule>
 
 + (instancetype)instance;
-- (void)onPressEventReceived:(UiNode *)sender;
+- (void)onActivateEventReceived:(UiNode *)sender;
 - (void)onClickEventReceived:(UiNode *)sender;
+- (void)onEnabledEventReceived:(UiNode *)
+- (void)onDisabledEventReceived:(UiNode *)
+- (void)onFocusGainedEventReceived:(UiNode *)
+- (void)onFocusLostEventReceived:(UiNode *)
+- (void)onUpdateEventReceived:(UiNode *)
+- (void)onDeleteEventReceived:(UiNode *)
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value;
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;

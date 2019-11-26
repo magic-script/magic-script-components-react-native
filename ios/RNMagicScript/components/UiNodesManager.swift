@@ -96,6 +96,10 @@ import SceneKit
     @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {
         return nodesById[nodeId]
     }
+
+    @objc public func findUiNodeWithId(_ nodeId: String) -> UiNode? {
+        return nodesById[nodeId] as? UiNode
+    }
     
     @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
         return nodeByAnchorUuid[nodeId]
@@ -113,6 +117,9 @@ import SceneKit
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
+            if let uiNode = node as? UiNode {
+                uiNode.onDelete?(uiNode)
+            }
         }
     }
 
@@ -166,6 +173,9 @@ import SceneKit
     @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
+        if let uiNode = node as? UiNode {
+            uiNode.onUpdate?(uiNode)
+        }
         return true
     }
 

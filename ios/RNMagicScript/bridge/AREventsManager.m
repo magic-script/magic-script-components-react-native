@@ -56,196 +56,172 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-             @"onClick",
-             @"onPress",
-             @"onScrollChanged",
-             @"onSelectionChanged",
-             @"onSliderChanged",
-             @"onTextChanged",
-             @"onToggleChanged",
-             @"onVideoPrepared",
-             @"onDateChanged",
-             @"onDateConfirmed",
-             @"onTimeChanged",
-             @"onTimeConfirmed",
-             @"onColorChanged",
-             @"onColorConfirmed",
-             @"onColorCanceled",
-             @"onDialogConfirmed",
-             @"onDialogCanceled",
-             @"onDialogTimeExpired",
-             @"onConfirmationCompleted",
-             @"onConfirmationUpdated",
-             @"onConfirmationCanceled"
-             ];
+        // UiNode
+        @"onActivate",
+        @"onClick",
+        //@"onPress",
+        //@"onLongPress",
+        //@"onRelease",
+        @"onEnabled",
+        @"onDisabled",
+        @"onFocusGained",
+        @"onFocusLost",
+        @"onUpdate",
+        @"onDelete",
+        // UiScrollViewNode
+        @"onScrollChanged",
+        // UiDropDownList
+        @"onSelectionChanged",
+        // UiSliderNode
+        @"onSliderChanged",
+        // UiTextEditNode
+        @"onTextChanged",
+        // UiToggleNode
+        @"onToggleChanged",
+        // UiVideoNode
+        @"onVideoPrepared",
+        // UiDatePickerNode
+        @"onDateChanged",
+        @"onDateConfirmed",
+        // UiTimePickerNode
+        @"onTimeChanged",
+        @"onTimeConfirmed",
+        // UiColorPickerNode
+        @"onColorChanged",
+        @"onColorConfirmed",
+        @"onColorCanceled",
+        // UiDialogNode
+        @"onDialogConfirmed",
+        @"onDialogCanceled",
+        @"onDialogTimeExpired",
+        // UiCircleConfirmationNode
+        @"onConfirmationCompleted",
+        @"onConfirmationUpdated",
+        @"onConfirmationCanceled"
+     ];
 }
 
-- (void)onPressEventReceived:(UiNode *)sender {
+- (void)onEventWithName:(NSString *)name received:(UiNode *)sender body:(NSDictionary *)body {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onPress" body:@{ @"nodeId": sender.name }];
+            NSMutableDictionary *fullBody = NULL;
+            if (body != NULL) {
+                fullBody = [NSMutableDictionary dictionaryWithDictionary:body];
+            } else {
+                fullBody = [@{} mutableCopy];
+            }
+            fullBody[@"nodeId"] = sender.name
+            [self sendEventWithName:name body:fullBody];
         });
     }
+}
+
+- (void)onActivateEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onActivate" received:sender body:NULL];
 }
 
 - (void)onClickEventReceived:(UiNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onClick" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onClick" received:sender body:NULL];
+}
+
+- (void)onEnabledEventReceived:(UiNode *) {
+    [self onEventWithName:@"onEnabled" received:sender body:NULL]
+}
+
+- (void)onDisabledEventReceived:(UiNode *) {
+    [self onEventWithName:@"onDisabled" received:sender body:NULL]
+}
+
+- (void)onFocusGainedEventReceived:(UiNode *) {
+    [self onEventWithName:@"onFocusGained" received:sender body:NULL]
+}
+
+- (void)onFocusLostEventReceived:(UiNode *) {
+    [self onEventWithName:@"onFocusLost" received:sender body:NULL]
+}
+
+- (void)onUpdateEventReceived:(UiNode *) {
+    [self onEventWithName:@"onUpdate" received:sender body:NULL]
+}
+
+- (void)onDeleteEventReceived:(UiNode *) {
+    [self onEventWithName:@"onDelete" received:sender body:NULL]
 }
 
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onScrollChanged" body:@{ @"nodeId": sender.name, @"ScrollValue": @(value) }];
-        });
-    }
+    [self onEventWithName:@"onScrollChanged" received:sender body:@{ @"ScrollValue": @(value) }];
 }
 
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onTextChanged" body:@{ @"nodeId": sender.name, @"text": text }];
-        });
-    }
+    [self onEventWithName:@"onTextChanged" received:sender body:@{ @"text": text }];
 }
 
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onToggleChanged" body:@{ @"nodeId": sender.name, @"On": @(value) }];
-        });
-    }
+    [self onEventWithName:@"onToggleChanged" received:sender body:@{ @"On": @(value) }];
 }
 
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onVideoPrepared" body:@{ @"nodeId": sender.name, @"videoURL": videoURL }];
-        });
-    }
+    [self onEventWithName:@"onVideoPrepared" received:sender body:@{ @"videoURL": videoURL }];
 }
 
 - (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onSelectionChanged" body:@{ @"nodeId": sender.name, @"selectedItems": selectedItemsIndexes }];
-        });
-    }
+    [self onEventWithName:@"onSelectionChanged" received:sender body:@{ @"selectedItems": selectedItemsIndexes }];
 }
 
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onSliderChanged" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
-        });
-    }
+    [self onEventWithName:@"onSliderChanged" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDateChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
-        });
-    }
+    [self onEventWithName:@"onDateChanged" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDateConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
-        });
-    }
+    [self onEventWithName:@"onDateConfirmed" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onTimeChanged" body:@{ @"nodeId": sender.name, @"Value": value }];
-        });
-    }
+    [self onEventWithName:@"onTimeChanged" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onTimeConfirmed" body:@{ @"nodeId": sender.name, @"Value": value }];
-        });
-    }
+    [self onEventWithName:@"onTimeConfirmed" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onColorChanged" body:@{ @"nodeId": sender.name, @"Color": value }];
-        });
-    }
+    [self onEventWithName:@"onColorChanged" received:sender body:@{ @"Color": @(value) }];
 }
 
 - (void)onColorConfirmedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onColorConfirmed" body:@{ @"nodeId": sender.name, @"Color": value }];
-        });
-    }
+    [self onEventWithName:@"onColorConfirmed" received:sender body:@{ @"Color": @(value) }];
 }
 
 - (void)onColorCanceledEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onColorCanceled" body:@{ @"nodeId": sender.name, @"Color": value }];
-        });
-    }
+    [self onEventWithName:@"onColorCanceled" received:sender body:@{ @"Color": @(value) }];
 }
 
 - (void)onDialogConfirmedEventReceived:(UiDialogNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDialogConfirmed" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onDialogConfirmed" received:sender body:NULL];
 }
 
 - (void)onDialogCanceledEventReceived:(UiDialogNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDialogCanceled" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onDialogCanceled" received:sender body:NULL];
 }
 
 - (void)onDialogTimeExpiredEventReceived:(UiDialogNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onDialogTimeExpired" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onDialogTimeExpired" received:sender body:NULL];
 }
 
 - (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onConfirmationCompleted" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onConfirmationCompleted" received:sender body:NULL];
 }
 
 - (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onConfirmationUpdated" body:@{ @"nodeId": sender.name, @"Value": @(value) }];
-        });
-    }
+    [self onEventWithName:@"onConfirmationUpdated" received:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {
-    if (hasListeners) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self sendEventWithName:@"onConfirmationCanceled" body:@{ @"nodeId": sender.name }];
-        });
-    }
+    [self onEventWithName:@"onConfirmationCanceled" received:sender body:NULL];
 }
 
 @end

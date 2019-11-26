@@ -27,6 +27,7 @@ import SceneKit
     fileprivate(set) var itemsList: Array<UiToggleNode> = []
 
 
+
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
@@ -107,7 +108,16 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> TransformNode? {
-        return self.innerLayout?.hitTest(ray: ray)
+         if innerLayout != nil {
+            return self.innerLayout?.hitTest(ray: ray)
+        }
+
+        for item in itemsList {
+            let hitNode = item.hitTest(ray: ray)
+            if hitNode != nil { return hitNode }
+        }
+
+        return selfHitTest(ray: ray)
     }
 
     @objc override func _calculateSize() -> CGSize {

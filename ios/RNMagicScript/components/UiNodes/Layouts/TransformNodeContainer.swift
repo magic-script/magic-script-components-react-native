@@ -19,5 +19,4 @@ import SceneKit
 
 protocol TransformNodeContainer {
     var itemsCount: Int { get }
-    var items: [TransformNode] { get }
 }

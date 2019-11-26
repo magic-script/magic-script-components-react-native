@@ -106,5 +106,4 @@ import SceneKit
 
 extension UiLinearLayoutNode: TransformNodeContainer {
     var itemsCount: Int { return gridLayout.itemsCount }
-    var items: [TransformNode] { return gridLayout.items }
 }

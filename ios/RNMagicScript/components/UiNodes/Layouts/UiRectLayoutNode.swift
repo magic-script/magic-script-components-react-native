@@ -83,5 +83,4 @@ import SceneKit
 
 extension UiRectLayoutNode: TransformNodeContainer {
     var itemsCount: Int { return gridLayout.itemsCount }
-    var items: [TransformNode] { return gridLayout.items }
 }

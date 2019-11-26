@@ -28,18 +28,19 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.FileDownloader
 import com.magicleap.magicscript.utils.PropertiesReader.Companion.readFilePath
 import com.magicleap.magicscript.utils.ifContains
+import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 import java.io.File
 
 
 open class AudioNode @JvmOverloads constructor(
-    initProps: ReadableMap,
-    private val context: Context,
-    private val audioEngine: GvrAudioEngine = GvrAudioEngine(
-        context,
-        GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY
-    ),
-    private val fileDownloader: FileDownloader = FileDownloader(context)
+        initProps: ReadableMap,
+        private val context: Context,
+        private val audioEngine: GvrAudioEngine = GvrAudioEngine(
+                context,
+                GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY
+        ),
+        private val fileDownloader: FileDownloader = FileDownloader(context)
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -66,9 +67,9 @@ open class AudioNode @JvmOverloads constructor(
     }
 
     private var audioThread: Thread? = Thread(
-        Runnable {
-            setupAudioEngine()
-        }
+            Runnable {
+                setupAudioEngine()
+            }
     )
 
     private var audioEngineSet: Boolean = false
@@ -151,12 +152,12 @@ open class AudioNode @JvmOverloads constructor(
             audioEngine.preloadSoundFile(file.path)
             createAudioSource(file)
             audioEngine.setRoomProperties(
-                15f,
-                15f,
-                15f,
-                PLASTER_SMOOTH,
-                PLASTER_SMOOTH,
-                CURTAIN_HEAVY
+                    15f,
+                    15f,
+                    15f,
+                    PLASTER_SMOOTH,
+                    PLASTER_SMOOTH,
+                    CURTAIN_HEAVY
             )
             autoplayAudio()
             audioEngineSet = true
@@ -201,20 +202,20 @@ open class AudioNode @JvmOverloads constructor(
             spatialSoundPosition.channelPosition?.let { channelPosition ->
 
                 audioEngine.setSoundObjectPosition(
-                    sourceId,
-                    channelPosition.x,
-                    channelPosition.y,
-                    channelPosition.z
+                        sourceId,
+                        channelPosition.x,
+                        channelPosition.y,
+                        channelPosition.z
                 )
             }
         }
 
         props.ifContains(PROP_SPATIAL_SOUND_DISTANCE) { spatialSoundDistance: SpatialSoundDistance ->
             audioEngine.setSoundObjectDistanceRolloffModel(
-                sourceId,
-                spatialSoundDistance.rolloffFactor,
-                spatialSoundDistance.minDistance,
-                spatialSoundDistance.maxDistance
+                    sourceId,
+                    spatialSoundDistance.rolloffFactor,
+                    spatialSoundDistance.minDistance,
+                    spatialSoundDistance.maxDistance
             )
         }
     }

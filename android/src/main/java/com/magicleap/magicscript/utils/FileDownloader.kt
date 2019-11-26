@@ -36,39 +36,35 @@ class FileDownloader(private val context: Context) {
             val url = URL(path)
 
             val thread = Thread(
-                    Runnable {
-                        try {
-                            val ucon = url.openConnection().apply {
-                                readTimeout = 5000
-                                connectTimeout = 10000
-                            }
-
-                            val inputStream = ucon.getInputStream()
-                            val bufferedInputStream = BufferedInputStream(inputStream, 1024 * 5)
-
-                            val internalStorage = context.getDir("filesdir", Context.MODE_PRIVATE)
-                            val guessFileName = URLUtil.guessFileName(path, null, null)
-                            val file = File("$internalStorage/$guessFileName")
-
-                            if (file.exists()) {
-                                file.delete()
-                            }
-                            file.createNewFile()
-
-                            file.copyInputStreamToFile(bufferedInputStream)
-
-                            bufferedInputStream.close()
-                            fileDownloaded(path, result, file)
-                        } catch (e: Exception) {
-                            logMessage(e.toString(), true)
-                        }
+                Runnable {
+                    val ucon = url.openConnection().apply {
+                        readTimeout = 5000
+                        connectTimeout = 10000
                     }
+
+                    val inputStream = ucon.getInputStream()
+                    val bufferedInputStream = BufferedInputStream(inputStream, 1024 * 5)
+
+                    val internalStorage = context.getDir("filesdir", Context.MODE_PRIVATE)
+                    val guessFileName = URLUtil.guessFileName(path, null, null)
+                    val file = File("$internalStorage/$guessFileName")
+
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                    file.createNewFile()
+
+                    file.copyInputStreamToFile(bufferedInputStream)
+
+                    bufferedInputStream.close()
+                    fileDownloaded(path, result, file)
+                }
             )
             threads[path] = thread
             thread.start()
 
         } catch (e: Exception) {
-            logMessage(e.toString(), true)
+            logMessage(e.localizedMessage, true)
             return false
         }
 
@@ -76,11 +72,7 @@ class FileDownloader(private val context: Context) {
     }
 
     fun onDestroy() {
-        try {
-            threads.values.forEach { it.interrupt() }
-        } catch (e: SecurityException) {
-            logMessage(e.toString(), true)
-        }
+        threads.values.forEach { it.interrupt() }
         threads.clear()
     }
 
@@ -93,16 +85,12 @@ class FileDownloader(private val context: Context) {
     }
 
     private fun fileDownloaded(
-            path: String,
-            result: (File) -> Unit,
-            file: File
+        path: String,
+        result: (File) -> Unit,
+        file: File
     ) {
         result(file)
-        try {
-            threads[path]?.interrupt()
-        } catch (e: SecurityException) {
-            logMessage(e.toString(), true)
-        }
+        threads[path]?.interrupt()
         threads.remove(path)
     }
 }

@@ -34,8 +34,6 @@ import SceneKit
         didSet { labelNode.textSize = textSize; setNeedsLayout() }
     }
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
-
     fileprivate var labelNode: LabelNode!
 
     deinit {
@@ -48,9 +46,6 @@ import SceneKit
 
     @objc override func enterFocus() {
         super.enterFocus()
-        guard hasFocus else { return }
-
-        simulateTap()
         leaveFocus()
     }
 

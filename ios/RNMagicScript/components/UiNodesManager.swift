@@ -74,7 +74,10 @@ import SceneKit
         }
 
         focusedNode = node as? UiNode
-        focusedNode?.enterFocus()
+        if let uiNode = focusedNode {
+            uiNode.enterFocus()
+            uiNode.onActivate?(uiNode)
+        }
         if let input = focusedNode as? DataProviding {
             onInputFocused?(input)
         }

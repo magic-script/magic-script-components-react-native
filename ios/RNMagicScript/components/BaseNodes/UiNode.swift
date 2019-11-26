@@ -88,6 +88,10 @@ import SceneKit
     @objc func enterFocus() {
         guard canHaveFocus else { return }
         hasFocus = true
+
+        if let simulator = self as? TapSimulating {
+            simulator.simulateTap()
+        }
     }
 
     @objc func leaveFocus() {

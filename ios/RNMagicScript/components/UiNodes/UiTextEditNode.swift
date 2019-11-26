@@ -122,7 +122,6 @@ import SceneKit
         }
     }
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onTextChanged: ((_ sender: UiNode, _ text: String) -> (Void))?
 
     fileprivate var labelNode: LabelNode!
@@ -139,7 +138,6 @@ import SceneKit
 
     @objc override func enterFocus() {
         super.enterFocus()
-        guard hasFocus else { return }
 
         if outlineNode == nil {
             reloadOutlineNode()

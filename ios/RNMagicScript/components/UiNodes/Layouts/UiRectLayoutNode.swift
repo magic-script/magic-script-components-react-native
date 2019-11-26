@@ -27,7 +27,6 @@ import SceneKit
         set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
 
-    var itemsCount: Int { return gridLayout.itemsCount }
     fileprivate var gridLayout = GridLayout()
 
     @objc override func setupNode() {
@@ -80,4 +79,8 @@ import SceneKit
         super.setNeedsLayout()
         gridLayout.invalidate()
     }
+}
+
+extension UiRectLayoutNode: TransformNodeContainer {
+    var itemsCount: Int { return gridLayout.itemsCount }
 }

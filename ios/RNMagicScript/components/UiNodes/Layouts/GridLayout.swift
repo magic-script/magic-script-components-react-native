@@ -43,6 +43,7 @@ import SceneKit
     var itemsCount: Int {
         return container.childNodes.count
     }
+
     var recalculateNeeded: Bool {
         return gridDescriptor == nil
     }

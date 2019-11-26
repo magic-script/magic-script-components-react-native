@@ -208,4 +208,9 @@ class Convert {
         guard let side = value as? String else { return nil }
         return Side(rawValue: side)
     }
+
+    static func toToggleType(_ value: Any?) -> ToggleType? {
+        guard let toggleType = value as? String else { return nil }
+        return ToggleType(rawValue: toggleType)
+    }
 }

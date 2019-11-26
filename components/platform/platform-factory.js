@@ -80,7 +80,7 @@ export class PlatformFactory extends NativeFactory {
             .map(key => ({ name: key, handler: properties[key] }));
 
         for (const pair of eventHandlers) {
-            const eventName = pair.name;//UiNodeEvents[pair.name];
+            const eventName = pair.name;
 
             if (eventName === undefined) {
                 throw new TypeError(`Event ${pair.name} is not recognized event`);
@@ -217,5 +217,4 @@ export class PlatformFactory extends NativeFactory {
 
     createApp(appComponent) {
     }
-    
 }

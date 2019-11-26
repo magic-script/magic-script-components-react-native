@@ -33,7 +33,7 @@
 @class UiListViewNode;
 @class UiListViewItemNode;
 @class UiModelNode;
-@class UiPageView;
+@class UiPageViewNode;
 @class UiPanelNode;
 @class UiProgressBarNode;
 @class UiRectLayoutNode;

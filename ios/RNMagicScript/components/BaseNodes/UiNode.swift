@@ -32,20 +32,20 @@ import SceneKit
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
 
-    var onActivate: ((_ sender: UiNode) -> Void)?
-    //var onPress: ((_ sender: UiNode) -> Void)?
-    //var onLongPress: ((_ sender: UiNode) -> Void)?
-    //var onRelease: ((_ sender: UiNode) -> Void)?
-    ///var onHoverEnter: ((_ sender: UiNode) -> Void)?
-    ///var onHoverExit: ((_ sender: UiNode) -> Void)?
-    ///var onHoverMove: ((_ sender: UiNode) -> Void)?
-    var onEnabled: ((_ sender: UiNode) -> Void)?
-    var onDisabled: ((_ sender: UiNode) -> Void)?
-    var onFocusGained: ((_ sender: UiNode) -> Void)?
-    var onFocusLost: ((_ sender: UiNode) -> Void)?
-    ///var onFocusInput: ((_ sender: UiNode) -> Void)?
-    var onUpdate: ((_ sender: UiNode) -> Void)?
-    var onDelete: ((_ sender: UiNode) -> Void)?
+    @objc var onActivate: ((_ sender: UiNode) -> Void)?
+    //@objc var onPress: ((_ sender: UiNode) -> Void)?
+    //@objc var onLongPress: ((_ sender: UiNode) -> Void)?
+    //@objc var onRelease: ((_ sender: UiNode) -> Void)?
+    ///@objc var onHoverEnter: ((_ sender: UiNode) -> Void)?
+    ///@objc var onHoverExit: ((_ sender: UiNode) -> Void)?
+    ///@objc var onHoverMove: ((_ sender: UiNode) -> Void)?
+    @objc var onEnabled: ((_ sender: UiNode) -> Void)?
+    @objc var onDisabled: ((_ sender: UiNode) -> Void)?
+    @objc var onFocusGained: ((_ sender: UiNode) -> Void)?
+    @objc var onFocusLost: ((_ sender: UiNode) -> Void)?
+    ///@objc var onFocusInput: ((_ sender: UiNode) -> Void)?
+    @objc var onUpdate: ((_ sender: UiNode) -> Void)?
+    @objc var onDelete: ((_ sender: UiNode) -> Void)?
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)

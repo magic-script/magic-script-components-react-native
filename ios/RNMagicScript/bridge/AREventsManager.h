@@ -33,12 +33,12 @@
 + (instancetype)instance;
 - (void)onActivateEventReceived:(UiNode *)sender;
 - (void)onClickEventReceived:(UiNode *)sender;
-- (void)onEnabledEventReceived:(UiNode *)
-- (void)onDisabledEventReceived:(UiNode *)
-- (void)onFocusGainedEventReceived:(UiNode *)
-- (void)onFocusLostEventReceived:(UiNode *)
-- (void)onUpdateEventReceived:(UiNode *)
-- (void)onDeleteEventReceived:(UiNode *)
+- (void)onEnabledEventReceived:(UiNode *)sender;
+- (void)onDisabledEventReceived:(UiNode *)sender;
+- (void)onFocusGainedEventReceived:(UiNode *)sender;
+- (void)onFocusLostEventReceived:(UiNode *)sender;
+- (void)onUpdateEventReceived:(UiNode *)sender;
+- (void)onDeleteEventReceived:(UiNode *)sender;
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value;
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;

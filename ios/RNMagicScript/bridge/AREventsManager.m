@@ -101,7 +101,7 @@ RCT_EXPORT_MODULE();
      ];
 }
 
-- (void)onEventWithName:(NSString *)name received:(UiNode *)sender body:(NSDictionary *)body {
+- (void)onEventWithName:(NSString *)name sender:(TransformNode *)sender body:(NSDictionary *)body {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSMutableDictionary *fullBody = NULL;
@@ -110,118 +110,118 @@ RCT_EXPORT_MODULE();
             } else {
                 fullBody = [@{} mutableCopy];
             }
-            fullBody[@"nodeId"] = sender.name
+            fullBody[@"nodeId"] = sender.name;
             [self sendEventWithName:name body:fullBody];
         });
     }
 }
 
 - (void)onActivateEventReceived:(UiNode *)sender {
-    [self onEventWithName:@"onActivate" received:sender body:NULL];
+    [self onEventWithName:@"onActivate" sender:sender body:NULL];
 }
 
 - (void)onClickEventReceived:(UiNode *)sender {
-    [self onEventWithName:@"onClick" received:sender body:NULL];
+    [self onEventWithName:@"onClick" sender:sender body:NULL];
 }
 
-- (void)onEnabledEventReceived:(UiNode *) {
-    [self onEventWithName:@"onEnabled" received:sender body:NULL]
+- (void)onEnabledEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onEnabled" sender:sender body:NULL];
 }
 
-- (void)onDisabledEventReceived:(UiNode *) {
-    [self onEventWithName:@"onDisabled" received:sender body:NULL]
+- (void)onDisabledEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onDisabled" sender:sender body:NULL];
 }
 
-- (void)onFocusGainedEventReceived:(UiNode *) {
-    [self onEventWithName:@"onFocusGained" received:sender body:NULL]
+- (void)onFocusGainedEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onFocusGained" sender:sender body:NULL];
 }
 
-- (void)onFocusLostEventReceived:(UiNode *) {
-    [self onEventWithName:@"onFocusLost" received:sender body:NULL]
+- (void)onFocusLostEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onFocusLost" sender:sender body:NULL];
 }
 
-- (void)onUpdateEventReceived:(UiNode *) {
-    [self onEventWithName:@"onUpdate" received:sender body:NULL]
+- (void)onUpdateEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onUpdate" sender:sender body:NULL];
 }
 
-- (void)onDeleteEventReceived:(UiNode *) {
-    [self onEventWithName:@"onDelete" received:sender body:NULL]
+- (void)onDeleteEventReceived:(UiNode *)sender {
+    [self onEventWithName:@"onDelete" sender:sender body:NULL];
 }
 
 - (void)onScrollChangedEventReceived:(UiNode *)sender value:(CGFloat)value {
-    [self onEventWithName:@"onScrollChanged" received:sender body:@{ @"ScrollValue": @(value) }];
+    [self onEventWithName:@"onScrollChanged" sender:sender body:@{ @"ScrollValue": @(value) }];
 }
 
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text {
-    [self onEventWithName:@"onTextChanged" received:sender body:@{ @"text": text }];
+    [self onEventWithName:@"onTextChanged" sender:sender body:@{ @"text": text }];
 }
 
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value {
-    [self onEventWithName:@"onToggleChanged" received:sender body:@{ @"On": @(value) }];
+    [self onEventWithName:@"onToggleChanged" sender:sender body:@{ @"On": @(value) }];
 }
 
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL {
-    [self onEventWithName:@"onVideoPrepared" received:sender body:@{ @"videoURL": videoURL }];
+    [self onEventWithName:@"onVideoPrepared" sender:sender body:@{ @"videoURL": videoURL }];
 }
 
 - (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes {
-    [self onEventWithName:@"onSelectionChanged" received:sender body:@{ @"selectedItems": selectedItemsIndexes }];
+    [self onEventWithName:@"onSelectionChanged" sender:sender body:@{ @"selectedItems": selectedItemsIndexes }];
 }
 
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value {
-    [self onEventWithName:@"onSliderChanged" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onSliderChanged" sender:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
-    [self onEventWithName:@"onDateChanged" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onDateChanged" sender:sender body:@{ @"Value": value }];
 }
 
 - (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value {
-    [self onEventWithName:@"onDateConfirmed" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onDateConfirmed" sender:sender body:@{ @"Value": value }];
 }
 
 - (void)onTimeChangedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
-    [self onEventWithName:@"onTimeChanged" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onTimeChanged" sender:sender body:@{ @"Value": value }];
 }
 
 - (void)onTimeConfirmedEventReceived:(UiTimePickerNode *)sender value:(NSString *)value {
-    [self onEventWithName:@"onTimeConfirmed" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onTimeConfirmed" sender:sender body:@{ @"Value": value }];
 }
 
 - (void)onColorChangedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    [self onEventWithName:@"onColorChanged" received:sender body:@{ @"Color": @(value) }];
+    [self onEventWithName:@"onColorChanged" sender:sender body:@{ @"Color": value }];
 }
 
 - (void)onColorConfirmedEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    [self onEventWithName:@"onColorConfirmed" received:sender body:@{ @"Color": @(value) }];
+    [self onEventWithName:@"onColorConfirmed" sender:sender body:@{ @"Color": value }];
 }
 
 - (void)onColorCanceledEventReceived:(UiColorPickerNode *)sender value:(NSArray<NSNumber *> *)value {
-    [self onEventWithName:@"onColorCanceled" received:sender body:@{ @"Color": @(value) }];
+    [self onEventWithName:@"onColorCanceled" sender:sender body:@{ @"Color": value }];
 }
 
 - (void)onDialogConfirmedEventReceived:(UiDialogNode *)sender {
-    [self onEventWithName:@"onDialogConfirmed" received:sender body:NULL];
+    [self onEventWithName:@"onDialogConfirmed" sender:sender body:NULL];
 }
 
 - (void)onDialogCanceledEventReceived:(UiDialogNode *)sender {
-    [self onEventWithName:@"onDialogCanceled" received:sender body:NULL];
+    [self onEventWithName:@"onDialogCanceled" sender:sender body:NULL];
 }
 
 - (void)onDialogTimeExpiredEventReceived:(UiDialogNode *)sender {
-    [self onEventWithName:@"onDialogTimeExpired" received:sender body:NULL];
+    [self onEventWithName:@"onDialogTimeExpired" sender:sender body:NULL];
 }
 
 - (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender {
-    [self onEventWithName:@"onConfirmationCompleted" received:sender body:NULL];
+    [self onEventWithName:@"onConfirmationCompleted" sender:sender body:NULL];
 }
 
 - (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value {
-    [self onEventWithName:@"onConfirmationUpdated" received:sender body:@{ @"Value": @(value) }];
+    [self onEventWithName:@"onConfirmationUpdated" sender:sender body:@{ @"Value": @(value) }];
 }
 
 - (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {
-    [self onEventWithName:@"onConfirmationCanceled" received:sender body:NULL];
+    [self onEventWithName:@"onConfirmationCanceled" sender:sender body:NULL];
 }
 
 @end

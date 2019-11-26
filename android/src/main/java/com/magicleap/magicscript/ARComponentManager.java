@@ -19,8 +19,6 @@ package com.magicleap.magicscript;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.annotation.Nullable;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -97,6 +95,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import kotlin.Unit;
 
 /**
@@ -209,8 +208,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiButtonNode node
-                    = new UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -314,12 +312,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
     }
 
-
     @ReactMethod
     public void createDropdownListNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDropdownListNode node
-                    = new UiDropdownListNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+            UiDropdownListNode node = new UiDropdownListNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -628,7 +624,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         });
     }
 
-
     @ReactMethod
     public void addOnDateConfirmedEventHandler(final String nodeId) {
         mainHandler.post(() -> {
@@ -653,14 +648,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                 ((UiScrollViewNode) node).setOnScrollChangeListener((position) -> {
                     WritableMap params = Arguments.createMap();
                     params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putDouble(EVENT_ARG_SCROLL_VALUE, position.getX());
+                    params.putDouble(EVENT_ARG_SCROLL_VALUE, position);
                     sendEvent(EVENT_SCROLL_CHANGED, params);
                     return Unit.INSTANCE;
                 });
             }
         });
     }
-
 
     @ReactMethod
     public void addOnTimeChangedEventHandler(final String nodeId) {
@@ -677,7 +671,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             }
         });
     }
-
 
     @ReactMethod
     public void addOnTimeConfirmedEventHandler(final String nodeId) {

@@ -1,6 +1,5 @@
 # .slather.yml
 
-coverage_service: cobertura_xml
 xcodeproj: ./RNMagicScript.xcodeproj
 xcworkspace: ./RNMagicScript.xcworkspace
 scheme: RNMagicScriptHostApplication
@@ -8,4 +7,11 @@ source_directory: ./RNMagicScript
 build_directory: ./Build
 output_directory: ./coverage_report
 ignore:
-  - ./RNMagicScript/*.{h,m}
+  - RNMagicScript/*.{h,m}
+  - RNMagicScriptHostApplication/*
+  - RNMagicScriptTests/*
+  - RNMagicScript/bridge/*
+  - RNMagicScript/components/Utils/Extensions/UIView+Screenshot.swift
+  - RNMagicScript/components/Utils/Extensions/URLSession+Extension.swift
+  - RNMagicScript/components/UiHelpers/DragGestureRecognizer.swift
+  - RNMagicScript/components/Utils/Extensions/GLTFSceneKit+Extension.swift

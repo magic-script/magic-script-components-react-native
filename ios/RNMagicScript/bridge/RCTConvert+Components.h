@@ -33,7 +33,7 @@
 @class UiListViewNode;
 @class UiListViewItemNode;
 @class UiModelNode;
-@class UiPageView;
+@class UiPageViewNode;
 @class UiPanelNode;
 @class UiProgressBarNode;
 @class UiRectLayoutNode;
@@ -46,6 +46,7 @@
 @class UiTextEditNode;
 @class UiTimePickerNode;
 @class UiToggleNode;
+@class UiToggleGroupNode;
 @class UiVideoNode;
 @class UiWebViewNode;
 
@@ -80,6 +81,7 @@
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
++ (UiToggleGroupNode *)UiToggleGroupNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
 + (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

@@ -139,6 +139,10 @@
     return [[UiToggleNode alloc] initWithProps:json];
 }
 
++ (UiToggleGroupNode *)UiToggleGroupNode:(id)json {
+    return [[UiToggleGroupNode alloc] initWithProps:json];
+}
+
 + (UiVideoNode *)UiVideoNode:(id)json {
     return [[UiVideoNode alloc] initWithProps:json];
 }

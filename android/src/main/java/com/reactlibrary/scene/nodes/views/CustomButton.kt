@@ -23,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat.getColor
 import com.reactlibrary.utils.Vector2
 import kotlin.math.max
@@ -180,12 +181,12 @@ class CustomButton @JvmOverloads constructor(
         requestLayout() // need to measure the view
     }
 
-    fun setTextColor(color: Int) {
+    fun setTextColor(@ColorInt color: Int) {
         textPaint.color = color
         invalidate()
     }
 
-    fun setIconColor(color: Int) {
+    fun setIconColor(@ColorInt color: Int) {
         iconPaint.color = color
         iconPaint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
         invalidate()

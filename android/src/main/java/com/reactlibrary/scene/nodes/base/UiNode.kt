@@ -99,10 +99,11 @@ abstract class UiNode(
     /**
      * Should be called when the size of the node may have changed,
      * so we need to rebuild the native view (renderable)
-     * (resizing the current view does not work - ARCore bug?)
      *
-     * @param force whether to force the rebuild. Use this flag with caution
-     * in particular during [applyProperties] execution (the rebuild may loop)
+     * @param force whether to force the rebuild (set this to true when rebuild is required
+     * beyond the [applyProperties] execution).
+     * Use this flag with caution in particular during [applyProperties] execution
+     * (the rebuild may loop)
      */
     fun setNeedsRebuild(force: Boolean = false) {
         if (updatingProperties || force) {

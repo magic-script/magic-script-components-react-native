@@ -29,10 +29,13 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode
 class EventsManager(private val context: ReactApplicationContext) {
 
     companion object {
+
         // Supported event names
         private const val EVENT_CLICK = "onClick"
         private const val EVENT_ACTIVATE = "onActivate" // = onClick
         private const val EVENT_PRESS = "onPress"
+        private const val EVENT_LONG_PRESS = "onLongPress"
+        private const val EVENT_RELEASE = "onRelease"
 
         private const val EVENT_TEXT_CHANGED = "onTextChanged"
         private const val EVENT_TOGGLE_CHANGED = "onToggleChanged"
@@ -71,14 +74,47 @@ class EventsManager(private val context: ReactApplicationContext) {
     fun addOnActivateEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
-            node.clickListener = {
-                val pressParams = Arguments.createMap()
-                pressParams.putString(EVENT_ARG_NODE_ID, nodeId)
+            node.onClickListener = {
+                val activateParams = Arguments.createMap()
+                activateParams.putString(EVENT_ARG_NODE_ID, nodeId)
                 // must use separate map
                 val clickParams = Arguments.createMap()
                 clickParams.putString(EVENT_ARG_NODE_ID, nodeId)
-                sendEvent(EVENT_ACTIVATE, pressParams)
+                sendEvent(EVENT_ACTIVATE, activateParams)
                 sendEvent(EVENT_CLICK, clickParams)
+            }
+        }
+    }
+
+    fun addOnPressEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onPressListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_PRESS, params)
+            }
+        }
+    }
+
+    fun addOnLongPressEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onLongPressListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_LONG_PRESS, params)
+            }
+        }
+    }
+
+    fun addOnReleaseEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onReleaseListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_RELEASE, params)
             }
         }
     }

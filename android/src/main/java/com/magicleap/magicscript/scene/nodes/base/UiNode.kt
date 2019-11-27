@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.ReadableMap
@@ -41,10 +42,10 @@ import kotlin.math.min
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
  */
 abstract class UiNode(
-        initProps: ReadableMap,
-        protected val context: Context,
-        private val viewRenderableLoader: ViewRenderableLoader,
-        useContentNodeAlignment: Boolean = false
+    initProps: ReadableMap,
+    protected val context: Context,
+    private val viewRenderableLoader: ViewRenderableLoader,
+    useContentNodeAlignment: Boolean = false
 ) : TransformNode(initProps, true, useContentNodeAlignment) {
 
     companion object {
@@ -52,6 +53,7 @@ abstract class UiNode(
         const val PROP_ENABLED = "enabled"
 
         const val WRAP_CONTENT_DIMENSION = 0.0F // width or height that grow to fit content
+        const val LONG_PRESS_TIME = 0.5f // in seconds
         private const val REBUILD_CHECK_DELAY = 30L
     }
 
@@ -65,7 +67,10 @@ abstract class UiNode(
     var size = Vector2(0F, 0F)
         private set
 
-    var clickListener: (() -> Unit)? = null
+    var onClickListener: (() -> Unit)? = null
+    var onPressListener: (() -> Unit)? = null
+    var onLongPressListener: (() -> Unit)? = null
+    var onReleaseListener: (() -> Unit)? = null
 
     /**
      * A view attached to the node
@@ -79,6 +84,9 @@ abstract class UiNode(
     private var loadingView = false
     private var rebuildLoopStarted = false
     private var renderableCopy: Renderable? = null
+
+    private var touching = false
+    private var touchTime = 0f
 
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
@@ -178,24 +186,24 @@ abstract class UiNode(
 
         // clipping collision shape (regarding click events)
         val pivotCenterOffset = Vector2(
-                -horizontalAlignment.centerOffset * size.x,
-                -verticalAlignment.centerOffset * size.y
+            -horizontalAlignment.centerOffset * size.x,
+            -verticalAlignment.centerOffset * size.y
         )
 
         val nodeCollisionShape = Bounding(
-                -size.x / 2 * localScale.x,
-                -size.y / 2 * localScale.y,
-                size.x / 2 * localScale.x,
-                size.y / 2 * localScale.y
+            -size.x / 2 * localScale.x,
+            -size.y / 2 * localScale.y,
+            size.x / 2 * localScale.x,
+            size.y / 2 * localScale.y
         ).translate(pivotCenterOffset)
 
         val clipCollisionShape = clipBounds.translate(-getContentPosition())
 
         var intersection = Bounding(
-                max(nodeCollisionShape.left, clipCollisionShape.left),
-                max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
-                min(nodeCollisionShape.right, clipCollisionShape.right),
-                min(nodeCollisionShape.top, clipCollisionShape.top)
+            max(nodeCollisionShape.left, clipCollisionShape.left),
+            max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
+            min(nodeCollisionShape.right, clipCollisionShape.right),
+            min(nodeCollisionShape.top, clipCollisionShape.top)
         )
         if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
             intersection = Bounding()
@@ -216,10 +224,21 @@ abstract class UiNode(
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
-        if(visibility) {
+        if (visibility) {
             contentNode.renderable = renderableCopy
         } else {
             contentNode.renderable = null
+        }
+    }
+
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
+        if (touching) {
+            touchTime += deltaSeconds
+            if (touchTime >= LONG_PRESS_TIME) {
+                onLongPressListener?.invoke()
+                touchTime = 0f
+            }
         }
     }
 
@@ -256,6 +275,8 @@ abstract class UiNode(
         }
         // we have to set layout params before attaching view to the node
         view.layoutParams = ViewGroup.LayoutParams(widthPx, heightPx)
+
+        setupViewListeners()
     }
 
     override fun applyAlignment() {
@@ -270,10 +291,6 @@ abstract class UiNode(
     private fun initView() {
         viewWrapper = ViewWrapper(context, this)
         this.view = provideView(context)
-        this.view.setOnClickListener {
-            onViewClick()
-            clickListener?.invoke()
-        }
     }
 
     private fun setup() {
@@ -292,17 +309,19 @@ abstract class UiNode(
 
         viewWrapper.addView(view)
 
-        val alignHorizontal = if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
-        val alignVertical = if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
+        val alignHorizontal =
+            if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
+        val alignVertical =
+            if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
         val config = ViewRenderableLoader.Config(
-                view = viewWrapper,
-                horizontalAlignment = alignHorizontal,
-                verticalAlignment = alignVertical
+            view = viewWrapper,
+            horizontalAlignment = alignHorizontal,
+            verticalAlignment = alignVertical
         )
         viewRenderableLoader.loadRenderable(config) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
-                if(isVisible) {
+                if (isVisible) {
                     contentNode.renderable = result.renderable
                     renderableCopy = result.renderable
                 } else {
@@ -339,6 +358,36 @@ abstract class UiNode(
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
             Utils.applyMaterialClipping(material, materialClipBounding)
+        }
+    }
+
+    private fun setupViewListeners() {
+        view.setOnClickListener {
+            onViewClick()
+            onClickListener?.invoke()
+        }
+
+        view.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    touching = true
+                    if (onPressListener == null) {
+                        return@setOnTouchListener false
+                    }
+                    onPressListener?.invoke()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    touching = false
+                    touchTime = 0f
+                    if (onReleaseListener == null) {
+                        return@setOnTouchListener false
+                    }
+                    onReleaseListener?.invoke()
+                    true
+                }
+                else -> false
+            }
         }
     }
 

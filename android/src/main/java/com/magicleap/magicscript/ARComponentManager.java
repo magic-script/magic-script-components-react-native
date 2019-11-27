@@ -19,16 +19,11 @@ package com.magicleap.magicscript;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.ar.sceneform.Node;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.ModelRenderableLoader;
@@ -46,6 +41,7 @@ import com.magicleap.magicscript.icons.IconsRepository;
 import com.magicleap.magicscript.icons.IconsRepositoryImpl;
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
 import com.magicleap.magicscript.scene.UiNodesManager;
+import com.magicleap.magicscript.scene.nodes.ContentNode;
 import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
@@ -72,12 +68,13 @@ import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
-import com.magicleap.magicscript.scene.nodes.base.UiNode;
+import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManagerImpl;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManagerImpl;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
@@ -89,17 +86,11 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
-import com.magicleap.magicscript.scene.nodes.ContentNode;
-import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
-
-import androidx.annotation.Nullable;
-import kotlin.Unit;
 
 /**
  * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
@@ -416,27 +407,27 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> UiNodesManager.clear());
     }
 
-
+    // activate = click
     @ReactMethod
     public void addOnActivateEventHandler(final String nodeId) {
         mainHandler.post(() -> eventsManager.addOnActivateEventHandler(nodeId));
     }
 
-    // On touch down
+    // touch down
     @ReactMethod
     public void addOnPressEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnPressEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnLongPressEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnLongPressEventHandler(nodeId));
     }
 
-    // on touch up
+    // touch up
     @ReactMethod
     public void addOnReleaseEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnReleaseEventHandler(nodeId));
     }
 
     @ReactMethod
@@ -501,7 +492,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void addOnColorCanceledEventHandler(final String nodeId) {
-        mainHandler.post(() ->eventsManager.addOnColorCanceledEventHandler(nodeId));
+        mainHandler.post(() -> eventsManager.addOnColorCanceledEventHandler(nodeId));
     }
 
     @ReactMethod

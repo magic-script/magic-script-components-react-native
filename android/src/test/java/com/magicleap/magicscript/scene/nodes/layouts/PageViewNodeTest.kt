@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -78,13 +78,10 @@ class PageViewNodeTest {
     fun `should rescale child if bigger than layout size`() {
         val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = PageViewNode(props, layoutManager)
+        val childNode = NodeBuilder()
+            .withContentBounds(Bounding(0f, 0f, 2f, 1f))
+            .build()
 
-        val childNode = object : TransformNode(JavaOnlyMap(), false, false) {
-            override fun getContentBounding(): Bounding {
-                return Bounding(0f, 0f, 2f, 1f)
-            }
-        }
-        childNode.build()
         node.addContent(childNode)
         node.build() // invokes the layout loop
 

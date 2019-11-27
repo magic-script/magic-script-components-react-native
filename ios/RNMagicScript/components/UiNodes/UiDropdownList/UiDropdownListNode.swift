@@ -59,7 +59,6 @@ import SceneKit
     }
     @objc var listFont: UIFont = UIFont.systemFont(ofSize: 14.0) 
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItem: [Int]) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
@@ -89,8 +88,6 @@ import SceneKit
     @objc override func enterFocus() {
         super.enterFocus()
         guard hasFocus else { return }
-
-        simulateTap()
         toggleListNodeVisibility()
     }
 

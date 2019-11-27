@@ -18,14 +18,11 @@ import SceneKit
 
 //sourcery: AutoMockable
 protocol TapSimulating {
-    var onTap: ((_ sender: UiNode) -> (Void))? { get set }
     func simulateTap()
 }
 
 extension TapSimulating where Self: UiNode {
     func simulateTap() {
-        assert(enabled, "Node must be enabled in order to tap it!")
-        onTap?(self)
         let initialPosition = contentNode.position
         let animation = CABasicAnimation(keyPath: "position.z")
         animation.fromValue = initialPosition.z

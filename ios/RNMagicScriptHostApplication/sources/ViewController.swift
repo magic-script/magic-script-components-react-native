@@ -97,7 +97,7 @@ class ViewController: UIViewController {
         let _: UiLinearLayoutNode = createComponent(["alignment": "bottom-center", "orientation": "horizontal", "localPosition": localPosition, "defaultItemPadding": [0.03, 0.03, 0.03, 0.03]], nodeId: linearLayoutId, parentId: groupId)
         for (index, item) in colorByName.enumerated() {
             let tab: UiTabNode = createComponent(["text": item.key, "textSize": 0.08], nodeId: "tab_" + item.key, parentId: linearLayoutId)
-            tab.onTap = { [weak self] sender in
+            tab.onActivate = { [weak self] sender in
                 self?.pageView.visiblePage = index
                 self?.pageView.layoutIfNeeded()
             }

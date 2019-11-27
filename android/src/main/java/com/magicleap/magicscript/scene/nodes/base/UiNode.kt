@@ -215,8 +215,8 @@ abstract class UiNode(
         contentNode.collisionShape = collisionShape
     }
 
-    override fun onVisibilityChanged(isVisible: Boolean) {
-        if(isVisible) {
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if(visibility) {
             contentNode.renderable = renderableCopy
         } else {
             contentNode.renderable = null

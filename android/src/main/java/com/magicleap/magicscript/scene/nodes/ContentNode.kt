@@ -19,5 +19,5 @@ package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.ReadableMap
 
-// Container class
+// Container class for PageViewNode
 class ContentNode(props: ReadableMap): GroupNode(props)

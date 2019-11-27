@@ -59,11 +59,13 @@ class LineNode(initProps: ReadableMap,
         visibilityObservers.add {
             if(isVisible) {
                 contentNode.children.forEachIndexed { index, node ->
-                    node.renderable = renderableCopies[index]
+                    if(index < renderableCopies.size) {
+                        node.renderable = renderableCopies[index]
+                    }
                 }
             } else {
-                contentNode.children.forEachIndexed { index, node ->
-                    node.renderable = null
+                contentNode.children.forEach {
+                    it.renderable = null
                 }
             }
         }

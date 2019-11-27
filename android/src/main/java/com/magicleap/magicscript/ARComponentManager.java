@@ -66,6 +66,7 @@ import com.magicleap.magicscript.scene.nodes.UiScrollBarNode;
 import com.magicleap.magicscript.scene.nodes.UiScrollViewNode;
 import com.magicleap.magicscript.scene.nodes.UiSliderNode;
 import com.magicleap.magicscript.scene.nodes.UiSpinnerNode;
+import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
@@ -391,7 +392,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }

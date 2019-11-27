@@ -7,7 +7,6 @@ import ColorPickerBuilder from "./elements/builders/color-picker-builder.js";
 import DatePickerBuilder from "./elements/builders/date-picker-builder.js";
 import DialogBuilder from './elements/builders/dialog-builder.js';
 import CircleConfirmationBuilder from './elements/builders/circle-confirmation-builder';
-import ContentBuilder from './elements/builders/content-builder.js';
 import DropdownListBuilder from "./elements/builders/dropdown-list-builder.js";
 import DropdownListItemBuilder from "./elements/builders/dropdown-list-item-builder.js";
 import GridLayoutBuilder from "./elements/builders/grid-layout-builder.js";
@@ -20,7 +19,6 @@ import ListViewItemBuilder from './elements/builders/listview-item-builder.js';
 import ModelBuilder from "./elements/builders/model-builder.js";
 import PageViewBuilder from "./elements/builders/page-view-builder.js";
 import PanelBuilder from "./elements/builders/panel-builder.js";
-import PageViewBuilder from "./elements/builders/page-view-builder.js";
 import ProgressBarBuilder from "./elements/builders/progress-bar-builder.js";
 import RectLayoutBuilder from "./elements/builders/rect-layout-builder.js";
 import ScrollBarBuilder from "./elements/builders/scroll-bar-builder.js";
@@ -50,7 +48,6 @@ export default {
     datePicker: componentManager => new DatePickerBuilder(componentManager),
     dialog: (componentManager) => new DialogBuilder(componentManager),
     circleConfirmation: (componentManager) => new CircleConfirmationBuilder(componentManager),
-    content: (componentManager) => new ContentBuilder(componentManager),
     dropdownList: componentManager => new DropdownListBuilder(componentManager),
     dropdownListItem: componentManager => new DropdownListItemBuilder(componentManager),
     image: componentManager => new ImageBuilder(componentManager),
@@ -58,7 +55,6 @@ export default {
     listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),
     pageView: componentManager => new PageViewBuilder(componentManager),
     panel: componentManager => new PanelBuilder(componentManager),
-    pageView: componentManager => new PageViewBuilder(componentManager),
     progressBar: componentManager => new ProgressBarBuilder(componentManager),
     scrollBar: componentManager => new ScrollBarBuilder(componentManager),
     scrollView: componentManager => new ScrollViewBuilder(componentManager),

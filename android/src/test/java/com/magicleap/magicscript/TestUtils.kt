@@ -58,6 +58,11 @@ class NodeBuilder {
         return this
     }
 
+    fun withAlignment(alignment: String): NodeBuilder {
+        props.putString(TransformNode.PROP_ALIGNMENT, alignment)
+        return this
+    }
+
     fun build(): TransformNode {
         val node = object : TransformNode(props, false, true) {
             override fun getContentBounding(): Bounding {

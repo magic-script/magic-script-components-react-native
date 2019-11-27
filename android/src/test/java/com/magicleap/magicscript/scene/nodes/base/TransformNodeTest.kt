@@ -16,7 +16,6 @@
 
 package com.magicleap.magicscript.scene.nodes.base
 
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
@@ -173,12 +172,10 @@ class TransformNodeTest {
 
     @Test
     fun `should align content node when using content node alignment`() {
-        val alignment = "top-right"
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
         val bounds = Bounding(-2F, -5F, 2F, 5F)
 
         val node = NodeBuilder()
-            .withProps(props)
+            .withAlignment("top-right")
             .withContentBounds(bounds)
             .build()
 
@@ -189,14 +186,10 @@ class TransformNodeTest {
 
     @Test
     fun `should return proper content position`() {
-        val localPosition = JavaOnlyArray.of(5.0, 3.0, 0.0)
-        val props = JavaOnlyMap.of(
-            TransformNode.PROP_LOCAL_POSITION, localPosition,
-            TransformNode.PROP_ALIGNMENT, "bottom-right"
-        )
         val bounds = Bounding(-2F, -1F, 2F, 1F)
         val node = NodeBuilder()
-            .withProps(props)
+            .withPosition(5.0, 3.0, 0.0)
+            .withAlignment("bottom-right")
             .withContentBounds(bounds)
             .build()
 

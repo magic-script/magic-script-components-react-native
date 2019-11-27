@@ -88,9 +88,9 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    protected val visibilityObservers = mutableListOf<(() -> Unit)>()
+    val visibilityObservers = mutableListOf<(() -> Unit)>()
 
-    protected var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
+    var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
         visibilityObservers.forEach { it.invoke() }
     }
 

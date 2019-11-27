@@ -95,6 +95,14 @@ abstract class UiNode(
     init {
         // set default values of properties
         properties.putDefault(PROP_ENABLED, true)
+        visibilityObservers.add {
+            if(isVisible) {
+                contentNode.renderable = renderableCopy
+            } else {
+                contentNode.renderable = null
+            }
+            setNeedsRebuild(true)
+        }
     }
 
     /**
@@ -120,13 +128,6 @@ abstract class UiNode(
      * with all initial properties
      */
     override fun build() {
-        visibilityObservers.add {
-            if(isVisible) {
-                contentNode.renderable = renderableCopy
-            } else {
-                contentNode.renderable = null
-            }
-        }
         initView()
         setup()
         if (!rebuildLoopStarted) {

@@ -18,6 +18,7 @@
 package com.reactlibrary.scene.nodes.layouts
 
 import android.os.Bundle
+import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.reactlibrary.scene.nodes.base.UiLayout
 import com.reactlibrary.scene.nodes.layouts.manager.PageViewLayoutManager
@@ -41,7 +42,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager): UiLayout(p
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
-        const val DEFAULT_CONTENT_ALIGNMENT = "center-center"
+        const val DEFAULT_CONTENT_ALIGNMENT = "top-left"
         const val DEFAULT_VISIBLE_PAGE = 0
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }

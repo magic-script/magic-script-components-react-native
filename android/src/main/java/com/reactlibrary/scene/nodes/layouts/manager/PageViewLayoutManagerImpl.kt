@@ -20,13 +20,11 @@ package com.reactlibrary.scene.nodes.layouts.manager
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.reactlibrary.scene.nodes.ContentNode
-import com.reactlibrary.scene.nodes.base.TransformNode
 import com.reactlibrary.scene.nodes.base.UiNode
 import com.reactlibrary.scene.nodes.props.Alignment
 import com.reactlibrary.scene.nodes.props.Bounding
 import com.reactlibrary.scene.nodes.props.Padding
 import com.reactlibrary.utils.Vector2
-import java.lang.Exception
 
 class PageViewLayoutManagerImpl : PageViewLayoutManager {
     override var visiblePage: Int = 0
@@ -47,10 +45,9 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                 throw Exception("Only ContentNode type is accepted in the PageView!")
             }
             children.forEachIndexed { index, node ->
-                if(index == visiblePage) {
-                    (node as TransformNode).show()
-                    childrenBounds[index]?.let {
-                        childBounds ->
+                if (index == visiblePage) {
+                    (node as ContentNode).show()
+                    childrenBounds[index]?.let { childBounds ->
                         val childSize = childBounds.size()
                         val sizeLimitX = if (parentWidth != UiNode.WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
                         val sizeLimitY = if (parentHeight != UiNode.WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
@@ -58,13 +55,13 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                         layoutNode(node, childBounds, sizeLimit)
                     }
                 } else {
-                    (node as TransformNode).hide()
+                    (node as ContentNode).hide()
                 }
             }
         }
     }
 
-    private fun layoutNode(node: TransformNode, nodeBounds: Bounding, sizeLimit: Vector2) {
+    private fun layoutNode(node: ContentNode, nodeBounds: Bounding, sizeLimit: Vector2) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
         val boundsCenterX = nodeBounds.left + nodeWidth / 2
@@ -103,7 +100,6 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                 -sizeLimit.y / 2 + nodeHeight / 2 + pivotOffsetY + itemPadding.bottom
             }
         }
-
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 }

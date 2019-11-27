@@ -385,7 +385,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }

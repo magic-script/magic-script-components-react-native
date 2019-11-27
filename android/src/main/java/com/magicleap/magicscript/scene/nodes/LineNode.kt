@@ -55,22 +55,6 @@ class LineNode(initProps: ReadableMap,
     private var linesBounding = Bounding()
     private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
 
-    init {
-        visibilityObservers.add {
-            if(isVisible) {
-                contentNode.children.forEachIndexed { index, node ->
-                    if(index < renderableCopies.size) {
-                        node.renderable = renderableCopies[index]
-                    }
-                }
-            } else {
-                contentNode.children.forEach {
-                    it.renderable = null
-                }
-            }
-        }
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -110,6 +94,20 @@ class LineNode(initProps: ReadableMap,
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for line
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if(visibility) {
+            contentNode.children.forEachIndexed { index, node ->
+                if(index < renderableCopies.size) {
+                    node.renderable = renderableCopies[index]
+                }
+            }
+        } else {
+            contentNode.children.forEach {
+                it.renderable = null
+            }
+        }
     }
 
     private fun drawLines(clipBox: BoundingBox) {

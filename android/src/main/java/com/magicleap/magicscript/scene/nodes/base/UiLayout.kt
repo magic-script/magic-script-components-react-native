@@ -87,6 +87,17 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         redrawRequested = true
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        childrenList.forEach {
+            if (visibility) {
+                it.show()
+            } else {
+                it.hide()
+            }
+        }
+        redrawRequested = true
+    }
+
     protected open fun setLayoutSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             if (props.containsKey(PROP_WIDTH)) {

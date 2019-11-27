@@ -32,20 +32,6 @@ import com.magicleap.magicscript.utils.Utils
 open class GroupNode(initProps: ReadableMap) :
         TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
-    init {
-        visibilityObservers.add {
-            contentNode.children
-                    .filterIsInstance<TransformNode>()
-                    .forEach {
-                        if (isVisible) {
-                            it.show()
-                        } else {
-                            it.hide()
-                        }
-                    }
-        }
-    }
-
     override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = clipBounds.translate(-getContentPosition())
         contentNode.children
@@ -61,6 +47,18 @@ open class GroupNode(initProps: ReadableMap) :
                 childBounds.right + contentNode.localPosition.x,
                 childBounds.top + contentNode.localPosition.y
         )
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach {
+                    if (visibility) {
+                        it.show()
+                    } else {
+                        it.hide()
+                    }
+                }
     }
 }
 

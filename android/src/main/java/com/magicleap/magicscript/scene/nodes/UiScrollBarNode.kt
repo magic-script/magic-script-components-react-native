@@ -69,4 +69,7 @@ class UiScrollBarNode(initProps: ReadableMap) :
         properties.putDefault(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        //no-op
+    }
 }

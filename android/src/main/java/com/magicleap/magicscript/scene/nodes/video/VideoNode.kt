@@ -53,16 +53,6 @@ class VideoNode(initProps: ReadableMap,
         const val DEFAULT_VOLUME = 1.0
     }
 
-    init {
-        visibilityObservers.add {
-            if(isVisible) {
-                contentNode.renderable = renderableCopy
-            } else {
-                contentNode.renderable = null
-            }
-        }
-    }
-
     var onVideoPreparedListener: (() -> Unit)? = null
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
@@ -105,6 +95,14 @@ class VideoNode(initProps: ReadableMap,
     override fun setClipBounds(clipBounds: Bounding) {
         materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
         applyMaterialClipping()
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if(visibility) {
+            contentNode.renderable = renderableCopy
+        } else {
+            contentNode.renderable = null
+        }
     }
 
     // destroying media player when node is detached (e.g. on scene change)

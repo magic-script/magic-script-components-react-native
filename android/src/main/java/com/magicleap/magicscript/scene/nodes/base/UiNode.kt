@@ -95,14 +95,6 @@ abstract class UiNode(
     init {
         // set default values of properties
         properties.putDefault(PROP_ENABLED, true)
-        visibilityObservers.add {
-            if(isVisible) {
-                contentNode.renderable = renderableCopy
-            } else {
-                contentNode.renderable = null
-            }
-            setNeedsRebuild(true)
-        }
     }
 
     /**
@@ -221,6 +213,15 @@ abstract class UiNode(
         val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
 
         contentNode.collisionShape = collisionShape
+    }
+
+    override fun onVisibilityChanged(isVisible: Boolean) {
+        if(isVisible) {
+            contentNode.renderable = renderableCopy
+        } else {
+            contentNode.renderable = null
+        }
+        setNeedsRebuild(true)
     }
 
     override fun onDestroy() {

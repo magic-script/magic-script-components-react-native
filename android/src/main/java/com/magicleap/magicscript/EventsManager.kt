@@ -67,7 +67,8 @@ class EventsManager(private val context: ReactApplicationContext) {
         private const val EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle"
     }
 
-    fun addOnPressEventHandler(nodeId: String) {
+    // = onClick
+    fun addOnActivateEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.clickListener = {
@@ -76,7 +77,7 @@ class EventsManager(private val context: ReactApplicationContext) {
                 // must use separate map
                 val clickParams = Arguments.createMap()
                 clickParams.putString(EVENT_ARG_NODE_ID, nodeId)
-                sendEvent(EVENT_PRESS, pressParams)
+                sendEvent(EVENT_ACTIVATE, pressParams)
                 sendEvent(EVENT_CLICK, clickParams)
             }
         }

@@ -407,8 +407,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
 
     @ReactMethod
-    public void addOnPressEventHandler(final String nodeId) {
-        mainHandler.post(() -> eventsManager.addOnPressEventHandler(nodeId));
+    public void addOnActivateEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnActivateEventHandler(nodeId));
     }
 
     @ReactMethod

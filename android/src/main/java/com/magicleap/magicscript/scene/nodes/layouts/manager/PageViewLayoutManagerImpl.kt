@@ -43,7 +43,7 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
     override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
         if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
             if (children.any { it !is ContentNode }) {
-                throw Exception("Only ContentNode type is accepted in the PageView!")
+                throw Exception("Only Content type is accepted in the PageView!")
             }
             children.forEachIndexed { index, node ->
                 if (index == visiblePage) {

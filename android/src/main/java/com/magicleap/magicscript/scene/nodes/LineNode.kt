@@ -51,16 +51,20 @@ class LineNode(initProps: ReadableMap,
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
-    private var renderableCopy: Renderable? = null
+    private var renderableCopies = mutableListOf<Renderable?>()
     private var linesBounding = Bounding()
     private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
 
     init {
         visibilityObservers.add {
             if(isVisible) {
-                contentNode.renderable = renderableCopy
+                contentNode.children.forEachIndexed { index, node ->
+                    node.renderable = renderableCopies[index]
+                }
             } else {
-                contentNode.renderable = null
+                contentNode.children.forEachIndexed { index, node ->
+                    node.renderable = null
+                }
             }
         }
     }
@@ -167,9 +171,9 @@ class LineNode(initProps: ReadableMap,
                 contentNode.addChild(lineSegment)
                 if(isVisible) {
                     lineSegment.renderable = result.renderable
-                    renderableCopy = result.renderable
+                    renderableCopies.add(result.renderable)
                 } else {
-                    renderableCopy = result.renderable
+                    renderableCopies.add(result.renderable)
                 }
                 lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
                 lineSegment.localRotation = rotation

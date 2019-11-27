@@ -23,12 +23,29 @@ import SceneKit
     }
     //var activateResponse: FocusRequest
     //var renderingLayer: RenderingLayer
-    var enabled: Bool = true   // (check SCNNodeFocusBehavior)
+    @objc var enabled: Bool = true {
+        didSet { if oldValue != enabled { enabled ? onEnabled?(self) : onDisabled?(self) } }
+    }
     //var eventPassThrough: Bool = true
     //var eventPassThroughChildren: Bool = true
     //var gravityWellEnabled: Bool = true
     //var eventSoundId: ClassProperty
     //var gravityWellProperties: GravityWellProperties
+
+    @objc public var onActivate: ((_ sender: UiNode) -> Void)?
+    //@objc public var onPress: ((_ sender: UiNode) -> Void)?
+    //@objc public var onLongPress: ((_ sender: UiNode) -> Void)?
+    //@objc public var onRelease: ((_ sender: UiNode) -> Void)?
+    ///@objc public var onHoverEnter: ((_ sender: UiNode) -> Void)?
+    ///@objc public var onHoverExit: ((_ sender: UiNode) -> Void)?
+    ///@objc public var onHoverMove: ((_ sender: UiNode) -> Void)?
+    @objc public var onEnabled: ((_ sender: UiNode) -> Void)?
+    @objc public var onDisabled: ((_ sender: UiNode) -> Void)?
+    @objc public var onFocusGained: ((_ sender: UiNode) -> Void)?
+    @objc public var onFocusLost: ((_ sender: UiNode) -> Void)?
+    ///@objc public var onFocusInput: ((_ sender: UiNode) -> Void)?
+    @objc public var onUpdate: ((_ sender: UiNode) -> Void)?
+    @objc public var onDelete: ((_ sender: UiNode) -> Void)?
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
@@ -60,19 +77,21 @@ import SceneKit
     }
 
     // MARK: - Focus
-    @objc var onFocusChanged: ((_ sender: UiNode) -> (Void))?
-
     @objc var canHaveFocus: Bool {
         return false
     }
 
     @objc private(set) var hasFocus: Bool = false {
-        didSet { if oldValue != hasFocus { onFocusChanged?(self) } }
+        didSet { if oldValue != hasFocus { hasFocus ? onFocusGained?(self) : onFocusLost?(self) } }
     }
 
     @objc func enterFocus() {
         guard canHaveFocus else { return }
         hasFocus = true
+
+        if let simulator = self as? TapSimulating {
+            simulator.simulateTap()
+        }
     }
 
     @objc func leaveFocus() {

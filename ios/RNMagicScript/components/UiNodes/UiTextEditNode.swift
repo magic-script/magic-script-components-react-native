@@ -122,7 +122,6 @@ import SceneKit
         }
     }
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onTextChanged: ((_ sender: UiNode, _ text: String) -> (Void))?
 
     fileprivate var labelNode: LabelNode!

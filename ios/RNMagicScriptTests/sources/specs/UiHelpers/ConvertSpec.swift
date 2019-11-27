@@ -687,6 +687,35 @@ class ConvertSpec: QuickSpec {
                     expect(Convert.toSide(any_arrayOfInts)).to(beNil())
                 }
             }
+
+            context("toToggleType") {
+                it("should convert to ToggleType value") {
+                    let `default`: ToggleType = .default
+                    let radio: ToggleType = .radio
+                    let checkbox: ToggleType = .checkbox
+
+                    let defaultToggleTypeString: String = "default"
+                    let radioToggleTypeString: String = "radio"
+                    let checkboxToggleTypeString: String = "checkbox"
+
+                    expect(Convert.toToggleType(defaultToggleTypeString)).to(equal(`default`))
+                    expect(Convert.toToggleType(radioToggleTypeString)).to(equal(radio))
+                    expect(Convert.toToggleType(checkboxToggleTypeString)).to(equal(checkbox))
+
+                    expect(Convert.toToggleType(defaultToggleTypeString)).notTo(equal(radio))
+                    expect(Convert.toToggleType(defaultToggleTypeString)).notTo(equal(checkbox))
+                    expect(Convert.toToggleType(radioToggleTypeString)).notTo(equal(checkbox))
+
+                    expect(Convert.toToggleType(nil)).to(beNil())
+                    expect(Convert.toToggleType(any_bool)).to(beNil())
+                    expect(Convert.toToggleType(any_int)).to(beNil())
+                    expect(Convert.toToggleType(any_cgFloat)).to(beNil())
+                    expect(Convert.toToggleType(any_float)).to(beNil())
+                    expect(Convert.toToggleType(any_double)).to(beNil())
+                    expect(Convert.toToggleType(any_vec3)).to(beNil())
+                    expect(Convert.toToggleType(any_arrayOfInts)).to(beNil())
+                }
+            }
         }
     }
 }

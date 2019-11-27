@@ -64,8 +64,6 @@ import SceneKit
         }
     }
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
-
     fileprivate var outlineNode: SCNNode!
     fileprivate var labelNode: LabelNode!
     fileprivate var reloadOutline: Bool = true
@@ -81,8 +79,6 @@ import SceneKit
     @objc override func enterFocus() {
         super.enterFocus()
         guard hasFocus else { return }
-
-        simulateTap()
         leaveFocus()
     }
 

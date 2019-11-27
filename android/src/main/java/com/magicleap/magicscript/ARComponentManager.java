@@ -112,45 +112,10 @@ import kotlin.Unit;
 public class ARComponentManager extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     private static final String COMPONENT_NAME = "ARComponentManager";
-
-    // Supported events names
-    private static final String EVENT_CLICK = "onClick";
-    private static final String EVENT_PRESS = "onPress";
-    private static final String EVENT_TEXT_CHANGED = "onTextChanged";
-    private static final String EVENT_TOGGLE_CHANGED = "onToggleChanged";
-    private static final String EVENT_VIDEO_PREPARED = "onVideoPrepared";
-    private static final String EVENT_DROPDOWN_SELECTION_CHANGED = "onSelectionChanged";
-    private static final String EVENT_SLIDER_VALUE_CHANGED = "onSliderChanged";
-    private static final String EVENT_COLOR_CONFIRMED = "onColorConfirmed";
-    private static final String EVENT_COLOR_CANCELLED = "onColorCanceled";
-    private static final String EVENT_COLOR_CHANGED = "onColorChanged";
-    private static final String EVENT_DATE_CHANGED = "onDateChanged";
-    private static final String EVENT_DATE_CONFIRMED = "onDateConfirmed";
-    private static final String EVENT_TIME_CHANGED = "onTimeChanged";
-    private static final String EVENT_TIME_CONFIRMED = "onTimeConfirmed";
-    private static final String EVENT_SCROLL_CHANGED = "onScrollChanged";
-    private static final String EVENT_DIALOG_CONFIRMED = "onDialogConfirmed";
-    private static final String EVENT_DIALOG_CANCELED = "onDialogCanceled";
-    private static final String EVENT_DIALOG_EXPIRED = "onDialogTimeExpired";
-    private static final String EVENT_CONFIRMATION_COMPLETED = "onConfirmationCompleted";
-    private static final String EVENT_CONFIRMATION_UPDATED = "onConfirmationUpdated";
-    private static final String EVENT_CONFIRMATION_CANCELED = "onConfirmationCanceled";
-
-    // Supported events arguments
-    private static final String EVENT_ARG_NODE_ID = "nodeId";
-    private static final String EVENT_ARG_TEXT = "text";
-    private static final String EVENT_ARG_TOGGLE_ACTIVE = "On";
-    private static final String EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes";
-    private static final String EVENT_ARG_SLIDER_VALUE = "Value";
-    private static final String EVENT_ARG_COLOR = "color";
-    private static final String EVENT_ARG_DATE = "date";
-    private static final String EVENT_ARG_TIME = "time";
-    private static final String EVENT_ARG_SCROLL_VALUE = "ScrollValue";
-    private static final String EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle";
-
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
+    private EventsManager eventsManager;
 
     // Renderable loaders
     private ViewRenderableLoader viewRenderableLoader;
@@ -165,6 +130,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public ARComponentManager(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        this.eventsManager = new EventsManager(reactContext);
         this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
@@ -450,344 +416,152 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> UiNodesManager.clear());
     }
 
+
+    @ReactMethod
+    public void addOnActivateEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnActivateEventHandler(nodeId));
+    }
+
+    // On touch down
     @ReactMethod
     public void addOnPressEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiNode) {
-                ((UiNode) node).setClickListener(() -> {
-                    WritableMap pressParams = Arguments.createMap();
-                    pressParams.putString(EVENT_ARG_NODE_ID, nodeId);
-
-                    // must use separate map
-                    WritableMap clickParams = Arguments.createMap();
-                    clickParams.putString(EVENT_ARG_NODE_ID, nodeId);
-
-                    sendEvent(EVENT_PRESS, pressParams);
-                    sendEvent(EVENT_CLICK, clickParams);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        // TODO
     }
 
     @ReactMethod
-    public void removeOnPressEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiNode) {
-                ((UiNode) node).setClickListener(null);
-            }
-        });
+    public void addOnLongPressEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    // on touch up
+    @ReactMethod
+    public void addOnReleaseEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnEnabledEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnDisabledEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnFocusGainedEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnFocusLostEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnUpdateEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnDeleteEventHandler(final String nodeId) {
+        // TODO
     }
 
     @ReactMethod
     public void addOnTextChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiTextEditNode) {
-                ((UiTextEditNode) node).setTextChangedListener(text -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putString(EVENT_ARG_TEXT, text);
-
-                    sendEvent(EVENT_TEXT_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnTextChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnToggleChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiToggleNode) {
-                ((UiToggleNode) node).setToggleChangedListener(isOn -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putBoolean(EVENT_ARG_TOGGLE_ACTIVE, isOn);
-
-                    sendEvent(EVENT_TOGGLE_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnToggleChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnVideoPreparedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof VideoNode) {
-                ((VideoNode) node).setOnVideoPreparedListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_VIDEO_PREPARED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnVideoPreparedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnSliderChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiSliderNode) {
-                ((UiSliderNode) node).setOnSliderChangedListener((value) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putDouble(EVENT_ARG_SLIDER_VALUE, value);
-                    sendEvent(EVENT_SLIDER_VALUE_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnSliderChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnSelectionChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiDropdownListNode) {
-                ((UiDropdownListNode) node).setOnSelectionChangedListener((itemIndex) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    WritableArray selectedItems = Arguments.createArray();
-                    selectedItems.pushInt(itemIndex);
-                    params.putArray(EVENT_ARG_SELECTED_ITEMS, selectedItems);
-                    sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnSelectionChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnColorConfirmedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiColorPickerNode) {
-                ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    WritableArray selectedItems = Arguments.createArray();
-                    for (final Double color : colors) {
-                        selectedItems.pushDouble(color);
-                    }
-                    params.putArray(EVENT_ARG_COLOR, selectedItems);
-                    sendEvent(EVENT_COLOR_CONFIRMED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnColorConfirmedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnColorCanceledEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiColorPickerNode) {
-                ((UiColorPickerNode) node).setOnColorCanceled(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_COLOR_CANCELLED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() ->eventsManager.addOnColorCanceledEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnColorChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiColorPickerNode) {
-                ((UiColorPickerNode) node).setOnColorConfirmed((colors) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    WritableArray selectedItems = Arguments.createArray();
-                    for (final Double color : colors) {
-                        selectedItems.pushDouble(color);
-                    }
-                    params.putArray(EVENT_ARG_COLOR, selectedItems);
-                    sendEvent(EVENT_COLOR_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnColorChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDateChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiDatePickerNode) {
-                ((UiDatePickerNode) node).setOnDateChanged((date) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putString(EVENT_ARG_DATE, date);
-                    sendEvent(EVENT_DATE_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnDateChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDateConfirmedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiDatePickerNode) {
-                ((UiDatePickerNode) node).setOnDateConfirmed((date) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putString(EVENT_ARG_DATE, date);
-                    sendEvent(EVENT_DATE_CONFIRMED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnDateConfirmedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnScrollChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiScrollViewNode) {
-                ((UiScrollViewNode) node).setOnScrollChangeListener((position) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putDouble(EVENT_ARG_SCROLL_VALUE, position);
-                    sendEvent(EVENT_SCROLL_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnScrollChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnTimeChangedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiTimePickerNode) {
-                ((UiTimePickerNode) node).setOnTimeChanged((time) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putString(EVENT_ARG_TIME, time);
-                    sendEvent(EVENT_TEXT_CHANGED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnTimeChangedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnTimeConfirmedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiTimePickerNode) {
-                ((UiTimePickerNode) node).setOnTimeConfirmed((time) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putString(EVENT_ARG_TIME, time);
-                    sendEvent(EVENT_TIME_CONFIRMED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnTimeConfirmedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDialogConfirmedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof DialogNode) {
-                ((DialogNode) node).setOnDialogConfirmListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_DIALOG_CONFIRMED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnDialogConfirmedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDialogCanceledEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof DialogNode) {
-                ((DialogNode) node).setOnDialogCancelListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_DIALOG_CANCELED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnDialogCanceledEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDialogTimeExpiredEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof DialogNode) {
-                ((DialogNode) node).setOnDialogExpiredListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_DIALOG_EXPIRED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnDialogTimeExpiredEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnConfirmationCompletedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiCircleConfirmationNode) {
-                ((UiCircleConfirmationNode) node).setOnConfirmationCompletedListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_CONFIRMATION_COMPLETED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnConfirmationCompletedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnConfirmationUpdatedEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiCircleConfirmationNode) {
-                ((UiCircleConfirmationNode) node).setOnConfirmationUpdatedListener((value) -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    params.putDouble(EVENT_ARG_CONFIRMATION_UPDATED_VALUE, value);
-                    sendEvent(EVENT_CONFIRMATION_UPDATED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnConfirmationUpdatedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnConfirmationCanceledEventHandler(final String nodeId) {
-        mainHandler.post(() -> {
-            final Node node = UiNodesManager.findNodeWithId(nodeId);
-            if (node instanceof UiCircleConfirmationNode) {
-                ((UiCircleConfirmationNode) node).setOnConfirmationCanceledListener(() -> {
-                    WritableMap params = Arguments.createMap();
-                    params.putString(EVENT_ARG_NODE_ID, nodeId);
-                    sendEvent(EVENT_CONFIRMATION_CANCELED, params);
-                    return Unit.INSTANCE;
-                });
-            }
-        });
+        mainHandler.post(() -> eventsManager.addOnConfirmationCanceledEventHandler(nodeId));
     }
 
     @ReactMethod
@@ -798,10 +572,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private void addNode(TransformNode node, String nodeId) {
         node.build();
         UiNodesManager.registerNode(node, nodeId);
-    }
-
-    private void sendEvent(String eventName, @Nullable WritableMap params) {
-        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
     @Override

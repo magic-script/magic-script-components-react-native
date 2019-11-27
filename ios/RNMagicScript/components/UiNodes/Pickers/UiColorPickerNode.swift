@@ -44,7 +44,6 @@ import SceneKit
 
     @objc var height: CGFloat = 0
 
-    @objc public var onTap: ((_ sender: UiNode) -> (Void))?
     @objc public var onColorChanged: ((_ sender: UiColorPickerNode, _ selected: [CGFloat]) -> (Void))?
     @objc public var onColorConfirmed: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
     @objc public var onColorCanceled: ((_ sender: UiColorPickerNode, _ confirmed: [CGFloat]) -> (Void))?
@@ -62,13 +61,6 @@ import SceneKit
 
     @objc override var canHaveFocus: Bool {
         return enabled
-    }
-
-    @objc override func enterFocus() {
-        super.enterFocus()
-        guard hasFocus else { return }
-
-        simulateTap()
     }
 
     @objc override func setupNode() {

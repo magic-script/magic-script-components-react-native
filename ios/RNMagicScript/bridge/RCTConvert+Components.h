@@ -20,6 +20,7 @@
 @class UiButtonNode;
 @class UiCircleConfirmationNode;
 @class UiColorPickerNode;
+@class UiContentNode;
 @class UiDatePickerNode;
 @class UiDialogNode;
 @class UiDropdownListNode;
@@ -32,6 +33,7 @@
 @class UiListViewNode;
 @class UiListViewItemNode;
 @class UiModelNode;
+@class UiPageViewNode;
 @class UiPanelNode;
 @class UiProgressBarNode;
 @class UiRectLayoutNode;
@@ -39,10 +41,12 @@
 @class UiScrollViewNode;
 @class UiSliderNode;
 @class UiSpinnerNode;
+@class UiTabNode;
 @class UiTextNode;
 @class UiTextEditNode;
 @class UiTimePickerNode;
 @class UiToggleNode;
+@class UiToggleGroupNode;
 @class UiVideoNode;
 @class UiWebViewNode;
 
@@ -51,6 +55,7 @@
 + (UiButtonNode *)UiButtonNode:(id)json;
 + (UiCircleConfirmationNode *)UiCircleConfirmationNode:(id)json;
 + (UiColorPickerNode *)UiColorPickerNode:(id)json;
++ (UiContentNode *)UiContentNode:(id)json;
 + (UiDatePickerNode *)UiDatePickerNode:(id)json;
 + (UiDialogNode *)UiDialogNode:(id)json;
 + (UiDropdownListNode *)UiDropdownListNode:(id)json;
@@ -63,6 +68,7 @@
 + (UiListViewNode *)UiListViewNode:(id)json;
 + (UiListViewItemNode *)UiListViewItemNode:(id)json;
 + (UiModelNode *)UiModelNode:(id)json;
++ (UiPageViewNode *)UiPageViewNode:(id)json;
 + (UiPanelNode *)UiPanelNode:(id)json;
 + (UiProgressBarNode *)UiProgressBarNode:(id)json;
 + (UiRectLayoutNode *)UiRectLayoutNode:(id)json;
@@ -70,10 +76,12 @@
 + (UiScrollViewNode *)UiScrollViewNode:(id)json;
 + (UiSliderNode *)UiSliderNode:(id)json;
 + (UiSpinnerNode *)UiSpinnerNode:(id)json;
++ (UiTabNode *)UiTabNode:(id)json;
 + (UiTextNode *)UiTextNode:(id)json;
 + (UiTextEditNode *)UiTextEditNode:(id)json;
 + (UiTimePickerNode *)UiTimePickerNode:(id)json;
 + (UiToggleNode *)UiToggleNode:(id)json;
++ (UiToggleGroupNode *)UiToggleGroupNode:(id)json;
 + (UiVideoNode *)UiVideoNode:(id)json;
 + (UiWebViewNode *)UiWebViewNode:(id)json;
 @end

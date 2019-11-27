@@ -40,7 +40,6 @@ import SceneKit
         set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
     }
 
-    var itemsCount: Int { return gridLayout.itemsCount }
     fileprivate var gridLayout = GridLayout()
 
     @objc override func setupNode() {
@@ -101,4 +100,8 @@ import SceneKit
         super.setNeedsLayout()
         gridLayout.invalidate()
     }
+}
+
+extension UiGridLayoutNode: TransformNodeContainer {
+    var itemsCount: Int { return gridLayout.itemsCount }
 }

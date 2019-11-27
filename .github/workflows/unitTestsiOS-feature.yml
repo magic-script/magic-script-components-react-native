@@ -1,6 +1,6 @@
 name: UTs_iOS_feature
 on:
-  push:
+  pull_request:
     branches-ignore:
       - master
 jobs:
@@ -28,4 +28,4 @@ jobs:
       - name: Code Coverage
         run: |
           cd ios
-          slather coverage --scheme RNMagicScriptHostApplication --workspace ./RNMagicScript.xcworkspace --build-directory Build -s ./RNMagicScript.xcodeproj | grep "Test Coverage:"
+          slather | grep "Test Coverage:"

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,167 +13,175 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#00000000">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/color_picker_dialog_title"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="#00000000">
 
-    <com.larswerkman.holocolorpicker.ColorPicker
-        android:id="@+id/picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/color_picker_dialog_title"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/luminosity"
-        app:layout_constraintEnd_toEndOf="@+id/picker"
-        app:layout_constraintStart_toStartOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/picker" />
+        <com.larswerkman.holocolorpicker.ColorPicker
+            android:id="@+id/picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/r" />
 
-    <com.larswerkman.holocolorpicker.SVBar
-        android:id="@+id/svbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/picker"
-        app:layout_constraintStart_toStartOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/luminosity"
+            app:layout_constraintEnd_toEndOf="@+id/picker"
+            app:layout_constraintStart_toStartOf="@+id/picker"
+            app:layout_constraintTop_toBottomOf="@+id/picker" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/opacity"
-        app:layout_constraintEnd_toEndOf="@+id/picker"
-        app:layout_constraintStart_toStartOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/svbar" />
+        <com.larswerkman.holocolorpicker.SVBar
+            android:id="@+id/svbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/picker"
+            app:layout_constraintStart_toStartOf="@+id/picker"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <com.larswerkman.holocolorpicker.OpacityBar
-        android:id="@+id/opacitybar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/picker"
-        app:layout_constraintStart_toStartOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opacity"
+            app:layout_constraintEnd_toEndOf="@+id/picker"
+            app:layout_constraintStart_toStartOf="@+id/picker"
+            app:layout_constraintTop_toBottomOf="@+id/svbar" />
 
-    <TextView
-        android:id="@+id/r"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="R:"
-        app:layout_constraintStart_toEndOf="@+id/picker"
-        app:layout_constraintTop_toTopOf="@+id/picker" />
+        <com.larswerkman.holocolorpicker.OpacityBar
+            android:id="@+id/opacitybar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/picker"
+            app:layout_constraintStart_toStartOf="@+id/picker"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <TextView
-        android:id="@+id/rvalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/r"
-        app:layout_constraintTop_toTopOf="@+id/r" />
+        <TextView
+            android:id="@+id/r"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="R:"
+            app:layout_constraintEnd_toStartOf="@+id/rvalue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-    <TextView
-        android:id="@+id/g"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:text="G:"
-        app:layout_constraintStart_toEndOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/r" />
+        <TextView
+            android:id="@+id/rvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="0"
+            app:layout_constraintEnd_toStartOf="@+id/g"
+            app:layout_constraintStart_toEndOf="@+id/r"
+            app:layout_constraintTop_toTopOf="@+id/r" />
 
-    <TextView
-        android:id="@+id/gvalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/g"
-        app:layout_constraintTop_toTopOf="@+id/g" />
+        <TextView
+            android:id="@+id/g"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="G:"
+            app:layout_constraintEnd_toStartOf="@+id/gvalue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/rvalue"
+            app:layout_constraintTop_toTopOf="@+id/rvalue" />
 
-    <TextView
-        android:id="@+id/b"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:text="B:"
-        app:layout_constraintStart_toEndOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/g" />
+        <TextView
+            android:id="@+id/gvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="0"
+            app:layout_constraintEnd_toStartOf="@+id/b"
+            app:layout_constraintStart_toEndOf="@+id/g"
+            app:layout_constraintTop_toTopOf="@+id/g" />
 
-    <TextView
-        android:id="@+id/bvalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/b"
-        app:layout_constraintTop_toTopOf="@+id/b" />
+        <TextView
+            android:id="@+id/b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B:"
+            app:layout_constraintEnd_toStartOf="@+id/bvalue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/gvalue"
+            app:layout_constraintTop_toTopOf="@+id/gvalue" />
 
-    <TextView
-        android:id="@+id/a"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:text="A:"
-        app:layout_constraintStart_toEndOf="@+id/picker"
-        app:layout_constraintTop_toBottomOf="@+id/b" />
+        <TextView
+            android:id="@+id/bvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="0"
+            app:layout_constraintEnd_toStartOf="@+id/a"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/b"
+            app:layout_constraintTop_toTopOf="@+id/b" />
 
-    <TextView
-        android:id="@+id/avalue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/b"
-        app:layout_constraintTop_toTopOf="@+id/a" />
+        <TextView
+            android:id="@+id/a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A:"
+            app:layout_constraintEnd_toStartOf="@+id/avalue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/bvalue"
+            app:layout_constraintTop_toTopOf="@+id/bvalue" />
 
-    <Button
-        android:id="@+id/confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/confirm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cancel"
-        app:layout_constraintTop_toBottomOf="@+id/opacitybar" />
+        <TextView
+            android:id="@+id/avalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/a"
+            app:layout_constraintTop_toTopOf="@+id/a" />
 
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/cancel"
-        app:layout_constraintEnd_toStartOf="@+id/confirm"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/opacitybar" />
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cancel"
+            app:layout_constraintTop_toTopOf="@+id/cancel" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/cancel"
+            app:layout_constraintEnd_toStartOf="@+id/confirm"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/opacitybar" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

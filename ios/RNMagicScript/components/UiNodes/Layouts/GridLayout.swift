@@ -18,6 +18,12 @@ import Foundation
 import SceneKit
 
 @objc open class GridLayout: NSObject {
+    @objc var width: CGFloat = 0 {
+        didSet { invalidate() }
+    }
+    @objc var height: CGFloat = 0 {
+        didSet { invalidate() }
+    }
     @objc var columns: Int = 0 {
         didSet { invalidate() }
     }
@@ -37,6 +43,7 @@ import SceneKit
     var itemsCount: Int {
         return container.childNodes.count
     }
+
     var recalculateNeeded: Bool {
         return gridDescriptor == nil
     }
@@ -50,6 +57,11 @@ import SceneKit
 
     @objc func invalidate() {
         gridDescriptor = nil
+    }
+
+    @objc func getItem(at index: Int) -> TransformNode? {
+        guard index >= 0 && index < container.childNodes.count else { return nil }
+        return container.childNodes[index].childNodes.first as? TransformNode
     }
 
     @objc func addItem(_ item: TransformNode) {

@@ -221,7 +221,6 @@ abstract class UiNode(
         } else {
             contentNode.renderable = null
         }
-        setNeedsRebuild(true)
     }
 
     override fun onDestroy() {

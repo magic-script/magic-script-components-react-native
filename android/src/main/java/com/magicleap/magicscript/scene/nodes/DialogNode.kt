@@ -86,6 +86,10 @@ class DialogNode(
         showDialog()
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        //no-op
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         dialog?.dismiss()

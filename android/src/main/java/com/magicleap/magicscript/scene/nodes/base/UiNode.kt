@@ -78,6 +78,7 @@ abstract class UiNode(
     private var shouldRebuild = false
     private var loadingView = false
     private var rebuildLoopStarted = false
+    private var renderableCopy: Renderable? = null
 
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
@@ -214,6 +215,14 @@ abstract class UiNode(
         contentNode.collisionShape = collisionShape
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if(visibility) {
+            contentNode.renderable = renderableCopy
+        } else {
+            contentNode.renderable = null
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null) //stop the loop
@@ -293,7 +302,12 @@ abstract class UiNode(
         viewRenderableLoader.loadRenderable(config) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
-                contentNode.renderable = result.renderable
+                if(isVisible) {
+                    contentNode.renderable = result.renderable
+                    renderableCopy = result.renderable
+                } else {
+                    renderableCopy = result.renderable
+                }
                 applyMaterialClipping()
                 onViewLoadedListener?.invoke(result.renderable)
             }

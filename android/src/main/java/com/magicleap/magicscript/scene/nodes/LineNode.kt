@@ -25,6 +25,7 @@ import com.google.ar.sceneform.collision.RayHit
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -50,6 +51,7 @@ class LineNode(initProps: ReadableMap,
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
+    private var renderableCopies = mutableListOf<Renderable?>()
     private var linesBounding = Bounding()
     private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
 
@@ -92,6 +94,20 @@ class LineNode(initProps: ReadableMap,
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for line
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if(visibility) {
+            contentNode.children.forEachIndexed { index, node ->
+                if(index < renderableCopies.size) {
+                    node.renderable = renderableCopies[index]
+                }
+            }
+        } else {
+            contentNode.children.forEach {
+                it.renderable = null
+            }
+        }
     }
 
     private fun drawLines(clipBox: BoundingBox) {
@@ -153,7 +169,12 @@ class LineNode(initProps: ReadableMap,
         cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
             if (result is RenderableResult.Success) {
                 contentNode.addChild(lineSegment)
-                lineSegment.renderable = result.renderable
+                if(isVisible) {
+                    lineSegment.renderable = result.renderable
+                    renderableCopies.add(result.renderable)
+                } else {
+                    renderableCopies.add(result.renderable)
+                }
                 lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
                 lineSegment.localRotation = rotation
             }

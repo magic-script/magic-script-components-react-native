@@ -75,6 +75,14 @@ class ModelNode(initProps: ReadableMap,
         }
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        if (visibility) {
+            contentNode.renderable = renderableCopy
+        } else {
+            contentNode.renderable = null
+        }
+    }
+
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
             // cannot update the ModelRenderable before [renderableRequested],

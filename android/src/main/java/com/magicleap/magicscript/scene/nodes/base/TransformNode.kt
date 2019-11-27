@@ -26,6 +26,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
+import kotlin.properties.Delegates
 
 /**
  * Base node.
@@ -85,6 +86,10 @@ abstract class TransformNode(
      * exceptions when reading from [ReadableMap])
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
+
+    var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
+        onVisibilityChanged(new)
+    }
 
     protected var updatingProperties = false
         private set
@@ -379,5 +384,13 @@ abstract class TransformNode(
         }
     }
 
+    open fun hide() {
+        isVisible = false
+    }
 
+    open fun show() {
+        isVisible = true
+    }
+
+    abstract fun onVisibilityChanged(visibility: Boolean)
 }

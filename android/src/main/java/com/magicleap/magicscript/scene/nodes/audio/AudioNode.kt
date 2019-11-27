@@ -91,6 +91,10 @@ open class AudioNode @JvmOverloads constructor(
         applyActions(props)
     }
 
+    override fun onVisibilityChanged(visibility: Boolean) {
+        //no-op
+    }
+
     override fun onDestroy() {
         fileDownloader.onDestroy()
 

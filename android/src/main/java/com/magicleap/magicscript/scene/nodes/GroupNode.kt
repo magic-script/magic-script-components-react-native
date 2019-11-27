@@ -48,5 +48,17 @@ open class GroupNode(initProps: ReadableMap) :
                 childBounds.top + contentNode.localPosition.y
         )
     }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach {
+                    if (visibility) {
+                        it.show()
+                    } else {
+                        it.hide()
+                    }
+                }
+    }
 }
 

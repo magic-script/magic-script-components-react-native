@@ -89,6 +89,9 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+import com.magicleap.magicscript.scene.nodes.ContentNode;
+import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -362,9 +365,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPanelNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> {
-            addNode(new PanelNode(props), nodeId);
-        });
+        mainHandler.post(() -> addNode(new PanelNode(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createContentNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new ContentNode(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createPageViewNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManagerImpl()), nodeId));
     }
 
     @ReactMethod

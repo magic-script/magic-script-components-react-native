@@ -411,6 +411,53 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> eventsManager.addOnActivateEventHandler(nodeId));
     }
 
+    // On touch down
+    @ReactMethod
+    public void addOnPressEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnLongPressEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    // on touch up
+    @ReactMethod
+    public void addOnReleaseEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnEnabledEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnDisabledEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnFocusGainedEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnFocusLostEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnUpdateEventHandler(final String nodeId) {
+        // TODO
+    }
+
+    @ReactMethod
+    public void addOnDeleteEventHandler(final String nodeId) {
+        // TODO
+    }
+
     @ReactMethod
     public void addOnTextChangedEventHandler(final String nodeId) {
         mainHandler.post(() -> eventsManager.addOnTextChangedEventHandler(nodeId));

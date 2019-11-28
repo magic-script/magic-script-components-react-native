@@ -407,6 +407,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> UiNodesManager.clear());
     }
 
+    // region Events
+
     // activate = click
     @ReactMethod
     public void addOnActivateEventHandler(final String nodeId) {
@@ -431,22 +433,22 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void addOnFocusGainedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnFocusGainedEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnFocusLostEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnFocusLostEventHandler(nodeId));
+    }
+
+    @ReactMethod
     public void addOnEnabledEventHandler(final String nodeId) {
         // TODO
     }
 
     @ReactMethod
     public void addOnDisabledEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
-    public void addOnFocusGainedEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
-    public void addOnFocusLostEventHandler(final String nodeId) {
         // TODO
     }
 
@@ -554,6 +556,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void addOnConfirmationCanceledEventHandler(final String nodeId) {
         mainHandler.post(() -> eventsManager.addOnConfirmationCanceledEventHandler(nodeId));
     }
+
+    // endregion
 
     @ReactMethod
     public void updateLayout() {

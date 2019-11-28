@@ -36,6 +36,12 @@ class EventsManager(private val context: ReactApplicationContext) {
         private const val EVENT_PRESS = "onPress"
         private const val EVENT_LONG_PRESS = "onLongPress"
         private const val EVENT_RELEASE = "onRelease"
+        private const val EVENT_FOCUS_GAINED = "onFocusGained"
+        private const val EVENT_FOCUS_LOST = "onFocusLost"
+        private const val EVENT_NODE_ENABLED = "onEnabled"
+        private const val EVENT_NODE_DISABLED = "onDisabled"
+        private const val EVENT_NODE_UPDATED = "onUpdate"
+        private const val EVENT_NODE_DELETED = "onDelete"
 
         private const val EVENT_TEXT_CHANGED = "onTextChanged"
         private const val EVENT_TOGGLE_CHANGED = "onToggleChanged"
@@ -104,6 +110,28 @@ class EventsManager(private val context: ReactApplicationContext) {
                 val params = Arguments.createMap()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_LONG_PRESS, params)
+            }
+        }
+    }
+
+    fun addOnFocusGainedEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onFocusGainedListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_FOCUS_GAINED, params)
+            }
+        }
+    }
+
+    fun addOnFocusLostEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onFocusLostListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_FOCUS_LOST, params)
             }
         }
     }

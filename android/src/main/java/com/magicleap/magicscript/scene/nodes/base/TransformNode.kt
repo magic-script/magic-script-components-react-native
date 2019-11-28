@@ -39,9 +39,9 @@ import kotlin.properties.Delegates
  * be true for nodes that don't use renderable alignment in ViewRenderble.Builder)
  */
 abstract class TransformNode(
-        initProps: ReadableMap,
-        val hasRenderable: Boolean,
-        protected val useContentNodeAlignment: Boolean
+    initProps: ReadableMap,
+    val hasRenderable: Boolean,
+    protected val useContentNodeAlignment: Boolean
 ) : Node() {
 
     companion object {
@@ -58,6 +58,9 @@ abstract class TransformNode(
          */
         private const val ALIGNMENT_INTERVAL = 0.05F // in seconds
     }
+
+    var onUpdatedListener: (() -> Unit)? = null
+    var onDeletedListener: (() -> Unit)? = null
 
     /**
      * Used as content node for alignment purpose.
@@ -134,6 +137,8 @@ abstract class TransformNode(
         logMessage("updating properties: $propsToUpdate")
         applyProperties(propsToUpdate)
         updatingProperties = false
+
+        onUpdatedListener?.invoke()
     }
 
     /**
@@ -158,18 +163,23 @@ abstract class TransformNode(
         val contentBounds = getContentBounding()
 
         // bounding vertices
-        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z).rotatedBy(localRotation)
-        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
-        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z).rotatedBy(localRotation)
-        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z).rotatedBy(localRotation)
+        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z)
+            .rotatedBy(localRotation)
+        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z)
+            .rotatedBy(localRotation)
+        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z)
+            .rotatedBy(localRotation)
+        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z)
+            .rotatedBy(localRotation)
 
         val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
 
         return Bounding(
-                left = minimumBounds.left * localScale.x + localPosition.x,
-                bottom = minimumBounds.bottom * localScale.y + localPosition.y,
-                right = minimumBounds.right * localScale.x + localPosition.x,
-                top = minimumBounds.top * localScale.y + localPosition.y)
+            left = minimumBounds.left * localScale.x + localPosition.x,
+            bottom = minimumBounds.bottom * localScale.y + localPosition.y,
+            right = minimumBounds.right * localScale.x + localPosition.x,
+            top = minimumBounds.top * localScale.y + localPosition.y
+        )
     }
 
     /**
@@ -190,7 +200,9 @@ abstract class TransformNode(
     /**
      * Should clear all node's resources (if any)
      */
-    open fun onDestroy() {}
+    open fun onDestroy() {
+        onDeletedListener?.invoke()
+    }
 
     /**
      * Should return position of the content (relative to this node's parent)

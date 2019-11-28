@@ -443,22 +443,22 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
+    public void addOnUpdateEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnUpdateEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnDeleteEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnDeleteEventHandler(nodeId));
+    }
+
+    @ReactMethod
     public void addOnEnabledEventHandler(final String nodeId) {
         // TODO
     }
 
     @ReactMethod
     public void addOnDisabledEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
-    public void addOnUpdateEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
-    public void addOnDeleteEventHandler(final String nodeId) {
         // TODO
     }
 

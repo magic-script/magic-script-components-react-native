@@ -22,6 +22,7 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.magicleap.magicscript.scene.UiNodesManager.findNodeWithId
 import com.magicleap.magicscript.scene.nodes.*
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
@@ -114,6 +115,17 @@ class EventsManager(private val context: ReactApplicationContext) {
         }
     }
 
+    fun addOnReleaseEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onReleaseListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_RELEASE, params)
+            }
+        }
+    }
+
     fun addOnFocusGainedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
@@ -136,13 +148,24 @@ class EventsManager(private val context: ReactApplicationContext) {
         }
     }
 
-    fun addOnReleaseEventHandler(nodeId: String) {
+    fun addOnUpdateEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
-        if (node is UiNode) {
-            node.onReleaseListener = {
+        if (node is TransformNode) {
+            node.onUpdatedListener = {
                 val params = Arguments.createMap()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
-                sendEvent(EVENT_RELEASE, params)
+                sendEvent(EVENT_NODE_UPDATED, params)
+            }
+        }
+    }
+
+    fun addOnDeleteEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is TransformNode) {
+            node.onDeletedListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_NODE_DELETED, params)
             }
         }
     }

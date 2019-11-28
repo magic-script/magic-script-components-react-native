@@ -62,7 +62,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
             currentActivity.getSupportFragmentManager().beginTransaction().add(fragment, "arFragment").commitNow();
             addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
             Scene scene = fragment.getArSceneView().getScene();
-            UiNodesManager.registerScene(scene);
+            UiNodesManager.INSTANCE.registerScene(scene);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }

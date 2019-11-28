@@ -25,9 +25,9 @@ import com.magicleap.magicscript.utils.logMessage
 /**
  * It manages nodes registration and attaching them to scene
  */
-object UiNodesManager {
+object UiNodesManager : NodesManager {
 
-    private val rootNode = Node()
+    private val rootNode by lazy { Node() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
@@ -43,24 +43,21 @@ object UiNodesManager {
         }
     }
 
-    @JvmStatic
     @Synchronized
-    fun registerScene(scene: Scene) {
+    override fun registerScene(scene: Scene) {
         this.scene = scene
         if (arReady) {
             scene.addChild(rootNode)
         }
     }
 
-    @JvmStatic
     @Synchronized
-    fun findNodeWithId(nodeId: String): Node? {
+    override fun findNodeWithId(nodeId: String): Node? {
         return nodesById[nodeId]
     }
 
-    @JvmStatic
     @Synchronized
-    fun registerNode(node: TransformNode, nodeId: String) {
+    override fun registerNode(node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
         logMessage("register node id= $nodeId, type=${node.javaClass.simpleName}")
@@ -70,9 +67,8 @@ object UiNodesManager {
         }
     }
 
-    @JvmStatic
     @Synchronized
-    fun addNodeToRoot(nodeId: String) {
+    override fun addNodeToRoot(nodeId: String) {
         val node = nodesById[nodeId]
 
         if (node == null) {
@@ -82,9 +78,8 @@ object UiNodesManager {
         rootNode.addChild(node)
     }
 
-    @JvmStatic
     @Synchronized
-    fun addNodeToParent(nodeId: String, parentId: String) {
+    override fun addNodeToParent(nodeId: String, parentId: String) {
         val node = nodesById[nodeId]
         val parentNode = nodesById[parentId]
 
@@ -99,9 +94,8 @@ object UiNodesManager {
         parentNode.addContent(node)
     }
 
-    @JvmStatic
     @Synchronized
-    fun updateNode(nodeId: String, properties: ReadableMap): Boolean {
+    override fun updateNode(nodeId: String, properties: ReadableMap): Boolean {
         val node = nodesById[nodeId]
         if (node == null) {
             logMessage("cannot update node: not found")
@@ -111,9 +105,8 @@ object UiNodesManager {
         return true
     }
 
-    @JvmStatic
     @Synchronized
-    fun removeNode(nodeId: String) {
+    override fun removeNode(nodeId: String) {
         val node = nodesById[nodeId]
 
         if (node == null) {
@@ -125,9 +118,8 @@ object UiNodesManager {
         logMessage("removed node id=$nodeId, nodes count=${nodesById.size}")
     }
 
-    @JvmStatic
     @Synchronized
-    fun clear() {
+    override fun clear() {
         nodesById.forEach { (_, node) ->
             detachNode(node)
             node.onDestroy()

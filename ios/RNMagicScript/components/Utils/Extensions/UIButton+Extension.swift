@@ -24,6 +24,7 @@ extension UIButton {
         button.addTarget(target, action: action, for: .touchUpInside)
         button.backgroundColor = .white
         button.setTitleColor(.black, for: .normal)
+        button.tintColor = .black
         button.layer.borderWidth = 1.0
         button.layer.cornerRadius = 10;
         button.clipsToBounds = true

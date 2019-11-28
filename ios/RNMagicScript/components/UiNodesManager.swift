@@ -20,43 +20,43 @@ import SceneKit
 @objc open class UiNodesManager: NSObject {
     @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
     @objc public private (set) var rootNode: TransformNode
-
+    
     var onInputFocused: ((_ input: DataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
-
+    
     fileprivate var nodesById: [String: TransformNode]
     fileprivate var nodeByAnchorUuid: [String: TransformNode]
     fileprivate var focusedNode: UiNode?
     fileprivate var longPressedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
     var dialogPresenter: DialogPresenting?
-
+    
     init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.nodeByAnchorUuid = nodeByAnchorUuid
         self.focusedNode = focusedNode
     }
-
+    
     @objc public func registerScene(_ scene: SCNScene) {
         scene.rootNode.addChildNode(rootNode)
         nodeSelector = UiNodeSelector(rootNode)
     }
-
+    
     @objc public func handleTapAction(ray: Ray?) {
         if let ray = ray {
             let hitNode = nodeSelector?.hitTest(ray: ray)
             handleNodeTap(hitNode)
-        #if targetEnvironment(simulator)
+            #if targetEnvironment(simulator)
             if let node = hitNode {
                 print("hitTest: \(type(of: node))")
             }
-        #endif
+            #endif
         } else {
             handleNodeTap(nil)
         }
     }
-
+    
     @objc public func handleLongPressAction(ray: Ray?, state: UIGestureRecognizer.State) {
         if let ray = ray {
             let hitNode = nodeSelector?.hitTest(ray: ray)
@@ -65,14 +65,14 @@ import SceneKit
             handleNodeLongPress(nil, state)
         }
     }
-
+    
     @objc public func handleNodeTap(_ node: TransformNode?) {
-
+        
         focusedNode?.leaveFocus()
         if focusedNode != nil {
             onInputUnfocused?()
         }
-
+        
         focusedNode = node as? UiNode
         if let uiNode = focusedNode {
             uiNode.enterFocus()
@@ -82,7 +82,7 @@ import SceneKit
             onInputFocused?(input)
         }
     }
-
+    
     @objc public func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
         switch state {
         case .changed, .began:
@@ -99,7 +99,7 @@ import SceneKit
     @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {
         return nodesById[nodeId]
     }
-
+    
     @objc public func findUiNodeWithId(_ nodeId: String) -> UiNode? {
         return nodesById[nodeId] as? UiNode
     }
@@ -107,7 +107,7 @@ import SceneKit
     @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
         return nodeByAnchorUuid[nodeId]
     }
-
+    
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
@@ -115,40 +115,47 @@ import SceneKit
             nodeByAnchorUuid[node.anchorUuid] = node;
         }
     }
-
+    
     @objc public func unregisterNode(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
+            if let dialog = node as? DialogDataProviding {
+                dialogPresenter?.dismiss(dialog)
+            }
             if let uiNode = node as? UiNode {
                 uiNode.onDelete?(uiNode)
             }
         }
     }
-
+    
     @objc public func addNode(_ nodeId: String, toParent parentId: String) {
         if let node = nodesById[nodeId],
-           let parentNode = nodesById[parentId] {
+            let parentNode = nodesById[parentId] {
             parentNode.addChild(node)
-            if let dialog = node as? DialogDataProviding { dialogPresenter?.present(dialog) }
+            if let dialog = node as? DialogDataProviding {
+                dialogPresenter?.present(dialog)
+            }
         }
     }
-
+    
     @objc public func addNodeToRoot(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             rootNode.addChildNode(node)
         }
     }
-
+    
     @objc public func removeNode(_ nodeId: String, fromParent parentId: String) {
         if let node = nodesById[nodeId],
             let parentNode = nodesById[parentId] {
             parentNode.removeChild(node)
             removeNodeWithDescendants(node)
-            if let dialog = node as? DialogDataProviding { dialogPresenter?.dismiss(dialog) }
+            if let dialog = node as? DialogDataProviding {
+                dialogPresenter?.dismiss(dialog)
+            }
         }
     }
-
+    
     @objc public func removeNodeFromRoot(_ nodeId: String) {
         if let node = nodesById[nodeId],
             rootNode == node.parent {
@@ -156,7 +163,7 @@ import SceneKit
             removeNodeWithDescendants(node)
         }
     }
-
+    
     @objc fileprivate func removeNodeWithDescendants(_ node: TransformNode) {
         node.enumerateHierarchy { (item, stop) in
             if let node = item as? TransformNode,
@@ -165,14 +172,14 @@ import SceneKit
             }
         }
     }
-
+    
     @objc public func clear() {
         nodesById.forEach { (key: String, value: SCNNode) in
             value.removeFromParentNode()
         }
         nodesById.removeAll()
     }
-
+    
     @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
         guard let node = nodesById[nodeId] else { return false }
         node.update(properties)
@@ -181,27 +188,27 @@ import SceneKit
         }
         return true
     }
-
+    
     @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         updateLayoutFor(node: rootNode)
     }
-
+    
     @objc fileprivate func updateLayoutFor(node: SCNNode) {
         node.childNodes.forEach { (child) in
             updateLayoutFor(node: child)
         }
-
+        
         if let transformNode = node as? TransformNode {
             transformNode.layoutIfNeeded()
         }
     }
-
+    
     @objc func textFieldShouldReturn() {
         focusedNode?.leaveFocus()
         onInputUnfocused?()
     }
-
+    
     @objc func textFieldDidChange(text: String?) {
         if let textEdit = focusedNode as? UiTextEditNode {
             textEdit.text = text

@@ -127,6 +127,14 @@ object UiNodesManager {
 
     @JvmStatic
     @Synchronized
+    fun removeNode(node: TransformNode) {
+        removeFromMap(node)
+        detachNode(node)
+        logMessage("removed node id=???, nodes count=${nodesById.size}")
+    }
+
+    @JvmStatic
+    @Synchronized
     fun clear() {
         nodesById.forEach { (_, node) ->
             detachNode(node)

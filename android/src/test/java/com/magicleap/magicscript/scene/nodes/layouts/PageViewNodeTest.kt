@@ -80,6 +80,10 @@ class PageViewNodeTest {
         val node = PageViewNode(props, layoutManager)
 
         val childNode = object : TransformNode(JavaOnlyMap(), false, false) {
+            override fun onVisibilityChanged(visibility: Boolean) {
+
+            }
+
             override fun getContentBounding(): Bounding {
                 return Bounding(0f, 0f, 2f, 1f)
             }

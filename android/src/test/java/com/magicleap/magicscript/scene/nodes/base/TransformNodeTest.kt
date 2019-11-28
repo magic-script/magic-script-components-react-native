@@ -240,6 +240,10 @@ class TransformNodeTest {
 
     private fun createNodeWithContentBounding(properties: ReadableMap, bounding: Bounding): TransformNode {
         return object : TransformNode(properties, false, true) {
+            override fun onVisibilityChanged(visibility: Boolean) {
+
+            }
+
             override fun getContentBounding(): Bounding {
                 return bounding
             }
@@ -247,7 +251,11 @@ class TransformNodeTest {
     }
 
     private fun createNode(properties: ReadableMap): TransformNode {
-        return object : TransformNode(properties, false, true) {}
+        return object : TransformNode(properties, false, true) {
+            override fun onVisibilityChanged(visibility: Boolean) {
+
+            }
+        }
     }
 
     private fun Array<Double>.toVector3(): Vector3 {

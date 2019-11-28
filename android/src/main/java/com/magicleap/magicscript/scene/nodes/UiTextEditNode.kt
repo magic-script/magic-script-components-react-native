@@ -38,11 +38,10 @@ import com.magicleap.magicscript.scene.nodes.views.InputDialogBuilder
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
 
-open class UiTextEditNode(
-    initProps: ReadableMap,
-    context: Context,
-    viewRenderableLoader: ViewRenderableLoader,
-    private val fontProvider: FontProvider
+open class UiTextEditNode(initProps: ReadableMap,
+                          context: Context,
+                          viewRenderableLoader: ViewRenderableLoader,
+                          private val fontProvider: FontProvider
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -285,7 +284,6 @@ open class UiTextEditNode(
                 view.text_edit_underline.visibility = View.INVISIBLE
                 view.text_edit.setTextColor(textColor)
                 showInputDialog(activity)
-                onFocusGainedListener?.invoke()
             }
         }
 
@@ -339,7 +337,6 @@ open class UiTextEditNode(
             refreshVisibleText()
             hideBorder()
             view.text_edit_underline.visibility = View.VISIBLE
-            onFocusLostListener?.invoke()
         }
 
         builder.show()
@@ -386,10 +383,10 @@ open class UiTextEditNode(
             val textWithCursor = getMaskedText() + "|"
             val spannable = SpannableString(textWithCursor)
             spannable.setSpan(
-                ForegroundColorSpan(cursorColor),
-                textWithCursor.length - 1,
-                textWithCursor.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(cursorColor),
+                    textWithCursor.length - 1,
+                    textWithCursor.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             view.text_edit.text = spannable
             view.text_edit.setTextColor(textColor) // clear hint color

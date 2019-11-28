@@ -71,8 +71,6 @@ abstract class UiNode(
     var onPressListener: (() -> Unit)? = null
     var onLongPressListener: (() -> Unit)? = null
     var onReleaseListener: (() -> Unit)? = null
-    var onFocusGainedListener: (() -> Unit)? = null
-    var onFocusLostListener: (() -> Unit)? = null
 
     /**
      * A view attached to the node

@@ -20,11 +20,12 @@ import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.utils.Vector2
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -59,17 +60,37 @@ class UiNodeTest {
     }
 
     @Test
-    fun shouldBeEnabledByDefault() {
+    fun `should be enabled by default`() {
         val enabledProp = node.getProperty(UiNode.PROP_ENABLED)
 
         assertEquals(true, enabledProp)
     }
 
     @Test
-    fun shouldLoadRenderableWhenAttachRequested() {
+    fun `should load renderable when attach requested`() {
         node.attachRenderable()
 
         verify(viewRenderableLoader).loadRenderable(any(), any())
+    }
+
+    @Test
+    fun `should call onUpdate listener when property updated`() {
+        var called = false
+        node.onUpdatedListener = { called = true }
+
+        node.update(JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-right"))
+
+        called shouldEqual true
+    }
+
+    @Test
+    fun `should call onDelete listener when destroyed`() {
+        var called = false
+        node.onDeletedListener = { called = true }
+
+        node.onDestroy()
+
+        called shouldEqual true
     }
 
 }

@@ -21,24 +21,77 @@ import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
+
+class NodeBuilder {
+    private var props = JavaOnlyMap()
+    private var contentBounding = Bounding()
+
+    fun withProps(initProps: JavaOnlyMap): NodeBuilder {
+        props = initProps
+        return this
+    }
+
+    fun withPosition(x: Double, y: Double, z: Double): NodeBuilder {
+        val position = JavaOnlyArray.of(x, y, z)
+        props.putArray(TransformNode.PROP_LOCAL_POSITION, position)
+        return this
+    }
+
+    fun withScale(x: Double, y: Double, z: Double): NodeBuilder {
+        val scale = JavaOnlyArray.of(x, y, z)
+        props.putArray(TransformNode.PROP_LOCAL_SCALE, scale)
+        return this
+    }
+
+    fun withRotation(x: Double, y: Double, z: Double, w: Double): NodeBuilder {
+        val rotation = JavaOnlyArray.of(x, y, z, w)
+        props.putArray(TransformNode.PROP_LOCAL_ROTATION, rotation)
+        return this
+    }
+
+    fun withContentBounds(bounds: Bounding): NodeBuilder {
+        contentBounding = bounds
+        return this
+    }
+
+    fun withAlignment(alignment: String): NodeBuilder {
+        props.putString(TransformNode.PROP_ALIGNMENT, alignment)
+        return this
+    }
+
+    fun build(): TransformNode {
+        val node = object : TransformNode(props, false, true) {
+            override fun getContentBounding(): Bounding {
+                return contentBounding
+            }
+
+            override fun onVisibilityChanged(visibility: Boolean) {}
+        }
+        node.build()
+        return node
+    }
+}
 
 fun createProperty(vararg keysAndValues: Any): Bundle =
-        Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
+    Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
 
 fun View.createActionDownEvent(): MotionEvent {
     val coordinates = IntArray(2)
     getLocationOnScreen(coordinates)
     return MotionEvent.obtain(
-            SystemClock.uptimeMillis(),
-            SystemClock.uptimeMillis(),
-            MotionEvent.ACTION_DOWN,
-            coordinates[0].toFloat(),
-            coordinates[1].toFloat(),
-            0)
+        SystemClock.uptimeMillis(),
+        SystemClock.uptimeMillis(),
+        MotionEvent.ACTION_DOWN,
+        coordinates[0].toFloat(),
+        coordinates[1].toFloat(),
+        0
+    )
 }
 
-fun <T: TransformNode> T.update(vararg keysAndValues: Any) {
+fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
     update(JavaOnlyMap.of(*keysAndValues))
 }

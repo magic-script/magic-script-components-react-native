@@ -6,7 +6,7 @@ jest.mock('NativeModules', () => {
   return {
     ARComponentManager: {
       clearScene: () => { },
-      addOnPressEventHandler: jest.fn(),
+      addOnActivateEventHandler: jest.fn(),
       addOnTextChangedEventHandler: jest.fn(),
       addOnToggleChangedEventHandler: jest.fn()
     },
@@ -102,12 +102,12 @@ describe('platformFactory.registerEvent', () => {
 
   test('selected events should be served', () => {
     platformFactory.registerEvent('', 'onClick', null);
-    platformFactory.registerEvent('', 'onPress', null);
+    platformFactory.registerEvent('', 'onActivate', null);
     platformFactory.registerEvent('', 'onTextChanged', null);
     platformFactory.registerEvent('', 'onToggleChanged', null);
 
     const m = platformFactory.componentManager;
-    expect(m.addOnPressEventHandler).toHaveBeenCalledTimes(2);
+    expect(m.addOnActivateEventHandler).toHaveBeenCalledTimes(2);
     expect(m.addOnTextChangedEventHandler).toHaveBeenCalledTimes(1);
     expect(m.addOnToggleChangedEventHandler).toHaveBeenCalledTimes(1);
   });

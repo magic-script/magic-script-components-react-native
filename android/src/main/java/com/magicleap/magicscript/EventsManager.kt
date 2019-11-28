@@ -170,6 +170,28 @@ class EventsManager(private val context: ReactApplicationContext) {
         }
     }
 
+    fun addOnEnabledEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onEnabledListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_NODE_ENABLED, params)
+            }
+        }
+    }
+
+    fun addOnDisabledEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is UiNode) {
+            node.onDisabledListener = {
+                val params = Arguments.createMap()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                sendEvent(EVENT_NODE_DISABLED, params)
+            }
+        }
+    }
+
     fun addOnTextChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiTextEditNode) {

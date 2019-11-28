@@ -74,7 +74,7 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should call onUpdate listener when property updated`() {
+    fun `should notify when property updated`() {
         var called = false
         node.onUpdatedListener = { called = true }
 
@@ -84,11 +84,32 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should call onDelete listener when destroyed`() {
+    fun `should notify when destroyed`() {
         var called = false
         node.onDeletedListener = { called = true }
 
         node.onDestroy()
+
+        called shouldEqual true
+    }
+
+    @Test
+    fun `should notify after disabling`() {
+        var called = false
+        node.onDisabledListener = { called = true }
+
+        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, false))
+
+        called shouldEqual true
+    }
+
+    @Test
+    fun `should notify after enabling`() {
+        var called = false
+        node.onEnabledListener = { called = true }
+        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, false))
+
+        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, true))
 
         called shouldEqual true
     }

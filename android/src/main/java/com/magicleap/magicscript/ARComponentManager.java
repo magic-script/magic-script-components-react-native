@@ -41,7 +41,6 @@ import com.magicleap.magicscript.icons.IconsRepository;
 import com.magicleap.magicscript.icons.IconsRepositoryImpl;
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
 import com.magicleap.magicscript.scene.NodesManager;
-import com.magicleap.magicscript.scene.UiNodesManager;
 import com.magicleap.magicscript.scene.nodes.ContentNode;
 import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
@@ -120,11 +119,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private FontProvider fontProvider;
     private IconsRepository iconsRepo;
 
-    public ARComponentManager(ReactApplicationContext reactContext) {
+    public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager) {
         super(reactContext);
         this.context = reactContext;
-        this.nodesManager = UiNodesManager.INSTANCE;
-        this.eventsManager = new ReactEventsManager(new ReactEventsEmitter(context));
+        this.nodesManager = nodesManager;
+        this.eventsManager = eventsManager;
         this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
@@ -149,16 +148,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @Override
     public Map<String, Object> getConstants() {
         return Collections.emptyMap();
-    }
-
-    // for tests
-    public void setNodesManager(NodesManager manager) {
-        this.nodesManager = manager;
-    }
-
-    // for tests
-    public void setEventsManager(EventsManager manager) {
-        this.eventsManager = manager;
     }
 
     /**

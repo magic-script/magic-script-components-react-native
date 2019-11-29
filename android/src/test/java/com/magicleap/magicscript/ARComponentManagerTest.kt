@@ -49,11 +49,9 @@ class ARComponentManagerTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-        manager = ARComponentManager(ReactApplicationContext(context))
         nodesManager = mock()
-        manager.setNodesManager(nodesManager)
         eventsManager = mock()
-        manager.setEventsManager(eventsManager)
+        manager = ARComponentManager(ReactApplicationContext(context), nodesManager, eventsManager)
     }
 
     // region Nodes
@@ -88,9 +86,9 @@ class ARComponentManagerTest {
 
     @Test
     fun `should register text edit node`() {
-        manager.createTextNode(JavaOnlyMap(), "123")
+        manager.createTextEditNode(JavaOnlyMap(), "123")
 
-        verify(nodesManager).registerNode(isA<UiTextNode>(), eq("123"))
+        verify(nodesManager).registerNode(isA<UiTextEditNode>(), eq("123"))
     }
 
     @Test

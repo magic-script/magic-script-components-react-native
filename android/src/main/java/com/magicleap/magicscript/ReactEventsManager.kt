@@ -18,7 +18,8 @@ package com.magicleap.magicscript
 
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
-import com.magicleap.magicscript.scene.UiNodesManager.findNodeWithId
+import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.scene.UiNodesManager
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -423,5 +424,9 @@ class ReactEventsManager(private val eventsEmitter: EventsEmitter) : EventsManag
 
     private fun sendEvent(eventName: String, params: WritableMap) {
         eventsEmitter.sendEvent(eventName, params)
+    }
+
+    private fun findNodeWithId(id: String): Node? {
+        return UiNodesManager.INSTANCE.findNodeWithId(id)
     }
 }

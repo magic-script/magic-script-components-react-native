@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.update
 import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -78,7 +79,7 @@ class UiNodeTest {
         var called = false
         node.onUpdatedListener = { called = true }
 
-        node.update(JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-right"))
+        node.update(TransformNode.PROP_ALIGNMENT, "top-right")
 
         called shouldEqual true
     }
@@ -98,7 +99,7 @@ class UiNodeTest {
         var called = false
         node.onDisabledListener = { called = true }
 
-        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, false))
+        node.update(UiNode.PROP_ENABLED, false)
 
         called shouldEqual true
     }
@@ -107,9 +108,9 @@ class UiNodeTest {
     fun `should notify after enabling`() {
         var called = false
         node.onEnabledListener = { called = true }
-        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, false))
+        node.update(UiNode.PROP_ENABLED, false)
 
-        node.update(JavaOnlyMap.of(UiNode.PROP_ENABLED, true))
+        node.update(UiNode.PROP_ENABLED, true)
 
         called shouldEqual true
     }

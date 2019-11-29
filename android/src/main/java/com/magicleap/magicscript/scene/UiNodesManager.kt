@@ -25,12 +25,18 @@ import com.magicleap.magicscript.utils.logMessage
 /**
  * It manages nodes registration and attaching them to scene
  */
-object UiNodesManager : NodesManager {
+open class UiNodesManager : NodesManager {
 
     private val rootNode by lazy { Node() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
+
+    companion object {
+        val INSTANCE: UiNodesManager by lazy {
+            UiNodesManager()
+        }
+    }
 
     @Synchronized
     fun onArFragmentReady() {

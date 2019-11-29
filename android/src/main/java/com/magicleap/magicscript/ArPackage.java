@@ -21,6 +21,8 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.magicleap.magicscript.scene.NodesManager;
+import com.magicleap.magicscript.scene.UiNodesManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +36,9 @@ public class ArPackage implements ReactPackage {
     @NotNull
     @Override
     public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new ARComponentManager(reactContext));
+        NodesManager nodesManager = UiNodesManager.Companion.getINSTANCE();
+        EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext));
+        return Arrays.<NativeModule>asList(new ARComponentManager(reactContext, nodesManager, eventsManager));
     }
 
     // Deprecated from RN 0.47

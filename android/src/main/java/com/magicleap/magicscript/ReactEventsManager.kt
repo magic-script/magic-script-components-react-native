@@ -19,14 +19,17 @@ package com.magicleap.magicscript
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 import com.google.ar.sceneform.Node
-import com.magicleap.magicscript.scene.UiNodesManager
+import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
 
-class ReactEventsManager(private val eventsEmitter: EventsEmitter) : EventsManager {
+class ReactEventsManager(
+    private val eventsEmitter: EventsEmitter,
+    private val nodesManager: NodesManager
+) : EventsManager {
 
     companion object {
 
@@ -427,6 +430,6 @@ class ReactEventsManager(private val eventsEmitter: EventsEmitter) : EventsManag
     }
 
     private fun findNodeWithId(id: String): Node? {
-        return UiNodesManager.INSTANCE.findNodeWithId(id)
+        return nodesManager.findNodeWithId(id)
     }
 }

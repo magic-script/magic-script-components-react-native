@@ -37,7 +37,7 @@ public class ArPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
         NodesManager nodesManager = UiNodesManager.Companion.getINSTANCE();
-        EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext));
+        EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         return Arrays.<NativeModule>asList(new ARComponentManager(reactContext, nodesManager, eventsManager));
     }
 

@@ -33,9 +33,7 @@ open class UiNodesManager : NodesManager {
     private lateinit var scene: Scene
 
     companion object {
-        val INSTANCE: UiNodesManager by lazy {
-            UiNodesManager()
-        }
+        val INSTANCE = UiNodesManager()
     }
 
     @Synchronized

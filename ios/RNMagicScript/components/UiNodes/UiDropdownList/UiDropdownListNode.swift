@@ -135,8 +135,8 @@ import SceneKit
         gridLayoutNode.defaultItemPadding = UIEdgeInsets(top: 0.015, left: 0.005, bottom: 0.015, right: 0.005)
         gridLayoutNode.alignment = Alignment.centerCenter
 
-        gridLayoutNode.addChild(labelNode)
-        gridLayoutNode.addChild(iconNode)
+        _ = gridLayoutNode.addChild(labelNode)
+        _ = gridLayoutNode.addChild(iconNode)
 
         contentNode.addChildNode(gridLayoutNode)
 
@@ -160,13 +160,14 @@ import SceneKit
         listNode.addChildNode(listGridLayoutNode)
     }
 
-    @objc override func addChild(_ child: TransformNode) {
-        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+    @objc override func addChild(_ child: TransformNode) -> Bool {
+        guard let dropDownListItem = child as? UiDropdownListItemNode else { return false }
         dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
         dropDownListItem.tapHandler = self
-        listGridLayoutNode.addChild(dropDownListItem)
+        _ = listGridLayoutNode.addChild(dropDownListItem)
         setNeedsLayout()
+        return true
     }
 
     @objc override func removeChild(_ child: TransformNode) {

@@ -217,7 +217,8 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value {
-    [self onEventWithName:@"onConfirmationUpdated" sender:sender body:@{ @"Value": @(value) }];
+    const CGFloat angle = 2 * M_PI * value;
+    [self onEventWithName:@"onConfirmationUpdated" sender:sender body:@{ @"Angle": @(angle) }];
 }
 
 - (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {

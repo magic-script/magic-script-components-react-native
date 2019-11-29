@@ -86,10 +86,11 @@ import SceneKit
         addChildNode(contentNode)
     }
 
-    @objc func addChild(_ child: TransformNode) {
+    @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()
         setNeedsLayoutForAllParents()
+        return true
     }
 
     @objc func removeChild(_ child: TransformNode) {
@@ -258,4 +259,17 @@ extension TransformNode {
         addChildNode(borderNode!)
     }
 #endif
+}
+
+// MARK: - Enumerate components hierarchy
+extension SCNNode {
+    @objc func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
+        childNodes.forEach { (node) in
+            node.enumerateComponentsHierarchy(block)
+        }
+
+        if let transformNode = self as? TransformNode {
+            block(transformNode)
+        }
+    }
 }

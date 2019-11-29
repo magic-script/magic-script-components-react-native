@@ -52,11 +52,14 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         if gridLayout.itemsCount == 0 {
             gridLayout.addItem(child)
             setNeedsLayout()
+            return true
         }
+
+        return false
     }
 
     @objc override func removeChild(_ child: TransformNode) {
@@ -71,7 +74,7 @@ import SceneKit
 
     @objc override func updateLayout() {
         // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
-        let _ = getSize()
+        _ = getSize()
         gridLayout.updateLayout()
     }
 

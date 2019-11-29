@@ -20,16 +20,16 @@ import GrowingTextView
 class DialogView: UIView {
     static let titleFontSize: CGFloat = 15.0
     static let messageFontSize: CGFloat = 12.0
-    
+
     static var width: CGFloat {
         let margin: CGFloat = 16.0
         return min(UIScreen.height, UIScreen.width) - 2 * margin
     }
-    
+
     static var height: CGFloat {
         return DialogView.width * 0.75
     }
-    
+
     var dialogData: DialogDataProviding? {
         didSet {
             titleLabel.text = dialogData?.title
@@ -43,33 +43,37 @@ class DialogView: UIView {
             setExpirationTimer()
         }
     }
-    
+
     fileprivate var titleLabel: UILabel!
     fileprivate var messageTextView: GrowingTextView!
     fileprivate var confirmButton: UIButton!
     fileprivate var cancelButton: UIButton!
-    
-    fileprivate var expirationTimer: Timer!
-    
+
+    fileprivate var expirationTimer: Timer?
+
     init(frame: CGRect, dialogData: DialogDataProviding) {
         super.init(frame: frame)
         setupView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("please use init(frame: CGRect, dialogData: DialogDataProviding)")
     }
-    
+
+    deinit {
+        expirationTimer?.invalidate()
+    }
+
     fileprivate func setupView() {
         backgroundColor = .white
-        
+
         titleLabel = UILabel()
         titleLabel.text = dialogData?.title
         titleLabel.textColor = .black
         titleLabel.font = UIFont.systemFont(ofSize: DialogView.titleFontSize, weight: .semibold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
-        
+
         messageTextView = GrowingTextView()
         messageTextView.isEditable = false
         messageTextView.isSelectable = false
@@ -80,23 +84,23 @@ class DialogView: UIView {
         messageTextView.font = UIFont.systemFont(ofSize: DialogView.messageFontSize, weight: .regular)
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(messageTextView)
-        
+
         confirmButton = UIButton.createDialogButton(text: dialogData?.confirmText,
                                                     image: dialogData?.confirmIcon?.image,
                                                     target: self,
                                                     action: #selector(confirmButtonAction(_:)))
-        
+
         cancelButton = UIButton.createDialogButton(text: dialogData?.cancelText,
                                                    image: dialogData?.cancelIcon?.image,
                                                    target: self,
                                                    action: #selector(cancelButtonAction(_:)))
-        
+
         let stackView = UIStackView(arrangedSubviews: [cancelButton, confirmButton])
         stackView.distribution = .fillEqually
         stackView.spacing = 8.0
         stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
-        
+
         let margin: CGFloat = 16.0
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: margin),
@@ -110,25 +114,27 @@ class DialogView: UIView {
             stackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -margin),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -margin)
         ])
-        
+
         setExpirationTimer()
     }
-    
+
     fileprivate func setExpirationTimer() {
         if let expireTime = dialogData?.expireTime, expireTime > 0, let interval = TimeInterval(exactly: expireTime) {
-            if expirationTimer != nil { expirationTimer.invalidate() }
-            expirationTimer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(timerExpirationAction(_:)), userInfo: nil, repeats: false)
-            expirationTimer.tolerance = 0.5
+            expirationTimer?.invalidate()
+            expirationTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false, block: { [weak self] timer in
+                self?.dialogData?.dialogTimeExpired()
+            })
+            expirationTimer?.tolerance = 0.5
         }
     }
-    
+
     fileprivate func toggleButtonsVisibility() {
         if dialogData?.confirmIcon == nil && dialogData?.confirmText == nil {
             confirmButton.isHidden = true
         } else {
             confirmButton.isHidden = false
         }
-        
+
         if dialogData?.cancelIcon == nil && dialogData?.cancelText == nil {
             cancelButton.isHidden = true
         } else {
@@ -141,12 +147,8 @@ extension DialogView {
     @objc fileprivate func confirmButtonAction(_ sender: UIButton) {
         dialogData?.dialogConfirmed()
     }
-    
+
     @objc fileprivate func cancelButtonAction(_ sender: UIButton) {
         dialogData?.dialogCanceled()
-    }
-    
-    @objc fileprivate func timerExpirationAction(_ sender: Timer) {
-        dialogData?.dialogTimeExpired()
     }
 }

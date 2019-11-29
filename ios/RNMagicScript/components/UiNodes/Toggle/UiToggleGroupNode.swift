@@ -44,18 +44,21 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         if let toggleNode = child as? UiToggleNode {
             registerToggleGroupHandler(toggleNode)
             addToggleNode(toggleNode)
-            return
+            return true
         }
 
         if let _ = child as? TransformNodeContainer {
             self.innerLayout = child
             contentNode.addChildNode(child)
             setNeedsLayout()
+            return true
         }
+
+        return false
     }
 
     func childPresent(toggleNode: UiToggleNode) {
@@ -125,7 +128,7 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        let _ = getSize()
+        _ = getSize()
         innerLayout?.updateLayout()
     }
 

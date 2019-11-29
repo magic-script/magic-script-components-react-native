@@ -162,9 +162,8 @@ import SceneKit
     }
     
     @objc fileprivate func removeNodeWithDescendants(_ node: TransformNode) {
-        node.enumerateHierarchy { (item, stop) in
-            if let node = item as? TransformNode,
-                let id = node.name {
+        node.enumerateComponentsHierarchy { (item) in
+            if let id = item.name {
                 unregisterNode(id)
             }
         }

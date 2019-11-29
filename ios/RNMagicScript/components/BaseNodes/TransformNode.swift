@@ -259,3 +259,16 @@ extension TransformNode {
     }
 #endif
 }
+
+// MARK: - Enumerate components hierarchy
+extension SCNNode {
+    @objc func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
+        childNodes.forEach { (node) in
+            node.enumerateComponentsHierarchy(block)
+        }
+
+        if let transformNode = self as? TransformNode {
+            block(transformNode)
+        }
+    }
+}

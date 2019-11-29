@@ -131,7 +131,15 @@ import SceneKit
 
         let newPage = pages[pageIndex]
         pageLayout.addItem(newPage)
+    }
 
+    @objc override func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
+        pages.forEach { (page) in
+            if page.parent == nil {
+                page.enumerateComponentsHierarchy(block)
+            }
+        }
+        super.enumerateComponentsHierarchy(block)
     }
 }
 

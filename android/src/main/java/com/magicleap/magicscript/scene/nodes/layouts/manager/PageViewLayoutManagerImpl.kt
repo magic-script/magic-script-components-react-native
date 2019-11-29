@@ -20,6 +20,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.ContentNode
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -42,12 +43,9 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
 
     override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
         if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
-            if (children.any { it !is ContentNode }) {
-                throw Exception("Only Content type is accepted in the PageView!")
-            }
             children.forEachIndexed { index, node ->
                 if (index == visiblePage) {
-                    (node as ContentNode).show()
+                    (node as TransformNode).show()
                     childrenBounds[index]?.let { childBounds ->
                         val childSize = childBounds.size()
                         val sizeLimitX = if (parentWidth != UiNode.WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
@@ -56,13 +54,13 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                         layoutNode(node, childBounds, sizeLimit)
                     }
                 } else {
-                    (node as ContentNode).hide()
+                    (node as TransformNode).hide()
                 }
             }
         }
     }
 
-    private fun layoutNode(node: ContentNode, nodeBounds: Bounding, sizeLimit: Vector2) {
+    private fun layoutNode(node: TransformNode, nodeBounds: Bounding, sizeLimit: Vector2) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
         val boundsCenterX = nodeBounds.left + nodeWidth / 2

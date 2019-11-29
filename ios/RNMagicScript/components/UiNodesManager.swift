@@ -150,9 +150,6 @@ import SceneKit
             let parentNode = nodesById[parentId] {
             parentNode.removeChild(node)
             removeNodeWithDescendants(node)
-            if let dialog = node as? DialogDataProviding {
-                dialogPresenter?.dismiss(dialog)
-            }
         }
     }
     

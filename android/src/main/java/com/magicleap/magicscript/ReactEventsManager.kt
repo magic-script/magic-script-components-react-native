@@ -83,7 +83,7 @@ class ReactEventsManager(
     override fun addOnActivateEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
-            node.onClickListener = {
+            node.onActivateListener = {
                 val activateParams = Arguments.createMap()
                 activateParams.putString(EVENT_ARG_NODE_ID, nodeId)
                 // must use separate map

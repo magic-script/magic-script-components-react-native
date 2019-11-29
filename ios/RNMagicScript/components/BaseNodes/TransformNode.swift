@@ -86,10 +86,11 @@ import SceneKit
         addChildNode(contentNode)
     }
 
-    @objc func addChild(_ child: TransformNode) {
+    @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()
         setNeedsLayoutForAllParents()
+        return true
     }
 
     @objc func removeChild(_ child: TransformNode) {

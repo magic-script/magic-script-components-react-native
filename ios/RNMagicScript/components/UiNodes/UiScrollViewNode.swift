@@ -111,20 +111,22 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         if child is UiScrollBarNode {
-            guard scrollBar == nil else { return }
+            guard scrollBar == nil else { return false }
             scrollBar = child as? UiScrollBarNode
             contentNode.addChildNode(child)
             setNeedsLayout()
             updateScrollBarVisibility()
-        } else {
-            guard scrollContent == nil else { return }
-            scrollContent = child
-            proxyNode.addChildNode(child)
-            invalidateClippingPlanes = true
-            setNeedsLayout()
+            return true
         }
+
+        guard scrollContent == nil else { return false }
+        scrollContent = child
+        proxyNode.addChildNode(child)
+        invalidateClippingPlanes = true
+        setNeedsLayout()
+        return true
     }
 
     @objc override func removeChild(_ child: TransformNode) {

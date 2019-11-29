@@ -52,11 +52,14 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         if gridLayout.itemsCount == 0 {
             gridLayout.addItem(child)
             setNeedsLayout()
+            return true
         }
+
+        return false
     }
 
     @objc override func removeChild(_ child: TransformNode) {

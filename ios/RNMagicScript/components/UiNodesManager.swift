@@ -130,12 +130,19 @@ import SceneKit
     }
     
     @objc public func addNode(_ nodeId: String, toParent parentId: String) {
-        if let node = nodesById[nodeId],
-            let parentNode = nodesById[parentId] {
-            parentNode.addChild(node)
-            if let dialog = node as? DialogDataProviding {
-                dialogPresenter?.present(dialog)
+        if let node = nodesById[nodeId] {
+            if let parentNode = nodesById[parentId] {
+                if parentNode.addChild(node) {
+                    if let dialog = node as? DialogDataProviding {
+                        dialogPresenter?.present(dialog)
+                    }
+                    return
+                }
             }
+
+            // Remove node which does not have a parent or
+            // the parent does not want to add the node to its hierarchy.
+            removeNodeWithDescendants(node)
         }
     }
     

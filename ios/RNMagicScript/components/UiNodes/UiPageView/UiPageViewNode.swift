@@ -85,9 +85,10 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         pages.append(child)
         setNeedsLayout()
+        return true
     }
 
     @objc override func removeChild(_ child: TransformNode) {

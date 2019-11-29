@@ -44,11 +44,12 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
-        super.addChild(child)
+    @objc override func addChild(_ child: TransformNode) -> Bool {
+        let _ = super.addChild(child)
         childNode = child
         child.renderingOrder = 1
         setNeedsLayout()
+        return true
     }
 
     @objc override func removeChild(_ child: TransformNode) {

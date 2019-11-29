@@ -30,7 +30,7 @@ class CustomArFragment : ArFragment() {
         arSceneView.scene.addOnUpdateListener {
             if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
                 // We can add AR objects after session is ready and camera is in tracking mode
-                UiNodesManager.onArFragmentReady()
+                UiNodesManager.INSTANCE.onArFragmentReady()
                 onReadyCalled = true
             }
         }

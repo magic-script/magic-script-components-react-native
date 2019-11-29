@@ -57,8 +57,8 @@ import SceneKit
 
         scrollView = UiScrollViewNode()
         scrollView.scrollBarVisibility = .always
-        let _ = scrollView.addChild(scrollBar)
-        let _ = scrollView.addChild(linearLayout)
+        _ = scrollView.addChild(scrollBar)
+        _ = scrollView.addChild(linearLayout)
         contentNode.addChildNode(scrollView)
 
         updateLayoutOrientation(layoutOrientation)
@@ -128,7 +128,7 @@ import SceneKit
     @objc override func addChild(_ child: TransformNode) -> Bool {
         guard let listItem = child as? UiListViewItemNode else { return false }
         items.append(listItem)
-        let _ = linearLayout.addChild(listItem)
+        _ = linearLayout.addChild(listItem)
         setNeedsLayout()
         return true
     }

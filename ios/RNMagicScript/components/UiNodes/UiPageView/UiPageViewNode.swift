@@ -106,7 +106,7 @@ import SceneKit
         updateVisiblePage(visiblePage)
         
         // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
-        let _ = getSize()
+        _ = getSize()
         pageLayout.updateLayout()
     }
 

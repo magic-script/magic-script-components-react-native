@@ -128,7 +128,7 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        let _ = getSize()
+        _ = getSize()
         innerLayout?.updateLayout()
     }
 

@@ -94,7 +94,7 @@ import SceneKit
             "defaultItemPadding": [0.005, 0.005, 0.005, 0.005],
             "alignment": "center-center"
         ])
-        let _ = gridLayoutNode.addChild(labelNode)
+        _ = gridLayoutNode.addChild(labelNode)
         gridLayoutNode.layoutIfNeeded()
 
         backgroundGeometry = SCNPlane(width: gridLayoutNode.getSize().width, height: gridLayoutNode.getSize().height)

@@ -135,8 +135,8 @@ import SceneKit
         gridLayoutNode.defaultItemPadding = UIEdgeInsets(top: 0.015, left: 0.005, bottom: 0.015, right: 0.005)
         gridLayoutNode.alignment = Alignment.centerCenter
 
-        let _ = gridLayoutNode.addChild(labelNode)
-        let _ = gridLayoutNode.addChild(iconNode)
+        _ = gridLayoutNode.addChild(labelNode)
+        _ = gridLayoutNode.addChild(iconNode)
 
         contentNode.addChildNode(gridLayoutNode)
 

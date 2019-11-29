@@ -16,7 +16,6 @@
 
 package com.magicleap.magicscript
 
-import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactApplicationContext
@@ -28,30 +27,42 @@ import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
+import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.isA
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class ARComponentManagerTest {
 
-    private lateinit var context: Context
     private lateinit var manager: ARComponentManager
+
+    @Mock
     private lateinit var nodesManager: UiNodesManager
+    @Mock
     private lateinit var eventsManager: EventsManager
+    @Mock
+    private lateinit var mediaPlayerPool: MediaPlayerPool
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        nodesManager = mock()
-        eventsManager = mock()
-        manager = ARComponentManager(ReactApplicationContext(context), nodesManager, eventsManager)
+        MockitoAnnotations.initMocks(this)
+        val context = ReactApplicationContext(ApplicationProvider.getApplicationContext())
+        manager = ARComponentManager(context, nodesManager, eventsManager, mediaPlayerPool)
+    }
+
+    @Test
+    fun `should destroy media player when host activity destroyed`() {
+        manager.onHostDestroy()
+
+        verify(mediaPlayerPool).destroy()
     }
 
     // region Nodes
@@ -354,6 +365,117 @@ class ARComponentManagerTest {
         verify(eventsManager).addOnVideoPreparedEventHandler("123")
     }
 
+    @Test
+    fun `should add on slider changed event handler`() {
+        manager.addOnSliderChangedEventHandler("123")
+
+        verify(eventsManager).addOnSliderChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on selection changed event handler`() {
+        manager.addOnSelectionChangedEventHandler("123")
+
+        verify(eventsManager).addOnSelectionChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on color confirmed event handler`() {
+        manager.addOnColorConfirmedEventHandler("123")
+
+        verify(eventsManager).addOnColorConfirmedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on color canceled event handler`() {
+        manager.addOnColorCanceledEventHandler("123")
+
+        verify(eventsManager).addOnColorCanceledEventHandler("123")
+    }
+
+    @Test
+    fun `should add on color changed event handler`() {
+        manager.addOnColorChangedEventHandler("123")
+
+        verify(eventsManager).addOnColorChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on date changed event handler`() {
+        manager.addOnDateChangedEventHandler("123")
+
+        verify(eventsManager).addOnDateChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on date confirmed event handler`() {
+        manager.addOnDateConfirmedEventHandler("123")
+
+        verify(eventsManager).addOnDateConfirmedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on scroll changed event handler`() {
+        manager.addOnScrollChangedEventHandler("123")
+
+        verify(eventsManager).addOnScrollChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on time changed event handler`() {
+        manager.addOnTimeChangedEventHandler("123")
+
+        verify(eventsManager).addOnTimeChangedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on time confirmed event handler`() {
+        manager.addOnTimeConfirmedEventHandler("123")
+
+        verify(eventsManager).addOnTimeConfirmedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on dialog confirmed event handler`() {
+        manager.addOnDialogConfirmedEventHandler("123")
+
+        verify(eventsManager).addOnDialogConfirmedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on dialog canceled event handler`() {
+        manager.addOnDialogCanceledEventHandler("123")
+
+        verify(eventsManager).addOnDialogCanceledEventHandler("123")
+    }
+
+    @Test
+    fun `should add on dialog time expired event handler`() {
+        manager.addOnDialogTimeExpiredEventHandler("123")
+
+        verify(eventsManager).addOnDialogTimeExpiredEventHandler("123")
+    }
+
+    @Test
+    fun `should add on confirmation completed event handler`() {
+        manager.addOnConfirmationCompletedEventHandler("123")
+
+        verify(eventsManager).addOnConfirmationCompletedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on confirmation updated event handler`() {
+        manager.addOnConfirmationUpdatedEventHandler("123")
+
+        verify(eventsManager).addOnConfirmationUpdatedEventHandler("123")
+    }
+
+    @Test
+    fun `should add on confirmation canceled event handler`() {
+        manager.addOnConfirmationCanceledEventHandler("123")
+
+        verify(eventsManager).addOnConfirmationCanceledEventHandler("123")
+    }
 
     // endregion
 

@@ -53,13 +53,6 @@ import SceneKit
     @objc override func setupNode() {
         super.setupNode()
 
-//        let backgroundGeometry = SCNCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.065)
-//        let backgroundImage = Image.image(from: [UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)], size: 8)
-//        backgroundGeometry.barBeginImage = backgroundImage
-//        backgroundGeometry.barEndImage = backgroundImage
-//        backgroundNode = SCNNode(geometry: backgroundGeometry)
-//        contentNode.addChildNode(backgroundNode)
-
         let circleGeometry = SCNCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.04)
         circleGeometry.barImage = ImageAsset.circleConfirmation.image
         circleNode = SCNNode(geometry: circleGeometry)
@@ -83,7 +76,6 @@ import SceneKit
         let spinnerSize = getSize()
         let scaleX: CGFloat = spinnerSize.width
         let scaleY: CGFloat = spinnerSize.height
-//        backgroundNode.scale = SCNVector3(scaleX, scaleY, 1)
         circleNode.scale = SCNVector3(scaleX, scaleY, 1)
         updateValue()
     }

@@ -23,6 +23,7 @@ typealias Image = NSImage
 #endif
 
 public enum ImageAsset: String {
+    case circleConfirmation = "circle_confirmation"
     case dropdownListBackground = "dropdown_list_background"
     case spinner = "spinner"
     case spinnerProgressBegin = "spinner_begin"
@@ -34,7 +35,6 @@ public enum ImageAsset: String {
     case checkboxUnchecked = "checkbox_unchecked"
     case radioChecked = "radio_checked"
     case radioUnchecked = "radio_unchecked"
-
 
     var image: Image {
         let bundle = Bundle.resourcesBundle!

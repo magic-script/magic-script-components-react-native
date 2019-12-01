@@ -33,7 +33,7 @@ import SceneKit
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
+            if (_value != clampedValue) { _value = clampedValue; updateValue() }
         }
     }
 
@@ -41,16 +41,29 @@ import SceneKit
     @objc public var onConfirmationUpdated: ((_ sender: UiCircleConfirmationNode,_ value: CGFloat) -> (Void))?
     @objc public var onConfirmationCanceled: ((_ sender: UiCircleConfirmationNode) -> (Void))?
 
-    fileprivate var planeGeometry: SCNPlane!
-    fileprivate var backgroundGeometry: SCNSpinnerCircle!
-    fileprivate var circleGeometry: SCNSpinnerCircle!
     fileprivate var backgroundNode: SCNNode!
-    fileprivate var spinnerNode: SCNNode!
+    fileprivate var circleNode: SCNNode!
     fileprivate var animationAction: SCNAction?
     fileprivate var reverseInitialValue: CGFloat = 0
 
     deinit {
         stopAnimation()
+    }
+
+    @objc override func setupNode() {
+        super.setupNode()
+
+//        let backgroundGeometry = SCNCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.065)
+//        let backgroundImage = Image.image(from: [UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)], size: 8)
+//        backgroundGeometry.barBeginImage = backgroundImage
+//        backgroundGeometry.barEndImage = backgroundImage
+//        backgroundNode = SCNNode(geometry: backgroundGeometry)
+//        contentNode.addChildNode(backgroundNode)
+
+        let circleGeometry = SCNCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.04)
+        circleGeometry.barImage = ImageAsset.circleConfirmation.image
+        circleNode = SCNNode(geometry: circleGeometry)
+        contentNode.addChildNode(circleNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -62,42 +75,23 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let localWidth: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
-        let localHeight: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
-        return CGSize(width: localWidth, height: localHeight)
+        let size: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
+        return CGSize(width: size, height: size)
     }
 
     @objc override func updateLayout() {
-        if circleGeometry == nil && planeGeometry == nil {
-            reloadGeometry()
-        }
-
         let spinnerSize = getSize()
         let scaleX: CGFloat = spinnerSize.width
         let scaleY: CGFloat = spinnerSize.height
-        backgroundNode?.scale = SCNVector3(scaleX, scaleY, 1)
-        spinnerNode?.scale = SCNVector3(scaleX, scaleY, 1)
-        circleGeometry?.progress = Float(value)
+//        backgroundNode.scale = SCNVector3(scaleX, scaleY, 1)
+        circleNode.scale = SCNVector3(scaleX, scaleY, 1)
+        updateValue()
     }
 
-    fileprivate func reloadGeometry() {
-        planeGeometry = nil
-        circleGeometry = nil
-        backgroundNode?.removeFromParentNode()
-        spinnerNode?.removeFromParentNode()
-
-        backgroundGeometry = SCNSpinnerCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.065)
-        let backgroundImage = Image.image(from: [UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)], size: 8)
-        backgroundGeometry.barBeginImage = backgroundImage
-        backgroundGeometry.barEndImage = backgroundImage
-        backgroundNode = SCNNode(geometry: backgroundGeometry)
-        contentNode.addChildNode(backgroundNode)
-
-        circleGeometry = SCNSpinnerCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.08)
-        circleGeometry.barBeginImage = ImageAsset.spinnerProgressBegin.image
-        circleGeometry.barEndImage = ImageAsset.spinnerProgressEnd.image
-        spinnerNode = SCNNode(geometry: circleGeometry)
-        contentNode.addChildNode(spinnerNode)
+    fileprivate func updateValue() {
+        if let circleGeometry = circleNode.geometry as? SCNCircle {
+            circleGeometry.progress = Float(value)
+        }
     }
 
     fileprivate var isConfirmed: Bool {
@@ -116,11 +110,11 @@ import SceneKit
                 strongSelf.onConfirmationCompleted?(strongSelf)
             }
         }
-        spinnerNode.runAction(action, forKey: "forward")
+        circleNode.runAction(action, forKey: "forward")
     }
 
     fileprivate func stopAnimation() {
-        spinnerNode.removeAllActions()
+        circleNode.removeAllActions()
     }
 
     @objc override var canBeLongPressed: Bool {
@@ -149,7 +143,7 @@ import SceneKit
                 strongSelf.onConfirmationCanceled?(strongSelf)
             }
         }
-        spinnerNode.runAction(action, forKey: "backward")
+        circleNode.runAction(action, forKey: "backward")
 
     }
 }

@@ -232,6 +232,8 @@
 		44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */; };
 		44DA5F55235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
 		44DA5F56235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
+		44DF644423946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
+		44DF644523946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
 		44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
 		44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
@@ -664,6 +666,7 @@
 		44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoActionSpec.swift; sourceTree = "<group>"; };
 		44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModeSpec.swift; sourceTree = "<group>"; };
 		44DA5F54235EF3900058212C /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		44DF644323946568005E0518 /* SCNCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNCircle.swift; sourceTree = "<group>"; };
 		44E949352370337900BD0F32 /* DragGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureRecognizer.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
@@ -1170,6 +1173,7 @@
 				44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */,
 				44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */,
 				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
+				44DF644323946568005E0518 /* SCNCircle.swift */,
 				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
 				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
@@ -2071,6 +2075,7 @@
 				44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
+				44DF644523946568005E0518 /* SCNCircle.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
@@ -2291,6 +2296,7 @@
 				44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */,
 				C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */,
+				44DF644423946568005E0518 /* SCNCircle.swift in Sources */,
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,

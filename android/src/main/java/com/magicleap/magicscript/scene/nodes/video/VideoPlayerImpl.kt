@@ -23,7 +23,7 @@ import android.view.Surface
 
 class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
-    private val mediaPlayer = MediaPlayerPool.createMediaPlayer()
+    private val mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
     private var onLoadedListener: (() -> Unit)? = null
     private var ready = false
 

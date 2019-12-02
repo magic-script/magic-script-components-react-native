@@ -119,11 +119,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private FontProvider fontProvider;
     private IconsRepository iconsRepo;
 
-    public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager) {
+    private MediaPlayerPool mediaPlayerPool;
+
+    public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
+                              MediaPlayerPool mediaPlayerPool) {
         super(reactContext);
         this.context = reactContext;
         this.nodesManager = nodesManager;
         this.eventsManager = eventsManager;
+        this.mediaPlayerPool = mediaPlayerPool;
+
         this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
@@ -583,6 +588,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @Override
     public void onHostDestroy() {
-        MediaPlayerPool.INSTANCE.destroy();
+        mediaPlayerPool.destroy();
     }
 }

@@ -28,27 +28,33 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
-    @objc public var onConfirmationCompleted: ((_ sender: UiCircleConfirmationNode) -> (Void))?
-    @objc public var onConfirmationUpdated: ((_ sender: UiCircleConfirmationNode,_ value: CGFloat) -> (Void))?
-    @objc public var onConfirmationCanceled: ((_ sender: UiCircleConfirmationNode) -> (Void))?
+    var nodeAnimator: NodeAnimating!
 
     fileprivate var _value: CGFloat = 0.0
     fileprivate var value: CGFloat {
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); }
+            if (_value != clampedValue) { _value = clampedValue; updateValue() }
         }
     }
-    fileprivate var planeGeometry: SCNPlane!
-    fileprivate var backgroundGeometry: SCNSpinnerCircle!
-    fileprivate var circleGeometry: SCNSpinnerCircle!
-    fileprivate var backgroundNode: SCNNode!
-    fileprivate var spinnerNode: SCNNode!
-    fileprivate(set) var expirationTimer: Timer?
 
-    deinit {
-        stopAnimation()
+    @objc public var onConfirmationCompleted: ((_ sender: UiCircleConfirmationNode) -> (Void))?
+    @objc public var onConfirmationUpdated: ((_ sender: UiCircleConfirmationNode,_ value: CGFloat) -> (Void))?
+    @objc public var onConfirmationCanceled: ((_ sender: UiCircleConfirmationNode) -> (Void))?
+
+    fileprivate var circleNode: SCNNode!
+    fileprivate var reverseInitialValue: CGFloat = 0
+
+    @objc override func setupNode() {
+        super.setupNode()
+
+        let circleGeometry = SCNCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.04)
+        circleGeometry.barImage = ImageAsset.circleConfirmation.image
+        circleNode = SCNNode(geometry: circleGeometry)
+        contentNode.addChildNode(circleNode)
+
+        nodeAnimator = UiNodeAnimator(circleNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -60,60 +66,54 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let localWidth: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
-        let localHeight: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
-        return CGSize(width: localWidth, height: localHeight)
+        let size: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
+        return CGSize(width: size, height: size)
     }
 
     @objc override func updateLayout() {
-        if circleGeometry == nil && planeGeometry == nil {
-            reloadGeometry()
-        }
-
         let spinnerSize = getSize()
         let scaleX: CGFloat = spinnerSize.width
         let scaleY: CGFloat = spinnerSize.height
-        backgroundNode?.scale = SCNVector3(scaleX, scaleY, 1)
-        spinnerNode?.scale = SCNVector3(scaleX, scaleY, 1)
-        circleGeometry?.progress = Float(value)
+        circleNode.scale = SCNVector3(scaleX, scaleY, 1)
     }
 
-    fileprivate func reloadGeometry() {
-        planeGeometry = nil
-        circleGeometry = nil
-        backgroundNode?.removeFromParentNode()
-        spinnerNode?.removeFromParentNode()
-
-        backgroundGeometry = SCNSpinnerCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.065)
-        let backgroundImage = Image.image(from: [UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)], size: 8)
-        backgroundGeometry.barBeginImage = backgroundImage
-        backgroundGeometry.barEndImage = backgroundImage
-        backgroundNode = SCNNode(geometry: backgroundGeometry)
-        contentNode.addChildNode(backgroundNode)
-
-        circleGeometry = SCNSpinnerCircle(size: CGSize(width: 1.0, height: 1.0), thickness: 0.08)
-        circleGeometry.barBeginImage = ImageAsset.spinnerProgressBegin.image
-        circleGeometry.barEndImage = ImageAsset.spinnerProgressEnd.image
-        spinnerNode = SCNNode(geometry: circleGeometry)
-        contentNode.addChildNode(spinnerNode)
-    }
-    
-    fileprivate func startAnimation() {
-        expirationTimer?.invalidate()
-        expirationTimer = Timer.scheduledTimer(timeInterval: 0.100, target: self, selector: #selector(timerExpirationAction(_:)), userInfo: nil, repeats: true)
-    }
-
-    @objc fileprivate func timerExpirationAction(_ sender: Timer) {
-        value += 0.05
-        onConfirmationUpdated?(self, value)
-        if value >= 1 {
-            expirationTimer?.invalidate()
-            onConfirmationCompleted?(self)
+    fileprivate func updateValue() {
+        if let circleGeometry = circleNode.geometry as? SCNCircle {
+            circleGeometry.progress = Float(value)
         }
     }
 
-    fileprivate func stopAnimation() {
-        expirationTimer?.invalidate()
+    fileprivate var isConfirmed: Bool {
+        return value >= 0.99999
+    }
+    
+    fileprivate func startForwardAnimation() {
+        let duration: TimeInterval = 2.0
+        nodeAnimator.startAnimation(duration: duration) { [weak self] (node, deltaTime) in
+            guard let strongSelf = self else { return }
+            let currentValue = deltaTime / CGFloat(duration)
+            strongSelf.value = currentValue
+            strongSelf.onConfirmationUpdated?(strongSelf, currentValue)
+            strongSelf.layoutIfNeeded()
+            if (strongSelf.isConfirmed) {
+                strongSelf.onConfirmationCompleted?(strongSelf)
+            }
+        }
+    }
+
+    fileprivate func startBackwardAnimation() {
+        reverseInitialValue = value
+        let duration: TimeInterval = 0.5 * TimeInterval(value)
+        nodeAnimator.startAnimation(duration: duration) { [weak self] (node, deltaTime) in
+            guard let strongSelf = self else { return }
+            let currentValue = (duration > 0.00001) ? (1.0 - deltaTime / CGFloat(duration)) * strongSelf.reverseInitialValue : 0.0
+            strongSelf.value = currentValue
+            strongSelf.onConfirmationUpdated?(strongSelf, currentValue)
+            strongSelf.layoutIfNeeded()
+            if (currentValue <= 0.00001) {
+                strongSelf.onConfirmationCanceled?(strongSelf)
+            }
+        }
     }
 
     @objc override var canBeLongPressed: Bool {
@@ -122,13 +122,13 @@ import SceneKit
 
     @objc override func longPressStarted() {
         super.longPressStarted()
-        startAnimation()
+        startForwardAnimation()
     }
 
     @objc override func longPressEnded() {
         super.longPressEnded()
-        value = 0.0
-        stopAnimation()
-        onConfirmationCanceled?(self)
+
+        guard !isConfirmed else { return }
+        startBackwardAnimation()
     }
 }

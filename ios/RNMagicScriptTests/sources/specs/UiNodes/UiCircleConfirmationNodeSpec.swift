@@ -20,13 +20,31 @@ import Nimble
 
 import SceneKit
 
+class UiNodeAnimatorMock: NodeAnimating {
+    fileprivate(set) var startAnimationCalled: Bool = false
+    var startAnimationUpdateParamNode: SCNNode?
+    var startAnimationUpdateParamTimeElapsed: CGFloat = 0.0
+    func startAnimation(duration: TimeInterval, update: @escaping (_ node: SCNNode, _ timeElapsed: CGFloat) -> Void) {
+        startAnimationCalled = true
+        update(startAnimationUpdateParamNode ?? SCNNode(), startAnimationUpdateParamTimeElapsed)
+    }
+
+    fileprivate(set) var stopAnimationCalled: Bool = false
+    func stopAnimation() {
+        stopAnimationCalled = true
+    }
+}
+
 class UiCircleConfirmationNodeSpec: QuickSpec {
     override func spec() {
         describe("UiCircleConfirmationNode") {
             var node: UiCircleConfirmationNode!
+            var nodeAnimatorMock: UiNodeAnimatorMock!
 
             beforeEach {
-                node = UiCircleConfirmationNode(props: [:])
+                node = UiCircleConfirmationNode()
+                nodeAnimatorMock = UiNodeAnimatorMock()
+                node.nodeAnimator = nodeAnimatorMock
                 node.layoutIfNeeded()
             }
 
@@ -65,6 +83,19 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                 }
             }
 
+            context("updateLayout") {
+                it("should update size when 'height' prop has changed") {
+                    let referenceHeight: CGFloat = 1.2
+                    node.height = referenceHeight
+                    expect(node.isLayoutNeeded).to(beTrue())
+                    node.layoutIfNeeded()
+                    expect(node.isLayoutNeeded).to(beFalse())
+
+                    let circleNode = node.contentNode.childNodes.first!
+                    expect(circleNode.scale).to(beCloseTo(SCNVector3(referenceHeight, referenceHeight, 1)))
+                }
+            }
+
             context("when long press gesture") {
                 context("started") {
                     it("should trigger event (value updated)") {
@@ -84,14 +115,28 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (completed)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCompleted = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode
                         }
                         node.longPressStarted()
-                        for _ in 0...20 { node.expirationTimer?.fire() }
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))
+                    }
+
+                    it("should not trigger event (canceled)") {
+                        var result = false
+                        var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
+                        node.onConfirmationCanceled = { circleConfirmationNode in
+                            result = true
+                            reportedNode = circleConfirmationNode
+                        }
+                        node.longPressStarted()
+                        node.longPressEnded()
+                        expect(result).toEventually(beFalse())
+                        expect(reportedNode).toEventually(beNil())
                     }
                 }
 
@@ -99,6 +144,7 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (canceled)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCanceled = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode

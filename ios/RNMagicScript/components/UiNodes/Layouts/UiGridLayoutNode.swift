@@ -75,6 +75,7 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         gridLayout.addItem(child)
         setNeedsLayout()

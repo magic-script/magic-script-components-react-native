@@ -86,6 +86,7 @@ import SceneKit
         addChildNode(contentNode)
     }
 
+    @discardableResult
     @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()

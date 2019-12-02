@@ -36,7 +36,7 @@ function toSex(num, base) {
   return result;
 }
 
-export function toDigits(str, n) {
+function toDigits(str, n) {
   if (str.length === n) {
     return str;
   }
@@ -54,7 +54,7 @@ export function toDigits(str, n) {
 
 let random = Math.floor(Math.random() * 60 * 60 * 60 * 60);
 
-export function generateId(idfv) {
+export default function (idfv) {
   random++;
   const time = toSex(Math.floor(Date.now() / 1000));
   const device = idfv ? toSex(idfv.split('-')[4], 16) : '';

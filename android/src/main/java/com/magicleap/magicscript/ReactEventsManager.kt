@@ -16,9 +16,7 @@
 
 package com.magicleap.magicscript
 
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.JavaOnlyMap
-import com.facebook.react.bridge.WritableMap
+import android.os.Bundle
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.*
@@ -85,12 +83,10 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onClickListener = {
-                val activateParams = Arguments.createMap()
-                activateParams.putString(EVENT_ARG_NODE_ID, nodeId)
-                // must use separate map
-                val clickParams = Arguments.createMap()
+                val clickParams = Bundle()
                 clickParams.putString(EVENT_ARG_NODE_ID, nodeId)
-                sendEvent(EVENT_ACTIVATE, activateParams)
+
+                sendEvent(EVENT_ACTIVATE, clickParams)
                 sendEvent(EVENT_CLICK, clickParams)
             }
         }
@@ -100,7 +96,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onPressListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_PRESS, params)
             }
@@ -111,7 +107,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onLongPressListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_LONG_PRESS, params)
             }
@@ -122,7 +118,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onReleaseListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_RELEASE, params)
             }
@@ -133,7 +129,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onFocusGainedListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_FOCUS_GAINED, params)
             }
@@ -144,7 +140,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onFocusLostListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_FOCUS_LOST, params)
             }
@@ -155,7 +151,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is TransformNode) {
             node.onUpdatedListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_NODE_UPDATED, params)
             }
@@ -166,7 +162,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is TransformNode) {
             node.onDeletedListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_NODE_DELETED, params)
             }
@@ -177,7 +173,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onEnabledListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_NODE_ENABLED, params)
             }
@@ -188,7 +184,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
             node.onDisabledListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_NODE_DISABLED, params)
             }
@@ -199,7 +195,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiTextEditNode) {
             node.onTextChangedListener = { text: String ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_TEXT, text)
                 sendEvent(EVENT_TEXT_CHANGED, params)
@@ -211,7 +207,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiToggleNode) {
             node.toggleChangedListener = { isOn: Boolean ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putBoolean(EVENT_ARG_TOGGLE_ACTIVE, isOn)
                 sendEvent(EVENT_TOGGLE_CHANGED, params)
@@ -223,7 +219,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is VideoNode) {
             node.onVideoPreparedListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_VIDEO_PREPARED, params)
             }
@@ -234,8 +230,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiSliderNode) {
             node.setOnSliderChangedListener { value: Float ->
-                val map = JavaOnlyMap()
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putDouble(EVENT_ARG_SLIDER_VALUE, value.toDouble())
                 sendEvent(EVENT_SLIDER_VALUE_CHANGED, params)
@@ -247,11 +242,10 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiDropdownListNode) {
             node.onSelectionChangedListener = { itemIndex: Int ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
-                val selectedItems = Arguments.createArray()
-                selectedItems.pushInt(itemIndex)
-                params.putArray(EVENT_ARG_SELECTED_ITEMS, selectedItems)
+                val selectedItems = arrayListOf(itemIndex)
+                params.putSerializable(EVENT_ARG_SELECTED_ITEMS, selectedItems)
                 sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params)
             }
         }
@@ -261,13 +255,13 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiColorPickerNode) {
             node.onColorConfirmed = { colors: Array<Double> ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
-                val selectedItems = Arguments.createArray()
+                val selectedItems = arrayListOf<Double>()
                 for (color in colors) {
-                    selectedItems.pushDouble(color)
+                    selectedItems.add(color)
                 }
-                params.putArray(EVENT_ARG_COLOR, selectedItems)
+                params.putSerializable(EVENT_ARG_COLOR, selectedItems)
                 sendEvent(EVENT_COLOR_CONFIRMED, params)
             }
         }
@@ -277,7 +271,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiColorPickerNode) {
             node.onColorCanceled = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_COLOR_CANCELLED, params)
             }
@@ -288,13 +282,13 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiColorPickerNode) {
             node.onColorChanged = { colors: Array<Double> ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
-                val selectedItems = Arguments.createArray()
+                val selectedItems = arrayListOf<Double>()
                 for (color in colors) {
-                    selectedItems.pushDouble(color)
+                    selectedItems.add(color)
                 }
-                params.putArray(EVENT_ARG_COLOR, selectedItems)
+                params.putSerializable(EVENT_ARG_COLOR, selectedItems)
                 sendEvent(EVENT_COLOR_CHANGED, params)
             }
         }
@@ -304,7 +298,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiDatePickerNode) {
             node.onDateChanged = { date: String ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_DATE, date)
                 sendEvent(EVENT_DATE_CHANGED, params)
@@ -316,7 +310,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiDatePickerNode) {
             node.onDateConfirmed = { date: String ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_DATE, date)
                 sendEvent(EVENT_DATE_CONFIRMED, params)
@@ -328,7 +322,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiScrollViewNode) {
             node.onScrollChangeListener = { position: Float ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putDouble(EVENT_ARG_SCROLL_VALUE, position.toDouble())
                 sendEvent(EVENT_SCROLL_CHANGED, params)
@@ -340,7 +334,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiTimePickerNode) {
             node.onTimeChanged = { time: String ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_TIME, time)
                 sendEvent(EVENT_TIME_CHANGED, params)
@@ -352,7 +346,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiTimePickerNode) {
             node.onTimeConfirmed = { time: String ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_TIME, time)
                 sendEvent(EVENT_TIME_CONFIRMED, params)
@@ -364,7 +358,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is DialogNode) {
             node.onDialogConfirmListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_DIALOG_CONFIRMED, params)
             }
@@ -375,7 +369,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is DialogNode) {
             node.onDialogCancelListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_DIALOG_CANCELED, params)
             }
@@ -386,7 +380,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is DialogNode) {
             node.onDialogExpiredListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_DIALOG_EXPIRED, params)
             }
@@ -397,7 +391,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiCircleConfirmationNode) {
             node.onConfirmationCompletedListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_CONFIRMATION_COMPLETED, params)
             }
@@ -408,7 +402,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiCircleConfirmationNode) {
             node.onConfirmationUpdatedListener = { value: Float ->
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putDouble(EVENT_ARG_CONFIRMATION_UPDATED_VALUE, value.toDouble())
                 sendEvent(EVENT_CONFIRMATION_UPDATED, params)
@@ -420,14 +414,14 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiCircleConfirmationNode) {
             node.onConfirmationCanceledListener = {
-                val params = Arguments.createMap()
+                val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_CONFIRMATION_CANCELED, params)
             }
         }
     }
 
-    private fun sendEvent(eventName: String, params: WritableMap) {
+    private fun sendEvent(eventName: String, params: Bundle) {
         eventsEmitter.sendEvent(eventName, params)
     }
 

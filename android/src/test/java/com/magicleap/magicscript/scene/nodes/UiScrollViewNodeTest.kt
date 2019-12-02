@@ -23,12 +23,15 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.update
+import com.magicleap.magicscript.utils.Vector2
+import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -36,6 +39,7 @@ import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatcher
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertTrue
 
@@ -69,15 +73,9 @@ class UiScrollViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val scrollBoundsMap = JavaOnlyMap.of(
-            "min", JavaOnlyArray.of(-0.8, -0.2, 0.1),
-            "max", JavaOnlyArray.of(0.8, 0.2, 0.1)
-        )
+        val scrollBoundsMap = getScrollBoundsMap(1.6, 0.4)
         val tested = createNodeWithViewSpy(
-            JavaOnlyMap.of(
-                UiScrollViewNode.PROP_SCROLL_BOUNDS,
-                scrollBoundsMap
-            )
+            JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build() // need to recreate the view
         val expectedBounds = Bounding(-0.8f, -0.2f, 0.8f, 0.2f)
@@ -102,11 +100,70 @@ class UiScrollViewNodeTest {
         verify(viewSpy).scrollDirection = "horizontal"
     }
 
+    @Test
+    fun `should only accept one child and scrollbar as children`() {
+        val scrollBar = UiScrollBarNode(JavaOnlyMap())
+        val node1: TransformNode = NodeBuilder().build()
+        val node2: TransformNode = NodeBuilder().build()
+
+        tested.addContent(scrollBar)
+        tested.addContent(node1)
+        tested.addContent(node2)
+
+        tested.contentNode.children.size shouldEqual 2
+    }
+
+    @Test
+    fun `should remove scrollbar`() {
+        val scrollBar = UiScrollBarNode(JavaOnlyMap())
+        tested.addContent(scrollBar)
+
+        tested.removeContent(scrollBar)
+
+        tested.contentNode.children.size shouldEqual 0
+    }
+
+    @Test
+    fun `should correctly clip the content when scrolled`() {
+        val scrollBoundsMap = getScrollBoundsMap(0.8, 0.4)
+        val tested = createNodeWithViewSpy(
+            JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
+        )
+        tested.build()
+
+        val contentBounds = Bounding(left = 0f, bottom = -0.8f, right = 0.8f, top = 0f)
+        val contentNode = spy(
+            NodeBuilder()
+                .withContentBounds(contentBounds)
+                .build()
+        )
+        tested.addContent(contentNode)
+
+        // scroll vertically by 50% of possible movement
+        viewSpy.onScrollChangeListener?.invoke(Vector2(0f, 0.5f))
+        val expectedClipBounds = Bounding(left = 0f, bottom = -0.6f, right = 0.8f, top = -0.2f)
+
+        verify(contentNode).setClipBounds(argThat(BoundingMatcher(expectedClipBounds)))
+    }
+
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {
         return object : UiScrollViewNode(props, context, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }
+        }
+    }
+
+    private fun getScrollBoundsMap(width: Double, height: Double): JavaOnlyMap {
+        return JavaOnlyMap.of(
+            "min", JavaOnlyArray.of(0.0, 0.0, 0.0),
+            "max", JavaOnlyArray.of(width, height, 0.0)
+        )
+    }
+
+    class BoundingMatcher(private val bounds: Bounding) : ArgumentMatcher<Bounding> {
+        override fun matches(argument: Bounding): Boolean {
+            return Bounding.equalInexact(argument, bounds)
         }
     }
 

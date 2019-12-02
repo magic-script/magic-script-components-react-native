@@ -32,6 +32,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import org.junit.Assert.assertEquals
@@ -205,7 +206,7 @@ class UiButtonNodeTest {
 
         node.build()
 
-        assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
+        node.getBounding() shouldEqualInexact expectedBounds
     }
 
     @Test
@@ -220,7 +221,7 @@ class UiButtonNodeTest {
 
         node.build()
 
-        assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
+        node.getBounding() shouldEqualInexact expectedBounds
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {

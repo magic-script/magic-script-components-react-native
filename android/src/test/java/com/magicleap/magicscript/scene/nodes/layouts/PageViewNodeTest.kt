@@ -24,6 +24,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert
@@ -71,7 +72,7 @@ class PageViewNodeTest {
 
         val bounds = node.getBounding()
 
-        Assert.assertTrue(Bounding.equalInexact(expectedBounds, bounds))
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test

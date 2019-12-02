@@ -23,18 +23,18 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
+import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertTrue
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -49,15 +49,16 @@ class UiListViewNodeTest {
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
-        val view = LayoutInflater.from(context).inflate(R.layout.scroll_view, null) as CustomScrollView
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.scroll_view, null) as CustomScrollView
         this.viewSpy = spy(view)
     }
 
     @Test
     fun `should return correct bounds`() {
         val props = JavaOnlyMap.of(
-                TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(1.0, 1.0, 0.0),
-                UiListViewNode.PROP_WIDTH, 1.2, UiListViewNode.PROP_HEIGHT, 0.6
+            TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(1.0, 1.0, 0.0),
+            UiListViewNode.PROP_WIDTH, 1.2, UiListViewNode.PROP_HEIGHT, 0.6
         )
         val node = createNodeWithViewSpy(props)
         node.build()
@@ -65,7 +66,7 @@ class UiListViewNodeTest {
 
         val bounds = node.getBounding()
 
-        assertTrue(Bounding.equalInexact(expectedBounds, bounds))
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test

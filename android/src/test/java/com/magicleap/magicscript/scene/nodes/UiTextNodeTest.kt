@@ -26,16 +26,17 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.FontParamsReader
 import com.magicleap.magicscript.utils.Utils
+import com.nhaarman.mockitokotlin2.atLeastOnce
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -120,8 +121,8 @@ class UiTextNodeTest {
     @Test
     fun `should apply single line when wrap property is false`() {
         val boundsData = JavaOnlyMap.of(
-                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.5, 0.0),
-                UiTextNode.PROP_WRAP, false
+            UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.5, 0.0),
+            UiTextNode.PROP_WRAP, false
         )
         val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
         val node = createNodeWithViewSpy(props)
@@ -134,8 +135,8 @@ class UiTextNodeTest {
     @Test
     fun `should apply single line when width is dynamic`() {
         val boundsData = JavaOnlyMap.of(
-                UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.2),
-                UiTextNode.PROP_WRAP, true // wrap has no effect when size is 0 (dynamic)
+            UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.0, 0.2),
+            UiTextNode.PROP_WRAP, true // wrap has no effect when size is 0 (dynamic)
         )
         val props = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
         val node = createNodeWithViewSpy(props)
@@ -193,15 +194,15 @@ class UiTextNodeTest {
     fun `should return proper bounds`() {
         val boundsSize = JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, JavaOnlyArray.of(0.8, 0.4))
         val props = JavaOnlyMap.of(
-                UiTextNode.PROP_BOUNDS_SIZE, boundsSize,
-                TransformNode.PROP_ALIGNMENT, "top-left"
+            UiTextNode.PROP_BOUNDS_SIZE, boundsSize,
+            TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNodeWithViewSpy(props)
         val expectedBounds = Bounding(0F, -0.4F, 0.8F, 0F)
 
         node.build()
 
-        Assert.assertTrue(Bounding.equalInexact(expectedBounds, node.getBounding()))
+        node.getBounding() shouldEqualInexact expectedBounds
     }
 
     @Test

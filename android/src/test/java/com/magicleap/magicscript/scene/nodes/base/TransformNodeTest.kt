@@ -22,6 +22,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -122,7 +123,7 @@ class TransformNodeTest {
 
         val result = node.getBounding()
 
-        assertTrue(Bounding.equalInexact(expected, result))
+        result shouldEqualInexact expected
     }
 
     @Test
@@ -137,7 +138,7 @@ class TransformNodeTest {
 
         val result = node.getBounding()
 
-        assertTrue(Bounding.equalInexact(expected, result))
+        result shouldEqualInexact expected
     }
 
     @Test
@@ -152,7 +153,7 @@ class TransformNodeTest {
 
         val result = node.getBounding()
 
-        assertTrue(Bounding.equalInexact(expected, result))
+        result shouldEqualInexact expected
     }
 
     @Test
@@ -167,7 +168,7 @@ class TransformNodeTest {
 
         val result = node.getBounding()
 
-        assertTrue(Bounding.equalInexact(expected, result))
+        result shouldEqualInexact expected
     }
 
     @Test

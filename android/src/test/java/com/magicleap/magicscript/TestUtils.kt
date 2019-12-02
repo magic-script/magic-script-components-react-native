@@ -25,6 +25,8 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import org.mockito.ArgumentMatcher
+import kotlin.test.assertTrue
 
 class NodeBuilder {
     private var props = JavaOnlyMap()
@@ -95,3 +97,14 @@ fun View.createActionDownEvent(): MotionEvent {
 fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
     update(JavaOnlyMap.of(*keysAndValues))
 }
+
+// region Custom matchers
+
+infix fun Bounding.shouldEqualInexact(other: Bounding) =
+    assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
+
+fun matchesBounds(bounds: Bounding) =
+    ArgumentMatcher<Bounding> { argument -> Bounding.equalInexact(argument, bounds) }
+
+// endregion
+

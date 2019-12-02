@@ -23,13 +23,11 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.NodeBuilder
-import com.magicleap.magicscript.R
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.update
 import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.mock
@@ -39,9 +37,7 @@ import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatcher
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertTrue
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -82,7 +78,7 @@ class UiScrollViewNodeTest {
 
         val bounds = tested.getBounding()
 
-        assertTrue(Bounding.equalInexact(expectedBounds, bounds))
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
@@ -143,7 +139,7 @@ class UiScrollViewNodeTest {
         viewSpy.onScrollChangeListener?.invoke(Vector2(0f, 0.5f))
         val expectedClipBounds = Bounding(left = 0f, bottom = -0.6f, right = 0.8f, top = -0.2f)
 
-        verify(contentNode).setClipBounds(argThat(BoundingMatcher(expectedClipBounds)))
+        verify(contentNode).setClipBounds(argThat(matchesBounds(expectedClipBounds)))
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {
@@ -161,10 +157,5 @@ class UiScrollViewNodeTest {
         )
     }
 
-    class BoundingMatcher(private val bounds: Bounding) : ArgumentMatcher<Bounding> {
-        override fun matches(argument: Bounding): Boolean {
-            return Bounding.equalInexact(argument, bounds)
-        }
-    }
 
 }

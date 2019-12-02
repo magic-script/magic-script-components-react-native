@@ -70,10 +70,6 @@ export class PlatformFactory extends NativeFactory {
         }
     }
 
-    isController(element) {
-        return this.controllers[element] !== undefined;
-    }
-
     setComponentEvents(elementId, properties) {
         const eventHandlers = Object.keys(properties)
             .filter(key => key.length > 2 && key.startsWith('on'))
@@ -109,7 +105,6 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _processAssetSource(path) {
-        
         if (typeof path === 'number') {
             return Image.resolveAssetSource(path);
         }
@@ -125,7 +120,6 @@ export class PlatformFactory extends NativeFactory {
 
         return ({
             ...properties,
-            ...(properties.shadowColor ? { shadowColor: this._processColor(properties.shadowColor) } : {}),
             ...(properties.color ? { color: this._processColor(properties.color) } : {}),
             ...(properties.textColor ? { textColor: this._processColor(properties.textColor) } : {}),
             ...(properties.modelPath ? { modelPath: this._processAssetSource(properties.modelPath) } : {}),

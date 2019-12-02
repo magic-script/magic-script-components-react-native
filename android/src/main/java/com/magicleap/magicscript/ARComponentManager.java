@@ -40,7 +40,7 @@ import com.magicleap.magicscript.icons.ExternalIconsProvider;
 import com.magicleap.magicscript.icons.IconsRepository;
 import com.magicleap.magicscript.icons.IconsRepositoryImpl;
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
-import com.magicleap.magicscript.scene.UiNodesManager;
+import com.magicleap.magicscript.scene.NodesManager;
 import com.magicleap.magicscript.scene.nodes.ContentNode;
 import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
@@ -106,6 +106,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     // All code inside react method must be called from main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ReactApplicationContext context;
+    private NodesManager nodesManager;
     private EventsManager eventsManager;
 
     // Renderable loaders
@@ -118,10 +119,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private FontProvider fontProvider;
     private IconsRepository iconsRepo;
 
-    public ARComponentManager(ReactApplicationContext reactContext) {
+    public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager) {
         super(reactContext);
         this.context = reactContext;
-        this.eventsManager = new EventsManager(reactContext);
+        this.nodesManager = nodesManager;
+        this.eventsManager = eventsManager;
         this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
         this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
@@ -379,33 +381,35 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void addChildNode(final String nodeId, final String parentId) {
-        mainHandler.post(() -> UiNodesManager.addNodeToParent(nodeId, parentId));
+        mainHandler.post(() -> nodesManager.addNodeToParent(nodeId, parentId));
     }
 
     @ReactMethod
     public void addChildNodeToContainer(final String nodeId) {
-        mainHandler.post(() -> UiNodesManager.addNodeToRoot(nodeId));
+        mainHandler.post(() -> nodesManager.addNodeToRoot(nodeId));
     }
 
     @ReactMethod
     public void removeChildNode(final String nodeId, final String parentId) {
-        mainHandler.post(() -> UiNodesManager.removeNode(nodeId));
+        mainHandler.post(() -> nodesManager.removeNode(nodeId));
     }
 
     @ReactMethod
     public void removeChildNodeFromRoot(final String nodeId) {
-        mainHandler.post(() -> UiNodesManager.removeNode(nodeId));
+        mainHandler.post(() -> nodesManager.removeNode(nodeId));
     }
 
     @ReactMethod
     public void updateNode(final String nodeId, final ReadableMap properties) {
-        mainHandler.post(() -> UiNodesManager.updateNode(nodeId, properties));
+        mainHandler.post(() -> nodesManager.updateNode(nodeId, properties));
     }
 
     @ReactMethod
     public void clearScene() {
-        mainHandler.post(() -> UiNodesManager.clear());
+        mainHandler.post(() -> nodesManager.clear());
     }
+
+    // region Events
 
     // activate = click
     @ReactMethod
@@ -431,33 +435,33 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     @ReactMethod
-    public void addOnEnabledEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
-    public void addOnDisabledEventHandler(final String nodeId) {
-        // TODO
-    }
-
-    @ReactMethod
     public void addOnFocusGainedEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnFocusGainedEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnFocusLostEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnFocusLostEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnUpdateEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnUpdateEventHandler(nodeId));
     }
 
     @ReactMethod
     public void addOnDeleteEventHandler(final String nodeId) {
-        // TODO
+        mainHandler.post(() -> eventsManager.addOnDeleteEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnEnabledEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnEnabledEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnDisabledEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnDisabledEventHandler(nodeId));
     }
 
     @ReactMethod
@@ -555,6 +559,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> eventsManager.addOnConfirmationCanceledEventHandler(nodeId));
     }
 
+    // endregion
+
     @ReactMethod
     public void updateLayout() {
         // unused on Android
@@ -562,7 +568,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     private void addNode(TransformNode node, String nodeId) {
         node.build();
-        UiNodesManager.registerNode(node, nodeId);
+        nodesManager.registerNode(node, nodeId);
     }
 
     @Override

@@ -61,16 +61,20 @@ open class UiDateTimePickerBaseNode(
     override fun setupView() {
         super.setupView()
 
-        view.title.textSize =
-            Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
-        view.value.textSize =
-            Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
+        view.title.textSize = Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
+        view.value.textSize = Utils.metersToFontPx(DEFAULT_TEXT_SIZE, view.context).toFloat()
         view.value.setOnClickListener { this.onViewClick() }
+        view.value.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                onFocusGainedListener?.invoke()
+            } else {
+                onFocusLostListener?.invoke()
+            }
+        }
     }
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.date_time_picker, null)
-
     }
 
     override fun provideDesiredSize(): Vector2 =

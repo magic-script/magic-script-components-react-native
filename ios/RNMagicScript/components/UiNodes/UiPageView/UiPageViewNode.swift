@@ -85,9 +85,10 @@ import SceneKit
         }
     }
 
-    @objc override func addChild(_ child: TransformNode) {
+    @objc override func addChild(_ child: TransformNode) -> Bool {
         pages.append(child)
         setNeedsLayout()
+        return true
     }
 
     @objc override func removeChild(_ child: TransformNode) {
@@ -105,7 +106,7 @@ import SceneKit
         updateVisiblePage(visiblePage)
         
         // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
-        let _ = getSize()
+        _ = getSize()
         pageLayout.updateLayout()
     }
 
@@ -131,7 +132,15 @@ import SceneKit
 
         let newPage = pages[pageIndex]
         pageLayout.addItem(newPage)
+    }
 
+    @objc override func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
+        pages.forEach { (page) in
+            if page.parent == nil {
+                page.enumerateComponentsHierarchy(block)
+            }
+        }
+        super.enumerateComponentsHierarchy(block)
     }
 }
 

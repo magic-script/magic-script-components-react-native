@@ -81,7 +81,6 @@ class PageViewNodeTest {
         val childNode = NodeBuilder()
             .withContentBounds(Bounding(0f, 0f, 2f, 1f))
             .build()
-
         node.addContent(childNode)
         node.build() // invokes the layout loop
 

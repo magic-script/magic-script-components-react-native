@@ -71,6 +71,10 @@ abstract class UiNode(
     var onPressListener: (() -> Unit)? = null
     var onLongPressListener: (() -> Unit)? = null
     var onReleaseListener: (() -> Unit)? = null
+    var onFocusGainedListener: (() -> Unit)? = null
+    var onFocusLostListener: (() -> Unit)? = null
+    var onEnabledListener: (() -> Unit)? = null
+    var onDisabledListener: (() -> Unit)? = null
 
     /**
      * A view attached to the node
@@ -393,7 +397,13 @@ abstract class UiNode(
 
     private fun setEnabled(props: Bundle) {
         if (props.containsKey(PROP_ENABLED)) {
-            view.isEnabled = props.getBoolean(PROP_ENABLED)
+            val enabled = props.getBoolean(PROP_ENABLED)
+            view.isEnabled = enabled
+            if (enabled) {
+                onEnabledListener?.invoke()
+            } else {
+                onDisabledListener?.invoke()
+            }
         }
     }
 }

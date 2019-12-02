@@ -139,7 +139,9 @@ import SceneKit
             self?.dismissInput()
         }
 
-        UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: self)
+        if let rootView = UIApplication.shared.keyWindow?.rootViewController?.view {
+            UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: rootView)
+        }
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {

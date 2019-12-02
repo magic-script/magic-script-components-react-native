@@ -43,6 +43,9 @@ describe("platformFactory", () => {
       expect(processCustomProps("", { children: "abc" })).toEqual({
         text: "abc"
       });
+      expect(processCustomProps("", { children: 3.14 })).toEqual({
+        text: "3.14"
+      });
     });
 
     test('all props except "children" should be returned', () => {
@@ -99,15 +102,49 @@ describe("platformFactory", () => {
     });
 
     test("selected events should be served", () => {
-      platformFactory.registerEvent("", "onClick", null);
       platformFactory.registerEvent("", "onActivate", null);
+      platformFactory.registerEvent("", "onClick", null);
+      platformFactory.registerEvent("", "onDialogConfirmed", null);
+      platformFactory.registerEvent("", "onDialogCanceled", null);
+      platformFactory.registerEvent("", "onDialogTimeExpired", null);
+      platformFactory.registerEvent("", "onColorCanceled", null);
+      platformFactory.registerEvent("", "onColorChanged", null);
+      platformFactory.registerEvent("", "onColorConfirmed", null);
+      platformFactory.registerEvent("", "onDateChanged", null);
+      platformFactory.registerEvent("", "onDateConfirmed", null);
+      platformFactory.registerEvent("", "onScrollChanged", null);
+      platformFactory.registerEvent("", "onSelectionChanged", null);
+      platformFactory.registerEvent("", "onSliderChanged", null);
+      platformFactory.registerEvent("", "onConfirmationCompleted", null);
+      platformFactory.registerEvent("", "onConfirmationUpdated", null);
+      platformFactory.registerEvent("", "onConfirmationCanceled", null);
       platformFactory.registerEvent("", "onTextChanged", null);
+      platformFactory.registerEvent("", "onTimeChanged", null);
+      platformFactory.registerEvent("", "onTimeConfirmed", null);
       platformFactory.registerEvent("", "onToggleChanged", null);
+      platformFactory.registerEvent("", "onVideoPrepared", null);
 
       const m = platformFactory.componentManager;
       expect(m.addOnActivateEventHandler).toHaveBeenCalledTimes(2);
+      expect(m.addOnDialogConfirmedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnDialogCanceledEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnDialogTimeExpiredEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnColorConfirmedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnColorCanceledEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnColorChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnDateChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnDateConfirmedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnScrollChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnSelectionChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnSliderChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnConfirmationCompletedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnConfirmationUpdatedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnConfirmationCanceledEventHandler).toHaveBeenCalledTimes(1);
       expect(m.addOnTextChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnTimeChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnTimeConfirmedEventHandler).toHaveBeenCalledTimes(1);
       expect(m.addOnToggleChangedEventHandler).toHaveBeenCalledTimes(1);
+      expect(m.addOnVideoPreparedEventHandler).toHaveBeenCalledTimes(1);
     });
 
     test("events should be added to array", () => {

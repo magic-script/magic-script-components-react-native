@@ -158,9 +158,7 @@ import SceneKit
         addGestureRecognizer(dragGestureRecognizer)
 
         let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
-        longPressGestureRecogrnizer.minimumPressDuration = 0.5
         addGestureRecognizer(longPressGestureRecogrnizer)
-
 
         // Set dependencies between drag gesture and debug camera pan gesture
         // so that both gestures can be used in debug mode.

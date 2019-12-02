@@ -18,13 +18,13 @@ import SceneKit
 
 @objc open class UiCircleConfirmationNode: UiNode {
 
-    static let defaultSize: CGFloat = 0.07
+    static let defaultRadius: CGFloat = 0.02
 
     @objc override var alignment: Alignment {
         get { return .centerCenter }
         set { }
     }
-    @objc var height: CGFloat = 0 {
+    @objc var radius: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
 
@@ -60,13 +60,17 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let height = Convert.toCGFloat(props["height"]) {
-            self.height = height
+        if let radius = Convert.toCGFloat(props["radius"]) {
+            self.radius = radius
+        }
+
+        if let radius = Convert.toCGFloat(props["height"]) {
+            self.radius = radius
         }
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let size: CGFloat = height > 0 ? height : UiSpinnerNode.defaultSize
+        let size: CGFloat = (radius > 0) ? 2 * radius : 2 * UiCircleConfirmationNode.defaultRadius
         return CGSize(width: size, height: size)
     }
 

@@ -51,12 +51,13 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.alignment).to(equal(Alignment.centerCenter))
-                    expect(node.height).to(beCloseTo(0.0))
+                    expect(node.radius).to(beCloseTo(0.0))
                     expect(node.canBeLongPressed).to(beTrue())
                 }
 
                 it("should have set default size") {
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiCircleConfirmationNode.defaultSize, height: UiCircleConfirmationNode.defaultSize)))
+                    let defaultSize = 2 * UiCircleConfirmationNode.defaultRadius
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: defaultSize, height: defaultSize)))
                 }
             }
 
@@ -69,11 +70,21 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
 
+                it("should update 'radius' prop") {
+                    let referenceRadius = 0.6
+                    node.update(["radius" : referenceRadius])
+                    expect(node.radius).to(beCloseTo(referenceRadius))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceRadius, height: 2 * referenceRadius)))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
                 it("should update 'height' prop") {
+                    // 'height' property is supported only for compatibility with Lumin,
+                    // Lumin's 'height' is the same as radius.
                     let referenceHeight = 0.6
                     node.update(["height" : referenceHeight])
-                    expect(node.height).to(beCloseTo(referenceHeight))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceHeight, height: referenceHeight)))
+                    expect(node.radius).to(beCloseTo(referenceHeight))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceHeight, height: 2 * referenceHeight)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -84,15 +95,15 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
             }
 
             context("updateLayout") {
-                it("should update size when 'height' prop has changed") {
-                    let referenceHeight: CGFloat = 1.2
-                    node.height = referenceHeight
+                it("should update size when 'radius' prop has changed") {
+                    let referenceRadius: CGFloat = 0.6
+                    node.radius = referenceRadius
                     expect(node.isLayoutNeeded).to(beTrue())
                     node.layoutIfNeeded()
                     expect(node.isLayoutNeeded).to(beFalse())
 
                     let circleNode = node.contentNode.childNodes.first!
-                    expect(circleNode.scale).to(beCloseTo(SCNVector3(referenceHeight, referenceHeight, 1)))
+                    expect(circleNode.scale).to(beCloseTo(SCNVector3(2 * referenceRadius, 2 * referenceRadius, 1)))
                 }
             }
 

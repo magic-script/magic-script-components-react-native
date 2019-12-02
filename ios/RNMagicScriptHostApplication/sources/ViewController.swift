@@ -77,7 +77,7 @@ class ViewController: UIViewController {
             "alignment": "top-center",
             "debug": true,
             "localPosition": localPosition,
-            "height": 1.0
+            "radius": 0.5
         ], nodeId: circleConfirmationId, parentId: groupId)
     }
 

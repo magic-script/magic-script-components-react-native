@@ -17,6 +17,7 @@
 package com.magicleap.magicscript
 
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.WritableMap
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.NodesManager
@@ -83,7 +84,7 @@ class ReactEventsManager(
     override fun addOnActivateEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiNode) {
-            node.onActivateListener = {
+            node.onClickListener = {
                 val activateParams = Arguments.createMap()
                 activateParams.putString(EVENT_ARG_NODE_ID, nodeId)
                 // must use separate map
@@ -197,7 +198,7 @@ class ReactEventsManager(
     override fun addOnTextChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiTextEditNode) {
-            node.textChangedListener = { text: String ->
+            node.onTextChangedListener = { text: String ->
                 val params = Arguments.createMap()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_TEXT, text)
@@ -233,6 +234,7 @@ class ReactEventsManager(
         val node = findNodeWithId(nodeId)
         if (node is UiSliderNode) {
             node.setOnSliderChangedListener { value: Float ->
+                val map = JavaOnlyMap()
                 val params = Arguments.createMap()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putDouble(EVENT_ARG_SLIDER_VALUE, value.toDouble())
@@ -285,7 +287,7 @@ class ReactEventsManager(
     override fun addOnColorChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiColorPickerNode) {
-            node.onColorConfirmed = { colors: Array<Double> ->
+            node.onColorChanged = { colors: Array<Double> ->
                 val params = Arguments.createMap()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 val selectedItems = Arguments.createArray()

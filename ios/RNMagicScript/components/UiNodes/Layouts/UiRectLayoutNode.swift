@@ -52,6 +52,7 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         if gridLayout.itemsCount == 0 {
             gridLayout.addItem(child)

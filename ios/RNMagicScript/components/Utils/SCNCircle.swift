@@ -18,13 +18,11 @@ import SceneKit
 
 class SCNCircle : SCNGeometry {
     var barImage: UIImage? {
-        didSet { firstMaterial?.diffuse.contents = barImage }
+        didSet { firstMaterial?.diffuse.contents = barImage; updateProgress() }
     }
 
     var progress: Float = 0.0 {
-        didSet {
-            firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeTranslation(1.0 - progress, 0, 0)
-        }
+        didSet { updateProgress() }
     }
 
     convenience init(radius: CGFloat, thickness: CGFloat) {
@@ -34,7 +32,6 @@ class SCNCircle : SCNGeometry {
     convenience init(size: CGSize, thickness: CGFloat) {
         let geom = SCNCircle.createGeometry(size: size, thickness: thickness)
         self.init(sources: geom.sources, elements: geom.elements)
-//        materials.append(SCNMaterial())
         for (index, material) in materials.enumerated() {
             material.lightingModel = .constant
             material.diffuse.wrapS = .clamp
@@ -43,6 +40,10 @@ class SCNCircle : SCNGeometry {
             material.diffuse.mappingChannel = index
             material.transparencyMode = .singleLayer
         }
+    }
+
+    fileprivate func updateProgress() {
+        firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeTranslation(1.0 - progress, 0, 0)
     }
 
     static fileprivate func createGeometry(size: CGSize, thickness: CGFloat) -> (sources: [SCNGeometrySource], elements: [SCNGeometryElement]) {

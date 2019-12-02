@@ -28,6 +28,8 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
 
+    var nodeAnimator: NodeAnimating!
+
     fileprivate var _value: CGFloat = 0.0
     fileprivate var value: CGFloat {
         get { return _value }
@@ -41,14 +43,8 @@ import SceneKit
     @objc public var onConfirmationUpdated: ((_ sender: UiCircleConfirmationNode,_ value: CGFloat) -> (Void))?
     @objc public var onConfirmationCanceled: ((_ sender: UiCircleConfirmationNode) -> (Void))?
 
-    fileprivate var backgroundNode: SCNNode!
     fileprivate var circleNode: SCNNode!
-    fileprivate var animationAction: SCNAction?
     fileprivate var reverseInitialValue: CGFloat = 0
-
-    deinit {
-        stopAnimation()
-    }
 
     @objc override func setupNode() {
         super.setupNode()
@@ -57,6 +53,8 @@ import SceneKit
         circleGeometry.barImage = ImageAsset.circleConfirmation.image
         circleNode = SCNNode(geometry: circleGeometry)
         contentNode.addChildNode(circleNode)
+
+        nodeAnimator = UiNodeAnimator(circleNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -77,7 +75,6 @@ import SceneKit
         let scaleX: CGFloat = spinnerSize.width
         let scaleY: CGFloat = spinnerSize.height
         circleNode.scale = SCNVector3(scaleX, scaleY, 1)
-        updateValue()
     }
 
     fileprivate func updateValue() {
@@ -90,9 +87,9 @@ import SceneKit
         return value >= 0.99999
     }
     
-    fileprivate func startAnimation() {
+    fileprivate func startForwardAnimation() {
         let duration: TimeInterval = 2.0
-        let action = SCNAction.customAction(duration: duration) { [weak self] (node, deltaTime) in
+        nodeAnimator.startAnimation(duration: duration) { [weak self] (node, deltaTime) in
             guard let strongSelf = self else { return }
             let currentValue = deltaTime / CGFloat(duration)
             strongSelf.value = currentValue
@@ -102,11 +99,21 @@ import SceneKit
                 strongSelf.onConfirmationCompleted?(strongSelf)
             }
         }
-        circleNode.runAction(action, forKey: "forward")
     }
 
-    fileprivate func stopAnimation() {
-        circleNode.removeAllActions()
+    fileprivate func startBackwardAnimation() {
+        reverseInitialValue = value
+        let duration: TimeInterval = 0.5 * TimeInterval(value)
+        nodeAnimator.startAnimation(duration: duration) { [weak self] (node, deltaTime) in
+            guard let strongSelf = self else { return }
+            let currentValue = (duration > 0.00001) ? (1.0 - deltaTime / CGFloat(duration)) * strongSelf.reverseInitialValue : 0.0
+            strongSelf.value = currentValue
+            strongSelf.onConfirmationUpdated?(strongSelf, currentValue)
+            strongSelf.layoutIfNeeded()
+            if (currentValue <= 0.00001) {
+                strongSelf.onConfirmationCanceled?(strongSelf)
+            }
+        }
     }
 
     @objc override var canBeLongPressed: Bool {
@@ -115,27 +122,13 @@ import SceneKit
 
     @objc override func longPressStarted() {
         super.longPressStarted()
-        startAnimation()
+        startForwardAnimation()
     }
 
     @objc override func longPressEnded() {
         super.longPressEnded()
-        stopAnimation()
-        guard !isConfirmed else { return }
-        
-        reverseInitialValue = value
-        let duration: TimeInterval = 0.5 * TimeInterval(value)
-        let action = SCNAction.customAction(duration: duration) { [weak self] (node, deltaTime) in
-            guard let strongSelf = self else { return }
-            let currentValue = (1.0 - deltaTime / CGFloat(duration)) * strongSelf.reverseInitialValue
-            strongSelf.value = currentValue
-            strongSelf.onConfirmationUpdated?(strongSelf, currentValue)
-            strongSelf.layoutIfNeeded()
-            if (currentValue <= 0.00001) {
-                strongSelf.onConfirmationCanceled?(strongSelf)
-            }
-        }
-        circleNode.runAction(action, forKey: "backward")
 
+        guard !isConfirmed else { return }
+        startBackwardAnimation()
     }
 }

@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     let groupId: String = "group"
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupPageViewTest()
+        setupCircleConfirmationTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -69,40 +69,16 @@ class ViewController: UIViewController {
         arView.delegate = self
     }
 
-    fileprivate var pageView: UiPageViewNode!
-    fileprivate func setupPageViewTest() {
-        // PageView
+    fileprivate func setupCircleConfirmationTest() {
+        // CircleConfirmation
         let localPosition: [CGFloat] = [0, 0.5, 0]
-        let pageSize = CGSize(width: 1.7, height: 1.5)
-        let pageViewId: String = "page_view"
-        pageView = createComponent([
+        let circleConfirmationId: String = "circle_confirmation"
+        let _: UiCircleConfirmationNode = createComponent([
             "alignment": "top-center",
             "debug": true,
             "localPosition": localPosition,
-            "visiblePage": 0
-        ], nodeId: pageViewId, parentId: groupId)
-
-        // Pages
-        let colorByName: [String: UIColor] = [
-            "red": UIColor.red,
-            "green": UIColor.green,
-            "blue": UIColor.blue,
-            "brown": UIColor.brown,
-            "magenta": UIColor.magenta,
-            "cyan": UIColor.cyan,
-            "yellow": UIColor.yellow,
-        ]
-
-        let linearLayoutId = "linearLayoutId"
-        let _: UiLinearLayoutNode = createComponent(["alignment": "bottom-center", "orientation": "horizontal", "localPosition": localPosition, "defaultItemPadding": [0.03, 0.03, 0.03, 0.03]], nodeId: linearLayoutId, parentId: groupId)
-        for (index, item) in colorByName.enumerated() {
-            let tab: UiTabNode = createComponent(["text": item.key, "textSize": 0.08], nodeId: "tab_" + item.key, parentId: linearLayoutId)
-            tab.onActivate = { [weak self] sender in
-                self?.pageView.visiblePage = index
-                self?.pageView.layoutIfNeeded()
-            }
-            let _: UiImageNode = createComponent(["color": item.value.toArrayOfCGFloat, "height": pageSize.height, "width": pageSize.width], nodeId: "content_" + item.key, parentId: pageViewId)
-        }
+            "height": 1.0
+        ], nodeId: circleConfirmationId, parentId: groupId)
     }
 
     @discardableResult

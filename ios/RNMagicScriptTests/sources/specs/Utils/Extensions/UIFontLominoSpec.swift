@@ -50,4 +50,3 @@ class UIFontLominoSpec: QuickSpec {
         }
     }
 }
-

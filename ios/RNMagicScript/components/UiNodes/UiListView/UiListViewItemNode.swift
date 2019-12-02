@@ -44,8 +44,9 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
-        _ = super.addChild(child)
+        super.addChild(child)
         childNode = child
         child.renderingOrder = 1
         setNeedsLayout()

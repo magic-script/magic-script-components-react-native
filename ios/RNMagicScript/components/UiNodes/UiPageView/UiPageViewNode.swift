@@ -85,6 +85,7 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         pages.append(child)
         setNeedsLayout()

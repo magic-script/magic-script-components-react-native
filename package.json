@@ -33,6 +33,7 @@
   "jest": {
     "preset": "react-native",
     "clearMocks": true,
+    "setupFiles": ["<rootDir>/components/__mocks__/native-modules.mock.js"],
     "modulePaths": [
       "components/utils"
     ],

@@ -23,6 +23,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.magicleap.magicscript.scene.NodesManager;
 import com.magicleap.magicscript.scene.UiNodesManager;
+import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
+import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +40,9 @@ public class ArPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
         NodesManager nodesManager = UiNodesManager.Companion.getINSTANCE();
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
-        return Arrays.<NativeModule>asList(new ARComponentManager(reactContext, nodesManager, eventsManager));
+        MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
+        ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool);
+        return Arrays.<NativeModule>asList(arComponentManager);
     }
 
     // Deprecated from RN 0.47

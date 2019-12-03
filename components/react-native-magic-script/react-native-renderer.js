@@ -32,7 +32,7 @@ const UPDATE_SIGNAL = {};
 //  rootContainerInstance: Container,
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
-function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
+export function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
   Log.debug(`createInstance ${type}`);
   // console.log(props);
   // console.log(rootContainerInstance);
@@ -49,7 +49,7 @@ function createInstance(type, props, rootContainerInstance, hostContext, interna
 //  rootContainerInstance: Container,
 //  hostContext: HostContext,
 //  internalInstanceHandle: Object
-function createTextInstance(text, rootContainerInstance, hostContext, internalInstanceHandle) {
+export function createTextInstance(text, rootContainerInstance, hostContext, internalInstanceHandle) {
   Log.debug(`createTextInstance ${text}`);
   return text;
 }
@@ -60,7 +60,7 @@ function createTextInstance(text, rootContainerInstance, hostContext, internalIn
 // Input paramters: 
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
-function appendInitialChild(parentInstance, child) {
+export function appendInitialChild(parentInstance, child) {
   Log.debug('appendInitialChild');
   // console.log(parentInstance);
   // console.log(child);
@@ -76,7 +76,7 @@ function appendInitialChild(parentInstance, child) {
 //  props: Props,
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
-function finalizeInitialChildren(parentInstance, type, props, rootContainerInstance, hostContext) {
+export function finalizeInitialChildren(parentInstance, type, props, rootContainerInstance, hostContext) {
   Log.debug('finalizeInitialChildren');
   return false;
 }
@@ -86,7 +86,7 @@ function finalizeInitialChildren(parentInstance, type, props, rootContainerInsta
 // Returns: HostContext
 // Input parameters:
 //  rootContainerInstance: Container
-function getRootHostContext(rootContainerInstance) {
+export function getRootHostContext(rootContainerInstance) {
   Log.debug('getRootHostContext');
 
   // React-360
@@ -103,7 +103,7 @@ function getRootHostContext(rootContainerInstance) {
 //  parentHostContext: HostContext,
 //  type: string,
 //  rootContainerInstance: Container
-function getChildHostContext(parentHostContext, type, rootContainerInstance) {
+export function getChildHostContext(parentHostContext, type, rootContainerInstance) {
   Log.debug('getChildHostContext');
   // React-360
   // return {};
@@ -117,7 +117,7 @@ function getChildHostContext(parentHostContext, type, rootContainerInstance) {
 // Returns: Instance
 // Input parameters:
 //  instance: Instance
-function getPublicInstance(instance) {
+export function getPublicInstance(instance) {
   Log.debug('getPublicInstance');
   return instance;
 }
@@ -127,7 +127,7 @@ function getPublicInstance(instance) {
 // Returns: void
 // Input parameters:
 //  containerInfo: Container
-function prepareForCommit(containerInfo) {
+export function prepareForCommit(containerInfo) {
   Log.debug('prepareForCommit');
 }
 
@@ -136,7 +136,7 @@ function prepareForCommit(containerInfo) {
 // Returns: void
 // Input parameters:
 //  containerInfo: Container
-function resetAfterCommit(containerInfo) {
+export function resetAfterCommit(containerInfo) {
   Log.debug('resetAfterCommit');
   mxs._nativeFactory.resetAfterCommit(containerInfo);
 }
@@ -151,7 +151,7 @@ function resetAfterCommit(containerInfo) {
 //  newProps: Props,
 //  rootContainerInstance: Container,
 //  hostContext: HostContext
-function prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance, hostContext) {
+export function prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance, hostContext) {
   Log.debug('prepareUpdate');
   return true;
 }
@@ -162,7 +162,7 @@ function prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance
 // Input parameters:
 //  type: string, 
 //  props: Props
-function shouldDeprioritizeSubtree(type, props) {
+export function shouldDeprioritizeSubtree(type, props) {
   logNotImplemented('shouldDeprioritizeSubtree');
   // return false
 }
@@ -173,7 +173,7 @@ function shouldDeprioritizeSubtree(type, props) {
 // Input parameters:
 //  type: string, 
 //  props: Props
-function shouldSetTextContent(type, props) {
+export function shouldSetTextContent(type, props) {
   // Brian Vaughn:
   //  Always returning false simplifies the createInstance() implementation,
   //  But creates an additional child Fiber for raw text children.
@@ -191,7 +191,7 @@ function shouldSetTextContent(type, props) {
 // Input parameters:
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
-function appendChild(parentInstance, child) {
+export function appendChild(parentInstance, child) {
   Log.debug('appendChild');
   // console.log(parentInstance);
   // console.log(child);
@@ -204,7 +204,7 @@ function appendChild(parentInstance, child) {
 // Input parameters:
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
-function appendChildToContainer(container, child) {
+export function appendChildToContainer(container, child) {
   Log.debug('appendChildToContainer');
   // console.log(container);
   // console.log(child);
@@ -218,7 +218,7 @@ function appendChildToContainer(container, child) {
 //  textInstance: TextInstance,
 //  oldText: string,
 //  newText: string
-function commitTextUpdate(textInstance, oldText, newText) {
+export function commitTextUpdate(textInstance, oldText, newText) {
   // Log.debug('commitTextUpdate');
   // console.log(textInstance);
   // console.log(oldText);
@@ -234,7 +234,7 @@ function commitTextUpdate(textInstance, oldText, newText) {
 //  type: string,
 //  newProps: Props,
 //  internalInstanceHandle: Object
-function commitMount(instance, type, newProps, internalInstanceHandle) {
+export function commitMount(instance, type, newProps, internalInstanceHandle) {
   logNotImplemented('commitMount');
 }
 
@@ -248,7 +248,7 @@ function commitMount(instance, type, newProps, internalInstanceHandle) {
 //  oldProps: Props,
 //  newProps: Props,
 //  internalInstanceHandle: Object
-function commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
+export function commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
   Log.debug('commitUpdate');
   // console.log(instance);
   // console.log(type);
@@ -265,7 +265,7 @@ function commitUpdate(instance, updatePayload, type, oldProps, newProps, interna
 //  parentInstance: Instance,
 //  child: Instance | TextInstance,
 //  beforeChild: Instance | TextInstance
-function insertBefore(parentInstance, child, beforeChild) {
+export function insertBefore(parentInstance, child, beforeChild) {
   mxs._nativeFactory.insertBefore(parentInstance, child, beforeChild);
 }
 
@@ -276,7 +276,7 @@ function insertBefore(parentInstance, child, beforeChild) {
 //  parentInstance: Container,
 //  child: Instance | TextInstance,
 //  beforeChild: Instance | TextInstance
-function insertInContainerBefore(container, child, beforeChild) {
+export function insertInContainerBefore(container, child, beforeChild) {
   logNotImplemented('insertInContainerBefore');
 }
 
@@ -286,7 +286,7 @@ function insertInContainerBefore(container, child, beforeChild) {
 // Input parameters:
 //  parentInstance: Instance,
 //  child: Instance | TextInstance
-function removeChild(parentInstance, child) {
+export function removeChild(parentInstance, child) {
   Log.debug('removeChild');
   mxs._nativeFactory.removeChildElement(parentInstance, child);
 }
@@ -297,7 +297,7 @@ function removeChild(parentInstance, child) {
 // Input parameters:
 //  parentInstance: Container,
 //  child: Instance | TextInstance
-function removeChildFromContainer(parentInstance, child) {
+export function removeChildFromContainer(parentInstance, child) {
   Log.debug('removeChildFromContainer');
   // console.log(parentInstance);
   // console.log(child);
@@ -309,7 +309,7 @@ function removeChildFromContainer(parentInstance, child) {
 // Returns: void
 // Input parameters:
 //  instance: Instance
-function resetTextContent(instance) {
+export function resetTextContent(instance) {
   logNotImplemented('resetTextContent');
 }
 
@@ -318,7 +318,7 @@ function resetTextContent(instance) {
 // Returns: void
 // Input parameters:
 //  instance: Instance
-function hideInstance(instance) {
+export function hideInstance(instance) {
   logNotImplemented('hideInstance');
 }
 
@@ -327,7 +327,7 @@ function hideInstance(instance) {
 // Returns: void
 // Input parameters:
 //  textInstance: TextInstance
-function hideTextInstance(textInstance) {
+export function hideTextInstance(textInstance) {
   logNotImplemented('hideTextInstance');
 }
 
@@ -337,7 +337,7 @@ function hideTextInstance(textInstance) {
 // Input parameters:
 //  instance: Instance,
 //  props: Props
-function unhideInstance(instance, props) {
+export function unhideInstance(instance, props) {
   logNotImplemented('unhideInstance');
 }
 
@@ -347,7 +347,7 @@ function unhideInstance(instance, props) {
 // Input parameters:
 //  textInstance: TextInstance,
 //  text: string
-function unhideTextInstance(textInstance, text) {
+export function unhideTextInstance(textInstance, text) {
   logNotImplemented('unhideTextInstance');
 }
 
@@ -440,11 +440,11 @@ const HostConfig = {
   didNotFindHydratableSuspenseInstance: throwNotImplemented('didNotFindHydratableSuspenseInstance')
 };
 
-function logNotImplemented(functionName) {
+export function logNotImplemented(functionName) {
   Log.warn(`${functionName} has not been implemented yet`);
 }
 
-function throwNotImplemented(functionName) {
+export function throwNotImplemented(functionName) {
   return () => {
     throw new Error(`[MXS] ${functionName} has not been implemented yet`);
   };

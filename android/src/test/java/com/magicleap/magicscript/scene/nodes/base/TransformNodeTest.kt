@@ -17,7 +17,6 @@
 package com.magicleap.magicscript.scene.nodes.base
 
 import com.facebook.react.bridge.JavaOnlyMap
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
@@ -204,8 +203,8 @@ class TransformNodeTest {
     @Test
     fun `children should be added to content node`() {
         val node = NodeBuilder().build()
-        val child1 = Node()
-        val child2 = Node()
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
 
         node.addContent(child1)
         node.addContent(child2)

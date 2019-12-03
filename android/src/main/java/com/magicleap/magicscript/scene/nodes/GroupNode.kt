@@ -30,35 +30,23 @@ import com.magicleap.magicscript.utils.Utils
  * so that it would take into account the local position of GroupNode itself.
  */
 open class GroupNode(initProps: ReadableMap) :
-        TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
+    TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
     override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = clipBounds.translate(-getContentPosition())
         contentNode.children
-                .filterIsInstance<TransformNode>()
-                .forEach { it.setClipBounds(localBounds) }
+            .filterIsInstance<TransformNode>()
+            .forEach { it.setClipBounds(localBounds) }
     }
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         return Bounding(
-                childBounds.left + contentNode.localPosition.x,
-                childBounds.bottom + contentNode.localPosition.y,
-                childBounds.right + contentNode.localPosition.x,
-                childBounds.top + contentNode.localPosition.y
+            childBounds.left + contentNode.localPosition.x,
+            childBounds.bottom + contentNode.localPosition.y,
+            childBounds.right + contentNode.localPosition.x,
+            childBounds.top + contentNode.localPosition.y
         )
-    }
-
-    override fun onVisibilityChanged(visibility: Boolean) {
-        contentNode.children
-                .filterIsInstance<TransformNode>()
-                .forEach {
-                    if (visibility) {
-                        it.show()
-                    } else {
-                        it.hide()
-                    }
-                }
     }
 }
 

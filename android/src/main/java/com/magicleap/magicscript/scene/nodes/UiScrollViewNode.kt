@@ -148,24 +148,19 @@ open class UiScrollViewNode(
         setScrollDirection(props)
     }
 
-    override fun addContent(child: Node) {
+    override fun addContent(child: TransformNode) {
         if (child is UiScrollBarNode) {
             addScrollBar(child)
             return
         }
-
         if (content != null) {
             return
         }
         super.addContent(child)
-
-        if (child !is TransformNode) {
-            return
-        }
         this.content = child
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         super.removeContent(child)
         when (child) {
             content -> content = null

@@ -71,8 +71,6 @@ class NodeBuilder {
             override fun getContentBounding(): Bounding {
                 return contentBounding
             }
-
-            override fun onVisibilityChanged(visibility: Boolean) {}
         }
         node.build()
         return node

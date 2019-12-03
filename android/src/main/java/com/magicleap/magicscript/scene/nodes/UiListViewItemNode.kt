@@ -13,6 +13,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 
 open class UiListViewItemNode(initProps: ReadableMap,
@@ -51,14 +52,10 @@ open class UiListViewItemNode(initProps: ReadableMap,
         setBackgroundColor(props)
     }
 
-    override fun addContent(child: Node) {
-        if (child !is TransformNode) {
-            return
-        }
-
-        // only one child can be added
-        if (contentNode.children.isEmpty()) {
-            super.addContent(child)
+    override fun addContent(child: TransformNode) {
+        super.addContent(child)
+        if (contentNode.children.size > 1) {
+            logMessage("Only one node can be added as list item child", true)
         }
     }
 

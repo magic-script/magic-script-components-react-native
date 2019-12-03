@@ -147,11 +147,14 @@ abstract class TransformNode(
      * To manage alignment correctly, we should use this method instead of
      * attaching a child directly.
      */
-    open fun addContent(child: Node) {
+    open fun addContent(child: TransformNode) {
+        if (!isVisible) {
+            child.hide()
+        }
         contentNode.addChild(child)
     }
 
-    open fun removeContent(child: Node) {
+    open fun removeContent(child: TransformNode) {
         contentNode.removeChild(child)
     }
 
@@ -241,6 +244,26 @@ abstract class TransformNode(
             }
             bounding = currentBounding
         }
+    }
+
+    open fun hide() {
+        isVisible = false
+    }
+
+    open fun show() {
+        isVisible = true
+    }
+
+    open fun onVisibilityChanged(visibility: Boolean) {
+        contentNode.children
+            .filterIsInstance<TransformNode>()
+            .forEach { child ->
+                if (visibility) {
+                    child.show()
+                } else {
+                    child.hide()
+                }
+            }
     }
 
     /**
@@ -395,14 +418,4 @@ abstract class TransformNode(
             }
         }
     }
-
-    open fun hide() {
-        isVisible = false
-    }
-
-    open fun show() {
-        isVisible = true
-    }
-
-    abstract fun onVisibilityChanged(visibility: Boolean)
 }

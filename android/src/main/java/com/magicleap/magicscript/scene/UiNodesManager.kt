@@ -147,7 +147,7 @@ open class UiNodesManager : NodesManager {
         }
     }
 
-    private fun detachNode(node: Node) {
+    private fun detachNode(node: TransformNode) {
         val parent = node.parent // content node
         val grandparent = parent?.parent
         if (grandparent is TransformNode) {

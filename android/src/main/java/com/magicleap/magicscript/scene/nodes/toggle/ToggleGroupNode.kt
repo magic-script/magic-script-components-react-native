@@ -18,8 +18,8 @@ package com.magicleap.magicscript.scene.nodes.toggle
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.GroupNode
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
@@ -74,16 +74,16 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
         setForceAllOff(props)
     }
 
-    override fun addContent(child: Node) {
+    override fun addContent(child: TransformNode) {
         super.addContent(child)
 
         if (child is UiLayout) {
             child.childrenList
-                    .filterIsInstance<UiToggleNode>()
-                    .forEach { toggle ->
-                        togglesList.add(toggle)
-                        updateToggle(toggle, toggle.isOn)
-                    }
+                .filterIsInstance<UiToggleNode>()
+                .forEach { toggle ->
+                    togglesList.add(toggle)
+                    updateToggle(toggle, toggle.isOn)
+                }
 
             child.onAddedToLayoutListener = { node ->
                 if (node is UiToggleNode) {
@@ -104,7 +104,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
         setForceAllOff(properties)
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         super.removeContent(child)
         if (child is UiToggleNode) {
             togglesList.remove(child)

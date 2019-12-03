@@ -105,6 +105,39 @@ class UiListViewNodeSpec: QuickSpec {
                         node.addChild(otherNode)
                         expect(node.items.count).to(equal(1))
                     }
+
+                    it("should set its size according to width of all elements - #1") {
+                        let buttonNode = UiButtonNode(props: ["width": 0.25, "height": 0.125])
+                        let itemNode = UiListViewItemNode(props: [:])
+                        itemNode.addChild(buttonNode)
+                        itemNode.layoutIfNeeded()
+                        node.addChild(itemNode)
+                        expect(node.items.count).to(equal(1))
+                        let item = node.items.first
+                        expect(item?.width).to(beCloseTo(0.25))
+                    }
+
+                    it("should set its size according to width of all elements - #2") {
+                        let buttonNode1 = UiButtonNode(props: ["width": 0.25, "height": 0.125])
+                        let itemNode1 = UiListViewItemNode(props: [:])
+                        itemNode1.addChild(buttonNode1)
+                        itemNode1.layoutIfNeeded()
+                        node.addChild(itemNode1)
+                        expect(node.items.count).to(equal(1))
+                        var item1 = node.items[0]
+                        expect(item1.width).to(beCloseTo(0.25))
+
+                        let buttonNode2 = UiButtonNode(props: ["width": 0.75, "height": 0.125])
+                        let itemNode2 = UiListViewItemNode(props: [:])
+                        itemNode2.addChild(buttonNode2)
+                        itemNode2.layoutIfNeeded()
+                        node.addChild(itemNode2)
+                        expect(node.items.count).to(equal(2))
+                        item1 = node.items[0]
+                        expect(item1.width).to(beCloseTo(0.75))
+                        let item2 = node.items[1]
+                        expect(item2.width).to(beCloseTo(0.75))
+                    }
                 }
             }
 
@@ -120,6 +153,15 @@ class UiListViewNodeSpec: QuickSpec {
 
                     node.removeChild(itemNode)
                     expect(node.items.count).to(equal(0))
+                }
+            }
+
+            context("when asked for size") {
+                context("when width & height set") {
+                    it("should return them") {
+                        let node = UiListViewNode(props: ["width": 0.75, "height": 0.25])
+                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.25)))
+                    }
                 }
             }
         }

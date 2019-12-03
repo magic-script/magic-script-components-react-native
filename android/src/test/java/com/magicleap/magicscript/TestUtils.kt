@@ -79,6 +79,10 @@ class NodeBuilder {
     }
 }
 
+fun reactMapOf(vararg keyAndValues: Any) = JavaOnlyMap.of(*keyAndValues)
+
+fun reactArrayOf(vararg values: Any) = JavaOnlyArray.of(*values)
+
 fun createProperty(vararg keysAndValues: Any): Bundle =
     Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
 
@@ -111,4 +115,3 @@ fun matchesInexact(bounds: Bounding) = argThat(
 )
 
 // endregion
-

@@ -139,7 +139,7 @@ import SceneKit
     }
 }
 
-// Helpers
+// MARK: - Helpers
 extension GridLayout {
     fileprivate func getLocalPositionForChild(at index: Int, desc: GridLayoutDescriptor) -> CGPoint {
         let colId: Int = index % desc.columns

@@ -62,8 +62,18 @@ class ExtensionsKtTest {
             whenever(it.datePicker).thenReturn(datePicker)
         }
 
-        val dec_31_2000 = 978220800000L
-        val dec_31_2030 = 1924905600000L
+        val dec_31_2000 = Calendar.getInstance().apply {
+            timeInMillis = 0
+            set(Calendar.MONTH, getActualMaximum(Calendar.MONTH))
+            set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+            set(Calendar.YEAR, 2000)
+        }.timeInMillis
+        val dec_31_2030 = Calendar.getInstance().apply {
+            timeInMillis = 0
+            set(Calendar.MONTH, getActualMaximum(Calendar.MONTH))
+            set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+            set(Calendar.YEAR, 2030)
+        }.timeInMillis
 
         tested.updateMinMaxYear(2000, 2030)
         verify(datePicker).minDate = dec_31_2000

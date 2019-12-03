@@ -17,7 +17,8 @@
 import Foundation
 import SceneKit
 
-@objc protocol NodeAnimating {
+//sourcery: AutoMockable
+protocol NodeAnimating {
     func startAnimation(duration: TimeInterval, update: @escaping (_ node: SCNNode, _ timeElapsed: CGFloat) -> Void)
     func stopAnimation()
 }

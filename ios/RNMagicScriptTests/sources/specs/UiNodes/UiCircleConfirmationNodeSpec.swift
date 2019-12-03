@@ -142,7 +142,7 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                 }
 
                 context("stopped") {
-                    it("should trigger event (canceled)") {
+                    it("should trigger event (canceled) - duration 0.0") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
                         node.onConfirmationCanceled = { circleConfirmationNode in
@@ -152,6 +152,25 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                         Perform(nodeAnimatorMock, .startAnimation(duration: .value(0.0), update: .any, perform: { (interval, callback) in
                             callback(node, 0.0)
                         }))
+                        node.longPressEnded()
+                        expect(result).toEventually(beTrue())
+                        expect(reportedNode).toEventually(beIdenticalTo(node))
+                    }
+
+                    it("should trigger event (canceled) - duration > 0.0") {
+                        var result = false
+                        var reportedNode: UiCircleConfirmationNode?
+                        node.onConfirmationCanceled = { circleConfirmationNode in
+                            result = true
+                            reportedNode = circleConfirmationNode
+                        }
+                        Perform(nodeAnimatorMock, .startAnimation(duration: .value(2.0), update: .any, perform: { (interval, callback) in
+                            callback(node, 0.5)
+                        }))
+                        Perform(nodeAnimatorMock, .startAnimation(duration: .value(0.125), update: .any, perform: { (interval, callback) in
+                            callback(node, 0.5)
+                        }))
+                        node.longPressStarted()
                         node.longPressEnded()
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))

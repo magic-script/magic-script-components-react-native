@@ -111,6 +111,7 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         if child is UiScrollBarNode {
             guard scrollBar == nil else { return false }

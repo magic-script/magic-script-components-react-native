@@ -85,9 +85,11 @@ import SceneKit
     
     @objc public func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
         switch state {
-        case .changed, .began:
+        case .began:
             longPressedNode = node as? UiNode
             longPressedNode?.longPressStarted()
+        case .changed:
+            break
         case .ended, .cancelled:
             longPressedNode?.longPressEnded()
             longPressedNode = nil

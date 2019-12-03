@@ -44,6 +44,7 @@ import SceneKit
         }
     }
 
+    @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         if let toggleNode = child as? UiToggleNode {
             registerToggleGroupHandler(toggleNode)

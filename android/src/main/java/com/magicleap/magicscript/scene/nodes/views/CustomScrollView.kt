@@ -25,9 +25,9 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
 
 class CustomScrollView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
@@ -42,10 +42,13 @@ class CustomScrollView @JvmOverloads constructor(
             updateScrollbars()
         }
 
-    var onScrollChangeListener: ((on: Vector2) -> Unit)? = null
+    var onScrollChangeListener: ((position: Vector2) -> Unit)? = null
 
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
+    /**
+     * Normalized scroll position (0 - 1)
+     */
     var position = Vector2()
         private set
 

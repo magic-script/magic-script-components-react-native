@@ -16,7 +16,6 @@
 
 package com.magicleap.magicscript.scene.nodes
 
-import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
@@ -32,16 +31,14 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.BoundingBox
 import com.magicleap.magicscript.utils.PropertiesReader
+import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.minus
-import kotlin.Float.Companion.MAX_VALUE
-import kotlin.math.max
-import kotlin.math.min
 
 // Node that represents a chain of lines
-class LineNode(initProps: ReadableMap,
-               private val context: Context,
-               private val cubeRenderableBuilder: CubeRenderableBuilder) :
-        TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = false) {
+class LineNode(
+    initProps: ReadableMap,
+    private val cubeRenderableBuilder: CubeRenderableBuilder
+) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -51,9 +48,14 @@ class LineNode(initProps: ReadableMap,
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
+    private val colorDefault = Color(1f, 1f, 1f)
+
     private var renderableCopies = mutableListOf<Renderable?>()
     private var linesBounding = Bounding()
-    private var clipBox = BoundingBox(Vector3(MAX_VALUE, MAX_VALUE, MAX_VALUE), Vector3())
+    private var clipBox = BoundingBox(
+        Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE),
+        Vector3()
+    )
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -76,10 +78,10 @@ class LineNode(initProps: ReadableMap,
 
     override fun getContentBounding(): Bounding {
         return Bounding(
-                linesBounding.left + contentNode.localPosition.x,
-                linesBounding.bottom + contentNode.localPosition.y,
-                linesBounding.right + contentNode.localPosition.x,
-                linesBounding.top + contentNode.localPosition.y
+            linesBounding.left + contentNode.localPosition.x,
+            linesBounding.bottom + contentNode.localPosition.y,
+            linesBounding.right + contentNode.localPosition.x,
+            linesBounding.top + contentNode.localPosition.y
         )
     }
 
@@ -97,9 +99,9 @@ class LineNode(initProps: ReadableMap,
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
-        if(visibility) {
+        if (visibility) {
             contentNode.children.forEachIndexed { index, node ->
-                if(index < renderableCopies.size) {
+                if (index < renderableCopies.size) {
                     node.renderable = renderableCopies[index]
                 }
             }
@@ -119,7 +121,7 @@ class LineNode(initProps: ReadableMap,
         // draw each line segment
         val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
         val androidColor = PropertiesReader.readColor(properties, PROP_COLOR)
-        val color = if (androidColor != null) Color(androidColor) else Color(1f, 1f, 1f)
+        val color = if (androidColor != null) Color(androidColor) else colorDefault
 
         var idx = 0
         while (idx + 1 < points.size) {
@@ -132,7 +134,8 @@ class LineNode(initProps: ReadableMap,
         }
     }
 
-    private fun clipLineSegment(start: Vector3, end: Vector3, clipBox: BoundingBox): Pair<Vector3, Vector3>? {
+    private fun clipLineSegment(start: Vector3, end: Vector3, clipBox: BoundingBox)
+            : Pair<Vector3, Vector3>? {
         var collisions = 0
         val hit = RayHit()
 
@@ -169,7 +172,7 @@ class LineNode(initProps: ReadableMap,
         cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
             if (result is RenderableResult.Success) {
                 contentNode.addChild(lineSegment)
-                if(isVisible) {
+                if (isVisible) {
                     lineSegment.renderable = result.renderable
                     renderableCopies.add(result.renderable)
                 } else {
@@ -181,22 +184,8 @@ class LineNode(initProps: ReadableMap,
         }
     }
 
-    // For some reason Utils.calculateSumBounds fails for this node.
-    // Even if it didn't, we still want to cache content bounding,
-    // because clipping changes content size.
     private fun updateLinesBounding() {
         val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
-        linesBounding = if (points.isEmpty()) {
-            Bounding()
-        } else {
-            Bounding(MAX_VALUE, MAX_VALUE, -MAX_VALUE, -MAX_VALUE)
-        }
-
-        for (p in points) {
-            linesBounding.left = min(linesBounding.left, p.x)
-            linesBounding.right = max(linesBounding.right, p.x)
-            linesBounding.top = max(linesBounding.top, p.y)
-            linesBounding.bottom = min(linesBounding.bottom, p.y)
-        }
+        linesBounding = Utils.findMinimumBounding(points)
     }
 }

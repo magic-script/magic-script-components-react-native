@@ -263,7 +263,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new LineNode(props, context, cubeRenderableBuilder), nodeId));
+        mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder), nodeId));
     }
 
     @ReactMethod

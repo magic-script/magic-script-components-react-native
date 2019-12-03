@@ -82,7 +82,7 @@ open class UiTextEditNode(
         const val CURSOR_BLINK_INTERVAL = 400L // in ms
     }
 
-    var textChangedListener: ((text: String) -> Unit)? = null
+    var onTextChangedListener: ((text: String) -> Unit)? = null
 
     private var cursorVisible = false
     private var text = ""
@@ -329,7 +329,7 @@ open class UiTextEditNode(
         builder.setOnSubmitListener { input ->
             if (input != text) {
                 text = input
-                textChangedListener?.invoke(input)
+                onTextChangedListener?.invoke(input)
             }
         }
 

@@ -25,6 +25,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.createProperty
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
@@ -206,9 +208,9 @@ class PropertiesReaderTest {
     fun `should read SpatialSoundPosition`() {
         val key = "spatialSoundPosition"
         val spatialBundle = createProperty(
-                key, JavaOnlyMap.of(
+                key, reactMapOf(
                 "channel", 4.0,
-                "channelPosition", JavaOnlyArray.of(.1f, 1.1f, 2.1f)
+                "channelPosition", reactArrayOf(.1f, 1.1f, 2.1f)
         )
         )
 
@@ -228,7 +230,7 @@ class PropertiesReaderTest {
     fun `should read SpatialSoundDistance`() {
         val key = "spatialSoundDistance"
         val spatialBundle = createProperty(
-                key, JavaOnlyMap.of(
+                key, reactMapOf(
                 "channel", 4.0,
                 "minDistance", 1.0,
                 "maxDistance", 3.0,

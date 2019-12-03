@@ -31,11 +31,12 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.logMessage
 
-class UiDropdownListNode(initProps: ReadableMap,
-                         context: Context,
-                         viewRenderableLoader: ViewRenderableLoader,
-                         fontProvider: FontProvider,
-                         iconsRepo: IconsRepository
+class UiDropdownListNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    fontProvider: FontProvider,
+    iconsRepo: IconsRepository
 ) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo), Layoutable {
 
     companion object {

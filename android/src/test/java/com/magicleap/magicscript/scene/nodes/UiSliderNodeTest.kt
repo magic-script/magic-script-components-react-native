@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -49,7 +50,7 @@ class UiSliderNodeTest {
     @Test
     fun shouldApplyValueWhenValuePropertyPresent() {
         val value = 0.99
-        val props = JavaOnlyMap.of(UiSliderNode.PROP_VALUE, value)
+        val props = reactMapOf(UiSliderNode.PROP_VALUE, value)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -60,7 +61,7 @@ class UiSliderNodeTest {
     @Test
     fun shouldApplyMinValueWhenMinPropertyPresent() {
         val minValue = 1.0
-        val props = JavaOnlyMap.of(UiSliderNode.PROP_MIN, minValue)
+        val props = reactMapOf(UiSliderNode.PROP_MIN, minValue)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -71,7 +72,7 @@ class UiSliderNodeTest {
     @Test
     fun shouldApplyMaxValueWhenMaxPropertyPresent() {
         val maxValue = 1.5
-        val props = JavaOnlyMap.of(UiSliderNode.PROP_MAX, maxValue)
+        val props = reactMapOf(UiSliderNode.PROP_MAX, maxValue)
         val node = createNodeWithViewSpy(props)
 
         node.build()

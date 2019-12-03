@@ -20,25 +20,44 @@ import Nimble
 
 import SceneKit
 
+class UiNodeAnimatorMock: NodeAnimating {
+    fileprivate(set) var startAnimationCalled: Bool = false
+    var startAnimationUpdateParamNode: SCNNode?
+    var startAnimationUpdateParamTimeElapsed: CGFloat = 0.0
+    func startAnimation(duration: TimeInterval, update: @escaping (_ node: SCNNode, _ timeElapsed: CGFloat) -> Void) {
+        startAnimationCalled = true
+        update(startAnimationUpdateParamNode ?? SCNNode(), startAnimationUpdateParamTimeElapsed)
+    }
+
+    fileprivate(set) var stopAnimationCalled: Bool = false
+    func stopAnimation() {
+        stopAnimationCalled = true
+    }
+}
+
 class UiCircleConfirmationNodeSpec: QuickSpec {
     override func spec() {
         describe("UiCircleConfirmationNode") {
             var node: UiCircleConfirmationNode!
+            var nodeAnimatorMock: UiNodeAnimatorMock!
 
             beforeEach {
-                node = UiCircleConfirmationNode(props: [:])
+                node = UiCircleConfirmationNode()
+                nodeAnimatorMock = UiNodeAnimatorMock()
+                node.nodeAnimator = nodeAnimatorMock
                 node.layoutIfNeeded()
             }
 
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.alignment).to(equal(Alignment.centerCenter))
-                    expect(node.height).to(beCloseTo(0.0))
+                    expect(node.radius).to(beCloseTo(0.0))
                     expect(node.canBeLongPressed).to(beTrue())
                 }
 
                 it("should have set default size") {
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiCircleConfirmationNode.defaultSize, height: UiCircleConfirmationNode.defaultSize)))
+                    let defaultSize = 2 * UiCircleConfirmationNode.defaultRadius
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: defaultSize, height: defaultSize)))
                 }
             }
 
@@ -51,17 +70,40 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
 
+                it("should update 'radius' prop") {
+                    let referenceRadius = 0.6
+                    node.update(["radius" : referenceRadius])
+                    expect(node.radius).to(beCloseTo(referenceRadius))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceRadius, height: 2 * referenceRadius)))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
                 it("should update 'height' prop") {
+                    // 'height' property is supported only for compatibility with Lumin,
+                    // Lumin's 'height' is the same as radius.
                     let referenceHeight = 0.6
                     node.update(["height" : referenceHeight])
-                    expect(node.height).to(beCloseTo(referenceHeight))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceHeight, height: referenceHeight)))
+                    expect(node.radius).to(beCloseTo(referenceHeight))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceHeight, height: 2 * referenceHeight)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
                 it("should not update 'canBeLongPressed' prop") {
                     node.update(["canBeLongPressed" : false])
                     expect(node.canBeLongPressed).toNot(beFalse())
+                }
+            }
+
+            context("updateLayout") {
+                it("should update size when 'radius' prop has changed") {
+                    let referenceRadius: CGFloat = 0.6
+                    node.radius = referenceRadius
+                    expect(node.isLayoutNeeded).to(beTrue())
+                    node.layoutIfNeeded()
+                    expect(node.isLayoutNeeded).to(beFalse())
+
+                    let circleNode = node.contentNode.childNodes.first!
+                    expect(circleNode.scale).to(beCloseTo(SCNVector3(2 * referenceRadius, 2 * referenceRadius, 1)))
                 }
             }
 
@@ -84,14 +126,28 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (completed)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCompleted = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode
                         }
                         node.longPressStarted()
-                        for _ in 0...20 { node.expirationTimer?.fire() }
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))
+                    }
+
+                    it("should not trigger event (canceled)") {
+                        var result = false
+                        var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
+                        node.onConfirmationCanceled = { circleConfirmationNode in
+                            result = true
+                            reportedNode = circleConfirmationNode
+                        }
+                        node.longPressStarted()
+                        node.longPressEnded()
+                        expect(result).toEventually(beFalse())
+                        expect(reportedNode).toEventually(beNil())
                     }
                 }
 
@@ -99,6 +155,7 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (canceled)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
+                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCanceled = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode

@@ -232,6 +232,13 @@
 		44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */; };
 		44DA5F55235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
 		44DA5F56235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
+		44DF644423946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
+		44DF644523946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
+		44DF644923951405005E0518 /* UiNodeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644823951405005E0518 /* UiNodeAnimator.swift */; };
+		44DF644A23951405005E0518 /* UiNodeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644823951405005E0518 /* UiNodeAnimator.swift */; };
+		44DF644C23951823005E0518 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644B23951823005E0518 /* String+Random.swift */; };
+		44DF644D23951823005E0518 /* String+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644B23951823005E0518 /* String+Random.swift */; };
+		44DF644F23952AC7005E0518 /* StringRandomSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644E23952AC7005E0518 /* StringRandomSpec.swift */; };
 		44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
 		44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E949352370337900BD0F32 /* DragGestureRecognizer.swift */; };
 		44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09307232D985A0081FF14 /* UiNodeSpec.swift */; };
@@ -664,6 +671,10 @@
 		44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoActionSpec.swift; sourceTree = "<group>"; };
 		44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModeSpec.swift; sourceTree = "<group>"; };
 		44DA5F54235EF3900058212C /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		44DF644323946568005E0518 /* SCNCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNCircle.swift; sourceTree = "<group>"; };
+		44DF644823951405005E0518 /* UiNodeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeAnimator.swift; sourceTree = "<group>"; };
+		44DF644B23951823005E0518 /* String+Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Random.swift"; sourceTree = "<group>"; };
+		44DF644E23952AC7005E0518 /* StringRandomSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringRandomSpec.swift; sourceTree = "<group>"; };
 		44E949352370337900BD0F32 /* DragGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureRecognizer.swift; sourceTree = "<group>"; };
 		44F09307232D985A0081FF14 /* UiNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodeSpec.swift; sourceTree = "<group>"; };
 		44F09308232D985A0081FF14 /* TransformNodeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformNodeSpec.swift; sourceTree = "<group>"; };
@@ -1083,6 +1094,7 @@
 				44AFAC17232B9BCF005AC8EF /* Utils */,
 				44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */,
 				44C5D7272360993600AC0B6C /* UiNodeSelector.swift */,
+				44DF644823951405005E0518 /* UiNodeAnimator.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -1170,6 +1182,7 @@
 				44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */,
 				44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */,
 				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
+				44DF644323946568005E0518 /* SCNCircle.swift */,
 				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
 				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
@@ -1194,6 +1207,7 @@
 				448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */,
 				44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */,
 				44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */,
+				44DF644B23951823005E0518 /* String+Random.swift */,
 				C435F90623829F050060F956 /* UIButton+Extension.swift */,
 				4474A06023896AC2001BE61E /* UIColor+Extension.swift */,
 				44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */,
@@ -1386,6 +1400,7 @@
 				441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */,
 				44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */,
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
+				44DF644E23952AC7005E0518 /* StringRandomSpec.swift */,
 				449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */,
 			);
 			path = Extensions;
@@ -1996,6 +2011,7 @@
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
 				C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */,
+				44DF644D23951823005E0518 /* String+Random.swift in Sources */,
 				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				44AB3971238BCD130002DF14 /* UiContentNode.swift in Sources */,
 				C4A12B282361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
@@ -2054,6 +2070,7 @@
 				44AFAD14232BCAE3005AC8EF /* HorizontalTextAlignment.swift in Sources */,
 				44A5896A2382EF1A00934E5E /* UiWebViewNode.swift in Sources */,
 				448586FF235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
+				44DF644A23951405005E0518 /* UiNodeAnimator.swift in Sources */,
 				44AFAD0E232BCAE3005AC8EF /* RenderNode.swift in Sources */,
 				4425EDFF2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
@@ -2071,6 +2088,7 @@
 				44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
 				C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */,
 				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
+				44DF644523946568005E0518 /* SCNCircle.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
@@ -2137,6 +2155,7 @@
 				44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */,
 				C400D4462387F57A002A38CB /* UiToggleGroupNodeSpec.swift in Sources */,
 				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
+				44DF644F23952AC7005E0518 /* StringRandomSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
 				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
@@ -2216,6 +2235,7 @@
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
+				44DF644C23951823005E0518 /* String+Random.swift in Sources */,
 				44AB3970238BCD130002DF14 /* UiContentNode.swift in Sources */,
 				C4D5417E23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
@@ -2274,6 +2294,7 @@
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,
 				44AFAC48232B9BCF005AC8EF /* UiSliderNode.swift in Sources */,
 				C4B73CB3238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
+				44DF644923951405005E0518 /* UiNodeAnimator.swift in Sources */,
 				44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */,
 				447755592374D37C00E98F03 /* AudioAction.swift in Sources */,
 				C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
@@ -2291,6 +2312,7 @@
 				44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44AFAC5F232B9BCF005AC8EF /* RCTConvert+Components.m in Sources */,
 				C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */,
+				44DF644423946568005E0518 /* SCNCircle.swift in Sources */,
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,

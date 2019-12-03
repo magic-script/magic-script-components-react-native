@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.spy
@@ -71,7 +72,7 @@ class UiSpinnerNodeTest {
     @Test
     fun `should apply progress when determinate`() {
         val value = 0.3
-        val props = JavaOnlyMap.of(
+        val props = reactMapOf(
                 UiSpinnerNode.PROP_VALUE, value,
                 UiSpinnerNode.PROP_DETERMINATE, true
         )
@@ -86,7 +87,7 @@ class UiSpinnerNodeTest {
     @Test
     fun `should not apply progress when not determinate`() {
         val value = 0.6
-        val props = JavaOnlyMap.of(
+        val props = reactMapOf(
                 UiSpinnerNode.PROP_VALUE, value,
                 UiSpinnerNode.PROP_DETERMINATE, false
         )
@@ -100,7 +101,7 @@ class UiSpinnerNodeTest {
 
     @Test
     fun `should not change hardcoded alignment`() {
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-left")
+        val props = reactMapOf(TransformNode.PROP_ALIGNMENT, "top-left")
         val node = createNodeWithViewSpy(props)
 
         node.build()

@@ -6,6 +6,7 @@ import android.webkit.WebView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -48,7 +49,7 @@ class UIWebViewNodeTest {
     fun `should override default properties`() {
         val testedHeight = 2.0
         val testedWith = 3.0
-        val props = JavaOnlyMap.of(PROP_HEIGHT, testedHeight, PROP_WIDTH, testedWith)
+        val props = reactMapOf(PROP_HEIGHT, testedHeight, PROP_WIDTH, testedWith)
 
         tested = createNodeWithViewSpy(props)
 
@@ -59,7 +60,7 @@ class UIWebViewNodeTest {
     @Test
     fun `should set url`() {
         val url = "https://asasd.dsa"
-        val props = JavaOnlyMap.of(PROP_URL, url)
+        val props = reactMapOf(PROP_URL, url)
 
         tested = createNodeWithViewSpy(props)
         tested.build()
@@ -69,7 +70,7 @@ class UIWebViewNodeTest {
 
     @Test
     fun `should reload page`() {
-        val props = JavaOnlyMap.of(PROP_ACTION, ACTION_RELOAD)
+        val props = reactMapOf(PROP_ACTION, ACTION_RELOAD)
 
         tested = createNodeWithViewSpy(props)
         tested.build()
@@ -79,7 +80,7 @@ class UIWebViewNodeTest {
 
     @Test
     fun `should forward page`() {
-        val props = JavaOnlyMap.of(PROP_ACTION, ACTION_FORWARD)
+        val props = reactMapOf(PROP_ACTION, ACTION_FORWARD)
 
         tested = createNodeWithViewSpy(props)
         tested.build()
@@ -89,7 +90,7 @@ class UIWebViewNodeTest {
 
     @Test
     fun `should go back on the page`() {
-        val props = JavaOnlyMap.of(PROP_ACTION, ACTION_BACK)
+        val props = reactMapOf(PROP_ACTION, ACTION_BACK)
 
         tested = createNodeWithViewSpy(props)
         tested.build()
@@ -100,7 +101,7 @@ class UIWebViewNodeTest {
     @Test
     fun `should scroll by`() {
         val scrollBy = 15.0
-        val props = JavaOnlyMap.of(PROP_SCROLL_BY, scrollBy)
+        val props = reactMapOf(PROP_SCROLL_BY, scrollBy)
 
         tested = createNodeWithViewSpy(props)
         tested.build()

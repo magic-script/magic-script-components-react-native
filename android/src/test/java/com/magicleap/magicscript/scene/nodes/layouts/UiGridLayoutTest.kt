@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
@@ -65,7 +66,7 @@ class UiGridLayoutTest {
 
     @Test
     fun shouldApplyItemAlignmentWhenItemAlignmentPropertyPresent() {
-        val props = JavaOnlyMap.of(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
+        val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = UiGridLayout(props, gridLayoutManager)
         node.build()
 
@@ -80,7 +81,7 @@ class UiGridLayoutTest {
         node.build()
 
         val columns = 3
-        val props = JavaOnlyMap.of(UiGridLayout.PROP_COLUMNS, columns.toDouble())
+        val props = reactMapOf(UiGridLayout.PROP_COLUMNS, columns.toDouble())
         node.update(props)
 
         verify(gridLayoutManager).columns = columns

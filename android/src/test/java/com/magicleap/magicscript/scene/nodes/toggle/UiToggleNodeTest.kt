@@ -21,6 +21,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -65,7 +67,7 @@ class UiToggleNodeTest {
     @Test
     fun `default text size should be equal to height`() {
         val height = 0.1
-        val toggle = createNode(JavaOnlyMap.of(UiToggleNode.PROP_HEIGHT, height))
+        val toggle = createNode(reactMapOf(UiToggleNode.PROP_HEIGHT, height))
 
         val textSize = toggle.getProperty(UiToggleNode.PROP_TEXT_SIZE)
 
@@ -93,7 +95,7 @@ class UiToggleNodeTest {
 
     @Test
     fun `should apply text color when color property updated`() {
-        val textColor = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
+        val textColor = reactArrayOf(1.0, 1.0, 1.0, 1.0)
 
         toggle.update(UiToggleNode.PROP_TEXT_COLOR, textColor)
 

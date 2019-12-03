@@ -67,7 +67,7 @@ abstract class UiNode(
     var size = Vector2(0F, 0F)
         private set
 
-    var onActivateListener: (() -> Unit)? = null // on click
+    var onClickListener: (() -> Unit)? = null
     var onPressListener: (() -> Unit)? = null
     var onLongPressListener: (() -> Unit)? = null
     var onReleaseListener: (() -> Unit)? = null
@@ -368,7 +368,7 @@ abstract class UiNode(
     private fun setupViewListeners() {
         view.setOnClickListener {
             onViewClick()
-            onActivateListener?.invoke()
+            onClickListener?.invoke()
         }
 
         view.setOnTouchListener { _, event ->

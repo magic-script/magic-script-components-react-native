@@ -16,34 +16,20 @@
 
 import Quick
 import Nimble
+import SwiftyMocky
 @testable import RNMagicScriptHostApplication
 
 import SceneKit
-
-class UiNodeAnimatorMock: NodeAnimating {
-    fileprivate(set) var startAnimationCalled: Bool = false
-    var startAnimationUpdateParamNode: SCNNode?
-    var startAnimationUpdateParamTimeElapsed: CGFloat = 0.0
-    func startAnimation(duration: TimeInterval, update: @escaping (_ node: SCNNode, _ timeElapsed: CGFloat) -> Void) {
-        startAnimationCalled = true
-        update(startAnimationUpdateParamNode ?? SCNNode(), startAnimationUpdateParamTimeElapsed)
-    }
-
-    fileprivate(set) var stopAnimationCalled: Bool = false
-    func stopAnimation() {
-        stopAnimationCalled = true
-    }
-}
 
 class UiCircleConfirmationNodeSpec: QuickSpec {
     override func spec() {
         describe("UiCircleConfirmationNode") {
             var node: UiCircleConfirmationNode!
-            var nodeAnimatorMock: UiNodeAnimatorMock!
+            var nodeAnimatorMock: NodeAnimatingMock!
 
             beforeEach {
                 node = UiCircleConfirmationNode()
-                nodeAnimatorMock = UiNodeAnimatorMock()
+                nodeAnimatorMock = NodeAnimatingMock()
                 node.nodeAnimator = nodeAnimatorMock
                 node.layoutIfNeeded()
             }
@@ -116,6 +102,9 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                             result = true
                             reportedNode = circleConfirmationNode
                         }
+                        Perform(nodeAnimatorMock, .startAnimation(duration: .value(2.0), update: .any, perform: { (interval, callback) in
+                            callback(node, 2.0)
+                        }))
                         node.longPressStarted()
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))
@@ -126,11 +115,13 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (completed)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
-                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCompleted = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode
                         }
+                        Perform(nodeAnimatorMock, .startAnimation(duration: .value(2.0), update: .any, perform: { (interval, callback) in
+                            callback(node, 2.0)
+                        }))
                         node.longPressStarted()
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))
@@ -139,7 +130,6 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should not trigger event (canceled)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
-                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCanceled = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode
@@ -155,11 +145,13 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     it("should trigger event (canceled)") {
                         var result = false
                         var reportedNode: UiCircleConfirmationNode?
-                        nodeAnimatorMock.startAnimationUpdateParamTimeElapsed = 2.0
                         node.onConfirmationCanceled = { circleConfirmationNode in
                             result = true
                             reportedNode = circleConfirmationNode
                         }
+                        Perform(nodeAnimatorMock, .startAnimation(duration: .value(0.0), update: .any, perform: { (interval, callback) in
+                            callback(node, 0.0)
+                        }))
                         node.longPressEnded()
                         expect(result).toEventually(beTrue())
                         expect(reportedNode).toEventually(beIdenticalTo(node))

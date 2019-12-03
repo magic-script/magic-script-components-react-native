@@ -31,11 +31,12 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 
-class VideoNode(initProps: ReadableMap,
-                private val context: Context,
-                private val videoPlayer: VideoPlayer,
-                private val videoRenderableLoader: VideoRenderableLoader)
-    : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
+class VideoNode(
+    initProps: ReadableMap,
+    private val context: Context,
+    private val videoPlayer: VideoPlayer,
+    private val videoRenderableLoader: VideoRenderableLoader
+) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
@@ -98,8 +99,9 @@ class VideoNode(initProps: ReadableMap,
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
-        if(visibility) {
+        if (visibility) {
             contentNode.renderable = renderableCopy
+            applyMaterialClipping()
         } else {
             contentNode.renderable = null
         }
@@ -132,12 +134,10 @@ class VideoNode(initProps: ReadableMap,
             videoRenderableLoader.loadRenderable { result ->
                 if (result is RenderableResult.Success) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
-                    if(isVisible) {
+                    if (isVisible) {
                         contentNode.renderable = result.renderable
-                        renderableCopy = result.renderable
-                    } else {
-                        renderableCopy = result.renderable
                     }
+                    renderableCopy = result.renderable
                     applyMaterialClipping()
                 }
             }

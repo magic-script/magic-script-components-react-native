@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.ContentNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -45,7 +46,7 @@ class PageViewManagerTest {
 
     @Test(expected = Exception::class)
     fun `should throw error if any of the children is not a content node`() {
-        val children: List<Node> = arrayListOf(ContentNode(JavaOnlyMap.of()), Node())
+        val children: List<Node> = arrayListOf(ContentNode(reactMapOf()), Node())
 
         pageViewManager.layoutChildren(children, mapOf(1 to Bounding()))
     }

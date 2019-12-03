@@ -20,9 +20,11 @@ import android.content.Context
 import android.util.DisplayMetrics
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.nhaarman.mockitokotlin2.whenever
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import org.junit.Assert.*
+import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
@@ -116,22 +118,22 @@ class UtilsTest {
 
         val bounding = Utils.calculateSumBounds(listOf(testNode))
 
-        assertTrue(Bounding.equalInexact(expectedBounding, bounding))
+        bounding shouldEqualInexact expectedBounding
     }
 
     @Test
     fun shouldReturnMinimumBoundingForListOfPoints() {
         val points = listOf(
-                Vector3(-1f, 2f, 0f),
-                Vector3(-1f, -1f, 0f),
-                Vector3(4f, -1f, 0f),
-                Vector3(5f, 4f, 0f)
+            Vector3(-1f, 2f, 0f),
+            Vector3(-1f, -1f, 0f),
+            Vector3(4f, -1f, 0f),
+            Vector3(5f, 4f, 0f)
         )
         val expectedBounding = Bounding(-1f, -1f, 5f, 4f)
 
         val bounding = Utils.findMinimumBounding(points)
 
-        assertTrue(Bounding.equalInexact(expectedBounding, bounding))
+        bounding shouldEqualInexact expectedBounding
     }
 
 }

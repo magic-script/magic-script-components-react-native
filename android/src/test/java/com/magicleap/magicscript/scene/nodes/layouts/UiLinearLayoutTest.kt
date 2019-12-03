@@ -18,6 +18,8 @@ package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
@@ -56,8 +58,8 @@ class UiLinearLayoutTest {
 
     @Test
     fun shouldApplyItemPaddingWhenItemPaddingPropertyPresent() {
-        val padding = JavaOnlyArray.of(1.5, 2.0, 1.5, 0.0)
-        val props = JavaOnlyMap.of(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
+        val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
+        val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
         val node = UiLinearLayout(props, linearLayoutManager)
         node.build()
 

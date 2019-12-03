@@ -25,6 +25,9 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.nhaarman.mockitokotlin2.argThat
+import org.mockito.ArgumentMatcher
+import kotlin.test.assertTrue
 
 class NodeBuilder {
     private var props = JavaOnlyMap()
@@ -36,19 +39,19 @@ class NodeBuilder {
     }
 
     fun withPosition(x: Double, y: Double, z: Double): NodeBuilder {
-        val position = JavaOnlyArray.of(x, y, z)
+        val position = reactArrayOf(x, y, z)
         props.putArray(TransformNode.PROP_LOCAL_POSITION, position)
         return this
     }
 
     fun withScale(x: Double, y: Double, z: Double): NodeBuilder {
-        val scale = JavaOnlyArray.of(x, y, z)
+        val scale = reactArrayOf(x, y, z)
         props.putArray(TransformNode.PROP_LOCAL_SCALE, scale)
         return this
     }
 
     fun withRotation(x: Double, y: Double, z: Double, w: Double): NodeBuilder {
-        val rotation = JavaOnlyArray.of(x, y, z, w)
+        val rotation = reactArrayOf(x, y, z, w)
         props.putArray(TransformNode.PROP_LOCAL_ROTATION, rotation)
         return this
     }
@@ -76,8 +79,12 @@ class NodeBuilder {
     }
 }
 
+fun reactMapOf(vararg keyAndValues: Any) = JavaOnlyMap.of(*keyAndValues)
+
+fun reactArrayOf(vararg values: Any) = JavaOnlyArray.of(*values)
+
 fun createProperty(vararg keysAndValues: Any): Bundle =
-    Arguments.toBundle(JavaOnlyMap.of(*keysAndValues)) ?: Bundle()
+    Arguments.toBundle(reactMapOf(*keysAndValues)) ?: Bundle()
 
 fun View.createActionDownEvent(): MotionEvent {
     val coordinates = IntArray(2)
@@ -93,5 +100,18 @@ fun View.createActionDownEvent(): MotionEvent {
 }
 
 fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
-    update(JavaOnlyMap.of(*keysAndValues))
+    update(reactMapOf(*keysAndValues))
 }
+
+// region Custom matchers
+
+infix fun Bounding.shouldEqualInexact(other: Bounding) =
+    assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
+
+fun matchesInexact(bounds: Bounding) = argThat(
+    ArgumentMatcher<Bounding> { argument ->
+        Bounding.equalInexact(argument, bounds)
+    }
+)
+
+// endregion

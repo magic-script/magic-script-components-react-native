@@ -16,13 +16,15 @@
 
 package com.magicleap.magicscript
 
+import android.os.Bundle
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 
 class ReactEventsEmitter(private val context: ReactApplicationContext) : EventsEmitter {
-    override fun sendEvent(eventName: String, params: WritableMap) {
+    override fun sendEvent(eventName: String, params: Bundle) {
+        val eventArgs = Arguments.fromBundle(params)
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
+            .emit(eventName, eventArgs)
     }
 }

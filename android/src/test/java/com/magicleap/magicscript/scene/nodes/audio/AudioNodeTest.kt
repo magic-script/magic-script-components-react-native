@@ -19,6 +19,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.vr.sdk.audio.GvrAudioEngine
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.update
 import com.magicleap.magicscript.utils.FileDownloader
 import com.nhaarman.mockitokotlin2.*
@@ -92,7 +94,7 @@ class AudioNodeTest {
     fun `should download file when file path is updated`() {
         tested.update(
             AudioNode.PROP_FILE_NAME,
-            JavaOnlyMap.of("uri", FILE_URL)
+            reactMapOf("uri", FILE_URL)
         )
 
         verify(fileDownloader, timeout(200)).downloadFile(eq(FILE_URL), any())
@@ -101,7 +103,7 @@ class AudioNodeTest {
     @Test
     fun `should preload audio when when file is ready`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL)
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL)
         )
 
         verify(audioEngine, timeout(200)).preloadSoundFile(any())
@@ -110,7 +112,7 @@ class AudioNodeTest {
     @Test
     fun `should create stereo audio for non spatial`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, false
         )
 
@@ -120,7 +122,7 @@ class AudioNodeTest {
     @Test
     fun `should unload and stop and preload audio when spatial changed`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, false
         )
 
@@ -136,7 +138,7 @@ class AudioNodeTest {
     @Test
     fun `should create mono audio when spatial`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, true
         )
 
@@ -146,7 +148,7 @@ class AudioNodeTest {
     @Test
     fun `should autoplay when last action is start`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_ACTION, AudioAction.START
         )
 
@@ -160,7 +162,7 @@ class AudioNodeTest {
     @Test
     fun `should autoplay when last action is resume`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_ACTION, AudioAction.RESUME
         )
 
@@ -174,7 +176,7 @@ class AudioNodeTest {
     @Test
     fun `should play with looping`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, true,
             AudioNode.PROP_SOUND_LOOPING, true
         )
@@ -185,7 +187,7 @@ class AudioNodeTest {
     @Test
     fun `should play without looping`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, true,
             AudioNode.PROP_SOUND_LOOPING, false
         )
@@ -225,9 +227,9 @@ class AudioNodeTest {
     fun `should apply SpatialSoundPosition`() {
         tested.update(
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, true,
-            AudioNode.PROP_SPATIAL_SOUND_POSITION, JavaOnlyMap.of(
+            AudioNode.PROP_SPATIAL_SOUND_POSITION, reactMapOf(
                 "channel", 4,
-                "channelPosition", JavaOnlyArray.of(0.0,1.0,2.0)
+                "channelPosition", reactArrayOf(0.0,1.0,2.0)
             )
         )
 
@@ -238,7 +240,7 @@ class AudioNodeTest {
     fun `should apply SpatialSoundDistance`() {
         tested.update(
             AudioNode.PROP_SPATIAL_SOUND_ENABLE, true,
-            AudioNode.PROP_SPATIAL_SOUND_DISTANCE, JavaOnlyMap.of(
+            AudioNode.PROP_SPATIAL_SOUND_DISTANCE, reactMapOf(
                 "channel", 4,
                 "minDistance", 1.0,
                 "maxDistance", 3.0,
@@ -252,7 +254,7 @@ class AudioNodeTest {
     @Test
     fun `onDestroy should destroy file downloader and unload sound`() {
         tested.update(
-            AudioNode.PROP_FILE_NAME, JavaOnlyMap.of("uri", FILE_URL),
+            AudioNode.PROP_FILE_NAME, reactMapOf("uri", FILE_URL),
             AudioNode.PROP_ACTION, AudioAction.START
         )
 

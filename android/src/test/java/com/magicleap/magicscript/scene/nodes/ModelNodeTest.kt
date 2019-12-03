@@ -25,6 +25,8 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import junit.framework.Assert.assertEquals
@@ -53,7 +55,7 @@ class ModelNodeTest {
     @Test
     fun shouldLoadModelWhenPathProvided() {
         val modelPath = "http://sample.com/model.glb"
-        val props = JavaOnlyMap.of(ModelNode.PROP_MODEL_PATH, modelPath)
+        val props = reactMapOf(ModelNode.PROP_MODEL_PATH, modelPath)
         val node = ModelNode(props, context, modelRenderableLoader)
         node.build()
 
@@ -64,7 +66,7 @@ class ModelNodeTest {
 
     @Test
     fun shouldApplyImportScaleWhenImportScalePropertyPresent() {
-        val props = JavaOnlyMap.of(ModelNode.PROP_IMPORT_SCALE, 0.5)
+        val props = reactMapOf(ModelNode.PROP_IMPORT_SCALE, 0.5)
         val expectedLocalScale = Vector3(0.5F, 0.5F, 0.5F)
 
         val node = ModelNode(props, context, modelRenderableLoader)
@@ -76,9 +78,9 @@ class ModelNodeTest {
 
     @Test
     fun shouldApplyCorrectScaleWhenLocalAndImportScalePropertiesPresent() {
-        val initialLocalScale = JavaOnlyArray.of(2.0, 2.0, 2.0)
+        val initialLocalScale = reactArrayOf(2.0, 2.0, 2.0)
         val importScale = 1.5
-        val props = JavaOnlyMap.of(TransformNode.PROP_LOCAL_SCALE, initialLocalScale,
+        val props = reactMapOf(TransformNode.PROP_LOCAL_SCALE, initialLocalScale,
                 ModelNode.PROP_IMPORT_SCALE, importScale
 
         )
@@ -93,7 +95,7 @@ class ModelNodeTest {
 
     @Test
     fun shouldNotChangeHardcodedAlignment() {
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "bottom-left")
+        val props = reactMapOf(TransformNode.PROP_ALIGNMENT, "bottom-left")
         val node = ModelNode(props, context, modelRenderableLoader)
 
         node.build()

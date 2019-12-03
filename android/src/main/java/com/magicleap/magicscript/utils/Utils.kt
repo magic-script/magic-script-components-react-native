@@ -116,7 +116,8 @@ class Utils {
                 return Bounding()
             }
 
-            val sumBounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+            val sumBounds =
+                Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
             for (node in nodes) {
                 val childBounds = if (node is TransformNode) {
@@ -139,7 +140,8 @@ class Utils {
                 return Bounding()
             }
 
-            val bounds = Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+            val bounds =
+                Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
             for (point in points) {
                 bounds.left = min(point.x, bounds.left)
@@ -178,10 +180,10 @@ class Utils {
 
             if (sizeX > 0) {
                 val offsetLeft = nodeBounds.left - clipBounds.left
-                materialClip.left = java.lang.Float.max(-0.5f - offsetLeft / sizeX, -0.5f)
+                materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
 
                 val offsetRight = nodeBounds.right - clipBounds.right
-                materialClip.right = java.lang.Float.min(0.5f - offsetRight / sizeX, 0.5f)
+                materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
             }
 
             if (sizeY > 0) {

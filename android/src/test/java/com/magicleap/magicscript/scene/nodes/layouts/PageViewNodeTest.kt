@@ -20,10 +20,12 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert
@@ -54,7 +56,7 @@ class PageViewNodeTest {
 
     @Test
     fun `should set passed alignment`() {
-        val props = JavaOnlyMap.of(PageViewNode.PROP_CONTENT_ALIGNMENT, "bottom-left")
+        val props = reactMapOf(PageViewNode.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = PageViewNode(props, layoutManager)
         node.build()
 
@@ -64,19 +66,19 @@ class PageViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
+        val props = reactMapOf(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = PageViewNode(props, layoutManager)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
         node.build() // invokes the layout loop
 
         val bounds = node.getBounding()
 
-        Assert.assertTrue(Bounding.equalInexact(expectedBounds, bounds))
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
     fun `should rescale child if bigger than layout size`() {
-        val props = JavaOnlyMap.of(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
+        val props = reactMapOf(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
         val node = PageViewNode(props, layoutManager)
         val childNode = NodeBuilder()
             .withContentBounds(Bounding(0f, 0f, 2f, 1f))
@@ -89,7 +91,7 @@ class PageViewNodeTest {
 
     @Test
     fun `should set visible page when is passed`() {
-        val props = JavaOnlyMap.of(PageViewNode.PROP_VISIBLE_PAGE, 1.0)
+        val props = reactMapOf(PageViewNode.PROP_VISIBLE_PAGE, 1.0)
         val node = PageViewNode(props, layoutManager)
         node.build()
 

@@ -20,8 +20,8 @@ class SliderInputView: UIView {
     var input: SliderDataProviding? {
         didSet {
             if let input = input {
-                minLabel.text = "\(input.min)"
-                maxLabel.text = "\(input.max)"
+                minLabel.text = input.min.uiPrecision()
+                maxLabel.text = input.max.uiPrecision()
                 slider.minimumValue = Float(input.min)
                 slider.maximumValue = Float(input.max)
                 slider.value = Float(input.sliderValue)
@@ -31,7 +31,8 @@ class SliderInputView: UIView {
     }
 
     func updateCurrentValue(_ value: CGFloat) {
-        currentValueLabel.text = String(format: "Current value: %.1f", arguments: [value])
+        let stringValue = value.uiPrecision() ?? String(format: "%.1f", value)
+        currentValueLabel.text = "Current value: \(stringValue)"
         setNeedsLayout()
     }
 

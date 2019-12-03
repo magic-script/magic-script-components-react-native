@@ -28,6 +28,8 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer
 import com.magicleap.magicscript.ar.VideoRenderableLoader
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -53,7 +55,7 @@ class VideoNodeTest {
         this.videoReadableLoader = mock()
 
         val videoUri = "http://video.com/sample.mp4"
-        val props = JavaOnlyMap.of(VideoNode.PROP_VIDEO_PATH, videoUri)
+        val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
         videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader)
         videoNode.build()
     }
@@ -67,8 +69,8 @@ class VideoNodeTest {
 
     @Test
     fun shouldAdjustContentNodeScaleWhenSizePropertySent() {
-        val size = JavaOnlyArray.of(3, 2)
-        val props = JavaOnlyMap.of(VideoNode.PROP_SIZE, size)
+        val size = reactArrayOf(3, 2)
+        val props = reactMapOf(VideoNode.PROP_SIZE, size)
 
         videoNode.update(props)
 
@@ -78,7 +80,7 @@ class VideoNodeTest {
     @Test
     fun shouldStartPlayerWhenStartActionSentAndPlayerIsReady() {
         whenever(videoPlayer.isReady).thenReturn(true)
-        val props = JavaOnlyMap.of(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
+        val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
 
         videoNode.update(props)
 
@@ -88,7 +90,7 @@ class VideoNodeTest {
     @Test
     fun shouldNotStartPlayerWhenNotReady() {
         whenever(videoPlayer.isReady).thenReturn(false)
-        val props = JavaOnlyMap.of(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
+        val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
 
         videoNode.update(props)
 
@@ -99,7 +101,7 @@ class VideoNodeTest {
     fun shouldPausePlayerWhenPauseActionSentAndIsPlaying() {
         whenever(videoPlayer.isReady).thenReturn(true)
         whenever(videoPlayer.isPlaying).thenReturn(true)
-        val props = JavaOnlyMap.of(VideoNode.PROP_ACTION, VideoNode.ACTION_PAUSE)
+        val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_PAUSE)
 
         videoNode.update(props)
 
@@ -110,7 +112,7 @@ class VideoNodeTest {
     fun shouldStopPlayerWhenStopActionSentAndIsPlaying() {
         whenever(videoPlayer.isReady).thenReturn(true)
         whenever(videoPlayer.isPlaying).thenReturn(true)
-        val props = JavaOnlyMap.of(VideoNode.PROP_ACTION, VideoNode.ACTION_STOP)
+        val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_STOP)
 
         videoNode.update(props)
 
@@ -119,7 +121,7 @@ class VideoNodeTest {
 
     @Test
     fun shouldSetLoopingWhenLoopingPropertySent() {
-        val props = JavaOnlyMap.of(VideoNode.PROP_LOOPING, true)
+        val props = reactMapOf(VideoNode.PROP_LOOPING, true)
 
         videoNode.update(props)
 

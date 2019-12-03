@@ -19,8 +19,9 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.spy
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
+import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -50,9 +51,9 @@ class UiScrollBarNodeTest {
     fun `should update size`() {
         val width = 0.6
         val height = 0.02
-        val props = JavaOnlyMap.of(
-                UiScrollBarNode.PROP_WIDTH, width,
-                UiScrollBarNode.PROP_HEIGHT, height
+        val props = reactMapOf(
+            UiScrollBarNode.PROP_WIDTH, width,
+            UiScrollBarNode.PROP_HEIGHT, height
         )
 
         node.update(props)
@@ -64,7 +65,7 @@ class UiScrollBarNodeTest {
     @Test
     fun `should update thumb position`() {
         val thumbPosition = 0.43
-        val props = JavaOnlyMap.of(UiScrollBarNode.PROP_THUMB_POSITION, thumbPosition)
+        val props = reactMapOf(UiScrollBarNode.PROP_THUMB_POSITION, thumbPosition)
 
         node.update(props)
 
@@ -74,7 +75,7 @@ class UiScrollBarNodeTest {
     @Test
     fun `should update thumb size`() {
         val thumbSize = 0.77
-        val props = JavaOnlyMap.of(UiScrollBarNode.PROP_THUMB_SIZE, thumbSize)
+        val props = reactMapOf(UiScrollBarNode.PROP_THUMB_SIZE, thumbSize)
 
         node.update(props)
 
@@ -83,7 +84,10 @@ class UiScrollBarNodeTest {
 
     @Test
     fun `should update orientation`() {
-        val props = JavaOnlyMap.of(UiScrollBarNode.PROP_ORIENTATION, UiScrollBarNode.ORIENTATION_HORIZONTAL)
+        val props = reactMapOf(
+            UiScrollBarNode.PROP_ORIENTATION,
+            UiScrollBarNode.ORIENTATION_HORIZONTAL
+        )
 
         node.update(props)
 

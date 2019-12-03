@@ -32,6 +32,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import junit.framework.Assert.assertEquals
 import kotlinx.android.synthetic.main.image.view.*
 import org.junit.Before
@@ -62,9 +64,9 @@ class UiImageNodeTest {
 
     @Test
     fun shouldMixColorWithImageWhenImagePathAndColorPropertiesPresent() {
-        val props = JavaOnlyMap.of(
+        val props = reactMapOf(
                 UiImageNode.PROP_FILE_PATH, "http://sample-image.com",
-                UiImageNode.PROP_COLOR, JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
+                UiImageNode.PROP_COLOR, reactArrayOf(1.0, 1.0, 1.0, 1.0)
         )
         val node = createNodeWithViewSpy(props)
         val expectedFilter = PorterDuffColorFilter(0XFFFFFFFF.toInt(), PorterDuff.Mode.MULTIPLY)
@@ -76,8 +78,8 @@ class UiImageNodeTest {
 
     @Test
     fun shouldApplyBackgroundColorWhenProvidedColorWithoutImagePath() {
-        val props = JavaOnlyMap.of(
-                UiImageNode.PROP_COLOR, JavaOnlyArray.of(0.0, 0.0, 0.0, 0.0)
+        val props = reactMapOf(
+                UiImageNode.PROP_COLOR, reactArrayOf(0.0, 0.0, 0.0, 0.0)
         )
         val node = createNodeWithViewSpy(props)
 
@@ -88,7 +90,7 @@ class UiImageNodeTest {
 
     @Test
     fun shouldApplyFrameWhenUseFramePropertyIsTrue() {
-        val props = JavaOnlyMap.of(UiImageNode.PROP_FRAME, true)
+        val props = reactMapOf(UiImageNode.PROP_FRAME, true)
         val node = createNodeWithViewSpy(props)
 
         node.build()

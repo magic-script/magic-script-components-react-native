@@ -20,6 +20,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -104,7 +105,7 @@ class TransformNodeTest {
     fun `should apply new properties on update`() {
         val node = NodeBuilder().build()
         val alignment = "bottom-right"
-        val propsToUpdate = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, alignment)
+        val propsToUpdate = reactMapOf(TransformNode.PROP_ALIGNMENT, alignment)
 
         node.update(propsToUpdate)
 

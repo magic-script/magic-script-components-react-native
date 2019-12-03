@@ -70,7 +70,7 @@ class UiScrollViewNodeTest {
     fun `should return correct bounds`() {
         val scrollBoundsMap = getScrollBoundsMap(1.6, 0.4)
         val tested = createNodeWithViewSpy(
-            JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
+            reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build() // need to recreate the view
         val expectedBounds = Bounding(-0.8f, -0.2f, 0.8f, 0.2f)
@@ -122,7 +122,7 @@ class UiScrollViewNodeTest {
     fun `should correctly clip the content when scrolled`() {
         val scrollBoundsMap = getScrollBoundsMap(0.8, 0.4)
         val tested = createNodeWithViewSpy(
-            JavaOnlyMap.of(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
+            reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build()
 
@@ -150,9 +150,9 @@ class UiScrollViewNodeTest {
     }
 
     private fun getScrollBoundsMap(width: Double, height: Double): JavaOnlyMap {
-        return JavaOnlyMap.of(
-            "min", JavaOnlyArray.of(0.0, 0.0, 0.0),
-            "max", JavaOnlyArray.of(width, height, 0.0)
+        return reactMapOf(
+            "min", reactArrayOf(0.0, 0.0, 0.0),
+            "max", reactArrayOf(width, height, 0.0)
         )
     }
 

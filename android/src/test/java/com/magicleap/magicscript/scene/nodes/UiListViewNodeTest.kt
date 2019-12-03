@@ -24,6 +24,8 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
@@ -56,8 +58,8 @@ class UiListViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = JavaOnlyMap.of(
-            TransformNode.PROP_LOCAL_POSITION, JavaOnlyArray.of(1.0, 1.0, 0.0),
+        val props = reactMapOf(
+            TransformNode.PROP_LOCAL_POSITION, reactArrayOf(1.0, 1.0, 0.0),
             UiListViewNode.PROP_WIDTH, 1.2, UiListViewNode.PROP_HEIGHT, 0.6
         )
         val node = createNodeWithViewSpy(props)
@@ -71,7 +73,7 @@ class UiListViewNodeTest {
 
     @Test
     fun `should apply orientation`() {
-        val props = JavaOnlyMap.of(UiListViewNode.PROP_ORIENTATION, "horizontal")
+        val props = reactMapOf(UiListViewNode.PROP_ORIENTATION, "horizontal")
         val node = createNodeWithViewSpy(props)
 
         node.build()

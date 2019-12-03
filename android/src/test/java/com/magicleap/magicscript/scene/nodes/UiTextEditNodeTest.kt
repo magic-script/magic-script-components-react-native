@@ -32,6 +32,8 @@ import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.Utils
 import kotlinx.android.synthetic.main.text_edit.view.*
@@ -125,7 +127,7 @@ class UiTextEditNodeTest {
     @Test
     fun shouldApplyTextWhenTextPropertyPresent() {
         val text = "xyz"
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT, text)
+        val props = reactMapOf(UiTextEditNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -136,7 +138,7 @@ class UiTextEditNodeTest {
     @Test
     fun shouldApplyHintWhenHintPropertyPresentAndTextIsEmpty() {
         val hint = "hint text"
-        val props = JavaOnlyMap.of(
+        val props = reactMapOf(
                 UiTextEditNode.PROP_HINT, hint,
                 UiTextEditNode.PROP_TEXT, ""
 
@@ -154,7 +156,7 @@ class UiTextEditNodeTest {
     fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
         val textSize = 0.15
         val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_SIZE, textSize)
+        val props = reactMapOf(UiTextEditNode.PROP_TEXT_SIZE, textSize)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -165,7 +167,7 @@ class UiTextEditNodeTest {
     @Test
     fun shouldApplyTextAlignmentWhenAlignmentPropertyPresent() {
         val textAlignment = "center"
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_ALIGNMENT, textAlignment)
+        val props = reactMapOf(UiTextEditNode.PROP_TEXT_ALIGNMENT, textAlignment)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -177,8 +179,8 @@ class UiTextEditNodeTest {
     @Test
     fun shouldApplyTextColorWhenColorPropertyPresentAndTextNotEmpty() {
         val text = "some text"
-        val textColor = JavaOnlyArray.of(0.5, 1.0, 1.0, 1.0)
-        val props = JavaOnlyMap.of(
+        val textColor = reactArrayOf(0.5, 1.0, 1.0, 1.0)
+        val props = reactMapOf(
                 UiTextEditNode.PROP_TEXT_COLOR, textColor,
                 UiTextEditNode.PROP_TEXT, text
         )
@@ -192,7 +194,7 @@ class UiTextEditNodeTest {
     @Test
     fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
         val spacing = 0.3 // 'EM' units
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_CHARACTERS_SPACING, spacing)
+        val props = reactMapOf(UiTextEditNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -202,7 +204,7 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldApplyMultilineWhenMultilinePropertyIsTrue() {
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_MULTILINE, true)
+        val props = reactMapOf(UiTextEditNode.PROP_MULTILINE, true)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -212,8 +214,8 @@ class UiTextEditNodeTest {
 
     @Test
     fun shouldApplyTextPaddingWhenPaddingPropertyPresent() {
-        val padding = JavaOnlyArray.of(2.0, 3.0, 2.0, 3.0)
-        val props = JavaOnlyMap.of(UiTextEditNode.PROP_TEXT_PADDING, padding)
+        val padding = reactArrayOf(2.0, 3.0, 2.0, 3.0)
+        val props = reactMapOf(UiTextEditNode.PROP_TEXT_PADDING, padding)
         val node = createNodeWithViewSpy(props)
 
         node.build()

@@ -182,7 +182,7 @@ import SceneKit
 
         foregroundGeometry.firstMaterial?.diffuse.contents = foregroundColor.cgColor
 
-        let slideWidth = size.width * progress
+        let slideWidth = Swift.max(size.height, size.width * progress)
         foregroundGeometry.width = slideWidth
         foregroundGeometry.height = size.height
         foregroundGeometry.cornerRadius = 0.5 * size.height

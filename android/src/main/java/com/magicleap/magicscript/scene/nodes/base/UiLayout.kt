@@ -78,11 +78,15 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     }
 
     override fun show() {
+        super.show()
+
         childrenList.forEach { it.show() }
         redrawRequested = true
     }
 
     override fun hide() {
+        super.hide()
+
         childrenList.forEach { it.hide() }
         redrawRequested = true
     }

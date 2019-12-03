@@ -59,7 +59,9 @@ class UiDropdownListNode(initProps: ReadableMap,
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
         listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
-        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
+        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl()).apply {
+            this@UiDropdownListNode.addContent(this)
+        }
 
         properties.putString(PROP_ICON, "arrow-down")
     }
@@ -89,6 +91,7 @@ class UiDropdownListNode(initProps: ReadableMap,
                 logMessage("on item selected, index= $index")
             }
             listNode.addContent(child)
+            hideList()
         } else {
             super.addContent(child)
         }
@@ -107,12 +110,14 @@ class UiDropdownListNode(initProps: ReadableMap,
 
     override fun onViewClick() {
         super.onViewClick()
-        if (isListVisible()) {
+        if (listNode.isVisible) {
             hideList()
         } else {
             showList()
         }
     }
+
+
 
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
@@ -149,25 +154,21 @@ class UiDropdownListNode(initProps: ReadableMap,
     private fun setShowList(props: Bundle) {
         if (props.containsKey(PROP_SHOW_LIST)) {
             val show = props.getBoolean(PROP_SHOW_LIST)
-            if (show && !isListVisible()) {
-                showList()
-            } else if (isListVisible()) {
+            if (show && !listNode.isVisible) {
                 hideList()
+            } else if (listNode.isVisible) {
+               showList()
             }
         }
     }
 
-    private fun isListVisible(): Boolean {
-        return contentNode.children.contains(listNode)
-    }
-
     private fun showList() {
-        addContent(listNode)
+        listNode.show()
         onListVisibilityChanged?.invoke(true)
     }
 
     private fun hideList() {
-        removeContent(listNode)
+        listNode.hide()
         onListVisibilityChanged?.invoke(false)
     }
 

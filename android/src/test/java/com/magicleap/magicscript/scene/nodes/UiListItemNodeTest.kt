@@ -22,6 +22,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -48,8 +50,8 @@ class UiListItemNodeTest {
 
     @Test
     fun `should apply background color`() {
-        val color = JavaOnlyArray.of(1.0, 1.0, 1.0, 1.0)
-        val props = JavaOnlyMap.of(UiListViewItemNode.PROP_BACKGROUND_COLOR, color)
+        val color = reactArrayOf(1.0, 1.0, 1.0, 1.0)
+        val props = reactMapOf(UiListViewItemNode.PROP_BACKGROUND_COLOR, color)
         val node = createNodeWithViewSpy(props)
 
         node.build()

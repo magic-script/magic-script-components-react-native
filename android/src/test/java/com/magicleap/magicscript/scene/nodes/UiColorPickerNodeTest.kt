@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_COLOR
@@ -61,7 +62,7 @@ class UiColorPickerNodeTest {
     fun `should override default properties`() {
         val testedHeight = 2.0
         val testedColor = "[0.3, 1.0, 0.3, 1.0]"
-        val props = JavaOnlyMap.of(PROP_HEIGHT, testedHeight, PROP_COLOR, testedColor)
+        val props = reactMapOf(PROP_HEIGHT, testedHeight, PROP_COLOR, testedColor)
 
         tested = createNodeWithViewSpy(props)
 

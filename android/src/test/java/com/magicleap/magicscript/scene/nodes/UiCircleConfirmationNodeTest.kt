@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.magicleap.magicscript.createActionDownEvent
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
 import junit.framework.Assert.assertEquals
 import org.amshove.kluent.shouldEqual
@@ -64,7 +65,7 @@ class UiCircleConfirmationNodeTest {
 
     @Test
     fun `should apply height property as circle radius`() {
-        val props = JavaOnlyMap.of(UiCircleConfirmationNode.PROP_HEIGHT, 0.22)
+        val props = reactMapOf(UiCircleConfirmationNode.PROP_HEIGHT, 0.22)
         val node = createNodeWithViewSpy(props)
         node.build()
 

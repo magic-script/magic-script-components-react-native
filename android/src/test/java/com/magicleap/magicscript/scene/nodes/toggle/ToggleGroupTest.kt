@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -44,14 +45,14 @@ class ToggleGroupTest {
     @Test
     fun `only one toggle should be active when multiple selection not allowed`() {
         val node = buildGroupNode(
-                JavaOnlyMap.of(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, false)
+                reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, false)
         )
-        val toggle1 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, false))
-        val toggle2 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
-        val toggle3 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
+        val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, false))
+        val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
+        val toggle3 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val togglesList = listOf(toggle1, toggle2, toggle3)
         node.addToggles(togglesList)
-        toggle1.update(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
+        toggle1.update(reactMapOf(UiToggleNode.PROP_CHECKED, true))
 
         val numberOfActiveToggles = countActiveToggles(togglesList)
 
@@ -61,10 +62,10 @@ class ToggleGroupTest {
     @Test
     fun `every toggle can be active when multiple selection is allowed`() {
         val node = buildGroupNode(
-                JavaOnlyMap.of(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, true)
+                reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, true)
         )
-        val toggle1 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
-        val toggle2 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
+        val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
+        val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val togglesList = listOf(toggle1, toggle2)
         node.addToggles(togglesList)
 
@@ -75,11 +76,11 @@ class ToggleGroupTest {
 
     @Test
     fun `all toggles should be initially off when forced by group`() {
-        val node = buildGroupNode(JavaOnlyMap.of(
+        val node = buildGroupNode(reactMapOf(
                 ToggleGroupNode.PROP_FORCE_ALL_OFF, true
         ))
-        val toggle1 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
-        val toggle2 = buildToggleNode(JavaOnlyMap.of(UiToggleNode.PROP_CHECKED, true))
+        val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
+        val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val togglesList = listOf(toggle1, toggle2)
         node.addToggles(togglesList)
 

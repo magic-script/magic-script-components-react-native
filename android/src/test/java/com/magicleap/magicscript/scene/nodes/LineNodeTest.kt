@@ -16,14 +16,15 @@
 
 package com.magicleap.magicscript.scene.nodes
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -37,51 +38,67 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class LineNodeTest {
 
-    private lateinit var context: Context
-    private lateinit var cubeRenderableBuilder: CubeRenderableBuilder
+    private lateinit var cubeBuilder: CubeRenderableBuilder
 
     @Before
     fun setUp() {
-        this.context = ApplicationProvider.getApplicationContext()
-        this.cubeRenderableBuilder = mock()
+        this.cubeBuilder = mock()
     }
 
     @Test
-    fun shouldNotChangeHardcodedAlignment() {
-        val node = LineNode(JavaOnlyMap(), context, cubeRenderableBuilder)
+    fun `should not change hardcoded alignment`() {
+        val node = createLineNode(JavaOnlyMap())
 
-        node.update(JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-left"))
+        node.update(reactMapOf(TransformNode.PROP_ALIGNMENT, "top-left"))
 
         assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
         assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
     }
 
     @Test
-    fun shouldBuildTwoLineSegmentsWhenThreePointsProvided() {
-        val point1 = JavaOnlyArray.of(1.0, 2.0, 0.0)
-        val point2 = JavaOnlyArray.of(3.0, 4.0, 1.0)
-        val point3 = JavaOnlyArray.of(4.0, 2.0, 1.5)
-        val points = JavaOnlyArray.of(point1, point2, point3)
-        val props = JavaOnlyMap.of(LineNode.PROP_POINTS, points)
-        val node = LineNode(props, context, cubeRenderableBuilder)
+    fun `should return bounding based on provided points`() {
+        val point1 = reactArrayOf(-2.0, -2.0, 0.0)
+        val point2 = reactArrayOf(2.0, 2.0, 0.0)
+        val points = reactArrayOf(point1, point2)
+        val props = reactMapOf(LineNode.PROP_POINTS, points)
+        val node = createLineNode(props)
         node.build()
-
         node.attachRenderable()
+        val expectedBounds = Bounding(-2f, -2f, 2f, 2f)
 
-        verify(cubeRenderableBuilder, times(2)).buildRenderable(any(), any(), any(), any())
+        node.getBounding() shouldEqualInexact expectedBounds
     }
 
     @Test
-    fun shouldNotBuildCubeWhenOnlyOnePointProvided() {
-        val point = JavaOnlyArray.of(1.0, 2.0, 0.0)
-        val points = JavaOnlyArray.of(point)
-        val props = JavaOnlyMap.of(LineNode.PROP_POINTS, points)
-        val node = LineNode(props, context, cubeRenderableBuilder)
+    fun `should build two line segments when three points provided`() {
+        val point1 = reactArrayOf(1.0, 2.0, 0.0)
+        val point2 = reactArrayOf(3.0, 4.0, 1.0)
+        val point3 = reactArrayOf(4.0, 2.0, 1.5)
+        val points = reactArrayOf(point1, point2, point3)
+        val props = reactMapOf(LineNode.PROP_POINTS, points)
+        val node = createLineNode(props)
         node.build()
 
         node.attachRenderable()
 
-        verify(cubeRenderableBuilder, never()).buildRenderable(any(), any(), any(), any())
+        verify(cubeBuilder, times(2)).buildRenderable(any(), any(), any(), any())
+    }
+
+    @Test
+    fun `should not build cube when only one point provided`() {
+        val point = reactArrayOf(1.0, 2.0, 0.0)
+        val points = reactArrayOf(point)
+        val props = reactMapOf(LineNode.PROP_POINTS, points)
+        val node = createLineNode(props)
+        node.build()
+
+        node.attachRenderable()
+
+        verify(cubeBuilder, never()).buildRenderable(any(), any(), any(), any())
+    }
+
+    private fun createLineNode(props: JavaOnlyMap): LineNode {
+        return LineNode(props, cubeBuilder)
     }
 
 }

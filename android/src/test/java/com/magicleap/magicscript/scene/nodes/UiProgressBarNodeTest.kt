@@ -22,6 +22,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -72,7 +74,7 @@ class UiProgressBarNodeTest {
     @Test
     fun shouldApplyValueWhenValuePropertyPresent() {
         val value = 0.2
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_VALUE, value)
+        val props = reactMapOf(UiProgressBarNode.PROP_VALUE, value)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -83,7 +85,7 @@ class UiProgressBarNodeTest {
     @Test
     fun shouldApplyMinValueWhenMinPropertyPresent() {
         val minValue = 10.0
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MIN, minValue)
+        val props = reactMapOf(UiProgressBarNode.PROP_MIN, minValue)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -94,7 +96,7 @@ class UiProgressBarNodeTest {
     @Test
     fun shouldApplyMaxValueWhenMaxPropertyPresent() {
         val maxValue = 1000.0
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_MAX, maxValue)
+        val props = reactMapOf(UiProgressBarNode.PROP_MAX, maxValue)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -104,13 +106,13 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldApplyProgressColorWhenColoPropertyPresent() {
-        val beginColor = JavaOnlyArray.of(0.5, 0.5, 0.5, 0.5)
-        val endColor = JavaOnlyArray.of(0.8, 0.8, 0.8, 0.8)
-        val progressColor = JavaOnlyMap.of(
+        val beginColor = reactArrayOf(0.5, 0.5, 0.5, 0.5)
+        val endColor = reactArrayOf(0.8, 0.8, 0.8, 0.8)
+        val progressColor = reactMapOf(
                 UiProgressBarNode.PROP_PROGRESS_COLOR_BEGIN, beginColor,
                 UiProgressBarNode.PROP_PROGRESS_COLOR_END, endColor
         )
-        val props = JavaOnlyMap.of(UiProgressBarNode.PROP_PROGRESS_COLOR, progressColor)
+        val props = reactMapOf(UiProgressBarNode.PROP_PROGRESS_COLOR, progressColor)
         val node = createNodeWithViewSpy(props)
 
         node.build()
@@ -121,7 +123,7 @@ class UiProgressBarNodeTest {
 
     @Test
     fun shouldNotChangeHardcodedAlignment() {
-        val props = JavaOnlyMap.of(TransformNode.PROP_ALIGNMENT, "top-right")
+        val props = reactMapOf(TransformNode.PROP_ALIGNMENT, "top-right")
         val node = createNodeWithViewSpy(props)
 
         node.build()

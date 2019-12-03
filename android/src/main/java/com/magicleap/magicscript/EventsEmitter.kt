@@ -16,8 +16,8 @@
 
 package com.magicleap.magicscript
 
-import com.facebook.react.bridge.WritableMap
+import android.os.Bundle
 
 interface EventsEmitter {
-    fun sendEvent(eventName: String, params: WritableMap)
+    fun sendEvent(eventName: String, params: Bundle)
 }

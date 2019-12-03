@@ -25,6 +25,7 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.nhaarman.mockitokotlin2.argThat
 import org.mockito.ArgumentMatcher
 import kotlin.test.assertTrue
 
@@ -103,8 +104,11 @@ fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
 infix fun Bounding.shouldEqualInexact(other: Bounding) =
     assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
 
-fun matchesBounds(bounds: Bounding) =
-    ArgumentMatcher<Bounding> { argument -> Bounding.equalInexact(argument, bounds) }
+fun matchesInexact(bounds: Bounding) = argThat(
+    ArgumentMatcher<Bounding> { argument ->
+        Bounding.equalInexact(argument, bounds)
+    }
+)
 
 // endregion
 

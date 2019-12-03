@@ -29,7 +29,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
-import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -139,7 +138,7 @@ class UiScrollViewNodeTest {
         viewSpy.onScrollChangeListener?.invoke(Vector2(0f, 0.5f))
         val expectedClipBounds = Bounding(left = 0f, bottom = -0.6f, right = 0.8f, top = -0.2f)
 
-        verify(contentNode).setClipBounds(argThat(matchesBounds(expectedClipBounds)))
+        verify(contentNode).setClipBounds(matchesInexact(expectedClipBounds))
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {

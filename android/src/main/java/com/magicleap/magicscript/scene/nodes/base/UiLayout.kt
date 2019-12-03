@@ -28,8 +28,8 @@ import com.magicleap.magicscript.utils.logMessage
 import java.lang.Float.min
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager)
-    : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
+abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager) :
+    TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     companion object {
         const val WRAP_CONTENT_DIMENSION = 0F
@@ -77,20 +77,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         setLayoutSize(props)
     }
 
-    override fun show() {
-        super.show()
-
-        childrenList.forEach { it.show() }
-        redrawRequested = true
-    }
-
-    override fun hide() {
-        super.hide()
-
-        childrenList.forEach { it.hide() }
-        redrawRequested = true
-    }
-
     override fun onVisibilityChanged(visibility: Boolean) {
         childrenList.forEach {
             if (visibility) {
@@ -99,7 +85,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                 it.hide()
             }
         }
-        redrawRequested = true
     }
 
     protected open fun setLayoutSize(props: Bundle) {
@@ -110,7 +95,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             if (props.containsKey(PROP_HEIGHT)) {
                 height = props.getDouble(PROP_HEIGHT).toFloat()
             }
-            requestLayout()
+            redrawRequested = true
         }
     }
 
@@ -120,6 +105,9 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      */
     override fun addContent(child: Node) {
         if (child is TransformNode) {
+            if (!isVisible) {
+                child.hide()
+            }
             mChildrenList.add(child)
             onAddedToLayoutListener?.invoke(child)
             redrawRequested = true
@@ -141,8 +129,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     override fun setClipBounds(clipBounds: Bounding) {
         val localBounds = clipBounds.translate(-getContentPosition())
         contentNode.children
-                .filterIsInstance<TransformNode>()
-                .forEach { it.setClipBounds(localBounds) }
+            .filterIsInstance<TransformNode>()
+            .forEach { it.setClipBounds(localBounds) }
     }
 
     override fun onDestroy() {
@@ -170,7 +158,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
 
             // Attach the child after position is calculated
             mChildrenList.filter { it !in contentNode.children }
-                    .forEach { contentNode.addChild(it) }
+                .forEach { contentNode.addChild(it) }
 
         }
 
@@ -215,7 +203,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
 
     private fun readUserSpecifiedScale(node: TransformNode): Vector3 {
         val scale = node.getProperty(PROP_LOCAL_SCALE) as? ArrayList<Double>
-                ?: return Vector3.one()
+            ?: return Vector3.one()
         return Vector3(scale[0].toFloat(), scale[1].toFloat(), scale[2].toFloat())
     }
 

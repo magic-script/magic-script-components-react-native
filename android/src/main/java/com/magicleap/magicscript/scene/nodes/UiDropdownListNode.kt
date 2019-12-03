@@ -60,16 +60,18 @@ class UiDropdownListNode(
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
         listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
-        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl()).apply {
-            this@UiDropdownListNode.addContent(this)
-        }
-
         properties.putString(PROP_ICON, "arrow-down")
+
+        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
     }
 
     override fun build() {
         super.build()
+
         listNode.build()
+        addContent(listNode)
+        hideList()
+
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
     }
 
@@ -92,7 +94,6 @@ class UiDropdownListNode(
                 logMessage("on item selected, index= $index")
             }
             listNode.addContent(child)
-            hideList()
         } else {
             super.addContent(child)
         }
@@ -117,8 +118,6 @@ class UiDropdownListNode(
             showList()
         }
     }
-
-
 
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
@@ -156,9 +155,9 @@ class UiDropdownListNode(
         if (props.containsKey(PROP_SHOW_LIST)) {
             val show = props.getBoolean(PROP_SHOW_LIST)
             if (show && !listNode.isVisible) {
-                hideList()
+                showList()
             } else if (listNode.isVisible) {
-               showList()
+                hideList()
             }
         }
     }

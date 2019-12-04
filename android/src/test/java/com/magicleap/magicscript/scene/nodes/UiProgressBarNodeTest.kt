@@ -109,8 +109,8 @@ class UiProgressBarNodeTest {
         val beginColor = reactArrayOf(0.5, 0.5, 0.5, 0.5)
         val endColor = reactArrayOf(0.8, 0.8, 0.8, 0.8)
         val progressColor = reactMapOf(
-                UiProgressBarNode.PROP_PROGRESS_COLOR_BEGIN, beginColor,
-                UiProgressBarNode.PROP_PROGRESS_COLOR_END, endColor
+            UiProgressBarNode.PROP_PROGRESS_COLOR_BEGIN, beginColor,
+            UiProgressBarNode.PROP_PROGRESS_COLOR_END, endColor
         )
         val props = reactMapOf(UiProgressBarNode.PROP_PROGRESS_COLOR, progressColor)
         val node = createNodeWithViewSpy(props)

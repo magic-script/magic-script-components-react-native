@@ -21,10 +21,11 @@ import com.google.ar.sceneform.rendering.Color
 
 interface CubeRenderableBuilder {
 
-    fun buildRenderable(cubeSize: Vector3,
-                        cubeCenter: Vector3,
-                        color: Color,
-                        resultCallback: ((result: RenderableResult) -> Unit)
+    fun buildRenderable(
+        cubeSize: Vector3,
+        cubeCenter: Vector3,
+        color: Color,
+        resultCallback: ((result: RenderableResult) -> Unit)
     )
 
 }

@@ -28,8 +28,8 @@ import com.magicleap.magicscript.icons.ToggleIconsProvider
 import com.magicleap.magicscript.utils.Utils
 
 class LinearToggleViewManager(
-        private val fontProvider: FontProvider,
-        private val toggleIconsProvider: ToggleIconsProvider
+    private val fontProvider: FontProvider,
+    private val toggleIconsProvider: ToggleIconsProvider
 ) : ToggleViewManager {
 
     companion object {
@@ -53,8 +53,8 @@ class LinearToggleViewManager(
 
         toggleConfig.container.apply {
             layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
             (this as LinearLayout).orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
@@ -73,13 +73,14 @@ class LinearToggleViewManager(
         // text to toggle spacing
         val spacing = (SWITCH_SPACING_RATIO * iconWidthPx).toInt()
 
-        toggleConfig.imageView.layoutParams = LinearLayout.LayoutParams(iconWidthPx, iconHeightPx).apply {
-            if (toggleType == UiToggleNode.TYPE_DEFAULT) {
-                leftMargin = spacing
-            } else {
-                rightMargin = spacing
+        toggleConfig.imageView.layoutParams =
+            LinearLayout.LayoutParams(iconWidthPx, iconHeightPx).apply {
+                if (toggleType == UiToggleNode.TYPE_DEFAULT) {
+                    leftMargin = spacing
+                } else {
+                    rightMargin = spacing
+                }
             }
-        }
 
         toggleConfig.imageView.setOnClickListener {
             toggleConfig.onToggleClickListener()

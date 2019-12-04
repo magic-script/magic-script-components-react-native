@@ -139,8 +139,8 @@ class UiTextEditNodeTest {
     fun shouldApplyHintWhenHintPropertyPresentAndTextIsEmpty() {
         val hint = "hint text"
         val props = reactMapOf(
-                UiTextEditNode.PROP_HINT, hint,
-                UiTextEditNode.PROP_TEXT, ""
+            UiTextEditNode.PROP_HINT, hint,
+            UiTextEditNode.PROP_TEXT, ""
 
         )
         val node = createNodeWithViewSpy(props)
@@ -181,8 +181,8 @@ class UiTextEditNodeTest {
         val text = "some text"
         val textColor = reactArrayOf(0.5, 1.0, 1.0, 1.0)
         val props = reactMapOf(
-                UiTextEditNode.PROP_TEXT_COLOR, textColor,
-                UiTextEditNode.PROP_TEXT, text
+            UiTextEditNode.PROP_TEXT_COLOR, textColor,
+            UiTextEditNode.PROP_TEXT, text
         )
         val node = createNodeWithViewSpy(props)
 

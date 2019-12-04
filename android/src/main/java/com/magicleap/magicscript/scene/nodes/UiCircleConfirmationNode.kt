@@ -29,10 +29,11 @@ import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 import kotlin.math.PI
 
-open class UiCircleConfirmationNode(initProps: ReadableMap,
-                                    context: Context,
-                                    viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiCircleConfirmationNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     var onConfirmationCompletedListener: (() -> Unit)? = null
     var onConfirmationCanceledListener: (() -> Unit)? = null

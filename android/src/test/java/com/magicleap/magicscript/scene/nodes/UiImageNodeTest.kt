@@ -65,8 +65,8 @@ class UiImageNodeTest {
     @Test
     fun shouldMixColorWithImageWhenImagePathAndColorPropertiesPresent() {
         val props = reactMapOf(
-                UiImageNode.PROP_FILE_PATH, "http://sample-image.com",
-                UiImageNode.PROP_COLOR, reactArrayOf(1.0, 1.0, 1.0, 1.0)
+            UiImageNode.PROP_FILE_PATH, "http://sample-image.com",
+            UiImageNode.PROP_COLOR, reactArrayOf(1.0, 1.0, 1.0, 1.0)
         )
         val node = createNodeWithViewSpy(props)
         val expectedFilter = PorterDuffColorFilter(0XFFFFFFFF.toInt(), PorterDuff.Mode.MULTIPLY)
@@ -79,7 +79,7 @@ class UiImageNodeTest {
     @Test
     fun shouldApplyBackgroundColorWhenProvidedColorWithoutImagePath() {
         val props = reactMapOf(
-                UiImageNode.PROP_COLOR, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+            UiImageNode.PROP_COLOR, reactArrayOf(0.0, 0.0, 0.0, 0.0)
         )
         val node = createNodeWithViewSpy(props)
 

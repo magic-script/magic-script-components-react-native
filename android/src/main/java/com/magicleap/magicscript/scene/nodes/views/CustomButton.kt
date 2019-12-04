@@ -30,9 +30,9 @@ import kotlin.math.max
 import kotlin.math.min
 
 class CustomButton @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     enum class IconPosition {
@@ -223,13 +223,13 @@ class CustomButton @JvmOverloads constructor(
 
         bgPaint.strokeWidth = strokeSize
         canvas.drawRoundRect(
-                strokeSize / 2,
-                strokeSize / 2,
-                width.toFloat() - strokeSize / 2,
-                height.toFloat() - strokeSize / 2,
-                radius,
-                radius,
-                bgPaint
+            strokeSize / 2,
+            strokeSize / 2,
+            width.toFloat() - strokeSize / 2,
+            height.toFloat() - strokeSize / 2,
+            radius,
+            radius,
+            bgPaint
         )
     }
 
@@ -265,9 +265,9 @@ class CustomButton @JvmOverloads constructor(
             }
         }
         val bitmap = Bitmap.createBitmap(
-                max(drawable.intrinsicWidth, 1),
-                max(drawable.intrinsicHeight, 1),
-                Bitmap.Config.ARGB_8888
+            max(drawable.intrinsicWidth, 1),
+            max(drawable.intrinsicHeight, 1),
+            Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)

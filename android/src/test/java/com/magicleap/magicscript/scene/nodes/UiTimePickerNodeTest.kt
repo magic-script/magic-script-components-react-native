@@ -69,10 +69,10 @@ class UiTimePickerNodeTest {
     @Test
     fun `should set vertical orientation when label side is top`() {
         tested.updateProperties(
-                createProperty(
-                        UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                        UiDateTimePickerBaseNode.LABEL_SIDE_TOP
-                )
+            createProperty(
+                UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
+                UiDateTimePickerBaseNode.LABEL_SIDE_TOP
+            )
         )
 
         verify(tested.mainView).orientation = LinearLayout.VERTICAL
@@ -81,10 +81,10 @@ class UiTimePickerNodeTest {
     @Test
     fun `should set horizontal orientation when label side is left`() {
         tested.updateProperties(
-                createProperty(
-                        UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                        UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
-                )
+            createProperty(
+                UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
+                UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
+            )
         )
 
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL
@@ -101,10 +101,10 @@ class UiTimePickerNodeTest {
     @Test
     fun `on view click should create dialog with default time`() {
         tested.updateProperties(
-                createProperty(
-                        UiTimePickerNode.PROP_DEFAULT_TIME, "14:10:00",
-                        UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
-                )
+            createProperty(
+                UiTimePickerNode.PROP_DEFAULT_TIME, "14:10:00",
+                UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
@@ -115,57 +115,60 @@ class UiTimePickerNodeTest {
     @Test
     fun `if date and defaultDate is not set should apply current date in dialog`() {
         tested.updateProperties(
-                createProperty(
-                        UiTimePickerNode.PROP_TIME_FORMAT,
-                        UiTimePickerNode.TIME_FORMAT_DEFAULT
-                )
+            createProperty(
+                UiTimePickerNode.PROP_TIME_FORMAT,
+                UiTimePickerNode.TIME_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
         val calendar = Calendar.getInstance()
 
 
-        verify(timePickerDialog).updateTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+        verify(timePickerDialog).updateTime(
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE)
+        )
     }
 
     @Test
     fun `if defaultDate is set should apply it to dialog`() {
         val textTime = "14:15:00"
         tested.updateProperties(
-                createProperty(
-                        UiTimePickerNode.PROP_DEFAULT_TIME, textTime,
-                        UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
-                )
+            createProperty(
+                UiTimePickerNode.PROP_DEFAULT_TIME, textTime,
+                UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
 
-        verify(timePickerDialog).updateTime(14,15)
+        verify(timePickerDialog).updateTime(14, 15)
     }
 
     @Test
     fun `if date is set should apply it to dialog`() {
         val textTime = "14:16:00"
         tested.updateProperties(
-                createProperty(
-                        UiTimePickerNode.PROP_DEFAULT_TIME, "14:15:00",
-                        UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT,
-                        UiTimePickerNode.PROP_TIME, textTime
-                )
+            createProperty(
+                UiTimePickerNode.PROP_DEFAULT_TIME, "14:15:00",
+                UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT,
+                UiTimePickerNode.PROP_TIME, textTime
+            )
         )
 
         tested.forceClick()
 
-        verify(timePickerDialog).updateTime(14,16)
+        verify(timePickerDialog).updateTime(14, 16)
     }
 
     @Test
     fun `should update timeValue when date set`() {
         tested.updateProperties(
-                createProperty(
-                        UiTimePickerNode.PROP_DEFAULT_TIME, "14:15:00",
-                        UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
-                )
+            createProperty(
+                UiTimePickerNode.PROP_DEFAULT_TIME, "14:15:00",
+                UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
@@ -206,7 +209,10 @@ class UiTimePickerNodeTest {
             return mainView
         }
 
-        fun provideDialogOnTimeSetListener(): TimePickerDialog.OnTimeSetListener { return onTimeSetListener }
+        fun provideDialogOnTimeSetListener(): TimePickerDialog.OnTimeSetListener {
+            return onTimeSetListener
+        }
+
         fun provideDialogOnTimeChangeListener() = onTimeChangeListener
 
         override fun provideActivityContext() = context

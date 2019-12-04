@@ -9,16 +9,16 @@ import com.magicleap.magicscript.scene.nodes.views.NotifiableTimePickerDialog
 interface DialogProvider {
 
     fun provideDatePickerDialog(
-            context: Context
+        context: Context
     ): DatePickerDialog
 
     fun provideTimePickerDialog(
-            context: Context,
-            onTimeSetListener: TimePickerDialog.OnTimeSetListener,
-            is24HourView: Boolean
+        context: Context,
+        onTimeSetListener: TimePickerDialog.OnTimeSetListener,
+        is24HourView: Boolean
     ): NotifiableTimePickerDialog
 
     fun provideCustomAlertDialogBuilder(
-            context: Context
+        context: Context
     ): CustomAlertDialogBuilder
 }

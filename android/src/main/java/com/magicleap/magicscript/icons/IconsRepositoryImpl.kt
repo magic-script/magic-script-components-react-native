@@ -18,8 +18,10 @@ package com.magicleap.magicscript.icons
 
 import android.graphics.drawable.Drawable
 
-class IconsRepositoryImpl(private val defaultIconsProvider: DefaultIconsProvider,
-                          private val externalIconsProvider: ExternalIconsProvider) : IconsRepository {
+class IconsRepositoryImpl(
+    private val defaultIconsProvider: DefaultIconsProvider,
+    private val externalIconsProvider: ExternalIconsProvider
+) : IconsRepository {
 
     override fun getIcon(name: String, forceDefault: Boolean): Drawable? {
         if (forceDefault) {

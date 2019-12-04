@@ -73,8 +73,8 @@ class UiSpinnerNodeTest {
     fun `should apply progress when determinate`() {
         val value = 0.3
         val props = reactMapOf(
-                UiSpinnerNode.PROP_VALUE, value,
-                UiSpinnerNode.PROP_DETERMINATE, true
+            UiSpinnerNode.PROP_VALUE, value,
+            UiSpinnerNode.PROP_DETERMINATE, true
         )
         val node = createNodeWithViewSpy(props)
 
@@ -88,8 +88,8 @@ class UiSpinnerNodeTest {
     fun `should not apply progress when not determinate`() {
         val value = 0.6
         val props = reactMapOf(
-                UiSpinnerNode.PROP_VALUE, value,
-                UiSpinnerNode.PROP_DETERMINATE, false
+            UiSpinnerNode.PROP_VALUE, value,
+            UiSpinnerNode.PROP_DETERMINATE, false
         )
         val node = createNodeWithViewSpy(props)
 

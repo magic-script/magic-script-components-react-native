@@ -26,11 +26,12 @@ import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.limited
 
-class UiDropdownListItemNode(initProps: ReadableMap,
-                             context: Context,
-                             viewRenderableLoader: ViewRenderableLoader,
-                             fontProvider: FontProvider)
-    : UiTextNode(initProps, context, viewRenderableLoader, fontProvider) {
+class UiDropdownListItemNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    fontProvider: FontProvider
+) : UiTextNode(initProps, context, viewRenderableLoader, fontProvider) {
 
     companion object {
         const val PROP_ID = "id"

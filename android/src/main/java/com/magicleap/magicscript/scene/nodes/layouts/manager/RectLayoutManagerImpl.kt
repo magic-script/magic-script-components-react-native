@@ -27,8 +27,10 @@ class RectLayoutManagerImpl : RectLayoutManager {
         if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
             childrenBounds[0]?.let { childBounds ->
                 val childSize = childBounds.size()
-                val sizeLimitX = if (parentWidth != WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
-                val sizeLimitY = if (parentHeight != WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
+                val sizeLimitX =
+                    if (parentWidth != WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
+                val sizeLimitY =
+                    if (parentHeight != WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
                 val sizeLimit = Vector2(sizeLimitX, sizeLimitY)
                 layoutNode(children[0], childBounds, sizeLimit)
             }

@@ -25,19 +25,24 @@ import com.magicleap.magicscript.utils.logMessage
 
 class CubeRenderableBuilderImpl(private val context: Context) : CubeRenderableBuilder {
 
-    override fun buildRenderable(cubeSize: Vector3, cubeCenter: Vector3, color: Color, resultCallback: (result: RenderableResult) -> Unit) {
+    override fun buildRenderable(
+        cubeSize: Vector3,
+        cubeCenter: Vector3,
+        color: Color,
+        resultCallback: (result: RenderableResult) -> Unit
+    ) {
         MaterialFactory
-                .makeOpaqueWithColor(context, color)
-                .thenAccept { material ->
-                    val renderable = ShapeFactory.makeCube(cubeSize, cubeCenter, material)
-                    renderable.isShadowReceiver = false
-                    renderable.isShadowCaster = false
-                    resultCallback(RenderableResult.Success(renderable))
-                }
-                .exceptionally { throwable ->
-                    resultCallback(RenderableResult.Error(throwable))
-                    logMessage("error building cube material: $throwable")
-                    null
-                }
+            .makeOpaqueWithColor(context, color)
+            .thenAccept { material ->
+                val renderable = ShapeFactory.makeCube(cubeSize, cubeCenter, material)
+                renderable.isShadowReceiver = false
+                renderable.isShadowCaster = false
+                resultCallback(RenderableResult.Success(renderable))
+            }
+            .exceptionally { throwable ->
+                resultCallback(RenderableResult.Error(throwable))
+                logMessage("error building cube material: $throwable")
+                null
+            }
     }
 }

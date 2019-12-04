@@ -20,4 +20,4 @@ package com.magicleap.magicscript.scene.nodes
 import com.facebook.react.bridge.ReadableMap
 
 /// Since we don't have cursor in Android, the functionality of panel boils down to the functionality of group.
-class PanelNode(props: ReadableMap): GroupNode(props)
+class PanelNode(props: ReadableMap) : GroupNode(props)

@@ -41,15 +41,17 @@ data class Vector2(var x: Float = 0F, var y: Float = 0F) {
     }
 
     operator fun div(other: Vector2): Vector2 {
-        return Vector2(if (other.x != 0F) {
-            x / other.x
-        } else {
-            0F
-        }, if (other.y != 0F) {
-            y / other.y
-        } else {
-            0F
-        })
+        return Vector2(
+            if (other.x != 0F) {
+                x / other.x
+            } else {
+                0F
+            }, if (other.y != 0F) {
+                y / other.y
+            } else {
+                0F
+            }
+        )
     }
 
     operator fun div(other: Float): Vector2 {

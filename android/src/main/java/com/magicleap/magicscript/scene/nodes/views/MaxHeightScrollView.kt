@@ -25,9 +25,11 @@ class MaxHeightScrollView(context: Context, attrs: AttributeSet) : ScrollView(co
     private var maxHeight = context.resources.getDimension(R.dimen.default_scroll_dialog_max_height)
 
     init {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView, 0, 0)
+        val typedArray =
+            context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView, 0, 0)
         try {
-            maxHeight = typedArray.getDimension(R.styleable.MaxHeightScrollView_maxHeight, maxHeight)
+            maxHeight =
+                typedArray.getDimension(R.styleable.MaxHeightScrollView_maxHeight, maxHeight)
         } finally {
             typedArray.recycle()
         }

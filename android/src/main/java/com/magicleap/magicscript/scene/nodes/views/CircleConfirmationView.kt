@@ -25,9 +25,9 @@ import androidx.core.content.ContextCompat.getColor
 import com.magicleap.magicscript.R
 
 class CircleConfirmationView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     companion object {
@@ -57,8 +57,8 @@ class CircleConfirmationView @JvmOverloads constructor(
     }
 
     private val gradientColors = context.resources.getStringArray(R.array.circe_confirmation_colors)
-            .map { Color.parseColor(it) }
-            .toIntArray()
+        .map { Color.parseColor(it) }
+        .toIntArray()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

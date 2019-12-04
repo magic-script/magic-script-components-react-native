@@ -27,10 +27,11 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.PropertiesReader
 
-class ModelNode(initProps: ReadableMap,
-                private val context: Context,
-                private val modelRenderableLoader: ModelRenderableLoader)
-    : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
+class ModelNode(
+    initProps: ReadableMap,
+    private val context: Context,
+    private val modelRenderableLoader: ModelRenderableLoader
+) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
         // properties
@@ -64,7 +65,8 @@ class ModelNode(initProps: ReadableMap,
     override fun setClipBounds(clipBounds: Bounding) {
         val contentPosition = getContentPosition()
         if (contentPosition.x in clipBounds.left..clipBounds.right
-                && contentPosition.y in clipBounds.bottom..clipBounds.top) {
+            && contentPosition.y in clipBounds.bottom..clipBounds.top
+        ) {
             if (contentNode.renderable == null) {
                 contentNode.renderable = renderableCopy
             }

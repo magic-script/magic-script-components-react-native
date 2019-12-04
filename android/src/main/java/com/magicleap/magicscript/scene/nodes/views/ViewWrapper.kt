@@ -95,12 +95,12 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val translation = calculateScrollTranslation()
         val positionMeters = Vector2(
-                Utils.pxToMeters(event.x.toInt(), context),
-                -Utils.pxToMeters(event.y.toInt(), context)
+            Utils.pxToMeters(event.x.toInt(), context),
+            -Utils.pxToMeters(event.y.toInt(), context)
         )
         event.setLocation(
-                positionMeters.x + translation.x,
-                positionMeters.y + translation.y
+            positionMeters.x + translation.x,
+            positionMeters.y + translation.y
         )
         return findScrollAncestor()?.onTouchEvent(event) ?: false
     }

@@ -32,9 +32,9 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 
 class CustomScrollBar @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null

@@ -106,7 +106,7 @@ class UIWebViewNodeTest {
         tested = createNodeWithViewSpy(props)
         tested.build()
 
-        verify(containerSpy).scrollBy(eq(0), eq(scrollBy.toInt()    ))
+        verify(containerSpy).scrollBy(eq(0), eq(scrollBy.toInt()))
     }
 
 

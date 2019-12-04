@@ -68,10 +68,10 @@ class UiDateTimePickerBaseNodeTest {
     @Test
     fun `should set vertical orientation when label side is top`() {
         tested.updateProperties(
-                createProperty(
-                        UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                        UiDateTimePickerBaseNode.LABEL_SIDE_TOP
-                )
+            createProperty(
+                UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
+                UiDateTimePickerBaseNode.LABEL_SIDE_TOP
+            )
         )
 
         verify(tested.mainView).orientation = LinearLayout.VERTICAL
@@ -80,10 +80,10 @@ class UiDateTimePickerBaseNodeTest {
     @Test
     fun `should set horizontal orientation when label side is left`() {
         tested.updateProperties(
-                createProperty(
-                        UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                        UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
-                )
+            createProperty(
+                UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
+                UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
+            )
         )
 
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL

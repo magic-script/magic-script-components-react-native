@@ -22,8 +22,8 @@ import com.google.ar.sceneform.math.Vector3
  * Axis aligned bounding box.
  */
 data class AABB(
-        val min: Vector3 = Vector3.zero(),
-        val max: Vector3 = Vector3.zero()
+    val min: Vector3 = Vector3.zero(),
+    val max: Vector3 = Vector3.zero()
 ) {
 
     fun getWidth(): Float {

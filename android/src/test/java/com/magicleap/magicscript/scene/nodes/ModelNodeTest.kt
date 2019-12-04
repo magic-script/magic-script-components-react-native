@@ -80,8 +80,9 @@ class ModelNodeTest {
     fun shouldApplyCorrectScaleWhenLocalAndImportScalePropertiesPresent() {
         val initialLocalScale = reactArrayOf(2.0, 2.0, 2.0)
         val importScale = 1.5
-        val props = reactMapOf(TransformNode.PROP_LOCAL_SCALE, initialLocalScale,
-                ModelNode.PROP_IMPORT_SCALE, importScale
+        val props = reactMapOf(
+            TransformNode.PROP_LOCAL_SCALE, initialLocalScale,
+            ModelNode.PROP_IMPORT_SCALE, importScale
 
         )
         val expectedLocalScale = Vector3(3F, 3F, 3F)

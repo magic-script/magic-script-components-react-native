@@ -29,8 +29,8 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.edit_text_2d.view.*
 
-class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boolean)
-    : AlertDialog.Builder(context, R.style.InputDialogTheme) {
+class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boolean) :
+    AlertDialog.Builder(context, R.style.InputDialogTheme) {
 
     companion object {
         private const val MAX_HEIGHT = 100

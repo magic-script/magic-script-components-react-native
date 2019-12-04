@@ -27,13 +27,13 @@ import SceneKit
 
     var preferredWidth: CGFloat = 0.0 {
         didSet {
-            (backgroundNode.geometry as? SCNPlane)?.width = preferredWidth
+            setNeedsLayout()
         }
     }
 
     var preferredHeight: CGFloat = 0.0 {
         didSet {
-            (backgroundNode.geometry as? SCNPlane)?.height = preferredHeight
+            setNeedsLayout()
         }
     }
 

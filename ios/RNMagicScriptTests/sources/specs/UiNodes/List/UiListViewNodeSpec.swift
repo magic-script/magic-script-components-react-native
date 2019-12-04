@@ -135,7 +135,6 @@ class UiListViewNodeSpec: QuickSpec {
                         let itemNode2 = UiListViewItemNode(props: [:])
                         itemNode2.addChild(buttonNode2)
                         node.addChild(itemNode2)
-                        node.updateLayout() // calculation trigger
                         expect(node.items.count).to(equal(2))
                         item1 = node.items[0]
                         expect(item1.preferredWidth).to(beCloseTo(0.75))
@@ -156,7 +155,6 @@ class UiListViewNodeSpec: QuickSpec {
                         let itemNode = UiListViewItemNode(props: [:])
                         itemNode.addChild(buttonNode)
                         node.addChild(itemNode)
-                        node.updateLayout() // calculation trigger
                         expect(node.items.count).to(equal(1))
                         let item = node.items.first
                         expect(item?.preferredHeight).to(beCloseTo(0.125))
@@ -176,7 +174,6 @@ class UiListViewNodeSpec: QuickSpec {
                         let itemNode2 = UiListViewItemNode(props: [:])
                         itemNode2.addChild(buttonNode2)
                         node.addChild(itemNode2)
-                        node.updateLayout() // calculation trigger
                         expect(node.items.count).to(equal(2))
                         item1 = node.items[0]
                         expect(item1.preferredHeight).to(beCloseTo(0.125))

@@ -100,8 +100,6 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        updateItemsSize()
-
         linearLayout.layoutIfNeeded()
 
         let size = getSize()
@@ -132,6 +130,7 @@ import SceneKit
         guard let listItem = child as? UiListViewItemNode else { return false }
         items.append(listItem)
         linearLayout.addChild(listItem)
+        updateItemsSize()
         setNeedsLayout()
         return true
     }
@@ -144,6 +143,7 @@ import SceneKit
             }
             items.forEach {
                 $0.preferredWidth = maxWidthNode?.getSize().width ?? 0.0
+                $0.preferredHeight = 0.0
             }
         case .horizontal:
             let maxHeightNode = items.max { nodeA, nodeB in
@@ -151,8 +151,8 @@ import SceneKit
             }
             items.forEach {
                 $0.preferredHeight = maxHeightNode?.getSize().height ?? 0.0
+                $0.preferredWidth = 0.0
             }
-
         }
     }
 
@@ -160,6 +160,7 @@ import SceneKit
         guard let listItem = child as? UiListViewItemNode, let indexToRemove = items.firstIndex(of: listItem) else { return }
         items.remove(at: indexToRemove)
         linearLayout.removeChild(listItem)
+        updateItemsSize()
         setNeedsLayout()
     }
 

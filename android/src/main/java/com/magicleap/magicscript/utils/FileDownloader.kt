@@ -16,85 +16,9 @@
 
 package com.magicleap.magicscript.utils
 
-import android.content.Context
-import android.webkit.URLUtil
-import java.io.BufferedInputStream
 import java.io.File
-import java.io.InputStream
-import java.net.URL
 
-
-class FileDownloader(private val context: Context) {
-
-    private val threads = mutableMapOf<String, Thread>()
-
-    fun downloadFile(path: String?, result: (File) -> Unit): Boolean {
-        try {
-            if (path == null) {
-                return false
-            }
-            val url = URL(path)
-
-            val thread = Thread(
-                Runnable {
-                    try {
-                        val ucon = url.openConnection().apply {
-                            readTimeout = 5000
-                            connectTimeout = 10000
-                        }
-
-                        val inputStream = ucon.getInputStream()
-                        val bufferedInputStream = BufferedInputStream(inputStream, 1024 * 5)
-
-                        val internalStorage = context.getDir("filesdir", Context.MODE_PRIVATE)
-                        val guessFileName = URLUtil.guessFileName(path, null, null)
-                        val file = File("$internalStorage/$guessFileName")
-
-                        if (file.exists()) {
-                            file.delete()
-                        }
-                        file.createNewFile()
-
-                        file.copyInputStreamToFile(bufferedInputStream)
-
-                        bufferedInputStream.close()
-                        fileDownloaded(path, result, file)
-                    } catch (e: Exception) {
-                        logMessage(e.toString(), true)
-                    }
-                }
-            )
-            threads[path] = thread
-            thread.start()
-
-        } catch (e: Exception) {
-            logMessage(e.toString(), true)
-            return false
-        }
-
-        return true
-    }
-
-    fun onDestroy() {
-        threads.values.forEach { it.interrupt() }
-        threads.clear()
-    }
-
-    private fun File.copyInputStreamToFile(inputStream: InputStream) {
-        inputStream.use { input ->
-            this.outputStream().use { fileOut ->
-                input.copyTo(fileOut)
-            }
-        }
-    }
-
-    private fun fileDownloaded(
-        path: String,
-        result: (File) -> Unit,
-        file: File
-    ) {
-        result(file)
-        threads[path]?.interrupt()
-        threads.remove(path)
-    }
+interface FileDownloader {
+    fun downloadFile(path: String?, result: (File) -> Unit): Boolean
+    fun onDestroy()
 }

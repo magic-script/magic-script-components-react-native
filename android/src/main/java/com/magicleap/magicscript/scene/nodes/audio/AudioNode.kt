@@ -19,9 +19,6 @@ package com.magicleap.magicscript.scene.nodes.audio
 import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.vr.sdk.audio.GvrAudioEngine
-import com.google.vr.sdk.audio.GvrAudioEngine.MaterialName.CURTAIN_HEAVY
-import com.google.vr.sdk.audio.GvrAudioEngine.MaterialName.PLASTER_SMOOTH
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -29,17 +26,13 @@ import com.magicleap.magicscript.utils.FileDownloader
 import com.magicleap.magicscript.utils.PropertiesReader.Companion.readFilePath
 import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
-import java.io.File
 
 
 open class AudioNode @JvmOverloads constructor(
     initProps: ReadableMap,
     private val context: Context,
-    private var audioEngine: GvrAudioEngine? = GvrAudioEngine(
-        context,
-        GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY
-    ),
-    private val fileDownloader: FileDownloader = FileDownloader(context)
+    private var audioEngine: AudioEngine,
+    private val fileDownloader: FileDownloader
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -65,19 +58,7 @@ open class AudioNode @JvmOverloads constructor(
         }
     }
 
-    private var audioThread: Thread? = Thread(
-        Runnable {
-            setupAudioEngine()
-        }
-    )
-
-    private var audioEngineSet: Boolean = false
-    private var file: File? = null
-    private var looping: Boolean = DEFAULT_SOUND_LOOPING
-    private var sourceId: Int = GvrAudioEngine.INVALID_ID
     private var spatialSoundEnabled = DEFAULT_SPATIAL_SOUND_ENABLE
-    private var volume = 0f
-    private var action: String = AudioAction.START
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -93,131 +74,60 @@ open class AudioNode @JvmOverloads constructor(
 
     override fun onDestroy() {
         fileDownloader.onDestroy()
-
-        audioThread?.interrupt()
-        audioThread = null
-
-        if (sourceId != GvrAudioEngine.INVALID_ID) {
-            audioEngine?.stopSound(sourceId)
-        }
-        file?.let { file ->
-            audioEngine?.unloadSoundFile(file.path)
-        }
-
-        audioEngineSet = false
-        audioEngine = null
-
+        audioEngine.onDestroy()
         super.onDestroy()
     }
 
     private fun applyValues(props: Bundle) {
         props.run {
             ifContains(PROP_SOUND_LOOPING) { isLooping: Boolean ->
-                looping = isLooping
+                audioEngine.looping(isLooping)
             }
 
             val filePath = readFilePath(this, PROP_FILE_NAME, context)
             if (filePath != null) {
                 fileDownloader.downloadFile(filePath.toString()) { file ->
-                    this@AudioNode.file = file
-                    audioThread?.start()
+                    audioEngine.load(file)
                 }
             }
 
             ifContains(PROP_SPATIAL_SOUND_ENABLE) { isSpatialSoundEnabled: Boolean ->
-                spatialSoundEnabled = isSpatialSoundEnabled
-
-                if (audioThread?.isAlive == true) {
-                    setupAudioEngine()
+                if (spatialSoundEnabled != isSpatialSoundEnabled) {
+                    spatialSoundEnabled = isSpatialSoundEnabled
+                    audioEngine.spatialSoundEnabled(spatialSoundEnabled)
                 }
             }
 
             ifContains(PROP_SOUND_VOLUME_LINEAR) { volume: Double ->
-                this@AudioNode.volume = volume.toFloat()
-                audioEngine?.setSoundVolume(sourceId, this@AudioNode.volume)
+                audioEngine.setSoundVolume(volume.toFloat())
             }
 
             ifContains(PROP_SOUND_MUTE) { isMuted: Boolean ->
-                if (isMuted) {
-                    audioEngine?.setSoundVolume(sourceId, 0f)
-                } else {
-                    audioEngine?.setSoundVolume(sourceId, volume)
-                }
+                audioEngine.mute(isMuted)
             }
-        }
-    }
-
-    private fun setupAudioEngine() {
-        file?.let { file ->
-            unloadSoundFile(file)
-            audioEngine?.preloadSoundFile(file.path)
-            createAudioSource(file)
-            audioEngine?.setRoomProperties(
-                15f,
-                15f,
-                15f,
-                PLASTER_SMOOTH,
-                PLASTER_SMOOTH,
-                CURTAIN_HEAVY
-            )
-            autoplayAudio()
-            audioEngineSet = true
-        }
-    }
-
-    private fun unloadSoundFile(file: File) {
-        if (sourceId != GvrAudioEngine.INVALID_ID) {
-            audioEngine?.stopSound(sourceId)
-            audioEngine?.unloadSoundFile(file.path)
-        }
-    }
-
-    private fun createAudioSource(file: File) {
-        sourceId = if (spatialSoundEnabled) {
-            audioEngine?.createSoundObject(file.path)
-        } else {
-            audioEngine?.createStereoSound(file.path)
-        } ?: GvrAudioEngine.INVALID_ID
-    }
-
-    private fun autoplayAudio() {
-        if (AudioAction.shouldPlay(action)) {
-            audioEngine?.playSound(sourceId, looping)
         }
     }
 
     private fun applyActions(props: Bundle) {
         props.ifContains(PROP_ACTION) { action: String ->
             when (action) {
-                AudioAction.STOP -> audioEngine?.stopSound(sourceId)
-                AudioAction.PAUSE -> audioEngine?.pause()
-                AudioAction.RESUME -> audioEngine?.resume()
-                AudioAction.START -> audioEngine?.playSound(sourceId, looping)
+                AudioAction.STOP -> audioEngine.stop()
+                AudioAction.PAUSE -> audioEngine.pause()
+                AudioAction.RESUME -> audioEngine.resume()
+                AudioAction.START -> audioEngine.play()
             }
-            this@AudioNode.action = action
         }
     }
 
     private fun applySpatialSoundProperties(props: Bundle) {
         props.ifContains(PROP_SPATIAL_SOUND_POSITION) { spatialSoundPosition: SpatialSoundPosition ->
             spatialSoundPosition.channelPosition?.let { channelPosition ->
-
-                audioEngine?.setSoundObjectPosition(
-                    sourceId,
-                    channelPosition.x,
-                    channelPosition.y,
-                    channelPosition.z
-                )
+                audioEngine.setSoundObjectPosition(channelPosition)
             }
         }
 
         props.ifContains(PROP_SPATIAL_SOUND_DISTANCE) { spatialSoundDistance: SpatialSoundDistance ->
-            audioEngine?.setSoundObjectDistanceRolloffModel(
-                sourceId,
-                spatialSoundDistance.rolloffFactor,
-                spatialSoundDistance.minDistance,
-                spatialSoundDistance.maxDistance
-            )
+            audioEngine.setSoundObjectDistanceRolloffModel(spatialSoundDistance)
         }
     }
 }

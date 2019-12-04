@@ -16,9 +16,10 @@
 package com.magicleap.magicscript.scene.nodes.audio
 
 import androidx.test.core.app.ApplicationProvider
-import com.google.vr.sdk.audio.GvrAudioEngine
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
-import com.magicleap.magicscript.utils.FileDownloader
+import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
+import com.magicleap.magicscript.utils.URLFileDownloader
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
@@ -35,20 +36,14 @@ class AudioNodeTest {
 
     val FILE_URL = "http://localhost:8081/assets/resources/bg_stereo.mp3"
     val FILE_LOCAL_PATH = "/asd/dsa/bg_stereo.mp3"
-    val TIMEOUT = 500L
 
     lateinit var downloadedFile: File
-    lateinit var audioEngine: GvrAudioEngine
-    lateinit var fileDownloader: FileDownloader
+    var audioEngine: AudioEngine = mock()
+    lateinit var fileDownloader: URLFileDownloader
     lateinit var tested: AudioNode
 
     @Before
     fun setup() {
-        audioEngine = mock {
-            on { createSoundObject(any()) } doReturn 5
-            on { createStereoSound(any()) } doReturn 5
-        }
-
         downloadedFile = mock {
             on { path } doReturn FILE_LOCAL_PATH
         }
@@ -94,113 +89,17 @@ class AudioNodeTest {
                 .fileName(FILE_URL)
         )
 
-        verify(fileDownloader, timeout(TIMEOUT)).downloadFile(eq(FILE_URL), any())
+        verify(fileDownloader).downloadFile(eq(FILE_URL), any())
     }
 
     @Test
-    fun `should preload audio when when file is ready`() {
+    fun `should load engine when file is downloaded`() {
         tested.update(
             reactMapOf()
                 .fileName(FILE_URL)
         )
 
-        verify(audioEngine, timeout(TIMEOUT)).preloadSoundFile(any())
-    }
-
-    @Test
-    fun `should create stereo audio for non spatial`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .spatialSoundEnable(false)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).createStereoSound(eq(FILE_LOCAL_PATH))
-    }
-
-    @Test
-    fun `should unload and stop and preload audio when spatial changed`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .spatialSoundEnable(false)
-        )
-
-        tested.update(
-            reactMapOf()
-                .spatialSoundEnable(true)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT)).stopSound(5)
-        verify(audioEngine, timeout(TIMEOUT)).unloadSoundFile(FILE_LOCAL_PATH)
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).preloadSoundFile(FILE_LOCAL_PATH)
-    }
-
-    @Test
-    fun `should create mono audio when spatial`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .spatialSoundEnable(true)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).createSoundObject(eq(FILE_LOCAL_PATH))
-    }
-
-    @Test
-    fun `should autoplay when last action is start`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .action(AudioAction.START)
-        )
-
-        tested.update(
-            reactMapOf()
-                .spatialSoundEnable(true)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT).atLeast(2)).playSound(5, false)
-    }
-
-    @Test
-    fun `should autoplay when last action is resume`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .action(AudioAction.RESUME)
-        )
-
-        tested.update(
-            reactMapOf()
-                .spatialSoundEnable(true)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT).atLeast(2)).playSound(5, false)
-    }
-
-    @Test
-    fun `should play with looping`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .spatialSoundEnable(true)
-                .soundLooping(true)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT)).playSound(5, true)
-    }
-
-    @Test
-    fun `should play without looping`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .spatialSoundEnable(true)
-                .soundLooping(false)
-        )
-
-        verify(audioEngine, timeout(TIMEOUT)).playSound(5, false)
+        verify(audioEngine).load(File(FILE_LOCAL_PATH))
     }
 
     @Test
@@ -210,7 +109,7 @@ class AudioNodeTest {
                 .action(AudioAction.START)
         )
 
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).playSound(any(), any())
+        verify(audioEngine).play()
     }
 
     @Test
@@ -219,7 +118,7 @@ class AudioNodeTest {
             reactMapOf()
                 .action(AudioAction.STOP)
         )
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).stopSound(any())
+        verify(audioEngine).stop()
     }
 
     @Test
@@ -228,7 +127,7 @@ class AudioNodeTest {
             reactMapOf()
                 .action(AudioAction.RESUME)
         )
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).resume()
+        verify(audioEngine).resume()
     }
 
     @Test
@@ -237,7 +136,7 @@ class AudioNodeTest {
             reactMapOf()
                 .action(AudioAction.PAUSE)
         )
-        verify(audioEngine, timeout(TIMEOUT).atLeastOnce()).pause()
+        verify(audioEngine).pause()
     }
 
     @Test
@@ -248,7 +147,7 @@ class AudioNodeTest {
                 .spatialSoundPosition(4, arrayOf(0.0, 1.0, 2.0))
         )
 
-        verify(audioEngine).setSoundObjectPosition(-1, 0f, 1f, 2f)
+        verify(audioEngine).setSoundObjectPosition(Vector3(0f, 1f, 2f))
     }
 
     @Test
@@ -259,22 +158,16 @@ class AudioNodeTest {
                 .spatialSoundDistance(4, 1.0, 3.0, 2)
         )
 
-        verify(audioEngine).setSoundObjectDistanceRolloffModel(-1, 2, 1f, 3f)
+        verify(audioEngine).setSoundObjectDistanceRolloffModel(
+            SpatialSoundDistance(4.0, 1f, 3f, 2)
+        )
     }
 
     @Test
-    fun `onDestroy should destroy file downloader and unload sound`() {
-        tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
-                .action(AudioAction.START)
-        )
-
+    fun `onDestroy should destroy file downloader and audio engine`() {
         tested.onDestroy()
 
         verify(fileDownloader).onDestroy()
-        verify(audioEngine, timeout(TIMEOUT)).unloadSoundFile(any())
+        verify(audioEngine).onDestroy()
     }
-
-
 }

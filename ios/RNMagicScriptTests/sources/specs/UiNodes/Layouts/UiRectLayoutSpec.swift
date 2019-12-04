@@ -27,7 +27,9 @@ class UiRectLayoutNodeSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
-                    node = UiRectLayoutNode(props: [:])
+                    node = UiRectLayoutNode()
+                    expect(node.width).to(equal(0))
+                    expect(node.height).to(equal(0))
                     expect(node.contentAlignment).to(equal(Alignment.centerCenter))
                     expect(node.padding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.itemsCount).to(equal(0))
@@ -35,6 +37,20 @@ class UiRectLayoutNodeSpec: QuickSpec {
             }
 
             context("update properties") {
+                it("should update 'width' prop") {
+                    let referenceWidth: CGFloat = 0.7
+                    node.width = referenceWidth
+                    expect(node.width).to(beCloseTo(referenceWidth))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'height' prop") {
+                    let referenceHeight: CGFloat = 0.8
+                    node.height = referenceHeight
+                    expect(node.height).to(beCloseTo(referenceHeight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
                 it("should update 'contentAlignment' prop") {
                     node = UiRectLayoutNode(props: ["contentAlignment": "top-right"])
                     expect(node.contentAlignment).to(equal(Alignment.topRight))
@@ -55,11 +71,11 @@ class UiRectLayoutNodeSpec: QuickSpec {
 
             context("add/remove child nodes") {
                 it("should add child node correctly") {
-                    node = UiRectLayoutNode(props: [:])
+                    node = UiRectLayoutNode()
                     let childNodes = node.contentNode.childNodes
                     expect(childNodes.count).to(equal(1))
 
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     node.addChild(referenceNode)
                     expect(childNodes.count).to(equal(1))
 
@@ -70,13 +86,13 @@ class UiRectLayoutNodeSpec: QuickSpec {
                 }
 
                 it("should not allow adding multiple child nodes") {
-                    node = UiRectLayoutNode(props: [:])
+                    node = UiRectLayoutNode()
                     let containerNode = node.contentNode.childNodes.first!
                     expect(containerNode.childNodes.count).to(equal(0))
 
-                    let referenceNode1 = TransformNode(props: [:])
-                    let referenceNode2 = TransformNode(props: [:])
-                    let referenceNode3 = TransformNode(props: [:])
+                    let referenceNode1 = TransformNode()
+                    let referenceNode2 = TransformNode()
+                    let referenceNode3 = TransformNode()
                     node.addChild(referenceNode1)
                     node.addChild(referenceNode2)
                     node.addChild(referenceNode3)
@@ -85,9 +101,9 @@ class UiRectLayoutNodeSpec: QuickSpec {
                 }
 
                 it("should remove child node correctly") {
-                    node = UiRectLayoutNode(props: [:])
+                    node = UiRectLayoutNode()
 
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     node.addChild(referenceNode)
                     node.removeChild(referenceNode)
 
@@ -127,14 +143,14 @@ class UiRectLayoutNodeSpec: QuickSpec {
 
             context("when asked for size") {
                 it("should calculate it according to configuration") {
-                    node = UiRectLayoutNode(props: [:])
+                    node = UiRectLayoutNode()
                     expect(node.getSize()).to(beCloseTo(CGSize.zero))
 
                     var referenceWidth: CGFloat = 0.0
                     var referenceHeight: CGFloat = 0.0
 
                     for number in 1...4 {
-                        let referenceNode = UiButtonNode(props: [:])
+                        let referenceNode = UiButtonNode()
                         referenceNode.name = "button_\(number)"
                         referenceNode.text = "Default text"
                         node.addChild(referenceNode)

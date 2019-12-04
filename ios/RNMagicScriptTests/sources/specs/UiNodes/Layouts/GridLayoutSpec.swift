@@ -175,7 +175,7 @@ class GridLayoutSpec: QuickSpec {
             }
 
             context("when asked for size") {
-                it("should calculate it according to configuration") {
+                it("should calculate it according to configuration (default width and height)") {
                     layout.columns = 0
                     layout.rows = 0
                     expect(layout.getSize()).to(beCloseTo(CGSize.zero))
@@ -221,6 +221,52 @@ class GridLayoutSpec: QuickSpec {
                     layout.rows = 0
                     layout.recalculate()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: 4 * referenceHeight)))
+                }
+
+                it("should calculate it according to configuration (defined width and height)") {
+                    let referenceSize = CGSize(width: 0.5, height: 0.25)
+                    layout.width = referenceSize.width
+                    layout.height = referenceSize.height
+                    layout.columns = 0
+                    layout.rows = 0
+                    expect(layout.getSize()).to(beCloseTo(CGSize.zero))
+
+                    for number in 1...4 {
+                        let referenceNode = UiButtonNode()
+                        referenceNode.name = "button_\(number)"
+                        referenceNode.text = "Default text"
+                        layout.addItem(referenceNode)
+                    }
+
+                    // If neither rows or columns are set, the grid layout will have 1 row and add columns as needed.
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
+
+                    layout.columns = 2
+                    layout.rows = 2
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
+
+                    layout.columns = 3
+                    layout.rows = 3
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
+
+                    // If both 'columns' and 'rows' props are set to be non-zero, the columns will take precedence.
+                    layout.columns = 1
+                    layout.rows = 1
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
+
+                    layout.columns = 0
+                    layout.rows = 1
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
+
+                    layout.columns = 1
+                    layout.rows = 0
+                    layout.recalculate()
+                    expect(layout.getSize()).to(beCloseTo(referenceSize))
                 }
 
                 it("should ignore invisible items in calculation") {

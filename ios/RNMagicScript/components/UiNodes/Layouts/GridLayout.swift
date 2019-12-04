@@ -175,10 +175,6 @@ extension GridLayout {
 
         return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }
-
-    fileprivate func getLocalScaleForChild(at index: Int, desc: GridLayoutDescriptor) -> CGFloat {
-        return 1
-    }
     
     fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
         let filteredChildren: [SCNNode] = container.childNodes.filter { ($0.childNodes.first is TransformNode) }

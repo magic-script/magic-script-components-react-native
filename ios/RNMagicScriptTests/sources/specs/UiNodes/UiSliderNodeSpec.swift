@@ -190,7 +190,7 @@ class UiSliderNodeSpec: QuickSpec {
 
                     let foregroundNode: SCNNode = node.contentNode.childNodes[2]
                     let plane: SCNPlane = foregroundNode.geometry as! SCNPlane
-                    expect(plane.width).to(beCloseTo(0))
+                    expect(plane.width).to(beCloseTo(plane.height))
                 }
             }
 

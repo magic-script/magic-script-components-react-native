@@ -63,10 +63,6 @@ import SceneKit
         if let radius = Convert.toCGFloat(props["radius"]) {
             self.radius = radius
         }
-
-        if let radius = Convert.toCGFloat(props["height"]) {
-            self.radius = radius
-        }
     }
 
     @objc override func _calculateSize() -> CGSize {

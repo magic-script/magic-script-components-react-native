@@ -64,16 +64,6 @@ class UiCircleConfirmationNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'height' prop") {
-                    // 'height' property is supported only for compatibility with Lumin,
-                    // Lumin's 'height' is the same as radius.
-                    let referenceHeight = 0.6
-                    node.update(["height" : referenceHeight])
-                    expect(node.radius).to(beCloseTo(referenceHeight))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceHeight, height: 2 * referenceHeight)))
-                    expect(node.isLayoutNeeded).to(beTrue())
-                }
-
                 it("should not update 'canBeLongPressed' prop") {
                     node.update(["canBeLongPressed" : false])
                     expect(node.canBeLongPressed).toNot(beFalse())

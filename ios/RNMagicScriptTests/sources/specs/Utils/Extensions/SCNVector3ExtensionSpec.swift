@@ -144,6 +144,10 @@ class SCNVector3ExtensionSpec: QuickSpec {
                     expect(vector * scalarFloat).to(beCloseTo(SCNVector3(vector.x * scalarFloat, vector.y * scalarFloat, vector.z * scalarFloat)))
                     expect(scalarFloat * vector).to(beCloseTo(SCNVector3(scalarFloat * vector.x, scalarFloat * vector.y, scalarFloat * vector.z)))
 
+                    let scalarCGFloat: CGFloat = 4.6
+                    expect(vector * scalarCGFloat).to(beCloseTo(SCNVector3(vector.x * Float(scalarCGFloat), vector.y * Float(scalarCGFloat), vector.z * Float(scalarCGFloat))))
+                    expect(scalarCGFloat * vector).to(beCloseTo(SCNVector3(Float(scalarCGFloat) * vector.x, Float(scalarCGFloat) * vector.y, Float(scalarCGFloat) * vector.z)))
+
                     let scalarInt: Int = 7
                     expect(vector * scalarInt).to(beCloseTo(SCNVector3(vector.x * Float(scalarInt), vector.y * Float(scalarInt), vector.z * Float(scalarInt))))
                     expect(scalarInt * vector).to(beCloseTo(SCNVector3(Float(scalarInt) * vector.x, Float(scalarInt) * vector.y, Float(scalarInt) * vector.z)))

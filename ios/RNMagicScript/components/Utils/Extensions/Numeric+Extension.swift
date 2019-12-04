@@ -17,14 +17,8 @@
 import Foundation
 
 extension Numeric {
-    private func toNSNumber() -> NSNumber? {
-        if let num = self as? NSNumber { return num }
-        guard let string = self as? String, let double = Double(string) else { return nil }
-        return NSNumber(value: double)
-    }
-
     func precision(with numberFormatter: NumberFormatter) -> String? {
-        guard let number = toNSNumber() else { return nil }
+        guard let number = self as? NSNumber else { return nil }
         return numberFormatter.string(from: number)
     }
 

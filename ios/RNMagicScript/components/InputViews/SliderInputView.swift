@@ -41,7 +41,7 @@ class SliderInputView: UIView {
     }
 
     var onFinishEditing: (() -> (Void))?
-
+ 
     fileprivate var currentValueLabel: UILabel!
     fileprivate var slider: UISlider!
     fileprivate var minLabel: UILabel!

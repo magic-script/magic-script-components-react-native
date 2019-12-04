@@ -79,6 +79,30 @@ class UiListViewItemNodeSpec: QuickSpec {
                     
                     expect(node.getSize()).to(beCloseTo(CGSize(width: 1.0, height: 1.0)))
                 }
+
+                context("when preferred values set") {
+                    it("should calculate based on them") {
+                        let referenceNode = UiButtonNode(props: ["width": 2.0, "height": 1.25])
+                        referenceNode.text = "Text"
+                        referenceNode.layoutIfNeeded()
+                        node.preferredWidth = 0.75
+                        node.preferredHeight = 0.325
+                        node.addChild(referenceNode)
+                        node.layoutIfNeeded()
+
+                        expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.325)))
+                    }
+                }
+
+                context("when no child node") {
+                    it("should return zero (even when preferred values set)") {
+                        node.preferredWidth = 0.75
+                        node.preferredHeight = 0.325
+                        node.layoutIfNeeded()
+
+                        expect(node.getSize()).to(beCloseTo(CGSize.zero))
+                    }
+                }
             }
         }
     }

@@ -41,8 +41,8 @@ class UiScrollBarNode(initProps: ReadableMap) :
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_WIDTH = 0.04
         const val DEFAULT_HEIGHT = 1.2
-        const val DEFAULT_THUMB_SIZE = 0.0
         const val DEFAULT_THUMB_POSITION = 0.0
+        const val THUMB_SIZE_AUTO = 0.0 // calculated automatically
     }
 
     val width: Float
@@ -55,7 +55,7 @@ class UiScrollBarNode(initProps: ReadableMap) :
         get() = properties.getDouble(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION).toFloat()
 
     val thumbSize: Float
-        get() = properties.getDouble(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE).toFloat()
+        get() = properties.getDouble(PROP_THUMB_SIZE, THUMB_SIZE_AUTO).toFloat()
 
     val orientation: String
         get() = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
@@ -65,7 +65,7 @@ class UiScrollBarNode(initProps: ReadableMap) :
         properties.putDefault(PROP_WIDTH, DEFAULT_WIDTH)
         properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
         properties.putDefault(PROP_THUMB_POSITION, DEFAULT_THUMB_POSITION)
-        properties.putDefault(PROP_THUMB_SIZE, DEFAULT_THUMB_SIZE)
+        properties.putDefault(PROP_THUMB_SIZE, THUMB_SIZE_AUTO)
         properties.putDefault(PROP_ORIENTATION, ORIENTATION_VERTICAL)
     }
 }

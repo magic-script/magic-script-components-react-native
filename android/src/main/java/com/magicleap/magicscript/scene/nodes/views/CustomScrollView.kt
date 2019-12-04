@@ -120,13 +120,19 @@ class CustomScrollView @JvmOverloads constructor(
         return true
     }
 
-    // Update scrollbars when content size has changed.
     private fun updateScrollbars() {
-        if (contentSize.x > 0) {
-            this.hBar?.thumbSize = width.toFloat() / contentSize.x
+
+        // set default thumb length if not specified
+        hBar?.let {
+            if (it.useAutoThumbSize && contentSize.x > 0) {
+                hBar?.thumbSize = width.toFloat() / contentSize.x
+            }
         }
-        if (contentSize.y > 0) {
-            this.vBar?.thumbSize = height.toFloat() / contentSize.y
+
+        vBar?.let {
+            if (it.useAutoThumbSize && contentSize.y > 0) {
+                vBar?.thumbSize = height.toFloat() / contentSize.y
+            }
         }
     }
 }

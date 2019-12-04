@@ -41,9 +41,9 @@ open class UiCircleConfirmationNode(
 
     companion object {
         // properties
-        const val PROP_HEIGHT = "height" // radius of a circle
+        const val PROP_HEIGHT = "radius"
 
-        const val DEFAULT_HEIGHT = 0.1
+        const val DEFAULT_HEIGHT = 0.02
         const val TIME_TO_COMPLETE = 2F // in seconds
     }
 

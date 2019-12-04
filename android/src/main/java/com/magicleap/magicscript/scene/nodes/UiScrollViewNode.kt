@@ -30,6 +30,7 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
@@ -112,17 +113,8 @@ open class UiScrollViewNode(
     override fun setupView() {
         super.setupView()
 
-        if (vBarNode != null) {
-            val thickness = calculateBarThickness(size)
-            val thicknessPx = metersToPx(thickness, context)
-            (view as CustomScrollView).vBar?.setThickness(thicknessPx)
-        }
-
-        if (hBarNode != null) {
-            val thickness = calculateBarThickness(size)
-            val thicknessPx = metersToPx(thickness, context)
-            (view as CustomScrollView).hBar?.setThickness(thicknessPx)
-        }
+        vBarNode?.apply { setupScrollBar(this) }
+        hBarNode?.apply { setupScrollBar(this) }
 
         val scrollView = view as CustomScrollView
         scrollView.onScrollChangeListener = { position: Vector2 ->
@@ -150,9 +142,20 @@ open class UiScrollViewNode(
         super.addContent(child)
 
         if (child is UiScrollBarNode) {
-            setupScrollBar(child)
+            if (child.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
+                if (vBarNode == null) {
+                    vBarNode = child
+                    setupScrollBar(child)
+                }
+            } else {
+                if (hBarNode == null) {
+                    hBarNode = child
+                    setupScrollBar(child)
+                }
+            }
             return
         }
+
         if (content == null) {
             this.content = child
         } else {
@@ -212,17 +215,17 @@ open class UiScrollViewNode(
     private fun setupScrollBar(scrollBarNode: UiScrollBarNode) {
         val thickness = calculateBarThickness(size)
         val thicknessPx = metersToPx(thickness, context)
+        val barToSetup: CustomScrollBar? =
+            if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
+                (view as CustomScrollView).vBar
+            } else {
+                (view as CustomScrollView).hBar
+            }
 
-        if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
-            if (vBarNode == null) {
-                vBarNode = scrollBarNode
-                (view as CustomScrollView).vBar?.setThickness(thicknessPx)
-            }
-        } else {
-            if (hBarNode == null) {
-                hBarNode = scrollBarNode
-                (view as CustomScrollView).hBar?.setThickness(thicknessPx)
-            }
+        barToSetup?.apply {
+            useAutoThumbSize = scrollBarNode.thumbSize == UiScrollBarNode.THUMB_SIZE_AUTO.toFloat()
+            thumbSize = scrollBarNode.thumbSize
+            setThickness(thicknessPx)
         }
     }
 

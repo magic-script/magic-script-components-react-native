@@ -125,23 +125,26 @@ import SceneKit
         if gridDescriptor == nil {
             recalculate()
         }
-        return gridDescriptor?.size ?? CGSize.zero
+
+        return gridDescriptor?.realSize ?? CGSize.zero
     }
 
     @objc func updateLayout() {
         guard let gridDescriptor = gridDescriptor else { return }
 
-        let origin = CGPoint(x: -0.5 * gridDescriptor.size.width, y: 0.5 * gridDescriptor.size.height)
+        let size = gridDescriptor.realSize
+        let origin = CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
         for i in 0..<gridDescriptor.children.count {
-            let pos: CGPoint = getLocalPositionForChild(at: i, desc: gridDescriptor)
-            gridDescriptor.children[i].position = SCNVector3(origin.x + pos.x, origin.y - pos.y, 0)
+            let result = getLocalPositionAndScaleForChild(at: i, desc: gridDescriptor)
+            gridDescriptor.children[i].position = SCNVector3(origin.x + result.position.x, origin.y - result.position.y, 0)
+            gridDescriptor.children[i].scale = SCNVector3(result.scale, result.scale, 1)
         }
     }
 }
 
 // MARK: - Helpers
 extension GridLayout {
-    fileprivate func getLocalPositionForChild(at index: Int, desc: GridLayoutDescriptor) -> CGPoint {
+    fileprivate func getLocalPositionAndScaleForChild(at index: Int, desc: GridLayoutDescriptor) -> (position: CGPoint, scale: CGFloat) {
         let colId: Int = index % desc.columns
         let rowId: Int = index / desc.columns
         let childNodeSize: CGSize = desc.cellSizes[index]
@@ -152,11 +155,15 @@ extension GridLayout {
         let rowContnetHeight = rowBounds.height - (defaultItemPadding.top + defaultItemPadding.bottom)
         let localCenter = CGPoint(x: columnBounds.x + defaultItemPadding.left + 0.5 * columnContentWidth,
                                   y: rowBounds.y + defaultItemPadding.top + 0.5 * rowContnetHeight)
+
+        let deltaWidth: CGFloat = columnBounds.width - childNodeSize.width
+        let deltaHeight: CGFloat = rowBounds.height - childNodeSize.height
         let offset: CGPoint = defaultItemAlignment.shiftDirection
         let gridItemAlignmentOffset = CGPoint(
-            x: (columnBounds.width - childNodeSize.width) * offset.x,
-            y: (rowBounds.height - childNodeSize.height) * offset.y
+            x: max(0, deltaWidth) * offset.x,
+            y: max(0, deltaHeight) * offset.y
         )
+        let scale: CGFloat = Math.clamp(min(columnBounds.width / childNodeSize.width, rowBounds.height / childNodeSize.height), 0, 1)
 
         // Ignore children nodes alignment
         let node: TransformNode = desc.children[index].childNodes[0] as! TransformNode
@@ -166,7 +173,11 @@ extension GridLayout {
         let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x)
         let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y)
 
-        return CGPoint(x: localPositionX, y: localPositionY)
+        return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
+    }
+
+    fileprivate func getLocalScaleForChild(at index: Int, desc: GridLayoutDescriptor) -> CGFloat {
+        return 1
     }
     
     fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
@@ -191,11 +202,23 @@ extension GridLayout {
 
         let totalWidth: CGFloat = columnsBounds.reduce(0) { $0 + $1.width }
         let totalHeight: CGFloat = rowsBounds.reduce(0) { $0 + $1.height }
-        let size = CGSize(width: totalWidth, height: totalHeight)
-        return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, size: size)
+        let estimatedSize = CGSize(width: totalWidth, height: totalHeight)
+        let realWidth: CGFloat = (width > 0) ? width : estimatedSize.width
+        let realHeight: CGFloat = (height > 0) ? height : estimatedSize.height
+        let realSize = CGSize(width: realWidth, height: realHeight)
+        return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, estimatedSize: estimatedSize, realSize: realSize)
     }
     
     fileprivate func getColumnsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(x: CGFloat, width: CGFloat)] {
+        guard width < 0.00001 else {
+            var columnsBounds: [(x: CGFloat, width: CGFloat)] = []
+            let columnWidth: CGFloat = width / CGFloat(columnsCount)
+            for c in 0..<columnsCount {
+                columnsBounds.append((x: CGFloat(c) * columnWidth, width: columnWidth))
+            }
+            return columnsBounds
+        }
+
         var columnsBounds: [(x: CGFloat, width: CGFloat)] = []
         var x: CGFloat = 0
         for c in 0..<columnsCount {
@@ -214,6 +237,15 @@ extension GridLayout {
     }
 
     fileprivate func getRowsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(y: CGFloat, height: CGFloat)] {
+        guard height < 0.00001 else {
+            var rowsBounds: [(y: CGFloat, height: CGFloat)] = []
+            let rowHeight: CGFloat = height / CGFloat(rowsCount)
+            for r in 0..<rowsCount {
+                rowsBounds.append((y: CGFloat(r) * rowHeight, height: rowHeight))
+            }
+            return rowsBounds
+        }
+
         var rowsBounds: [(y: CGFloat, height: CGFloat)] = []
         var y: CGFloat = 0
         for r in 0..<rowsCount {
@@ -238,6 +270,7 @@ extension GridLayout {
         let rows: Int
         let columnsBounds: [(x: CGFloat, width: CGFloat)]
         let rowsBounds: [(y: CGFloat, height: CGFloat)]
-        let size: CGSize
+        let estimatedSize: CGSize
+        let realSize: CGSize
     }
 }

@@ -76,6 +76,19 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         setLayoutSize(props)
     }
 
+    // We should access children via [childrenList], because they may not have
+    // been added yet to [contentNode]
+    override fun onVisibilityChanged(visibility: Boolean) {
+        childrenList
+            .forEach { child ->
+                if (visibility) {
+                    child.show()
+                } else {
+                    child.hide()
+                }
+            }
+    }
+
     protected open fun setLayoutSize(props: Bundle) {
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             if (props.containsKey(PROP_WIDTH)) {

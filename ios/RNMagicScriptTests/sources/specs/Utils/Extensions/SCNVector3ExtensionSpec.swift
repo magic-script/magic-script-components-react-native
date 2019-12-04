@@ -38,7 +38,6 @@ class SCNVector3ExtensionSpec: QuickSpec {
                     let referenceNegatedVector = SCNVector3(-0.1, -0.2, -0.3)
                     expect(referenceVector.length()).to(beCloseTo(0.3741657387))
                     expect(referenceNegatedVector.length()).to(beCloseTo(0.3741657387))
-                    expect(referenceVector.length()).to(beCloseTo(SCNVector3Length(referenceVector)))
                 }
 
                 it("should return square length of a vector") {

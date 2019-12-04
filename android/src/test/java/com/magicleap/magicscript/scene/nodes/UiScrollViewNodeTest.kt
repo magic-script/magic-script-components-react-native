@@ -94,20 +94,7 @@ class UiScrollViewNodeTest {
 
         verify(viewSpy).scrollDirection = "horizontal"
     }
-
-    @Test
-    fun `should only accept one child and scrollbar as children`() {
-        val scrollBar = UiScrollBarNode(JavaOnlyMap())
-        val node1: TransformNode = NodeBuilder().build()
-        val node2: TransformNode = NodeBuilder().build()
-
-        tested.addContent(scrollBar)
-        tested.addContent(node1)
-        tested.addContent(node2)
-
-        tested.contentNode.children.size shouldEqual 2
-    }
-
+    
     @Test
     fun `should remove scrollbar`() {
         val scrollBar = UiScrollBarNode(JavaOnlyMap())

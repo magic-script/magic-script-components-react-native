@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene.nodes.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.VelocityTracker
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.magicleap.magicscript.R
@@ -66,9 +67,14 @@ class CustomScrollView @JvmOverloads constructor(
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+    private var velocityTracker: VelocityTracker? = null
 
     init {
         viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+
+    override fun stopNestedScroll() {
+        isBeingDragged = false
     }
 
     override fun onFinishInflate() {
@@ -77,29 +83,30 @@ class CustomScrollView @JvmOverloads constructor(
         this.hBar = findViewById(R.id.bar_horizontal)
     }
 
-    override fun stopNestedScroll() {
-        isBeingDragged = false
-    }
-
     override fun onGlobalLayout() {
         viewTreeObserver.removeOnGlobalLayoutListener(this)
         updateScrollbars()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val action = event.actionMasked
-        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
-            stopNestedScroll()
-            return false
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain()
         }
 
+        val action = event.actionMasked
         val touch = Vector2(event.x, event.y)
         if (!isBeingDragged) {
             isBeingDragged = true
             previousTouch = touch
         }
 
+        if (action == MotionEvent.ACTION_DOWN) {
+            velocityTracker?.addMovement(event)
+            return true
+        }
+
         if (action == MotionEvent.ACTION_MOVE) {
+            velocityTracker?.addMovement(event)
             val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
@@ -114,10 +121,21 @@ class CustomScrollView @JvmOverloads constructor(
             hBar?.thumbPosition = position.x
             vBar?.thumbPosition = position.y
             onScrollChangeListener?.invoke(position)
+            previousTouch = touch
+            return true
         }
-        previousTouch = touch
 
-        return true
+        if (action == MotionEvent.ACTION_UP) {
+            velocityTracker?.addMovement(event)
+            // TODO get velocity and move scroll
+            velocityTracker?.recycle()
+            velocityTracker = null
+            isBeingDragged = false
+            return true
+        }
+
+        isBeingDragged = false
+        return false
     }
 
     private fun updateScrollbars() {

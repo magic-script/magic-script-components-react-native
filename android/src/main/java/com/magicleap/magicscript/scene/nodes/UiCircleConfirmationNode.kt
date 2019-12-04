@@ -41,9 +41,9 @@ open class UiCircleConfirmationNode(
 
     companion object {
         // properties
-        const val PROP_HEIGHT = "radius"
+        const val PROP_RADIUS = "radius"
 
-        const val DEFAULT_HEIGHT = 0.02
+        const val DEFAULT_RADIUS = 0.02
         const val TIME_TO_COMPLETE = 2F // in seconds
     }
 
@@ -52,7 +52,7 @@ open class UiCircleConfirmationNode(
     private var completed = false
 
     init {
-        properties.putDefault(PROP_HEIGHT, DEFAULT_HEIGHT)
+        properties.putDefault(PROP_RADIUS, DEFAULT_RADIUS)
     }
 
     override fun provideView(context: Context): View {
@@ -60,7 +60,7 @@ open class UiCircleConfirmationNode(
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val radius = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT)
+        val radius = properties.getDouble(PROP_RADIUS, DEFAULT_RADIUS)
         val height = (radius * 2).toFloat()
         return Vector2(height, height)
     }
@@ -86,7 +86,7 @@ open class UiCircleConfirmationNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (props.containsKey(PROP_HEIGHT)) {
+        if (props.containsKey(PROP_RADIUS)) {
             setNeedsRebuild()
         }
     }

@@ -20,7 +20,8 @@ public extension NumberFormatter {
     static let uiNumberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.minimumFractionDigits = 1
-        numberFormatter.maximumFractionDigits = 6
+        numberFormatter.maximumFractionDigits = 2
+
         return numberFormatter
     }()
 }

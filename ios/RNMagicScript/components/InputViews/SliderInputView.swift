@@ -30,10 +30,14 @@ class SliderInputView: UIView {
         }
     }
 
-    func updateCurrentValue(_ value: CGFloat) {
-        let stringValue = value.uiPrecision() ?? String(format: "%.1f", value)
+    func updateCurrentValue(_ value: CGFloat?) {
+        guard let value = value else {
+            currentValueLabel.text = "Current value: n/a"
+            return
+        }
+
+        let stringValue = value.uiPrecision() ?? String(format: "%.2f", value)
         currentValueLabel.text = "Current value: \(stringValue)"
-        setNeedsLayout()
     }
 
     var onFinishEditing: (() -> (Void))?
@@ -57,7 +61,6 @@ class SliderInputView: UIView {
         backgroundColor = UIColor.white
 
         currentValueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
-        currentValueLabel.text = String(format: "Current value: %d", arguments: [input?.sliderValue ?? "n/a"])
         currentValueLabel.font = UIFont.systemFont(ofSize: 15)
         currentValueLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(currentValueLabel)
@@ -96,6 +99,8 @@ class SliderInputView: UIView {
             stackView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -margin),
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: frame.height/3)
         ])
+
+        updateCurrentValue(input?.sliderValue)
     }
 }
 
@@ -103,7 +108,7 @@ class SliderInputView: UIView {
 extension SliderInputView {
     @objc fileprivate func onValueChangedAction(_ sender: UISlider) {
         input?.sliderValue = CGFloat(slider.value)
-        currentValueLabel.text = String(format: "Current value: %.1f", arguments: [slider.value])
+        updateCurrentValue(input?.sliderValue)
     }
 
     @objc fileprivate func doneButtonAction(_ sender: UIButton) {

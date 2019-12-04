@@ -105,38 +105,85 @@ class UiListViewNodeSpec: QuickSpec {
                         node.addChild(otherNode)
                         expect(node.items.count).to(equal(1))
                     }
+                }
+            }
 
-                    it("should set its size according to width of all elements - #1") {
+            context("when updating layout") {
+                context("when vertical layout orientation") {
+                    it("should set its width according to width of all elements - #1") {
                         let buttonNode = UiButtonNode(props: ["width": 0.25, "height": 0.125])
                         let itemNode = UiListViewItemNode(props: [:])
                         itemNode.addChild(buttonNode)
-                        itemNode.layoutIfNeeded()
                         node.addChild(itemNode)
+                        node.updateLayout() // calculation trigger
                         expect(node.items.count).to(equal(1))
                         let item = node.items.first
-                        expect(item?.width).to(beCloseTo(0.25))
+                        expect(item?.preferredWidth).to(beCloseTo(0.25))
                     }
 
-                    it("should set its size according to width of all elements - #2") {
+                    it("should set its width according to width of all elements - #2") {
                         let buttonNode1 = UiButtonNode(props: ["width": 0.25, "height": 0.125])
                         let itemNode1 = UiListViewItemNode(props: [:])
                         itemNode1.addChild(buttonNode1)
-                        itemNode1.layoutIfNeeded()
                         node.addChild(itemNode1)
+                        node.updateLayout()
                         expect(node.items.count).to(equal(1))
                         var item1 = node.items[0]
-                        expect(item1.width).to(beCloseTo(0.25))
+                        expect(item1.preferredWidth).to(beCloseTo(0.25))
 
-                        let buttonNode2 = UiButtonNode(props: ["width": 0.75, "height": 0.125])
+                        let buttonNode2 = UiButtonNode(props: ["width": 0.75, "height": 0.0625])
                         let itemNode2 = UiListViewItemNode(props: [:])
                         itemNode2.addChild(buttonNode2)
-                        itemNode2.layoutIfNeeded()
                         node.addChild(itemNode2)
+                        node.updateLayout() // calculation trigger
                         expect(node.items.count).to(equal(2))
                         item1 = node.items[0]
-                        expect(item1.width).to(beCloseTo(0.75))
+                        expect(item1.preferredWidth).to(beCloseTo(0.75))
+                        expect(item1.preferredHeight).to(beCloseTo(0.0))
                         let item2 = node.items[1]
-                        expect(item2.width).to(beCloseTo(0.75))
+                        expect(item2.preferredWidth).to(beCloseTo(0.75))
+                        expect(item2.preferredHeight).to(beCloseTo(0.0))
+                    }
+                }
+
+                context("when horizontal layout orientation") {
+                    beforeEach {
+                        node.layoutOrientation = .horizontal
+                    }
+
+                    it("should set its height according to width of all elements - #1") {
+                        let buttonNode = UiButtonNode(props: ["width": 0.25, "height": 0.125])
+                        let itemNode = UiListViewItemNode(props: [:])
+                        itemNode.addChild(buttonNode)
+                        node.addChild(itemNode)
+                        node.updateLayout() // calculation trigger
+                        expect(node.items.count).to(equal(1))
+                        let item = node.items.first
+                        expect(item?.preferredHeight).to(beCloseTo(0.125))
+                    }
+
+                    it("should set its htight according to width of all elements - #2") {
+                        let buttonNode1 = UiButtonNode(props: ["width": 0.25, "height": 0.125])
+                        let itemNode1 = UiListViewItemNode(props: [:])
+                        itemNode1.addChild(buttonNode1)
+                        node.addChild(itemNode1)
+                        node.updateLayout()
+                        expect(node.items.count).to(equal(1))
+                        var item1 = node.items[0]
+                        expect(item1.preferredHeight).to(beCloseTo(0.125))
+
+                        let buttonNode2 = UiButtonNode(props: ["width": 0.5, "height": 0.0625])
+                        let itemNode2 = UiListViewItemNode(props: [:])
+                        itemNode2.addChild(buttonNode2)
+                        node.addChild(itemNode2)
+                        node.updateLayout() // calculation trigger
+                        expect(node.items.count).to(equal(2))
+                        item1 = node.items[0]
+                        expect(item1.preferredHeight).to(beCloseTo(0.125))
+                        expect(item1.preferredWidth).to(beCloseTo(0.0))
+                        let item2 = node.items[1]
+                        expect(item2.preferredHeight).to(beCloseTo(0.125))
+                        expect(item2.preferredWidth).to(beCloseTo(0.0))
                     }
                 }
             }

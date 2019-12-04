@@ -100,6 +100,8 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
+        updateItemsSize()
+
         linearLayout.layoutIfNeeded()
 
         let size = getSize()
@@ -130,17 +132,28 @@ import SceneKit
         guard let listItem = child as? UiListViewItemNode else { return false }
         items.append(listItem)
         linearLayout.addChild(listItem)
-        updateItemsWidth()
         setNeedsLayout()
         return true
     }
 
-    fileprivate func updateItemsWidth() {
-        let maxWidthNode = items.max { nodeA, nodeB in
-            return nodeA.getSize().width < nodeB.getSize().width
+    fileprivate func updateItemsSize() {
+        switch layoutOrientation {
+        case .vertical:
+            let maxWidthNode = items.max { nodeA, nodeB in
+                return nodeA.getSize().width < nodeB.getSize().width
+            }
+            items.forEach {
+                $0.preferredWidth = maxWidthNode?.getSize().width ?? 0.0
+            }
+        case .horizontal:
+            let maxHeightNode = items.max { nodeA, nodeB in
+                return nodeA.getSize().height < nodeB.getSize().height
+            }
+            items.forEach {
+                $0.preferredHeight = maxHeightNode?.getSize().height ?? 0.0
+            }
+
         }
-        items.forEach { $0.width = maxWidthNode?.getSize().width ?? 0.0 }
-        linearLayout.layoutIfNeeded()
     }
 
     @objc override func removeChild(_ child: TransformNode) {

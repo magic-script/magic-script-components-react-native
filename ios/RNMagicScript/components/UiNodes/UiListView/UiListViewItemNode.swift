@@ -25,10 +25,15 @@ import SceneKit
 
     fileprivate var backgroundNode: SCNNode!
 
-    var width: CGFloat = 0.0 {
+    var preferredWidth: CGFloat = 0.0 {
         didSet {
-            (backgroundNode.geometry as? SCNPlane)?.width = width
-            setNeedsLayout()
+            (backgroundNode.geometry as? SCNPlane)?.width = preferredWidth
+        }
+    }
+
+    var preferredHeight: CGFloat = 0.0 {
+        didSet {
+            (backgroundNode.geometry as? SCNPlane)?.height = preferredHeight
         }
     }
 
@@ -68,7 +73,7 @@ import SceneKit
 
     override func _calculateSize() -> CGSize {
         if let childNodeSize = childNode?.getSize() {
-            return CGSize(width: width > 0.0 ? width : childNodeSize.width, height: childNodeSize.height)
+            return CGSize(width: preferredWidth > 0.0 ? preferredWidth : childNodeSize.width, height: preferredHeight > 0.0 ? preferredHeight : childNodeSize.height)
         }
         return CGSize.zero
     }

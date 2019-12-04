@@ -26,8 +26,10 @@ import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.*
 
-class UiLinearLayout @JvmOverloads constructor(props: ReadableMap, layoutManager: LinearLayoutManager = LinearLayoutManagerImpl())
-    : UiLayout(props, layoutManager) {
+class UiLinearLayout @JvmOverloads constructor(
+    props: ReadableMap,
+    layoutManager: LinearLayoutManager = LinearLayoutManagerImpl()
+) : UiLayout(props, layoutManager) {
 
     companion object {
         // properties
@@ -69,18 +71,19 @@ class UiLinearLayout @JvmOverloads constructor(props: ReadableMap, layoutManager
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)
-                ?: Padding()
+            ?: Padding()
         return Bounding(
-                childBounds.left + contentNode.localPosition.x - itemPadding.left,
-                childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
-                childBounds.right + contentNode.localPosition.x + itemPadding.right,
-                childBounds.top + contentNode.localPosition.y + itemPadding.top
+            childBounds.left + contentNode.localPosition.x - itemPadding.left,
+            childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
+            childBounds.right + contentNode.localPosition.x + itemPadding.right,
+            childBounds.top + contentNode.localPosition.y + itemPadding.top
         )
     }
 
     private fun setOrientation(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
-            val isVertical = props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
+            val isVertical =
+                props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
             (layoutManager as LinearLayoutManager).isVertical = isVertical
             requestLayout()
         }

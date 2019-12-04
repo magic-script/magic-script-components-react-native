@@ -23,10 +23,10 @@ import kotlin.math.abs
  * Represents bounds of a node
  */
 data class Bounding(
-        var left: Float = 0f,
-        var bottom: Float = 0f,
-        var right: Float = 0f,
-        var top: Float = 0f
+    var left: Float = 0f,
+    var bottom: Float = 0f,
+    var right: Float = 0f,
+    var top: Float = 0f
 ) {
     companion object {
 
@@ -60,10 +60,10 @@ data class Bounding(
     // Get new Bounding equal to this translated by 2D vector.
     fun translate(translation: Vector2): Bounding {
         return Bounding(
-                left + translation.x,
-                bottom + translation.y,
-                right + translation.x,
-                top + translation.y
+            left + translation.x,
+            bottom + translation.y,
+            right + translation.x,
+            top + translation.y
         )
     }
 }

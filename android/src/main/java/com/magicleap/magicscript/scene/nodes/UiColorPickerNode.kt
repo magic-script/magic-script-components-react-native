@@ -35,12 +35,12 @@ import com.magicleap.magicscript.utils.toJsColorArray
 
 
 open class UiColorPickerNode @JvmOverloads constructor(
-        initProps: ReadableMap,
-        context: Context,
-        viewRenderableLoader: ViewRenderableLoader,
-        fontProvider: FontProvider,
-        iconsRepo: IconsRepository,
-        private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    fontProvider: FontProvider,
+    iconsRepo: IconsRepository,
+    private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
 ) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo) {
 
     companion object {
@@ -117,6 +117,6 @@ open class UiColorPickerNode @JvmOverloads constructor(
 
     fun readColor(props: Bundle): Int {
         return PropertiesReader.readColor(props, PROP_COLOR)
-                ?: (PropertiesReader.readColor(props, PROP_STARTING_COLOR) ?: Color.WHITE)
+            ?: (PropertiesReader.readColor(props, PROP_STARTING_COLOR) ?: Color.WHITE)
     }
 }

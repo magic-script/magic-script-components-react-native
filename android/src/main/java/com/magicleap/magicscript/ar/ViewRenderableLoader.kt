@@ -24,8 +24,8 @@ interface ViewRenderableLoader {
     fun loadRenderable(config: Config, resultCallback: ((result: RenderableResult) -> Unit))
 
     data class Config(
-            val view: View,
-            val horizontalAlignment: Alignment.HorizontalAlignment,
-            val verticalAlignment: Alignment.VerticalAlignment
+        val view: View,
+        val horizontalAlignment: Alignment.HorizontalAlignment,
+        val verticalAlignment: Alignment.VerticalAlignment
     )
 }

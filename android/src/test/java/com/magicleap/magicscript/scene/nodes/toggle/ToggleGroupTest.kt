@@ -45,7 +45,7 @@ class ToggleGroupTest {
     @Test
     fun `only one toggle should be active when multiple selection not allowed`() {
         val node = buildGroupNode(
-                reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, false)
+            reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, false)
         )
         val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, false))
         val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
@@ -62,7 +62,7 @@ class ToggleGroupTest {
     @Test
     fun `every toggle can be active when multiple selection is allowed`() {
         val node = buildGroupNode(
-                reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, true)
+            reactMapOf(ToggleGroupNode.PROP_ALLOW_MULTIPLE_ON, true)
         )
         val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
@@ -76,9 +76,11 @@ class ToggleGroupTest {
 
     @Test
     fun `all toggles should be initially off when forced by group`() {
-        val node = buildGroupNode(reactMapOf(
+        val node = buildGroupNode(
+            reactMapOf(
                 ToggleGroupNode.PROP_FORCE_ALL_OFF, true
-        ))
+            )
+        )
         val toggle1 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val toggle2 = buildToggleNode(reactMapOf(UiToggleNode.PROP_CHECKED, true))
         val togglesList = listOf(toggle1, toggle2)

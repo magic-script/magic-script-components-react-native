@@ -27,9 +27,9 @@ import androidx.core.content.ContextCompat.getColor
 import com.magicleap.magicscript.R
 
 class CustomSpinner @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     companion object {
@@ -143,12 +143,12 @@ class CustomSpinner @JvmOverloads constructor(
         outerBlurMaskFilter = BlurMaskFilter(outBlurRadius, BlurMaskFilter.Blur.NORMAL)
 
         paint.shader = RadialGradient(
-                w / 2F,
-                h / 2F,
-                h / 2F,
-                intArrayOf(paint.color, paint.color, Color.TRANSPARENT),
-                floatArrayOf(0F, 0.85F, 1F),
-                Shader.TileMode.MIRROR
+            w / 2F,
+            h / 2F,
+            h / 2F,
+            intArrayOf(paint.color, paint.color, Color.TRANSPARENT),
+            floatArrayOf(0F, 0.85F, 1F),
+            Shader.TileMode.MIRROR
         )
     }
 
@@ -168,13 +168,13 @@ class CustomSpinner @JvmOverloads constructor(
         paint.maskFilter = innerBlurMaskFilter
 
         spinnerRect.left =
-                innerStrokeWidth / 2 + innerBlurRadius + outStrokeWidth + outBlurRadius
+            innerStrokeWidth / 2 + innerBlurRadius + outStrokeWidth + outBlurRadius
         spinnerRect.top =
-                innerStrokeWidth / 2 + innerBlurRadius + outStrokeWidth + outBlurRadius
+            innerStrokeWidth / 2 + innerBlurRadius + outStrokeWidth + outBlurRadius
         spinnerRect.right =
-                width.toFloat() - innerStrokeWidth / 2 - innerBlurRadius - outStrokeWidth - outBlurRadius
+            width.toFloat() - innerStrokeWidth / 2 - innerBlurRadius - outStrokeWidth - outBlurRadius
         spinnerRect.bottom =
-                height.toFloat() - innerStrokeWidth / 2 - innerBlurRadius - outStrokeWidth - outBlurRadius
+            height.toFloat() - innerStrokeWidth / 2 - innerBlurRadius - outStrokeWidth - outBlurRadius
 
         canvas.drawArc(spinnerRect, startAngle, sweepAngle, false, paint)
 

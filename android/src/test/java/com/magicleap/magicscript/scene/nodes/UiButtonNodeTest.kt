@@ -160,8 +160,8 @@ class UiButtonNodeTest {
     fun shouldSetIconColorWhenIconColorPropertyPresent() {
         val color = reactArrayOf(0.1, 0.2, 0.3, 0.4)
         val props = reactMapOf(
-                UiButtonNode.PROP_ICON, "magic-icon",
-                UiButtonNode.PROP_ICON_COLOR, color
+            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_COLOR, color
         )
         val node = createNodeWithViewSpy(props)
 
@@ -175,8 +175,8 @@ class UiButtonNodeTest {
         val sizeInMeters = 0.1
         val iconSize = reactArrayOf(sizeInMeters, sizeInMeters)
         val props = reactMapOf(
-                UiButtonNode.PROP_ICON, "magic-icon",
-                UiButtonNode.PROP_ICON_SIZE, iconSize
+            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_SIZE, iconSize
         )
         val node = createNodeWithViewSpy(props)
 
@@ -200,8 +200,8 @@ class UiButtonNodeTest {
     @Test
     fun shouldReturnCorrectBounds() {
         val props = reactMapOf(
-                TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-1.0, 1.0, 0.0),
-                UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
+            TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-1.0, 1.0, 0.0),
+            UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
         )
         val node = createNodeWithViewSpy(props)
         val expectedBounds = Bounding(-2F, 0.5F, 0F, 1.5F)
@@ -215,8 +215,8 @@ class UiButtonNodeTest {
     fun shouldReturnCorrectBoundsWhenScaled() {
         val scale = reactArrayOf(0.5, 0.5, 0.5)
         val props = reactMapOf(
-                UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0,
-                TransformNode.PROP_LOCAL_SCALE, scale
+            UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0,
+            TransformNode.PROP_LOCAL_SCALE, scale
         )
         val node = createNodeWithViewSpy(props)
         val expectedBounds = Bounding(-0.5F, -0.25F, 0.5F, 0.25F)

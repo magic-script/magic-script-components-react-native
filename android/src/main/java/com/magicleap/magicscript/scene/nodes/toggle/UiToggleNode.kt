@@ -34,10 +34,11 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 
-open class UiToggleNode(initProps: ReadableMap,
-                        context: Context,
-                        viewRenderableLoader: ViewRenderableLoader,
-                        private val toggleViewManager: ToggleViewManager
+open class UiToggleNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    private val toggleViewManager: ToggleViewManager
 ) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
 
     companion object {
@@ -99,7 +100,8 @@ open class UiToggleNode(initProps: ReadableMap,
 
     override fun setupView() {
         val textView = LayoutInflater.from(context).inflate(R.layout.toggle_text, null) as TextView
-        val imageView = LayoutInflater.from(context).inflate(R.layout.toggle_switch, null) as ImageView
+        val imageView =
+            LayoutInflater.from(context).inflate(R.layout.toggle_switch, null) as ImageView
         val type = properties.getString(PROP_TYPE, TYPE_DEFAULT)
 
         var heightMeters = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
@@ -108,12 +110,12 @@ open class UiToggleNode(initProps: ReadableMap,
         }
 
         val toggleConfig = ToggleConfig(
-                toggleType = type,
-                toggleHeight = heightMeters,
-                container = view as ViewGroup,
-                imageView = imageView,
-                textView = textView,
-                onToggleClickListener = this.toggleClickListener
+            toggleType = type,
+            toggleHeight = heightMeters,
+            container = view as ViewGroup,
+            imageView = imageView,
+            textView = textView,
+            onToggleClickListener = this.toggleClickListener
         )
         toggleViewManager.setupToggleView(context, toggleConfig)
     }

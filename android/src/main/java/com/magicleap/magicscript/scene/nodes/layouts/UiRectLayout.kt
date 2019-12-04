@@ -10,8 +10,8 @@ import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
 
-class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
-    : UiLayout(initProps, layoutManager) {
+class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
+    UiLayout(initProps, layoutManager) {
 
     private var padding: Padding = Padding(0f, 0f, 0f, 0f)
 
@@ -55,10 +55,10 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager)
         val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
 
         return Bounding(
-                -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
-                -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
-                sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
-                sizeY / 2 + contentNode.localPosition.y + itemPadding.top
+            -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
+            -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
+            sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
+            sizeY / 2 + contentNode.localPosition.y + itemPadding.top
         )
 
     }

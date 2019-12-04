@@ -22,29 +22,33 @@ import com.magicleap.magicscript.R
 
 class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoader {
 
-    override fun loadRenderable(config: ViewRenderableLoader.Config,
-                                resultCallback: ((result: RenderableResult) -> Unit)) {
+    override fun loadRenderable(
+        config: ViewRenderableLoader.Config,
+        resultCallback: ((result: RenderableResult) -> Unit)
+    ) {
 
         val builder = ViewRenderable
-                .builder()
-                .setSource(context, R.raw.android_view) // using custom material to disable back side
-                .setView(context, config.view)
+            .builder()
+            .setSource(context, R.raw.android_view) // using custom material to disable back side
+            .setView(context, config.view)
 
-        val horizontalAlignment = ViewRenderable.HorizontalAlignment.valueOf(config.horizontalAlignment.name)
-        val verticalAlignment = ViewRenderable.VerticalAlignment.valueOf(config.verticalAlignment.name)
+        val horizontalAlignment =
+            ViewRenderable.HorizontalAlignment.valueOf(config.horizontalAlignment.name)
+        val verticalAlignment =
+            ViewRenderable.VerticalAlignment.valueOf(config.verticalAlignment.name)
         builder.setHorizontalAlignment(horizontalAlignment)
         builder.setVerticalAlignment(verticalAlignment)
 
         builder.build()
-                .thenAccept { renderable ->
-                    renderable.isShadowReceiver = false
-                    renderable.isShadowCaster = false
-                    resultCallback(RenderableResult.Success(renderable))
-                }
-                .exceptionally { throwable ->
-                    resultCallback(RenderableResult.Error(throwable))
-                    null
-                }
+            .thenAccept { renderable ->
+                renderable.isShadowReceiver = false
+                renderable.isShadowCaster = false
+                resultCallback(RenderableResult.Success(renderable))
+            }
+            .exceptionally { throwable ->
+                resultCallback(RenderableResult.Error(throwable))
+                null
+            }
     }
 
 }

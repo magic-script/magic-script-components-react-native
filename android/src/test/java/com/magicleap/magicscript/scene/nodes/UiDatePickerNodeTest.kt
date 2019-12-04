@@ -110,10 +110,10 @@ class UiDatePickerNodeTest {
     @Test
     fun `on view click should create dialog with default date`() {
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, "13/12/2011",
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
@@ -124,10 +124,10 @@ class UiDatePickerNodeTest {
     @Test
     fun `on view click should should attach listeners to dialog`() {
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, "13/12/2011",
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()
@@ -149,10 +149,10 @@ class UiDatePickerNodeTest {
     fun `if defaultDate is set should apply it to dialog`() {
         val textDate = "13/12/2011"
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, textDate,
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, textDate,
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
         )
 
         val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(textDate)
@@ -166,11 +166,11 @@ class UiDatePickerNodeTest {
     fun `if date is set should apply it to dialog`() {
         val textDate = "10/11/2012"
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, "13/12/2011",
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
-                        PROP_DATE, textDate
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
+                PROP_DATE, textDate
+            )
         )
 
         val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(textDate)
@@ -185,12 +185,12 @@ class UiDatePickerNodeTest {
         val minYear = 2010
         val maxYear = 2030
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, "13/12/2011",
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
-                        PROP_YEAR_MIN, minYear,
-                        PROP_YEAM_MAX, maxYear
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
+                PROP_YEAR_MIN, minYear,
+                PROP_YEAM_MAX, maxYear
+            )
         )
 
         tested.forceClick()
@@ -202,10 +202,10 @@ class UiDatePickerNodeTest {
     @Test
     fun `should update dateValue when date set`() {
         tested.updateProperties(
-                createProperty(
-                        PROP_DEFAULT_DATE, "13/12/2011",
-                        PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
-                )
+            createProperty(
+                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
         )
 
         tested.forceClick()

@@ -28,9 +28,9 @@ import android.view.View
 import com.magicleap.magicscript.R
 
 class CustomProgressBar @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     var value = 0F
@@ -80,13 +80,13 @@ class CustomProgressBar @JvmOverloads constructor(
         // draw background
         val radius = height.toFloat() / 2 * roundnessFactor
         canvas.drawRoundRect(
-                0F,
-                0F,
-                width.toFloat(),
-                height.toFloat(),
-                radius,
-                radius,
-                bgPaint
+            0F,
+            0F,
+            width.toFloat(),
+            height.toFloat(),
+            radius,
+            radius,
+            bgPaint
         )
 
         // draw progress
@@ -97,23 +97,23 @@ class CustomProgressBar @JvmOverloads constructor(
         val progressWidth = progress * width.toFloat()
 
         progressPaint.shader = LinearGradient(
-                0F,
-                0F,
-                progressWidth,
-                0F,
-                beginColor,
-                endColor,
-                Shader.TileMode.CLAMP
+            0F,
+            0F,
+            progressWidth,
+            0F,
+            beginColor,
+            endColor,
+            Shader.TileMode.CLAMP
         )
 
         canvas.drawRoundRect(
-                0F,
-                0F,
-                progressWidth,
-                height.toFloat(),
-                radius,
-                radius,
-                progressPaint
+            0F,
+            0F,
+            progressWidth,
+            height.toFloat(),
+            radius,
+            radius,
+            progressPaint
         )
 
     }

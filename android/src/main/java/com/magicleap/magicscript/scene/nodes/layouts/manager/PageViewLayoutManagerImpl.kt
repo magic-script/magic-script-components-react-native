@@ -48,8 +48,10 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                     (node as TransformNode).show()
                     childrenBounds[index]?.let { childBounds ->
                         val childSize = childBounds.size()
-                        val sizeLimitX = if (parentWidth != UiNode.WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
-                        val sizeLimitY = if (parentHeight != UiNode.WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
+                        val sizeLimitX =
+                            if (parentWidth != UiNode.WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
+                        val sizeLimitY =
+                            if (parentHeight != UiNode.WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
                         val sizeLimit = Vector2(sizeLimitX, sizeLimitY)
                         layoutNode(node, childBounds, sizeLimit)
                     }

@@ -94,7 +94,7 @@ class UiScrollViewNodeTest {
 
         verify(viewSpy).scrollDirection = "horizontal"
     }
-    
+
     @Test
     fun `should remove scrollbar`() {
         val scrollBar = UiScrollBarNode(JavaOnlyMap())

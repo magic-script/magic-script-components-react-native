@@ -24,19 +24,19 @@ import com.magicleap.magicscript.utils.logMessage
 class VideoRenderableLoaderImpl(private val context: Context) : VideoRenderableLoader {
     override fun loadRenderable(resultCallback: (result: RenderableResult) -> Unit) {
         ModelRenderable.builder()
-                .setSource(context, R.raw.chroma_key_video)
-                .build()
-                .thenAccept { renderable ->
-                    renderable.material.setBoolean("disableChromaKey", true)
-                    // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
-                    renderable.isShadowCaster = false
-                    renderable.isShadowReceiver = false
-                    resultCallback(RenderableResult.Success(renderable))
-                }
-                .exceptionally { throwable ->
-                    logMessage("error loading video renderable: $throwable")
-                    resultCallback(RenderableResult.Error(throwable))
-                    null
-                }
+            .setSource(context, R.raw.chroma_key_video)
+            .build()
+            .thenAccept { renderable ->
+                renderable.material.setBoolean("disableChromaKey", true)
+                // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
+                renderable.isShadowCaster = false
+                renderable.isShadowReceiver = false
+                resultCallback(RenderableResult.Success(renderable))
+            }
+            .exceptionally { throwable ->
+                logMessage("error loading video renderable: $throwable")
+                resultCallback(RenderableResult.Error(throwable))
+                null
+            }
     }
 }

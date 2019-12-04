@@ -29,8 +29,10 @@ import com.magicleap.magicscript.utils.logMessage
  * Typeface returned from this provider should be used by every
  * node that contains a text
  */
-class FontProviderImpl(private val context: Context,
-                       private val androidFontProvider: AndroidFontProvider) : FontProvider {
+class FontProviderImpl(
+    private val context: Context,
+    private val androidFontProvider: AndroidFontProvider
+) : FontProvider {
 
     companion object {
         private const val FONTS_DIR = "fonts"

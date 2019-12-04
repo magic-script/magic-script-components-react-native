@@ -28,7 +28,8 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.ifContainsDouble
 import com.magicleap.magicscript.utils.putDefault
 
-class PageViewNode(props: ReadableMap, layoutManager: LayoutManager): UiLayout(props, layoutManager) {
+class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
+    UiLayout(props, layoutManager) {
 
     private var padding: Padding = Padding(0f, 0f, 0f, 0f)
     private var visiblePage: Int = 0
@@ -85,10 +86,10 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager): UiLayout(p
         val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
 
         return Bounding(
-                -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
-                -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
-                sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
-                sizeY / 2 + contentNode.localPosition.y + itemPadding.top
+            -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
+            -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
+            sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
+            sizeY / 2 + contentNode.localPosition.y + itemPadding.top
         )
     }
 

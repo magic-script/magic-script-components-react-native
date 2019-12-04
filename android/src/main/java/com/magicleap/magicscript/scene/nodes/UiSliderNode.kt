@@ -28,8 +28,11 @@ import com.magicleap.magicscript.scene.nodes.views.CustomSlider
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 
-open class UiSliderNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiSliderNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

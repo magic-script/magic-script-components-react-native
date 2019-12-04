@@ -34,11 +34,12 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 
-open class UiButtonNode(initProps: ReadableMap,
-                        context: Context,
-                        viewRenderableLoader: ViewRenderableLoader,
-                        private val fontProvider: FontProvider,
-                        private val iconsRepo: IconsRepository
+open class UiButtonNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    private val fontProvider: FontProvider,
+    private val iconsRepo: IconsRepository
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {

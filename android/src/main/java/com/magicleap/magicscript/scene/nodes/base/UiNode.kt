@@ -228,8 +228,10 @@ abstract class UiNode(
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
+            applyMaterialClipping()
         } else {
             contentNode.renderable = null
         }
@@ -327,10 +329,8 @@ abstract class UiNode(
             if (result is RenderableResult.Success) {
                 if (isVisible) {
                     contentNode.renderable = result.renderable
-                    renderableCopy = result.renderable
-                } else {
-                    renderableCopy = result.renderable
                 }
+                renderableCopy = result.renderable
                 applyMaterialClipping()
                 onViewLoadedListener?.invoke(result.renderable)
             }

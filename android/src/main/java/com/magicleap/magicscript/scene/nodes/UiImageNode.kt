@@ -32,11 +32,12 @@ import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Vector2
 import kotlinx.android.synthetic.main.image.view.*
 
-open class UiImageNode(initProps: ReadableMap,
-                       context: Context,
-                       viewRenderableLoader: ViewRenderableLoader,
-                       private val iconsRepo: IconsRepository)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiImageNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    private val iconsRepo: IconsRepository
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties
@@ -80,8 +81,8 @@ open class UiImageNode(initProps: ReadableMap,
         val imageUri = PropertiesReader.readImagePath(props, PROP_FILE_PATH, context)
         if (imageUri != null) {
             Glide.with(context)
-                    .load(imageUri)
-                    .into(view.image_view)
+                .load(imageUri)
+                .into(view.image_view)
 
             val color = PropertiesReader.readColor(props, PROP_COLOR)
             if (color != null) {

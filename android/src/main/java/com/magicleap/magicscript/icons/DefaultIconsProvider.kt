@@ -35,7 +35,8 @@ class DefaultIconsProvider(private val context: Context) : IconsProvider {
         }
 
         val resourceName = digitCorrectedName.replace("-", "_")
-        val resourceId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
+        val resourceId =
+            context.resources.getIdentifier(resourceName, "drawable", context.packageName)
         if (resourceId == 0) { // resource not exists
             return null
         }

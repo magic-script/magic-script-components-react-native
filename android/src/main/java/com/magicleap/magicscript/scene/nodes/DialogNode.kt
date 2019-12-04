@@ -33,10 +33,10 @@ import com.magicleap.magicscript.utils.putDefault
 import java.lang.ref.WeakReference
 
 class DialogNode(
-        initProps: ReadableMap,
-        private val context: Context,
-        private val iconsRepository: IconsRepository,
-        private val dialogProvider: DialogProvider
+    initProps: ReadableMap,
+    private val context: Context,
+    private val iconsRepository: IconsRepository,
+    private val dialogProvider: DialogProvider
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -84,10 +84,6 @@ class DialogNode(
     override fun build() {
         super.build()
         showDialog()
-    }
-
-    override fun onVisibilityChanged(visibility: Boolean) {
-        //no-op
     }
 
     override fun onDestroy() {

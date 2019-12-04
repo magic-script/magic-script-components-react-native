@@ -92,10 +92,10 @@ class LinearLayoutManagerImpl : LinearLayoutManager {
 
     // sets the proper position for the child node
     private fun layoutNode(
-            node: Node,
-            nodeBounds: Bounding,
-            span: Float,
-            offset: Float
+        node: Node,
+        nodeBounds: Bounding,
+        span: Float,
+        offset: Float
     ) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom

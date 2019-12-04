@@ -30,11 +30,12 @@ import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.*
 
-open class UiTextNode(initProps: ReadableMap,
-                      context: Context,
-                      viewRenderableLoader: ViewRenderableLoader,
-                      private val fontProvider: FontProvider)
-    : UiNode(initProps, context, viewRenderableLoader) {
+open class UiTextNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    private val fontProvider: FontProvider
+) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
         // properties

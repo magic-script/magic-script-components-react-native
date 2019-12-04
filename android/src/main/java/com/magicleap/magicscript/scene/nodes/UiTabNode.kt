@@ -25,9 +25,9 @@ import com.magicleap.magicscript.icons.IconsRepository
 
 // As per documentation, UiTabNode is basically a limited button node.
 class UiTabNode(
-        props: ReadableMap,
-        context: Context,
-        viewRenderableLoader: ViewRenderableLoader,
-        fontProvider: FontProvider,
-        iconsRepository: IconsRepository
+    props: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader,
+    fontProvider: FontProvider,
+    iconsRepository: IconsRepository
 ) : UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepository)

@@ -4,7 +4,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 
-interface RectLayoutManager: LayoutManager {
+interface RectLayoutManager : LayoutManager {
 
     var itemPadding: Padding
 

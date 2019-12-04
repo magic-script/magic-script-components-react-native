@@ -26,24 +26,27 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
 
     override fun loadRenderable(modelUri: Uri, resultCallback: (result: RenderableResult) -> Unit) {
         ModelRenderable.builder()
-                .setSource(context, RenderableSource.builder().setSource(
-                        context,
-                        modelUri,
-                        RenderableSource.SourceType.GLB) // GLB (binary) or GLTF (text)
-                        .setRecenterMode(RenderableSource.RecenterMode.CENTER)
-                        .build())
-                .setRegistryId(modelUri)
-                .build()
-                .thenAccept { renderable ->
-                    renderable.isShadowReceiver = false
-                    renderable.isShadowCaster = false
-                    resultCallback(RenderableResult.Success(renderable))
-                }
-                .exceptionally { throwable ->
-                    logMessage("error loading ModelRenderable: $throwable")
-                    resultCallback(RenderableResult.Error(throwable))
-                    null
-                }
+            .setSource(
+                context, RenderableSource.builder().setSource(
+                    context,
+                    modelUri,
+                    RenderableSource.SourceType.GLB
+                ) // GLB (binary) or GLTF (text)
+                    .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+                    .build()
+            )
+            .setRegistryId(modelUri)
+            .build()
+            .thenAccept { renderable ->
+                renderable.isShadowReceiver = false
+                renderable.isShadowCaster = false
+                resultCallback(RenderableResult.Success(renderable))
+            }
+            .exceptionally { throwable ->
+                logMessage("error loading ModelRenderable: $throwable")
+                resultCallback(RenderableResult.Error(throwable))
+                null
+            }
 
     }
 }

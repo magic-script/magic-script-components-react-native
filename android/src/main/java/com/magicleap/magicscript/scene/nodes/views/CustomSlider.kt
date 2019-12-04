@@ -28,9 +28,9 @@ import androidx.core.content.ContextCompat
 import com.magicleap.magicscript.R
 
 class CustomSlider @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null

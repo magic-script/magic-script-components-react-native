@@ -24,8 +24,8 @@ import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.*
 
-class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
-    : UiLayout(initProps, layoutManager) {
+class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
+    UiLayout(initProps, layoutManager) {
 
     companion object {
         // properties
@@ -65,12 +65,12 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager)
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)
-                ?: Padding()
+            ?: Padding()
         return Bounding(
-                childBounds.left + contentNode.localPosition.x - itemPadding.left,
-                childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
-                childBounds.right + contentNode.localPosition.x + itemPadding.right,
-                childBounds.top + contentNode.localPosition.y + itemPadding.top
+            childBounds.left + contentNode.localPosition.x - itemPadding.left,
+            childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
+            childBounds.right + contentNode.localPosition.x + itemPadding.right,
+            childBounds.top + contentNode.localPosition.y + itemPadding.top
         )
     }
 

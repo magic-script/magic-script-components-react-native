@@ -49,14 +49,16 @@ class DialogNodeTest {
         iconsRepository = mock()
         testDialogProvider = mock()
         context = ApplicationProvider.getApplicationContext()
-        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(mockDialogBuilder)
+        whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(
+            mockDialogBuilder
+        )
     }
 
     @Test
     fun `should set confirm icon and text if props are passed`() {
         val props = reactMapOf(
-                DialogNode.PROP_CONFIRM_ICON, "icon",
-                DialogNode.PROP_CONFIRM_TEXT, "text"
+            DialogNode.PROP_CONFIRM_ICON, "icon",
+            DialogNode.PROP_CONFIRM_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
@@ -71,8 +73,8 @@ class DialogNodeTest {
     @Test
     fun `should set cancel icon, text and listener if props are passed`() {
         val props = reactMapOf(
-                DialogNode.PROP_CANCEL_ICON, "icon",
-                DialogNode.PROP_CANCEL_TEXT, "text"
+            DialogNode.PROP_CANCEL_ICON, "icon",
+            DialogNode.PROP_CANCEL_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
@@ -87,8 +89,8 @@ class DialogNodeTest {
     @Test
     fun `should set title and message if props are passed`() {
         val props = reactMapOf(
-                DialogNode.PROP_TITLE, "title",
-                DialogNode.PROP_TEXT, "text"
+            DialogNode.PROP_TITLE, "title",
+            DialogNode.PROP_TEXT, "text"
         )
         val node = DialogNode(props, context, iconsRepository, testDialogProvider)
 

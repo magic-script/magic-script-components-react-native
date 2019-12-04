@@ -208,10 +208,10 @@ class PropertiesReaderTest {
     fun `should read SpatialSoundPosition`() {
         val key = "spatialSoundPosition"
         val spatialBundle = createProperty(
-                key, reactMapOf(
+            key, reactMapOf(
                 "channel", 4.0,
                 "channelPosition", reactArrayOf(.1f, 1.1f, 2.1f)
-        )
+            )
         )
 
         val spatialSoundPosition = PropertiesReader.readSpatialSoundPosition(spatialBundle, key)
@@ -230,12 +230,12 @@ class PropertiesReaderTest {
     fun `should read SpatialSoundDistance`() {
         val key = "spatialSoundDistance"
         val spatialBundle = createProperty(
-                key, reactMapOf(
+            key, reactMapOf(
                 "channel", 4.0,
                 "minDistance", 1.0,
                 "maxDistance", 3.0,
                 "rolloffFactor", 2
-        )
+            )
         )
 
         val spatialSoundDistance = PropertiesReader.readSpatialSoundDistance(spatialBundle, key)

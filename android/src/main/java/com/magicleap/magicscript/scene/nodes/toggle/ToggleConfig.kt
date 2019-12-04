@@ -21,10 +21,10 @@ import android.widget.ImageView
 import android.widget.TextView
 
 data class ToggleConfig(
-        val toggleType: String,
-        val toggleHeight: Float,
-        val container: ViewGroup,
-        val imageView: ImageView,
-        val textView: TextView,
-        val onToggleClickListener: () -> Unit
+    val toggleType: String,
+    val toggleHeight: Float,
+    val container: ViewGroup,
+    val imageView: ImageView,
+    val textView: TextView,
+    val onToggleClickListener: () -> Unit
 )

@@ -20,14 +20,17 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.utils.Vector2
 
-open class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderableLoader: ViewRenderableLoader)
-    : UiScrollViewNode(initProps, context, viewRenderableLoader) {
+open class UiListViewNode(
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader
+) : UiScrollViewNode(initProps, context, viewRenderableLoader) {
 
     private val containerNode: UiLinearLayout
 
@@ -101,7 +104,7 @@ open class UiListViewNode(initProps: ReadableMap, context: Context, viewRenderab
         }
     }
 
-    override fun addContent(child: Node) {
+    override fun addContent(child: TransformNode) {
         when (child) {
             is UiListViewItemNode -> containerNode.addContent(child)
             is UiScrollBarNode -> {

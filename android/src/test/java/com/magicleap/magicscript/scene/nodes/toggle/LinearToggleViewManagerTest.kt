@@ -61,12 +61,12 @@ class LinearToggleViewManagerTest {
         toggleViewManager = LinearToggleViewManager(fontProvider, ToggleIconsProviderImpl())
 
         toggleConfig = ToggleConfig(
-                toggleType = UiToggleNode.TYPE_DEFAULT,
-                toggleHeight = 0.1F,
-                container = mock<LinearLayout>(),
-                imageView = imageViewSpy,
-                textView = textViewSpy,
-                onToggleClickListener = {}
+            toggleType = UiToggleNode.TYPE_DEFAULT,
+            toggleHeight = 0.1F,
+            container = mock<LinearLayout>(),
+            imageView = imageViewSpy,
+            textView = textViewSpy,
+            onToggleClickListener = {}
         )
 
         toggleViewManager.setupToggleView(context, toggleConfig)

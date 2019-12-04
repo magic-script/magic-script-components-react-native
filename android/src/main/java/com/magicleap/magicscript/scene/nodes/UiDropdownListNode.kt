@@ -20,12 +20,12 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
@@ -60,14 +60,18 @@ class UiDropdownListNode(
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
         listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
-        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
-
         properties.putString(PROP_ICON, "arrow-down")
+
+        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
     }
 
     override fun build() {
         super.build()
+
         listNode.build()
+        addContent(listNode)
+        hideList()
+
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
     }
 
@@ -79,7 +83,7 @@ class UiDropdownListNode(
         setShowList(props)
     }
 
-    override fun addContent(child: Node) {
+    override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
             child.onSelectedListener = {
@@ -95,7 +99,7 @@ class UiDropdownListNode(
         }
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
             if (child == lastSelectedItem) {
@@ -108,7 +112,7 @@ class UiDropdownListNode(
 
     override fun onViewClick() {
         super.onViewClick()
-        if (isListVisible()) {
+        if (listNode.isVisible) {
             hideList()
         } else {
             showList()
@@ -150,25 +154,21 @@ class UiDropdownListNode(
     private fun setShowList(props: Bundle) {
         if (props.containsKey(PROP_SHOW_LIST)) {
             val show = props.getBoolean(PROP_SHOW_LIST)
-            if (show && !isListVisible()) {
+            if (show && !listNode.isVisible) {
                 showList()
-            } else if (isListVisible()) {
+            } else if (listNode.isVisible) {
                 hideList()
             }
         }
     }
 
-    private fun isListVisible(): Boolean {
-        return contentNode.children.contains(listNode)
-    }
-
     private fun showList() {
-        addContent(listNode)
+        listNode.show()
         onListVisibilityChanged?.invoke(true)
     }
 
     private fun hideList() {
-        removeContent(listNode)
+        listNode.hide()
         onListVisibilityChanged?.invoke(false)
     }
 

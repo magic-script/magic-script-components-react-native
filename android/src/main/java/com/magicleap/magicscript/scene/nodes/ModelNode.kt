@@ -76,6 +76,7 @@ class ModelNode(initProps: ReadableMap,
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
         } else {

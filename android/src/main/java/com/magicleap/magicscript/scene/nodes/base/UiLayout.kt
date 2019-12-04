@@ -24,7 +24,6 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.logMessage
 import java.lang.Float.min
 
 // Base class for layouts (grid, linear, rect)
@@ -77,14 +76,17 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         setLayoutSize(props)
     }
 
+    // We should access children via [childrenList], because they may not have
+    // been added yet to [contentNode]
     override fun onVisibilityChanged(visibility: Boolean) {
-        childrenList.forEach {
-            if (visibility) {
-                it.show()
-            } else {
-                it.hide()
+        childrenList
+            .forEach { child ->
+                if (visibility) {
+                    child.show()
+                } else {
+                    child.hide()
+                }
             }
-        }
     }
 
     protected open fun setLayoutSize(props: Bundle) {
@@ -103,20 +105,16 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * For layouts child is actually added with delay,
      * after position for it is calculated.
      */
-    override fun addContent(child: Node) {
-        if (child is TransformNode) {
-            if (!isVisible) {
-                child.hide()
-            }
-            mChildrenList.add(child)
-            onAddedToLayoutListener?.invoke(child)
-            redrawRequested = true
-        } else {
-            logMessage("Non transform nodes are not supported in layouts", true)
+    override fun addContent(child: TransformNode) {
+        if (!isVisible) {
+            child.hide()
         }
+        mChildrenList.add(child)
+        onAddedToLayoutListener?.invoke(child)
+        redrawRequested = true
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         mChildrenList.remove(child)
         if (contentNode.children.contains(child)) {
             contentNode.removeChild(child)

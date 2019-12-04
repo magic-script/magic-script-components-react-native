@@ -20,12 +20,12 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
@@ -83,7 +83,7 @@ class UiDropdownListNode(
         setShowList(props)
     }
 
-    override fun addContent(child: Node) {
+    override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
             child.onSelectedListener = {
@@ -99,7 +99,7 @@ class UiDropdownListNode(
         }
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
             if (child == lastSelectedItem) {

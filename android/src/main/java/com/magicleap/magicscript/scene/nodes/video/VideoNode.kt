@@ -99,6 +99,7 @@ class VideoNode(
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
             applyMaterialClipping()

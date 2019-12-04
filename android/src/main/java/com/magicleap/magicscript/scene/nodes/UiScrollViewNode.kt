@@ -24,7 +24,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
@@ -32,20 +31,18 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.utils.PropertiesReader
+import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
 import com.magicleap.magicscript.utils.Utils.Companion.pxToMeters
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
 import kotlin.math.max
 import kotlin.math.min
 
 open class UiScrollViewNode(
-        initProps: ReadableMap,
-        context: Context,
-        viewRenderableLoader: ViewRenderableLoader) :
-        UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
+    initProps: ReadableMap,
+    context: Context,
+    viewRenderableLoader: ViewRenderableLoader
+) :
+    UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -89,8 +86,9 @@ open class UiScrollViewNode(
     fun onTouchEvent(event: MotionEvent): Boolean {
         val viewBounds = getScrollBounds()
         event.setLocation(
-                metersToPx(event.x - viewBounds.left, context).toFloat(),
-                metersToPx(-event.y + viewBounds.top, context).toFloat())
+            metersToPx(event.x - viewBounds.left, context).toFloat(),
+            metersToPx(-event.y + viewBounds.top, context).toFloat()
+        )
         return view.onTouchEvent(event)
     }
 
@@ -148,24 +146,22 @@ open class UiScrollViewNode(
         setScrollDirection(props)
     }
 
-    override fun addContent(child: Node) {
-        if (child is UiScrollBarNode) {
-            addScrollBar(child)
-            return
-        }
-
-        if (content != null) {
-            return
-        }
+    override fun addContent(child: TransformNode) {
         super.addContent(child)
 
-        if (child !is TransformNode) {
+        if (child is UiScrollBarNode) {
+            setupScrollBar(child)
             return
         }
-        this.content = child
+        if (content == null) {
+            this.content = child
+        } else {
+            child.hide()
+            logMessage("ScrollView should have only one direct child", true)
+        }
     }
 
-    override fun removeContent(child: Node) {
+    override fun removeContent(child: TransformNode) {
         super.removeContent(child)
         when (child) {
             content -> content = null
@@ -192,8 +188,8 @@ open class UiScrollViewNode(
         // requestedContentPosition.
         val position = content?.localPosition ?: Vector3()
         return Vector2(
-                requestedContentPosition.x - position.x,
-                requestedContentPosition.y - position.y
+            requestedContentPosition.x - position.x,
+            requestedContentPosition.y - position.y
         )
     }
 
@@ -213,19 +209,17 @@ open class UiScrollViewNode(
         return max(parentBasedThickness, BAR_MINIMUM_THICKNESS)
     }
 
-    private fun addScrollBar(scrollBarNode: UiScrollBarNode) {
+    private fun setupScrollBar(scrollBarNode: UiScrollBarNode) {
         val thickness = calculateBarThickness(size)
         val thicknessPx = metersToPx(thickness, context)
 
         if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
             if (vBarNode == null) {
-                super.addContent(scrollBarNode)
                 vBarNode = scrollBarNode
                 (view as CustomScrollView).vBar?.setThickness(thicknessPx)
             }
         } else {
             if (hBarNode == null) {
-                super.addContent(scrollBarNode)
                 hBarNode = scrollBarNode
                 (view as CustomScrollView).hBar?.setThickness(thicknessPx)
             }
@@ -251,8 +245,9 @@ open class UiScrollViewNode(
         val scrollView = (view as CustomScrollView)
         val contentSize = contentBounds.size()
         scrollView.contentSize = Vector2(
-                metersToPx(contentSize.x, context).toFloat(),
-                metersToPx(contentSize.y, context).toFloat())
+            metersToPx(contentSize.x, context).toFloat(),
+            metersToPx(contentSize.y, context).toFloat()
+        )
         update(scrollView.position)
     }
 
@@ -261,15 +256,17 @@ open class UiScrollViewNode(
             val contentBounds = content.getContentBounding()
             val viewBounds = getScrollBounds()
             val alignTopLeft = Vector2(
-                    viewBounds.left - contentBounds.left,
-                    viewBounds.top - contentBounds.top)
+                viewBounds.left - contentBounds.left,
+                viewBounds.top - contentBounds.top
+            )
 
             val contentSize = contentBounds.size()
             val viewSize = viewBounds.size()
             val possibleTravel = (contentSize - viewSize).coerceAtLeast(0F)
             val travel = Vector2(
-                    -possibleTravel.x * viewPosition.x,
-                    possibleTravel.y * viewPosition.y)
+                -possibleTravel.x * viewPosition.x,
+                possibleTravel.y * viewPosition.y
+            )
 
             requestedContentPosition = alignTopLeft + travel
 
@@ -278,9 +275,10 @@ open class UiScrollViewNode(
 
             // Moving content up in z-plane, so it'll receive touch events first.
             content.localPosition = Vector3(
-                    requestedContentPosition.x,
-                    requestedContentPosition.y,
-                    Z_ORDER_OFFSET)
+                requestedContentPosition.x,
+                requestedContentPosition.y,
+                Z_ORDER_OFFSET
+            )
 
         }
     }
@@ -293,10 +291,11 @@ open class UiScrollViewNode(
         val vBarWidthPxMeters = pxToMeters(vBarWidthPx, context)
 
         return Bounding(
-                -size.x / 2F,
-                -size.y / 2F + hBarHeightMeters,
-                size.x / 2F - vBarWidthPxMeters,
-                size.y / 2F)
+            -size.x / 2F,
+            -size.y / 2F + hBarHeightMeters,
+            size.x / 2F - vBarWidthPxMeters,
+            size.y / 2F
+        )
     }
 
     private fun setScrollDirection(props: Bundle) {

@@ -21,7 +21,6 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 
-
 fun JavaOnlyMap.localPosition(x: Double, y: Double, z: Double): JavaOnlyMap {
     putArray("localPosition", JavaOnlyArray.of(x, y, z))
     return this
@@ -221,9 +220,6 @@ fun JavaOnlyMap.fileName(fileName: String): JavaOnlyMap {
     return this
 }
 
-const val PROP_SOUND_VOLUME_LINEAR = "soundVolumeLinear"
-const val PROP_SPATIAL_SOUND_DISTANCE = "spatialSoundDistance"
-const val PROP_SPATIAL_SOUND_POSITION = "spatialSoundPosition"
 fun JavaOnlyMap.spatialSoundEnable(spatialSoundEnable: Boolean): JavaOnlyMap {
     putBoolean("spatialSoundEnable", spatialSoundEnable)
     return this

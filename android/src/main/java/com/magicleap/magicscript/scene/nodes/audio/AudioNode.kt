@@ -66,9 +66,9 @@ open class AudioNode @JvmOverloads constructor(
     }
 
     private var audioThread: Thread? = Thread(
-            Runnable {
-                setupAudioEngine()
-            }
+        Runnable {
+            setupAudioEngine()
+        }
     )
 
     private var audioEngineSet: Boolean = false
@@ -89,10 +89,6 @@ open class AudioNode @JvmOverloads constructor(
         }
 
         applyActions(props)
-    }
-
-    override fun onVisibilityChanged(visibility: Boolean) {
-        //no-op
     }
 
     override fun onDestroy() {

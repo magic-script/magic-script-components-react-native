@@ -170,8 +170,11 @@ extension GridLayout {
         let nodePos: SCNVector3 = node.contentNode.position
         let itemInternalAlignmentOffset = CGPoint(x: CGFloat(-nodePos.x), y: CGFloat(-nodePos.y))
 
-        let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x)
-        let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y)
+        let itemBounds = node.getBounds()
+        let itemBoundsCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
+
+        let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x) - itemBoundsCenterOffset.x
+        let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y) - itemBoundsCenterOffset.y
 
         return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }

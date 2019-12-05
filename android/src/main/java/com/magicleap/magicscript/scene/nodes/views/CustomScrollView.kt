@@ -29,7 +29,6 @@ import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
 
 class CustomScrollView @JvmOverloads constructor(
     context: Context,
@@ -74,6 +73,7 @@ class CustomScrollView @JvmOverloads constructor(
             hBar?.thumbPosition = value.x
             vBar?.thumbPosition = value.y
             onScrollChangeListener?.invoke(value)
+            invalidate()
         }
 
     var hBar: CustomScrollBar? = null
@@ -168,8 +168,30 @@ class CustomScrollView @JvmOverloads constructor(
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
         val newPos = animation.animatedValue as PointF
-        logMessage("new  x=${newPos.x}, y=${newPos.y}")
         position = Vector2(newPos.x, newPos.y)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        scrollAnimator?.apply {
+            if (isPaused) {
+                resume()
+            }
+        }
+    }
+
+    // Called e.g. when activity was paused. In that case we should pause animation,
+    // because otherwise the invalidate() queue will overflow and animation may get stuck.
+    // See: https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/ProgressBar.java
+    override fun onDetachedFromWindow() {
+        scrollAnimator?.apply {
+            if (isStarted) {
+                pause()
+            }
+        }
+        // This should come after stopping animation, otherwise an invalidate message remains in the
+        // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
+        super.onDetachedFromWindow()
     }
 
     private fun updateScrollbars() {
@@ -188,11 +210,11 @@ class CustomScrollView @JvmOverloads constructor(
     }
 
     private fun startScrollAnimation(speedX: Float, speedY: Float) {
+        // cancel previous animation
+        scrollAnimator?.cancel()
+
         val scrollDeltaX = -speedX / maximumScrollVelocity
         val scrollDeltaY = -speedY / maximumScrollVelocity
-        logMessage("scroll delta x= $scrollDeltaY, y=")
-
-        scrollAnimator?.cancel()
 
         val destX = (position.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
         val destY = (position.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)

@@ -153,8 +153,8 @@ extension GridLayout {
 
         let columnContentWidth = columnBounds.width - (defaultItemPadding.left + defaultItemPadding.right)
         let rowContnetHeight = rowBounds.height - (defaultItemPadding.top + defaultItemPadding.bottom)
-        let localCenter = CGPoint(x: columnBounds.x + defaultItemPadding.left + 0.5 * columnContentWidth,
-                                  y: rowBounds.y + defaultItemPadding.top + 0.5 * rowContnetHeight)
+        let gridSlotCenter = CGPoint(x: columnBounds.x + defaultItemPadding.left + 0.5 * columnContentWidth,
+                                     y: rowBounds.y + defaultItemPadding.top + 0.5 * rowContnetHeight)
 
         let deltaWidth: CGFloat = columnBounds.width - childNodeSize.width
         let deltaHeight: CGFloat = rowBounds.height - childNodeSize.height
@@ -165,18 +165,13 @@ extension GridLayout {
         )
         let scale: CGFloat = Math.clamp(min(columnBounds.width / childNodeSize.width, rowBounds.height / childNodeSize.height), 0, 1)
 
-        // Ignore children nodes alignment
+        // Get item's local center (based on pivot and alignment)
         let node: TransformNode = desc.children[index].childNodes[0] as! TransformNode
-        let nodePos: SCNVector3 = node.contentNode.position
-        let itemInternalAlignmentOffset = CGPoint(x: CGFloat(-nodePos.x), y: CGFloat(-nodePos.y))
-
         let itemBounds = node.getBounds()
-        let itemBoundsCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
+        let itemCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
 
-        let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x) - itemBoundsCenterOffset.x
-        let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y) - itemBoundsCenterOffset.y
-
-        return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
+        let localPosition = gridSlotCenter - itemCenterOffset - gridItemAlignmentOffset
+        return (position: localPosition, scale: scale)
     }
     
     fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {

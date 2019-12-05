@@ -14,11 +14,25 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.utils
+package com.magicleap.magicscript.scene.nodes.audio
 
+import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import java.io.File
 
-interface FileDownloader {
-    fun downloadFile(path: String?, result: (File) -> Unit): Boolean
+interface AudioEngine {
+    fun stop()
+    fun unload()
+    fun setSoundVolume(volume: Float)
+    fun mute(muted: Boolean)
+    fun load(file: File)
+    fun play()
+    fun pause()
+    fun resume()
+    fun setSoundObjectPosition(channelPosition: Vector3)
+    fun setSoundObjectDistanceRolloffModel(spatialSoundDistance: SpatialSoundDistance)
     fun onDestroy()
+    fun spatialSoundEnabled(spatialSoundEnabled: Boolean)
+    fun looping(looping: Boolean)
 }
+

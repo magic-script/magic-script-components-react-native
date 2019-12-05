@@ -16,20 +16,25 @@
 
 package com.magicleap.magicscript.scene.nodes.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.VelocityTracker
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.Scroller
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
 
 class CustomScrollView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
+) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener,
+    ValueAnimator.AnimatorUpdateListener {
 
     companion object {
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
@@ -68,9 +73,16 @@ class CustomScrollView @JvmOverloads constructor(
     private var isBeingDragged = false
     private var previousTouch = Vector2()
     private var velocityTracker: VelocityTracker? = null
+    private val maximumScrollVelocity: Float
+
+    private val scroller = Scroller(context)
+
+    private var animator: ValueAnimator? = null
 
     init {
         viewTreeObserver.addOnGlobalLayoutListener(this)
+        val viewConfiguration = ViewConfiguration.get(context)
+        maximumScrollVelocity = viewConfiguration.scaledMaximumFlingVelocity.toFloat()
     }
 
     override fun stopNestedScroll() {
@@ -127,7 +139,26 @@ class CustomScrollView @JvmOverloads constructor(
 
         if (action == MotionEvent.ACTION_UP) {
             velocityTracker?.addMovement(event)
-            // TODO get velocity and move scroll
+
+            velocityTracker?.computeCurrentVelocity(1000, maximumScrollVelocity)
+            val velocityY = velocityTracker?.yVelocity ?: 0f
+
+            //  valueAn
+
+            val scrollDeltaY = -velocityY / maximumScrollVelocity
+            logMessage("scroll delta= $scrollDeltaY")
+
+            animator?.let {
+                it.pause()
+                it.removeUpdateListener(this)
+            }
+            val destinationY = (position.y + scrollDeltaY).coerceIn(0f, 1f)
+            logMessage("destinationY= $destinationY")
+            animator = ValueAnimator.ofFloat(position.y, destinationY)
+            animator?.duration = 200
+            animator?.addUpdateListener(this)
+            animator?.start()
+
             velocityTracker?.recycle()
             velocityTracker = null
             isBeingDragged = false
@@ -136,6 +167,16 @@ class CustomScrollView @JvmOverloads constructor(
 
         isBeingDragged = false
         return false
+    }
+
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        val newY = animation.animatedValue as Float
+        logMessage("new  y=$newY")
+        position = Vector2(position.x, newY)
+        hBar?.thumbPosition = position.x
+        vBar?.thumbPosition = position.y
+
+        onScrollChangeListener?.invoke(position)
     }
 
     private fun updateScrollbars() {

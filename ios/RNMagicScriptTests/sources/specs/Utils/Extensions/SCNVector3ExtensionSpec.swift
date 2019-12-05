@@ -38,7 +38,6 @@ class SCNVector3ExtensionSpec: QuickSpec {
                     let referenceNegatedVector = SCNVector3(-0.1, -0.2, -0.3)
                     expect(referenceVector.length()).to(beCloseTo(0.3741657387))
                     expect(referenceNegatedVector.length()).to(beCloseTo(0.3741657387))
-                    expect(referenceVector.length()).to(beCloseTo(SCNVector3Length(referenceVector)))
                 }
 
                 it("should return square length of a vector") {
@@ -143,6 +142,10 @@ class SCNVector3ExtensionSpec: QuickSpec {
                     let scalarFloat: Float = 3.5
                     expect(vector * scalarFloat).to(beCloseTo(SCNVector3(vector.x * scalarFloat, vector.y * scalarFloat, vector.z * scalarFloat)))
                     expect(scalarFloat * vector).to(beCloseTo(SCNVector3(scalarFloat * vector.x, scalarFloat * vector.y, scalarFloat * vector.z)))
+
+                    let scalarCGFloat: CGFloat = 4.6
+                    expect(vector * scalarCGFloat).to(beCloseTo(SCNVector3(vector.x * Float(scalarCGFloat), vector.y * Float(scalarCGFloat), vector.z * Float(scalarCGFloat))))
+                    expect(scalarCGFloat * vector).to(beCloseTo(SCNVector3(Float(scalarCGFloat) * vector.x, Float(scalarCGFloat) * vector.y, Float(scalarCGFloat) * vector.z)))
 
                     let scalarInt: Int = 7
                     expect(vector * scalarInt).to(beCloseTo(SCNVector3(vector.x * Float(scalarInt), vector.y * Float(scalarInt), vector.z * Float(scalarInt))))

@@ -18,6 +18,14 @@ import Foundation
 import SceneKit
 
 @objc open class UiRectLayoutNode: UiLayoutNode {
+    @objc override var width: CGFloat {
+        get { return gridLayout.width }
+        set { gridLayout.width = newValue; setNeedsLayout() }
+    }
+    @objc override var height: CGFloat {
+        get { return gridLayout.height }
+        set { gridLayout.height = newValue; setNeedsLayout() }
+    }
     @objc var contentAlignment: Alignment {
         get { return gridLayout.defaultItemAlignment }
         set { gridLayout.defaultItemAlignment = newValue; setNeedsLayout() }

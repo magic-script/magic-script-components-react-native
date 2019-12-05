@@ -27,7 +27,9 @@ class UiLinearLayoutNodeSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
-                    node = UiLinearLayoutNode(props: [:])
+                    node = UiLinearLayoutNode()
+                    expect(node.width).to(equal(0))
+                    expect(node.height).to(equal(0))
                     expect(node.layoutOrientation).to(equal(Orientation.vertical))
                     expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
@@ -37,6 +39,20 @@ class UiLinearLayoutNodeSpec: QuickSpec {
             }
 
             context("update properties") {
+                it("should update 'width' prop") {
+                    let referenceWidth: CGFloat = 0.7
+                    node.width = referenceWidth
+                    expect(node.width).to(beCloseTo(referenceWidth))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+
+                it("should update 'height' prop") {
+                    let referenceHeight: CGFloat = 0.8
+                    node.height = referenceHeight
+                    expect(node.height).to(beCloseTo(referenceHeight))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
                 it("should update 'orientation' prop") {
                     node = UiLinearLayoutNode(props: ["orientation": "horizontal"])
                     expect(node.layoutOrientation).to(equal(Orientation.horizontal))
@@ -73,11 +89,11 @@ class UiLinearLayoutNodeSpec: QuickSpec {
 
             context("always") {
                 it("should add child node correctly") {
-                    node = UiLinearLayoutNode(props: [:])
+                    node = UiLinearLayoutNode()
                     let childNodes = node.contentNode.childNodes
                     expect(childNodes.count).to(equal(1))
 
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     node.addChild(referenceNode)
                     expect(childNodes.count).to(equal(1))
 
@@ -88,9 +104,9 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                 }
 
                 it("should remove child node correctly") {
-                    node = UiLinearLayoutNode(props: [:])
+                    node = UiLinearLayoutNode()
 
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     node.addChild(referenceNode)
                     node.removeChild(referenceNode)
 
@@ -139,7 +155,7 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                     var referenceHeight: CGFloat = 0.0
 
                     for number in 1...4 {
-                        let referenceNode = UiButtonNode(props: [:])
+                        let referenceNode = UiButtonNode()
                         referenceNode.name = "button_\(number)"
                         referenceNode.text = "Default text"
                         node.addChild(referenceNode)
@@ -163,7 +179,7 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                     var referenceHeight: CGFloat = 0.0
 
                     for number in 1...4 {
-                        let referenceNode = UiButtonNode(props: [:])
+                        let referenceNode = UiButtonNode()
                         referenceNode.name = "button_\(number)"
                         referenceNode.text = "Default text"
                         referenceNode.visible = (number % 2 == 0)

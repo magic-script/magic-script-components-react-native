@@ -53,7 +53,7 @@ class SCNSpinnerCircle : SCNGeometry {
     }
 
     static fileprivate func createGeometry(size: CGSize, thickness: CGFloat) -> (sources: [SCNGeometrySource], elements: [SCNGeometryElement]) {
-        let radius = min(0.5 * size.width, 0.5 * size.height)
+        let radius = 0.5 * min(size.width, size.height)
         let borderWidth: CGFloat = max(0.05 * radius, min(thickness, radius))
 
         let outVertices = SCNSpinnerCircle.createVertices(size: size)

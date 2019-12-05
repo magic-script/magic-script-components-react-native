@@ -16,9 +16,10 @@
 
 package com.magicleap.magicscript.utils
 
+import android.net.Uri
 import java.io.File
 
-interface FileDownloader {
-    fun downloadFile(path: String?, result: (File) -> Unit): Boolean
+interface AudioFileProvider {
+    fun provideFile(path: Uri?, result: (File) -> Unit): Boolean
     fun onDestroy()
 }

@@ -26,9 +26,12 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
+import kotlin.math.abs
+import kotlin.math.sign
 
 class CustomScrollView @JvmOverloads constructor(
     context: Context,
@@ -90,6 +93,7 @@ class CustomScrollView @JvmOverloads constructor(
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+    private var lastMove = Vector2()
     private var velocityTracker: VelocityTracker? = null
     private val maximumScrollVelocity: Float
 
@@ -138,14 +142,14 @@ class CustomScrollView @JvmOverloads constructor(
             val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
-            val move = movePx / maxTravel
+            lastMove = movePx / maxTravel
 
             when (scrollDirection) {
-                SCROLL_DIRECTION_VERTICAL -> move.x = 0F
-                SCROLL_DIRECTION_HORIZONTAL -> move.y = 0F
+                SCROLL_DIRECTION_VERTICAL -> lastMove.x = 0F
+                SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            position = (position + move).coerceIn(MIN_POSITION, MAX_POSITION)
+            position = (position + lastMove).coerceIn(MIN_POSITION, MAX_POSITION)
             previousTouch = touch
             return true
         }
@@ -154,7 +158,11 @@ class CustomScrollView @JvmOverloads constructor(
             velocityTracker?.let {
                 it.addMovement(event)
                 it.computeCurrentVelocity(1000, maximumScrollVelocity)
-                startScrollAnimation(it.xVelocity, it.yVelocity)
+                // must use abs, because velocity may be change sign even in same direction
+                val speedX = abs(it.xVelocity)
+                val speedY = abs(it.yVelocity)
+                val direction = lastMove
+                startScrollAnimation(direction, speedX, speedY)
                 it.recycle()
             }
             velocityTracker = null
@@ -209,12 +217,12 @@ class CustomScrollView @JvmOverloads constructor(
         }
     }
 
-    private fun startScrollAnimation(speedX: Float, speedY: Float) {
+    private fun startScrollAnimation(direction: Vector2, speedX: Float, speedY: Float) {
         // cancel previous animation
         scrollAnimator?.cancel()
 
-        val scrollDeltaX = -speedX / maximumScrollVelocity
-        val scrollDeltaY = -speedY / maximumScrollVelocity
+        val scrollDeltaX = sign(direction.x) * speedX / maximumScrollVelocity
+        val scrollDeltaY = sign(direction.y) * speedY / maximumScrollVelocity
 
         val destX = (position.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
         val destY = (position.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)
@@ -226,6 +234,7 @@ class CustomScrollView @JvmOverloads constructor(
         ).also {
             it.duration = 200
             it.addUpdateListener(this)
+            it.interpolator = LinearInterpolator()
             it.start()
         }
     }

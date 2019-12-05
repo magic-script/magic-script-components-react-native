@@ -32,8 +32,13 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        arView.register(self)
         setupARView()
         setupScene()
+    }
+
+    deinit {
+        arView.unregister(self)
     }
 
     let groupId: String = "group"
@@ -65,8 +70,6 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-
-        arView.delegate = self
     }
 
     fileprivate let rectSize = CGSize(width: 0.4, height: 0.2)
@@ -127,7 +130,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: ARSCNViewDelegate {
+extension ViewController: RCTARViewObserving {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         let deltaTime = time - lastTime
         lastTime = time

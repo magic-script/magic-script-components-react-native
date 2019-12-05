@@ -10,6 +10,7 @@ import SwiftyMocky
 import XCTest
 #endif
 import UIKit
+import ARKit
 import SceneKit
 import AVKit
 @testable import RNMagicScriptHostApplication
@@ -2410,6 +2411,368 @@ open class NodeAnimatingMock: NodeAnimating, Mock {
         }
         public static func stopAnimation(perform: @escaping () -> Void) -> Perform {
             return Perform(method: .m_stopAnimation, performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - RCTARViewObserving
+open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        addInvocation(.m_renderer__rendererdidAdd_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidAdd_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`))) as? (SCNSceneRenderer, SCNNode, ARAnchor) -> Void
+		perform?(`renderer`, `node`, `anchor`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
+        addInvocation(.m_renderer__rendererwillUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`)))
+		let perform = methodPerformValue(.m_renderer__rendererwillUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`))) as? (SCNSceneRenderer, SCNNode, ARAnchor) -> Void
+		perform?(`renderer`, `node`, `anchor`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        addInvocation(.m_renderer__rendererdidUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`))) as? (SCNSceneRenderer, SCNNode, ARAnchor) -> Void
+		perform?(`renderer`, `node`, `anchor`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        addInvocation(.m_renderer__rendererdidRemove_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidRemove_nodefor_anchor(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNNode>.value(`node`), Parameter<ARAnchor>.value(`anchor`))) as? (SCNSceneRenderer, SCNNode, ARAnchor) -> Void
+		perform?(`renderer`, `node`, `anchor`)
+    }
+
+    open func session(_ session: ARSession, didFailWithError error: Error) {
+        addInvocation(.m_session__sessiondidFailWithError_error(Parameter<ARSession>.value(`session`), Parameter<Error>.value(`error`)))
+		let perform = methodPerformValue(.m_session__sessiondidFailWithError_error(Parameter<ARSession>.value(`session`), Parameter<Error>.value(`error`))) as? (ARSession, Error) -> Void
+		perform?(`session`, `error`)
+    }
+
+    open func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        addInvocation(.m_session__sessioncameraDidChangeTrackingState_camera(Parameter<ARSession>.value(`session`), Parameter<ARCamera>.value(`camera`)))
+		let perform = methodPerformValue(.m_session__sessioncameraDidChangeTrackingState_camera(Parameter<ARSession>.value(`session`), Parameter<ARCamera>.value(`camera`))) as? (ARSession, ARCamera) -> Void
+		perform?(`session`, `camera`)
+    }
+
+    open func sessionWasInterrupted(_ session: ARSession) {
+        addInvocation(.m_sessionWasInterrupted__session(Parameter<ARSession>.value(`session`)))
+		let perform = methodPerformValue(.m_sessionWasInterrupted__session(Parameter<ARSession>.value(`session`))) as? (ARSession) -> Void
+		perform?(`session`)
+    }
+
+    open func sessionInterruptionEnded(_ session: ARSession) {
+        addInvocation(.m_sessionInterruptionEnded__session(Parameter<ARSession>.value(`session`)))
+		let perform = methodPerformValue(.m_sessionInterruptionEnded__session(Parameter<ARSession>.value(`session`))) as? (ARSession) -> Void
+		perform?(`session`)
+    }
+
+    open func session(_ session: ARSession, didOutputAudioSampleBuffer audioSampleBuffer: CMSampleBuffer) {
+        addInvocation(.m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(Parameter<ARSession>.value(`session`), Parameter<CMSampleBuffer>.value(`audioSampleBuffer`)))
+		let perform = methodPerformValue(.m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(Parameter<ARSession>.value(`session`), Parameter<CMSampleBuffer>.value(`audioSampleBuffer`))) as? (ARSession, CMSampleBuffer) -> Void
+		perform?(`session`, `audioSampleBuffer`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        addInvocation(.m_renderer__rendererupdateAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_renderer__rendererupdateAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`))) as? (SCNSceneRenderer, TimeInterval) -> Void
+		perform?(`renderer`, `time`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, didApplyAnimationsAtTime time: TimeInterval) {
+        addInvocation(.m_renderer__rendererdidApplyAnimationsAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidApplyAnimationsAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`))) as? (SCNSceneRenderer, TimeInterval) -> Void
+		perform?(`renderer`, `time`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
+        addInvocation(.m_renderer__rendererdidSimulatePhysicsAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidSimulatePhysicsAtTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<TimeInterval>.value(`time`))) as? (SCNSceneRenderer, TimeInterval) -> Void
+		perform?(`renderer`, `time`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        addInvocation(.m_renderer__rendererwillRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNScene>.value(`scene`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_renderer__rendererwillRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNScene>.value(`scene`), Parameter<TimeInterval>.value(`time`))) as? (SCNSceneRenderer, SCNScene, TimeInterval) -> Void
+		perform?(`renderer`, `scene`, `time`)
+    }
+
+    open func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        addInvocation(.m_renderer__rendererdidRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNScene>.value(`scene`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_renderer__rendererdidRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>.value(`renderer`), Parameter<SCNScene>.value(`scene`), Parameter<TimeInterval>.value(`time`))) as? (SCNSceneRenderer, SCNScene, TimeInterval) -> Void
+		perform?(`renderer`, `scene`, `time`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_renderer__rendererdidAdd_nodefor_anchor(Parameter<SCNSceneRenderer>, Parameter<SCNNode>, Parameter<ARAnchor>)
+        case m_renderer__rendererwillUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>, Parameter<SCNNode>, Parameter<ARAnchor>)
+        case m_renderer__rendererdidUpdate_nodefor_anchor(Parameter<SCNSceneRenderer>, Parameter<SCNNode>, Parameter<ARAnchor>)
+        case m_renderer__rendererdidRemove_nodefor_anchor(Parameter<SCNSceneRenderer>, Parameter<SCNNode>, Parameter<ARAnchor>)
+        case m_session__sessiondidFailWithError_error(Parameter<ARSession>, Parameter<Error>)
+        case m_session__sessioncameraDidChangeTrackingState_camera(Parameter<ARSession>, Parameter<ARCamera>)
+        case m_sessionWasInterrupted__session(Parameter<ARSession>)
+        case m_sessionInterruptionEnded__session(Parameter<ARSession>)
+        case m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(Parameter<ARSession>, Parameter<CMSampleBuffer>)
+        case m_renderer__rendererupdateAtTime_time(Parameter<SCNSceneRenderer>, Parameter<TimeInterval>)
+        case m_renderer__rendererdidApplyAnimationsAtTime_time(Parameter<SCNSceneRenderer>, Parameter<TimeInterval>)
+        case m_renderer__rendererdidSimulatePhysicsAtTime_time(Parameter<SCNSceneRenderer>, Parameter<TimeInterval>)
+        case m_renderer__rendererwillRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>, Parameter<SCNScene>, Parameter<TimeInterval>)
+        case m_renderer__rendererdidRenderScene_sceneatTime_time(Parameter<SCNSceneRenderer>, Parameter<SCNScene>, Parameter<TimeInterval>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_renderer__rendererdidAdd_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidAdd_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererwillUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererwillUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererdidUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererdidRemove_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidRemove_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
+                return true
+            case (.m_session__sessiondidFailWithError_error(let lhsSession, let lhsError), .m_session__sessiondidFailWithError_error(let rhsSession, let rhsError)):
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsError, rhs: rhsError, with: matcher) else { return false }
+                return true
+            case (.m_session__sessioncameraDidChangeTrackingState_camera(let lhsSession, let lhsCamera), .m_session__sessioncameraDidChangeTrackingState_camera(let rhsSession, let rhsCamera)):
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsCamera, rhs: rhsCamera, with: matcher) else { return false }
+                return true
+            case (.m_sessionWasInterrupted__session(let lhsSession), .m_sessionWasInterrupted__session(let rhsSession)):
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
+                return true
+            case (.m_sessionInterruptionEnded__session(let lhsSession), .m_sessionInterruptionEnded__session(let rhsSession)):
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
+                return true
+            case (.m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let lhsSession, let lhsAudiosamplebuffer), .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let rhsSession, let rhsAudiosamplebuffer)):
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsAudiosamplebuffer, rhs: rhsAudiosamplebuffer, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererupdateAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererupdateAtTime_time(let rhsRenderer, let rhsTime)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererdidApplyAnimationsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidApplyAnimationsAtTime_time(let rhsRenderer, let rhsTime)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererdidSimulatePhysicsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidSimulatePhysicsAtTime_time(let rhsRenderer, let rhsTime)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererwillRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererwillRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
+                return true
+            case (.m_renderer__rendererdidRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererdidRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
+                return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_renderer__rendererdidAdd_nodefor_anchor(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            case let .m_renderer__rendererwillUpdate_nodefor_anchor(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            case let .m_renderer__rendererdidUpdate_nodefor_anchor(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            case let .m_renderer__rendererdidRemove_nodefor_anchor(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            case let .m_session__sessiondidFailWithError_error(p0, p1): return p0.intValue + p1.intValue
+            case let .m_session__sessioncameraDidChangeTrackingState_camera(p0, p1): return p0.intValue + p1.intValue
+            case let .m_sessionWasInterrupted__session(p0): return p0.intValue
+            case let .m_sessionInterruptionEnded__session(p0): return p0.intValue
+            case let .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(p0, p1): return p0.intValue + p1.intValue
+            case let .m_renderer__rendererupdateAtTime_time(p0, p1): return p0.intValue + p1.intValue
+            case let .m_renderer__rendererdidApplyAnimationsAtTime_time(p0, p1): return p0.intValue + p1.intValue
+            case let .m_renderer__rendererdidSimulatePhysicsAtTime_time(p0, p1): return p0.intValue + p1.intValue
+            case let .m_renderer__rendererwillRenderScene_sceneatTime_time(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            case let .m_renderer__rendererdidRenderScene_sceneatTime_time(p0, p1, p2): return p0.intValue + p1.intValue + p2.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didAdd node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>) -> Verify { return Verify(method: .m_renderer__rendererdidAdd_nodefor_anchor(`renderer`, `node`, `anchor`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, willUpdate node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>) -> Verify { return Verify(method: .m_renderer__rendererwillUpdate_nodefor_anchor(`renderer`, `node`, `anchor`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didUpdate node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>) -> Verify { return Verify(method: .m_renderer__rendererdidUpdate_nodefor_anchor(`renderer`, `node`, `anchor`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didRemove node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>) -> Verify { return Verify(method: .m_renderer__rendererdidRemove_nodefor_anchor(`renderer`, `node`, `anchor`))}
+        public static func session(_ session: Parameter<ARSession>, didFailWithError error: Parameter<Error>) -> Verify { return Verify(method: .m_session__sessiondidFailWithError_error(`session`, `error`))}
+        public static func session(_ session: Parameter<ARSession>, cameraDidChangeTrackingState camera: Parameter<ARCamera>) -> Verify { return Verify(method: .m_session__sessioncameraDidChangeTrackingState_camera(`session`, `camera`))}
+        public static func sessionWasInterrupted(_ session: Parameter<ARSession>) -> Verify { return Verify(method: .m_sessionWasInterrupted__session(`session`))}
+        public static func sessionInterruptionEnded(_ session: Parameter<ARSession>) -> Verify { return Verify(method: .m_sessionInterruptionEnded__session(`session`))}
+        public static func session(_ session: Parameter<ARSession>, didOutputAudioSampleBuffer audioSampleBuffer: Parameter<CMSampleBuffer>) -> Verify { return Verify(method: .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(`session`, `audioSampleBuffer`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, updateAtTime time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_renderer__rendererupdateAtTime_time(`renderer`, `time`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didApplyAnimationsAtTime time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_renderer__rendererdidApplyAnimationsAtTime_time(`renderer`, `time`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didSimulatePhysicsAtTime time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_renderer__rendererdidSimulatePhysicsAtTime_time(`renderer`, `time`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, willRenderScene scene: Parameter<SCNScene>, atTime time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_renderer__rendererwillRenderScene_sceneatTime_time(`renderer`, `scene`, `time`))}
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didRenderScene scene: Parameter<SCNScene>, atTime time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_renderer__rendererdidRenderScene_sceneatTime_time(`renderer`, `scene`, `time`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didAdd node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>, perform: @escaping (SCNSceneRenderer, SCNNode, ARAnchor) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidAdd_nodefor_anchor(`renderer`, `node`, `anchor`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, willUpdate node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>, perform: @escaping (SCNSceneRenderer, SCNNode, ARAnchor) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererwillUpdate_nodefor_anchor(`renderer`, `node`, `anchor`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didUpdate node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>, perform: @escaping (SCNSceneRenderer, SCNNode, ARAnchor) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidUpdate_nodefor_anchor(`renderer`, `node`, `anchor`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didRemove node: Parameter<SCNNode>, for anchor: Parameter<ARAnchor>, perform: @escaping (SCNSceneRenderer, SCNNode, ARAnchor) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidRemove_nodefor_anchor(`renderer`, `node`, `anchor`), performs: perform)
+        }
+        public static func session(_ session: Parameter<ARSession>, didFailWithError error: Parameter<Error>, perform: @escaping (ARSession, Error) -> Void) -> Perform {
+            return Perform(method: .m_session__sessiondidFailWithError_error(`session`, `error`), performs: perform)
+        }
+        public static func session(_ session: Parameter<ARSession>, cameraDidChangeTrackingState camera: Parameter<ARCamera>, perform: @escaping (ARSession, ARCamera) -> Void) -> Perform {
+            return Perform(method: .m_session__sessioncameraDidChangeTrackingState_camera(`session`, `camera`), performs: perform)
+        }
+        public static func sessionWasInterrupted(_ session: Parameter<ARSession>, perform: @escaping (ARSession) -> Void) -> Perform {
+            return Perform(method: .m_sessionWasInterrupted__session(`session`), performs: perform)
+        }
+        public static func sessionInterruptionEnded(_ session: Parameter<ARSession>, perform: @escaping (ARSession) -> Void) -> Perform {
+            return Perform(method: .m_sessionInterruptionEnded__session(`session`), performs: perform)
+        }
+        public static func session(_ session: Parameter<ARSession>, didOutputAudioSampleBuffer audioSampleBuffer: Parameter<CMSampleBuffer>, perform: @escaping (ARSession, CMSampleBuffer) -> Void) -> Perform {
+            return Perform(method: .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(`session`, `audioSampleBuffer`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, updateAtTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererupdateAtTime_time(`renderer`, `time`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didApplyAnimationsAtTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidApplyAnimationsAtTime_time(`renderer`, `time`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didSimulatePhysicsAtTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidSimulatePhysicsAtTime_time(`renderer`, `time`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, willRenderScene scene: Parameter<SCNScene>, atTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, SCNScene, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererwillRenderScene_sceneatTime_time(`renderer`, `scene`, `time`), performs: perform)
+        }
+        public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didRenderScene scene: Parameter<SCNScene>, atTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, SCNScene, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_renderer__rendererdidRenderScene_sceneatTime_time(`renderer`, `scene`, `time`), performs: perform)
         }
     }
 

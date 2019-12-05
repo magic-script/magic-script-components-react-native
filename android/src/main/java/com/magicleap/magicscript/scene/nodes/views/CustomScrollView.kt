@@ -26,7 +26,7 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
-import android.view.animation.LinearInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
@@ -54,6 +54,9 @@ class CustomScrollView @JvmOverloads constructor(
          * Maximum X and Y position
          */
         const val MAX_POSITION = 1f
+
+        private const val SCROLL_ANIM_DURATION = 200L
+        private const val PIXELS_PER_SECOND_UNIT = 1000
     }
 
     var contentSize = Vector2()
@@ -157,7 +160,7 @@ class CustomScrollView @JvmOverloads constructor(
         if (action == MotionEvent.ACTION_UP) {
             velocityTracker?.let {
                 it.addMovement(event)
-                it.computeCurrentVelocity(1000, maximumScrollVelocity)
+                it.computeCurrentVelocity(PIXELS_PER_SECOND_UNIT, maximumScrollVelocity)
                 // must use abs, because velocity may be change sign even in same direction
                 val speedX = abs(it.xVelocity)
                 val speedY = abs(it.yVelocity)
@@ -232,9 +235,9 @@ class CustomScrollView @JvmOverloads constructor(
             PointF(position.x, position.y),
             PointF(destX, destY)
         ).also {
-            it.duration = 200
+            it.duration = SCROLL_ANIM_DURATION
             it.addUpdateListener(this)
-            it.interpolator = LinearInterpolator()
+            it.interpolator = DecelerateInterpolator()
             it.start()
         }
     }

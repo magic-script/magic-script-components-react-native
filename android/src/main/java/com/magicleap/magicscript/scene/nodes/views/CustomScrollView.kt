@@ -16,15 +16,17 @@
 
 package com.magicleap.magicscript.scene.nodes.views
 
+import android.animation.ObjectAnimator
+import android.animation.PointFEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.Scroller
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
@@ -40,6 +42,16 @@ class CustomScrollView @JvmOverloads constructor(
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
         const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
         const val SCROLL_DIRECTION_UNSPECIFIED = ""
+
+        /**
+         * Minimum X and Y position
+         */
+        const val MIN_POSITION = 0f
+
+        /**
+         * Maximum X and Y position
+         */
+        const val MAX_POSITION = 1f
     }
 
     var contentSize = Vector2()
@@ -53,10 +65,16 @@ class CustomScrollView @JvmOverloads constructor(
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
     /**
-     * Normalized scroll position (0 - 1)
+     * Normalized scroll position. X and Y of a vector is always
+     * in the range of [MIN_POSITION] to [MAX_POSITION]
      */
     var position = Vector2()
-        private set
+        private set(value) {
+            field = value
+            hBar?.thumbPosition = value.x
+            vBar?.thumbPosition = value.y
+            onScrollChangeListener?.invoke(value)
+        }
 
     var hBar: CustomScrollBar? = null
         private set(value) {
@@ -75,9 +93,7 @@ class CustomScrollView @JvmOverloads constructor(
     private var velocityTracker: VelocityTracker? = null
     private val maximumScrollVelocity: Float
 
-    private val scroller = Scroller(context)
-
-    private var animator: ValueAnimator? = null
+    private var scrollAnimator: ValueAnimator? = null
 
     init {
         viewTreeObserver.addOnGlobalLayoutListener(this)
@@ -129,37 +145,18 @@ class CustomScrollView @JvmOverloads constructor(
                 SCROLL_DIRECTION_HORIZONTAL -> move.y = 0F
             }
 
-            position = (position + move).coerceIn(0F, 1F)
-            hBar?.thumbPosition = position.x
-            vBar?.thumbPosition = position.y
-            onScrollChangeListener?.invoke(position)
+            position = (position + move).coerceIn(MIN_POSITION, MAX_POSITION)
             previousTouch = touch
             return true
         }
 
         if (action == MotionEvent.ACTION_UP) {
-            velocityTracker?.addMovement(event)
-
-            velocityTracker?.computeCurrentVelocity(1000, maximumScrollVelocity)
-            val velocityY = velocityTracker?.yVelocity ?: 0f
-
-            //  valueAn
-
-            val scrollDeltaY = -velocityY / maximumScrollVelocity
-            logMessage("scroll delta= $scrollDeltaY")
-
-            animator?.let {
-                it.pause()
-                it.removeUpdateListener(this)
+            velocityTracker?.let {
+                it.addMovement(event)
+                it.computeCurrentVelocity(1000, maximumScrollVelocity)
+                startScrollAnimation(it.xVelocity, it.yVelocity)
+                it.recycle()
             }
-            val destinationY = (position.y + scrollDeltaY).coerceIn(0f, 1f)
-            logMessage("destinationY= $destinationY")
-            animator = ValueAnimator.ofFloat(position.y, destinationY)
-            animator?.duration = 200
-            animator?.addUpdateListener(this)
-            animator?.start()
-
-            velocityTracker?.recycle()
             velocityTracker = null
             isBeingDragged = false
             return true
@@ -170,17 +167,12 @@ class CustomScrollView @JvmOverloads constructor(
     }
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
-        val newY = animation.animatedValue as Float
-        logMessage("new  y=$newY")
-        position = Vector2(position.x, newY)
-        hBar?.thumbPosition = position.x
-        vBar?.thumbPosition = position.y
-
-        onScrollChangeListener?.invoke(position)
+        val newPos = animation.animatedValue as PointF
+        logMessage("new  x=${newPos.x}, y=${newPos.y}")
+        position = Vector2(newPos.x, newPos.y)
     }
 
     private fun updateScrollbars() {
-
         // set default thumb length if not specified
         hBar?.let {
             if (it.useAutoThumbSize && contentSize.x > 0) {
@@ -194,4 +186,26 @@ class CustomScrollView @JvmOverloads constructor(
             }
         }
     }
+
+    private fun startScrollAnimation(speedX: Float, speedY: Float) {
+        val scrollDeltaX = -speedX / maximumScrollVelocity
+        val scrollDeltaY = -speedY / maximumScrollVelocity
+        logMessage("scroll delta x= $scrollDeltaY, y=")
+
+        scrollAnimator?.cancel()
+
+        val destX = (position.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
+        val destY = (position.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)
+
+        scrollAnimator = ObjectAnimator.ofObject(
+            PointFEvaluator(),
+            PointF(position.x, position.y),
+            PointF(destX, destY)
+        ).also {
+            it.duration = 200
+            it.addUpdateListener(this)
+            it.start()
+        }
+    }
+
 }

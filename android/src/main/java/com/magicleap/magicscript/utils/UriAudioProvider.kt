@@ -26,6 +26,11 @@ import java.net.URL
 
 class UriAudioProvider(private val context: Context) : AudioFileProvider {
 
+    companion object {
+        private const val READ_TIMEOUT = 5000
+        private const val CONNECT_TIMEOUT = 10000
+    }
+
     private val threads = mutableMapOf<String, Thread>()
 
     override fun provideFile(uri: Uri?, result: (File) -> Unit): Boolean {
@@ -60,7 +65,7 @@ class UriAudioProvider(private val context: Context) : AudioFileProvider {
                         bufferedInputStream.close()
                         fileDownloaded(uri.path, result, file)
                     } catch (e: Exception) {
-                        logMessage(e.printStackTrace().toString(), true)
+                        logMessage("Error during reading Audio File $e", true)
                     }
                 }
             )
@@ -68,7 +73,7 @@ class UriAudioProvider(private val context: Context) : AudioFileProvider {
             thread.start()
 
         } catch (e: Exception) {
-            logMessage(e.printStackTrace().toString(), true)
+            logMessage("Error during reading Audio File $e", true)
             return false
         }
 
@@ -78,8 +83,8 @@ class UriAudioProvider(private val context: Context) : AudioFileProvider {
     private fun getRemoteInputStream(uri: Uri): InputStream {
         val url = URL(uri.toString())
         val ucon = url.openConnection().apply {
-            readTimeout = 5000
-            connectTimeout = 10000
+            readTimeout = READ_TIMEOUT
+            connectTimeout = CONNECT_TIMEOUT
         }
 
         return ucon.getInputStream()

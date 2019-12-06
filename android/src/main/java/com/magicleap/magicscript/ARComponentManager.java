@@ -91,8 +91,8 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
-import com.magicleap.magicscript.utils.FileDownloader;
-import com.magicleap.magicscript.utils.URLFileDownloader;
+import com.magicleap.magicscript.utils.AudioFileProvider;
+import com.magicleap.magicscript.utils.UriAudioProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -390,8 +390,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(new GvrAudioEngine(context,
                                                                                                    GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY));
             AudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
-            FileDownloader fileDownloader = new URLFileDownloader(context);
-            AudioNode node = new AudioNode(props, context, audioEngine, fileDownloader);
+            AudioFileProvider audioFileProvider = new UriAudioProvider(context);
+            AudioNode node = new AudioNode(props, context, audioEngine, audioFileProvider);
             addNode(node, nodeId);
         });
     }

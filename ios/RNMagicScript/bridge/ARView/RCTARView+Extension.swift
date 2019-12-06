@@ -34,57 +34,57 @@ extension RCTARView: ARSCNViewDelegate {
     //MARK: ARSCNViewDelegate
     public func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         for observer in observers {
-            observer.renderer?(renderer, didAdd: node, for: anchor)
+            observer.value?.renderer?(renderer, didAdd: node, for: anchor)
         }
     }
 
     public func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
         for observer in observers {
-            observer.renderer?(renderer, willUpdate: node, for: anchor)
+            observer.value?.renderer?(renderer, willUpdate: node, for: anchor)
         }
     }
 
     public func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         for observer in observers {
-            observer.renderer?(renderer, didUpdate: node, for: anchor)
+            observer.value?.renderer?(renderer, didUpdate: node, for: anchor)
         }
     }
 
     public func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         for observer in observers {
-            observer.renderer?(renderer, didRemove: node, for: anchor)
+            observer.value?.renderer?(renderer, didRemove: node, for: anchor)
         }
     }
 
     //MARK: ARSessionObserver
     public func session(_ session: ARSession, didFailWithError error: Error) {
         for observer in observers {
-            observer.session?(session, didFailWithError: error)
+            observer.value?.session?(session, didFailWithError: error)
         }
     }
 
     public func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         for observer in observers {
-            observer.session?(session, cameraDidChangeTrackingState: camera)
+            observer.value?.session?(session, cameraDidChangeTrackingState: camera)
         }
     }
 
     public func sessionWasInterrupted(_ session: ARSession) {
         for observer in observers {
-            observer.sessionWasInterrupted?(session)
+            observer.value?.sessionWasInterrupted?(session)
         }
     }
 
     public func sessionInterruptionEnded(_ session: ARSession) {
         for observer in observers {
-            observer.sessionInterruptionEnded?(session)
+            observer.value?.sessionInterruptionEnded?(session)
         }
     }
 
 
     public func session(_ session: ARSession, didOutputAudioSampleBuffer audioSampleBuffer: CMSampleBuffer) {
         for observer in observers {
-            observer.session?(session, didOutputAudioSampleBuffer: audioSampleBuffer)
+            observer.value?.session?(session, didOutputAudioSampleBuffer: audioSampleBuffer)
         }
     }
 
@@ -92,26 +92,26 @@ extension RCTARView: ARSCNViewDelegate {
     @objc @available(iOS 13.0, *)
     public  func session(_ session: ARSession, didOutputCollaborationData data: ARSession.CollaborationData) {
 //        for observer in observers {
-//            observer.session?(session, didOutputCollaborationData: data)
+//            observer.value?.session?(session, didOutputCollaborationData: data)
 //        }
     }
 
     //MARK: SCNSceneRendererDelegate
     public  func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         for observer in observers {
-            observer.renderer?(renderer, updateAtTime: time)
+            observer.value?.renderer?(renderer, updateAtTime: time)
         }
     }
 
     public  func renderer(_ renderer: SCNSceneRenderer, didApplyAnimationsAtTime time: TimeInterval) {
         for observer in observers {
-            observer.renderer?(renderer, didApplyAnimationsAtTime: time)
+            observer.value?.renderer?(renderer, didApplyAnimationsAtTime: time)
         }
     }
 
     public  func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
         for observer in observers {
-            observer.renderer?(renderer, didSimulatePhysicsAtTime: time)
+            observer.value?.renderer?(renderer, didSimulatePhysicsAtTime: time)
         }
     }
 
@@ -119,19 +119,19 @@ extension RCTARView: ARSCNViewDelegate {
     @objc @available(iOS 11.0, *)
     public func renderer(_ renderer: SCNSceneRenderer, didApplyConstraintsAtTime time: TimeInterval) {
 //        for observer in observers {
-//            observer.renderer?(renderer, didApplyConstraintsAtTime: time)
+//            observer.value?.renderer?(renderer, didApplyConstraintsAtTime: time)
 //        }
     }
 
     public func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
         for observer in observers {
-            observer.renderer?(renderer, willRenderScene: scene, atTime: time)
+            observer.value?.renderer?(renderer, willRenderScene: scene, atTime: time)
         }
     }
 
     public func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
         for observer in observers {
-            observer.renderer?(renderer, didRenderScene: scene, atTime: time)
+            observer.value?.renderer?(renderer, didRenderScene: scene, atTime: time)
         }
     }
 }

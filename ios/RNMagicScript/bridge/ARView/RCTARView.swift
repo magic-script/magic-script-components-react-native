@@ -77,15 +77,15 @@ import SceneKit
     }
 
     //MARK: RCTARView Observable
-    fileprivate(set) var observers: [RCTARViewObserving] = []
+    fileprivate(set) var observers: [WeakReference<RCTARViewObserving>] = []
 
     func register(_ observer: RCTARViewObserving) {
-        observers.append(observer)
+        observers.append(WeakReference(value: observer))
     }
 
     func unregister(_ observer: RCTARViewObserving) {
         observers.removeAll { storedObserver -> Bool in
-            return storedObserver === observer
+            return storedObserver.value === observer
         }
     }
 

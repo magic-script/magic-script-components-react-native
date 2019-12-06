@@ -308,6 +308,8 @@
 		C465C268234DE34600157AA6 /* UiDropdownListNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */; };
 		C470ED05238C74A8002B8D91 /* ToggleTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C470ED04238C74A8002B8D91 /* ToggleTypeSpec.swift */; };
 		C47B32BB239A5677005B59BE /* RCTARViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */; };
+		C47B32C9239A829A005B59BE /* WeakReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32C8239A829A005B59BE /* WeakReference.swift */; };
+		C47B32CA239A829A005B59BE /* WeakReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32C8239A829A005B59BE /* WeakReference.swift */; };
 		C4809BB2234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
@@ -748,6 +750,7 @@
 		C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListNodeSpec.swift; sourceTree = "<group>"; };
 		C470ED04238C74A8002B8D91 /* ToggleTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTypeSpec.swift; sourceTree = "<group>"; };
 		C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewSpec.swift; sourceTree = "<group>"; };
+		C47B32C8239A829A005B59BE /* WeakReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakReference.swift; sourceTree = "<group>"; };
 		C4809BB1234F57A600C4D22E /* UiLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNode.swift; sourceTree = "<group>"; };
 		C4816BF1234C9082001CCBDD /* DataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviding.swift; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
@@ -1203,6 +1206,7 @@
 				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
 				C419CF922359A7B2000094C3 /* NodeConfiguration.swift */,
+				C47B32C8239A829A005B59BE /* WeakReference.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2128,6 +2132,7 @@
 				4425EE05236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAD1D232BCAE3005AC8EF /* UiProgressBarNode.swift in Sources */,
+				C47B32CA239A829A005B59BE /* WeakReference.swift in Sources */,
 				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				C4A12B312361C85C009B7083 /* Side.swift in Sources */,
 				44AB3977238BCD290002DF14 /* UiPageViewNode.swift in Sources */,
@@ -2358,6 +2363,7 @@
 				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,
 				C41BF27523853FE300FEC9BD /* UiCircleConfirmationNode.swift in Sources */,
+				C47B32C9239A829A005B59BE /* WeakReference.swift in Sources */,
 				C4B91AC32386B8A6002A24D6 /* ToggleType.swift in Sources */,
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44AB3976238BCD290002DF14 /* UiPageViewNode.swift in Sources */,

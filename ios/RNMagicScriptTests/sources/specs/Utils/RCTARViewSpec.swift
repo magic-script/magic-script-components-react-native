@@ -25,23 +25,46 @@ class URCTARViewSpec: QuickSpec {
     override func spec() {
         describe("RCTARView") {
             var arView: RCTARView!
-            var registeredObserverMock1: RCTARViewObservingMock!
-            var registeredObserverMock2: RCTARViewObservingMock!
-            var unregisteredObserverMock: RCTARViewObservingMock!
 
-            beforeEach {
-                arView = RCTARView()
-                registeredObserverMock1 = RCTARViewObservingMock()
-                registeredObserverMock2 = RCTARViewObservingMock()
-                unregisteredObserverMock = RCTARViewObservingMock()
-
-                arView.register(registeredObserverMock1)
-                arView.register(registeredObserverMock2)
-            }
-
-
-            // MARK:
+            // MARK: ARSCNViewDelegate
             context("ARSCNViewDelegate") {
+                context("when registering observers") {
+                    it("should store observers internally") {
+                        arView = RCTARView()
+                        let registeredObserverMock1 = RCTARViewObservingMock()
+                        let registeredObserverMock2 = RCTARViewObservingMock()
+                        arView.register(registeredObserverMock1)
+                        expect(arView.observers.count).to(equal(1))
+                        arView.register(registeredObserverMock2)
+                        expect(arView.observers.count).to(equal(2))
+                        let observer1 = arView.observers[0].value
+                        expect(observer1).to(beIdenticalTo(registeredObserverMock1))
+                        let observer2 = arView.observers[1].value
+                        expect(observer2).to(beIdenticalTo(registeredObserverMock2))
+                    }
+
+                    it("should reference them with weak reference") {
+                        arView = RCTARView()
+                        let registeredObserverMock = RCTARViewObservingMock()
+                        var referenceCounter = CFGetRetainCount(registeredObserverMock)
+                        expect(referenceCounter).to(equal(2))
+                        arView.register(registeredObserverMock)
+                        referenceCounter = CFGetRetainCount(registeredObserverMock)
+                        expect(referenceCounter).to(equal(2))
+                    }
+                }
+
+                context("when registering observers") {
+                    it("should manage internal store") {
+                        arView = RCTARView()
+                        let registeredObserverMock1 = RCTARViewObservingMock()
+                        arView.register(registeredObserverMock1)
+                        expect(arView.observers.count).to(equal(1))
+                        arView.unregister(registeredObserverMock1)
+                        expect(arView.observers.count).to(equal(0))
+                    }
+                }
+
                 context("when receiving callback") {
                     context("should notify registered observers") {
                         let session = ARSession()
@@ -51,6 +74,20 @@ class URCTARViewSpec: QuickSpec {
                         let anchor = ARAnchor(name: "fakeAnchor", transform: simd_float4x4())
                         let time = TimeInterval()
                         let scene = SCNScene()
+
+                        var registeredObserverMock1: RCTARViewObservingMock!
+                        var registeredObserverMock2: RCTARViewObservingMock!
+                        var unregisteredObserverMock: RCTARViewObservingMock!
+
+                        beforeEach {
+                            arView = RCTARView()
+                            registeredObserverMock1 = RCTARViewObservingMock()
+                            registeredObserverMock2 = RCTARViewObservingMock()
+                            unregisteredObserverMock = RCTARViewObservingMock()
+
+                            arView.register(registeredObserverMock1)
+                            arView.register(registeredObserverMock2)
+                        }
 
                         it("about renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor)") {
                             arView.renderer(renderer, didAdd: node, for: anchor)

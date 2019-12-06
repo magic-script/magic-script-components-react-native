@@ -37,7 +37,8 @@ class CustomScrollBar @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    var onScrollChangeListener: ((on: Float) -> Unit)? = null
+    var interactive = false
+    var onScrollChangedListener: ((on: Float) -> Unit)? = null
 
     fun setThickness(thickness: Int) {
         layoutParams = if (isVertical) {
@@ -54,6 +55,12 @@ class CustomScrollBar @JvmOverloads constructor(
     var thumbPosition = 0F
         set(value) {
             field = value.coerceIn(0F, 1F)
+            invalidate()
+        }
+
+    var useAutoThumbSize = true
+        set(value) {
+            field = value
             invalidate()
         }
 
@@ -77,6 +84,10 @@ class CustomScrollBar @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!interactive) {
+            return false
+        }
+
         val action = event.actionMasked
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
             return false
@@ -101,7 +112,7 @@ class CustomScrollBar @JvmOverloads constructor(
         } else {
             0F
         }
-        onScrollChangeListener?.invoke(thumbPosition)
+        onScrollChangedListener?.invoke(thumbPosition)
         return true
     }
 

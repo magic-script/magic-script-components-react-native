@@ -21,11 +21,11 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
 import com.magicleap.magicscript.createActionDownEvent
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import junit.framework.Assert.assertEquals
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -53,25 +53,23 @@ class UiCircleConfirmationNodeTest {
     }
 
     @Test
-    fun `should have default height`() {
+    fun `should have default radius`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
-        val height = node.getProperty(UiCircleConfirmationNode.PROP_HEIGHT)
+        val radius = node.getProperty(UiCircleConfirmationNode.PROP_RADIUS)
 
-        node.getBounding().size()
-
-        height shouldEqual UiCircleConfirmationNode.DEFAULT_HEIGHT
+        radius shouldEqual UiCircleConfirmationNode.DEFAULT_RADIUS
     }
 
     @Test
-    fun `should apply height property as circle radius`() {
-        val props = reactMapOf(UiCircleConfirmationNode.PROP_HEIGHT, 0.22)
+    fun `should set correct height for given circle radius`() {
+        val props = reactMapOf(UiCircleConfirmationNode.PROP_RADIUS, 0.22)
         val node = createNodeWithViewSpy(props)
         node.build()
 
         val height = node.getBounding().size().y
 
-        // real height = 2 * circle radius
+        // height = 2 * circle radius
         assertEquals(0.44F, height, epsilon)
     }
 

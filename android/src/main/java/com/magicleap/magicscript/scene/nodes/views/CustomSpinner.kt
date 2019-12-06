@@ -118,7 +118,7 @@ class CustomSpinner @JvmOverloads constructor(
     }
 
     // Called e.g. when activity was paused. In that case we should pause animation,
-    // because otherwise the invalidate() queue will overflow and animation may hung.
+    // because otherwise the invalidate() queue will overflow and animation may get stuck.
     // See: https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/ProgressBar.java
     override fun onDetachedFromWindow() {
         attached = false

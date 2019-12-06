@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.google.vr.sdk.audio.GvrAudioEngine;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.ModelRenderableLoader;
@@ -66,7 +67,11 @@ import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
+import com.magicleap.magicscript.scene.nodes.audio.AudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
+import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
+import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
+import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
@@ -86,11 +91,14 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+import com.magicleap.magicscript.utils.FileDownloader;
+import com.magicleap.magicscript.utils.URLFileDownloader;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 /**
  * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
@@ -379,7 +387,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createAudioNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            AudioNode node = new AudioNode(props, context);
+            ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(new GvrAudioEngine(context,
+                                                                                                   GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY));
+            AudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
+            FileDownloader fileDownloader = new URLFileDownloader(context);
+            AudioNode node = new AudioNode(props, context, audioEngine, fileDownloader);
             addNode(node, nodeId);
         });
     }

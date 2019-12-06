@@ -3,10 +3,9 @@
 
 **Inherited:**
 - localPosition
+- ~~alignment~~
 - ~~localScale~~
 - ~~localRotation~~
-- ~~enabled~~
-- ~~onClick~~
 
 **Custom:**
 - scrollBarVisibility (only `auto`)

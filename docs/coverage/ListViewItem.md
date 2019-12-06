@@ -1,4 +1,4 @@
-# Functional test coverage for DropdownListItem
+# Functional test coverage for ListViewItem
 ## Tested properties
 
 **Inherited:**

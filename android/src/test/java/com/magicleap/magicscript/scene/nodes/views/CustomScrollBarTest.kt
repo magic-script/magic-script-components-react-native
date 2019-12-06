@@ -18,10 +18,11 @@ package com.magicleap.magicscript.scene.nodes.views
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.createActionDownEvent
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.createActionDownEvent
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,20 +41,31 @@ class CustomScrollBarTest {
     }
 
     @Test
-    fun `touch callback should set thumb position`() {
+    fun `touch should not change thumb position by default`() {
         scrollBar.onTouchEvent(scrollBar.createActionDownEvent())
+
+        verify(scrollBar, never()).thumbPosition = any()
+    }
+
+    @Test
+    fun `touch should set thumb position when interactive`() {
+        scrollBar.interactive = true
+        scrollBar.onTouchEvent(scrollBar.createActionDownEvent())
+
         verify(scrollBar).thumbPosition = any()
     }
 
     @Test
     fun `should redraw after setting thumb position`() {
         scrollBar.thumbPosition = 99F
+
         verify(scrollBar).invalidate()
     }
 
     @Test
     fun `should redraw after setting thumb size`() {
         scrollBar.thumbSize = 99F
+
         verify(scrollBar).invalidate()
     }
 

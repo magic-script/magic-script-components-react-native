@@ -16,24 +16,47 @@
 
 package com.magicleap.magicscript.scene.nodes.views
 
+import android.animation.ObjectAnimator
+import android.animation.PointFEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.Vector2
+import kotlin.math.abs
+import kotlin.math.sign
 
 class CustomScrollView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
+) : FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener,
+    ValueAnimator.AnimatorUpdateListener {
 
     companion object {
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
         const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
         const val SCROLL_DIRECTION_UNSPECIFIED = ""
+
+        /**
+         * Minimum X and Y position
+         */
+        const val MIN_POSITION = 0f
+
+        /**
+         * Maximum X and Y position
+         */
+        const val MAX_POSITION = 1f
+
+        private const val SCROLL_ANIM_DURATION = 200L
+        private const val PIXELS_PER_SECOND_UNIT = 1000
     }
 
     var contentSize = Vector2()
@@ -47,10 +70,17 @@ class CustomScrollView @JvmOverloads constructor(
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
     /**
-     * Normalized scroll position (0 - 1)
+     * Normalized scroll position. X and Y of a vector is always
+     * in the range of [MIN_POSITION] to [MAX_POSITION]
      */
     var position = Vector2()
-        private set
+        private set(value) {
+            field = value
+            hBar?.thumbPosition = value.x
+            vBar?.thumbPosition = value.y
+            onScrollChangeListener?.invoke(value)
+            invalidate()
+        }
 
     var hBar: CustomScrollBar? = null
         private set(value) {
@@ -66,9 +96,20 @@ class CustomScrollView @JvmOverloads constructor(
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+    private var lastMove = Vector2()
+    private var velocityTracker: VelocityTracker? = null
+    private val maximumScrollVelocity: Float
+
+    private var scrollAnimator: ValueAnimator? = null
 
     init {
         viewTreeObserver.addOnGlobalLayoutListener(this)
+        val viewConfiguration = ViewConfiguration.get(context)
+        maximumScrollVelocity = viewConfiguration.scaledMaximumFlingVelocity.toFloat()
+    }
+
+    override fun stopNestedScroll() {
+        isBeingDragged = false
     }
 
     override fun onFinishInflate() {
@@ -77,56 +118,128 @@ class CustomScrollView @JvmOverloads constructor(
         this.hBar = findViewById(R.id.bar_horizontal)
     }
 
-    override fun stopNestedScroll() {
-        isBeingDragged = false
-    }
-
     override fun onGlobalLayout() {
         viewTreeObserver.removeOnGlobalLayoutListener(this)
         updateScrollbars()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val action = event.actionMasked
-        if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
-            stopNestedScroll()
-            return false
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain()
         }
 
+        val action = event.actionMasked
         val touch = Vector2(event.x, event.y)
         if (!isBeingDragged) {
             isBeingDragged = true
             previousTouch = touch
         }
 
+        if (action == MotionEvent.ACTION_DOWN) {
+            velocityTracker?.addMovement(event)
+            return true
+        }
+
         if (action == MotionEvent.ACTION_MOVE) {
+            velocityTracker?.addMovement(event)
             val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
-            val move = movePx / maxTravel
+            lastMove = movePx / maxTravel
 
             when (scrollDirection) {
-                SCROLL_DIRECTION_VERTICAL -> move.x = 0F
-                SCROLL_DIRECTION_HORIZONTAL -> move.y = 0F
+                SCROLL_DIRECTION_VERTICAL -> lastMove.x = 0F
+                SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            position = (position + move).coerceIn(0F, 1F)
-            hBar?.thumbPosition = position.x
-            vBar?.thumbPosition = position.y
-            onScrollChangeListener?.invoke(position)
+            position = (position + lastMove).coerceIn(MIN_POSITION, MAX_POSITION)
+            previousTouch = touch
+            return true
         }
-        previousTouch = touch
 
-        return true
+        if (action == MotionEvent.ACTION_UP) {
+            velocityTracker?.let {
+                it.addMovement(event)
+                it.computeCurrentVelocity(PIXELS_PER_SECOND_UNIT, maximumScrollVelocity)
+                // must use abs, because velocity may be change sign even in same direction
+                val speedX = abs(it.xVelocity)
+                val speedY = abs(it.yVelocity)
+                val direction = lastMove
+                startScrollAnimation(direction, speedX, speedY)
+                it.recycle()
+            }
+            velocityTracker = null
+            isBeingDragged = false
+            return true
+        }
+
+        isBeingDragged = false
+        return false
     }
 
-    // Update scrollbars when content size has changed.
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        val newPos = animation.animatedValue as PointF
+        position = Vector2(newPos.x, newPos.y)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        scrollAnimator?.apply {
+            if (isPaused) {
+                resume()
+            }
+        }
+    }
+
+    // Called e.g. when activity was paused. In that case we should pause animation,
+    // because otherwise the invalidate() queue will overflow and animation may get stuck.
+    // See: https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/ProgressBar.java
+    override fun onDetachedFromWindow() {
+        scrollAnimator?.apply {
+            if (isStarted) {
+                pause()
+            }
+        }
+        // This should come after stopping animation, otherwise an invalidate message remains in the
+        // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
+        super.onDetachedFromWindow()
+    }
+
     private fun updateScrollbars() {
-        if (contentSize.x > 0) {
-            this.hBar?.thumbSize = width.toFloat() / contentSize.x
+        // set default thumb length if not specified
+        hBar?.let {
+            if (it.useAutoThumbSize && contentSize.x > 0) {
+                hBar?.thumbSize = width.toFloat() / contentSize.x
+            }
         }
-        if (contentSize.y > 0) {
-            this.vBar?.thumbSize = height.toFloat() / contentSize.y
+
+        vBar?.let {
+            if (it.useAutoThumbSize && contentSize.y > 0) {
+                vBar?.thumbSize = height.toFloat() / contentSize.y
+            }
         }
     }
+
+    private fun startScrollAnimation(direction: Vector2, speedX: Float, speedY: Float) {
+        // cancel previous animation
+        scrollAnimator?.cancel()
+
+        val scrollDeltaX = sign(direction.x) * speedX / maximumScrollVelocity
+        val scrollDeltaY = sign(direction.y) * speedY / maximumScrollVelocity
+
+        val destX = (position.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
+        val destY = (position.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)
+
+        scrollAnimator = ObjectAnimator.ofObject(
+            PointFEvaluator(),
+            PointF(position.x, position.y),
+            PointF(destX, destY)
+        ).also {
+            it.duration = SCROLL_ANIM_DURATION
+            it.addUpdateListener(this)
+            it.interpolator = DecelerateInterpolator()
+            it.start()
+        }
+    }
+
 }

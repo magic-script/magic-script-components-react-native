@@ -9,6 +9,7 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     UiLayout(initProps, layoutManager) {
@@ -50,7 +51,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val spacing = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
+        val spacing = properties.read(PROP_PADDING) ?: Padding()
 
         var sizeX = width
         var sizeY = height

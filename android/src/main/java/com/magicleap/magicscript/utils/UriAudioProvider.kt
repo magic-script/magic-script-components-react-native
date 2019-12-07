@@ -17,36 +17,42 @@
 package com.magicleap.magicscript.utils
 
 import android.content.Context
+import android.net.Uri
 import android.webkit.URLUtil
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.InputStream
 import java.net.URL
 
-class URLFileDownloader(private val context: Context) : FileDownloader {
+class UriAudioProvider(private val context: Context) : AudioFileProvider {
+
+    companion object {
+        private const val READ_TIMEOUT = 5000
+        private const val CONNECT_TIMEOUT = 10000
+    }
 
     private val threads = mutableMapOf<String, Thread>()
 
-    override fun downloadFile(path: String?, result: (File) -> Unit): Boolean {
+    override fun provideFile(uri: Uri?, result: (File) -> Unit): Boolean {
         try {
-            if (path == null) {
+            if (uri == null) {
                 return false
             }
-            val url = URL(path)
 
             val thread = Thread(
                 Runnable {
                     try {
-                        val ucon = url.openConnection().apply {
-                            readTimeout = 5000
-                            connectTimeout = 10000
-                        }
+                        var inputStream: InputStream =
+                            if (uri.toString().startsWith("android.resource")) {
+                                getLocalInputStream(uri)
+                            } else {
+                                getRemoteInputStream(uri)
+                            }
 
-                        val inputStream = ucon.getInputStream()
                         val bufferedInputStream = BufferedInputStream(inputStream, 1024 * 5)
 
                         val internalStorage = context.getDir("filesdir", Context.MODE_PRIVATE)
-                        val guessFileName = URLUtil.guessFileName(path, null, null)
+                        val guessFileName = URLUtil.guessFileName(uri.toString(), null, null)
                         val file = File("$internalStorage/$guessFileName")
 
                         if (file.exists()) {
@@ -57,21 +63,41 @@ class URLFileDownloader(private val context: Context) : FileDownloader {
                         file.copyInputStreamToFile(bufferedInputStream)
 
                         bufferedInputStream.close()
-                        fileDownloaded(path, result, file)
+                        fileDownloaded(uri.path, result, file)
                     } catch (e: Exception) {
-                        logMessage(e.toString(), true)
+                        logMessage("Error during reading Audio File $e", true)
                     }
                 }
             )
-            threads[path] = thread
+            threads[uri.path] = thread
             thread.start()
 
         } catch (e: Exception) {
-            logMessage(e.toString(), true)
+            logMessage("Error during reading Audio File $e", true)
             return false
         }
 
         return true
+    }
+
+    private fun getRemoteInputStream(uri: Uri): InputStream {
+        val url = URL(uri.toString())
+        val ucon = url.openConnection().apply {
+            readTimeout = READ_TIMEOUT
+            connectTimeout = CONNECT_TIMEOUT
+        }
+
+        return ucon.getInputStream()
+    }
+
+    private fun getLocalInputStream(uri: Uri): InputStream {
+        val filename = uri.path.toString().split("/").last()
+
+        val resources = context.resources
+        val identifier =
+            resources.getIdentifier(filename, "raw", context.packageName)
+
+        return resources.openRawResource(identifier)
     }
 
     override fun onDestroy() {

@@ -15,11 +15,12 @@
  */
 package com.magicleap.magicscript.scene.nodes.audio
 
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
-import com.magicleap.magicscript.utils.URLFileDownloader
+import com.magicleap.magicscript.utils.UriAudioProvider
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
@@ -39,7 +40,7 @@ class AudioNodeTest {
 
     lateinit var downloadedFile: File
     var audioEngine: AudioEngine = mock()
-    lateinit var fileDownloader: URLFileDownloader
+    lateinit var fileDownloader: UriAudioProvider
     lateinit var tested: AudioNode
 
     @Before
@@ -49,7 +50,7 @@ class AudioNodeTest {
         }
 
         fileDownloader = mock {
-            on { downloadFile(any(), any()) } doAnswer {
+            on { provideFile(any(), any()) } doAnswer {
                 val argument = it.arguments[1]
                 val result = argument as ((File) -> Unit)
                 result.invoke(downloadedFile)
@@ -61,7 +62,7 @@ class AudioNodeTest {
             initProps = reactMapOf(),
             context = ApplicationProvider.getApplicationContext(),
             audioEngine = audioEngine,
-            fileDownloader = fileDownloader
+            fileProvider = fileDownloader
         )
     }
 
@@ -89,7 +90,7 @@ class AudioNodeTest {
                 .fileName(FILE_URL)
         )
 
-        verify(fileDownloader).downloadFile(eq(FILE_URL), any())
+        verify(fileDownloader).provideFile(eq(Uri.parse(FILE_URL)), any())
     }
 
     @Test

@@ -9,6 +9,7 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     UiLayout(initProps, layoutManager) {
@@ -50,17 +51,31 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
-        val sizeX = if (width != WRAP_CONTENT_DIMENSION) width else childBounds.size().x
-        val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
+        val spacing = properties.read(PROP_PADDING) ?: Padding()
+
+        var sizeX = width
+        var sizeY = height
+
+        if (width == WRAP_CONTENT_DIMENSION) {
+            sizeX = childBounds.size().x
+        } else {
+            spacing.left = 0f
+            spacing.right = 0f
+        }
+
+        if (height == WRAP_CONTENT_DIMENSION) {
+            sizeY = childBounds.size().y
+        } else {
+            spacing.top = 0f
+            spacing.bottom = 0f
+        }
 
         return Bounding(
-            -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
-            -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
-            sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
-            sizeY / 2 + contentNode.localPosition.y + itemPadding.top
+            -sizeX / 2 + contentNode.localPosition.x - spacing.left,
+            -sizeY / 2 + contentNode.localPosition.y - spacing.bottom,
+            sizeX / 2 + contentNode.localPosition.x + spacing.right,
+            sizeY / 2 + contentNode.localPosition.y + spacing.top
         )
-
     }
 
     private fun setItemPadding(props: Bundle) {

@@ -30,7 +30,7 @@ import SceneKit
     @objc var rows: Int = 0 {
         didSet { invalidate() }
     }
-    @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
+    @objc var defaultItemAlignment: Alignment = Alignment.topLeft {
         didSet { invalidate() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
@@ -133,6 +133,7 @@ import SceneKit
         guard let gridDescriptor = gridDescriptor else { return }
 
         let size = gridDescriptor.realSize
+        print("layout size: \(size)")
         let origin = CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
         for i in 0..<gridDescriptor.children.count {
             let result = getLocalPositionAndScaleForChild(at: i, desc: gridDescriptor)
@@ -170,10 +171,11 @@ extension GridLayout {
         let itemBounds = node.getBounds()
         let itemCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
 
-        let localPosition = gridSlotCenter - itemCenterOffset - gridItemAlignmentOffset
-        return (position: localPosition, scale: scale)
+        let localPositionX = gridSlotCenter.x - itemCenterOffset.x - gridItemAlignmentOffset.x
+        let localPositionY = gridSlotCenter.y + itemCenterOffset.y - gridItemAlignmentOffset.y
+        return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }
-    
+
     fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
         let filteredChildren: [SCNNode] = container.childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
@@ -202,7 +204,7 @@ extension GridLayout {
         let realSize = CGSize(width: realWidth, height: realHeight)
         return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, estimatedSize: estimatedSize, realSize: realSize)
     }
-    
+
     fileprivate func getColumnsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(x: CGFloat, width: CGFloat)] {
         guard width < 0.00001 else {
             var columnsBounds: [(x: CGFloat, width: CGFloat)] = []

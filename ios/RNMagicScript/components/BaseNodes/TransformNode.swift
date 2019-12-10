@@ -190,6 +190,9 @@ import SceneKit
 
     @objc func updatePivot() {
     }
+
+    @objc func postUpdate() {
+    }
 }
 
 // MARK: - HitTest

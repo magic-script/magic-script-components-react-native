@@ -190,6 +190,10 @@ import SceneKit
 
         // Update scroll bar
         scrollBar?.thumbPosition = scrollValue
+    }
+
+    @objc override func postUpdate() {
+        guard let scrollBounds = scrollBounds else { return }
 
         // Update clipping planes
         if invalidateClippingPlanes {
@@ -210,6 +214,7 @@ import SceneKit
             scrollContent?.setClippingPlanes(worldSpacePlanes)
         }
     }
+
 
     fileprivate func updateScrollBarVisibility() {
         switch scrollBarVisibility {

@@ -32,9 +32,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        arView.register(self)
         setupARView()
         setupScene()
+        arView.register(self)
     }
 
     deinit {

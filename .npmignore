@@ -50,3 +50,6 @@ yarn.lock
 
 # NPM
 package-lock.json
+
+# Github Actions
+.github/

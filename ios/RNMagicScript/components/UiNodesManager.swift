@@ -196,22 +196,12 @@ import SceneKit
     
     @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
-        enumeratePostOrder(node: rootNode) { node in
+        rootNode.enumeratePostOrder { node in
             node.layoutIfNeeded()
         }
 
-        enumeratePostOrder(node: rootNode) { node in
+        rootNode.enumeratePostOrder { node in
             node.postUpdate()
-        }
-    }
-
-    fileprivate func enumeratePostOrder(node: SCNNode, block: @escaping (TransformNode) -> Void) {
-        node.childNodes.forEach { (child) in
-            enumeratePostOrder(node: child, block: block)
-        }
-
-        if let transformNode = node as? TransformNode {
-            block(transformNode)
         }
     }
     

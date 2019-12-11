@@ -89,7 +89,6 @@ import SceneKit
     @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()
-        setNeedsLayoutForAllParents()
         return true
     }
 
@@ -97,22 +96,11 @@ import SceneKit
         if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
             setNeedsLayout()
-            setNeedsLayoutForAllParents()
         }
     }
 
     @objc func hitTest(ray: Ray) -> TransformNode? {
         return selfHitTest(ray: ray)
-    }
-
-    fileprivate func setNeedsLayoutForAllParents() {
-        var node: SCNNode? = parent
-        while node != nil {
-            if let transformNode = node as? TransformNode {
-                transformNode.setNeedsLayout()
-            }
-            node = node?.parent
-        }
     }
 
     @objc func update(_ props: [String: Any]) {

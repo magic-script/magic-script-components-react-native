@@ -37,4 +37,14 @@ extension SCNNode {
             block(transformNode)
         }
     }
+
+    @objc func enumerateParents(block: @escaping (TransformNode) -> Void) {
+        var node: SCNNode! = parent
+        while node != nil {
+            if let transformNode = node as? TransformNode {
+                block(transformNode)
+            }
+            node = node.parent
+        }
+    }
 }

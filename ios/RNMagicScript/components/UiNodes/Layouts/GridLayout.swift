@@ -133,7 +133,6 @@ import SceneKit
         guard let gridDescriptor = gridDescriptor else { return }
 
         let size = gridDescriptor.realSize
-        print("layout size: \(size)")
         let origin = CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
         for i in 0..<gridDescriptor.children.count {
             let result = getLocalPositionAndScaleForChild(at: i, desc: gridDescriptor)

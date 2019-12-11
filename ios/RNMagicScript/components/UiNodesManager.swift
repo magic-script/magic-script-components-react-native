@@ -94,7 +94,7 @@ import SceneKit
             longPressedNode?.longPressEnded()
             longPressedNode = nil
         default:
-            print("LongPressGesture strange state.")
+            print("LongPressGesture unsupported state.")
         }
     }
     
@@ -198,6 +198,10 @@ import SceneKit
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         rootNode.enumeratePostOrder { node in
             node.layoutIfNeeded()
+        }
+
+        rootNode.enumeratePostOrder { node in
+            node.layoutContainerIfNeeded()
         }
 
         rootNode.enumeratePostOrder { node in

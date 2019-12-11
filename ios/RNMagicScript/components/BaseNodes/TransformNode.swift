@@ -62,8 +62,7 @@ import SceneKit
 
     fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
-    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
-    @objc var isLayoutNeeded: Bool { return layoutNeeded }
+    fileprivate var containerLayoutNeeded: Bool = false
 
     @objc override init() {
         super.init()
@@ -174,14 +173,11 @@ import SceneKit
         return UIEdgeInsets(top: bounds.minY, left: bounds.minX, bottom: bounds.maxY, right: bounds.maxX)
     }
 
-    @objc func layoutIfNeeded() {
-        if layoutNeeded {
-            layoutNeeded = false
-            updateLayout()
-            updatePivot()
-#if targetEnvironment(simulator)
-            updateDebugLayout()
-#endif
+    fileprivate func invalidateParentContainers() {
+        enumerateParents { node in
+            if node is TransformNodeContainer {
+                node.setNeedsContainerLayout()
+            }
         }
     }
 
@@ -192,6 +188,33 @@ import SceneKit
     }
 
     @objc func postUpdate() {
+    }
+}
+
+// MARK: - Layout
+extension TransformNode {
+    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
+    @objc var isLayoutNeeded: Bool { return layoutNeeded }
+    @objc func layoutIfNeeded() {
+        if layoutNeeded {
+            layoutNeeded = false
+            updateLayout()
+            updatePivot()
+#if targetEnvironment(simulator)
+            updateDebugLayout()
+#endif
+            invalidateParentContainers()
+        }
+    }
+
+    @objc func setNeedsContainerLayout() { containerLayoutNeeded = true }
+    @objc var isContainerLayoutNeeded: Bool { return containerLayoutNeeded }
+    @objc func layoutContainerIfNeeded() {
+        if containerLayoutNeeded {
+            containerLayoutNeeded = false
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
     }
 }
 

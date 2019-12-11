@@ -161,7 +161,6 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        guard let scrollBounds = scrollBounds else { return }
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 

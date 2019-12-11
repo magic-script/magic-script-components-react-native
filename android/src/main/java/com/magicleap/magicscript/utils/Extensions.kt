@@ -35,9 +35,9 @@ import java.util.*
 
 fun Any.logMessage(message: String, warn: Boolean = false) {
     if (warn) {
-        Log.w("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
+        Log.w("AR_LOG", "${this.javaClass.name}: $message")
     } else {
-        Log.d("AR_LOG_" + this.javaClass.name, message) //this.javaClass.name
+        Log.d("AR_LOG", "${this.javaClass.name}: $message")
     }
 }
 

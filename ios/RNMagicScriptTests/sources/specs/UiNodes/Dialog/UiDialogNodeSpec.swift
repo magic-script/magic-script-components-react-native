@@ -28,7 +28,7 @@ class UiDialogNodeSpec: QuickSpec {
             let systemIconReference: SystemIcon = SystemIcon(systemIconReferenceText)
 
             beforeEach {
-                node = UiDialogNode(props: [:])
+                node = UiDialogNode()
             }
 
             context("initial properties") {

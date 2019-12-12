@@ -24,7 +24,7 @@ class UiNodeSpec: QuickSpec {
             var node: UiNode!
 
             beforeEach {
-                node = UiNode(props: [:])
+                node = UiNode()
             }
 
             context("initial properties") {

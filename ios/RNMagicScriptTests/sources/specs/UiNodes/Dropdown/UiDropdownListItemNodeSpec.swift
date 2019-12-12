@@ -26,7 +26,7 @@ class UiDropdownListItemNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiDropdownListItemNode(props: [:])
+                node = UiDropdownListItemNode()
             }
 
             context("initial properties") {

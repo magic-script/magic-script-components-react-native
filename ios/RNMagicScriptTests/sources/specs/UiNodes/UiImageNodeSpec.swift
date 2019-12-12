@@ -25,7 +25,7 @@ class UiImageNodeSpec: QuickSpec {
             var node: UiImageNode!
 
             beforeEach {
-                node = UiImageNode(props: [:])
+                node = UiImageNode()
                 node.layoutIfNeeded()
             }
 

@@ -27,7 +27,7 @@ class UiTextNodeSpec: QuickSpec {
             let veryLongReferenceText: String = "Very very very very very very very very very very very very long Info text to be set in UiTextNode."
 
             beforeEach {
-                node = UiTextNode(props: [:])
+                node = UiTextNode()
                 node.layoutIfNeeded()
             }
             

@@ -25,7 +25,7 @@ class UiLineNodeSpec: QuickSpec {
             var node: UiLineNode!
 
             beforeEach {
-                node = UiLineNode(props: [:])
+                node = UiLineNode()
                 node.layoutIfNeeded()
             }
 

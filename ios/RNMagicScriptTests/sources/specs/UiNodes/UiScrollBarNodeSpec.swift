@@ -26,7 +26,7 @@ class UiScrollBarNodeSpec: QuickSpec {
             var node: UiScrollBarNode!
 
             beforeEach {
-                node = UiScrollBarNode(props: [:])
+                node = UiScrollBarNode()
                 node.layoutIfNeeded()
             }
 

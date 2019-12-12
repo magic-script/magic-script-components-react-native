@@ -25,7 +25,7 @@ class UiListViewItemNodeSpec: QuickSpec {
             var node: UiListViewItemNode!
             
             beforeEach {
-                node = UiListViewItemNode(props: [:])
+                node = UiListViewItemNode()
                 node.layoutIfNeeded()
             }
             
@@ -48,7 +48,7 @@ class UiListViewItemNodeSpec: QuickSpec {
             
             context("when item added") {
                 it("should store it internally") {
-                    let referenceNode = UiButtonNode(props: [:])
+                    let referenceNode = UiButtonNode()
                     node.addChild(referenceNode)
                     node.layoutIfNeeded()
                     
@@ -58,7 +58,7 @@ class UiListViewItemNodeSpec: QuickSpec {
             
             context("when item removed") {
                 it("should remove it from the list node") {
-                    let referenceNode = UiButtonNode(props: [:])
+                    let referenceNode = UiButtonNode()
                     node.addChild(referenceNode)
                     node.layoutIfNeeded()
                     

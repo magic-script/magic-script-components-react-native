@@ -26,7 +26,7 @@ class UiButtonNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiButtonNode(props: [:])
+                node = UiButtonNode()
                 node.layoutIfNeeded()
             }
 

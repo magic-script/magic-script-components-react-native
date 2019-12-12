@@ -23,13 +23,13 @@ class UiNodesManagerSpec: QuickSpec {
     override func spec() {
         describe("UiNodesManager") {
             var nodesManager: UiNodesManager!
-            let referenceNode = TransformNode(props: [:])
+            let referenceNode = TransformNode()
             let referenceNodeId = "referenceNodeId"
             let referenceAnchorUUID = "referenceAnchorUUID"
             
             context("always") {
                 it("should register scene when requrested") {
-                    let nodesManagerRootNode = TransformNode(props: [:])
+                    let nodesManagerRootNode = TransformNode()
                     nodesManager = UiNodesManager(rootNode: nodesManagerRootNode, nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
                     let scene = SCNScene()
                     
@@ -39,10 +39,10 @@ class UiNodesManagerSpec: QuickSpec {
                 }
                 
                 it("should handle tap event") {
-                    let focusedNode = UiButtonNode(props: [:])
+                    let focusedNode = UiButtonNode()
                     focusedNode.enterFocus()
                     
-                    let localReferenceNode = UiButtonNode(props: [:])
+                    let localReferenceNode = UiButtonNode()
                     let localReferenceNodeId = "referenceNodeId"
                     nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [localReferenceNodeId: localReferenceNode], nodeByAnchorUuid: [:], focusedNode: focusedNode)
                     nodesManager.onInputUnfocused = {
@@ -136,7 +136,7 @@ class UiNodesManagerSpec: QuickSpec {
             
             context("when child and parent node exist in storage (by ID)") {
                 it("should add node to parent (when requested)") {
-                    let parentReferenceNode = TransformNode(props: [:])
+                    let parentReferenceNode = TransformNode()
                     let parentRreferenceNodeId = "parentRreferenceNodeId"
                     
                     nodesManager = UiNodesManager(rootNode: TransformNode(),
@@ -148,7 +148,7 @@ class UiNodesManagerSpec: QuickSpec {
                 }
                 
                 it("should remove node from parent (when requested)") {
-                    let parentReferenceNode = TransformNode(props: [:])
+                    let parentReferenceNode = TransformNode()
                     let parentRreferenceNodeId = "parentRreferenceNodeId"
                     parentReferenceNode.contentNode.addChildNode(referenceNode)
                     

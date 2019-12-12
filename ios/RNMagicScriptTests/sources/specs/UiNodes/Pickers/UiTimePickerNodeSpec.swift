@@ -26,7 +26,7 @@ class UiTimePickerNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiTimePickerNode(props: [:])
+                node = UiTimePickerNode()
                 node.layoutIfNeeded()
             }
 

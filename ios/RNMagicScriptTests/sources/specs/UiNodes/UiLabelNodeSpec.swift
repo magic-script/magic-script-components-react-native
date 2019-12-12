@@ -26,7 +26,7 @@ class UiLabelNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiLabelNode(props: [:])
+                node = UiLabelNode()
                 node.layoutIfNeeded()
             }
 

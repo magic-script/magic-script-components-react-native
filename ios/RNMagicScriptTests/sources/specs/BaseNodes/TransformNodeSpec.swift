@@ -25,7 +25,7 @@ class TransformNodeSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
-                    let node = TransformNode(props: [:])
+                    let node = TransformNode()
 
                     expect(node.name).to(beNil())
                     //expect(node.parentedBoneName).to(beEmpty())
@@ -99,7 +99,7 @@ class TransformNodeSpec: QuickSpec {
 
             context("when asked for size") {
                 it("should calculate it") {
-                    let node = TransformNode(props: [:])
+                    let node = TransformNode()
                     /* correctness of calculation should be checked in spec for derived classes */
                     expect(node.getSize()).to(beCloseTo(CGSize.zero))
                 }
@@ -108,7 +108,7 @@ class TransformNodeSpec: QuickSpec {
             context("when initialized") {
                 context("for parent space") {
                     it("should calculate bounds") {
-                        let node = TransformNode(props: [:])
+                        let node = TransformNode()
                         /* correctness of calculation should be checked in spec for derived classes */
                         expect(node.getBounds(parentSpace: true)).to(beCloseTo(CGRect.zero))
                     }
@@ -116,7 +116,7 @@ class TransformNodeSpec: QuickSpec {
 
                 context("for own space") {
                     it("should calculate bounds") {
-                        let node = TransformNode(props: [:])
+                        let node = TransformNode()
                         /* correctness of calculation should be checked in spec for derived classes */
                         expect(node.getBounds()).to(beCloseTo(CGRect.zero))
                     }
@@ -125,7 +125,7 @@ class TransformNodeSpec: QuickSpec {
 
             context("when asked for size edge insets") {
                 it("should calculate it") {
-                    let node = TransformNode(props: [:])
+                    let node = TransformNode()
                     /* correctness of calculation should be checked in spec for derived classes */
                     expect(node.getEdgeInsets()).to(beCloseTo(UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)))
                 }

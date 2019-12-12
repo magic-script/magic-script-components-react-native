@@ -26,7 +26,7 @@ class UiDropdownListNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiDropdownListNode(props: [:])
+                node = UiDropdownListNode()
                 node.layoutIfNeeded()
             }
 
@@ -118,9 +118,9 @@ class UiDropdownListNodeSpec: QuickSpec {
                     }
 
                     it("should propagate new value to item nodes") {
-                        let itemNode1 = UiDropdownListItemNode(props: [:])
+                        let itemNode1 = UiDropdownListItemNode()
                         node.addChild(itemNode1)
-                        let itemNode2 = UiDropdownListItemNode(props: [:])
+                        let itemNode2 = UiDropdownListItemNode()
                         node.addChild(itemNode2)
 
                         let referenceMaxCharacterLimit = 11
@@ -160,12 +160,12 @@ class UiDropdownListNodeSpec: QuickSpec {
             context("when item added") {
                 context("when item is DropdownList item") {
                     it("should add it to the list node") {
-                        let itemNode = UiDropdownListItemNode(props: [:])
+                        let itemNode = UiDropdownListItemNode()
                         node.addChild(itemNode)
                         expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
                         expect(itemNode.tapHandler).toNot(beNil())
 
-                        let otherNode = TransformNode(props: [:])
+                        let otherNode = TransformNode()
                         node.addChild(otherNode)
                         expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
                     }
@@ -174,11 +174,11 @@ class UiDropdownListNodeSpec: QuickSpec {
 
             context("when item removed") {
                 it("should remove it from the list node") {
-                    let itemNode = UiDropdownListItemNode(props: [:])
+                    let itemNode = UiDropdownListItemNode()
                     node.addChild(itemNode)
                     expect(node.listGridLayoutNode.itemsCount).to(equal(1))
 
-                    let otherNode = TransformNode(props: [:])
+                    let otherNode = TransformNode()
                     node.removeChild(otherNode)
                     expect(node.listGridLayoutNode.itemsCount).to(equal(1))
 
@@ -190,7 +190,7 @@ class UiDropdownListNodeSpec: QuickSpec {
 
             context("when handling item tap") {
                 it("should maintain selection state - selection") {
-                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    let dummyItemNode = UiDropdownListItemNode()
                     node.handleTap(dummyItemNode)
 
                     expect(node.selectedItem).to(equal(dummyItemNode))
@@ -198,7 +198,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                 }
 
                 it("should maintain selection state - deselection") {
-                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    let dummyItemNode = UiDropdownListItemNode()
                     node.handleTap(dummyItemNode)
                     node.handleTap(dummyItemNode)
 
@@ -211,7 +211,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     node.onSelectionChanged = { sender, selecctedItems in
                         upperLayerNotified = true
                     }
-                    let dummyItemNode = UiDropdownListItemNode(props: [:])
+                    let dummyItemNode = UiDropdownListItemNode()
                     node.handleTap(dummyItemNode)
                     expect(upperLayerNotified).to(beTrue())
                 }

@@ -25,7 +25,7 @@ class UiListViewNodeSpec: QuickSpec {
             var node: UiListViewNode!
 
             beforeEach {
-                node = UiListViewNode(props: [:])
+                node = UiListViewNode()
                 node.layoutIfNeeded()
             }
 
@@ -97,11 +97,11 @@ class UiListViewNodeSpec: QuickSpec {
             context("when item added") {
                 context("when item is ListView item") {
                     it("should add it to the list node") {
-                        let itemNode = UiListViewItemNode(props: [:])
+                        let itemNode = UiListViewItemNode()
                         node.addChild(itemNode)
                         expect(node.items.count).to(equal(1))
 
-                        let otherNode = TransformNode(props: [:])
+                        let otherNode = TransformNode()
                         node.addChild(otherNode)
                         expect(node.items.count).to(equal(1))
                     }
@@ -112,7 +112,7 @@ class UiListViewNodeSpec: QuickSpec {
                 context("when vertical layout orientation") {
                     it("should set its width according to width of all elements - #1") {
                         let buttonNode = UiButtonNode(props: ["width": 0.25, "height": 0.125])
-                        let itemNode = UiListViewItemNode(props: [:])
+                        let itemNode = UiListViewItemNode()
                         itemNode.addChild(buttonNode)
                         node.addChild(itemNode)
                         node.updateLayout() // calculation trigger
@@ -123,7 +123,7 @@ class UiListViewNodeSpec: QuickSpec {
 
                     it("should set its width according to width of all elements - #2") {
                         let buttonNode1 = UiButtonNode(props: ["width": 0.25, "height": 0.125])
-                        let itemNode1 = UiListViewItemNode(props: [:])
+                        let itemNode1 = UiListViewItemNode()
                         itemNode1.addChild(buttonNode1)
                         node.addChild(itemNode1)
                         node.updateLayout()
@@ -132,7 +132,7 @@ class UiListViewNodeSpec: QuickSpec {
                         expect(item1.preferredWidth).to(beCloseTo(0.25))
 
                         let buttonNode2 = UiButtonNode(props: ["width": 0.75, "height": 0.0625])
-                        let itemNode2 = UiListViewItemNode(props: [:])
+                        let itemNode2 = UiListViewItemNode()
                         itemNode2.addChild(buttonNode2)
                         node.addChild(itemNode2)
                         expect(node.items.count).to(equal(2))
@@ -152,7 +152,7 @@ class UiListViewNodeSpec: QuickSpec {
 
                     it("should set its height according to width of all elements - #1") {
                         let buttonNode = UiButtonNode(props: ["width": 0.25, "height": 0.125])
-                        let itemNode = UiListViewItemNode(props: [:])
+                        let itemNode = UiListViewItemNode()
                         itemNode.addChild(buttonNode)
                         node.addChild(itemNode)
                         expect(node.items.count).to(equal(1))
@@ -162,7 +162,7 @@ class UiListViewNodeSpec: QuickSpec {
 
                     it("should set its htight according to width of all elements - #2") {
                         let buttonNode1 = UiButtonNode(props: ["width": 0.25, "height": 0.125])
-                        let itemNode1 = UiListViewItemNode(props: [:])
+                        let itemNode1 = UiListViewItemNode()
                         itemNode1.addChild(buttonNode1)
                         node.addChild(itemNode1)
                         node.updateLayout()
@@ -171,7 +171,7 @@ class UiListViewNodeSpec: QuickSpec {
                         expect(item1.preferredHeight).to(beCloseTo(0.125))
 
                         let buttonNode2 = UiButtonNode(props: ["width": 0.5, "height": 0.0625])
-                        let itemNode2 = UiListViewItemNode(props: [:])
+                        let itemNode2 = UiListViewItemNode()
                         itemNode2.addChild(buttonNode2)
                         node.addChild(itemNode2)
                         expect(node.items.count).to(equal(2))
@@ -187,11 +187,11 @@ class UiListViewNodeSpec: QuickSpec {
 
             context("when item removed") {
                 it("should remove it from the list node") {
-                    let itemNode = UiListViewItemNode(props: [:])
+                    let itemNode = UiListViewItemNode()
                     node.addChild(itemNode)
                     expect(node.items.count).to(equal(1))
 
-                    let otherNode = TransformNode(props: [:])
+                    let otherNode = TransformNode()
                     node.removeChild(otherNode)
                     expect(node.items.count).to(equal(1))
 

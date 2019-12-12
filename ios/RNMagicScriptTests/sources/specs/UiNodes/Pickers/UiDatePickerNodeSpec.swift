@@ -26,7 +26,7 @@ class UiDatePickerNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiDatePickerNode(props: [:])
+                node = UiDatePickerNode()
                 node.layoutIfNeeded()
             }
 

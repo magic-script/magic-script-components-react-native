@@ -26,8 +26,7 @@ import com.magicleap.magicscript.utils.PropertiesReader.Companion.readFilePath
 import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
 
-
-open class AudioNode @JvmOverloads constructor(
+open class AudioNode(
     initProps: ReadableMap,
     private val context: Context,
     private var audioEngine: AudioEngine,

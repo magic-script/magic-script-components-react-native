@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
@@ -15,6 +14,7 @@ import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
+import kotlin.math.max
 
 open class UiListViewItemNode(
     initProps: ReadableMap,
@@ -29,6 +29,12 @@ open class UiListViewItemNode(
 
         val DEFAULT_BACKGROUND_COLOR = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
+
+    var minSize = Vector2(0f, 0f)
+        set(value) {
+            field = value
+            setNeedsRebuild(true)
+        }
 
     private var lastContentBounds = Bounding()
 
@@ -45,7 +51,9 @@ open class UiListViewItemNode(
     }
 
     override fun provideDesiredSize(): Vector2 {
-        return lastContentBounds.size()
+        val width = max(lastContentBounds.size().x, minSize.x)
+        val height = max(lastContentBounds.size().y, minSize.y)
+        return Vector2(width, height)
     }
 
     override fun applyProperties(props: Bundle) {

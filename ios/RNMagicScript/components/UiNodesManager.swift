@@ -171,7 +171,7 @@ import SceneKit
     }
     
     @objc fileprivate func removeNodeWithDescendants(_ node: TransformNode) {
-        node.enumerateComponentsHierarchy { (item) in
+        node.enumerateTransformNodes { (item) in
             if let id = item.name {
                 unregisterNode(id)
             }
@@ -196,15 +196,15 @@ import SceneKit
     
     @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
-        rootNode.enumeratePostOrder { node in
+        rootNode.enumerateTransformNodes { node in
             node.layoutIfNeeded()
         }
 
-        rootNode.enumeratePostOrder { node in
+        rootNode.enumerateTransformNodes { node in
             node.layoutContainerIfNeeded()
         }
 
-        rootNode.enumeratePostOrder { node in
+        rootNode.enumerateTransformNodes { node in
             node.postUpdate()
         }
     }

@@ -18,19 +18,10 @@ import Foundation
 import SceneKit
 
 extension SCNNode {
-    @objc func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
-        childNodes.forEach { (node) in
-            node.enumerateComponentsHierarchy(block)
-        }
-
-        if let transformNode = self as? TransformNode {
-            block(transformNode)
-        }
-    }
-
-    @objc func enumeratePostOrder(block: @escaping (TransformNode) -> Void) {
+    /// Enumerates SCNNode hierarchy in post order and invokes the block closure for each TransformNode.
+    @objc func enumerateTransformNodes(_ block: (TransformNode) -> Void) {
         childNodes.forEach { child in
-            child.enumeratePostOrder(block: block)
+            child.enumerateTransformNodes(block)
         }
 
         if let transformNode = self as? TransformNode {
@@ -38,8 +29,10 @@ extension SCNNode {
         }
     }
 
-    @objc func enumerateParents(block: @escaping (TransformNode) -> Void) {
-        var node: SCNNode! = parent
+    /// Enumerates SCNNode hierarchy from given node (self) to the root.
+    /// Invokes the block closure for each TransformNode.
+    @objc func enumerateTransformNodesParents(_ block: (TransformNode) -> Void) {
+        var node: SCNNode! = self
         while node != nil {
             if let transformNode = node as? TransformNode {
                 block(transformNode)

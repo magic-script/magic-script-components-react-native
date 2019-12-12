@@ -135,13 +135,13 @@ import SceneKit
         pageLayout.addItem(newPage)
     }
 
-    @objc override func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
+    @objc override func enumerateTransformNodes(_ block: (TransformNode) -> Void) {
         pages.forEach { (page) in
             if page.parent == nil {
-                page.enumerateComponentsHierarchy(block)
+                page.enumerateTransformNodes(block)
             }
         }
-        super.enumerateComponentsHierarchy(block)
+        super.enumerateTransformNodes(block)
     }
 }
 

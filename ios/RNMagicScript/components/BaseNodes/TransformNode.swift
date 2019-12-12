@@ -162,7 +162,7 @@ import SceneKit
     }
 
     fileprivate func invalidateParentContainers() {
-        enumerateParents { node in
+        enumerateTransformNodesParents { node in
             if node is TransformNodeContainer {
                 node.setNeedsContainerLayout()
             }

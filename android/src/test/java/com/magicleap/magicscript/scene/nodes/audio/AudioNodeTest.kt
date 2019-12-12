@@ -35,8 +35,6 @@ import java.io.File
 class AudioNodeTest {
 
     private val FILE_URL = "http://localhost:8081/assets/resources/bg_stereo.mp3"
-    private val FILE_LOCAL_PATH = "/asd/dsa/bg_stereo.mp3"
-
     private val audioEngine: AudioEngine = mock()
     private lateinit var audioProvider: AudioFileProvider
     private lateinit var tested: AudioNode
@@ -45,7 +43,7 @@ class AudioNodeTest {
     fun setup() {
         audioProvider = spy(object : AudioFileProvider {
             override fun provideFile(uri: Uri, result: (File) -> Unit) {
-                result.invoke(File(FILE_URL))
+                result.invoke(File(""))
             }
 
             override fun onDestroy() {}
@@ -92,7 +90,7 @@ class AudioNodeTest {
             reactMapOf().fileName(FILE_URL)
         )
 
-        verify(audioEngine).load(File(FILE_URL))
+        verify(audioEngine).load(any())
     }
 
     @Test

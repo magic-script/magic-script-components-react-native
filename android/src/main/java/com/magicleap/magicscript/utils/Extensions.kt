@@ -79,24 +79,6 @@ fun <T> Bundle.putDefault(key: String, value: T) {
     }
 }
 
-inline fun Bundle.ifContainsString(key: String, result: (String?) -> Unit) {
-    if (containsKey(key)) {
-        result(getString(key))
-    }
-}
-
-inline fun Bundle.ifContainsDouble(key: String, result: (Double) -> Unit) {
-    if (containsKey(key)) {
-        result(getDouble(key))
-    }
-}
-
-inline fun Bundle.ifContainsBoolean(key: String, result: (Boolean) -> Unit) {
-    if (containsKey(key)) {
-        result(getBoolean(key))
-    }
-}
-
 /*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end
@@ -105,7 +87,6 @@ fun String.limited(maxCharacters: Int): String {
     return if (this.length > maxCharacters) {
         substring(0, maxCharacters) + "\u2026"
     } else this
-
 }
 
 /**

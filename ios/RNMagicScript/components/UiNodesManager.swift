@@ -16,6 +16,7 @@
 
 import Foundation
 import SceneKit
+import ARKit
 
 @objc open class UiNodesManager: NSObject {
     @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
@@ -37,9 +38,10 @@ import SceneKit
         self.nodeByAnchorUuid = nodeByAnchorUuid
         self.focusedNode = focusedNode
     }
-    
-    @objc public func registerScene(_ scene: SCNScene) {
-        scene.rootNode.addChildNode(rootNode)
+
+    @objc public func registerARView(_ arView: RCTARView) {
+        arView.scene.rootNode.addChildNode(rootNode)
+        arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
     }
     
@@ -217,6 +219,22 @@ import SceneKit
     @objc func textFieldDidChange(text: String?) {
         if let textEdit = focusedNode as? UiTextEditNode {
             textEdit.text = text
+        }
+    }
+}
+
+extension UiNodesManager: RCTARViewObserving {
+    @objc internal func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let anchorName = anchor.name else { return }
+        if let transformNode = findNodeWithAnchorUuid(anchorName) {
+            transformNode.transform = node.transform
+        }
+    }
+
+    @objc internal func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        guard let anchorName = anchor.name else { return }
+        if let transformNode = findNodeWithAnchorUuid(anchorName) {
+            transformNode.transform = node.transform
         }
     }
 }

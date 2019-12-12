@@ -139,7 +139,7 @@ import SceneKit
 
     fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
-        UiNodesManager.instance.registerScene(view.scene)
+        UiNodesManager.instance.registerARView(self)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
             self?.presentInput(input)
         }

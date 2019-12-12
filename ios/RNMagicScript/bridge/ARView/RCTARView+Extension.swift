@@ -21,8 +21,8 @@ import SceneKit
 extension RCTARView: ARSCNViewDelegate {
     //MARK: ARSCNViewDelegate - this is dataSource rather than delegate
     @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        guard let anchorName = anchor.name else { return nil }
-        return UiNodesManager.instance.findNodeWithAnchorUuid(anchorName)
+        guard let _ = anchor.name else { return nil }
+        return SCNNode()
     }
 
     #warning("Should be updated according to expected behaviour")

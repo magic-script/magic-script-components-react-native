@@ -55,6 +55,7 @@ open class UiListViewNode(
 
         onContentSizeChangedListener = { contentSize ->
             this.contentSize = contentSize
+            forceSameItemsWidth()
 
             val size = readSize()
 
@@ -119,5 +120,19 @@ open class UiListViewNode(
         val width = properties.getDouble(PROP_WIDTH, WRAP_CONTENT_DIMENSION.toDouble())
         val height = properties.getDouble(PROP_HEIGHT, WRAP_CONTENT_DIMENSION.toDouble())
         return Vector2(width.toFloat(), height.toFloat())
+    }
+
+    private fun forceSameItemsWidth() {
+        val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        val minItemSize = if (orientation == ORIENTATION_VERTICAL) {
+            Vector2(contentSize.x, 0f)
+        } else {
+            Vector2(0f, contentSize.y)
+        }
+        containerNode.childrenList
+            .filterIsInstance<UiListViewItemNode>()
+            .forEach { item ->
+                item.minSize = minItemSize
+            }
     }
 }

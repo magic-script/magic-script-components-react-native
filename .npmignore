@@ -29,6 +29,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+/ios/RNMagicScriptHostApplication
+/ios/RNMagicScriptTests
       
 
 # Android/IntelliJ

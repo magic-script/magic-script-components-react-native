@@ -91,8 +91,8 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
-import com.magicleap.magicscript.utils.AudioFileProvider;
-import com.magicleap.magicscript.utils.UriAudioProvider;
+import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
+import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 
 import org.jetbrains.annotations.NotNull;
 

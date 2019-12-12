@@ -14,12 +14,12 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.utils
+package com.magicleap.magicscript.scene.nodes.audio
 
 import android.net.Uri
 import java.io.File
 
 interface AudioFileProvider {
-    fun provideFile(path: Uri?, result: (File) -> Unit): Boolean
+    fun provideFile(uri: Uri, result: (File) -> Unit)
     fun onDestroy()
 }

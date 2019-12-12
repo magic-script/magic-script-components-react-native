@@ -32,7 +32,7 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     expect(node.height).to(equal(0))
                     expect(node.columns).to(equal(0))
                     expect(node.rows).to(equal(0))
-                    expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.skipInvisibleItems).to(beFalse())
                     expect(node.itemsCount).to(equal(0))

@@ -35,7 +35,7 @@ class GridLayoutSpec: QuickSpec {
                     expect(layout.height).to(beCloseTo(0))
                     expect(layout.columns).to(equal(0))
                     expect(layout.rows).to(equal(0))
-                    expect(layout.defaultItemAlignment).to(equal(Alignment.centerCenter))
+                    expect(layout.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(layout.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(layout.skipInvisibleItems).to(beFalse())
                     expect(layout.itemsCount).to(equal(0))

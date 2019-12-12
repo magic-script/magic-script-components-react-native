@@ -31,7 +31,7 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                     expect(node.width).to(equal(0))
                     expect(node.height).to(equal(0))
                     expect(node.layoutOrientation).to(equal(Orientation.vertical))
-                    expect(node.defaultItemAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.skipInvisibleItems).to(beFalse())
                     expect(node.itemsCount).to(equal(0))

@@ -27,8 +27,7 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.DialogProvider
-import com.magicleap.magicscript.utils.ifContainsDouble
-import com.magicleap.magicscript.utils.ifContainsString
+import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
 import java.lang.ref.WeakReference
 
@@ -94,39 +93,35 @@ class DialogNode(
     private fun showDialog() {
         val dialogBuilder = dialogProvider.provideCustomAlertDialogBuilder(context)
         dialogBuilder.apply {
-            properties.ifContainsString(PROP_TITLE) { title ->
+            properties.ifContains(PROP_TITLE) { title: String ->
                 setTitle(title)
             }
-            properties.ifContainsString(PROP_TEXT) { text ->
+            properties.ifContains(PROP_TEXT) { text: String ->
                 setDescription(text)
             }
 
-            properties.ifContainsString(PROP_CONFIRM_TEXT) { text ->
+            properties.ifContains(PROP_CONFIRM_TEXT) { text: String ->
                 setConfirmationText(text)
                 setOnDialogConfirmClick(onDialogConfirmListener)
             }
-            properties.ifContainsString(PROP_CONFIRM_ICON) { iconRes ->
-                if (iconRes != null) {
-                    val icon = iconsRepository.getIcon(iconRes, false)
-                    setConfirmationIcon(icon)
-                }
+            properties.ifContains(PROP_CONFIRM_ICON) { iconRes: String ->
+                val icon = iconsRepository.getIcon(iconRes, false)
+                setConfirmationIcon(icon)
             }
-            properties.ifContainsString(PROP_CANCEL_TEXT) { text ->
+            properties.ifContains(PROP_CANCEL_TEXT) { text: String ->
                 setCancelText(text)
                 setOnDialogCancelClick(onDialogCancelListener)
             }
-            properties.ifContainsString(PROP_CANCEL_ICON) { iconRes ->
-                if (iconRes != null) {
-                    val icon = iconsRepository.getIcon(iconRes, false)
-                    setCancelIcon(icon)
-                }
+            properties.ifContains(PROP_CANCEL_ICON) { iconRes: String ->
+                val icon = iconsRepository.getIcon(iconRes, false)
+                setCancelIcon(icon)
             }
         }
         this.dialog = dialogBuilder.create()
         this.dialog?.show()
         this.dialog?.window?.setBackgroundDrawable(null)
         this.dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        properties.ifContainsDouble(PROP_EXPIRATION_TIME) { time: Double ->
+        properties.ifContains(PROP_EXPIRATION_TIME) { time: Double ->
             val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
             val timeInMillis = (time * 1000).toLong()
             timerHandler.sendMessageDelayed(msg, timeInMillis)

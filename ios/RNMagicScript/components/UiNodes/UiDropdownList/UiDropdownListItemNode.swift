@@ -25,7 +25,7 @@ import SceneKit
     }
     @objc var label: String? {
         get { return labelNode.text }
-        set { labelNode.text = alignTextLenght(newValue, maxCharacterLimit); setNeedsLayout() }
+        set { labelNode.text = alignTextLength(newValue, maxCharacterLimit); setNeedsLayout() }
     }
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; setNeedsLayout() }
@@ -41,12 +41,12 @@ import SceneKit
     }
     @objc var maxCharacterLimit: Int = 0 {
         didSet {
-            labelNode.text = alignTextLenght(label, maxCharacterLimit)
+            labelNode.text = alignTextLength(label, maxCharacterLimit)
             setNeedsLayout()
         }
     }
 
-    fileprivate func alignTextLenght(_ text: String?, _ maxCharacterLimit: Int) -> String? {
+    fileprivate func alignTextLength(_ text: String?, _ maxCharacterLimit: Int) -> String? {
         guard let text = text else { return nil }
         if text.count > maxCharacterLimit && maxCharacterLimit > 0 {
             let trailingCharacters = "..."

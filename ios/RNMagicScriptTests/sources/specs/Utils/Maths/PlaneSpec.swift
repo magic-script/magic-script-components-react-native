@@ -32,11 +32,27 @@ class PlaneSpec: QuickSpec {
                     expect(plane.normal).to(beCloseTo(referenceNormal))
                 }
 
-                it("should init Plane from vec4") {
+                it("should init Plane from vec4 (x > 0)") {
                     let referenceVector = SCNVector4(1, 0, 0, 2.0)
                     let plane = Plane(vector: referenceVector)
                     expect(plane.toVector4()).to(beCloseTo(referenceVector))
                     expect(plane.center).to(beCloseTo(SCNVector3(-referenceVector.w, 0, 0)))
+                    expect(plane.normal).to(beCloseTo(SCNVector3(referenceVector.x, referenceVector.y, referenceVector.z)))
+                }
+
+                it("should init Plane from vec4 (y > 0)") {
+                    let referenceVector = SCNVector4(0, 1, 0, 2.0)
+                    let plane = Plane(vector: referenceVector)
+                    expect(plane.toVector4()).to(beCloseTo(referenceVector))
+                    expect(plane.center).to(beCloseTo(SCNVector3(0, -referenceVector.w, 0)))
+                    expect(plane.normal).to(beCloseTo(SCNVector3(referenceVector.x, referenceVector.y, referenceVector.z)))
+                }
+
+                it("should init Plane from vec4 (z > 0)") {
+                    let referenceVector = SCNVector4(0, 0, 1, 2.0)
+                    let plane = Plane(vector: referenceVector)
+                    expect(plane.toVector4()).to(beCloseTo(referenceVector))
+                    expect(plane.center).to(beCloseTo(SCNVector3(0, 0, -referenceVector.w)))
                     expect(plane.normal).to(beCloseTo(SCNVector3(referenceVector.x, referenceVector.y, referenceVector.z)))
                 }
 

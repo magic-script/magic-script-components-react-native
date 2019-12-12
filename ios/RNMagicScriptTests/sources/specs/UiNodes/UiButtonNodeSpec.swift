@@ -152,6 +152,16 @@ class UiButtonNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
             }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    let labelNode: LabelNode! = node.contentNode.childNodes.first as? LabelNode
+                    expect(labelNode).notTo(beNil())
+                    let referenceLabelNodeChildNodesCount: Int = labelNode.childNodes.count
+                    node.setDebugMode(true)
+                    expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
+                }
+            }
         }
     }
 }

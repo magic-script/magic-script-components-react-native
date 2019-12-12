@@ -29,15 +29,16 @@ extension UIFont {
 
             return systemFont
         }
+        
         return font
     }
 
     public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-      guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
-        return self
-      }
+        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
+            return self
+        }
 
-      return UIFont(descriptor: descriptor, size: 0)
+        return UIFont(descriptor: descriptor, size: 0)
     }
 
     static fileprivate func fontName(from style: FontStyle, weight: FontWeight) -> String {

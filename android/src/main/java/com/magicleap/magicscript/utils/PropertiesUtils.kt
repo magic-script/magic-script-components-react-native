@@ -53,6 +53,7 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             Matrix::class -> readMatrix(this, key) as T?
             Padding::class -> readPadding(this, key) as T?
             Alignment::class -> readAlignment(this, key) as T?
+            FontParams::class -> readFontParams(this, key) as T?
             SpatialSoundPosition::class -> readSpatialSoundPosition(this, key) as T?
             SpatialSoundDistance::class -> readSpatialSoundDistance(this, key) as T?
             else -> {
@@ -67,18 +68,6 @@ fun Bundle.readImagePath(propertyName: String, context: Context): Uri? {
 
 fun Bundle.readFilePath(propertyName: String, context: Context): Uri? {
     return getFileUri(this, propertyName, context, "raw")
-}
-
-fun Bundle.readFontParams(paramName: String): FontParams? {
-    val paramsBundle = this.getBundle(paramName) ?: return null
-    val weightName = paramsBundle.getString(PROP_WEIGHT, "")
-    val styleName = paramsBundle.getString(PROP_STYLE, "")
-    val allCaps = paramsBundle.getBoolean(PROP_ALL_CAPS, false)
-
-    val weight = FontWeight.fromName(weightName) ?: FontWeight.DEFAULT
-    val style = FontStyle.fromName(styleName) ?: FontStyle.DEFAULT
-
-    return FontParams(weight, style, allCaps)
 }
 
 /**
@@ -146,6 +135,17 @@ fun readMatrix(props: Bundle, propertyName: String): Matrix? {
     return null
 }
 
+fun readFontParams(bundle: Bundle, paramName: String): FontParams? {
+    val paramsBundle = bundle.getBundle(paramName) ?: return null
+    val weightName = paramsBundle.getString(PROP_WEIGHT, "")
+    val styleName = paramsBundle.getString(PROP_STYLE, "")
+    val allCaps = paramsBundle.getBoolean(PROP_ALL_CAPS, false)
+
+    val weight = FontWeight.fromName(weightName) ?: FontWeight.DEFAULT
+    val style = FontStyle.fromName(styleName) ?: FontStyle.DEFAULT
+
+    return FontParams(weight, style, allCaps)
+}
 
 /**
  * Reads [Padding] from an array in the format [top, right, bottom, left]

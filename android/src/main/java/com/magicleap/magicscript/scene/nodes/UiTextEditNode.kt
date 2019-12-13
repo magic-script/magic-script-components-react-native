@@ -32,6 +32,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -125,7 +126,7 @@ open class UiTextEditNode(
     override fun setupView() {
         super.setupView()
 
-        val fontParams = properties.readFontParams(PROP_FONT_PARAMS)
+        val fontParams = properties.read<FontParams>(PROP_FONT_PARAMS)
         if (fontParams == null) { // setting a default typeface
             view.text_edit.typeface = fontProvider.provideFont()
         }
@@ -249,7 +250,7 @@ open class UiTextEditNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = props.readFontParams(PROP_FONT_PARAMS) ?: return
+        val fontParams = props.read<FontParams>(PROP_FONT_PARAMS) ?: return
         view.text_edit.typeface = fontProvider.provideFont(fontParams)
         view.text_edit.isAllCaps = fontParams.allCaps
     }

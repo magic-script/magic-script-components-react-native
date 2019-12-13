@@ -26,6 +26,7 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.*
@@ -73,7 +74,7 @@ open class UiTextNode(
             (view as TextView).setSingleLine(true)
         }
 
-        val fontParams = properties.readFontParams(PROP_FONT_PARAMS)
+        val fontParams = properties.read<FontParams>(PROP_FONT_PARAMS)
         if (fontParams == null) {  // setting a default typeface
             (view as TextView).typeface = fontProvider.provideFont()
         }
@@ -179,7 +180,7 @@ open class UiTextNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = props.readFontParams(PROP_FONT_PARAMS) ?: return
+        val fontParams = props.read<FontParams>(PROP_FONT_PARAMS) ?: return
         val textView = (view as TextView)
         textView.typeface = fontProvider.provideFont(fontParams)
         textView.isAllCaps = fontParams.allCaps

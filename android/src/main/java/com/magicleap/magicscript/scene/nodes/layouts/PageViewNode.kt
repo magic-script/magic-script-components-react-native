@@ -25,7 +25,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -73,7 +72,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     }
 
     private fun setVisiblePage(props: Bundle) {
-        props.ifContains(PROP_VISIBLE_PAGE) { page: Double ->
+        props.read<Double>(PROP_VISIBLE_PAGE)?.let { page ->
             this.visiblePage = page.toInt()
             (layoutManager as PageViewLayoutManager).visiblePage = visiblePage
             requestLayout()

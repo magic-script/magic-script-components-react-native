@@ -55,14 +55,6 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             }
         } else null
 
-inline fun <reified T : Any> Bundle.ifContains(key: String, result: (T) -> Unit) {
-    if (containsKey(key)) {
-        read<T>(key)?.let {
-            result(it)
-        }
-    }
-}
-
 fun Bundle.readImagePath(propertyName: String, context: Context): Uri? {
     return getFileUri(this, propertyName, context, "drawable")
 }

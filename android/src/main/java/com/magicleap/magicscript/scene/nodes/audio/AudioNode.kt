@@ -22,8 +22,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 import com.magicleap.magicscript.utils.readFilePath
 
 open class AudioNode(
@@ -78,7 +78,7 @@ open class AudioNode(
 
     private fun applyValues(props: Bundle) {
         props.run {
-            ifContains(PROP_SOUND_LOOPING) { isLooping: Boolean ->
+            read<Boolean>(PROP_SOUND_LOOPING)?.let { isLooping ->
                 audioEngine.looping(isLooping)
             }
 
@@ -89,42 +89,41 @@ open class AudioNode(
                 }
             }
 
-            ifContains(PROP_SPATIAL_SOUND_ENABLE) { isSpatialSoundEnabled: Boolean ->
+            read<Boolean>(PROP_SPATIAL_SOUND_ENABLE)?.let { isSpatialSoundEnabled ->
                 if (spatialSoundEnabled != isSpatialSoundEnabled) {
                     spatialSoundEnabled = isSpatialSoundEnabled
                     audioEngine.spatialSoundEnabled(spatialSoundEnabled)
                 }
             }
 
-            ifContains(PROP_SOUND_VOLUME_LINEAR) { volume: Double ->
+            read<Double>(PROP_SOUND_VOLUME_LINEAR)?.let { volume ->
                 audioEngine.setSoundVolume(volume.toFloat())
             }
 
-            ifContains(PROP_SOUND_MUTE) { isMuted: Boolean ->
+            read<Boolean>(PROP_SOUND_MUTE)?.let { isMuted ->
                 audioEngine.mute(isMuted)
             }
         }
     }
 
     private fun applyActions(props: Bundle) {
-        props.ifContains(PROP_ACTION) { action: String ->
-            when (action) {
-                AudioAction.STOP -> audioEngine.stop()
-                AudioAction.PAUSE -> audioEngine.pause()
-                AudioAction.RESUME -> audioEngine.resume()
-                AudioAction.START -> audioEngine.play()
-            }
+        val action = props.read<String>(PROP_ACTION)
+        when (action) {
+            AudioAction.STOP -> audioEngine.stop()
+            AudioAction.PAUSE -> audioEngine.pause()
+            AudioAction.RESUME -> audioEngine.resume()
+            AudioAction.START -> audioEngine.play()
         }
     }
 
     private fun applySpatialSoundProperties(props: Bundle) {
-        props.ifContains(PROP_SPATIAL_SOUND_POSITION) { spatialSoundPosition: SpatialSoundPosition ->
+        props.read<SpatialSoundPosition>(PROP_SPATIAL_SOUND_POSITION)?.let { spatialSoundPosition ->
             spatialSoundPosition.channelPosition?.let { channelPosition ->
                 audioEngine.setSoundObjectPosition(channelPosition)
             }
         }
 
-        props.ifContains(PROP_SPATIAL_SOUND_DISTANCE) { spatialSoundDistance: SpatialSoundDistance ->
+        props.read<SpatialSoundDistance>(PROP_SPATIAL_SOUND_DISTANCE)?.let { spatialSoundDistance ->
             audioEngine.setSoundObjectDistanceRolloffModel(spatialSoundDistance)
         }
     }

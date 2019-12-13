@@ -225,16 +225,14 @@ import ARKit
 
 extension UiNodesManager: RCTARViewObserving {
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        guard let anchorName = anchor.name else { return }
-        if let transformNode = findNodeWithAnchorUuid(anchorName) {
-            transformNode.transform = node.transform
+        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
+            transformNode.transform = node.convertTransform(node.transform, to: transformNode)
         }
     }
 
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        guard let anchorName = anchor.name else { return }
-        if let transformNode = findNodeWithAnchorUuid(anchorName) {
-            transformNode.transform = node.transform
+        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
+            transformNode.transform = node.convertTransform(node.transform, to: transformNode)
         }
     }
 }

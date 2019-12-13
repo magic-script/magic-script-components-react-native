@@ -18,7 +18,6 @@ package com.magicleap.magicscript
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 
 fun JavaOnlyMap.localPosition(x: Double, y: Double, z: Double): JavaOnlyMap {
@@ -159,6 +158,16 @@ fun JavaOnlyMap.columns(columns: Int): JavaOnlyMap {
     return this
 }
 
+fun JavaOnlyMap.scrollBounds(min: Array<Double>, max: Array<Double>): JavaOnlyMap {
+    putMap(
+        "scrollBounds", reactMapOf(
+            "min", reactArrayOf(*min),
+            "max", reactArrayOf(*max)
+        )
+    )
+    return this
+}
+
 fun JavaOnlyMap.defaultItemAlignment(defaultItemAlignment: String): JavaOnlyMap {
     putString("defaultItemAlignment", defaultItemAlignment)
     return this
@@ -204,7 +213,6 @@ fun JavaOnlyMap.allTogglesOff(allTogglesOff: Boolean): JavaOnlyMap {
     return this
 }
 
-
 fun JavaOnlyMap.type(type: String): JavaOnlyMap {
     putString("type", type)
     return this
@@ -240,7 +248,7 @@ fun JavaOnlyMap.soundLooping(soundLooping: Boolean): JavaOnlyMap {
     return this
 }
 
-fun JavaOnlyMap.spatialSoundPosition(channel: Int, channelPosition: Array<Double>): ReadableMap {
+fun JavaOnlyMap.spatialSoundPosition(channel: Int, channelPosition: Array<Double>): JavaOnlyMap {
     putMap(
         "spatialSoundPosition", reactMapOf(
             "channel", channel,
@@ -256,7 +264,7 @@ fun JavaOnlyMap.spatialSoundDistance(
     minDistance: Double,
     maxDistance: Double,
     rolloffFactor: Int
-): ReadableMap {
+): JavaOnlyMap {
     putMap(
         "spatialSoundDistance", reactMapOf(
             "channel", channel,

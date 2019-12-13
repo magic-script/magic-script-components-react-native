@@ -20,14 +20,17 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
-import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.Arguments
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.createProperty
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
+import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scrollBounds
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.Assert.*
@@ -54,7 +57,7 @@ class PropertiesReaderTest {
         bundle.putString(prop, path)
         val expected = Uri.parse(path)
 
-        val uri = PropertiesReader.readFilePath(bundle, prop, context)
+        val uri = bundle.readFilePath(prop, context)
 
         assertEquals(expected, uri)
     }
@@ -69,7 +72,7 @@ class PropertiesReaderTest {
         propsBundle.putBundle(prop, pathBundle)
         val expected = Uri.parse(path)
 
-        val uri = PropertiesReader.readImagePath(propsBundle, prop, context)
+        val uri = propsBundle.readImagePath(prop, context)
 
         assertTrue(expected == uri)
     }
@@ -83,7 +86,7 @@ class PropertiesReaderTest {
         val prop = "videoPath"
         propsBundle.putBundle(prop, pathBundle)
 
-        val uri = PropertiesReader.readFilePath(propsBundle, prop, context)
+        val uri = propsBundle.readFilePath(prop, context)
 
         assertTrue(uri.toString().startsWith("android.resource"))
     }
@@ -91,9 +94,8 @@ class PropertiesReaderTest {
     @Test
     fun `should return null if there is no property to read vector from`() {
         val emptyBundle = Bundle()
-        val prop = "PROP_NAME"
 
-        val vector = PropertiesReader.readVector3(emptyBundle, prop)
+        val vector = emptyBundle.read<Vector3>("PROP_NAME")
 
         assertNull(vector)
     }
@@ -104,7 +106,7 @@ class PropertiesReaderTest {
         val prop = "PROP_NAME"
         bundle.putSerializable(prop, arrayListOf(1.0, 2.0))
 
-        val vector = PropertiesReader.readVector3(bundle, prop)
+        val vector = bundle.read<Vector3>(prop)
 
         assertNull(vector)
     }
@@ -115,7 +117,7 @@ class PropertiesReaderTest {
         val prop = "PROP_NAME"
         bundle.putSerializable(prop, arrayListOf(1.0, 2.0, 3.0))
 
-        val vector = PropertiesReader.readVector3(bundle, prop)
+        val vector = bundle.read<Vector3>(prop)
 
         assertNotNull(vector)
         assertTrue(vector is Vector3)
@@ -130,7 +132,7 @@ class PropertiesReaderTest {
         val elementsList = arrayListOf(element1, element2)
         bundle.putSerializable(prop, elementsList)
 
-        val result = PropertiesReader.readVectorsList(bundle, prop)
+        val result = bundle.readVectorsList(prop)
 
         assertTrue(result.isNotEmpty())
     }
@@ -143,7 +145,7 @@ class PropertiesReaderTest {
         val elementsList = arrayListOf(element)
         bundle.putSerializable(prop, elementsList)
 
-        val result = PropertiesReader.readVectorsList(bundle, prop)
+        val result = bundle.readVectorsList(prop)
 
         assertTrue(result.isEmpty())
     }
@@ -160,7 +162,7 @@ class PropertiesReaderTest {
         )
         bundle.putSerializable(prop, list)
 
-        val result = PropertiesReader.readMatrix(bundle, prop)
+        val result = bundle.read<Matrix>(prop)
 
         assertTrue(result is Matrix)
     }
@@ -172,7 +174,7 @@ class PropertiesReaderTest {
         val list = arrayListOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
         bundle.putSerializable(prop, list)
 
-        val result = PropertiesReader.readMatrix(bundle, prop)
+        val result = bundle.read<Matrix>(prop)
 
         assertNull(result)
     }
@@ -184,7 +186,7 @@ class PropertiesReaderTest {
         val list = arrayListOf(1.0, 2.0, 3.0, 4.0)
         bundle.putSerializable(prop, list)
 
-        val color = PropertiesReader.readColor(bundle, prop)
+        val color = bundle.readColor(prop)
 
         assertNotNull(color)
         assertTrue(color is Int)
@@ -198,10 +200,23 @@ class PropertiesReaderTest {
         val list = arrayListOf(1.0, 2.0, 3.0, 4.0)
         bundle.putSerializable(prop, list)
 
-        val padding = PropertiesReader.readPadding(bundle, prop)
+        val padding = bundle.read<Padding>(prop)
 
         assertNotNull(padding)
         assertTrue(padding is Padding)
+    }
+
+    @Test
+    fun `should read scroll bounds using properties reader`() {
+        val scrollBounds = reactMapOf().scrollBounds(
+            min = arrayOf(1.2, 1.2), max = arrayOf(2.0, 2.0)
+        )
+        val bundle = Bundle().apply {
+            putBundle("scrollBounds", Arguments.toBundle(scrollBounds))
+        }
+        val expected = bundle.read<AABB>("scrollBounds")
+
+        bundle.read<AABB>("scrollBounds") shouldEqual expected
     }
 
     @Test
@@ -214,7 +229,7 @@ class PropertiesReaderTest {
             )
         )
 
-        val spatialSoundPosition = PropertiesReader.readSpatialSoundPosition(spatialBundle, key)
+        val spatialSoundPosition = spatialBundle.read<SpatialSoundPosition>(key)
 
         spatialSoundPosition.shouldNotBeNull()
         spatialSoundPosition.channel shouldEqual 4.0
@@ -238,7 +253,7 @@ class PropertiesReaderTest {
             )
         )
 
-        val spatialSoundDistance = PropertiesReader.readSpatialSoundDistance(spatialBundle, key)
+        val spatialSoundDistance = spatialBundle.read<SpatialSoundDistance>(key)
 
         spatialSoundDistance.shouldNotBeNull()
         spatialSoundDistance.channel shouldEqual 4.0

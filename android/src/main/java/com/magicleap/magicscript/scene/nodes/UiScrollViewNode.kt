@@ -29,6 +29,7 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
@@ -102,7 +103,7 @@ open class UiScrollViewNode(
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val propBounds = PropertiesReader.readAABB(properties, PROP_SCROLL_BOUNDS)
+        val propBounds = properties.read<AABB>(PROP_SCROLL_BOUNDS)
         return if (propBounds != null) {
             Vector2(propBounds.getWidth(), propBounds.getHeight())
         } else {

@@ -34,13 +34,12 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 /**
  * Class containing functions that parse common nodes' properties
  */
-const val PROP_SCROLL_BOUNDS_MIN = "min"
-const val PROP_SCROLL_BOUNDS_MAX = "max"
-const val PROP_WEIGHT = "weight"
-const val PROP_STYLE = "style"
-const val PROP_ALL_CAPS = "allCaps"
+private const val PROP_SCROLL_BOUNDS_MIN = "min"
+private const val PROP_SCROLL_BOUNDS_MAX = "max"
+private const val PROP_WEIGHT = "weight"
+private const val PROP_STYLE = "style"
+private const val PROP_ALL_CAPS = "allCaps"
 private const val FILE_URI_PROPERTY = "uri"
-
 
 inline fun <reified T : Any> Bundle.read(key: String): T? =
     if (containsKey(key))

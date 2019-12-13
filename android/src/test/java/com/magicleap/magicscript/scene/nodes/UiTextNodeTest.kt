@@ -170,7 +170,7 @@ class UiTextNodeTest {
 
     @Test
     fun `should apply capital letters when allCaps property is true`() {
-        val allCapsProp = reactMapOf(FontParamsReader.PROP_ALL_CAPS, true)
+        val allCapsProp = reactMapOf("allCaps", true)
         val props = reactMapOf(UiTextEditNode.PROP_FONT_PARAMS, allCapsProp)
         val node = createNodeWithViewSpy(props)
 

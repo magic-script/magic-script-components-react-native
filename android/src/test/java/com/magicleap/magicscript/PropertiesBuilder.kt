@@ -16,9 +16,22 @@
 
 package com.magicleap.magicscript
 
+import android.os.Bundle
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+
+/**
+ * Properties building functions to use in tests
+ */
+
+fun reactMapOf(vararg keyAndValues: Any) = JavaOnlyMap.of(*keyAndValues)
+
+fun reactArrayOf(vararg values: Any) = JavaOnlyArray.of(*values)
+
+fun createProperty(vararg keysAndValues: Any): Bundle =
+    Arguments.toBundle(reactMapOf(*keysAndValues)) ?: Bundle()
 
 fun JavaOnlyMap.localPosition(x: Double, y: Double, z: Double): JavaOnlyMap {
     putArray("localPosition", JavaOnlyArray.of(x, y, z))

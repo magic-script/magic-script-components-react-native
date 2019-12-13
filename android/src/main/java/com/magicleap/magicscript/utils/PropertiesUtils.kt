@@ -32,7 +32,7 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 
 /**
- * Class containing functions that parse common nodes' properties
+ * File containing functions that parse common nodes' properties from Bundle
  */
 private const val PROP_SCROLL_BOUNDS_MIN = "min"
 private const val PROP_SCROLL_BOUNDS_MAX = "max"

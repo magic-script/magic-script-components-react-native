@@ -4,9 +4,9 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
@@ -79,7 +79,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     }
 
     private fun setItemPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_PADDING)
+        val padding = props.read<Padding>(PROP_PADDING)
         if (padding != null) {
             this.padding = padding
             (layoutManager as RectLayoutManager).itemPadding = padding
@@ -88,7 +88,7 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     }
 
     private fun setContentAlignment(props: Bundle) {
-        val alignment = PropertiesReader.readAlignment(props, PROP_CONTENT_ALIGNMENT)
+        val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
         if (alignment != null) {
             (layoutManager as RectLayoutManager)
             layoutManager.contentVerticalAlignment = alignment.vertical

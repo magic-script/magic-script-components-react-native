@@ -21,6 +21,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -361,14 +362,14 @@ abstract class TransformNode(
             return
         }
 
-        val localPosition = PropertiesReader.readVector3(props, PROP_LOCAL_POSITION)
+        val localPosition = props.read<Vector3>(PROP_LOCAL_POSITION)
         if (localPosition != null) {
             this.localPosition = localPosition
         }
     }
 
     protected open fun setLocalScale(props: Bundle) {
-        val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
+        val localScale = props.read<Vector3>(PROP_LOCAL_SCALE)
         if (localScale != null) {
             this.localScale = localScale
         }
@@ -389,7 +390,7 @@ abstract class TransformNode(
     }
 
     private fun setLocalTransform(props: Bundle) {
-        val transformMatrix = PropertiesReader.readMatrix(props, PROP_LOCAL_TRANSFORM)
+        val transformMatrix = props.read<Matrix>(PROP_LOCAL_TRANSFORM)
         if (transformMatrix != null) {
             val translation = Vector3()
             val scale = Vector3()
@@ -407,7 +408,7 @@ abstract class TransformNode(
     }
 
     protected open fun setAlignment(props: Bundle) {
-        val alignment = PropertiesReader.readAlignment(props, PROP_ALIGNMENT)
+        val alignment = props.read<Alignment>(PROP_ALIGNMENT)
         if (alignment != null) {
             verticalAlignment = alignment.vertical
             horizontalAlignment = alignment.horizontal

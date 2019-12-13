@@ -26,10 +26,7 @@ import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.PropertiesReader
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.*
 
 class VideoNode(
     initProps: ReadableMap,
@@ -121,7 +118,7 @@ class VideoNode(
     }
 
     private fun loadVideo() {
-        val videoUri = PropertiesReader.readFilePath(properties, PROP_VIDEO_PATH, context)
+        val videoUri = properties.readFilePath(PROP_VIDEO_PATH, context)
         if (videoUri != null) {
             val texture = ExternalTexture()
             try {

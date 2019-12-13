@@ -150,7 +150,7 @@ open class UiTextNode(
     }
 
     private fun setTextColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        val color = props.readColor(PROP_TEXT_COLOR)
         if (color != null) {
             (view as TextView).setTextColor(color)
         }

@@ -21,10 +21,14 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 class UiLinearLayout @JvmOverloads constructor(
     props: ReadableMap,
@@ -70,8 +74,7 @@ class UiLinearLayout @JvmOverloads constructor(
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)
-            ?: Padding()
+        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
         return Bounding(
             childBounds.left + contentNode.localPosition.x - itemPadding.left,
             childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
@@ -90,7 +93,7 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     private fun setItemPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_DEFAULT_ITEM_PADDING)
+        val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
             (layoutManager as LinearLayoutManager).itemPadding = padding
             requestLayout()
@@ -98,7 +101,7 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     private fun setItemAlignment(props: Bundle) {
-        val alignment = PropertiesReader.readAlignment(props, PROP_DEFAULT_ITEM_ALIGNMENT)
+        val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
             (layoutManager as LinearLayoutManager)
             layoutManager.itemVerticalAlignment = alignment.vertical

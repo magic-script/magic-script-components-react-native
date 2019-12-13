@@ -105,7 +105,7 @@ open class UiDateTimePickerBaseNode(
 
     private fun applyTextColor(props: Bundle) {
         if (props.containsKey(PROP_COLOR)) {
-            PropertiesReader.readColor(props, PROP_COLOR)?.let {
+            props.readColor(PROP_COLOR)?.let {
                 view.value.setTextColor(it)
             }
         }

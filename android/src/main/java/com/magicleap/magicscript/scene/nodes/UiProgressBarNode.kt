@@ -25,9 +25,9 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomProgressBar
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 
 open class UiProgressBarNode(
     initProps: ReadableMap,
@@ -107,8 +107,8 @@ open class UiProgressBarNode(
     private fun setProgressColor(props: Bundle) {
         if (props.containsKey(PROP_PROGRESS_COLOR)) {
             val colorsBundle = props.getBundle(PROP_PROGRESS_COLOR)!!
-            val beginColor = PropertiesReader.readColor(colorsBundle, PROP_PROGRESS_COLOR_BEGIN)
-            val endColor = PropertiesReader.readColor(colorsBundle, PROP_PROGRESS_COLOR_END)
+            val beginColor = colorsBundle.readColor(PROP_PROGRESS_COLOR_BEGIN)
+            val endColor = colorsBundle.readColor(PROP_PROGRESS_COLOR_END)
             if (beginColor != null) {
                 (view as CustomProgressBar).beginColor = beginColor
             }

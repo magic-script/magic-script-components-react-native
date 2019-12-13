@@ -10,10 +10,7 @@ import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.PropertiesReader
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.*
 import kotlin.math.max
 
 open class UiListViewItemNode(
@@ -95,7 +92,7 @@ open class UiListViewItemNode(
     }
 
     private fun setBackgroundColor(props: Bundle) {
-        val androidColor = PropertiesReader.readColor(props, PROP_BACKGROUND_COLOR)
+        val androidColor = props.readColor(PROP_BACKGROUND_COLOR)
         if (androidColor != null) {
             view.setBackgroundColor(androidColor)
         }

@@ -31,7 +31,6 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 /**
  * Class containing functions that parse common nodes' properties
  */
-
 const val PROP_SCROLL_BOUNDS_MIN = "min"
 const val PROP_SCROLL_BOUNDS_MAX = "max"
 private const val FILE_URI_PROPERTY = "uri"
@@ -88,6 +87,22 @@ fun Bundle.readColor(propertyName: String): Int? {
     return null
 }
 
+fun Bundle.readVectorsList(propertyName: String): List<Vector3> {
+    val vectorsList = mutableListOf<Vector3>()
+    val pointsArray = this.getSerializable(propertyName)
+    if (pointsArray is ArrayList<*>) {
+        pointsArray.forEach {
+            if (it is ArrayList<*> && it.size == 3) {
+                val point = it as ArrayList<Double>
+                val vector =
+                    Vector3(point[0].toFloat(), point[1].toFloat(), point[2].toFloat())
+                vectorsList.add(vector)
+            }
+        }
+    }
+    return vectorsList
+}
+
 fun readVector2(props: Bundle, propertyName: String): Vector2? {
     val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
     if (vector.size == 2) {
@@ -108,22 +123,6 @@ fun readVector3(props: Bundle, propertyName: String): Vector3? {
         return Vector3(x, y, z)
     }
     return null
-}
-
-fun Bundle.readVectorsList(propertyName: String): List<Vector3> {
-    val vectorsList = mutableListOf<Vector3>()
-    val pointsArray = this.getSerializable(propertyName)
-    if (pointsArray is ArrayList<*>) {
-        pointsArray.forEach {
-            if (it is ArrayList<*> && it.size == 3) {
-                val point = it as ArrayList<Double>
-                val vector =
-                    Vector3(point[0].toFloat(), point[1].toFloat(), point[2].toFloat())
-                vectorsList.add(vector)
-            }
-        }
-    }
-    return vectorsList
 }
 
 fun readMatrix(props: Bundle, propertyName: String): Matrix? {

@@ -34,6 +34,7 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.scene.nodes.views.InputDialogBuilder
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
@@ -168,7 +169,7 @@ open class UiTextEditNode(
     }
 
     private fun setHintColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_HINT_COLOR)
+        val color = props.readColor(PROP_HINT_COLOR)
         if (color != null) {
             this.hintColor = color
             refreshVisibleText()
@@ -205,7 +206,7 @@ open class UiTextEditNode(
     }
 
     private fun setTextColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        val color = props.readColor(PROP_TEXT_COLOR)
         if (color != null) {
             this.textColor = color
             refreshVisibleText()
@@ -237,7 +238,7 @@ open class UiTextEditNode(
     }
 
     private fun setTextPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_TEXT_PADDING)
+        val padding = props.read<Padding>(PROP_TEXT_PADDING)
         if (padding != null) {
             val top = Utils.metersToPx(padding.top, view.context)
             val right = Utils.metersToPx(padding.right, view.context)

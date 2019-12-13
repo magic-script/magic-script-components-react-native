@@ -20,7 +20,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
-import com.magicleap.magicscript.utils.UriAudioProvider
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
@@ -35,34 +34,26 @@ import java.io.File
 @RunWith(RobolectricTestRunner::class)
 class AudioNodeTest {
 
-    val FILE_URL = "http://localhost:8081/assets/resources/bg_stereo.mp3"
-    val FILE_LOCAL_PATH = "/asd/dsa/bg_stereo.mp3"
-
-    lateinit var downloadedFile: File
-    var audioEngine: AudioEngine = mock()
-    lateinit var fileDownloader: UriAudioProvider
-    lateinit var tested: AudioNode
+    private val FILE_URL = "http://localhost:8081/assets/resources/bg_stereo.mp3"
+    private val audioEngine: AudioEngine = mock()
+    private lateinit var audioProvider: AudioFileProvider
+    private lateinit var tested: AudioNode
 
     @Before
     fun setup() {
-        downloadedFile = mock {
-            on { path } doReturn FILE_LOCAL_PATH
-        }
-
-        fileDownloader = mock {
-            on { provideFile(any(), any()) } doAnswer {
-                val argument = it.arguments[1]
-                val result = argument as ((File) -> Unit)
-                result.invoke(downloadedFile)
-                true
+        audioProvider = spy(object : AudioFileProvider {
+            override fun provideFile(uri: Uri, result: (File) -> Unit) {
+                result.invoke(File(""))
             }
-        }
+
+            override fun onDestroy() {}
+        })
 
         tested = AudioNode(
             initProps = reactMapOf(),
             context = ApplicationProvider.getApplicationContext(),
             audioEngine = audioEngine,
-            fileProvider = fileDownloader
+            fileProvider = audioProvider
         )
     }
 
@@ -90,17 +81,16 @@ class AudioNodeTest {
                 .fileName(FILE_URL)
         )
 
-        verify(fileDownloader).provideFile(eq(Uri.parse(FILE_URL)), any())
+        verify(audioProvider).provideFile(eq(Uri.parse(FILE_URL)), any())
     }
 
     @Test
-    fun `should load engine when file is downloaded`() {
+    fun `should load audio file when path updated`() {
         tested.update(
-            reactMapOf()
-                .fileName(FILE_URL)
+            reactMapOf().fileName(FILE_URL)
         )
 
-        verify(audioEngine).load(File(FILE_LOCAL_PATH))
+        verify(audioEngine).load(any())
     }
 
     @Test
@@ -168,7 +158,7 @@ class AudioNodeTest {
     fun `onDestroy should destroy file downloader and audio engine`() {
         tested.onDestroy()
 
-        verify(fileDownloader).onDestroy()
+        verify(audioProvider).onDestroy()
         verify(audioEngine).onDestroy()
     }
 }

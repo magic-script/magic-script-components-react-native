@@ -26,7 +26,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.utils.DialogProvider
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 import java.lang.ref.WeakReference

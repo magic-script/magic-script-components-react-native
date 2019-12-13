@@ -22,6 +22,9 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.font.FontParams
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -33,7 +36,11 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
  */
 const val PROP_SCROLL_BOUNDS_MIN = "min"
 const val PROP_SCROLL_BOUNDS_MAX = "max"
+const val PROP_WEIGHT = "weight"
+const val PROP_STYLE = "style"
+const val PROP_ALL_CAPS = "allCaps"
 private const val FILE_URI_PROPERTY = "uri"
+
 
 inline fun <reified T : Any> Bundle.read(key: String): T? =
     if (containsKey(key))
@@ -61,6 +68,18 @@ fun Bundle.readImagePath(propertyName: String, context: Context): Uri? {
 
 fun Bundle.readFilePath(propertyName: String, context: Context): Uri? {
     return getFileUri(this, propertyName, context, "raw")
+}
+
+fun Bundle.readFontParams(paramName: String): FontParams? {
+    val paramsBundle = this.getBundle(paramName) ?: return null
+    val weightName = paramsBundle.getString(PROP_WEIGHT, "")
+    val styleName = paramsBundle.getString(PROP_STYLE, "")
+    val allCaps = paramsBundle.getBoolean(PROP_ALL_CAPS, false)
+
+    val weight = FontWeight.fromName(weightName) ?: FontWeight.DEFAULT
+    val style = FontStyle.fromName(styleName) ?: FontStyle.DEFAULT
+
+    return FontParams(weight, style, allCaps)
 }
 
 /**
@@ -104,7 +123,6 @@ fun readVector2(props: Bundle, propertyName: String): Vector2? {
     }
     return null
 }
-
 
 fun readVector3(props: Bundle, propertyName: String): Vector3? {
     val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null

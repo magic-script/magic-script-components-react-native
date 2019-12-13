@@ -73,7 +73,7 @@ open class UiTextNode(
             (view as TextView).setSingleLine(true)
         }
 
-        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        val fontParams = properties.readFontParams(PROP_FONT_PARAMS)
         if (fontParams == null) {  // setting a default typeface
             (view as TextView).typeface = fontProvider.provideFont()
         }
@@ -179,7 +179,7 @@ open class UiTextNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
+        val fontParams = props.readFontParams(PROP_FONT_PARAMS) ?: return
         val textView = (view as TextView)
         textView.typeface = fontProvider.provideFont(fontParams)
         textView.isAllCaps = fontParams.allCaps

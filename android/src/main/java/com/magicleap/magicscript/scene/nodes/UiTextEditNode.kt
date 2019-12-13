@@ -125,7 +125,7 @@ open class UiTextEditNode(
     override fun setupView() {
         super.setupView()
 
-        val fontParams = FontParamsReader.readFontParams(properties, PROP_FONT_PARAMS)
+        val fontParams = properties.readFontParams(PROP_FONT_PARAMS)
         if (fontParams == null) { // setting a default typeface
             view.text_edit.typeface = fontProvider.provideFont()
         }
@@ -249,7 +249,7 @@ open class UiTextEditNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = FontParamsReader.readFontParams(props, PROP_FONT_PARAMS) ?: return
+        val fontParams = props.readFontParams(PROP_FONT_PARAMS) ?: return
         view.text_edit.typeface = fontProvider.provideFont(fontParams)
         view.text_edit.isAllCaps = fontParams.allCaps
     }

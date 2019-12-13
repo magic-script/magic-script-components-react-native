@@ -24,8 +24,9 @@ import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.formatter.VerySimpleDateFormat
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import java.util.*
@@ -112,7 +113,11 @@ open class UiDatePickerNode(
     private fun applyDateFormat(props: Bundle) {
         if (props.containsKey(PROP_DATE_FORMAT)) {
             props.getString(PROP_DATE_FORMAT).let { format ->
-                dateFormat = VerySimpleDateFormat(format, Locale.getDefault())
+                dateFormat =
+                    VerySimpleDateFormat(
+                        format,
+                        Locale.getDefault()
+                    )
                 view.value.hint = format
             }
         }

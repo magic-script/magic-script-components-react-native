@@ -27,7 +27,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.createProperty
-import com.magicleap.magicscript.formatter.VerySimpleDateFormat
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.DATE_FORMAT_DEFAULT
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.PROP_DATE
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.PROP_DATE_FORMAT
@@ -211,7 +211,10 @@ class UiDatePickerNodeTest {
         tested.forceClick()
         tested.onDateConfirmed = mock()
         tested.provideDialogOnDateSetListener().invoke(datePicker, 2019, Calendar.NOVEMBER, 12)
-        val dateFormat = VerySimpleDateFormat(DATE_FORMAT_DEFAULT, Locale.getDefault())
+        val dateFormat = VerySimpleDateFormat(
+            DATE_FORMAT_DEFAULT,
+            Locale.getDefault()
+        )
 
         verify(tested.dateText).setText(eq(dateFormat.format(2019, 11, 12)), any())
     }

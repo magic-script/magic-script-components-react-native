@@ -29,10 +29,7 @@ import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.PropertiesReader
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.*
 
 open class UiButtonNode(
     initProps: ReadableMap,
@@ -172,7 +169,7 @@ open class UiButtonNode(
     }
 
     private fun setTextColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        val color = props.readColor(PROP_TEXT_COLOR)
         if (color != null) {
             (view as CustomButton).setTextColor(color)
         }
@@ -197,14 +194,14 @@ open class UiButtonNode(
     }
 
     private fun setIconColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_ICON_COLOR)
+        val color = props.readColor(PROP_ICON_COLOR)
         if (color != null) {
             (view as CustomButton).setIconColor(color)
         }
     }
 
     private fun setIconSize(props: Bundle) {
-        val size = PropertiesReader.readVector2(props, PROP_ICON_SIZE)
+        val size = props.read<Vector2>(PROP_ICON_SIZE)
         if (size != null) {
             val widthPx = Utils.metersToPx(size.x, view.context).toFloat()
             val heightPx = Utils.metersToPx(size.y, view.context).toFloat()

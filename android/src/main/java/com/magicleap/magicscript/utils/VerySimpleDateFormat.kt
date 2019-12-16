@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.magicleap.magicscript.formatter
+package com.magicleap.magicscript.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,8 +47,17 @@ private fun String?.simplify(): String? =
         ?.replace("D", "d", false)
         ?.replace("p", "a")
         ?.replace("SS", "ss", false)
-        ?.replace("MM", if (contains("H") || contains("K") || contains("s")) "mm" else "MM", false)
+        ?.replace("MM", if (containsAny("H", "K", "s")) "mm" else "MM", false)
 
 private fun is24hours(pattern: String?) = pattern?.containsAmPmSign() != true
 
 private fun String?.containsAmPmSign() = this?.contains("p") ?: false
+
+private fun String.containsAny(vararg words: String): Boolean {
+    words.forEach {
+        if (contains(it)) {
+            return true
+        }
+    }
+    return false
+}

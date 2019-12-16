@@ -20,9 +20,13 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     UiLayout(initProps, layoutManager) {
@@ -64,8 +68,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = PropertiesReader.readPadding(properties, PROP_DEFAULT_ITEM_PADDING)
-            ?: Padding()
+        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
         return Bounding(
             childBounds.left + contentNode.localPosition.x - itemPadding.left,
             childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
@@ -95,7 +98,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     }
 
     private fun setItemPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_DEFAULT_ITEM_PADDING)
+        val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
             (layoutManager as GridLayoutManager).itemPadding = padding
             requestLayout()
@@ -103,7 +106,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     }
 
     private fun setItemAlignment(props: Bundle) {
-        val alignment = PropertiesReader.readAlignment(props, PROP_DEFAULT_ITEM_ALIGNMENT)
+        val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
             (layoutManager as GridLayoutManager)
             layoutManager.itemVerticalAlignment = alignment.vertical

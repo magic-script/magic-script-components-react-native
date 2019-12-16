@@ -29,10 +29,10 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 
 open class UiToggleNode(
     initProps: ReadableMap,
@@ -193,7 +193,7 @@ open class UiToggleNode(
     }
 
     private fun setTextColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_TEXT_COLOR)
+        val color = props.readColor(PROP_TEXT_COLOR)
         if (color != null) {
             toggleViewManager.setTextColor(color)
         }

@@ -28,8 +28,9 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.readColor
+import com.magicleap.magicscript.utils.readImagePath
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(
@@ -78,13 +79,13 @@ open class UiImageNode(
     }
 
     private fun setImagePath(props: Bundle) {
-        val imageUri = PropertiesReader.readImagePath(props, PROP_FILE_PATH, context)
+        val imageUri = props.readImagePath(PROP_FILE_PATH, context)
         if (imageUri != null) {
             Glide.with(context)
                 .load(imageUri)
                 .into(view.image_view)
 
-            val color = PropertiesReader.readColor(props, PROP_COLOR)
+            val color = props.readColor(PROP_COLOR)
             if (color != null) {
                 (view.image_view as ImageView).setColorFilter(color, PorterDuff.Mode.MULTIPLY)
             }
@@ -109,7 +110,7 @@ open class UiImageNode(
     }
 
     private fun setColor(props: Bundle) {
-        val color = PropertiesReader.readColor(props, PROP_COLOR)
+        val color = props.readColor(PROP_COLOR)
         if (color != null) {
             if (properties.containsKey(PROP_FILE_PATH)) {
                 // blend color with image

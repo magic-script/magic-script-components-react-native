@@ -21,12 +21,12 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     UiLayout(props, layoutManager) {
@@ -72,7 +72,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     }
 
     private fun setVisiblePage(props: Bundle) {
-        props.ifContains(PROP_VISIBLE_PAGE) { page: Double ->
+        props.read<Double>(PROP_VISIBLE_PAGE)?.let { page ->
             this.visiblePage = page.toInt()
             (layoutManager as PageViewLayoutManager).visiblePage = visiblePage
             requestLayout()
@@ -81,7 +81,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
 
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = PropertiesReader.readPadding(properties, PROP_PADDING) ?: Padding()
+        val itemPadding = properties.read(PROP_PADDING) ?: Padding()
         val sizeX = if (width != WRAP_CONTENT_DIMENSION) width else childBounds.size().x
         val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
 
@@ -94,7 +94,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     }
 
     private fun setItemPadding(props: Bundle) {
-        val padding = PropertiesReader.readPadding(props, PROP_PADDING)
+        val padding = props.read<Padding>(PROP_PADDING)
         if (padding != null) {
             this.padding = padding
             (layoutManager as PageViewLayoutManager).itemPadding = padding
@@ -103,7 +103,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     }
 
     private fun setContentAlignment(props: Bundle) {
-        val alignment = PropertiesReader.readAlignment(props, PROP_CONTENT_ALIGNMENT)
+        val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
         if (alignment != null) {
             (layoutManager as PageViewLayoutManager)
             layoutManager.contentVerticalAlignment = alignment.vertical

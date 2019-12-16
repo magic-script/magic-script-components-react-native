@@ -19,9 +19,9 @@ package com.magicleap.magicscript.scene.nodes.views
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import com.magicleap.magicscript.utils.DialogProvider
 
-class DialogProviderImpl : DialogProvider {
+class DialogProviderImpl :
+    DialogProvider {
     override fun provideDatePickerDialog(
         context: Context
     ) = DatePickerDialog(context)

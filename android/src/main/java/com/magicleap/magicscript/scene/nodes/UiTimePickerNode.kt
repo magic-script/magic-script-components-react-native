@@ -23,9 +23,9 @@ import android.os.Bundle
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.formatter.VerySimpleDateFormat
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
-import com.magicleap.magicscript.utils.DialogProvider
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.getHour
 import com.magicleap.magicscript.utils.getMinute
 import com.magicleap.magicscript.utils.putDefault
@@ -101,7 +101,11 @@ open class UiTimePickerNode(
     private fun applyTimeFormat(props: Bundle) {
         if (props.containsKey(PROP_TIME_FORMAT)) {
             props.getString(PROP_TIME_FORMAT)?.let { format ->
-                timeFormat = VerySimpleDateFormat(format, Locale.getDefault())
+                timeFormat =
+                    VerySimpleDateFormat(
+                        format,
+                        Locale.getDefault()
+                    )
                 view.value.hint = format
             }
         }

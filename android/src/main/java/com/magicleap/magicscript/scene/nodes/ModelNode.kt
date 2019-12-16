@@ -25,7 +25,8 @@ import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.PropertiesReader
+import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.readFilePath
 
 class ModelNode(
     initProps: ReadableMap,
@@ -104,7 +105,7 @@ class ModelNode(
     }
 
     override fun setLocalScale(props: Bundle) {
-        val localScale = PropertiesReader.readVector3(props, PROP_LOCAL_SCALE)
+        val localScale = props.read<Vector3>(PROP_LOCAL_SCALE)
         if (localScale != null) {
             this.scale = localScale
             adjustLocalScale()
@@ -112,7 +113,7 @@ class ModelNode(
     }
 
     private fun loadModel() {
-        val modelUri = PropertiesReader.readFilePath(properties, PROP_MODEL_PATH, context)
+        val modelUri = properties.readFilePath(PROP_MODEL_PATH, context)
         if (modelUri != null) {
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {

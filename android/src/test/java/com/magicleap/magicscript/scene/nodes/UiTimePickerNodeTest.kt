@@ -26,7 +26,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.createProperty
-import com.magicleap.magicscript.formatter.VerySimpleDateFormat
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
 import com.magicleap.magicscript.scene.nodes.views.NotifiableTimePickerDialog
@@ -175,7 +175,10 @@ class UiTimePickerNodeTest {
         tested.onTimeChanged = mock()
         tested.provideDialogOnTimeSetListener().onTimeSet(mock(), 15, 16)
         val dateFormat =
-            VerySimpleDateFormat(UiTimePickerNode.TIME_FORMAT_DEFAULT, Locale.getDefault())
+            VerySimpleDateFormat(
+                UiTimePickerNode.TIME_FORMAT_DEFAULT,
+                Locale.getDefault()
+            )
 
         verify(tested.dateText).setText(eq(dateFormat.format(15, 16)), any())
     }

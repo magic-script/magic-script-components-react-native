@@ -25,6 +25,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 
@@ -105,7 +106,7 @@ open class UiDateTimePickerBaseNode(
 
     private fun applyTextColor(props: Bundle) {
         if (props.containsKey(PROP_COLOR)) {
-            PropertiesReader.readColor(props, PROP_COLOR)?.let {
+            props.readColor(PROP_COLOR)?.let {
                 view.value.setTextColor(it)
             }
         }

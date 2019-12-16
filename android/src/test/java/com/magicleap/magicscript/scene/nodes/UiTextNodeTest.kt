@@ -23,7 +23,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.font.FontParams
@@ -33,7 +32,6 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
-import com.magicleap.magicscript.utils.FontParamsReader
 import com.magicleap.magicscript.utils.Utils
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
@@ -172,7 +170,7 @@ class UiTextNodeTest {
 
     @Test
     fun `should apply capital letters when allCaps property is true`() {
-        val allCapsProp = reactMapOf(FontParamsReader.PROP_ALL_CAPS, true)
+        val allCapsProp = reactMapOf("allCaps", true)
         val props = reactMapOf(UiTextEditNode.PROP_FONT_PARAMS, allCapsProp)
         val node = createNodeWithViewSpy(props)
 

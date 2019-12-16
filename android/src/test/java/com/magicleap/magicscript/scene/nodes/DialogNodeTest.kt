@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyMap
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -27,7 +26,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CustomAlertDialogBuilder
-import com.magicleap.magicscript.utils.DialogProvider
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

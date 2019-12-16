@@ -29,10 +29,7 @@ import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.BoundingBox
-import com.magicleap.magicscript.utils.PropertiesReader
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.minus
+import com.magicleap.magicscript.utils.*
 
 // Node that represents a chain of lines
 class LineNode(
@@ -119,8 +116,8 @@ class LineNode(
         }
 
         // draw each line segment
-        val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
-        val androidColor = PropertiesReader.readColor(properties, PROP_COLOR)
+        val points = properties.readVectorsList(PROP_POINTS)
+        val androidColor = properties.readColor(PROP_COLOR)
         val color = if (androidColor != null) Color(androidColor) else colorDefault
 
         var idx = 0
@@ -185,7 +182,7 @@ class LineNode(
     }
 
     private fun updateLinesBounding() {
-        val points = PropertiesReader.readVectorsList(properties, PROP_POINTS)
+        val points = properties.readVectorsList(PROP_POINTS)
         linesBounding = Utils.findMinimumBounding(points)
     }
 }

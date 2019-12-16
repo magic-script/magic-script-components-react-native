@@ -13,8 +13,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.magicleap.magicscript.formatter
+package com.magicleap.magicscript.utils
 
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import org.amshove.kluent.shouldEqual
 import org.junit.Test
 import java.util.*
@@ -25,14 +26,18 @@ class VerySimpleDateFormatTest {
 
     @Test
     fun `should downcase days`() {
-        val tested = VerySimpleDateFormat("DD", locale)
+        val tested =
+            VerySimpleDateFormat("DD", locale)
 
         tested.toPattern() shouldEqual "dd"
     }
 
     @Test
     fun `should properly format date from given data`() {
-        val tested = VerySimpleDateFormat("DD/MM/YYYY", locale)
+        val tested = VerySimpleDateFormat(
+            "DD/MM/YYYY",
+            locale
+        )
 
         val format = tested.format(2020, 10, 20)
 

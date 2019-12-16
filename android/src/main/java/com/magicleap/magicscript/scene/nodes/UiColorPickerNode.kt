@@ -29,8 +29,8 @@ import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 import com.magicleap.magicscript.utils.toJsColorArray
 
 
@@ -116,7 +116,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     }
 
     fun readColor(props: Bundle): Int {
-        return PropertiesReader.readColor(props, PROP_COLOR)
-            ?: (PropertiesReader.readColor(props, PROP_STARTING_COLOR) ?: Color.WHITE)
+        return props.readColor(PROP_COLOR)
+            ?: (props.readColor(PROP_STARTING_COLOR) ?: Color.WHITE)
     }
 }

@@ -76,9 +76,17 @@ import SceneKit
         return _configuration
     }
 
-    public weak var delegate: ARSCNViewDelegate? {
-        get { return arView.delegate }
-        set { arView.delegate = newValue }
+    //MARK: RCTARView Observable
+    fileprivate(set) var observers: [WeakReference<RCTARViewObserving>] = []
+
+    func register(_ observer: RCTARViewObserving) {
+        observers.append(WeakReference(value: observer))
+    }
+
+    func unregister(_ observer: RCTARViewObserving) {
+        observers.removeAll { storedObserver -> Bool in
+            return storedObserver.value === observer
+        }
     }
 
     public init() {
@@ -131,7 +139,7 @@ import SceneKit
 
     fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
-        UiNodesManager.instance.registerScene(view.scene)
+        UiNodesManager.instance.registerARView(self)
         UiNodesManager.instance.onInputFocused = { [weak self] input in
             self?.presentInput(input)
         }
@@ -251,13 +259,5 @@ extension RCTARView {
         guard let cameraNode = cameraNode,
             let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
         UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
-    }
-}
-
-// MARK: - ARSCNViewDelegate
-extension RCTARView: ARSCNViewDelegate {
-    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        guard let anchorName = anchor.name else { return nil }
-        return UiNodesManager.instance.findNodeWithAnchorUuid(anchorName)
     }
 }

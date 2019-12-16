@@ -10,5 +10,6 @@ RNMagicScriptTests:
   - RNMagicScriptHostApplication
   import:
   - UIKit
+  - ARKit
   - SceneKit
   - AVKit

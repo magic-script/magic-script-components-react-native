@@ -28,14 +28,12 @@ class UiNodesManagerSpec: QuickSpec {
             let referenceAnchorUUID = "referenceAnchorUUID"
             
             context("always") {
-                it("should register scene when requrested") {
-                    let nodesManagerRootNode = TransformNode()
-                    nodesManager = UiNodesManager(rootNode: nodesManagerRootNode, nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
-                    let scene = SCNScene()
-                    
-                    nodesManager.registerScene(scene)
-                    let sceneRootNode = scene.rootNode.childNodes.first as! TransformNode
-                    expect(sceneRootNode).to(beIdenticalTo(nodesManagerRootNode))
+                it("should register AR view when requested") {
+                    let nodesManagerRootNode = UiNodesManager.instance.rootNode
+                    let arView = RCTARView()
+                    let sceneRootNodes: [TransformNode] = arView.scene.rootNode.childNodes.compactMap { $0 as? TransformNode }
+                    expect(sceneRootNodes.count).to(equal(1))
+                    expect(sceneRootNodes[0]).to(beIdenticalTo(nodesManagerRootNode))
                 }
                 
                 it("should handle tap event") {

@@ -21,7 +21,7 @@ import ARKit
 import SwiftyMocky
 @testable import RNMagicScriptHostApplication
 
-class URCTARViewSpec: QuickSpec {
+class RCTARViewSpec: QuickSpec {
     override func spec() {
         describe("RCTARView") {
             var arView: RCTARView!
@@ -29,17 +29,25 @@ class URCTARViewSpec: QuickSpec {
             context("always") {
                 context("RCTARViewObservable") {
                     context("when registering observers") {
+                        it("should store NodesManager as observer") {
+                            let nodesManager = UiNodesManager.instance
+                            arView = RCTARView()
+                            expect(arView.observers.count).to(equal(1))
+                            let observer = arView.observers[0].value
+                            expect(observer).to(beIdenticalTo(nodesManager))
+                        }
+
                         it("should store observers internally") {
                             arView = RCTARView()
                             let registeredObserverMock1 = RCTARViewObservingMock()
                             let registeredObserverMock2 = RCTARViewObservingMock()
                             arView.register(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(1))
-                            arView.register(registeredObserverMock2)
                             expect(arView.observers.count).to(equal(2))
-                            let observer1 = arView.observers[0].value
+                            arView.register(registeredObserverMock2)
+                            expect(arView.observers.count).to(equal(3))
+                            let observer1 = arView.observers[1].value
                             expect(observer1).to(beIdenticalTo(registeredObserverMock1))
-                            let observer2 = arView.observers[1].value
+                            let observer2 = arView.observers[2].value
                             expect(observer2).to(beIdenticalTo(registeredObserverMock2))
                         }
 
@@ -59,9 +67,9 @@ class URCTARViewSpec: QuickSpec {
                             arView = RCTARView()
                             let registeredObserverMock1 = RCTARViewObservingMock()
                             arView.register(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(1))
+                            expect(arView.observers.count).to(equal(2))
                             arView.unregister(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(0))
+                            expect(arView.observers.count).to(equal(1))
                         }
                     }
                 }

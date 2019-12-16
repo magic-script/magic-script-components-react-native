@@ -25,7 +25,7 @@ import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.PropertiesReader
 import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.ifContainsDouble
+import com.magicleap.magicscript.utils.ifContains
 import com.magicleap.magicscript.utils.putDefault
 
 class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
@@ -72,8 +72,8 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     }
 
     private fun setVisiblePage(props: Bundle) {
-        props.ifContainsDouble(PROP_VISIBLE_PAGE) {
-            this.visiblePage = it.toInt()
+        props.ifContains(PROP_VISIBLE_PAGE) { page: Double ->
+            this.visiblePage = page.toInt()
             (layoutManager as PageViewLayoutManager).visiblePage = visiblePage
             requestLayout()
         }

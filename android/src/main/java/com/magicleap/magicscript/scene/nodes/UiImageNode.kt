@@ -112,7 +112,7 @@ open class UiImageNode(
     private fun setColor(props: Bundle) {
         val color = props.readColor(PROP_COLOR)
         if (color != null) {
-            if (properties.containsKey(PROP_FILE_PATH)) {
+            if (properties.containsKey(PROP_FILE_PATH) || properties.containsKey(PROP_ICON)) {
                 // blend color with image
                 view.image_view.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
             } else { // use color instead of image

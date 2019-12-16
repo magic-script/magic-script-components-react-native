@@ -154,8 +154,10 @@ import SceneKit
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
         // Add tap gesture
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleTapAction(_:)))
+        tapGestureRecognizer.getCameraNode = { [weak self] in
+            return self?.arView.pointOfView
+        }
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
@@ -165,7 +167,10 @@ import SceneKit
         }
         addGestureRecognizer(dragGestureRecognizer)
 
-        let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.getCameraNode = { [weak self] in
+            return self?.arView.pointOfView
+        }
         addGestureRecognizer(longPressGestureRecogrnizer)
 
         // Set dependencies between drag gesture and debug camera pan gesture
@@ -176,6 +181,8 @@ import SceneKit
 
         // Allow tapping components that are embedded in scrollable content
         dragGestureRecognizer.require(toFail: tapGestureRecognizer)
+
+        longPressGestureRecogrnizer.require(toFail: tapGestureRecognizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {
@@ -186,11 +193,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleTapAction(ray: nil)
+            UiNodesManager.instance.handleNodeTap(nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleTapAction(ray: nil)
+            UiNodesManager.instance.handleNodeTap(nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView
@@ -229,13 +236,16 @@ import SceneKit
 
 // MARK: - Event handlers
 extension RCTARView {
-    @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
+    @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
+        print("BUKA \(self.classForCoder) \(#function)")
+        if sender.state == .ended {
+            UiNodesManager.instance.handleNodeTap(sender.tappedNode)
+        }
+
+    #if targetEnvironment(simulator)
         guard let cameraNode = cameraNode,
             let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
 
-        UiNodesManager.instance.handleTapAction(ray: ray)
-
-    #if targetEnvironment(simulator)
         if debug && rayCastNode == nil {
             rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
             scene.rootNode.addChildNode(rayCastNode!)
@@ -255,9 +265,8 @@ extension RCTARView {
         }
     }
 
-    @objc fileprivate func handleLongPressAction(_ sender: UILongPressGestureRecognizer) {
-        guard let cameraNode = cameraNode,
-            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
-        UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
+    @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
+        print("BUKA \(self.classForCoder) \(#function)")
+        UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

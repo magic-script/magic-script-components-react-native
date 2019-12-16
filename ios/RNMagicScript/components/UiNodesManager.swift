@@ -45,31 +45,7 @@ import ARKit
         nodeSelector = UiNodeSelector(rootNode)
     }
     
-    @objc public func handleTapAction(ray: Ray?) {
-        if let ray = ray {
-            let hitNode = nodeSelector?.hitTest(ray: ray)
-            handleNodeTap(hitNode)
-            #if targetEnvironment(simulator)
-            if let node = hitNode {
-                print("hitTest: \(type(of: node))")
-            }
-            #endif
-        } else {
-            handleNodeTap(nil)
-        }
-    }
-    
-    @objc public func handleLongPressAction(ray: Ray?, state: UIGestureRecognizer.State) {
-        if let ray = ray {
-            let hitNode = nodeSelector?.hitTest(ray: ray)
-            handleNodeLongPress(hitNode, state)
-        } else {
-            handleNodeLongPress(nil, state)
-        }
-    }
-    
     @objc public func handleNodeTap(_ node: TransformNode?) {
-        
         focusedNode?.leaveFocus()
         if focusedNode != nil {
             onInputUnfocused?()

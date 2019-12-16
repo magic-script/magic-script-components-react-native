@@ -25,7 +25,7 @@ class UiColorPickerNodeSpec: QuickSpec {
             var node: UiColorPickerNode!
 
             beforeEach {
-                node = UiColorPickerNode(props: [:])
+                node = UiColorPickerNode()
                 node.layoutIfNeeded()
             }
 

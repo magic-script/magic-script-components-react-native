@@ -34,7 +34,7 @@ class UiPageViewNodeSpec: QuickSpec {
                 it("should have set default values") {
                     expect(node.width).to(beCloseTo(0))
                     expect(node.height).to(beCloseTo(0))
-                    expect(node.defaultPageAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.defaultPageAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultPagePadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.visiblePage).to(equal(-1))
                 }

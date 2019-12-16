@@ -25,7 +25,7 @@ class UiLineNodeSpec: QuickSpec {
             var node: UiLineNode!
 
             beforeEach {
-                node = UiLineNode(props: [:])
+                node = UiLineNode()
                 node.layoutIfNeeded()
             }
 
@@ -71,13 +71,35 @@ class UiLineNodeSpec: QuickSpec {
                 }
             }
 
-            it("updateLayout should set color") {
-                node = UiLineNode(props: ["points": [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]])
-                expect(node.contentNode.childNodes.count).to(equal(1))
-                node.layoutIfNeeded()
-                let linesNode = node.contentNode.childNodes.first!
-                expect(linesNode.geometry?.sources.count).to(equal(1))
-                expect(linesNode.geometry?.elements.count).to(equal(1))
+            context("update layout") {
+                it("should set color") {
+                    node = UiLineNode(props: ["points": [[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]])
+                    expect(node.contentNode.childNodes.count).to(equal(1))
+                    node.layoutIfNeeded()
+                    let linesNode = node.contentNode.childNodes.first!
+                    expect(linesNode.geometry?.sources.count).to(equal(1))
+                    expect(linesNode.geometry?.elements.count).to(equal(1))
+                }
+            }
+
+            context("hitTest") {
+                it("should always return nil") {
+                    let referencePoints = [
+                        SCNVector3(-1.0, -0.2, 0.0),
+                        SCNVector3(0.0, 0.7, 0.0),
+                        SCNVector3(1.0, -0.2, 0.0),
+                        SCNVector3(-1.0, -0.2, 0.0)
+                    ]
+                    node.points = referencePoints
+                    let ray1 = Ray(begin: SCNVector3(0, 0, 0), direction: SCNVector3(0, 0, -1), length: 3)
+                    expect(node.hitTest(ray: ray1)).to(beNil())
+
+                    let ray2 = Ray(begin: referencePoints[0], direction: SCNVector3(0, 0, -1), length: 3)
+                    expect(node.hitTest(ray: ray2)).to(beNil())
+
+                    let ray3 = Ray(begin: SCNVector3(-2, 3, 0), direction: SCNVector3(0, 0, -1), length: 3)
+                    expect(node.hitTest(ray: ray3)).to(beNil())
+                }
             }
         }
     }

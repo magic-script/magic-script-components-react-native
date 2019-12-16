@@ -25,7 +25,7 @@ class UiTextEditNodeSpec: QuickSpec {
             var node: UiTextEditNode!
 
             beforeEach {
-                node = UiTextEditNode(props: [:])
+                node = UiTextEditNode()
             }
 
             context("initial properties") {
@@ -383,6 +383,20 @@ class UiTextEditNodeSpec: QuickSpec {
                     expect(childNodes.count).to(equal(5))
                     let outlineNode = childNodes[4]
                     expect(outlineNode.isHidden).to(beTrue())
+                }
+            }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    let labelNode: LabelNode! = node.contentNode.childNodes[2] as? LabelNode
+                    let hintNode: LabelNode! = node.contentNode.childNodes[3] as? LabelNode
+                    expect(labelNode).notTo(beNil())
+                    expect(hintNode).notTo(beNil())
+                    let referenceLabelNodeChildNodesCount: Int = labelNode.childNodes.count
+                    let referenceHintNodeChildNodesCount: Int = hintNode.childNodes.count
+                    node.setDebugMode(true)
+                    expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
+                    expect(referenceHintNodeChildNodesCount + 2).to(equal(hintNode.childNodes.count))
                 }
             }
 

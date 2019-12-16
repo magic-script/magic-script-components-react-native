@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import SceneKit
 
@@ -105,7 +105,7 @@ import SceneKit
             let max = Convert.toVector3(scrollBounds["max"]) {
             self.scrollBounds = (min: min, max: max)
         }
-        
+
         if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {
             self.scrollBarVisibility = scrollBarVisibility
         }
@@ -154,11 +154,13 @@ import SceneKit
         guard let scrollBounds = scrollBounds else { return CGRect.zero }
         let min = scrollBounds.min
         let max = scrollBounds.max
-        return CGRect(x: CGFloat(min.x), y: CGFloat(min.y), width: CGFloat(max.x - min.x), height: CGFloat(max.y - min.y))
+        let size = CGSize(width: CGFloat(max.x - min.x), height: CGFloat(max.y - min.y))
+        let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
+        let offset = parentSpace ? CGPoint(x: CGFloat(position.x), y: CGFloat(position.y)) : CGPoint.zero
+        return CGRect(origin: origin + offset, size: size)
     }
 
     @objc override func updateLayout() {
-        guard let scrollBounds = scrollBounds else { return }
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
@@ -168,19 +170,9 @@ import SceneKit
         let contentSize: CGSize
         if let scrollContent = scrollContent {
             contentSize = scrollContent.getSize()
-
-            let contentPositionNegated = scrollContent.position.negated()
-            var offset = CGPoint(
-                x: 0.5 * (contentSize.width - scrollSize.width),
-                y: 0.5 * (contentSize.height - scrollSize.height)
-            )
-
-            if let uiNode = scrollContent as? UiNode {
-                let alignOffset = uiNode.alignment.shiftDirection
-                offset.x -= alignOffset.x * contentSize.width
-                offset.y -= alignOffset.y * contentSize.height
-            }
-            proxyNode.position = contentPositionNegated + SCNVector3(offset.x, offset.y, 0)
+            let contentBounds = scrollContent.getBounds(parentSpace: true)
+            let contentOffset = SCNVector3(bounds.minX - contentBounds.minX, bounds.maxY - contentBounds.maxY, 0)
+            proxyNode.position = contentOffset
         } else {
             contentSize = CGSize.zero
             proxyNode.position = SCNVector3Zero
@@ -191,12 +183,16 @@ import SceneKit
         case .horizontal:
             shift.x = -scrollValue * max(0, contentSize.width - scrollSize.width)
         case .vertical:
-            shift.y = (scrollValue - 1) * max(0, contentSize.height - scrollSize.height)
+            shift.y = scrollValue * max(0, contentSize.height - scrollSize.height)
         }
         proxyNode.position += SCNVector3(shift.x, shift.y, 0)
 
         // Update scroll bar
         scrollBar?.thumbPosition = scrollValue
+    }
+
+    @objc override func postUpdate() {
+        guard let scrollBounds = scrollBounds else { return }
 
         // Update clipping planes
         if invalidateClippingPlanes {
@@ -217,6 +213,7 @@ import SceneKit
             scrollContent?.setClippingPlanes(worldSpacePlanes)
         }
     }
+
 
     fileprivate func updateScrollBarVisibility() {
         switch scrollBarVisibility {

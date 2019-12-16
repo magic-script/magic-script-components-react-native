@@ -62,8 +62,7 @@ import SceneKit
 
     fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
-    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
-    @objc var isLayoutNeeded: Bool { return layoutNeeded }
+    fileprivate var containerLayoutNeeded: Bool = false
 
     @objc override init() {
         super.init()
@@ -90,7 +89,6 @@ import SceneKit
     @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()
-        setNeedsLayoutForAllParents()
         return true
     }
 
@@ -98,22 +96,11 @@ import SceneKit
         if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
             setNeedsLayout()
-            setNeedsLayoutForAllParents()
         }
     }
 
     @objc func hitTest(ray: Ray) -> TransformNode? {
         return selfHitTest(ray: ray)
-    }
-
-    fileprivate func setNeedsLayoutForAllParents() {
-        var node: SCNNode? = parent
-        while node != nil {
-            if let transformNode = node as? TransformNode {
-                transformNode.setNeedsLayout()
-            }
-            node = node?.parent
-        }
     }
 
     @objc func update(_ props: [String: Any]) {
@@ -174,6 +161,28 @@ import SceneKit
         return UIEdgeInsets(top: bounds.minY, left: bounds.minX, bottom: bounds.maxY, right: bounds.maxX)
     }
 
+    fileprivate func invalidateParentContainers() {
+        enumerateTransformNodesParents { node in
+            if node is TransformNodeContainer {
+                node.setNeedsContainerLayout()
+            }
+        }
+    }
+
+    @objc func updateLayout() {
+    }
+
+    @objc func updatePivot() {
+    }
+
+    @objc func postUpdate() {
+    }
+}
+
+// MARK: - Layout
+extension TransformNode {
+    @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
+    @objc var isLayoutNeeded: Bool { return layoutNeeded }
     @objc func layoutIfNeeded() {
         if layoutNeeded {
             layoutNeeded = false
@@ -182,13 +191,18 @@ import SceneKit
 #if targetEnvironment(simulator)
             updateDebugLayout()
 #endif
+            invalidateParentContainers()
         }
     }
 
-    @objc func updateLayout() {
-    }
-
-    @objc func updatePivot() {
+    @objc func setNeedsContainerLayout() { containerLayoutNeeded = true }
+    @objc var isContainerLayoutNeeded: Bool { return containerLayoutNeeded }
+    @objc func layoutContainerIfNeeded() {
+        if containerLayoutNeeded {
+            containerLayoutNeeded = false
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
     }
 }
 
@@ -260,17 +274,4 @@ extension TransformNode {
         addChildNode(borderNode!)
     }
 #endif
-}
-
-// MARK: - Enumerate components hierarchy
-extension SCNNode {
-    @objc func enumerateComponentsHierarchy(_ block: (TransformNode) -> Void) {
-        childNodes.forEach { (node) in
-            node.enumerateComponentsHierarchy(block)
-        }
-
-        if let transformNode = self as? TransformNode {
-            block(transformNode)
-        }
-    }
 }

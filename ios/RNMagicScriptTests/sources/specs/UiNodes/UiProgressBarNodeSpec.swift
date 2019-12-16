@@ -25,7 +25,7 @@ class UiProgressBarNodeSpec: QuickSpec {
             var node: UiProgressBarNode!
 
             beforeEach {
-                node = UiProgressBarNode(props: [:])
+                node = UiProgressBarNode()
                 node.layoutIfNeeded()
             }
 

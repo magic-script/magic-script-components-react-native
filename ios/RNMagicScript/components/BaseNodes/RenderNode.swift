@@ -29,7 +29,4 @@ import SceneKit
             self.color = color
         }
     }
-
-    @objc override func updateLayout() {
-    }
 }

@@ -94,7 +94,7 @@ import SceneKit
             longPressedNode?.longPressEnded()
             longPressedNode = nil
         default:
-            print("LongPressGesture strange state.")
+            print("LongPressGesture unsupported state.")
         }
     }
     
@@ -171,7 +171,7 @@ import SceneKit
     }
     
     @objc fileprivate func removeNodeWithDescendants(_ node: TransformNode) {
-        node.enumerateComponentsHierarchy { (item) in
+        node.enumerateTransformNodes { (item) in
             if let id = item.name {
                 unregisterNode(id)
             }
@@ -196,16 +196,16 @@ import SceneKit
     
     @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
-        updateLayoutFor(node: rootNode)
-    }
-    
-    @objc fileprivate func updateLayoutFor(node: SCNNode) {
-        node.childNodes.forEach { (child) in
-            updateLayoutFor(node: child)
+        rootNode.enumerateTransformNodes { node in
+            node.layoutIfNeeded()
         }
-        
-        if let transformNode = node as? TransformNode {
-            transformNode.layoutIfNeeded()
+
+        rootNode.enumerateTransformNodes { node in
+            node.layoutContainerIfNeeded()
+        }
+
+        rootNode.enumerateTransformNodes { node in
+            node.postUpdate()
         }
     }
     

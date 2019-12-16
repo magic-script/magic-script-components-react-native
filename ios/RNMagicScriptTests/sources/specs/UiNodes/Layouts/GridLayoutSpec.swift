@@ -35,7 +35,7 @@ class GridLayoutSpec: QuickSpec {
                     expect(layout.height).to(beCloseTo(0))
                     expect(layout.columns).to(equal(0))
                     expect(layout.rows).to(equal(0))
-                    expect(layout.defaultItemAlignment).to(equal(Alignment.centerCenter))
+                    expect(layout.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(layout.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(layout.skipInvisibleItems).to(beFalse())
                     expect(layout.itemsCount).to(equal(0))
@@ -93,7 +93,7 @@ class GridLayoutSpec: QuickSpec {
 
             context("add/remove items") {
                 it("should add item correctly") {
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     layout.addItem(referenceNode)
                     expect(layout.itemsCount).to(equal(1))
                     expect(layout.container.childNodes.count).to(equal(1))
@@ -104,7 +104,7 @@ class GridLayoutSpec: QuickSpec {
                 }
 
                 it("should return true if removed item exists as a child node") {
-                    let referenceNode = TransformNode(props: [:])
+                    let referenceNode = TransformNode()
                     layout.addItem(referenceNode)
                     let result = layout.removeItem(referenceNode)
                     expect(result).to(beTrue())
@@ -113,8 +113,8 @@ class GridLayoutSpec: QuickSpec {
                 }
 
                 it("should return false if removed item does not exist as a child node") {
-                    let referenceNode1 = TransformNode(props: [:])
-                    let referenceNode2 = TransformNode(props: [:])
+                    let referenceNode1 = TransformNode()
+                    let referenceNode2 = TransformNode()
                     layout.addItem(referenceNode1)
                     let result = layout.removeItem(referenceNode2)
                     expect(result).to(beFalse())
@@ -126,7 +126,7 @@ class GridLayoutSpec: QuickSpec {
             context("items count") {
                 it("should return proper number of items") {
                     for i in 1...10 {
-                        let referenceNode = TransformNode(props: [:])
+                        let referenceNode = TransformNode()
                         layout.addItem(referenceNode)
                         expect(layout.itemsCount).to(equal(i))
                         expect(layout.container.childNodes.count).to(equal(i))
@@ -184,7 +184,7 @@ class GridLayoutSpec: QuickSpec {
                     var referenceHeight: CGFloat = 0.0
 
                     for number in 1...4 {
-                        let referenceNode = UiButtonNode(props: [:])
+                        let referenceNode = UiButtonNode()
                         referenceNode.name = "button_\(number)"
                         referenceNode.text = "Default text"
                         layout.addItem(referenceNode)
@@ -279,7 +279,7 @@ class GridLayoutSpec: QuickSpec {
                     var referenceHeight: CGFloat = 0.0
 
                     for number in 1...4 {
-                        let referenceNode = UiButtonNode(props: [:])
+                        let referenceNode = UiButtonNode()
                         referenceNode.name = "button_\(number)"
                         referenceNode.text = "Default text"
                         referenceNode.visible = (number % 2 == 0)

@@ -26,7 +26,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
             var node: UiToggleGroupNode!
 
             beforeEach {
-                node = UiToggleGroupNode(props: [:])
+                node = UiToggleGroupNode()
                 node.layoutIfNeeded()
             }
 
@@ -62,12 +62,12 @@ class UiToggleGroupNodeSpec: QuickSpec {
             context("when child added") {
                 context("when child is UiToggleNode") {
                     it("should add it to the list") {
-                        let toggleNode = UiToggleNode(props: [:])
+                        let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
                         expect(node.itemsList.count).to(equal(1))
 
 
-                        let otherNode = TransformNode(props: [:])
+                        let otherNode = TransformNode()
                         node.addChild(otherNode)
                         expect(node.itemsList.count).to(equal(1))
                     }
@@ -75,7 +75,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
 
                 context("when child is TransformNodeContainer (toggles container)") {
                     it("should manage it internally") {
-                        let layoutNode = UiLinearLayoutNode(props: [:])
+                        let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
                         expect(node.innerLayout).to(equal(layoutNode))
                     }
@@ -85,7 +85,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
             context("when child register his presence") {
                 context("when it's managed by this toggle group") {
                     it("should add it to the list") {
-                        let toggleNode = UiToggleNode(props: [:])
+                        let toggleNode = UiToggleNode()
                         node.childPresent(toggleNode: toggleNode)
                         expect(node.itemsList.count).to(equal(1))
                     }
@@ -93,7 +93,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
 
                 context("when it's already managed by this toggle group") {
                     it("should do nothing") {
-                        let toggleNode = UiToggleNode(props: [:])
+                        let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
                         expect(node.itemsList.count).to(equal(1))
 
@@ -106,7 +106,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
             context("when child removed") {
                 context("when child is UiToggleNode") {
                     it("should remove it from the list") {
-                        let toggleNode = UiToggleNode(props: [:])
+                        let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
                         expect(node.itemsList.count).to(equal(1))
 
@@ -117,7 +117,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
 
                 context("when child is TransformNodeContainer (toggles container)") {
                     it("should manage it internally") {
-                        let layoutNode = UiLinearLayoutNode(props: [:])
+                        let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
                         expect(node.innerLayout).to(equal(layoutNode))
 
@@ -133,7 +133,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         node.allowAllOff = true
                         node.allowMultipleOn = true
 
-                        let toggleNode = UiToggleNode(props: [:])
+                        let toggleNode = UiToggleNode()
                         toggleNode.on = true
 
                         node.toggleSelection(toggleNode)
@@ -150,10 +150,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                             node.allowAllOff = false
                             node.allowMultipleOn = true
 
-                            let toggleNode1 = UiToggleNode(props: [:])
+                            let toggleNode1 = UiToggleNode()
                             toggleNode1.on = true
 
-                            let toggleNode2 = UiToggleNode(props: [:])
+                            let toggleNode2 = UiToggleNode()
                             toggleNode2.on = false
 
                             node.childPresent(toggleNode: toggleNode1)
@@ -170,10 +170,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                             node.allowAllOff = false
                             node.allowMultipleOn = true
 
-                            let toggleNode1 = UiToggleNode(props: [:])
+                            let toggleNode1 = UiToggleNode()
                             toggleNode1.on = true
 
-                            let toggleNode2 = UiToggleNode(props: [:])
+                            let toggleNode2 = UiToggleNode()
                             toggleNode2.on = true
 
                             node.childPresent(toggleNode: toggleNode1)
@@ -192,10 +192,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                             node.allowAllOff = true
                             node.allowMultipleOn = false
 
-                            let toggleNode1 = UiToggleNode(props: [:])
+                            let toggleNode1 = UiToggleNode()
                             toggleNode1.on = false
 
-                            let toggleNode2 = UiToggleNode(props: [:])
+                            let toggleNode2 = UiToggleNode()
                             toggleNode2.on = true
 
                             node.childPresent(toggleNode: toggleNode1)
@@ -213,13 +213,13 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         node.allowAllOff = false
                         node.allowMultipleOn = false
 
-                        let toggleNode1 = UiToggleNode(props: [:])
+                        let toggleNode1 = UiToggleNode()
                         toggleNode1.on = false
 
-                        let toggleNode2 = UiToggleNode(props: [:])
+                        let toggleNode2 = UiToggleNode()
                         toggleNode2.on = false
 
-                        let toggleNode3 = UiToggleNode(props: [:])
+                        let toggleNode3 = UiToggleNode()
                         toggleNode3.on = true
 
                         node.childPresent(toggleNode: toggleNode1)

@@ -26,7 +26,7 @@ class UiDropdownListItemNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiDropdownListItemNode(props: [:])
+                node = UiDropdownListItemNode()
             }
 
             context("initial properties") {
@@ -99,17 +99,20 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                 }
 
 
-                context("when updateing 'maxCharacterLimit' prop") {
+                context("when updating 'maxCharacterLimit' prop") {
                     it("should update stored value") {
-                        let referenceHeight = 11
-                        node.update(["maxCharacterLimit" : referenceHeight])
-                        expect(node.maxCharacterLimit).to(equal(referenceHeight))
+                        let referenceLimit = 11
+                        node.update(["maxCharacterLimit" : referenceLimit])
+                        expect(node.maxCharacterLimit).to(equal(referenceLimit))
                         expect(node.isLayoutNeeded).to(beTrue())
                     }
 
                     it("should update label text according") {
-                        let referenceHeight = 11
-                        node.update(["maxCharacterLimit" : referenceHeight])
+                        let referenceText = "1234567890"
+                        let referenceLimit = 7
+                        node.label = referenceText
+                        node.maxCharacterLimit = referenceLimit
+                        expect(node.label).to(equal(referenceText.prefix(referenceLimit) + "..."))
                     }
                 }
             }

@@ -26,7 +26,7 @@ class UiButtonNodeSpec: QuickSpec {
             let shortReferenceText: String = "Info text"
 
             beforeEach {
-                node = UiButtonNode(props: [:])
+                node = UiButtonNode()
                 node.layoutIfNeeded()
             }
 
@@ -150,6 +150,16 @@ class UiButtonNodeSpec: QuickSpec {
                     node.update(["roundness" : referenceRoundness2])
                     expect(node.roundness).to(beCloseTo(0.0))
                     expect(node.isLayoutNeeded).to(beFalse())
+                }
+            }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    let labelNode: LabelNode! = node.contentNode.childNodes.first as? LabelNode
+                    expect(labelNode).notTo(beNil())
+                    let referenceLabelNodeChildNodesCount: Int = labelNode.childNodes.count
+                    node.setDebugMode(true)
+                    expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
                 }
             }
         }

@@ -24,7 +24,7 @@ class RenderNodeSpec: QuickSpec {
             var node: RenderNode!
 
             beforeEach {
-                node = RenderNode(props: [:])
+                node = RenderNode()
             }
 
             context("initial properties") {

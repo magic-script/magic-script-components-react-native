@@ -30,7 +30,7 @@ class UiRectLayoutNodeSpec: QuickSpec {
                     node = UiRectLayoutNode()
                     expect(node.width).to(equal(0))
                     expect(node.height).to(equal(0))
-                    expect(node.contentAlignment).to(equal(Alignment.centerCenter))
+                    expect(node.contentAlignment).to(equal(Alignment.topLeft))
                     expect(node.padding).to(beCloseTo(UIEdgeInsets.zero))
                     expect(node.itemsCount).to(equal(0))
                 }

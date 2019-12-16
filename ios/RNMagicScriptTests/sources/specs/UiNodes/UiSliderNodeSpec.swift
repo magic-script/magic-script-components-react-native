@@ -25,7 +25,7 @@ class UiSliderNodeSpec: QuickSpec {
             var node: UiSliderNode!
 
             beforeEach {
-                node = UiSliderNode(props: [:])
+                node = UiSliderNode()
                 node.layoutIfNeeded()
             }
 

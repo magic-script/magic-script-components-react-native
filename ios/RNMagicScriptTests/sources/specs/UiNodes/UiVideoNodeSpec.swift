@@ -27,7 +27,7 @@ class UiVideoNodeSpec: QuickSpec {
             var node: UiVideoNode!
 
             beforeEach {
-                node = UiVideoNode(props: [:])
+                node = UiVideoNode()
             }
 
             context("initial properties") {

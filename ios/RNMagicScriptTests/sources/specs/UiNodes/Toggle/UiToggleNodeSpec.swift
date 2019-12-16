@@ -27,7 +27,7 @@ class UiToggleNodeSpec: QuickSpec {
             let referenceText: String = "Info text"
 
             beforeEach {
-                node = UiToggleNode(props: [:])
+                node = UiToggleNode()
                 node.layoutIfNeeded()
             }
 

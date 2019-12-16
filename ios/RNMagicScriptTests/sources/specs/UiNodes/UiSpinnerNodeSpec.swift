@@ -26,7 +26,7 @@ class UiSpinnerNodeSpec: QuickSpec {
             var node: UiSpinnerNode!
             
             beforeEach {
-                node = UiSpinnerNode(props: [:])
+                node = UiSpinnerNode()
                 node.layoutIfNeeded()
             }
             

@@ -30,7 +30,7 @@ import SceneKit
     @objc var rows: Int = 0 {
         didSet { invalidate() }
     }
-    @objc var defaultItemAlignment: Alignment = Alignment.centerCenter {
+    @objc var defaultItemAlignment: Alignment = Alignment.topLeft {
         didSet { invalidate() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
@@ -153,8 +153,8 @@ extension GridLayout {
 
         let columnContentWidth = columnBounds.width - (defaultItemPadding.left + defaultItemPadding.right)
         let rowContnetHeight = rowBounds.height - (defaultItemPadding.top + defaultItemPadding.bottom)
-        let localCenter = CGPoint(x: columnBounds.x + defaultItemPadding.left + 0.5 * columnContentWidth,
-                                  y: rowBounds.y + defaultItemPadding.top + 0.5 * rowContnetHeight)
+        let gridSlotCenter = CGPoint(x: columnBounds.x + defaultItemPadding.left + 0.5 * columnContentWidth,
+                                     y: rowBounds.y + defaultItemPadding.top + 0.5 * rowContnetHeight)
 
         let deltaWidth: CGFloat = columnBounds.width - childNodeSize.width
         let deltaHeight: CGFloat = rowBounds.height - childNodeSize.height
@@ -165,17 +165,16 @@ extension GridLayout {
         )
         let scale: CGFloat = Math.clamp(min(columnBounds.width / childNodeSize.width, rowBounds.height / childNodeSize.height), 0, 1)
 
-        // Ignore children nodes alignment
+        // Get item's local center (based on pivot and alignment)
         let node: TransformNode = desc.children[index].childNodes[0] as! TransformNode
-        let nodePos: SCNVector3 = node.contentNode.position
-        let itemInternalAlignmentOffset = CGPoint(x: CGFloat(-nodePos.x), y: CGFloat(-nodePos.y))
+        let itemBounds = node.getBounds()
+        let itemCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
 
-        let localPositionX = localCenter.x + (itemInternalAlignmentOffset.x - gridItemAlignmentOffset.x)
-        let localPositionY = localCenter.y - (itemInternalAlignmentOffset.y - gridItemAlignmentOffset.y)
-
+        let localPositionX = gridSlotCenter.x - itemCenterOffset.x - gridItemAlignmentOffset.x
+        let localPositionY = gridSlotCenter.y + itemCenterOffset.y - gridItemAlignmentOffset.y
         return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }
-    
+
     fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
         let filteredChildren: [SCNNode] = container.childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
@@ -204,7 +203,7 @@ extension GridLayout {
         let realSize = CGSize(width: realWidth, height: realHeight)
         return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, estimatedSize: estimatedSize, realSize: realSize)
     }
-    
+
     fileprivate func getColumnsBounds(for cellSizes: [CGSize], columnsCount: Int, rowsCount: Int) -> [(x: CGFloat, width: CGFloat)] {
         guard width < 0.00001 else {
             var columnsBounds: [(x: CGFloat, width: CGFloat)] = []

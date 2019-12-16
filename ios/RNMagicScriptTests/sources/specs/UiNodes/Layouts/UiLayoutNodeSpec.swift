@@ -25,7 +25,7 @@ class UiLayoutNodeSpec: QuickSpec {
             var node: UiLayoutNode!
 
             beforeEach {
-                node = UiLayoutNode(props: [:])
+                node = UiLayoutNode()
             }
 
             context("initial properties") {

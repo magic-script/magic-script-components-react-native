@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -64,7 +65,7 @@ class GridLayoutManagerImpl : GridLayoutManager {
     // <row index, row height> pairs
     private val rowsHeightMap = mutableMapOf<Int, Float>()
 
-    override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
+    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         columnsWidthMap.clear()
         rowsHeightMap.clear()
 

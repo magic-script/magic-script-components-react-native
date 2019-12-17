@@ -16,7 +16,7 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts
 
-import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
 /**
@@ -27,5 +27,5 @@ interface LayoutManager {
     var parentWidth: Float
     var parentHeight: Float
 
-    fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>)
+    fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>)
 }

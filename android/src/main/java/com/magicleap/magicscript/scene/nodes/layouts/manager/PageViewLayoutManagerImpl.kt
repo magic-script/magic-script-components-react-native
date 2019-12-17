@@ -17,18 +17,34 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.ContentNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 
-
 class PageViewLayoutManagerImpl : PageViewLayoutManager {
+
+    override var parentWidth: Float = WRAP_CONTENT_DIMENSION
+        set(value) {
+            field = value
+            if (value != WRAP_CONTENT_DIMENSION) {
+                val paddingHorizontal = itemPadding.left + itemPadding.right
+                maxChildWidth = value - paddingHorizontal
+            }
+        }
+
+    override var parentHeight: Float = WRAP_CONTENT_DIMENSION
+        set(value) {
+            field = value
+            val paddingVertical = itemPadding.top + itemPadding.bottom
+            if (value != WRAP_CONTENT_DIMENSION) {
+                maxChildHeight = value - paddingVertical
+            }
+        }
+
     override var visiblePage: Int = 0
 
     override var itemPadding = Padding(0F, 0F, 0F, 0F)
@@ -37,26 +53,25 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
 
     override var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
 
-    override var parentWidth: Float = UiNode.WRAP_CONTENT_DIMENSION
+    private var maxChildWidth: Float = Float.MAX_VALUE
+    private var maxChildHeight: Float = Float.MAX_VALUE
 
-    override var parentHeight: Float = UiNode.WRAP_CONTENT_DIMENSION
-
-    override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
+    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
             children.forEachIndexed { index, node ->
                 if (index == visiblePage) {
-                    (node as TransformNode).show()
+                    node.show()
                     childrenBounds[index]?.let { childBounds ->
                         val childSize = childBounds.size()
                         val sizeLimitX =
-                            if (parentWidth != UiNode.WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
+                            if (parentWidth != WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
                         val sizeLimitY =
-                            if (parentHeight != UiNode.WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
+                            if (parentHeight != WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
                         val sizeLimit = Vector2(sizeLimitX, sizeLimitY)
                         layoutNode(node, childBounds, sizeLimit)
                     }
                 } else {
-                    (node as TransformNode).hide()
+                    node.hide()
                 }
             }
         }

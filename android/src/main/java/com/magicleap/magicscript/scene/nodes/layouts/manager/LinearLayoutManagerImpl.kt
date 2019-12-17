@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -39,7 +40,7 @@ class LinearLayoutManagerImpl : LinearLayoutManager {
 
     override var isVertical = true
 
-    override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
+    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         val itemsSpan = calculateSpan(childrenBounds)
         val itemsOffset = calculateOffset(childrenBounds)
 

@@ -29,7 +29,6 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
 
     init {
         // set default values of properties
-
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         properties.putDefault(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
         properties.putDefault(PROP_PADDING, DEFAULT_ITEM_PADDING)
@@ -39,14 +38,6 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
         super.applyProperties(props)
         setItemPadding(props)
         setContentAlignment(props)
-        val paddingHorizontal = padding.left + padding.right
-        val paddingVertical = padding.top + padding.bottom
-        if (width != WRAP_CONTENT_DIMENSION) {
-            maxChildWidth = width - paddingHorizontal
-        }
-        if (height != WRAP_CONTENT_DIMENSION) {
-            maxChildHeight = height - paddingVertical
-        }
     }
 
     override fun getContentBounding(): Bounding {

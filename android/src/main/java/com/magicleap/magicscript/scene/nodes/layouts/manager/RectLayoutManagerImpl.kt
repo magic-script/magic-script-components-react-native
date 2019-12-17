@@ -125,6 +125,8 @@ open class RectLayoutManagerImpl : RectLayoutManager {
         if (parentWidth != WRAP_CONTENT_DIMENSION) {
             val paddingHorizontal = itemPadding.left + itemPadding.right
             maxChildWidth = parentWidth - paddingHorizontal
+        } else {
+            maxChildWidth = Float.MAX_VALUE
         }
     }
 
@@ -132,6 +134,8 @@ open class RectLayoutManagerImpl : RectLayoutManager {
         if (parentHeight != WRAP_CONTENT_DIMENSION) {
             val paddingVertical = itemPadding.top + itemPadding.bottom
             maxChildHeight = parentHeight - paddingVertical
+        } else {
+            maxChildHeight = Float.MAX_VALUE
         }
     }
 

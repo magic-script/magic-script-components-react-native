@@ -169,8 +169,8 @@ class GridLayoutManagerImpl : GridLayoutManager {
                 val childWidth = childSize.x / child.localScale.x
                 val childHeight = childSize.y / child.localScale.y
                 if (childWidth > 0 && childHeight > 0) {
-                    val maxChildWidth = columnsWidthMap[getColumnIndex(i)]!!
-                    val maxChildHeight = rowsHeightMap[getRowIndex(i)]!!
+                    val maxChildWidth = calculateMaxChildWidth(i)
+                    val maxChildHeight = calculateMaxChildHeight(i)
                     val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
                     val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
                     val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
@@ -220,6 +220,22 @@ class GridLayoutManagerImpl : GridLayoutManager {
             childIdx % rows
         } else {
             childIdx / columns
+        }
+    }
+
+    private fun calculateMaxChildWidth(childIdx: Int): Float {
+        return if (parentWidth == WRAP_CONTENT_DIMENSION) {
+            Float.MAX_VALUE
+        } else {
+            columnsWidthMap[getColumnIndex(childIdx)]!!
+        }
+    }
+
+    private fun calculateMaxChildHeight(childIdx: Int): Float {
+        return if (parentHeight == WRAP_CONTENT_DIMENSION) {
+            Float.MAX_VALUE
+        } else {
+            rowsHeightMap[getRowIndex(childIdx)]!!
         }
     }
 

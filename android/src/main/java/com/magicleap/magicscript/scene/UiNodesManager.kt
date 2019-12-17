@@ -17,8 +17,11 @@
 package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.core.Anchor
+import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
 
@@ -27,10 +30,11 @@ import com.magicleap.magicscript.utils.logMessage
  */
 open class UiNodesManager : NodesManager {
 
-    private val rootNode by lazy { Node() }
+    private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
+    var planeDetection = false
 
     companion object {
         val INSTANCE = UiNodesManager()
@@ -39,6 +43,7 @@ open class UiNodesManager : NodesManager {
     @Synchronized
     fun onArFragmentReady() {
         arReady = true
+        rootNode.localPosition = Vector3(0f, 0f, 0f)
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
             if (node.hasRenderable && !node.renderableRequested) {
@@ -52,6 +57,14 @@ open class UiNodesManager : NodesManager {
         this.scene = scene
         if (arReady) {
             scene.addChild(rootNode)
+        }
+    }
+
+    @Synchronized
+    override fun onTapArPlane(anchor: Anchor) {
+        if (planeDetection) {
+            planeDetection = false
+            rootNode.anchor = anchor
         }
     }
 

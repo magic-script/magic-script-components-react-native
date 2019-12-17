@@ -92,7 +92,6 @@ fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
 }
 
 // region Custom matchers
-
 infix fun Bounding.shouldEqualInexact(other: Bounding) =
     assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
 

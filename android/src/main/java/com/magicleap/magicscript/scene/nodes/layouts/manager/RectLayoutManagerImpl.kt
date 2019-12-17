@@ -11,27 +11,30 @@ import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import com.magicleap.magicscript.utils.logMessage
 
-class RectLayoutManagerImpl : RectLayoutManager {
+open class RectLayoutManagerImpl : RectLayoutManager {
 
     override var parentWidth: Float = WRAP_CONTENT_DIMENSION
         set(value) {
             field = value
             if (value != WRAP_CONTENT_DIMENSION) {
-                val paddingHorizontal = itemPadding.left + itemPadding.right
-                maxChildWidth = value - paddingHorizontal
+                calculateMaxChildWidth()
             }
         }
 
     override var parentHeight: Float = WRAP_CONTENT_DIMENSION
         set(value) {
             field = value
-            val paddingVertical = itemPadding.top + itemPadding.bottom
             if (value != WRAP_CONTENT_DIMENSION) {
-                maxChildHeight = value - paddingVertical
+                calculateMaxChildHeight()
             }
         }
 
     override var itemPadding = Padding(0F, 0F, 0F, 0F)
+        set(value) {
+            field = value
+            calculateMaxChildWidth()
+            calculateMaxChildHeight()
+        }
 
     override var contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
 
@@ -81,7 +84,7 @@ class RectLayoutManagerImpl : RectLayoutManager {
         }
     }
 
-    private fun layoutNode(node: Node, nodeBounds: Bounding, sizeLimit: Vector2) {
+    protected fun layoutNode(node: Node, nodeBounds: Bounding, sizeLimit: Vector2) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
         val boundsCenterX = nodeBounds.left + nodeWidth / 2
@@ -123,4 +126,15 @@ class RectLayoutManagerImpl : RectLayoutManager {
 
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
+
+    private fun calculateMaxChildWidth() {
+        val paddingHorizontal = itemPadding.left + itemPadding.right
+        maxChildWidth = parentWidth - paddingHorizontal
+    }
+
+    private fun calculateMaxChildHeight() {
+        val paddingVertical = itemPadding.top + itemPadding.bottom
+        maxChildHeight = parentHeight - paddingVertical
+    }
+
 }

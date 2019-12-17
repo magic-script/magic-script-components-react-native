@@ -18,6 +18,8 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.nhaarman.mockitokotlin2.mock
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -47,7 +49,7 @@ class LinearLayoutManagerTest {
 
     @Test
     fun `should work for empty children list`() {
-        val children: List<Node> = emptyList()
+        val children: List<TransformNode> = emptyList()
 
         linearManager.layoutChildren(children, mapOf())
 
@@ -56,12 +58,12 @@ class LinearLayoutManagerTest {
 
     @Test
     fun `should position child node`() {
-        val children: List<Node> = listOf(Node())
+        val children: List<TransformNode> = listOf(NodeBuilder().build())
         val bound = Bounding(0F, 0F, 1F, 1F)
         val bounds: Map<Int, Bounding> = mapOf(0 to bound, 1 to bound)
 
         linearManager.layoutChildren(children, bounds)
 
-        assertNotEquals(Vector3(0F, 0F, 0F), children.get(0).localPosition)
+        assertNotEquals(Vector3(0F, 0F, 0F), children[0].localPosition)
     }
 }

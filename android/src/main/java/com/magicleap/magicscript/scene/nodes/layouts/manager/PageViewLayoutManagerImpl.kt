@@ -17,44 +17,19 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 
-class PageViewLayoutManagerImpl : PageViewLayoutManager {
-
-    override var parentWidth: Float = WRAP_CONTENT_DIMENSION
-        set(value) {
-            field = value
-            if (value != WRAP_CONTENT_DIMENSION) {
-                val paddingHorizontal = itemPadding.left + itemPadding.right
-                maxChildWidth = value - paddingHorizontal
-            }
-        }
-
-    override var parentHeight: Float = WRAP_CONTENT_DIMENSION
-        set(value) {
-            field = value
-            val paddingVertical = itemPadding.top + itemPadding.bottom
-            if (value != WRAP_CONTENT_DIMENSION) {
-                maxChildHeight = value - paddingVertical
-            }
-        }
-
-    override var visiblePage: Int = 0
-
-    override var itemPadding = Padding(0F, 0F, 0F, 0F)
+class PageViewLayoutManagerImpl : RectLayoutManagerImpl(), PageViewLayoutManager {
 
     override var contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
     override var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
 
-    private var maxChildWidth: Float = Float.MAX_VALUE
-    private var maxChildHeight: Float = Float.MAX_VALUE
+    override var visiblePage: Int = 0
 
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
@@ -75,47 +50,5 @@ class PageViewLayoutManagerImpl : PageViewLayoutManager {
                 }
             }
         }
-    }
-
-    private fun layoutNode(node: TransformNode, nodeBounds: Bounding, sizeLimit: Vector2) {
-        val nodeWidth = nodeBounds.right - nodeBounds.left
-        val nodeHeight = nodeBounds.top - nodeBounds.bottom
-        val boundsCenterX = nodeBounds.left + nodeWidth / 2
-        val boundsCenterY = nodeBounds.top - nodeHeight / 2
-        val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
-        val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
-
-        // calculating x position for a child
-        val x = when (contentHorizontalAlignment) {
-            Alignment.HorizontalAlignment.LEFT -> {
-                -sizeLimit.x / 2 + nodeWidth / 2 + pivotOffsetX + itemPadding.left
-            }
-
-            Alignment.HorizontalAlignment.CENTER -> {
-                val paddingDiff = itemPadding.right - itemPadding.left
-                pivotOffsetX + paddingDiff
-            }
-
-            Alignment.HorizontalAlignment.RIGHT -> {
-                sizeLimit.x / 2 - nodeWidth / 2 + pivotOffsetX - itemPadding.right
-            }
-        }
-
-        // calculating y position for a child
-        val y = when (contentVerticalAlignment) {
-            Alignment.VerticalAlignment.TOP -> {
-                sizeLimit.y / 2 - nodeHeight / 2 + pivotOffsetY - itemPadding.top
-            }
-
-            Alignment.VerticalAlignment.CENTER -> {
-                val paddingDiff = itemPadding.top - itemPadding.bottom
-                pivotOffsetY + paddingDiff
-            }
-
-            Alignment.VerticalAlignment.BOTTOM -> {
-                -sizeLimit.y / 2 + nodeHeight / 2 + pivotOffsetY + itemPadding.bottom
-            }
-        }
-        node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 }

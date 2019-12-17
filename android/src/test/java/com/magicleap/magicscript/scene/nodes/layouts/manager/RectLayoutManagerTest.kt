@@ -2,11 +2,9 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.nhaarman.mockitokotlin2.mock
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -15,14 +13,11 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class RectLayoutManagerTest {
-
-    private lateinit var rectLayout: UiRectLayout
     private lateinit var rectLayoutManager: RectLayoutManager
     private val EPSILON = 1e-5f
 
     @Before
     fun setUp() {
-        this.rectLayout = mock()
         this.rectLayoutManager = RectLayoutManagerImpl()
     }
 

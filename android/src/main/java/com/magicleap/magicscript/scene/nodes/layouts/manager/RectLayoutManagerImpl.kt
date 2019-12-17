@@ -10,23 +10,20 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import com.magicleap.magicscript.utils.logMessage
+import kotlin.math.min
 
 open class RectLayoutManagerImpl : RectLayoutManager {
 
     override var parentWidth: Float = WRAP_CONTENT_DIMENSION
         set(value) {
             field = value
-            if (value != WRAP_CONTENT_DIMENSION) {
-                calculateMaxChildWidth()
-            }
+            calculateMaxChildWidth()
         }
 
     override var parentHeight: Float = WRAP_CONTENT_DIMENSION
         set(value) {
             field = value
-            if (value != WRAP_CONTENT_DIMENSION) {
-                calculateMaxChildHeight()
-            }
+            calculateMaxChildHeight()
         }
 
     override var itemPadding = Padding(0F, 0F, 0F, 0F)
@@ -59,27 +56,6 @@ open class RectLayoutManagerImpl : RectLayoutManager {
                     if (parentHeight != WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
                 val sizeLimit = Vector2(sizeLimitX, sizeLimitY)
                 layoutNode(children[0], childBounds, sizeLimit)
-            }
-        }
-    }
-
-    private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
-        for (i in children.indices) {
-            val child = children[i]
-            val childSize = (childrenBounds[i] ?: Bounding()).size()
-            if (child.localScale.x > 0 && child.localScale.y > 0) {
-                val childWidth = childSize.x / child.localScale.x
-                val childHeight = childSize.y / child.localScale.y
-                if (childWidth > 0 && childHeight > 0) {
-                    val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
-                    val scaleX =
-                        java.lang.Float.min(maxChildWidth / childWidth, userSpecifiedScale.x)
-                    val scaleY =
-                        java.lang.Float.min(maxChildHeight / childHeight, userSpecifiedScale.y)
-                    val scaleXY =
-                        java.lang.Float.min(scaleX, scaleY) // scale saving width / height ratio
-                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
-                }
             }
         }
     }
@@ -127,14 +103,36 @@ open class RectLayoutManagerImpl : RectLayoutManager {
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
+    private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        for (i in children.indices) {
+            val child = children[i]
+            val childSize = (childrenBounds[i] ?: Bounding()).size()
+            if (child.localScale.x > 0 && child.localScale.y > 0) {
+                val childWidth = childSize.x / child.localScale.x
+                val childHeight = childSize.y / child.localScale.y
+                if (childWidth > 0 && childHeight > 0) {
+                    val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
+                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
+                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
+                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
+                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
+                }
+            }
+        }
+    }
+
     private fun calculateMaxChildWidth() {
-        val paddingHorizontal = itemPadding.left + itemPadding.right
-        maxChildWidth = parentWidth - paddingHorizontal
+        if (parentWidth != WRAP_CONTENT_DIMENSION) {
+            val paddingHorizontal = itemPadding.left + itemPadding.right
+            maxChildWidth = parentWidth - paddingHorizontal
+        }
     }
 
     private fun calculateMaxChildHeight() {
-        val paddingVertical = itemPadding.top + itemPadding.bottom
-        maxChildHeight = parentHeight - paddingVertical
+        if (parentHeight != WRAP_CONTENT_DIMENSION) {
+            val paddingVertical = itemPadding.top + itemPadding.bottom
+            maxChildHeight = parentHeight - paddingVertical
+        }
     }
 
 }

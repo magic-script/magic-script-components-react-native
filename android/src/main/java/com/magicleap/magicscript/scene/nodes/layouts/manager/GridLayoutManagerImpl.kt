@@ -19,9 +19,12 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.getUserSpecifiedScale
+import kotlin.math.min
 
 /**
  * Grid layout's manager with flexible columns and rows size:
@@ -29,9 +32,9 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
  */
 class GridLayoutManagerImpl : GridLayoutManager {
 
-    override var parentWidth: Float = 0F
+    override var parentWidth: Float = WRAP_CONTENT_DIMENSION
 
-    override var parentHeight: Float = 0F
+    override var parentHeight: Float = WRAP_CONTENT_DIMENSION
 
     override var columns: Int = 1
         set(value) {
@@ -68,7 +71,6 @@ class GridLayoutManagerImpl : GridLayoutManager {
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         columnsWidthMap.clear()
         rowsHeightMap.clear()
-
         for (i in 0 until children.size) {
             val col = getColumnIndex(i)
             val row = getRowIndex(i)
@@ -84,6 +86,24 @@ class GridLayoutManagerImpl : GridLayoutManager {
                 rowsHeightMap[row] = height
             }
         }
+
+        if (parentWidth != WRAP_CONTENT_DIMENSION) {
+            val columnsSumWidth = columnsWidthMap.values.sum()
+            val columnsScale = parentWidth / columnsSumWidth
+            columnsWidthMap.forEach {
+                columnsWidthMap[it.key] = columnsScale * it.value
+            }
+        }
+
+        if (parentHeight != WRAP_CONTENT_DIMENSION) {
+            val rowsSumHeight = rowsHeightMap.values.sum()
+            val rowsScale = parentHeight / rowsSumHeight
+            rowsHeightMap.forEach {
+                rowsHeightMap[it.key] = rowsScale * it.value
+            }
+        }
+
+        rescaleChildren(children, childrenBounds)
 
         for (i in 0 until children.size) {
             layoutNode(i, children[i], childrenBounds[i]!!)
@@ -139,6 +159,26 @@ class GridLayoutManagerImpl : GridLayoutManager {
         }
 
         node.localPosition = Vector3(x, y, node.localPosition.z)
+    }
+
+    private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        for (i in children.indices) {
+            val child = children[i]
+            val childSize = (childrenBounds[i] ?: Bounding()).size()
+            if (child.localScale.x > 0 && child.localScale.y > 0) {
+                val childWidth = childSize.x / child.localScale.x
+                val childHeight = childSize.y / child.localScale.y
+                if (childWidth > 0 && childHeight > 0) {
+                    val maxChildWidth = columnsWidthMap[getColumnIndex(i)]!!
+                    val maxChildHeight = rowsHeightMap[getRowIndex(i)]!!
+                    val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
+                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
+                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
+                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
+                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
+                }
+            }
+        }
     }
 
     // returns the position (x) of a column at the given index (includes padding)

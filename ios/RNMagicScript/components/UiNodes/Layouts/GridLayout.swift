@@ -171,7 +171,7 @@ extension GridLayout {
         let itemCenterOffset = CGPoint(x: itemBounds.midX, y: itemBounds.midY)
 
         let localPositionX = gridSlotCenter.x - itemCenterOffset.x - gridItemAlignmentOffset.x
-        let localPositionY = gridSlotCenter.y + itemCenterOffset.y - gridItemAlignmentOffset.y
+        let localPositionY = gridSlotCenter.y + itemCenterOffset.y + gridItemAlignmentOffset.y
         return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }
 

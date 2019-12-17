@@ -18,15 +18,11 @@ import SceneKit
 
 @objc open class UiToggleGroupNode: UiNode {
     @objc var allowMultipleOn: Bool = false
-
     @objc var allowAllOff: Bool = false
-
     @objc var allTogglesOff: Bool = false // not implemented
 
-    fileprivate(set) var innerLayout: TransformNode?
+    fileprivate(set) weak var innerLayout: TransformNode?
     fileprivate(set) var itemsList: Array<UiToggleNode> = []
-
-
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
@@ -53,7 +49,7 @@ import SceneKit
         }
 
         if let _ = child as? TransformNodeContainer {
-            self.innerLayout = child
+            innerLayout = child
             contentNode.addChildNode(child)
             setNeedsLayout()
             return true
@@ -94,6 +90,7 @@ import SceneKit
 
     fileprivate func addToggleNode(_ toggleNode: UiToggleNode) {
         itemsList.append(toggleNode)
+        setNeedsLayout()
     }
 
     @objc override func removeChild(_ child: TransformNode) {
@@ -133,8 +130,21 @@ import SceneKit
         innerLayout?.updateLayout()
     }
 
+    @objc override func updatePivot() {
+        super.updatePivot()
+        if let container = innerLayout as? UiNode {
+            let size = getSize()
+            let shift = container.alignment.shiftDirection
+            contentNode.position -= SCNVector3(shift.x * size.width, shift.y * size.height, 0)
+        }
+    }
+
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         innerLayout?.setNeedsLayout()
     }
+}
+
+extension UiToggleGroupNode: TransformNodeContainer {
+    var itemsCount: Int { return itemsList.count }
 }

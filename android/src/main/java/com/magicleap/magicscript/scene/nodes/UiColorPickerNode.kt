@@ -94,9 +94,6 @@ open class UiColorPickerNode @JvmOverloads constructor(
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        if (props.containsKey(PROP_HEIGHT)) {
-            setNeedsRebuild()
-        }
 
         setColor(props)
     }

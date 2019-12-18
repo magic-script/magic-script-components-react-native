@@ -22,6 +22,7 @@ import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
 
@@ -64,6 +65,7 @@ class ReactEventsManager(
         const val EVENT_CONFIRMATION_COMPLETED = "onConfirmationCompleted"
         const val EVENT_CONFIRMATION_UPDATED = "onConfirmationUpdated"
         const val EVENT_CONFIRMATION_CANCELED = "onConfirmationCanceled"
+        const val EVENT_FILE_SELECTED = "onFileSelected"
 
         // Supported events arguments
         const val EVENT_ARG_NODE_ID = "nodeId"
@@ -76,6 +78,7 @@ class ReactEventsManager(
         const val EVENT_ARG_TIME = "time"
         const val EVENT_ARG_SCROLL_VALUE = "ScrollValue"
         const val EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle"
+        const val EVENT_ARG_FILE_PATH = "filePath"
     }
 
     // = onClick
@@ -416,6 +419,18 @@ class ReactEventsManager(
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 sendEvent(EVENT_CONFIRMATION_CANCELED, params)
+            }
+        }
+    }
+
+    override fun addOnFileSelectedEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is NativeFilePickerNode) {
+            node.onFileSelected = { filePath ->
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                params.putString(EVENT_ARG_FILE_PATH, filePath)
+                sendEvent(EVENT_FILE_SELECTED, params)
             }
         }
     }

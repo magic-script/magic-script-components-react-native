@@ -66,12 +66,6 @@ class UiLinearLayout @JvmOverloads constructor(
         setItemAlignment(props)
     }
 
-    override fun setLayoutSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            logMessage("width and height properties are not supported yet", true)
-        }
-    }
-
     override fun getContentBounding(): Bounding {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
         val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()

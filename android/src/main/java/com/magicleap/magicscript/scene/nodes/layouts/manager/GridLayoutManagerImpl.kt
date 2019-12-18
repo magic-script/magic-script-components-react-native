@@ -26,10 +26,6 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import kotlin.math.min
 
-/**
- * Grid layout's manager with flexible columns and rows size:
- * column and row will grow to fit the bounding (+ padding) of a child.
- */
 class GridLayoutManagerImpl : GridLayoutManager {
 
     override var parentWidth: Float = WRAP_CONTENT_DIMENSION
@@ -76,12 +72,12 @@ class GridLayoutManagerImpl : GridLayoutManager {
             val row = getRowIndex(i)
             val bounds = childrenBounds[i]!!
 
-            val width = calculateColumnWidth(bounds)
+            val width = bounds.size().x
             if (width > maxChildWidthInColumnMap[col] ?: 0.0F) {
                 maxChildWidthInColumnMap[col] = width
             }
 
-            val height = calculateRowHeight(bounds)
+            val height = bounds.size().y
             if (height > maxChildHeightInRowMap[row] ?: 0.0F) {
                 maxChildHeightInRowMap[row] = height
             }
@@ -181,7 +177,6 @@ class GridLayoutManagerImpl : GridLayoutManager {
                     val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
                     val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
                     child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
-                    println("child[$i] scale=${child.localScale}")
                 }
             }
         }
@@ -203,14 +198,6 @@ class GridLayoutManagerImpl : GridLayoutManager {
             y -= (maxChildHeightInRowMap[i] ?: 0.0F) + itemPadding.top + itemPadding.bottom
         }
         return y
-    }
-
-    private fun calculateColumnWidth(itemBounds: Bounding): Float {
-        return itemBounds.right - itemBounds.left
-    }
-
-    private fun calculateRowHeight(itemBounds: Bounding): Float {
-        return itemBounds.top - itemBounds.bottom
     }
 
     private fun getColumnIndex(childIdx: Int): Int {

@@ -1,6 +1,7 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -28,11 +29,14 @@ class RectLayoutManagerTest {
         rectLayoutManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
         rectLayoutManager.contentHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
         rectLayoutManager.contentVerticalAlignment = Alignment.VerticalAlignment.TOP
-        val children: List<TransformNode> = listOf(NodeBuilder().build())
-        val bound = Bounding(-0.2F, -0.2F, 0.2F, 0.2F)
-        val childrenBounds: Map<Int, Bounding> = mapOf(0 to bound)
+        val children: List<TransformNode> = listOf(
+            NodeBuilder()
+                .withContentBounds(Bounding(-0.2F, -0.2F, 0.2F, 0.2F))
+                .build()
+        )
+        val childrenBounds: MutableMap<Int, Bounding> = mutableMapOf()
 
-        rectLayoutManager.layoutChildren(children, childrenBounds)
+        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds)
 
         val childPos = children[0].localPosition
         assertEquals(0.3f, childPos.x, EPSILON)
@@ -44,14 +48,17 @@ class RectLayoutManagerTest {
         rectLayoutManager.itemPadding = Padding(0f, 0f, 0f, 0f)
         rectLayoutManager.parentWidth = 1f
         rectLayoutManager.parentHeight = 1f
-        val child = NodeBuilder().build()
-        val childBounds = Bounding(0f, 0f, 2f, 1f)
-        val boundsMap = mapOf(0 to childBounds)
+        val children: List<TransformNode> = listOf(
+            NodeBuilder()
+                .withContentBounds(Bounding(0f, 0f, 2f, 1f))
+                .build()
+        )
+        val childrenBounds: MutableMap<Int, Bounding> = mutableMapOf()
 
-        rectLayoutManager.layoutChildren(listOf(child), boundsMap)
+        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds)
 
-        assertEquals(0.5f, child.localScale.x, EPSILON)
-        assertEquals(0.5f, child.localScale.y, EPSILON)
+        assertEquals(0.5f, children[0].localScale.x, EPSILON)
+        assertEquals(0.5f, children[0].localScale.y, EPSILON)
     }
 
 }

@@ -21,6 +21,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.argThat
 import org.mockito.ArgumentMatcher
@@ -102,3 +103,46 @@ fun matchesInexact(bounds: Bounding) = argThat(
 )
 
 // endregion
+
+/**
+ * Calls [LayoutManager.layoutChildren] on a [layoutManager] until
+ * bounds of all children are stable. It usually takes some iterations, depending on children
+ * number, until all children are positioned correctly in a layout and their
+ * bounds do not change anymore.
+ *
+ * We have to use this method in tests instead of [LayoutManager.layoutChildren],
+ * because we don't use the standard layout loop in tests.
+ */
+fun LayoutManager.layoutUntilStableBounds(
+    childrenList: List<TransformNode>,
+    childrenBounds: MutableMap<Int, Bounding>
+) {
+    do {
+        val boundsChanged = measureChildren(childrenList, childrenBounds)
+        layoutChildren(childrenList, childrenBounds)
+    } while (!boundsChanged)
+}
+
+/**
+ * Measures all children bounds and return true if bounding of any child
+ * has changed or false otherwise
+ *
+ * @param childrenList children list
+ * @param childrenBounds current children bounds map (pass an empty map)
+ */
+private fun measureChildren(
+    childrenList: List<TransformNode>,
+    childrenBounds: MutableMap<Int, Bounding>
+): Boolean {
+    var changed = false
+    for (i in childrenList.indices) {
+        val node = childrenList[i]
+        val oldBounds = childrenBounds[i] ?: Bounding()
+        childrenBounds[i] = node.getBounding()
+
+        if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+            changed = true
+        }
+    }
+    return changed
+}

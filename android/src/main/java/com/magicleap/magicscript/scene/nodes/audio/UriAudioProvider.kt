@@ -42,6 +42,8 @@ class UriAudioProvider(private val context: Context) :
                     val inputStream: InputStream =
                         if (uri.toString().startsWith("android.resource")) {
                             getLocalInputStream(uri)
+                        } else if (uri.toString().startsWith("content://")) {
+                            getLocalContentStream(uri)
                         } else {
                             getRemoteInputStream(uri)
                         }
@@ -88,6 +90,10 @@ class UriAudioProvider(private val context: Context) :
             resources.getIdentifier(filename, "raw", context.packageName)
 
         return resources.openRawResource(identifier)
+    }
+
+    private fun getLocalContentStream(uri: Uri): InputStream {
+        return context.contentResolver.openInputStream(uri)
     }
 
     override fun onDestroy() {

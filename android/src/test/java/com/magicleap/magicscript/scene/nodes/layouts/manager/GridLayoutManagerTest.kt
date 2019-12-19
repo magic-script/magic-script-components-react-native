@@ -37,7 +37,7 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should scale down children proportionally to their size when parent size is limited`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
@@ -45,10 +45,9 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should set back initial scale on children when parent width updated to unlimited`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds)
-
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
         manager.parentWidth = UiLayout.WRAP_CONTENT_DIMENSION
-        manager.layoutUntilStableBounds(childrenList, childrenBounds)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(1f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1f, childrenList[1].localScale.x, EPSILON)
@@ -56,9 +55,9 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should use apply previous scale when padding set back to 0`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
         manager.itemPadding = Padding(0f, 0f, 0f, 0f)
-        manager.layoutUntilStableBounds(childrenList, childrenBounds)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)

@@ -112,15 +112,25 @@ fun matchesInexact(bounds: Bounding) = argThat(
  *
  * We have to use this method in tests instead of [LayoutManager.layoutChildren],
  * because we don't use the standard layout loop in tests.
+ *
+ * @param maxIterations maximum number of layout iterations
+ * @throws RuntimeException when [maxIterations] number is not big enough
+ * in order to bounds were stable
  */
 fun LayoutManager.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, Bounding>
+    childrenBounds: MutableMap<Int, Bounding>,
+    maxIterations: Int
 ) {
+    var iterations = 0
     do {
+        iterations++
+        if (iterations > maxIterations) {
+            throw RuntimeException("maxIterations is not enough in order to bounds were stable")
+        }
         val boundsChanged = measureChildren(childrenList, childrenBounds)
         layoutChildren(childrenList, childrenBounds)
-    } while (!boundsChanged)
+    } while (boundsChanged)
 }
 
 /**

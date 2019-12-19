@@ -36,7 +36,7 @@ class RectLayoutManagerTest {
         )
         val childrenBounds: MutableMap<Int, Bounding> = mutableMapOf()
 
-        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds)
+        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds, 10)
 
         val childPos = children[0].localPosition
         assertEquals(0.3f, childPos.x, EPSILON)
@@ -55,7 +55,7 @@ class RectLayoutManagerTest {
         )
         val childrenBounds: MutableMap<Int, Bounding> = mutableMapOf()
 
-        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds)
+        rectLayoutManager.layoutUntilStableBounds(children, childrenBounds, 10)
 
         assertEquals(0.5f, children[0].localScale.x, EPSILON)
         assertEquals(0.5f, children[0].localScale.y, EPSILON)

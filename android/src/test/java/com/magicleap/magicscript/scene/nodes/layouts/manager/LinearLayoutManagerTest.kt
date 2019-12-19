@@ -58,7 +58,7 @@ class LinearLayoutManagerTest {
     fun `should change children position when top padding set`() {
         linearManager.itemPadding = Padding(0.5F, 0f, 0f, 0f)
 
-        linearManager.layoutUntilStableBounds(childrenList, childrenBounds)
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         childrenList[0].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
         childrenList[1].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
@@ -71,7 +71,7 @@ class LinearLayoutManagerTest {
         linearManager.parentWidth = 1f
         linearManager.parentHeight = 1f
 
-        linearManager.layoutUntilStableBounds(childrenList, childrenBounds)
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         // 0.45 = (parent width - horizontal padding) / child width
         assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)

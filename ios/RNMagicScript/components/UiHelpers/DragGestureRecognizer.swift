@@ -35,6 +35,7 @@ import SceneKit
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         if touches.count != 1 {
           state = .failed
         }
@@ -69,6 +70,7 @@ import SceneKit
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("BUKA \(self.classForCoder) \(#function)")
         if let cameraNode = getCameraNode?(),
             let ray = Ray(gesture: self, cameraNode: cameraNode),
             let dragRange = dragNode?.dragRange, dragRange > 0 {
@@ -79,14 +81,17 @@ import SceneKit
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("BUKA \(self.classForCoder) \(#function)")
         state = .ended
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("BUKA \(self.classForCoder) \(#function)")
         state = .cancelled
     }
 
     override func reset() {
+        print("BUKA \(self.classForCoder) \(#function)")
         trackedTouch = nil
         initialRay = nil
         dragNode = nil

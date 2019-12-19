@@ -30,15 +30,18 @@ import SceneKit
     init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         super.init(target: target, action: action)
-        delaysTouchesBegan = true
+    }
+
+    deinit {
+        longpressTimer?.invalidate()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         if let cameraNode = getCameraNode?(),
             let ray = Ray(gesture: self, cameraNode: cameraNode),
             state == .possible,
             let touch = touches.first {
-            print("BUKA \(self.classForCoder) \(#function)")
             let hitNode = nodeSelector.hitTest(ray: ray)
             trackedTouch = (touch, hitNode)
             longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in
@@ -52,6 +55,7 @@ import SceneKit
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         longpressTimer?.invalidate()
         longPressedNode = nil
         trackedTouch = nil
@@ -59,9 +63,17 @@ import SceneKit
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         longpressTimer?.invalidate()
         longPressedNode = nil
         trackedTouch = nil
         state = .cancelled
+    }
+
+    override func reset() {
+        print("BUKA \(self.classForCoder) \(#function)")
+        longpressTimer?.invalidate()
+        longPressedNode = nil
+        trackedTouch = nil
     }
 }

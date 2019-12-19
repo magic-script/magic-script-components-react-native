@@ -26,10 +26,10 @@ import SceneKit
     init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         super.init(target: target, action: action)
-
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         if let cameraNode = getCameraNode?(),
             let ray = Ray(gesture: self, cameraNode: cameraNode) {
             tappedNode = nodeSelector.hitTest(ray: ray)
@@ -38,6 +38,17 @@ import SceneKit
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        print("BUKA \(self.classForCoder) \(#function)")
         state = .ended
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("BUKA \(self.classForCoder) \(#function)")
+        state = .cancelled
+    }
+
+    override func reset() {
+        print("BUKA \(self.classForCoder) \(#function)")
+        tappedNode = nil
     }
 }

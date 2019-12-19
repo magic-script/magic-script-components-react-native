@@ -165,7 +165,7 @@ import SceneKit
         dragGestureRecognizer.getCameraNode = { [weak self] in
             return self?.arView.pointOfView
         }
-        addGestureRecognizer(dragGestureRecognizer)
+//        addGestureRecognizer(dragGestureRecognizer)
 
         let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in
@@ -237,36 +237,36 @@ import SceneKit
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
-        print("BUKA \(self.classForCoder) \(#function)")
+        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         if sender.state == .ended {
             UiNodesManager.instance.handleNodeTap(sender.tappedNode)
-        }
+            #if targetEnvironment(simulator)
+            guard let cameraNode = cameraNode,
+                let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
 
-    #if targetEnvironment(simulator)
-        guard let cameraNode = cameraNode,
-            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+            if debug && rayCastNode == nil {
+                rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
+                scene.rootNode.addChildNode(rayCastNode!)
+            }
 
-        if debug && rayCastNode == nil {
-            rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
-            scene.rootNode.addChildNode(rayCastNode!)
+            if let node = rayCastNode {
+                node.position = ray.begin
+                node.orientUpVectorAlong(ray.direction)
+                node.scale = SCNVector3(1, ray.length, 1)
+            }
+            #endif
         }
-
-        if let node = rayCastNode {
-            node.position = ray.begin
-            node.orientUpVectorAlong(ray.direction)
-            node.scale = SCNVector3(1, ray.length, 1)
-        }
-    #endif
     }
 
     @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
+        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
     }
 
     @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
-        print("BUKA \(self.classForCoder) \(#function)")
+        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

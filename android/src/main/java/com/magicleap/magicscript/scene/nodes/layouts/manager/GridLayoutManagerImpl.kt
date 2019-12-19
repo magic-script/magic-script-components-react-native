@@ -23,6 +23,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTEN
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import kotlin.math.min
 
@@ -64,7 +65,10 @@ class GridLayoutManagerImpl : GridLayoutManager {
     // <row index, max child height in that row> pairs
     private val maxChildHeightInRowMap = mutableMapOf<Int, Float>()
 
+    private var childrenList = listOf<TransformNode>()
+
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        this.childrenList = children
         maxChildWidthInColumnMap.clear()
         maxChildHeightInRowMap.clear()
         for (i in 0 until children.size) {
@@ -108,6 +112,16 @@ class GridLayoutManagerImpl : GridLayoutManager {
         for (i in 0 until children.size) {
             layoutNode(i, children[i], childrenBounds[i]!!)
         }
+    }
+
+    override fun getLayoutBounds(): Bounding {
+        val childBounds = Utils.calculateSumBounds(childrenList)
+        return Bounding(
+            childBounds.left - itemPadding.left,
+            childBounds.bottom - itemPadding.bottom,
+            childBounds.right + itemPadding.right,
+            childBounds.top + itemPadding.top
+        )
     }
 
     // sets the proper position for the child node

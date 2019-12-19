@@ -54,7 +54,7 @@ class GridLayoutManagerTest {
     }
 
     @Test
-    fun `should use apply previous scale when padding set back to 0`() {
+    fun `should apply previous scale when padding set back to 0`() {
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
         manager.itemPadding = Padding(0f, 0f, 0f, 0f)
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)

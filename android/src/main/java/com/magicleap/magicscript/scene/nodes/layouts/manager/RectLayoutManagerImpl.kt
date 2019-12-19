@@ -7,6 +7,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTEN
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import com.magicleap.magicscript.utils.logMessage
@@ -39,8 +40,10 @@ open class RectLayoutManagerImpl : RectLayoutManager {
 
     private var maxChildWidth: Float = Float.MAX_VALUE
     private var maxChildHeight: Float = Float.MAX_VALUE
+    private var childrenList = listOf<TransformNode>()
 
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        this.childrenList = children
         if (children.size > 1) {
             logMessage("RectLayout can only have one child!", true)
         }
@@ -60,7 +63,36 @@ open class RectLayoutManagerImpl : RectLayoutManager {
         }
     }
 
-    protected fun layoutNode(node: Node, nodeBounds: Bounding, sizeLimit: Vector2) {
+    override fun getLayoutBounds(): Bounding {
+        val childBounds = Utils.calculateSumBounds(childrenList)
+        val spacing = itemPadding
+
+        var sizeX = parentWidth
+        var sizeY = parentHeight
+
+        if (parentWidth == WRAP_CONTENT_DIMENSION) {
+            sizeX = childBounds.size().x
+        } else {
+            spacing.left = 0f
+            spacing.right = 0f
+        }
+
+        if (parentHeight == WRAP_CONTENT_DIMENSION) {
+            sizeY = childBounds.size().y
+        } else {
+            spacing.top = 0f
+            spacing.bottom = 0f
+        }
+
+        return Bounding(
+            -sizeX / 2 - spacing.left,
+            -sizeY / 2 - spacing.bottom,
+            sizeX / 2 + spacing.right,
+            sizeY / 2 + spacing.top
+        )
+    }
+
+    private fun layoutNode(node: Node, nodeBounds: Bounding, sizeLimit: Vector2) {
         val nodeWidth = nodeBounds.right - nodeBounds.left
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
         val boundsCenterX = nodeBounds.left + nodeWidth / 2

@@ -7,7 +7,6 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -41,31 +40,12 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     }
 
     override fun getContentBounding(): Bounding {
-        val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val spacing = properties.read(PROP_PADDING) ?: Padding()
-
-        var sizeX = width
-        var sizeY = height
-
-        if (width == WRAP_CONTENT_DIMENSION) {
-            sizeX = childBounds.size().x
-        } else {
-            spacing.left = 0f
-            spacing.right = 0f
-        }
-
-        if (height == WRAP_CONTENT_DIMENSION) {
-            sizeY = childBounds.size().y
-        } else {
-            spacing.top = 0f
-            spacing.bottom = 0f
-        }
-
+        val layoutBounds = layoutManager.getLayoutBounds()
         return Bounding(
-            -sizeX / 2 + contentNode.localPosition.x - spacing.left,
-            -sizeY / 2 + contentNode.localPosition.y - spacing.bottom,
-            sizeX / 2 + contentNode.localPosition.x + spacing.right,
-            sizeY / 2 + contentNode.localPosition.y + spacing.top
+            layoutBounds.left + contentNode.localPosition.x,
+            layoutBounds.bottom + contentNode.localPosition.y,
+            layoutBounds.right + contentNode.localPosition.x,
+            layoutBounds.top + contentNode.localPosition.y
         )
     }
 

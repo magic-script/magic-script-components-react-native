@@ -16,16 +16,13 @@
 
 package com.magicleap.magicscript.scene.nodes
 
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.nhaarman.mockitokotlin2.*
 import junit.framework.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
@@ -44,6 +41,9 @@ class UiLinearLayoutTest {
     @Before
     fun setUp() {
         linearLayoutManager = mock()
+        whenever(linearLayoutManager.getLayoutBounds()).thenReturn(
+            Bounding(1f, 1f, 1f, 1f)
+        )
     }
 
     @Test

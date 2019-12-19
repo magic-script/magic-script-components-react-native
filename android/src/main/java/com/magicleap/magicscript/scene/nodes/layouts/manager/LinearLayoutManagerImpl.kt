@@ -23,6 +23,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import kotlin.math.min
 
@@ -39,7 +40,10 @@ class LinearLayoutManagerImpl : LinearLayoutManager {
 
     override var isVertical = true
 
+    private var childrenList = listOf<TransformNode>()
+
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        this.childrenList = children
         rescaleChildren(children, childrenBounds)
 
         val itemsSpan = calculateSpan(childrenBounds)
@@ -112,6 +116,16 @@ class LinearLayoutManagerImpl : LinearLayoutManager {
 
             node.localPosition = Vector3(x, y, node.localPosition.z)
         }
+    }
+
+    override fun getLayoutBounds(): Bounding {
+        val childBounds = Utils.calculateSumBounds(childrenList)
+        return Bounding(
+            childBounds.left - itemPadding.left,
+            childBounds.bottom - itemPadding.bottom,
+            childBounds.right + itemPadding.right,
+            childBounds.top + itemPadding.top
+        )
     }
 
     private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {

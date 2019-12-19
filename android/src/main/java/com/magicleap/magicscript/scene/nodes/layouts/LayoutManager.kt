@@ -28,4 +28,6 @@ interface LayoutManager {
     var parentHeight: Float
 
     fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>)
+
+    fun getLayoutBounds(): Bounding
 }

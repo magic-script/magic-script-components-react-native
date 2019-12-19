@@ -25,8 +25,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -67,13 +65,12 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     override fun getContentBounding(): Bounding {
-        val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
+        val layoutBounds = layoutManager.getLayoutBounds()
         return Bounding(
-            childBounds.left + contentNode.localPosition.x - itemPadding.left,
-            childBounds.bottom + contentNode.localPosition.y - itemPadding.bottom,
-            childBounds.right + contentNode.localPosition.x + itemPadding.right,
-            childBounds.top + contentNode.localPosition.y + itemPadding.top
+            layoutBounds.left + contentNode.localPosition.x,
+            layoutBounds.bottom + contentNode.localPosition.y,
+            layoutBounds.right + contentNode.localPosition.x,
+            layoutBounds.top + contentNode.localPosition.y
         )
     }
 

@@ -69,7 +69,7 @@ class LinearLayoutManagerTest {
         linearManager.itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
         linearManager.isVertical = true
         linearManager.parentWidth = 1f
-        linearManager.parentHeight = 1f
+        linearManager.parentHeight = 2f
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 

@@ -18,10 +18,8 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.Vector2
 
 class PageViewLayoutManagerImpl : RectLayoutManagerImpl(), PageViewLayoutManager {
 
@@ -32,23 +30,17 @@ class PageViewLayoutManagerImpl : RectLayoutManagerImpl(), PageViewLayoutManager
     override var visiblePage: Int = 0
 
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
-        if (children.isNotEmpty() && childrenBounds.isNotEmpty()) {
-            children.forEachIndexed { index, node ->
-                if (index == visiblePage) {
-                    node.show()
-                    childrenBounds[index]?.let { childBounds ->
-                        val childSize = childBounds.size()
-                        val sizeLimitX =
-                            if (parentWidth != WRAP_CONTENT_DIMENSION) parentWidth else childSize.x
-                        val sizeLimitY =
-                            if (parentHeight != WRAP_CONTENT_DIMENSION) parentHeight else childSize.y
-                        val sizeLimit = Vector2(sizeLimitX, sizeLimitY)
-                        layoutNode(node, childBounds, sizeLimit)
-                    }
-                } else {
-                    node.hide()
-                }
+        children.forEachIndexed { index, node ->
+            if (index == visiblePage) {
+                node.show()
+
+            } else {
+                node.hide()
             }
+        }
+        if (children.size > visiblePage) {
+            val activeChild = children[visiblePage]
+            super.layoutChildren(listOf(activeChild), childrenBounds)
         }
     }
 }

@@ -49,9 +49,9 @@ class NativeFilePickerNode(
 
         const val FILE_TYPE_ALL = "*/*"
         const val CHOOSER_TITLE_DEFAULT = "Choose a file"
-
-        private val REQUEST_CODE = UUID.randomUUID().hashCode()
     }
+
+    private val REQUEST_CODE: Int = UUID.randomUUID().hashCode() and 0xFF
 
     var onFileSelected: ((filePath: String) -> Unit)? = null
 

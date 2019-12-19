@@ -42,7 +42,6 @@ import SceneKit
 
         backgroundNode = NodesFactory.createPlaneNode(width: 0.0, height: 0.0, color: backgroundColor)
         backgroundNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
-        backgroundNode.renderingOrder = 0
         contentNode.addChildNode(backgroundNode)
     }
 
@@ -60,7 +59,6 @@ import SceneKit
     @objc override func addChild(_ child: TransformNode) -> Bool {
         super.addChild(child)
         childNode = child
-        child.renderingOrder = 1
         setNeedsLayout()
         return true
     }
@@ -87,6 +85,8 @@ import SceneKit
             plane.height = size.height
             plane.firstMaterial?.diffuse.contents = backgroundColor
         }
+
+        backgroundNode.position = SCNVector3(0.0, 0.0, -0.005)
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {

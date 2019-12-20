@@ -42,7 +42,7 @@ class UiLinearLayout @JvmOverloads constructor(
         // default values
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ALIGNMENT = "top-left"
-        const val DEFAULT_ITEM_ALIGNMENT = "center-center"
+        const val DEFAULT_ITEM_ALIGNMENT = "top-left"
         // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }

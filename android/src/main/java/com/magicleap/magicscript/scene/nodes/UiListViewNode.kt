@@ -67,7 +67,10 @@ open class UiListViewNode(
 
     override fun applyProperties(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
-            props.putString(PROP_SCROLL_DIRECTION, props.getString(PROP_ORIENTATION))
+            val orientation = props.getString(PROP_ORIENTATION)
+            properties.putString(PROP_SCROLL_DIRECTION, orientation)
+            props.putString(PROP_SCROLL_DIRECTION, orientation)
+            containerNode.update(JavaOnlyMap.of(UiLinearLayout.PROP_ORIENTATION, orientation))
         }
         super.applyProperties(props)
 

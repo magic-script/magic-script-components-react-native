@@ -6,6 +6,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +34,24 @@ class GridLayoutManagerTest {
         val child1 = NodeBuilder().withContentBounds(child1Bounds).build()
         val child2 = NodeBuilder().withContentBounds(child2Bounds).build()
         childrenList = listOf(child1, child2)
+    }
+
+    @Test
+    fun `should not be able to set 0 columns and rows together`() {
+        manager.columns = 0
+        manager.rows = 0
+
+        manager.rows shouldEqual 1
+        manager.columns shouldEqual 0
+    }
+
+    @Test
+    fun `columns should take precedence over rows when both are set`() {
+        manager.columns = 2
+        manager.rows = 3
+
+        manager.columns shouldEqual 2
+        manager.rows shouldEqual 0
     }
 
     @Test

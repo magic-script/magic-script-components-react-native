@@ -33,22 +33,33 @@ class GridLayoutManagerImpl : GridLayoutManager {
 
     override var parentHeight: Float = WRAP_CONTENT_DIMENSION
 
-    override var columns: Int = 1
+    override var columns: Int = 0
         set(value) {
-            if (value == 0 && rows == 0) {
-                field = 1 // can't be 0 along with rows
+            backedColumns = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedRows == 0) {
+                rows = 1
             } else {
                 field = value
             }
-
+            // columns take precedence over rows when both != 0
+            if (value != 0 && backedRows != 0) {
+                rows = 0
+            }
         }
 
-    override var rows: Int = 0
+    override var rows: Int = 1
         set(value) {
-            if (value == 0 && columns == 0) {
-                field = 1 // can't be 0 along with columns
-            } else {
+            backedRows = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedColumns == 0) {
+                field = 1
+            } else if (backedColumns == 0) {
                 field = value
+            } else {
+                field = 0
             }
         }
 
@@ -66,6 +77,10 @@ class GridLayoutManagerImpl : GridLayoutManager {
     private val maxChildHeightInRowMap = mutableMapOf<Int, Float>()
 
     private var childrenList = listOf<TransformNode>()
+
+    // user specified columns and rows
+    private var backedColumns = columns
+    private var backedRows = rows
 
     override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
         this.childrenList = children

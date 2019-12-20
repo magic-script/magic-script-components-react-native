@@ -14,16 +14,14 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.*
-import junit.framework.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,24 +45,33 @@ class UiLinearLayoutTest {
     }
 
     @Test
-    fun shouldApplyVerticalOrientationByDefault() {
-        val node = UiLinearLayout(JavaOnlyMap(), linearLayoutManager)
+    fun `should layout children on build`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(linearLayoutManager).isVertical = true
         verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested) // redraw already happened
     }
 
     @Test
-    fun shouldApplyItemPaddingWhenItemPaddingPropertyPresent() {
+    fun `should apply vertical orientation by default`() {
+        val node = createNode(JavaOnlyMap())
+        node.build()
+
+        verify(linearLayoutManager).isVertical = true
+    }
+
+    @Test
+    fun `should apply item padding when item padding property present`() {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
-        val node = UiLinearLayout(props, linearLayoutManager)
+        val node = createNode(props)
         node.build()
 
         verify(linearLayoutManager).itemPadding = any()
-        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+    }
+
+    private fun createNode(props: JavaOnlyMap): UiLinearLayout {
+        return UiLinearLayout(props, linearLayoutManager)
     }
 
 }

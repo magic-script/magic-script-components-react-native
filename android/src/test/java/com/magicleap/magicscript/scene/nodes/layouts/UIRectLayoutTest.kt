@@ -28,7 +28,7 @@ class UIRectLayoutTest {
     @Test
     fun `should set center-center alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
-        val node = UiRectLayout(props, rectLayoutManager)
+        val node = createNode(props)
         node.build()
 
         verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
@@ -38,7 +38,7 @@ class UIRectLayoutTest {
     @Test
     fun `should set passed alignment`() {
         val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
-        val node = UiRectLayout(props, rectLayoutManager)
+        val node = createNode(props)
         node.build()
 
         verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
@@ -48,12 +48,17 @@ class UIRectLayoutTest {
     @Test
     fun `should return correct bounds`() {
         val props = reactMapOf(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
-        val node = UiRectLayout(props, rectLayoutManager)
+        val node = createNode(props)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
-        node.build() // invokes the layout loop
+        node.build()
 
         val bounds = node.getBounding()
 
         bounds shouldEqualInexact expectedBounds
     }
+
+    private fun createNode(props: JavaOnlyMap): UiRectLayout {
+        return UiRectLayout(props, rectLayoutManager)
+    }
+
 }

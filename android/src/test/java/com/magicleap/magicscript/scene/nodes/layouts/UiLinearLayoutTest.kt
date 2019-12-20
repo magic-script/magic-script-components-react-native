@@ -14,19 +14,14 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.layouts
 
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
-import junit.framework.Assert.assertFalse
+import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,27 +39,39 @@ class UiLinearLayoutTest {
     @Before
     fun setUp() {
         linearLayoutManager = mock()
+        whenever(linearLayoutManager.getLayoutBounds()).thenReturn(
+            Bounding(1f, 1f, 1f, 1f)
+        )
     }
 
     @Test
-    fun shouldApplyVerticalOrientationByDefault() {
-        val node = UiLinearLayout(JavaOnlyMap(), linearLayoutManager)
+    fun `should layout children on build`() {
+        val node = createNode(JavaOnlyMap())
+        node.build()
+
+        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+    }
+
+    @Test
+    fun `should apply vertical orientation by default`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
 
         verify(linearLayoutManager).isVertical = true
-        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested) // redraw already happened
     }
 
     @Test
-    fun shouldApplyItemPaddingWhenItemPaddingPropertyPresent() {
+    fun `should apply item padding when item padding property present`() {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
-        val node = UiLinearLayout(props, linearLayoutManager)
+        val node = createNode(props)
         node.build()
 
         verify(linearLayoutManager).itemPadding = any()
-        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
+    }
+
+    private fun createNode(props: JavaOnlyMap): UiLinearLayout {
+        return UiLinearLayout(props, linearLayoutManager)
     }
 
 }

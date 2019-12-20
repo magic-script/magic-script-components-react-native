@@ -26,8 +26,8 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
-import junit.framework.Assert.assertEquals
 import org.amshove.kluent.shouldEqual
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -16,15 +16,15 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.nhaarman.mockitokotlin2.mock
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
+import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.layoutUntilStableBounds
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
+import org.amshove.kluent.shouldNotEqual
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,36 +32,64 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class LinearLayoutManagerTest {
-
-    private lateinit var linearLayout: UiLinearLayout
+    private val EPSILON = 1e-5f
     private lateinit var linearManager: LinearLayoutManager
+    private lateinit var childrenList: List<TransformNode>
+    // <child index, bounding>
+    private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     @Before
     fun setUp() {
-        this.linearLayout = mock()
         this.linearManager = LinearLayoutManagerImpl()
-        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
         linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
-        linearManager.itemPadding = Padding(1F, 1F, 1F, 1F)
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
+
+        childrenList = listOf(
+            NodeBuilder()
+                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .build(),
+            NodeBuilder()
+                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .build()
+        )
     }
 
     @Test
-    fun `should work for empty children list`() {
-        val children: List<Node> = emptyList()
+    fun `should change children position when top padding set`() {
+        linearManager.itemPadding = Padding(0.5F, 0f, 0f, 0f)
 
-        linearManager.layoutChildren(children, mapOf())
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
-        assertTrue(children.isEmpty())
+        childrenList[0].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
+        childrenList[1].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
     }
 
     @Test
-    fun `should position child node`() {
-        val children: List<Node> = listOf(Node())
-        val bound = Bounding(0F, 0F, 1F, 1F)
-        val bounds: Map<Int, Bounding> = mapOf(0 to bound, 1 to bound)
+    fun `should scale child node if parent size limited`() {
+        linearManager.itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
+        linearManager.isVertical = true
+        linearManager.parentWidth = 1f
+        linearManager.parentHeight = 2f
 
-        linearManager.layoutChildren(children, bounds)
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
-        assertNotEquals(Vector3(0F, 0F, 0F), children.get(0).localPosition)
+        // 0.45 = (parent width - horizontal padding) / child width
+        assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
+        assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
     }
+
+    @Test
+    fun `number of columns should take precedence over rows`() {
+        linearManager.itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
+        linearManager.isVertical = true
+        linearManager.parentWidth = 1f
+        linearManager.parentHeight = 2f
+
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+
+        // 0.45 = (parent width - horizontal padding) / child width
+        assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
+        assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
+    }
+
 }

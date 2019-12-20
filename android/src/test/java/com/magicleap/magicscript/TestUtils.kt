@@ -21,6 +21,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.argThat
 import org.mockito.ArgumentMatcher
@@ -92,7 +93,6 @@ fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
 }
 
 // region Custom matchers
-
 infix fun Bounding.shouldEqualInexact(other: Bounding) =
     assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
 
@@ -103,3 +103,56 @@ fun matchesInexact(bounds: Bounding) = argThat(
 )
 
 // endregion
+
+/**
+ * Calls [LayoutManager.layoutChildren] on a [layoutManager] until
+ * bounds of all children are stable. It usually takes some iterations, depending on children
+ * number, until all children are positioned correctly in a layout and their
+ * bounds do not change anymore.
+ *
+ * We have to use this method in tests instead of [LayoutManager.layoutChildren],
+ * because we don't use the standard layout loop in tests.
+ *
+ * @param maxIterations maximum number of layout iterations
+ * @throws RuntimeException when [maxIterations] number is not big enough
+ * in order to bounds were stable
+ */
+fun LayoutManager.layoutUntilStableBounds(
+    childrenList: List<TransformNode>,
+    childrenBounds: MutableMap<Int, Bounding>,
+    maxIterations: Int
+) {
+    var iterations = 0
+    do {
+        iterations++
+        if (iterations > maxIterations) {
+            throw RuntimeException("maxIterations is not enough in order to bounds were stable")
+        }
+        val boundsChanged = measureChildren(childrenList, childrenBounds)
+        layoutChildren(childrenList, childrenBounds)
+    } while (boundsChanged)
+}
+
+/**
+ * Measures all children bounds and return true if bounding of any child
+ * has changed or false otherwise
+ *
+ * @param childrenList children list
+ * @param childrenBounds current children bounds map (pass an empty map)
+ */
+private fun measureChildren(
+    childrenList: List<TransformNode>,
+    childrenBounds: MutableMap<Int, Bounding>
+): Boolean {
+    var changed = false
+    for (i in childrenList.indices) {
+        val node = childrenList[i]
+        val oldBounds = childrenBounds[i] ?: Bounding()
+        childrenBounds[i] = node.getBounding()
+
+        if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+            changed = true
+        }
+    }
+    return changed
+}

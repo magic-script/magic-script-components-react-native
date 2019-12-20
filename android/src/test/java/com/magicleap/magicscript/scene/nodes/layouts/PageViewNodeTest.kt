@@ -77,19 +77,6 @@ class PageViewNodeTest {
     }
 
     @Test
-    fun `should rescale child if bigger than layout size`() {
-        val props = reactMapOf(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
-        val node = PageViewNode(props, layoutManager)
-        val childNode = NodeBuilder()
-            .withContentBounds(Bounding(0f, 0f, 2f, 1f))
-            .build()
-        node.addContent(childNode)
-        node.build() // invokes the layout loop
-
-        Assert.assertEquals(Vector3(0.5f, 0.5f, 1f), childNode.localScale)
-    }
-
-    @Test
     fun `should set visible page when is passed`() {
         val props = reactMapOf(PageViewNode.PROP_VISIBLE_PAGE, 1.0)
         val node = PageViewNode(props, layoutManager)

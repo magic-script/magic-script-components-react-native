@@ -14,18 +14,14 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import junit.framework.Assert.assertFalse
+import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,41 +39,48 @@ class UiGridLayoutTest {
     @Before
     fun setUp() {
         gridLayoutManager = mock()
+        whenever(gridLayoutManager.getLayoutBounds()).thenReturn(
+            Bounding(1f, 1f, 1f, 1f)
+        )
     }
 
     @Test
-    fun shouldApplyDefaultNumberOfColumns() {
-        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
+    fun `should layout children on build`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(gridLayoutManager).columns = UiGridLayout.COLUMNS_DEFAULT
-        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-        assertFalse(node.redrawRequested) // redraw already happened
-    }
-
-    @Test
-    fun shouldApplyDefaultNumberOfRows() {
-        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
-        node.build()
-
-        verify(gridLayoutManager).rows = UiGridLayout.ROWS_DEFAULT
         verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
     }
 
     @Test
-    fun shouldApplyItemAlignmentWhenItemAlignmentPropertyPresent() {
+    fun `should use dynamic sized column by default`() {
+        val node = createNode(JavaOnlyMap())
+        node.build()
+
+        verify(gridLayoutManager).columns = 0 // 0 means dynamic
+    }
+
+    @Test
+    fun `should use 1 row by default`() {
+        val node = createNode(JavaOnlyMap())
+        node.build()
+
+        verify(gridLayoutManager).rows = 1
+    }
+
+    @Test
+    fun `should apply item alignment when item alignment property present`() {
         val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
-        val node = UiGridLayout(props, gridLayoutManager)
+        val node = createNode(props)
         node.build()
 
         verify(gridLayoutManager).itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
         verify(gridLayoutManager).itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
-        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
     }
 
     @Test
-    fun shouldUpdateNumberOfColumnsWhenColumnsPropertyUpdated() {
-        val node = UiGridLayout(JavaOnlyMap(), gridLayoutManager)
+    fun `should update number of columns when columns property updated`() {
+        val node = createNode(JavaOnlyMap())
         node.build()
 
         val columns = 3
@@ -87,5 +90,8 @@ class UiGridLayoutTest {
         verify(gridLayoutManager).columns = columns
     }
 
+    private fun createNode(props: JavaOnlyMap): UiGridLayout {
+        return UiGridLayout(props, gridLayoutManager)
+    }
 
 }

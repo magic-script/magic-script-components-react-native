@@ -18,36 +18,48 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.getUserSpecifiedScale
+import kotlin.math.min
 
-/**
- * Grid layout's manager with flexible columns and rows size:
- * column and row will grow to fit the bounding (+ padding) of a child.
- */
 class GridLayoutManagerImpl : GridLayoutManager {
 
-    override var parentWidth: Float = 0F
+    override var parentWidth: Float = WRAP_CONTENT_DIMENSION
 
-    override var parentHeight: Float = 0F
+    override var parentHeight: Float = WRAP_CONTENT_DIMENSION
 
-    override var columns: Int = 1
+    override var columns: Int = 0
         set(value) {
-            if (value == 0 && rows == 0) {
-                field = 1 // can't be 0 along with rows
+            backedColumns = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedRows == 0) {
+                rows = 1
             } else {
                 field = value
             }
-
+            // columns take precedence over rows when both != 0
+            if (value != 0 && backedRows != 0) {
+                rows = 0
+            }
         }
 
-    override var rows: Int = 0
+    override var rows: Int = 1
         set(value) {
-            if (value == 0 && columns == 0) {
-                field = 1 // can't be 0 along with columns
-            } else {
+            backedRows = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedColumns == 0) {
+                field = 1
+            } else if (backedColumns == 0) {
                 field = value
+            } else {
+                field = 0
             }
         }
 
@@ -58,35 +70,73 @@ class GridLayoutManagerImpl : GridLayoutManager {
 
     override var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
 
-    // <column index, column width> pairs
-    private val columnsWidthMap = mutableMapOf<Int, Float>()
+    // <column index, max child width in that column> pairs
+    private val maxChildWidthInColumnMap = mutableMapOf<Int, Float>()
 
-    // <row index, row height> pairs
-    private val rowsHeightMap = mutableMapOf<Int, Float>()
+    // <row index, max child height in that row> pairs
+    private val maxChildHeightInRowMap = mutableMapOf<Int, Float>()
 
-    override fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>) {
-        columnsWidthMap.clear()
-        rowsHeightMap.clear()
+    private var childrenList = listOf<TransformNode>()
 
+    // user specified columns and rows
+    private var backedColumns = columns
+    private var backedRows = rows
+
+    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        this.childrenList = children
+        maxChildWidthInColumnMap.clear()
+        maxChildHeightInRowMap.clear()
         for (i in 0 until children.size) {
             val col = getColumnIndex(i)
             val row = getRowIndex(i)
             val bounds = childrenBounds[i]!!
 
-            val width = calculateColumnWidth(bounds)
-            if (width > columnsWidthMap[col] ?: 0.0F) {
-                columnsWidthMap[col] = width
+            val width = bounds.size().x
+            if (width > maxChildWidthInColumnMap[col] ?: 0.0F) {
+                maxChildWidthInColumnMap[col] = width
             }
 
-            val height = calculateRowHeight(bounds)
-            if (height > rowsHeightMap[row] ?: 0.0F) {
-                rowsHeightMap[row] = height
+            val height = bounds.size().y
+            if (height > maxChildHeightInRowMap[row] ?: 0.0F) {
+                maxChildHeightInRowMap[row] = height
             }
         }
+
+        if (parentWidth != WRAP_CONTENT_DIMENSION) {
+            val paddingHorizontal = itemPadding.left + itemPadding.right
+            val columnsSumWidth =
+                maxChildWidthInColumnMap.values.sum() + maxChildWidthInColumnMap.size * paddingHorizontal
+            val columnsScale = parentWidth / columnsSumWidth
+            maxChildWidthInColumnMap.forEach {
+                maxChildWidthInColumnMap[it.key] = columnsScale * it.value
+            }
+        }
+
+        if (parentHeight != WRAP_CONTENT_DIMENSION) {
+            val paddingVertical = itemPadding.top + itemPadding.bottom
+            val rowsSumHeight =
+                maxChildHeightInRowMap.values.sum() + maxChildHeightInRowMap.size * paddingVertical
+            val rowsScale = parentHeight / rowsSumHeight
+            maxChildHeightInRowMap.forEach {
+                maxChildHeightInRowMap[it.key] = rowsScale * it.value
+            }
+        }
+
+        rescaleChildren(children, childrenBounds)
 
         for (i in 0 until children.size) {
             layoutNode(i, children[i], childrenBounds[i]!!)
         }
+    }
+
+    override fun getLayoutBounds(): Bounding {
+        val childBounds = Utils.calculateSumBounds(childrenList)
+        return Bounding(
+            childBounds.left - itemPadding.left,
+            childBounds.bottom - itemPadding.bottom,
+            childBounds.right + itemPadding.right,
+            childBounds.top + itemPadding.top
+        )
     }
 
     // sets the proper position for the child node
@@ -94,10 +144,11 @@ class GridLayoutManagerImpl : GridLayoutManager {
         val col = getColumnIndex(index)
         val row = getRowIndex(index)
 
-        val columnWidth = columnsWidthMap[col] ?: 0.0F
+        val columnWidth =
+            maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
         val nodeWidth = nodeBounds.right - nodeBounds.left
 
-        val rowHeight = rowsHeightMap[row] ?: 0.0F
+        val rowHeight = maxChildHeightInRowMap[row] ?: 0.0F + itemPadding.bottom + itemPadding.top
         val nodeHeight = nodeBounds.top - nodeBounds.bottom
 
         val boundsCenterX = nodeBounds.left + nodeWidth / 2
@@ -140,11 +191,31 @@ class GridLayoutManagerImpl : GridLayoutManager {
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
+    private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+        for (i in children.indices) {
+            val child = children[i]
+            val childSize = (childrenBounds[i] ?: Bounding()).size()
+            if (child.localScale.x > 0 && child.localScale.y > 0) {
+                val childWidth = childSize.x / child.localScale.x
+                val childHeight = childSize.y / child.localScale.y
+                if (childWidth > 0 && childHeight > 0) {
+                    val maxChildWidth = calculateMaxChildWidth(i)
+                    val maxChildHeight = calculateMaxChildHeight(i)
+                    val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
+                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
+                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
+                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
+                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
+                }
+            }
+        }
+    }
+
     // returns the position (x) of a column at the given index (includes padding)
     private fun getColumnX(columnIdx: Int): Float {
         var x = 0.0F // start
         for (i in 0 until columnIdx) {
-            x += (columnsWidthMap[i] ?: 0.0F) // + padding
+            x += (maxChildWidthInColumnMap[i] ?: 0.0F) + itemPadding.left + itemPadding.right
         }
         return x
     }
@@ -153,17 +224,9 @@ class GridLayoutManagerImpl : GridLayoutManager {
     private fun getRowY(rowIdx: Int): Float {
         var y = 0.0F // start
         for (i in 0 until rowIdx) {
-            y -= (rowsHeightMap[i] ?: 0.0F) // + padding
+            y -= (maxChildHeightInRowMap[i] ?: 0.0F) + itemPadding.top + itemPadding.bottom
         }
         return y
-    }
-
-    private fun calculateColumnWidth(itemBounds: Bounding): Float {
-        return itemBounds.right - itemBounds.left + itemPadding.left + itemPadding.right
-    }
-
-    private fun calculateRowHeight(itemBounds: Bounding): Float {
-        return itemBounds.top - itemBounds.bottom + itemPadding.top + itemPadding.bottom
     }
 
     private fun getColumnIndex(childIdx: Int): Int {
@@ -179,6 +242,22 @@ class GridLayoutManagerImpl : GridLayoutManager {
             childIdx % rows
         } else {
             childIdx / columns
+        }
+    }
+
+    private fun calculateMaxChildWidth(childIdx: Int): Float {
+        return if (parentWidth == WRAP_CONTENT_DIMENSION) {
+            Float.MAX_VALUE
+        } else {
+            maxChildWidthInColumnMap[getColumnIndex(childIdx)]!!
+        }
+    }
+
+    private fun calculateMaxChildHeight(childIdx: Int): Float {
+        return if (parentHeight == WRAP_CONTENT_DIMENSION) {
+            Float.MAX_VALUE
+        } else {
+            maxChildHeightInRowMap[getRowIndex(childIdx)]!!
         }
     }
 

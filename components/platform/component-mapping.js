@@ -33,6 +33,7 @@ import ToggleBuilder from "./elements/builders/toggle-builder.js";
 import ToggleGroupBuilder from "./elements/builders/toggle-group-builder.js";
 import VideoBuilder from "./elements/builders/video-builder.js";
 import WebViewBuilder from "./elements/builders/webview-builder.js";
+import FilePickerBuilder from "./elements/builders/file-picker-builder.js";
 
 export default {
   version: "1.0",
@@ -50,6 +51,7 @@ export default {
     circleConfirmation: (componentManager) => new CircleConfirmationBuilder(componentManager),
     dropdownList: componentManager => new DropdownListBuilder(componentManager),
     dropdownListItem: componentManager => new DropdownListItemBuilder(componentManager),
+    filePicker: componentManager => new FilePickerBuilder(componentManager),
     image: componentManager => new ImageBuilder(componentManager),
     listView: (componentManager) => new ListViewBuilder(componentManager),
     listViewItem: (componentManager) => new ListViewItemBuilder(componentManager),

@@ -39,7 +39,6 @@ class CustomArFragment : ArFragment() {
             UiNodesManager.INSTANCE.onTapArPlane(anchor)
         }
 
-
         // Hide the instructions
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)

@@ -120,7 +120,11 @@ export const Events = [
     handler: (componentManager, elementId) => componentManager.addOnToggleChangedEventHandler(elementId)
   },
   {
+    name: "onFileSelected",
+    handler: (componentManager, elementId) => componentManager.addOnFileSelectedEventHandler(elementId)
+  },
+  {
     name: "onVideoPrepared",
     handler: (componentManager, elementId) => componentManager.addOnVideoPreparedEventHandler(elementId)
-  }
+  },
 ];

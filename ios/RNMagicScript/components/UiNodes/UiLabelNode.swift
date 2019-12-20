@@ -20,7 +20,7 @@ class UiLabelNode: UiNode {
     static fileprivate let defaultTextSize: CGFloat = 0.0167
 
     @objc override var alignment: Alignment {
-        get { return .centerCenter }
+        get { return .centerRight }
         set { }
     }
     @objc var text: String? {
@@ -81,10 +81,12 @@ class UiLabelNode: UiNode {
         let buttonToTextHeightMultiplier: CGFloat = 1.1
         let contentWidth: CGFloat = (width > 0) ? width : labelSize.width + buttonToTextHeightMultiplier * labelSize.height
         let contentHeight: CGFloat = (height > 0) ? height : buttonToTextHeightMultiplier * labelSize.height
+        print("BUKA UiLabelNode \(CGSize(width: contentWidth, height: contentHeight))")
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {
+        let _ = labelNode.getSize()
         labelNode.reload()
     }
 

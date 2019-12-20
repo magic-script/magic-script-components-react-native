@@ -201,6 +201,7 @@ extension GridLayout {
         let realWidth: CGFloat = (width > 0) ? width : estimatedSize.width
         let realHeight: CGFloat = (height > 0) ? height : estimatedSize.height
         let realSize = CGSize(width: realWidth, height: realHeight)
+        print("BUKA gridLayoutDescriptor \(realSize)")
         return GridLayoutDescriptor(children: children, cellSizes: cellSizes, columns: columnsCount, rows: rowsCount, columnsBounds: columnsBounds, rowsBounds: rowsBounds, estimatedSize: estimatedSize, realSize: realSize)
     }
 

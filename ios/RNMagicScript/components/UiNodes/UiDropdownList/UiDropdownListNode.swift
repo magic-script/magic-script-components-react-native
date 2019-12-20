@@ -62,7 +62,7 @@ import SceneKit
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItem: [Int]) -> (Void))?
 
     fileprivate var outlineNode: SCNNode!
-    fileprivate var gridLayoutNode: UiGridLayoutNode!
+    fileprivate var gridLayoutNode: GridLayout!
     fileprivate(set) var labelNode: UiLabelNode!
     fileprivate var iconNode: UiImageNode!
 
@@ -116,7 +116,7 @@ import SceneKit
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         labelNode.setNeedsLayout()
-        gridLayoutNode.setNeedsLayout()
+        gridLayoutNode.recalculate()
         listGridLayoutNode.setNeedsLayout()
     }
 
@@ -128,17 +128,18 @@ import SceneKit
         labelNode.textSize = UiDropdownListNode.defaultTextSize
 
         iconNode = UiImageNode(props: ["icon": "chevron-down", "height": 0.04])
+        iconNode.alignment = .centerLeft
 
-        gridLayoutNode = UiGridLayoutNode()
+        gridLayoutNode = GridLayout()
         gridLayoutNode.columns = 2
         gridLayoutNode.rows = 1
-        gridLayoutNode.defaultItemPadding = UIEdgeInsets(top: 0.015, left: 0.005, bottom: 0.015, right: 0.005)
-        gridLayoutNode.alignment = Alignment.centerCenter
+        gridLayoutNode.defaultItemPadding = UIEdgeInsets(top: 0.05, left: 0.15, bottom: 0.05, right: 0.15)
+        gridLayoutNode.defaultItemAlignment = Alignment.centerCenter
 
-        gridLayoutNode.addChild(labelNode)
-        gridLayoutNode.addChild(iconNode)
+        gridLayoutNode.addItem(labelNode)
+//        gridLayoutNode.addItem(iconNode)
 
-        contentNode.addChildNode(gridLayoutNode)
+        contentNode.addChildNode(gridLayoutNode.container)
 
         // List items node
         listNode = SCNNode()
@@ -234,7 +235,7 @@ import SceneKit
 
     @objc override func updateLayout() {
         labelNode.layoutIfNeeded()
-        gridLayoutNode.layoutIfNeeded()
+        gridLayoutNode.recalculate()
         listGridLayoutNode.layoutIfNeeded()
 
         if let plane = backgroundNode.geometry as? SCNPlane {
@@ -251,6 +252,7 @@ import SceneKit
 
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
+        iconNode.setDebugMode(debug)
         labelNode.setDebugMode(debug)
     }
 

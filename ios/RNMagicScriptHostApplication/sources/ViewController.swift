@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     let groupId: String = "group"
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupRectLayoutTest()
+        setupDropdownListTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -72,49 +72,37 @@ class ViewController: UIViewController {
         ])
     }
 
-    fileprivate let rectSize = CGSize(width: 0.4, height: 0.2)
-    fileprivate var rectScale: CGFloat = 1.0
-    fileprivate var rectLayout: UiRectLayoutNode!
-    fileprivate func setupRectLayoutTest() {
+    fileprivate func setupDropdownListTest() {
         // Rect layout
-        let rectLayoutId: String = "rect_layout"
-        rectLayout = createComponent([
+        let dropdownListId: String = "dropdown_list_id"
+        let _: UiDropdownListNode = createComponent([
             "alignment": "top-center",
             "debug": true,
             "localPosition": [0, 0.7, 0],
-            "height": rectSize.height,
-            "width": rectSize.width
-        ], nodeId: rectLayoutId, parentId: groupId)
+            "text": "DropDownList",
+            "textSize": 0.125
+        ], nodeId: dropdownListId, parentId: groupId)
 
-        let _: UiButtonNode = createComponent([
-            "enabled": false,
-            "roundness": 0.5,
-            "text": "Button",
-            "textColor": [0,1,0,1],
-            "textSize": 0.08,
-            "width": rectSize.width,
-            "height": rectSize.height
-        ], nodeId: "button_id", parentId: rectLayoutId)
-
-        let slider: UiSliderNode = createComponent([
-            "localPosition": [0, 0.1, 0],
-            "value": rectScale,
-            "min": 0.3,
-            "max": 2.0,
-            "width": 1.0,
-            "height": 0.06,
-        ], nodeId: "slider_id", parentId: groupId)
-
-        slider.onSliderChanged = { [weak self] sender, value in
-            self?.rectScale = value
-            self?.updateRectLayout()
-        }
-    }
-
-    fileprivate func updateRectLayout() {
-        rectLayout.width = rectScale * rectSize.width
-        rectLayout.height = rectScale * rectSize.height
-        rectLayout.layoutIfNeeded()
+        let length: CGFloat = 1.057 + 0.34
+        let hMargin: CGFloat = 0.15
+        let x1: CGFloat = -0.5 * length
+        let x2: CGFloat = x1 + 1.057
+        let x3: CGFloat = x2 + 0.34
+        let _: UiLineNode = createComponent([
+            "color": [1,1,0,1],
+            "points": [
+                [ x1, 0.43, 0],
+                [ x1 + 0.5 * hMargin, 0.43, 0],
+                [ x1 + 0.5 * hMargin, 0.4, 0],
+                [ x2 - 0.5 * hMargin, 0.4, 0],
+                [ x2 - 0.5 * hMargin, 0.43, 0],
+                [ x2 + 0.5 * hMargin, 0.43, 0],
+                [ x2 + 0.5 * hMargin, 0.4, 0],
+                [ x3 - 0.5 * hMargin, 0.4, 0],
+                [ x3 - 0.5 * hMargin, 0.43, 0],
+                [ x3, 0.43, 0],
+            ],
+        ], nodeId: "line_id", parentId: groupId)
     }
 
     @discardableResult

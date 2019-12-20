@@ -23,53 +23,47 @@ import SceneKit
         set { }
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
-        // Do not perform selfHitTest on group node becuase group may include
-        // child components which can change their size during interaction
-        // (e.g. UiDropdownList). Therefore, the bounds of the group may not cover
-        // some parts of components. Instead, perform hitTest on each child node.
-        //guard let _ = selfHitTest(ray: ray) else { return nil }
-        let nodes: [TransformNode] = contentNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
-        for node in nodes {
-            if let hitNode = node.hitTest(ray: ray) {
-                return hitNode
-            }
-        }
+    fileprivate var group = GroupContainer()
 
-        return nil
+    @objc override func setupNode() {
+        super.setupNode()
+        contentNode.addChildNode(group.container)
+    }
+
+    @discardableResult
+    @objc override func addChild(_ child: TransformNode) -> Bool {
+        group.addItem(child)
+        setNeedsLayout()
+        return true
+    }
+
+    @objc override func removeChild(_ child: TransformNode) {
+        group.removeItem(child)
+        setNeedsLayout()
+    }
+
+    @objc override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        return group.hitTest(ray: ray)
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return getBoundsCollection().size
+        return group.getSize()
     }
 
     @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
-        let bounds = getBoundsCollection()
+        let bounds = group.getBounds()
         let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(position.x), y: CGFloat(position.y)) : CGPoint.zero
         return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 
     @objc override func updateLayout() {
+        _ = getSize()
+        group.updateLayout()
     }
 
-    @objc override func updatePivot() {
-        // Do not update pivot for group node.
-        // Group node has it's own size/bounds (based on child nodes), but
-        // since it's a nodes' container, setting alignment does not make sense.
-    }
-}
-
-// MARK: - Helpers
-extension UiGroupNode {
-    @objc fileprivate func getBoundsCollection() -> CGRect {
-        let nodes: [TransformNode] = contentNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
-        guard !nodes.isEmpty else { return CGRect.zero }
-        var bounds: CGRect = nodes[0].getBounds(parentSpace: true)
-        for i in 1..<nodes.count {
-            let b = nodes[i].getBounds(parentSpace: true)
-            bounds = bounds.union(b)
-        }
-
-        return bounds
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        group.invalidate()
     }
 }

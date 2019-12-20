@@ -67,3 +67,7 @@ import SceneKit
         group.invalidate()
     }
 }
+
+extension UiGroupNode: TransformNodeContainer {
+    var itemsCount: Int { return group.container.childNodes.count }
+}

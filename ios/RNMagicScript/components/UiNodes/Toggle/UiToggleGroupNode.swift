@@ -22,6 +22,7 @@ import SceneKit
     @objc var allTogglesOff: Bool = false // not implemented
 
     fileprivate(set) weak var innerLayout: TransformNode?
+    fileprivate(set) var innerGroup: GroupContainer?
     fileprivate(set) var itemsList: Array<UiToggleNode> = []
 
     @objc override func update(_ props: [String: Any]) {
@@ -42,26 +43,90 @@ import SceneKit
 
     @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
-        if let toggleNode = child as? UiToggleNode {
-            registerToggleGroupHandler(toggleNode)
-            addToggleNode(toggleNode)
-            return true
-        }
+        if let toggleNode = child as? UiToggleNode, innerLayout == nil {
+            if innerGroup == nil {
+                innerGroup = GroupContainer()
+                contentNode.addChildNode(innerGroup!.container)
+            }
 
-        if let _ = child as? TransformNodeContainer {
-            innerLayout = child
-            contentNode.addChildNode(child)
+            innerGroup?.addItem(toggleNode)
+            registerToggleGroupHandler(toggleNode)
+            itemsList.append(toggleNode)
             setNeedsLayout()
             return true
         }
 
-        return false
+        if innerGroup == nil && innerLayout == nil && child is TransformNodeContainer {
+            innerLayout = child
+        }
+
+        contentNode.addChildNode(child)
+        setNeedsLayout()
+
+        return true
     }
 
-    func childPresent(toggleNode: UiToggleNode) {
-        if itemsList.contains(toggleNode) { return }
-        registerToggleGroupHandler(toggleNode)
-        addToggleNode(toggleNode)
+    @objc override func removeChild(_ child: TransformNode) {
+        if let toggleItem = child as? UiToggleNode {
+            itemsList.removeAll { $0 == toggleItem }
+            if itemsList.isEmpty {
+                innerGroup = nil
+            }
+            setNeedsLayout()
+        }
+
+        if let storedInnerLayout = self.innerLayout, storedInnerLayout == child {
+            storedInnerLayout.removeFromParentNode()
+            innerLayout = nil
+            setNeedsLayout()
+        }
+
+        super.removeChild(child)
+    }
+
+    override func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = selfHitTest(ray: ray) else { return nil }
+        if innerLayout != nil {
+            return innerLayout?.hitTest(ray: ray)
+        } else if innerGroup != nil {
+            return innerGroup?.hitTest(ray: ray)
+        }
+
+        return self
+    }
+
+    @objc override func _calculateSize() -> CGSize {
+        if innerLayout != nil {
+            return innerLayout!.getSize()
+        } else if innerGroup != nil {
+            return innerGroup!.getSize()
+        }
+
+        return CGSize.zero
+    }
+
+    @objc override func updateLayout() {
+        _ = getSize()
+        innerLayout?.updateLayout()
+        innerGroup?.updateLayout()
+    }
+
+    @objc override func updatePivot() {
+        super.updatePivot()
+        if let container = innerLayout as? UiNode {
+            let size = getSize()
+            let shift = container.alignment.shiftDirection
+            contentNode.position -= SCNVector3(shift.x * size.width, shift.y * size.height, 0)
+        } else if let group = innerGroup {
+            let bounds = group.getBounds()
+            contentNode.position -= SCNVector3(bounds.midX, bounds.midY, 0)
+        }
+    }
+
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        innerLayout?.setNeedsLayout()
+        innerGroup?.invalidate()
     }
 
     fileprivate func registerToggleGroupHandler(_ node: UiToggleNode) {
@@ -88,60 +153,10 @@ import SceneKit
         }
     }
 
-    fileprivate func addToggleNode(_ toggleNode: UiToggleNode) {
+    func childPresent(toggleNode: UiToggleNode) {
+        if itemsList.contains(toggleNode) { return }
+        registerToggleGroupHandler(toggleNode)
         itemsList.append(toggleNode)
-        setNeedsLayout()
-    }
-
-    @objc override func removeChild(_ child: TransformNode) {
-        if let toggleItem = child as? UiToggleNode {
-            itemsList.removeAll { node -> Bool in
-                return node == toggleItem
-            }
-        }
-
-        if let storedInnerLayout = self.innerLayout, storedInnerLayout == child {
-            storedInnerLayout.removeFromParentNode()
-            self.innerLayout = nil
-        }
-
-        setNeedsLayout()
-    }
-
-    override func hitTest(ray: Ray) -> TransformNode? {
-         if innerLayout != nil {
-            return self.innerLayout?.hitTest(ray: ray)
-        }
-
-        for item in itemsList {
-            let hitNode = item.hitTest(ray: ray)
-            if hitNode != nil { return hitNode }
-        }
-
-        return selfHitTest(ray: ray)
-    }
-
-    @objc override func _calculateSize() -> CGSize {
-        return innerLayout?.getSize() ?? CGSize.zero
-    }
-
-    @objc override func updateLayout() {
-        _ = getSize()
-        innerLayout?.updateLayout()
-    }
-
-    @objc override func updatePivot() {
-        super.updatePivot()
-        if let container = innerLayout as? UiNode {
-            let size = getSize()
-            let shift = container.alignment.shiftDirection
-            contentNode.position -= SCNVector3(shift.x * size.width, shift.y * size.height, 0)
-        }
-    }
-
-    @objc override func setNeedsLayout() {
-        super.setNeedsLayout()
-        innerLayout?.setNeedsLayout()
     }
 }
 

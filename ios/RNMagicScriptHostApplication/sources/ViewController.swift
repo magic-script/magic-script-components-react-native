@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     let groupId: String = "group"
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupRectLayoutTest()
+        setupToggleGroupTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -72,49 +72,31 @@ class ViewController: UIViewController {
         ])
     }
 
-    fileprivate let rectSize = CGSize(width: 0.4, height: 0.2)
-    fileprivate var rectScale: CGFloat = 1.0
-    fileprivate var rectLayout: UiRectLayoutNode!
-    fileprivate func setupRectLayoutTest() {
-        // Rect layout
-        let rectLayoutId: String = "rect_layout"
-        rectLayout = createComponent([
-            "alignment": "top-center",
+    fileprivate func setupToggleGroupTest() {
+        // Toggle group layout
+        let toggleGroupId: String = "rect_layout"
+        let toggleGroup: UiToggleGroupNode = createComponent([
+            "alignment": "center-center",
             "debug": true,
-            "localPosition": [0, 0.7, 0],
-            "height": rectSize.height,
-            "width": rectSize.width
-        ], nodeId: rectLayoutId, parentId: groupId)
+//            "localPosition": [0, 0.5, 0],
+        ], nodeId: toggleGroupId, parentId: groupId)
 
-        let _: UiButtonNode = createComponent([
-            "enabled": false,
-            "roundness": 0.5,
-            "text": "Button",
-            "textColor": [0,1,0,1],
-            "textSize": 0.08,
-            "width": rectSize.width,
-            "height": rectSize.height
-        ], nodeId: "button_id", parentId: rectLayoutId)
-
-        let slider: UiSliderNode = createComponent([
-            "localPosition": [0, 0.1, 0],
-            "value": rectScale,
-            "min": 0.3,
-            "max": 2.0,
-            "width": 1.0,
-            "height": 0.06,
-        ], nodeId: "slider_id", parentId: groupId)
-
-        slider.onSliderChanged = { [weak self] sender, value in
-            self?.rectScale = value
-            self?.updateRectLayout()
+        let texts = ["Item 1", "Item 2", "Item 3"]
+        let positions = [
+            [-0.125, -0.125, 0.0],
+            [0, -0.25, 0.0],
+            [0.125, -0.375, 0.0]
+        ]
+        for i in 0..<3 {
+            let _: UiToggleNode = createComponent([
+                "localPosition": positions[i],
+                "debug": true,
+                "text": texts[i],
+                "textSize": 0.075,
+                "height": 0.075,
+                "type": "radio"
+            ], nodeId: "toggle_id_\(i)", parentId: toggleGroupId)
         }
-    }
-
-    fileprivate func updateRectLayout() {
-        rectLayout.width = rectScale * rectSize.width
-        rectLayout.height = rectScale * rectSize.height
-        rectLayout.layoutIfNeeded()
     }
 
     @discardableResult

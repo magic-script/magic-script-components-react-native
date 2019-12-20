@@ -116,7 +116,7 @@ import SceneKit
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         labelNode.setNeedsLayout()
-        gridLayoutNode.recalculate()
+        gridLayoutNode.invalidate()
         listGridLayoutNode.setNeedsLayout()
     }
 
@@ -137,7 +137,7 @@ import SceneKit
         gridLayoutNode.defaultItemAlignment = Alignment.centerCenter
 
         gridLayoutNode.addItem(labelNode)
-//        gridLayoutNode.addItem(iconNode)
+        gridLayoutNode.addItem(iconNode)
 
         contentNode.addChildNode(gridLayoutNode.container)
 
@@ -235,7 +235,8 @@ import SceneKit
 
     @objc override func updateLayout() {
         labelNode.layoutIfNeeded()
-        gridLayoutNode.recalculate()
+        gridLayoutNode.recalculateIfNeeded()
+        gridLayoutNode.updateLayout()
         listGridLayoutNode.layoutIfNeeded()
 
         if let plane = backgroundNode.geometry as? SCNPlane {

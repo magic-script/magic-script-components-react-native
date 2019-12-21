@@ -40,6 +40,7 @@ class UiToggleNodeSpec: QuickSpec {
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
                     expect(node.on).to(beFalse())
+                    expect(node.type).to(equal(ToggleType.default))
                     expect(node.canHaveFocus).to(beTrue())
                 }
 
@@ -105,6 +106,12 @@ class UiToggleNodeSpec: QuickSpec {
                     expect(node.on).to(beTrue())
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
+
+                it("should update 'type' prop") {
+                    node.update(["type" : "checkbox"])
+                    expect(node.type).to(equal(ToggleType.checkbox))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
             }
 
             context("focus") {
@@ -128,6 +135,51 @@ class UiToggleNodeSpec: QuickSpec {
 
                     node.enterFocus()
                     expect(node.on).to(beFalse())
+                }
+            }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    let labelNode: LabelNode! = node.contentNode.childNodes.first as? LabelNode
+                    expect(labelNode).notTo(beNil())
+                    let referenceLabelNodeChildNodesCount: Int = labelNode.childNodes.count
+                    node.setDebugMode(true)
+                    expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
+                }
+            }
+
+            context("assets") {
+                it("should display 'toggleOn/Off' image") {
+                    let diffuse: SCNMaterialProperty! = node.contentNode.childNodes[1].geometry?.firstMaterial?.diffuse
+                    node.type = ToggleType.default
+
+                    node.on = true
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.toggleOn.image))
+
+                    node.on = false
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.toggleOff.image))
+                }
+
+                it("should display 'radioChecked/Unchecked' image") {
+                    let diffuse: SCNMaterialProperty! = node.contentNode.childNodes[1].geometry?.firstMaterial?.diffuse
+                    node.type = ToggleType.radio
+
+                    node.on = true
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.radioChecked.image))
+
+                    node.on = false
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.radioUnchecked.image))
+                }
+
+                it("should display 'checkboxChecked/Unchecked' image") {
+                    let diffuse: SCNMaterialProperty! = node.contentNode.childNodes[1].geometry?.firstMaterial?.diffuse
+                    node.type = ToggleType.checkbox
+
+                    node.on = true
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.checkboxChecked.image))
+
+                    node.on = false
+                    expect(diffuse.contents).to(beIdenticalTo(ImageAsset.checkboxUnchecked.image))
                 }
             }
         }

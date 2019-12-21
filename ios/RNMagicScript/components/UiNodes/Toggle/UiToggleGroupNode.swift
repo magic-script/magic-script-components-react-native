@@ -86,10 +86,10 @@ import SceneKit
 
     override func hitTest(ray: Ray) -> TransformNode? {
         guard let _ = selfHitTest(ray: ray) else { return nil }
-        if innerLayout != nil {
-            return innerLayout?.hitTest(ray: ray)
-        } else if innerGroup != nil {
-            return innerGroup?.hitTest(ray: ray)
+        if let layout = innerLayout, let result = layout.hitTest(ray: ray) {
+            return result
+        } else if let group = innerGroup, let result = group.hitTest(ray: ray) {
+            return result
         }
 
         return self

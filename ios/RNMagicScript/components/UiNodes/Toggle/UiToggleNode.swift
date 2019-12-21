@@ -42,7 +42,6 @@ import SceneKit
     @objc var on: Bool = false {
         didSet { toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset() }
     }
-
     @objc var type: ToggleType = .default {
         didSet { setNeedsLayout() }
     }

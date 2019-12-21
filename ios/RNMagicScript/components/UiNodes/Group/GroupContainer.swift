@@ -26,10 +26,6 @@ import SceneKit
         container.removeFromParentNode()
     }
 
-    func invalidate() {
-        bounds = nil
-    }
-
     func addItem(_ item: TransformNode) {
         container.addChildNode(item)
         invalidate()
@@ -53,6 +49,12 @@ import SceneKit
 
         return nil
     }
+
+    func invalidate() {
+        bounds = nil
+    }
+
+    var isRecalculationNeeded: Bool { return bounds == nil}
 
     func recalculateIfNeeded() {
         if bounds == nil {

@@ -151,7 +151,7 @@ import SceneKit
 
     @objc func getBounds(parentSpace: Bool = false) -> CGRect {
         let size = getSize()
-        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y)) : CGPoint.zero
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let offset = CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
         return CGRect(origin: origin + offset, size: size)
     }

@@ -40,6 +40,7 @@
 		44301CC223AC165C001A1766 /* GroupContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CC123AC165C001A1766 /* GroupContainer.swift */; };
 		44301CC323AC165C001A1766 /* GroupContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CC123AC165C001A1766 /* GroupContainer.swift */; };
 		44301CCB23AD7E38001A1766 /* GroupContainerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CCA23AD7E38001A1766 /* GroupContainerSpec.swift */; };
+		44301CCC23AE8461001A1766 /* UiGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */; };
 		44444719236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
@@ -2233,6 +2234,7 @@
 				C470ED05238C74A8002B8D91 /* ToggleTypeSpec.swift in Sources */,
 				C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */,
 				44F09333232D985A0081FF14 /* SharedData.swift in Sources */,
+				44301CCC23AE8461001A1766 /* UiGroupNodeSpec.swift in Sources */,
 				C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */,
 				44F596472355C62700C60F4C /* ScrollDirectionSpec.swift in Sources */,
 				44301CCB23AD7E38001A1766 /* GroupContainerSpec.swift in Sources */,

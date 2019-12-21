@@ -35,7 +35,7 @@ class GroupContainerSpec: QuickSpec {
                     expect(group.getBounds()).to(beCloseTo(CGRect.zero))
                 }
 
-                it("hitTest should return nil for invalid and recalculated group") {
+                it("hitTest should always return nil") {
                     let rays = [
                         Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 3),
                         Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 3),
@@ -54,6 +54,134 @@ class GroupContainerSpec: QuickSpec {
                     }
                 }
             }
+
+            context("items") {
+                it("should add/remove items") {
+                    let items = self.prepareSampleTransformNodes()
+                    items.forEach { (node) in
+                        group.addItem(node)
+                    }
+                    expect(group.container.childNodes.count).to(equal(items.count))
+
+                    items.forEach { (node) in
+                        group.removeItem(node)
+                    }
+                    expect(group.container.childNodes.count).to(equal(0))
+                }
+
+                it("should add new items only once") {
+                    let items = self.prepareSampleTransformNodes()
+                    items.forEach { (node) in
+                        group.addItem(node)
+                        group.addItem(node)
+                    }
+                    expect(group.container.childNodes.count).to(equal(items.count))
+                }
+            }
+
+            context("recalculation") {
+                it("should need recalculation") {
+                    expect(group.isRecalculationNeeded).to(beTrue())
+                    group.recalculateIfNeeded()
+                    expect(group.isRecalculationNeeded).to(beFalse())
+                }
+
+                it("should recalculation be needed after invalidate") {
+                    group.recalculateIfNeeded()
+                    expect(group.isRecalculationNeeded).to(beFalse())
+                    group.invalidate()
+                    expect(group.isRecalculationNeeded).to(beTrue())
+                }
+
+                it("should recalculation be needed after add item") {
+                    group.recalculateIfNeeded()
+                    expect(group.isRecalculationNeeded).to(beFalse())
+                    group.addItem(TransformNode())
+                    expect(group.isRecalculationNeeded).to(beTrue())
+                }
+
+                it("should recalculation be needed after remove item") {
+                    let node = TransformNode()
+                    group.addItem(node)
+                    group.recalculateIfNeeded()
+                    expect(group.isRecalculationNeeded).to(beFalse())
+
+                    group.removeItem(node)
+                    expect(group.isRecalculationNeeded).to(beTrue())
+                }
+            }
+
+            context("getBounds") {
+                it("should return bounds") {
+                    let items = self.prepareSampleTransformNodes()
+                    items.forEach { group.addItem($0) }
+                    let targetBounds = CGRect(x: 0.3, y: -0.5, width: 2.53, height: 1.45)
+                    expect(group.getBounds()).to(beCloseTo(targetBounds))
+                }
+
+                it("should return size") {
+                    let items = [
+                        TransformNode(props: ["localPosition": [1.3, -0.9, 0]]),
+                        TransformNode(props: ["localPosition": [-9.8, 2.3, 0]]),
+                    ]
+                    items.forEach { group.addItem($0) }
+                    let targetSize = CGSize(width: 11.1, height: 3.2)
+                    expect(group.getSize()).to(beCloseTo(targetSize))
+                }
+            }
+
+            context("hitTest") {
+                it("should return child node") {
+                    let items = self.prepareSampleTransformNodes()
+                    items.forEach { group.addItem($0) }
+                    group.recalculateIfNeeded()
+
+                    let direction = SCNVector3(0, 0, 1)
+                    let result1 = group.hitTest(ray: Ray(begin: SCNVector3(1.45, 0.8, -1), direction: direction, length: 3))
+                    expect(result1).to(beIdenticalTo(items[1]))
+
+                    let result2 = group.hitTest(ray: Ray(begin: SCNVector3(2.55, 0.05, -1), direction: direction, length: 3))
+                    expect(result2).to(beIdenticalTo(items[2]))
+                }
+
+                it("should return nil if no child node is hit") {
+                    let items = self.prepareSampleTransformNodes()
+                    items.forEach { group.addItem($0) }
+
+                    let direction = SCNVector3(0, 0, 1)
+                    let rayBegins = [
+                        SCNVector3(0.5, 0.5, -1),
+                        SCNVector3(2, -0.4, -1),
+                        SCNVector3(2.6, 0.11, -1),
+                    ]
+                    for begin in rayBegins {
+                        let result = group.hitTest(ray: Ray(begin: begin, direction: direction, length: 3))
+                        expect(result).to(beNil())
+                    }
+                }
+            }
         }
+    }
+
+    fileprivate func prepareSampleTransformNodes() -> [TransformNode] {
+        let node1 = TransformNode()
+        node1.localPosition = SCNVector3(0.3, -0.5, 0)
+        node1.layoutIfNeeded()
+
+        let node2 = UiImageNode()
+        node2.alignment = .centerCenter
+        node2.localPosition = SCNVector3(1.3, 0.7, -0.2)
+        node2.height = 0.5
+        node2.width = 0.4
+        node2.color = UIColor.red
+        node2.layoutIfNeeded()
+
+        let node3 = UiToggleNode()
+        node3.localPosition = SCNVector3(2.6, 0, 0)
+        node3.text = "Radio"
+        node3.type = .radio
+        node3.height = 0.2
+        node3.layoutIfNeeded()
+        return [node1, node2, node3]
     }
 }

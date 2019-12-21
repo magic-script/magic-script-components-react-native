@@ -39,6 +39,7 @@
 		442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442AED5623461BDF000B83AE /* SystemIcon.swift */; };
 		44301CC223AC165C001A1766 /* GroupContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CC123AC165C001A1766 /* GroupContainer.swift */; };
 		44301CC323AC165C001A1766 /* GroupContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CC123AC165C001A1766 /* GroupContainer.swift */; };
+		44301CCB23AD7E38001A1766 /* GroupContainerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44301CCA23AD7E38001A1766 /* GroupContainerSpec.swift */; };
 		44444719236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		4444471A236AFD5A00665D31 /* Dragging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44444718236AFD5A00665D31 /* Dragging.swift */; };
 		44489F0A237BF2E70046F16B /* SoundNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F09237BF2E70046F16B /* SoundNode.swift */; };
@@ -69,7 +70,6 @@
 		448F413623A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448F413523A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift */; };
 		44931E01237D855900E11972 /* SoundNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44489F10237C2B130046F16B /* SoundNodeSpec.swift */; };
 		44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */; };
-		44931E04237D898C00E11972 /* UiGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */; };
 		44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09314232D985A0081FF14 /* UiImageNodeSpec.swift */; };
 		44931E06237D898C00E11972 /* UiLabelNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */; };
 		44931E07237D898C00E11972 /* UiLineNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0930D232D985A0081FF14 /* UiLineNodeSpec.swift */; };
@@ -560,6 +560,7 @@
 		442AED502344B9B0000B83AE /* InputAccessoryViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryViewFactorySpec.swift; sourceTree = "<group>"; };
 		442AED5623461BDF000B83AE /* SystemIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIcon.swift; sourceTree = "<group>"; };
 		44301CC123AC165C001A1766 /* GroupContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContainer.swift; sourceTree = "<group>"; };
+		44301CCA23AD7E38001A1766 /* GroupContainerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContainerSpec.swift; sourceTree = "<group>"; };
 		44318E8F22CB4E0C0060575D /* RNMagicScriptResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNMagicScriptResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		44318E9122CB4E0C0060575D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		44444718236AFD5A00665D31 /* Dragging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dragging.swift; sourceTree = "<group>"; };
@@ -890,6 +891,15 @@
 			path = Group;
 			sourceTree = "<group>";
 		};
+		44301CC923AD7E24001A1766 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				44301CCA23AD7E38001A1766 /* GroupContainerSpec.swift */,
+				C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,12 +1167,12 @@
 			isa = PBXGroup;
 			children = (
 				44301CC023AC1505001A1766 /* Group */,
-				C400D4402387F4C8002A38CB /* Toggle */,
-				C428C0AC237D5F9400771FBC /* UiDialog */,
-				C4596A692374209D000E88C1 /* UiListView */,
 				4425EDFC2366052F0064A2EA /* Layouts */,
 				C4A12B142361B69B009B7083 /* Pickers */,
+				C400D4402387F4C8002A38CB /* Toggle */,
+				C428C0AC237D5F9400771FBC /* UiDialog */,
 				C465C25E234DC89200157AA6 /* UiDropdownList */,
+				C4596A692374209D000E88C1 /* UiListView */,
 				44AB396E238BCCFD0002DF14 /* UiPageView */,
 				447755372374C15600E98F03 /* UiAudioNode.swift */,
 				44AFAC0C232B9BCE005AC8EF /* UiButtonNode.swift */,
@@ -1344,6 +1354,7 @@
 		44F0930B232D985A0081FF14 /* UiNodes */ = {
 			isa = PBXGroup;
 			children = (
+				44301CC923AD7E24001A1766 /* Group */,
 				C4C1D47623840C9500437249 /* Dialog */,
 				C4596A802374217D000E88C1 /* Dropdown */,
 				44A3FCFF2366254600402912 /* Layouts */,
@@ -1354,7 +1365,6 @@
 				44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */,
 				44F0930F232D985A0081FF14 /* UiButtonNodeSpec.swift */,
 				C4AF1946238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift */,
-				C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */,
 				44F09314232D985A0081FF14 /* UiImageNodeSpec.swift */,
 				C4C3D74B2355D72A00ECEEDA /* UiLabelNodeSpec.swift */,
 				44F0930D232D985A0081FF14 /* UiLineNodeSpec.swift */,
@@ -2225,6 +2235,7 @@
 				44F09333232D985A0081FF14 /* SharedData.swift in Sources */,
 				C4A12B172361B6E0009B7083 /* UiTimePickerNodeSpec.swift in Sources */,
 				44F596472355C62700C60F4C /* ScrollDirectionSpec.swift in Sources */,
+				44301CCB23AD7E38001A1766 /* GroupContainerSpec.swift in Sources */,
 				44F09320232D985A0081FF14 /* UiNodeSpec.swift in Sources */,
 				44F0932E232D985A0081FF14 /* ConvertSpec.swift in Sources */,
 				44931E0C237D898C00E11972 /* UiTextNodeSpec.swift in Sources */,
@@ -2262,7 +2273,6 @@
 				44F09321232D985A0081FF14 /* TransformNodeSpec.swift in Sources */,
 				44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */,
 				44A3FD032366364900402912 /* UiLinearLayoutNodeSpec.swift in Sources */,
-				44931E04237D898C00E11972 /* UiGroupNodeSpec.swift in Sources */,
 				C4B73C9F238AE8560080D3F3 /* TimePickerInputViewSpec.swift in Sources */,
 				C47B32BB239A5677005B59BE /* RCTARViewSpec.swift in Sources */,
 				44F09332232D985A0081FF14 /* Utils.swift in Sources */,

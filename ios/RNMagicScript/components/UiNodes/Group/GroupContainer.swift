@@ -54,8 +54,10 @@ import SceneKit
         return nil
     }
 
-    func recalculate() {
-        bounds = getBoundsCollection()
+    func recalculateIfNeeded() {
+        if bounds == nil {
+            bounds = getBoundsCollection()
+        }
     }
 
     func getSize() -> CGSize {
@@ -63,14 +65,8 @@ import SceneKit
     }
 
     func getBounds() -> CGRect {
-        if bounds == nil {
-            recalculate()
-        }
-
+        recalculateIfNeeded()
         return bounds!
-    }
-
-    @objc func updateLayout() {
     }
 
     fileprivate func getBoundsCollection() -> CGRect {

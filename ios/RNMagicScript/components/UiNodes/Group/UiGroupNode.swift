@@ -57,11 +57,6 @@ import SceneKit
         return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 
-    @objc override func updateLayout() {
-        _ = getSize()
-        group.updateLayout()
-    }
-
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         group.invalidate()

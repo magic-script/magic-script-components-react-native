@@ -108,7 +108,6 @@ import SceneKit
     @objc override func updateLayout() {
         _ = getSize()
         innerLayout?.updateLayout()
-        innerGroup?.updateLayout()
     }
 
     @objc override func updatePivot() {

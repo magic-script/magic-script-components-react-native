@@ -75,10 +75,9 @@ class ViewController: UIViewController {
     fileprivate func setupToggleGroupTest() {
         // Toggle group layout
         let toggleGroupId: String = "rect_layout"
-        let toggleGroup: UiToggleGroupNode = createComponent([
+        let _: UiToggleGroupNode = createComponent([
             "alignment": "center-center",
             "debug": true,
-//            "localPosition": [0, 0.5, 0],
         ], nodeId: toggleGroupId, parentId: groupId)
 
         let texts = ["Item 1", "Item 2", "Item 3"]

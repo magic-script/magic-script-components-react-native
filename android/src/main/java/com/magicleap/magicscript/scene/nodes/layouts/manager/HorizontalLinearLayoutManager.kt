@@ -65,7 +65,7 @@ class HorizontalLinearLayoutManager : BaseLinearLayoutManager() {
         // calculating y position for a child
         val y = when (itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
-                nodeHeight / 2 + pivotOffsetY - itemPadding.top
+                -nodeHeight / 2 + pivotOffsetY - itemPadding.top
             }
 
             Alignment.VerticalAlignment.CENTER -> {

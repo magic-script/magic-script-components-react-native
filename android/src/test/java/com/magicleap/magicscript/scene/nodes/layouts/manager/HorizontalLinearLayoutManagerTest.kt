@@ -39,8 +39,6 @@ class HorizontalLinearLayoutManagerTest {
     @Before
     fun setUp() {
         this.linearManager = HorizontalLinearLayoutManager()
-        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
-        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
         childrenList = listOf(
             NodeBuilder()
@@ -72,11 +70,15 @@ class HorizontalLinearLayoutManagerTest {
         linearManager.parentWidth = 0f
         linearManager.parentHeight = 0f
         linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(1.5f, childrenList[0].localPosition.x, EPSILON)
         assertEquals(4.5f, childrenList[1].localPosition.x, EPSILON)
+        assertEquals(-1f, childrenList[0].localPosition.y, EPSILON)
+        assertEquals(-1f, childrenList[1].localPosition.y, EPSILON)
     }
 
     @Test
@@ -94,6 +96,25 @@ class HorizontalLinearLayoutManagerTest {
         assertEquals(-3f, childrenList[0].localPosition.y, EPSILON)
         assertEquals(-3f, childrenList[1].localPosition.y, EPSILON)
     }
+
+    /*
+    @Test
+    fun `should layout correctly when children scaled down`() {
+        linearManager.parentWidth = 3.5f
+        linearManager.parentHeight = 6f
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+        linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 50)
+
+
+        val child1Bounds = childrenBounds[0]
+        val child2Bounds = childrenBounds[1]
+
+        assertEquals(0.5f, childrenList[0].localScale.x, EPSILON)
+    }
+    */
 
     @Test
     fun `should align children bottom-right`() {

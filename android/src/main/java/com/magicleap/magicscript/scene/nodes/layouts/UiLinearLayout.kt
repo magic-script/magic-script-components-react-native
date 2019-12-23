@@ -59,8 +59,7 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-
+        // to apply height first
         if (props.containsKey(PROP_ORIENTATION)) {
             val isVertical =
                 props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
@@ -77,6 +76,7 @@ class UiLinearLayout @JvmOverloads constructor(
 
         }
 
+        super.applyProperties(props)
         setItemPadding(props)
         setItemAlignment(props)
     }

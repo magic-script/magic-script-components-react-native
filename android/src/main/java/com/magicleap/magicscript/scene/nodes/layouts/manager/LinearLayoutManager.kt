@@ -27,6 +27,4 @@ interface LinearLayoutManager : LayoutManager {
     var itemHorizontalAlignment: Alignment.HorizontalAlignment
 
     var itemVerticalAlignment: Alignment.VerticalAlignment
-
-    var isVertical: Boolean
 }

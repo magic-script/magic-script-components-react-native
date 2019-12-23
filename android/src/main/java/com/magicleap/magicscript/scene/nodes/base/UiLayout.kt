@@ -25,7 +25,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager) :
+abstract class UiLayout(initProps: ReadableMap, layoutManager: LayoutManager) :
     TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     companion object {
@@ -35,6 +35,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
     }
+
+    protected var layoutManager: LayoutManager = layoutManager
 
     // "backed" children list, it may differ from [contentNode.children] because we
     // actually attach children with delay (when position for them is calculated)

@@ -61,9 +61,9 @@ class UiRectLayout(initProps: ReadableMap, layoutManager: RectLayoutManager) :
     private fun setContentAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
         if (alignment != null) {
-            (layoutManager as RectLayoutManager)
-            layoutManager.contentVerticalAlignment = alignment.vertical
-            layoutManager.contentHorizontalAlignment = alignment.horizontal
+            val manager = layoutManager as RectLayoutManager
+            manager.contentVerticalAlignment = alignment.vertical
+            manager.contentHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

@@ -99,9 +99,9 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     private fun setItemAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
-            (layoutManager as GridLayoutManager)
-            layoutManager.itemVerticalAlignment = alignment.vertical
-            layoutManager.itemHorizontalAlignment = alignment.horizontal
+            val manager = layoutManager as GridLayoutManager
+            manager.itemVerticalAlignment = alignment.vertical
+            manager.itemHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

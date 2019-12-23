@@ -96,9 +96,9 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager) :
     private fun setContentAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
         if (alignment != null) {
-            (layoutManager as PageViewLayoutManager)
-            layoutManager.contentVerticalAlignment = alignment.vertical
-            layoutManager.contentHorizontalAlignment = alignment.horizontal
+            val manager = layoutManager as PageViewLayoutManager
+            manager.contentVerticalAlignment = alignment.vertical
+            manager.contentHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

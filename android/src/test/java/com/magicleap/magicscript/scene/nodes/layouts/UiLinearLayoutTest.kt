@@ -19,9 +19,10 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.*
+import org.amshove.kluent.shouldBeInstanceOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,7 +35,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiLinearLayoutTest {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var linearLayoutManager: VerticalLinearLayoutManager
 
     @Before
     fun setUp() {
@@ -57,7 +58,7 @@ class UiLinearLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(linearLayoutManager).isVertical = true
+        linearLayoutManager shouldBeInstanceOf VerticalLinearLayoutManager::class
     }
 
     @Test

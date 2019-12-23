@@ -16,14 +16,12 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import org.amshove.kluent.shouldNotEqual
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -31,16 +29,16 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class LinearLayoutManagerTest {
+class HorizontalLinearLayoutManagerTest {
     private val EPSILON = 1e-5f
-    private lateinit var linearManager: LinearLayoutManager
+    private lateinit var linearManager: HorizontalLinearLayoutManager
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     @Before
     fun setUp() {
-        this.linearManager = LinearLayoutManagerImpl()
+        this.linearManager = HorizontalLinearLayoutManager()
         linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.TOP
         linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
@@ -57,18 +55,7 @@ class LinearLayoutManagerTest {
     }
 
     @Test
-    fun `should change children position when top padding set`() {
-        linearManager.itemPadding = Padding(0.5f, 0f, 0f, 0f)
-
-        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
-
-        childrenList[0].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
-        childrenList[1].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
-    }
-
-    @Test
-    fun `should return correct layout bounds`() {
-        linearManager.isVertical = false
+    fun `should return correct layout bounds when horizontal`() {
         linearManager.itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
         linearManager.parentWidth = 0f // dynamic
         linearManager.parentHeight = 5f
@@ -81,30 +68,47 @@ class LinearLayoutManagerTest {
     }
 
     @Test
-    fun `should scale child node if parent size limited`() {
-        linearManager.itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
-        linearManager.isVertical = true
-        linearManager.parentWidth = 1f
-        linearManager.parentHeight = 2f
+    fun `should position children correctly when parent size is dynamic`() {
+        linearManager.parentWidth = 0f
+        linearManager.parentHeight = 0f
+        linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
-        // 0.45 = (parent width - horizontal padding) / child width
-        assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(1.5f, childrenList[0].localPosition.x, EPSILON)
+        assertEquals(4.5f, childrenList[1].localPosition.x, EPSILON)
     }
 
     @Test
-    fun `should center items in parent when items alignment is center-center`() {
+    fun `should center children vertically and horizontally`() {
         linearManager.parentWidth = 7f
         linearManager.parentHeight = 6f
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
         linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
-        linearManager.isVertical = true
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(2f, childrenList[0].localPosition.x, EPSILON)
-        // assertEquals(-3f, childrenList[0].localPosition.y, EPSILON)
+        assertEquals(5f, childrenList[1].localPosition.x, EPSILON)
+        assertEquals(-3f, childrenList[0].localPosition.y, EPSILON)
+        assertEquals(-3f, childrenList[1].localPosition.y, EPSILON)
+    }
+
+    @Test
+    fun `should align children bottom-right`() {
+        linearManager.parentWidth = 7f
+        linearManager.parentHeight = 6f
+        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
+        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
+        linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+
+        assertEquals(2.5f, childrenList[0].localPosition.x, EPSILON)
+        assertEquals(5.5f, childrenList[1].localPosition.x, EPSILON)
+        assertEquals(-5f, childrenList[0].localPosition.y, EPSILON)
+        assertEquals(-5f, childrenList[1].localPosition.y, EPSILON)
     }
 
 }

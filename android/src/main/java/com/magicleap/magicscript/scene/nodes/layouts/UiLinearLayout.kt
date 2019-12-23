@@ -19,8 +19,9 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
@@ -30,7 +31,7 @@ import com.magicleap.magicscript.utils.read
 
 class UiLinearLayout @JvmOverloads constructor(
     props: ReadableMap,
-    layoutManager: LinearLayoutManager = LinearLayoutManagerImpl()
+    layoutManager: LinearLayoutManager = VerticalLinearLayoutManager()
 ) : UiLayout(props, layoutManager) {
 
     companion object {
@@ -59,7 +60,23 @@ class UiLinearLayout @JvmOverloads constructor(
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setOrientation(props)
+
+        if (props.containsKey(PROP_ORIENTATION)) {
+            val isVertical =
+                props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
+
+            if (isVertical && layoutManager !is VerticalLinearLayoutManager) {
+                layoutManager = VerticalLinearLayoutManager()
+                requestLayout()
+            }
+
+            if (!isVertical && layoutManager !is HorizontalLinearLayoutManager) {
+                layoutManager = HorizontalLinearLayoutManager()
+                requestLayout()
+            }
+
+        }
+
         setItemPadding(props)
         setItemAlignment(props)
     }
@@ -74,15 +91,6 @@ class UiLinearLayout @JvmOverloads constructor(
         )
     }
 
-    private fun setOrientation(props: Bundle) {
-        if (props.containsKey(PROP_ORIENTATION)) {
-            val isVertical =
-                props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
-            (layoutManager as LinearLayoutManager).isVertical = isVertical
-            requestLayout()
-        }
-    }
-
     private fun setItemPadding(props: Bundle) {
         val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
@@ -94,9 +102,9 @@ class UiLinearLayout @JvmOverloads constructor(
     private fun setItemAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
-            (layoutManager as LinearLayoutManager)
-            layoutManager.itemVerticalAlignment = alignment.vertical
-            layoutManager.itemHorizontalAlignment = alignment.horizontal
+            val manager = layoutManager as LinearLayoutManager
+            manager.itemVerticalAlignment = alignment.vertical
+            manager.itemHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

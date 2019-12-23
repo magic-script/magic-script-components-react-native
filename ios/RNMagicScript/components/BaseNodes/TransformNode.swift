@@ -140,7 +140,7 @@ import SceneKit
 
     @objc func getSize() -> CGSize {
         if currentSize == nil {
-            currentSize = _calculateSize()
+            currentSize = _calculateSize() * CGSize(width: CGFloat(scale.x), height: CGFloat(scale.y))
         }
         return currentSize!
     }

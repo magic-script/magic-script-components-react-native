@@ -59,8 +59,8 @@ import SceneKit
         }
     }
 
-    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
-        let size = getSize()
+    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
+        let size = getSize(scaled: scaled)
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let boundsOffset = alignment.boundsOffset
         let offset = CGPoint(x: boundsOffset.x * size.width, y: boundsOffset.y * size.height)
@@ -71,7 +71,7 @@ import SceneKit
     }
 
     @objc override func updatePivot() {
-        let size = getSize()
+        let size = getSize(scaled: false)
         let shift = alignment.shiftDirection
         contentNode.position = SCNVector3(shift.x * size.width, shift.y * size.height, 0)
     }

@@ -187,8 +187,9 @@ extension GridLayout {
         let defaultItemPaddingSize = CGSize(width: defaultItemPadding.left + defaultItemPadding.right, height: defaultItemPadding.top + defaultItemPadding.bottom)
         var cellSizes: [CGSize] = []
         nodes.forEach { (node) in
+            let nodeSize = node.getSize()
             node.updateLayout()
-            cellSizes.append(node.getSize() + defaultItemPaddingSize)
+            cellSizes.append(nodeSize + defaultItemPaddingSize)
         }
 
         let itemsCount: Int = cellSizes.count
@@ -226,12 +227,13 @@ extension GridLayout {
             return columnsBounds
         }
 
-        let preferredWidth: CGFloat = columnsBounds.reduce(0) { $0 + $1.width }
-        let factor: CGFloat = (width - CGFloat(columnsCount) * paddingSize.width) / preferredWidth
+        let paddingWidth = CGFloat(columnsCount) * paddingSize.width
+        let preferredWidth: CGFloat = columnsBounds.reduce(0) { $0 + $1.width } - paddingWidth
+        let scale: CGFloat = max(0, width - paddingWidth) / preferredWidth
         var distributedColumnsBounds: [(x: CGFloat, width: CGFloat)] = []
         x = 0
         for bounds in columnsBounds {
-            let distributedWidth = (bounds.width - paddingSize.width) * factor + paddingSize.width
+            let distributedWidth = (bounds.width - paddingSize.width) * scale + paddingSize.width
             distributedColumnsBounds.append((x: x, width: distributedWidth))
             x += distributedWidth
         }
@@ -257,12 +259,13 @@ extension GridLayout {
             return rowsBounds
         }
 
-        let preferredHeight: CGFloat = rowsBounds.reduce(0) { $0 + $1.height }
-        let factor: CGFloat = height / preferredHeight
+        let paddingHeight = CGFloat(rowsCount) * paddingSize.height
+        let preferredHeight: CGFloat = rowsBounds.reduce(0) { $0 + $1.height } - paddingHeight
+        let scale: CGFloat = max(0, height - paddingHeight) / preferredHeight
         var distributedRowsBounds: [(y: CGFloat, height: CGFloat)] = []
         y = 0
         for bounds in rowsBounds {
-            let distributedHeight = (bounds.height - paddingSize.height) * factor + paddingSize.height
+            let distributedHeight = (bounds.height - paddingSize.height) * scale + paddingSize.height
             distributedRowsBounds.append((y: y, height: distributedHeight))
             y += distributedHeight
         }

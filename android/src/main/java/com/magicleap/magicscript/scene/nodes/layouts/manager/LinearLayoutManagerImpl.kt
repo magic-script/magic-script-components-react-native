@@ -120,11 +120,30 @@ class LinearLayoutManagerImpl : LinearLayoutManager {
 
     override fun getLayoutBounds(): Bounding {
         val childBounds = Utils.calculateSumBounds(childrenList)
+        val spacing = itemPadding
+
+        var sizeX = parentWidth
+        var sizeY = parentHeight
+
+        if (parentWidth == UiLayout.WRAP_CONTENT_DIMENSION) {
+            sizeX = childBounds.size().x
+        } else {
+            spacing.left = 0f
+            spacing.right = 0f
+        }
+
+        if (parentHeight == UiLayout.WRAP_CONTENT_DIMENSION) {
+            sizeY = childBounds.size().y
+        } else {
+            spacing.top = 0f
+            spacing.bottom = 0f
+        }
+
         return Bounding(
-            childBounds.left - itemPadding.left,
-            childBounds.bottom - itemPadding.bottom,
-            childBounds.right + itemPadding.right,
-            childBounds.top + itemPadding.top
+            -spacing.left,
+            -sizeY - spacing.bottom,
+            sizeX + spacing.right,
+            spacing.top
         )
     }
 

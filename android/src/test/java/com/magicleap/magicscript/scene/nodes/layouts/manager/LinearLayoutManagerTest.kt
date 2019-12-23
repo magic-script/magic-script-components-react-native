@@ -47,21 +47,37 @@ class LinearLayoutManagerTest {
         childrenList = listOf(
             NodeBuilder()
                 .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withAlignment("center-center")
                 .build(),
             NodeBuilder()
                 .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withAlignment("center-center")
                 .build()
         )
     }
 
     @Test
     fun `should change children position when top padding set`() {
-        linearManager.itemPadding = Padding(0.5F, 0f, 0f, 0f)
+        linearManager.itemPadding = Padding(0.5f, 0f, 0f, 0f)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         childrenList[0].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
         childrenList[1].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
+    }
+
+    @Test
+    fun `should return correct layout bounds`() {
+        linearManager.isVertical = false
+        linearManager.itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
+        linearManager.parentWidth = 0f // dynamic
+        linearManager.parentHeight = 5f
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+
+        val boundsSize = linearManager.getLayoutBounds().size()
+
+        assertEquals(4.6f, boundsSize.x, EPSILON)
+        assertEquals(5f, boundsSize.y, EPSILON)
     }
 
     @Test
@@ -76,6 +92,19 @@ class LinearLayoutManagerTest {
         // 0.45 = (parent width - horizontal padding) / child width
         assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
         assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
+    }
+
+    @Test
+    fun `should center items in parent when items alignment is center-center`() {
+        linearManager.parentWidth = 7f
+        linearManager.parentHeight = 6f
+        linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        linearManager.isVertical = true
+
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+
+        assertEquals(2f, childrenList[0].localPosition.x, EPSILON)
+        // assertEquals(-3f, childrenList[0].localPosition.y, EPSILON)
     }
 
 }

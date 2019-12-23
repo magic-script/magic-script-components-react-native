@@ -78,18 +78,4 @@ class LinearLayoutManagerTest {
         assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
     }
 
-    @Test
-    fun `number of columns should take precedence over rows`() {
-        linearManager.itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
-        linearManager.isVertical = true
-        linearManager.parentWidth = 1f
-        linearManager.parentHeight = 2f
-
-        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
-
-        // 0.45 = (parent width - horizontal padding) / child width
-        assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
-    }
-
 }

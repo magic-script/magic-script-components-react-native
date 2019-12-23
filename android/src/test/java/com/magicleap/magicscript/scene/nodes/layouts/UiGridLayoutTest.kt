@@ -53,7 +53,7 @@ class UiGridLayoutTest {
     }
 
     @Test
-    fun `should use dynamic sized column by default`() {
+    fun `should use dynamic number of columns by default`() {
         val node = createNode(JavaOnlyMap())
         node.build()
 

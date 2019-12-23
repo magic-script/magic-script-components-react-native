@@ -37,8 +37,8 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
         // default values
-        const val COLUMNS_DEFAULT = 0
-        const val ROWS_DEFAULT = 1 // 0 means unspecified (will grow with content)
+        const val COLUMNS_DEFAULT = 0 // 0 means unspecified (will grow with content)
+        const val ROWS_DEFAULT = 1
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
         // default padding for each item [top, right, bottom, left]

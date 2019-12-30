@@ -55,8 +55,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
         private set
 
     // we should re-draw the grid after adding / removing a child
-    var redrawRequested = false
-        private set
+    private var redrawRequested = false
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()

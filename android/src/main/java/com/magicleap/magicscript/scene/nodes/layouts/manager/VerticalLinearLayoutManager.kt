@@ -75,7 +75,6 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : BaseLinearLayoutManag
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-
     override fun getContentWidth(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float {
         val itemPadding = layoutParams.itemPadding
         val paddingHorizontal = itemPadding.left + itemPadding.right

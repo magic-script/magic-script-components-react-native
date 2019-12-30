@@ -30,7 +30,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     protected var childrenList = listOf<TransformNode>()
         private set
 
-    open override fun layoutChildren(
+    override fun layoutChildren(
         layoutParams: T,
         children: List<TransformNode>,
         childrenBounds: Map<Int, Bounding>

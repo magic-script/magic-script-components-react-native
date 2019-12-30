@@ -53,9 +53,9 @@ class UiLinearLayout @JvmOverloads constructor(
     // default padding for each item [top, right, bottom, left]
     private var itemPadding = Padding(0F, 0F, 0F, 0F)
 
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
 
     init {
         // set default values of properties

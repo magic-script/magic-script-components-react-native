@@ -25,7 +25,6 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
@@ -41,15 +40,15 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
-        const val DEFAULT_CONTENT_ALIGNMENT = "top-left"
+        const val DEFAULT_CONTENT_ALIGNMENT = "center-center"
         const val DEFAULT_VISIBLE_PAGE = 0
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
     private var visiblePage: Int = 0
     private var padding: Padding = Padding(0f, 0f, 0f, 0f)
-    private var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
-    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
+    private var contentVerticalAlignment = Alignment.VerticalAlignment.CENTER
+    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
 
     init {
         // set default values of properties
@@ -84,16 +83,12 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
     }
 
     override fun getContentBounding(): Bounding {
-        val childBounds = Utils.calculateSumBounds(contentNode.children)
-        val itemPadding = properties.read(PROP_PADDING) ?: Padding()
-        val sizeX = if (width != WRAP_CONTENT_DIMENSION) width else childBounds.size().x
-        val sizeY = if (height != WRAP_CONTENT_DIMENSION) height else childBounds.size().y
-
+        val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
         return Bounding(
-            -sizeX / 2 + contentNode.localPosition.x - itemPadding.left,
-            -sizeY / 2 + contentNode.localPosition.y - itemPadding.bottom,
-            sizeX / 2 + contentNode.localPosition.x + itemPadding.right,
-            sizeY / 2 + contentNode.localPosition.y + itemPadding.top
+            layoutBounds.left + contentNode.localPosition.x,
+            layoutBounds.bottom + contentNode.localPosition.y,
+            layoutBounds.right + contentNode.localPosition.x,
+            layoutBounds.top + contentNode.localPosition.y
         )
     }
 

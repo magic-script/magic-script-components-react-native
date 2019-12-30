@@ -24,13 +24,13 @@ class UiRectLayout(
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
-        const val DEFAULT_CONTENT_ALIGNMENT = "center-center"
+        const val DEFAULT_CONTENT_ALIGNMENT = "top-left"
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
     private var padding: Padding = Padding(0f, 0f, 0f, 0f)
-    private var contentVerticalAlignment = Alignment.VerticalAlignment.CENTER
-    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+    private var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
+    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
     init {
         // set default values of properties

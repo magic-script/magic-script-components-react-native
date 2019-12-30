@@ -18,21 +18,23 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
 class UiLinearLayout @JvmOverloads constructor(
     props: ReadableMap,
-    layoutManager: LinearLayoutManager = VerticalLinearLayoutManager()
-) : UiLayout(props, layoutManager) {
+    layoutManager: LayoutManager<LayoutParams> = VerticalLinearLayoutManager()
+) : UiBaseLayout<LayoutParams>(props, layoutManager) {
 
     companion object {
         // properties
@@ -47,6 +49,13 @@ class UiLinearLayout @JvmOverloads constructor(
         // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
+
+    // default padding for each item [top, right, bottom, left]
+    private var itemPadding = Padding(0F, 0F, 0F, 0F)
+
+    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+
+    private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
 
     init {
         // set default values of properties
@@ -82,7 +91,7 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     override fun getContentBounding(): Bounding {
-        val layoutBounds = layoutManager.getLayoutBounds()
+        val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
         return Bounding(
             layoutBounds.left + contentNode.localPosition.x,
             layoutBounds.bottom + contentNode.localPosition.y,
@@ -91,10 +100,19 @@ class UiLinearLayout @JvmOverloads constructor(
         )
     }
 
+    override fun getLayoutParams(): LayoutParams {
+        return LayoutParams(
+            size = Vector2(width, height),
+            itemPadding = itemPadding,
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment
+        )
+    }
+
     private fun setItemPadding(props: Bundle) {
         val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
-            (layoutManager as LinearLayoutManager).itemPadding = padding
+            this.itemPadding = padding
             requestLayout()
         }
     }
@@ -102,9 +120,8 @@ class UiLinearLayout @JvmOverloads constructor(
     private fun setItemAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
-            val manager = layoutManager as LinearLayoutManager
-            manager.itemVerticalAlignment = alignment.vertical
-            manager.itemHorizontalAlignment = alignment.horizontal
+            this.itemVerticalAlignment = alignment.vertical
+            this.itemHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

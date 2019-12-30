@@ -2,9 +2,7 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManagerImpl
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -47,7 +45,7 @@ class UIRectLayoutTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = reactMapOf(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
+        val props = reactMapOf(UiBaseLayout.PROP_WIDTH, 2.0, UiBaseLayout.PROP_HEIGHT, 1.0)
         val node = createNode(props)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
         node.build()

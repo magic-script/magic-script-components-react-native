@@ -18,17 +18,13 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,7 +62,7 @@ class PageViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = reactMapOf(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
+        val props = reactMapOf(UiBaseLayout.PROP_WIDTH, 2.0, UiBaseLayout.PROP_HEIGHT, 1.0)
         val node = PageViewNode(props, layoutManager)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
         node.build() // invokes the layout loop

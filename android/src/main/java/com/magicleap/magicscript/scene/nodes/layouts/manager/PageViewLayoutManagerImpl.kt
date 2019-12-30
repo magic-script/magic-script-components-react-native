@@ -17,19 +17,20 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
-class PageViewLayoutManagerImpl : RectLayoutManagerImpl(), PageViewLayoutManager {
+class PageViewLayoutManagerImpl : VerticalLinearLayoutManager<PageViewLayoutParams>() {
 
-    override var contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-
-    override var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
-
-    override var visiblePage: Int = 0
-
-    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
+    override fun layoutChildren(
+        layoutParams: PageViewLayoutParams,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, Bounding>
+    ) {
+        val visiblePage = layoutParams.visiblePage
         children.forEachIndexed { index, node ->
             if (index == visiblePage) {
                 node.show()
@@ -40,7 +41,9 @@ class PageViewLayoutManagerImpl : RectLayoutManagerImpl(), PageViewLayoutManager
         }
         if (children.size > visiblePage) {
             val activeChild = children[visiblePage]
-            super.layoutChildren(listOf(activeChild), childrenBounds)
+            super.layoutChildren(layoutParams, listOf(activeChild), childrenBounds)
         }
+
     }
+
 }

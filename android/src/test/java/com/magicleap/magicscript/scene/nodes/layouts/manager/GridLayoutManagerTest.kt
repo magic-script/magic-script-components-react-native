@@ -3,7 +3,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import org.amshove.kluent.shouldEqual
@@ -65,7 +65,7 @@ class GridLayoutManagerTest {
     @Test
     fun `should set back initial scale on children when parent width updated to unlimited`() {
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
-        manager.parentWidth = UiLayout.WRAP_CONTENT_DIMENSION
+        manager.parentWidth = UiBaseLayout.WRAP_CONTENT_DIMENSION
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
 
         assertEquals(1f, childrenList[0].localScale.x, EPSILON)

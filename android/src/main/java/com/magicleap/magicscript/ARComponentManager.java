@@ -77,16 +77,15 @@ import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManagerImpl;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManagerImpl;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
@@ -285,7 +284,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            GridLayoutManager layoutManager = new GridLayoutManagerImpl();
+            GridLayoutManagerImpl layoutManager = new GridLayoutManagerImpl();
             addNode(new UiGridLayout(props, layoutManager), nodeId);
         });
     }
@@ -330,7 +329,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createRectLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            RectLayoutManager layoutManager = new RectLayoutManagerImpl();
+            VerticalLinearLayoutManager<LayoutParams> layoutManager = new VerticalLinearLayoutManager<>();
             addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
     }

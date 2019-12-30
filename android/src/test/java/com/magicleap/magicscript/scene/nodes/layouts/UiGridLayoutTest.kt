@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.*

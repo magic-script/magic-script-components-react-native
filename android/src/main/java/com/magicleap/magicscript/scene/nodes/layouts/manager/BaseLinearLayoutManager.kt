@@ -16,93 +16,33 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiLayout.Companion.WRAP_CONTENT_DIMENSION
-import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.getUserSpecifiedScale
-import kotlin.math.min
 
-abstract class BaseLinearLayoutManager : LinearLayoutManager {
-    override var parentWidth: Float = 0F
+abstract class BaseLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() {
 
-    override var parentHeight: Float = 0F
-
-    override var itemPadding = Padding(0F, 0F, 0F, 0F)
-
-    override var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-
-    override var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-
-    protected var childrenList = listOf<TransformNode>()
-
-    override fun layoutChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
-        this.childrenList = children
-        rescaleChildren(children, childrenBounds)
-
-        val contentWidth = getContentWidth(childrenBounds)
-        val contentHeight = getContentHeight(childrenBounds)
-
-        val sizeLimitX = if (parentWidth == WRAP_CONTENT_DIMENSION) {
-            contentWidth
-        } else {
-            parentWidth
-        }
-
-        val sizeLimitY = if (parentHeight == WRAP_CONTENT_DIMENSION) {
-            contentHeight
-        } else {
-            parentHeight
-        }
-
-        val layoutSizeLimit = Vector2(sizeLimitX, sizeLimitY)
-        // sum of children size including padding
-        val contentSize = Vector2(contentWidth, contentHeight)
-        for (i in 0 until children.size) {
-            layoutNode(i, childrenBounds, contentSize, layoutSizeLimit)
-        }
-    }
-
-    // sets the proper position for the child node
-    protected abstract fun layoutNode(
-        index: Int,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2
-    )
-
-    /**
-     * Should return width of layout's content (including items padding)
-     */
-    protected abstract fun getContentWidth(childrenBounds: Map<Int, Bounding>): Float
-
-    /**
-     * Should return height of layout's content (including items padding)
-     */
-    protected abstract fun getContentHeight(childrenBounds: Map<Int, Bounding>): Float
-
-    override fun getLayoutBounds(): Bounding {
+    override fun getLayoutBounds(layoutParams: T): Bounding {
         val childrenBounds = Utils.calculateSumBounds(childrenList)
-        var sizeX = parentWidth
-        var sizeY = parentHeight
+        val parentSize = layoutParams.size
+        var sizeX = parentSize.x
+        var sizeY = parentSize.y
 
+        val itemPadding = layoutParams.itemPadding
         var leftOffset = -itemPadding.left
         var bottomOffset = -itemPadding.bottom
         var rightOffset = itemPadding.right
         var topOffset = itemPadding.top
 
-        if (parentWidth == WRAP_CONTENT_DIMENSION) {
+        if (parentSize.x == WRAP_CONTENT_DIMENSION) {
             sizeX = childrenBounds.size().x
         } else {
             leftOffset = 0f
             rightOffset = 0f
         }
 
-        if (parentHeight == WRAP_CONTENT_DIMENSION) {
+        if (parentSize.y == WRAP_CONTENT_DIMENSION) {
             sizeY = childrenBounds.size().y
         } else {
             topOffset = 0f
@@ -117,27 +57,4 @@ abstract class BaseLinearLayoutManager : LinearLayoutManager {
         )
     }
 
-    private fun rescaleChildren(children: List<TransformNode>, childrenBounds: Map<Int, Bounding>) {
-        for (i in children.indices) {
-            val child = children[i]
-            val childSize = (childrenBounds[i] ?: Bounding()).size()
-            if (child.localScale.x > 0 && child.localScale.y > 0) {
-                val childWidth = childSize.x / child.localScale.x
-                val childHeight = childSize.y / child.localScale.y
-                if (childWidth > 0 && childHeight > 0) {
-                    val maxChildWidth = calculateMaxChildWidth(i, childrenBounds)
-                    val maxChildHeight = calculateMaxChildHeight(i, childrenBounds)
-                    val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
-                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
-                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
-                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
-                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
-                }
-            }
-        }
-    }
-
-    abstract fun calculateMaxChildWidth(childIdx: Int, childrenBounds: Map<Int, Bounding>): Float
-
-    abstract fun calculateMaxChildHeight(childIdx: Int, childrenBounds: Map<Int, Bounding>): Float
 }

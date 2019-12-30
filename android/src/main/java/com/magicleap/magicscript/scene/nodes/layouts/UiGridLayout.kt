@@ -18,16 +18,18 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
+import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
-class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
-    UiLayout(initProps, layoutManager) {
+class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayoutParams>) :
+    UiBaseLayout<GridLayoutParams>(initProps, layoutManager) {
 
     companion object {
         // properties
@@ -44,6 +46,47 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
         // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
+
+    var columns: Int = 0
+        private set(value) {
+            backedColumns = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedRows == 0) {
+                rows = 1
+            } else {
+                field = value
+            }
+            // columns take precedence over rows when both != 0
+            if (value != 0 && backedRows != 0) {
+                rows = 0
+            }
+        }
+
+    var rows: Int = 1
+        private set(value) {
+            backedRows = value
+
+            // if both columns and rows = 0, 1 row should be used
+            if (value == 0 && backedColumns == 0) {
+                field = 1
+            } else if (backedColumns == 0) {
+                field = value
+            } else {
+                field = 0
+            }
+        }
+
+    // user specified columns and rows
+    private var backedColumns = columns
+    private var backedRows = rows
+
+    // default padding for each item [top, right, bottom, left]
+    private var itemPadding = Padding(0F, 0F, 0F, 0F)
+
+    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+
+    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
     init {
         // set default values of properties
@@ -65,7 +108,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     }
 
     override fun getContentBounding(): Bounding {
-        val layoutBounds = layoutManager.getLayoutBounds()
+        val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
         return Bounding(
             layoutBounds.left + contentNode.localPosition.x,
             layoutBounds.bottom + contentNode.localPosition.y,
@@ -74,16 +117,27 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
         )
     }
 
+    override fun getLayoutParams(): GridLayoutParams {
+        return GridLayoutParams(
+            columns = columns,
+            rows = rows,
+            size = Vector2(width, height),
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment,
+            itemPadding = itemPadding
+        )
+    }
+
     private fun setColumns(props: Bundle) {
         if (props.containsKey(PROP_COLUMNS)) {
-            (layoutManager as GridLayoutManager).columns = props.getDouble(PROP_COLUMNS).toInt()
+            this.columns = props.getDouble(PROP_COLUMNS).toInt()
             requestLayout()
         }
     }
 
     private fun setRows(props: Bundle) {
         if (props.containsKey(PROP_ROWS)) {
-            (layoutManager as GridLayoutManager).rows = props.getDouble(PROP_ROWS).toInt()
+            this.rows = props.getDouble(PROP_ROWS).toInt()
             requestLayout()
         }
     }
@@ -91,7 +145,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     private fun setItemPadding(props: Bundle) {
         val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
         if (padding != null) {
-            (layoutManager as GridLayoutManager).itemPadding = padding
+            this.itemPadding = padding
             requestLayout()
         }
     }
@@ -99,9 +153,8 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
     private fun setItemAlignment(props: Bundle) {
         val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
         if (alignment != null) {
-            val manager = layoutManager as GridLayoutManager
-            manager.itemVerticalAlignment = alignment.vertical
-            manager.itemHorizontalAlignment = alignment.horizontal
+            this.itemVerticalAlignment = alignment.vertical
+            this.itemHorizontalAlignment = alignment.horizontal
             requestLayout()
         }
     }

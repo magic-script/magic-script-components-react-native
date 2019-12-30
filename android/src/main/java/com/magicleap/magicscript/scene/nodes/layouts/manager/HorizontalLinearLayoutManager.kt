@@ -44,9 +44,7 @@ class HorizontalLinearLayoutManager : BaseLinearLayoutManager() {
 
         // calculating x position for a child
         val paddingSumX = itemPadding.left + index * (itemPadding.left + itemPadding.right)
-        val offsetX = childrenBounds.values.take(index).sumByFloat {
-            it.size().x
-        } + paddingSumX
+        val offsetX = childrenBounds.values.take(index).sumByFloat { it.size().x } + paddingSumX
 
         val x = when (itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
@@ -98,8 +96,12 @@ class HorizontalLinearLayoutManager : BaseLinearLayoutManager() {
         if (parentWidth == UiLayout.WRAP_CONTENT_DIMENSION) {
             return Float.MAX_VALUE
         }
-        val contentWidth = getContentWidth(childrenBounds)
-        val scale = parentWidth / contentWidth
+
+        val contentWidthNoPadding = childrenBounds.values.sumByFloat { it.size().x }
+        val paddingHorizontal = itemPadding.left + itemPadding.right
+        val paddingSum = childrenBounds.size * paddingHorizontal
+        val scale = (parentWidth - paddingSum) / contentWidthNoPadding
+
         return childrenBounds[childIdx]!!.size().x * scale
     }
 

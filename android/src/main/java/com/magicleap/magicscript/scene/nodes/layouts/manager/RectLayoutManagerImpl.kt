@@ -64,31 +64,34 @@ open class RectLayoutManagerImpl : RectLayoutManager {
     }
 
     override fun getLayoutBounds(): Bounding {
-        val childBounds = Utils.calculateSumBounds(childrenList)
-        val spacing = itemPadding
-
+        val childrenBounds = Utils.calculateSumBounds(childrenList)
         var sizeX = parentWidth
         var sizeY = parentHeight
 
+        var leftOffset = -itemPadding.left
+        var bottomOffset = -itemPadding.bottom
+        var rightOffset = itemPadding.right
+        var topOffset = itemPadding.top
+
         if (parentWidth == WRAP_CONTENT_DIMENSION) {
-            sizeX = childBounds.size().x
+            sizeX = childrenBounds.size().x
         } else {
-            spacing.left = 0f
-            spacing.right = 0f
+            leftOffset = 0f
+            rightOffset = 0f
         }
 
         if (parentHeight == WRAP_CONTENT_DIMENSION) {
-            sizeY = childBounds.size().y
+            sizeY = childrenBounds.size().y
         } else {
-            spacing.top = 0f
-            spacing.bottom = 0f
+            topOffset = 0f
+            bottomOffset = 0f
         }
 
         return Bounding(
-            -sizeX / 2 - spacing.left,
-            -sizeY / 2 - spacing.bottom,
-            sizeX / 2 + spacing.right,
-            sizeY / 2 + spacing.top
+            left = -sizeX / 2 + leftOffset,
+            bottom = -sizeY / 2 + bottomOffset,
+            right = sizeX / 2 + rightOffset,
+            top = sizeY / 2 + topOffset
         )
     }
 

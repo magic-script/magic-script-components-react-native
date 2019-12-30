@@ -49,18 +49,33 @@ class VerticalLinearLayoutManager : BaseLinearLayoutManager() {
             }
 
             Alignment.HorizontalAlignment.CENTER -> {
+                val inParentOffset = (layoutSizeLimit.x - contentSize.x) / 2
                 val paddingDiff = itemPadding.left - itemPadding.right
-                pivotOffsetX + paddingDiff
+                pivotOffsetX + paddingDiff + inParentOffset + contentSize.x / 2
             }
 
             Alignment.HorizontalAlignment.RIGHT -> {
-                nodeWidth / 2 + pivotOffsetX - itemPadding.right
+                layoutSizeLimit.x - nodeWidth / 2 + pivotOffsetX - itemPadding.right
             }
         }
 
         // calculating y position for a child
-        val paddingDiffY = itemPadding.top - itemPadding.bottom
-        val y = nodeHeight / 2 + pivotOffsetY - paddingDiffY
+        val paddingSumY = itemPadding.top + index * (itemPadding.top + itemPadding.bottom)
+        val offsetY = -(childrenBounds.values.take(index).sumByFloat { it.size().y } + paddingSumY)
+
+        val y = when (itemVerticalAlignment) {
+            Alignment.VerticalAlignment.TOP -> {
+                offsetY - nodeHeight / 2 + pivotOffsetY
+            }
+            Alignment.VerticalAlignment.CENTER -> {
+                val inParentOffset = -(layoutSizeLimit.y - contentSize.y) / 2
+                offsetY - nodeHeight / 2 + pivotOffsetY + inParentOffset
+            }
+            Alignment.VerticalAlignment.BOTTOM -> {
+                val inParentOffset = -(layoutSizeLimit.y - contentSize.y)
+                offsetY - nodeHeight / 2 + pivotOffsetY + inParentOffset
+            }
+        }
 
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
@@ -89,8 +104,12 @@ class VerticalLinearLayoutManager : BaseLinearLayoutManager() {
         if (parentHeight == UiLayout.WRAP_CONTENT_DIMENSION) {
             return Float.MAX_VALUE
         }
-        val contentHeight = getContentHeight(childrenBounds)
-        val scale = parentHeight / contentHeight
+
+        val contentHeightNoPadding = childrenBounds.values.sumByFloat { it.size().y }
+        val paddingVertical = itemPadding.top + itemPadding.bottom
+        val paddingSum = childrenBounds.size * paddingVertical
+        val scale = (parentHeight - paddingSum) / contentHeightNoPadding
+
         return childrenBounds[childIdx]!!.size().y * scale
     }
 

@@ -2,11 +2,14 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
+import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import org.amshove.kluent.shouldEqual
+import com.magicleap.magicscript.utils.Vector2
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -22,12 +25,18 @@ class GridLayoutManagerTest {
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
+    private val layoutParams = GridLayoutParams(
+        columns = 0,
+        rows = 1,
+        size = Vector2(1f, 0f),
+        itemPadding = Padding(0f, 0f, 0f, 0f),
+        itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER,
+        itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+    )
+
     @Before
     fun setUp() {
-        manager = GridLayoutManagerImpl()
-        manager.rows = 1
-        manager.parentWidth = 1f
-        manager.itemPadding = Padding(0f, 0f, 0f, 0f)
+        manager = GridLayoutManager()
 
         val child1Bounds = Bounding(0f, 0f, 2f, 1f)
         val child2Bounds = Bounding(0f, 0f, 1f, 1f)
@@ -37,26 +46,8 @@ class GridLayoutManagerTest {
     }
 
     @Test
-    fun `should not be able to set 0 columns and rows together`() {
-        manager.columns = 0
-        manager.rows = 0
-
-        manager.rows shouldEqual 1
-        manager.columns shouldEqual 0
-    }
-
-    @Test
-    fun `columns should take precedence over rows when both are set`() {
-        manager.columns = 2
-        manager.rows = 3
-
-        manager.columns shouldEqual 2
-        manager.rows shouldEqual 0
-    }
-
-    @Test
     fun `should scale down children proportionally to their size when parent size is limited`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, layoutParams,10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
@@ -64,6 +55,8 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should set back initial scale on children when parent width updated to unlimited`() {
+        layoutParams
+
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
         manager.parentWidth = UiBaseLayout.WRAP_CONTENT_DIMENSION
         manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
@@ -81,5 +74,4 @@ class GridLayoutManagerTest {
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
     }
-
 }

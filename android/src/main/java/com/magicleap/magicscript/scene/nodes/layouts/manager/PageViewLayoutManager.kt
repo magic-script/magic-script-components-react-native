@@ -21,7 +21,7 @@ import com.magicleap.magicscript.scene.nodes.base.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
-class PageViewLayoutManagerImpl : VerticalLinearLayoutManager<PageViewLayoutParams>() {
+class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>() {
 
     override fun layoutChildren(
         layoutParams: PageViewLayoutParams,

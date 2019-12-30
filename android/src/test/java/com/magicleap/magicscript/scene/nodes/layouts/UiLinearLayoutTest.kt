@@ -19,10 +19,16 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.*
+import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBeInstanceOf
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,22 +41,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiLinearLayoutTest {
 
-    private lateinit var linearLayoutManager: VerticalLinearLayoutManager
+    private lateinit var linearLayoutManager: LayoutManager<LayoutParams>
 
     @Before
     fun setUp() {
         linearLayoutManager = mock()
-        whenever(linearLayoutManager.getLayoutBounds()).thenReturn(
+        whenever(linearLayoutManager.getLayoutBounds(any())).thenReturn(
             Bounding(1f, 1f, 1f, 1f)
         )
-    }
-
-    @Test
-    fun `should layout children on build`() {
-        val node = createNode(JavaOnlyMap())
-        node.build()
-
-        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
     }
 
     @Test
@@ -68,7 +66,9 @@ class UiLinearLayoutTest {
         val node = createNode(props)
         node.build()
 
-        verify(linearLayoutManager).itemPadding = any()
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {

@@ -19,12 +19,14 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,7 +35,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class PageViewNodeTest {
 
-    private lateinit var layoutManager: PageViewLayoutManager
+    private lateinit var layoutManager: LayoutManager<PageViewLayoutParams>
 
     @Before
     fun setUp() {
@@ -46,18 +48,20 @@ class PageViewNodeTest {
         val node = PageViewNode(props, layoutManager)
         node.build()
 
-        verify(layoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        verify(layoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.TOP
+        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
+        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
     @Test
-    fun `should set passed alignment`() {
+    fun `should apply passed content alignment`() {
         val props = reactMapOf(PageViewNode.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = PageViewNode(props, layoutManager)
         node.build()
 
-        verify(layoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        verify(layoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
     @Test
@@ -65,7 +69,7 @@ class PageViewNodeTest {
         val props = reactMapOf(UiBaseLayout.PROP_WIDTH, 2.0, UiBaseLayout.PROP_HEIGHT, 1.0)
         val node = PageViewNode(props, layoutManager)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
-        node.build() // invokes the layout loop
+        node.build()
 
         val bounds = node.getBounding()
 
@@ -78,6 +82,8 @@ class PageViewNodeTest {
         val node = PageViewNode(props, layoutManager)
         node.build()
 
-        verify(layoutManager).visiblePage = 1
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.visiblePage shouldEqual 1
     }
 }

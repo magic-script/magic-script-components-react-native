@@ -33,7 +33,7 @@ class PageViewManagerTest {
 
     @Before
     fun setUp() {
-        this.pageViewManager = PageViewLayoutManagerImpl()
+        this.pageViewManager = PageViewLayoutManager()
     }
 
     @Test

@@ -18,9 +18,14 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,22 +38,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiGridLayoutTest {
 
-    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var gridLayoutManager: LayoutManager<GridLayoutParams>
 
     @Before
     fun setUp() {
         gridLayoutManager = mock()
-        whenever(gridLayoutManager.getLayoutBounds()).thenReturn(
+        whenever(gridLayoutManager.getLayoutBounds(any())).thenReturn(
             Bounding(1f, 1f, 1f, 1f)
         )
-    }
-
-    @Test
-    fun `should layout children on build`() {
-        val node = createNode(JavaOnlyMap())
-        node.build()
-
-        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
     }
 
     @Test
@@ -56,7 +53,7 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(gridLayoutManager).columns = 0 // 0 means dynamic
+        node.columns shouldEqual 0 // 0 means dynamic
     }
 
     @Test
@@ -64,17 +61,47 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(gridLayoutManager).rows = 1
+        node.rows shouldEqual 1
     }
 
     @Test
-    fun `should apply item alignment when item alignment property present`() {
+    fun `should not be able to set 0 columns and rows together`() {
+        val node = createNode(
+            reactMapOf(
+                UiGridLayout.PROP_COLUMNS, 0,
+                UiGridLayout.PROP_ROWS, 0
+            )
+        )
+        node.build()
+
+        node.rows shouldEqual 1
+        node.columns shouldEqual 0
+    }
+
+    @Test
+    fun `columns should take precedence over rows when both are set`() {
+        val node = createNode(
+            reactMapOf(
+                UiGridLayout.PROP_COLUMNS, 2,
+                UiGridLayout.PROP_ROWS, 3
+            )
+        )
+        node.build()
+
+        node.columns shouldEqual 2
+        node.rows shouldEqual 0
+    }
+
+    @Test
+    fun `should apply item alignment when passed`() {
         val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = createNode(props)
         node.build()
 
-        verify(gridLayoutManager).itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
-        verify(gridLayoutManager).itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.RIGHT
     }
 
     @Test
@@ -82,11 +109,11 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        val columns = 3
-        val props = reactMapOf(UiGridLayout.PROP_COLUMNS, columns.toDouble())
+        val props = reactMapOf(UiGridLayout.PROP_COLUMNS, 3.0)
         node.update(props)
+        val layoutParams = node.getLayoutParams()
 
-        verify(gridLayoutManager).columns = columns
+        layoutParams.columns shouldEqual 3
     }
 
     private fun createNode(props: JavaOnlyMap): UiGridLayout {

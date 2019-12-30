@@ -83,8 +83,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
@@ -284,7 +284,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            GridLayoutManagerImpl layoutManager = new GridLayoutManagerImpl();
+            GridLayoutManager layoutManager = new GridLayoutManager();
             addNode(new UiGridLayout(props, layoutManager), nodeId);
         });
     }
@@ -388,7 +388,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPageViewNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManagerImpl()), nodeId));
+        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManager()), nodeId));
     }
 
     @ReactMethod

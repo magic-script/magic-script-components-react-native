@@ -2,12 +2,14 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,31 +18,33 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UIRectLayoutTest {
 
-    private lateinit var rectLayoutManager: RectLayoutManager
+    private lateinit var layoutManager: VerticalLinearLayoutManager<LayoutParams>
 
     @Before
     fun setUp() {
-        rectLayoutManager = spy(RectLayoutManagerImpl())
+        layoutManager = spy(VerticalLinearLayoutManager())
     }
 
     @Test
-    fun `should set center-center alignment when no alignment is passed`() {
+    fun `should set top-left alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
         val node = createNode(props)
         node.build()
 
-        verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-        verify(rectLayoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.CENTER
+        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.CENTER
+        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.CENTER
     }
 
     @Test
-    fun `should set passed alignment`() {
+    fun `should set passed content alignment`() {
         val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = createNode(props)
         node.build()
 
-        verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        verify(rectLayoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
     @Test
@@ -56,7 +60,7 @@ class UIRectLayoutTest {
     }
 
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
-        return UiRectLayout(props, rectLayoutManager)
+        return UiRectLayout(props, layoutManager)
     }
 
 }

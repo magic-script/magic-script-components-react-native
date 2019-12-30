@@ -28,7 +28,7 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
-class GridLayoutManagerImpl : SizedLayoutManager<GridLayoutParams>() {
+class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     // <column index, max child width in that column> pairs
     private val maxChildWidthInColumnMap = mutableMapOf<Int, Float>()

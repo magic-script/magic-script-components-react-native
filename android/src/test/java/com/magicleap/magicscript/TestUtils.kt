@@ -20,6 +20,7 @@ import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.scene.nodes.base.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -117,9 +118,10 @@ fun matchesInexact(bounds: Bounding) = argThat(
  * @throws RuntimeException when [maxIterations] number is not big enough
  * in order to bounds were stable
  */
-fun LayoutManager.layoutUntilStableBounds(
+fun LayoutManager<LayoutParams>.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
     childrenBounds: MutableMap<Int, Bounding>,
+    layoutParams: LayoutParams,
     maxIterations: Int
 ) {
     var iterations = 0
@@ -129,7 +131,7 @@ fun LayoutManager.layoutUntilStableBounds(
             throw RuntimeException("maxIterations is not enough in order to bounds were stable")
         }
         val boundsChanged = measureChildren(childrenList, childrenBounds)
-        layoutChildren(childrenList, childrenBounds)
+        layoutChildren(layoutParams, childrenList, childrenBounds)
     } while (boundsChanged)
 }
 

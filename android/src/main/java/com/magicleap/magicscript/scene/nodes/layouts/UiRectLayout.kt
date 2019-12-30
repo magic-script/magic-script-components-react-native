@@ -3,12 +3,14 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -53,6 +55,14 @@ class UiRectLayout(
             layoutBounds.right + contentNode.localPosition.x,
             layoutBounds.top + contentNode.localPosition.y
         )
+    }
+
+    override fun addContent(child: TransformNode) {
+        super.addContent(child)
+
+        if (childrenList.size > 1) {
+            logMessage("RectLayout can only have one child!", true)
+        }
     }
 
     override fun getLayoutParams(): LayoutParams {

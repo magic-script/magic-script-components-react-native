@@ -9,7 +9,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -25,14 +24,13 @@ class GridLayoutManagerTest {
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
-    private val layoutParams = GridLayoutParams(
-        columns = 0,
-        rows = 1,
-        size = Vector2(1f, 0f),
-        itemPadding = Padding(0f, 0f, 0f, 0f),
-        itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER,
-        itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-    )
+    // Layout params
+    private var columns = 0
+    private var rows = 1
+    private var size = Vector2(1f, 0f)
+    private var itemPadding = Padding(0f, 0f, 0f, 0f)
+    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+    private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
 
     @Before
     fun setUp() {
@@ -47,7 +45,7 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should scale down children proportionally to their size when parent size is limited`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, layoutParams,10)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
@@ -55,11 +53,9 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should set back initial scale on children when parent width updated to unlimited`() {
-        layoutParams
-
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
-        manager.parentWidth = UiBaseLayout.WRAP_CONTENT_DIMENSION
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+        size.x = UiBaseLayout.WRAP_CONTENT_DIMENSION
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1f, childrenList[1].localScale.x, EPSILON)
@@ -67,11 +63,21 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should apply previous scale when padding set back to 0`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
-        manager.itemPadding = Padding(0f, 0f, 0f, 0f)
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, 10)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+        itemPadding = Padding(0f, 0f, 0f, 0f)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
     }
+
+    private fun getLayoutParams() = GridLayoutParams(
+        columns = columns,
+        rows = rows,
+        size = size,
+        itemPadding = itemPadding,
+        itemHorizontalAlignment = itemHorizontalAlignment,
+        itemVerticalAlignment = itemVerticalAlignment
+    )
+
 }

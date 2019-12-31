@@ -21,13 +21,11 @@ import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.LayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.amshove.kluent.shouldBeInstanceOf
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -52,11 +50,11 @@ class UiLinearLayoutTest {
     }
 
     @Test
-    fun `should apply vertical orientation by default`() {
+    fun `should use vertical orientation by default`() {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        linearLayoutManager shouldBeInstanceOf VerticalLinearLayoutManager::class
+        node.getProperty("orientation") shouldEqual "vertical"
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -31,8 +32,8 @@ class UIRectLayoutTest {
         val node = createNode(props)
         node.build()
 
-        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.CENTER
-        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.CENTER
+        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
+        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
     @Test
@@ -49,7 +50,11 @@ class UIRectLayoutTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = reactMapOf(UiBaseLayout.PROP_WIDTH, 2.0, UiBaseLayout.PROP_HEIGHT, 1.0)
+        val props = reactMapOf(
+            UiBaseLayout.PROP_WIDTH, 2.0,
+            UiBaseLayout.PROP_HEIGHT, 1.0,
+            TransformNode.PROP_ALIGNMENT, "center-center"
+        )
         val node = createNode(props)
         val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
         node.build()

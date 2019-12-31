@@ -118,10 +118,10 @@ fun matchesInexact(bounds: Bounding) = argThat(
  * @throws RuntimeException when [maxIterations] number is not big enough
  * in order to bounds were stable
  */
-fun LayoutManager<LayoutParams>.layoutUntilStableBounds(
+fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
     childrenBounds: MutableMap<Int, Bounding>,
-    layoutParams: LayoutParams,
+    layoutParams: T,
     maxIterations: Int
 ) {
     var iterations = 0

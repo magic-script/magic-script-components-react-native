@@ -26,6 +26,7 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -34,21 +35,16 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
     companion object {
         // properties
+        const val PROP_VISIBLE_PAGE = "visiblePage"
         const val PROP_PADDING = "defaultPagePadding"
         const val PROP_CONTENT_ALIGNMENT = "defaultPageAlignment"
-        const val PROP_VISIBLE_PAGE = "visiblePage"
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_CONTENT_ALIGNMENT = "center-center"
-        const val DEFAULT_VISIBLE_PAGE = 0
+        const val DEFAULT_VISIBLE_PAGE = 0.0
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
-
-    private var visiblePage: Int = 0
-    private var padding: Padding = Padding(0f, 0f, 0f, 0f)
-    private var contentVerticalAlignment = Alignment.VerticalAlignment.CENTER
-    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
 
     init {
         // set default values of properties
@@ -60,12 +56,19 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setItemPadding(props)
-        setContentAlignment(props)
-        setVisiblePage(props)
+
+        if (properties.containsAny(PROP_VISIBLE_PAGE, PROP_PADDING, PROP_CONTENT_ALIGNMENT)) {
+            requestLayout()
+        }
     }
 
     override fun getLayoutParams(): PageViewLayoutParams {
+        val visiblePage = properties.getDouble(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE).toInt()
+        val padding = properties.read(PROP_PADDING) ?: Padding()
+        val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
+        val contentHorizontalAlignment = contentAlignment.horizontal
+        val contentVerticalAlignment = contentAlignment.vertical
+
         return PageViewLayoutParams(
             visiblePage = visiblePage,
             size = Vector2(width, height),
@@ -73,13 +76,6 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
             itemHorizontalAlignment = contentHorizontalAlignment,
             itemVerticalAlignment = contentVerticalAlignment
         )
-    }
-
-    private fun setVisiblePage(props: Bundle) {
-        props.read<Double>(PROP_VISIBLE_PAGE)?.let { page ->
-            this.visiblePage = page.toInt()
-            requestLayout()
-        }
     }
 
     override fun getContentBounding(): Bounding {
@@ -92,20 +88,4 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
         )
     }
 
-    private fun setItemPadding(props: Bundle) {
-        val padding = props.read<Padding>(PROP_PADDING)
-        if (padding != null) {
-            this.padding = padding
-            requestLayout()
-        }
-    }
-
-    private fun setContentAlignment(props: Bundle) {
-        val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
-        if (alignment != null) {
-            this.contentVerticalAlignment = alignment.vertical
-            this.contentHorizontalAlignment = alignment.horizontal
-            requestLayout()
-        }
-    }
 }

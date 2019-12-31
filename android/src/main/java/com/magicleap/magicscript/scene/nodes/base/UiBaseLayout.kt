@@ -48,11 +48,11 @@ abstract class UiBaseLayout<T : LayoutParams>(
     var onAddedToLayoutListener: ((node: Node) -> Unit)? = null
     var onRemovedFromLayoutListener: ((node: Node) -> Unit)? = null
 
-    protected var width: Float = WRAP_CONTENT_DIMENSION
-        private set
+    val width: Float
+        get() = properties.getDouble(PROP_WIDTH, 0.0).toFloat()
 
-    protected var height: Float = WRAP_CONTENT_DIMENSION
-        private set
+    val height: Float
+        get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
 
     // we should re-draw the grid after adding / removing a child
     private var redrawRequested = false
@@ -73,7 +73,10 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setLayoutSize(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            redrawRequested = true
+        }
     }
 
     // We should access children via [childrenList], because they may not have
@@ -87,18 +90,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
                     child.hide()
                 }
             }
-    }
-
-    protected open fun setLayoutSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            if (props.containsKey(PROP_WIDTH)) {
-                width = props.getDouble(PROP_WIDTH).toFloat()
-            }
-            if (props.containsKey(PROP_HEIGHT)) {
-                height = props.getDouble(PROP_HEIGHT).toFloat()
-            }
-            redrawRequested = true
-        }
     }
 
     /**

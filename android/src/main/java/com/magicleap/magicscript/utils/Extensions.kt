@@ -90,6 +90,18 @@ fun <T> Bundle.putDefault(key: String, value: T) {
     }
 }
 
+/**
+ * Returns true if bundle contains value for at least one passed key.
+ */
+fun Bundle.containsAny(vararg keys: String): Boolean {
+    for (key in keys) {
+        if (containsKey(key)) {
+            return true
+        }
+    }
+    return false
+}
+
 /*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end

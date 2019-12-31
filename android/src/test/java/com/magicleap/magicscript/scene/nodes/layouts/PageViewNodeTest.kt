@@ -20,12 +20,14 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
-import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -39,13 +41,13 @@ class PageViewNodeTest {
 
     @Before
     fun setUp() {
-        layoutManager = mock()
+        layoutManager = spy(VerticalLinearLayoutManager())
     }
 
     @Test
     fun `should set top-left alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
-        val node = PageViewNode(props, layoutManager)
+        val node = createNode(props)
         node.build()
 
         node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
@@ -55,7 +57,7 @@ class PageViewNodeTest {
     @Test
     fun `should apply passed content alignment`() {
         val props = reactMapOf(PageViewNode.PROP_CONTENT_ALIGNMENT, "bottom-left")
-        val node = PageViewNode(props, layoutManager)
+        val node = createNode(props)
         node.build()
 
         val layoutParams = node.getLayoutParams()
@@ -66,9 +68,14 @@ class PageViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val props = reactMapOf(UiBaseLayout.PROP_WIDTH, 2.0, UiBaseLayout.PROP_HEIGHT, 1.0)
-        val node = PageViewNode(props, layoutManager)
-        val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "top-left",
+            PageViewNode.PROP_CONTENT_ALIGNMENT, "top-left",
+            UiBaseLayout.PROP_WIDTH, 2.0,
+            UiBaseLayout.PROP_HEIGHT, 1.0
+        )
+        val node = createNode(props)
+        val expectedBounds = Bounding(0F, -1F, 2F, 0F)
         node.build()
 
         val bounds = node.getBounding()
@@ -79,11 +86,15 @@ class PageViewNodeTest {
     @Test
     fun `should set visible page when is passed`() {
         val props = reactMapOf(PageViewNode.PROP_VISIBLE_PAGE, 1.0)
-        val node = PageViewNode(props, layoutManager)
+        val node = createNode(props)
         node.build()
 
         val layoutParams = node.getLayoutParams()
 
         layoutParams.visiblePage shouldEqual 1
+    }
+
+    private fun createNode(props: JavaOnlyMap): PageViewNode {
+        return PageViewNode(props, layoutManager)
     }
 }

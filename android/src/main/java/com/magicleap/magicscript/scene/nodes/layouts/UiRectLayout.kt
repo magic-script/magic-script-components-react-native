@@ -9,10 +9,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayou
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.*
 
 class UiRectLayout(
     initProps: ReadableMap,
@@ -21,7 +18,7 @@ class UiRectLayout(
 
     companion object {
         // properties
-        const val PROP_PADDING = "padding"
+        const val PROP_ITEM_PADDING = "padding"
         const val PROP_CONTENT_ALIGNMENT = "contentAlignment"
 
         // default values
@@ -30,21 +27,19 @@ class UiRectLayout(
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
-    private var padding: Padding = Padding(0f, 0f, 0f, 0f)
-    private var contentVerticalAlignment = Alignment.VerticalAlignment.TOP
-    private var contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-
     init {
         // set default values of properties
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         properties.putDefault(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
-        properties.putDefault(PROP_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setItemPadding(props)
-        setContentAlignment(props)
+
+        if (props.containsAny(PROP_ITEM_PADDING, PROP_CONTENT_ALIGNMENT)) {
+            requestLayout()
+        }
     }
 
     override fun getContentBounding(): Bounding {
@@ -66,29 +61,17 @@ class UiRectLayout(
     }
 
     override fun getLayoutParams(): LayoutParams {
+        val padding = properties.read(PROP_ITEM_PADDING) ?: Padding()
+        val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
+        val contentHorizontalAlignment = contentAlignment.horizontal
+        val contentVerticalAlignment = contentAlignment.vertical
+
         return LayoutParams(
             size = Vector2(width, height),
             itemPadding = padding,
             itemHorizontalAlignment = contentHorizontalAlignment,
             itemVerticalAlignment = contentVerticalAlignment
         )
-    }
-
-    private fun setItemPadding(props: Bundle) {
-        val padding = props.read<Padding>(PROP_PADDING)
-        if (padding != null) {
-            this.padding = padding
-            requestLayout()
-        }
-    }
-
-    private fun setContentAlignment(props: Bundle) {
-        val alignment = props.read<Alignment>(PROP_CONTENT_ALIGNMENT)
-        if (alignment != null) {
-            this.contentVerticalAlignment = alignment.vertical
-            this.contentHorizontalAlignment = alignment.horizontal
-            requestLayout()
-        }
     }
 
 }

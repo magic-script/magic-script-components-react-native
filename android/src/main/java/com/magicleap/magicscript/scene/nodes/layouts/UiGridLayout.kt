@@ -25,6 +25,7 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -39,72 +40,57 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
         // default values
-        const val COLUMNS_DEFAULT = 0 // 0 means unspecified (will grow with content)
-        const val ROWS_DEFAULT = 1
+        const val COLUMNS_DEFAULT = 0.0 // 0 means unspecified (will grow with content)
+        const val ROWS_DEFAULT = 1.0
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
         // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
-    var columns: Int = 0
-        private set(value) {
-            backedColumns = value
+    // the actual number of columns
+    val columns: Int get() = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT).toInt()
+
+    // the actual number of rows
+    val rows: Int
+        get() {
+            val userSpecifiedRows = properties.getDouble(PROP_ROWS, ROWS_DEFAULT).toInt()
+            val userSpecifiedColumns = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT).toInt()
 
             // if both columns and rows = 0, 1 row should be used
-            if (value == 0 && backedRows == 0) {
-                rows = 1
+            return if (userSpecifiedRows == 0 && userSpecifiedColumns == 0) {
+                1
+            } else if (userSpecifiedColumns == 0) {
+                userSpecifiedRows
             } else {
-                field = value
-            }
-            // columns take precedence over rows when both != 0
-            if (value != 0 && backedRows != 0) {
-                rows = 0
+                0
             }
         }
-
-    var rows: Int = 1
-        private set(value) {
-            backedRows = value
-
-            // if both columns and rows = 0, 1 row should be used
-            if (value == 0 && backedColumns == 0) {
-                field = 1
-            } else if (backedColumns == 0) {
-                field = value
-            } else {
-                field = 0
-            }
-        }
-
-    // user specified columns and rows
-    private var backedColumns = columns
-    private var backedRows = rows
-
-    // default padding for each item [top, right, bottom, left]
-    private var itemPadding = Padding(0F, 0F, 0F, 0F)
-
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
-
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
 
     init {
         // set default values of properties
 
         // alignment of the grid itself (pivot)
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefault(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble())
-        properties.putDefault(PROP_ROWS, ROWS_DEFAULT.toDouble())
+        properties.putDefault(PROP_COLUMNS, COLUMNS_DEFAULT)
+        properties.putDefault(PROP_ROWS, ROWS_DEFAULT)
         properties.putDefault(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        // default padding for each item [top, right, bottom, left]
         properties.putDefault(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setColumns(props)
-        setRows(props)
-        setItemPadding(props)
-        setItemAlignment(props)
+
+        if (props.containsAny(
+                PROP_COLUMNS,
+                PROP_ROWS,
+                PROP_DEFAULT_ITEM_PADDING,
+                PROP_DEFAULT_ITEM_ALIGNMENT
+            )
+        ) {
+            requestLayout()
+        }
     }
 
     override fun getContentBounding(): Bounding {
@@ -118,6 +104,11 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
     }
 
     override fun getLayoutParams(): GridLayoutParams {
+        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
+        val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val itemHorizontalAlignment = itemAlignment.horizontal
+        val itemVerticalAlignment = itemAlignment.vertical
+
         return GridLayoutParams(
             columns = columns,
             rows = rows,
@@ -126,37 +117,6 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
             itemVerticalAlignment = itemVerticalAlignment,
             itemPadding = itemPadding
         )
-    }
-
-    private fun setColumns(props: Bundle) {
-        if (props.containsKey(PROP_COLUMNS)) {
-            this.columns = props.getDouble(PROP_COLUMNS).toInt()
-            requestLayout()
-        }
-    }
-
-    private fun setRows(props: Bundle) {
-        if (props.containsKey(PROP_ROWS)) {
-            this.rows = props.getDouble(PROP_ROWS).toInt()
-            requestLayout()
-        }
-    }
-
-    private fun setItemPadding(props: Bundle) {
-        val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
-        if (padding != null) {
-            this.itemPadding = padding
-            requestLayout()
-        }
-    }
-
-    private fun setItemAlignment(props: Bundle) {
-        val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
-        if (alignment != null) {
-            this.itemVerticalAlignment = alignment.vertical
-            this.itemHorizontalAlignment = alignment.horizontal
-            requestLayout()
-        }
     }
 
 }

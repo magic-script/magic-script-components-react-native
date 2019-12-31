@@ -74,7 +74,7 @@ class VerticalLinearLayoutManagerTest {
     }
 
     @Test
-    fun `should return correct layout bounds when vertical`() {
+    fun `should return correct layout bounds`() {
         size = Vector2(0f, 5f) // 0 means dynamic
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
 

@@ -24,7 +24,7 @@ import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
-open class VerticalLinearLayoutManager<T : LayoutParams> : BaseLinearLayoutManager<T>() {
+open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() {
 
     override fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,

@@ -120,4 +120,22 @@ class ExtensionsKtTest {
         bundle.containsAny("abc", "some") shouldEqual false
     }
 
+    @Test
+    fun `should calculate sum of floats`() {
+        val numbers = listOf(1.2f, 2.8f, 3f)
+
+        val sum = numbers.sumByFloat { it }
+
+        sum shouldEqual 7f
+    }
+
+    @Test
+    fun `sum by float should return 0 for empty list`() {
+        val numbers = listOf<Float>()
+
+        val sum = numbers.sumByFloat { it }
+
+        sum shouldEqual 0f
+    }
+
 }

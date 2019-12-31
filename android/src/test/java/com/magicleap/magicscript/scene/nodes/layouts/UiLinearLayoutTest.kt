@@ -20,9 +20,11 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.LayoutParams
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -39,14 +41,29 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiLinearLayoutTest {
 
-    private lateinit var linearLayoutManager: LayoutManager<LayoutParams>
+    private lateinit var layoutManager: VerticalLinearLayoutManager<LayoutParams>
+
+    // local bounds of children inside the layout
+    private val layoutBounds = Bounding(0f, -3f, 2f, 1f)
 
     @Before
     fun setUp() {
-        linearLayoutManager = mock()
-        whenever(linearLayoutManager.getLayoutBounds(any())).thenReturn(
-            Bounding(1f, 1f, 1f, 1f)
+        layoutManager = mock()
+        whenever(layoutManager.getLayoutBounds(any())).thenReturn(layoutBounds)
+    }
+
+    @Test
+    fun `should return layout bounds based on bounds returned by layout manager`() {
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "top-left"
         )
+        val node = createNode(props)
+        node.build()
+        val expectedBounds = Bounding(0f, -4f, 2f, 0f)
+
+        val bounds = node.getBounding()
+
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
@@ -70,7 +87,7 @@ class UiLinearLayoutTest {
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
-        return UiLinearLayout(props, linearLayoutManager)
+        return UiLinearLayout(props, layoutManager)
     }
 
 }

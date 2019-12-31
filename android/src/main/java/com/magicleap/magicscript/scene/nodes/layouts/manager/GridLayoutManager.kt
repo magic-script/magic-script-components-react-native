@@ -24,7 +24,6 @@ import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CO
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
@@ -139,17 +138,6 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         val node = nodeInfo.node
         node.localPosition = Vector3(x, y, node.localPosition.z)
-    }
-
-    override fun getLayoutBounds(layoutParams: GridLayoutParams): Bounding {
-        val childBounds = Utils.calculateSumBounds(childrenList)
-        val itemPadding = layoutParams.itemPadding
-        return Bounding(
-            childBounds.left - itemPadding.left,
-            childBounds.bottom - itemPadding.bottom,
-            childBounds.right + itemPadding.right,
-            childBounds.top + itemPadding.top
-        )
     }
 
     override fun getContentWidth(

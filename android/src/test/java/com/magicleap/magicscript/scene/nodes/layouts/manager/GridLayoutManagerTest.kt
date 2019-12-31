@@ -43,6 +43,17 @@ class GridLayoutManagerTest {
     }
 
     @Test
+    fun `should return correct layout bounds size when parent bigger than children bounds`() {
+        size = Vector2(5f, 6f)
+        itemPadding = Padding(0.1f, 0.1f, 0.1f, 0.1f)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+
+        val boundsSize = manager.getLayoutBounds(getLayoutParams()).size()
+        assertEquals(5f, boundsSize.x, EPSILON)
+        assertEquals(6f, boundsSize.y, EPSILON)
+    }
+
+    @Test
     fun `should scale down children proportionally to their size when layout size is limited`() {
         size = Vector2(1f, 0f) // 0 means dynamic
 

@@ -61,7 +61,7 @@ class HorizontalLinearLayoutManagerTest {
     }
 
     @Test
-    fun `should return correct layout bounds when horizontal`() {
+    fun `should return correct layout bounds`() {
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
         size = Vector2(0f, 5f) // 0 means dynamic
 

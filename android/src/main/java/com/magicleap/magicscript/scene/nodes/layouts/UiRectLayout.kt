@@ -5,7 +5,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -13,7 +13,7 @@ import com.magicleap.magicscript.utils.*
 
 class UiRectLayout(
     initProps: ReadableMap,
-    layoutManager: VerticalLinearLayoutManager<LayoutParams>
+    layoutManager: LayoutManager<LayoutParams>
 ) : UiBaseLayout<LayoutParams>(initProps, layoutManager) {
 
     companion object {

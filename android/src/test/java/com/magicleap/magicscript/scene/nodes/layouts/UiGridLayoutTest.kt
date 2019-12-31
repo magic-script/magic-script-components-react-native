@@ -19,9 +19,11 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -38,14 +40,29 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiGridLayoutTest {
 
-    private lateinit var gridLayoutManager: LayoutManager<GridLayoutParams>
+    private lateinit var layoutManager: LayoutManager<GridLayoutParams>
+
+    // local bounds of children inside the layout
+    private val layoutBounds = Bounding(0f, -1f, 1f, 1f)
 
     @Before
     fun setUp() {
-        gridLayoutManager = mock()
-        whenever(gridLayoutManager.getLayoutBounds(any())).thenReturn(
-            Bounding(1f, 1f, 1f, 1f)
+        layoutManager = mock()
+        whenever(layoutManager.getLayoutBounds(any())).thenReturn(layoutBounds)
+    }
+
+    @Test
+    fun `should return layout bounds based on bounds returned by layout manager`() {
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "bottom-center"
         )
+        val node = createNode(props)
+        node.build()
+        val expectedBounds = Bounding(left = -0.5f, bottom = 0.0f, right = 0.5f, top = 2.0f)
+
+        val bounds = node.getBounding()
+
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
@@ -116,8 +133,9 @@ class UiGridLayoutTest {
         layoutParams.columns shouldEqual 3
     }
 
+
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
-        return UiGridLayout(props, gridLayoutManager)
+        return UiGridLayout(props, layoutManager)
     }
 
 }

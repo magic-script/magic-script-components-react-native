@@ -2,7 +2,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
-import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -109,13 +109,14 @@ class GridLayoutManagerTest {
         assertEquals(1 / 3f, childrenList[1].localScale.y, EPSILON)
     }
 
-    private fun getLayoutParams() = GridLayoutParams(
-        columns = columns,
-        rows = rows,
-        size = size,
-        itemPadding = itemPadding,
-        itemHorizontalAlignment = itemHorizontalAlignment,
-        itemVerticalAlignment = itemVerticalAlignment
-    )
+    private fun getLayoutParams() =
+        GridLayoutParams(
+            columns = columns,
+            rows = rows,
+            size = size,
+            itemPadding = itemPadding,
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment
+        )
 
 }

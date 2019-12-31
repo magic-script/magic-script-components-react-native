@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
-import com.magicleap.magicscript.scene.nodes.base.LayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -100,11 +100,12 @@ class VerticalLinearLayoutManagerTest {
         assertEquals(0.45f, childrenList[1].localScale.y, EPSILON)
     }
 
-    private fun getLayoutParams() = LayoutParams(
-        size = size,
-        itemPadding = itemPadding,
-        itemHorizontalAlignment = itemHorizontalAlignment,
-        itemVerticalAlignment = itemVerticalAlignment
-    )
+    private fun getLayoutParams() =
+        LayoutParams(
+            size = size,
+            itemPadding = itemPadding,
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment
+        )
 
 }

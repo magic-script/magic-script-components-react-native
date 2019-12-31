@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.ContentNode
-import com.magicleap.magicscript.scene.nodes.base.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -35,13 +35,14 @@ class PageViewManagerTest {
 
     private lateinit var pageViewManager: PageViewLayoutManager
 
-    private val layoutParams = PageViewLayoutParams(
-        visiblePage = 0,
-        size = Vector2(1f, 1f),
-        itemPadding = Padding(),
-        itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT,
-        itemVerticalAlignment = Alignment.VerticalAlignment.TOP
-    )
+    private val layoutParams =
+        PageViewLayoutParams(
+            visiblePage = 0,
+            size = Vector2(1f, 1f),
+            itemPadding = Padding(),
+            itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT,
+            itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+        )
 
     @Before
     fun setUp() {

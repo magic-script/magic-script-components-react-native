@@ -1,5 +1,6 @@
-package com.magicleap.magicscript.scene.nodes.base
+package com.magicleap.magicscript.scene.nodes.layouts.params
 
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2

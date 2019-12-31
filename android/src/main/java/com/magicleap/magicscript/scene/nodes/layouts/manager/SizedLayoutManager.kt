@@ -17,9 +17,9 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
@@ -77,7 +77,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     }
 
     // sets the proper position for the child node
-    protected abstract fun <T : LayoutParams> layoutNode(
+    abstract fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
         childrenBounds: Map<Int, Bounding>,
         contentSize: Vector2,

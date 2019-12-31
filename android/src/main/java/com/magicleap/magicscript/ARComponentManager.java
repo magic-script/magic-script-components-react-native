@@ -77,15 +77,17 @@ import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
@@ -291,7 +293,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
+        VerticalLinearLayoutManager verticalManager = new VerticalLinearLayoutManager<LayoutParams>();
+        HorizontalLinearLayoutManager horizontalManager = new HorizontalLinearLayoutManager<LayoutParams>();
+        LinearLayoutManager manager = new LinearLayoutManager(verticalManager, horizontalManager);
+        mainHandler.post(() -> addNode(new UiLinearLayout(props, manager), nodeId));
     }
 
     @ReactMethod

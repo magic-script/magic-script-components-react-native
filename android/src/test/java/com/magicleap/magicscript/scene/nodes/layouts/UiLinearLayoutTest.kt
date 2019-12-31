@@ -19,9 +19,8 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -41,7 +40,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiLinearLayoutTest {
 
-    private lateinit var layoutManager: VerticalLinearLayoutManager<LayoutParams>
+    private lateinit var layoutManager: LinearLayoutManager
 
     // local bounds of children inside the layout
     private val layoutBounds = Bounding(0f, -3f, 2f, 1f)

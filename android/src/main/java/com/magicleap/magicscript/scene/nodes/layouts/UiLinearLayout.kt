@@ -18,11 +18,9 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
@@ -32,10 +30,8 @@ import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
-class UiLinearLayout @JvmOverloads constructor(
-    props: ReadableMap,
-    layoutManager: LayoutManager<LayoutParams> = VerticalLinearLayoutManager()
-) : UiBaseLayout<LayoutParams>(props, layoutManager) {
+class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayoutParams>) :
+    UiBaseLayout<LinearLayoutParams>(props, layoutManager) {
 
     companion object {
         // properties
@@ -62,26 +58,14 @@ class UiLinearLayout @JvmOverloads constructor(
     }
 
     override fun applyProperties(props: Bundle) {
-        // to apply height first
-        if (props.containsKey(PROP_ORIENTATION)) {
-            val isVertical =
-                props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
-
-            if (isVertical && layoutManager !is VerticalLinearLayoutManager) {
-                layoutManager = VerticalLinearLayoutManager()
-                requestLayout()
-            }
-
-            if (!isVertical && layoutManager !is HorizontalLinearLayoutManager) {
-                layoutManager = HorizontalLinearLayoutManager()
-                requestLayout()
-            }
-
-        }
-
         super.applyProperties(props)
 
-        if (props.containsAny(PROP_DEFAULT_ITEM_ALIGNMENT, PROP_DEFAULT_ITEM_PADDING)) {
+        if (props.containsAny(
+                PROP_ORIENTATION,
+                PROP_DEFAULT_ITEM_ALIGNMENT,
+                PROP_DEFAULT_ITEM_PADDING
+            )
+        ) {
             requestLayout()
         }
     }
@@ -96,13 +80,15 @@ class UiLinearLayout @JvmOverloads constructor(
         )
     }
 
-    override fun getLayoutParams(): LayoutParams {
+    override fun getLayoutParams(): LinearLayoutParams {
+        val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
         val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
         val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
         val itemHorizontalAlignment = itemAlignment.horizontal
         val itemVerticalAlignment = itemAlignment.vertical
 
-        return LayoutParams(
+        return LinearLayoutParams(
+            orientation = orientation,
             size = Vector2(width, height),
             itemPadding = itemPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,

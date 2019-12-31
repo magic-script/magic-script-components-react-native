@@ -45,7 +45,7 @@ class PageViewNodeTest {
     }
 
     @Test
-    fun `should set top-left alignment when no alignment is passed`() {
+    fun `should use top-left alignment by default`() {
         val props = JavaOnlyMap()
         val node = createNode(props)
         node.build()

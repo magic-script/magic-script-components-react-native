@@ -35,13 +35,13 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class VerticalLinearLayoutManagerTest {
     private val EPSILON = 1e-5f
-    private lateinit var linearManager: LayoutManager<LayoutParams>
+    private lateinit var linearManager: VerticalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     // Layout params
-    private var size = Vector2(0f, 0f)
+    private var size = Vector2(0f, 0f) // 0 means dynamic
     private var itemPadding = Padding(0f, 0f, 0f, 0f)
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
     private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
@@ -64,6 +64,7 @@ class VerticalLinearLayoutManagerTest {
 
     @Test
     fun `should change children position when top padding set`() {
+        size = Vector2(0f, 0f) // 0 means dynamic
         itemPadding = Padding(0.5f, 0f, 0f, 0f)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -74,8 +75,9 @@ class VerticalLinearLayoutManagerTest {
 
     @Test
     fun `should return correct layout bounds when vertical`() {
-        itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
         size = Vector2(0f, 5f) // 0 means dynamic
+        itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
+
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         val boundsSize = linearManager.getLayoutBounds(getLayoutParams()).size()
@@ -84,17 +86,18 @@ class VerticalLinearLayoutManagerTest {
         assertEquals(5f, boundsSize.y, EPSILON)
     }
 
-
     @Test
-    fun `should scale child node if parent size limited`() {
-        itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
+    fun `should scale child nodes if layout size limited`() {
         size = Vector2(1f, 2f)
+        itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        // 0.45 = (parent width - horizontal padding) / child width
+        // 0.45 = (layout width - horizontal padding) / children sum width
         assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
         assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(0.45f, childrenList[1].localScale.x, EPSILON)
+        assertEquals(0.45f, childrenList[1].localScale.y, EPSILON)
     }
 
     private fun getLayoutParams() = LayoutParams(

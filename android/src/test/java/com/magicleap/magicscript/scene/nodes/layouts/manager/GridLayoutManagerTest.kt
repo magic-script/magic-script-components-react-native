@@ -4,7 +4,6 @@ import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -27,7 +26,7 @@ class GridLayoutManagerTest {
     // Layout params
     private var columns = 0
     private var rows = 1
-    private var size = Vector2(1f, 0f)
+    private var size = Vector2(1f, 0f) // 0 means dynamic
     private var itemPadding = Padding(0f, 0f, 0f, 0f)
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
     private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
@@ -44,31 +43,59 @@ class GridLayoutManagerTest {
     }
 
     @Test
-    fun `should scale down children proportionally to their size when parent size is limited`() {
+    fun `should scale down children proportionally to their size when layout size is limited`() {
+        size = Vector2(1f, 0f) // 0 means dynamic
+
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
+        assertEquals(1 / 3f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(1 / 3f, childrenList[1].localScale.y, EPSILON)
     }
 
     @Test
-    fun `should set back initial scale on children when parent width updated to unlimited`() {
+    fun `should correctly scale children when padding set`() {
+        size = Vector2(2.5f, 0f) // 0 means dynamic
+        itemPadding = Padding(0f, 0.04f, 0f, 0.06f)
+
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
+
+        // scale = (layout width - horizontal sum padding) / children sum width
+        val expectedScale = 0.76666f
+        assertEquals(expectedScale, childrenList[0].localScale.x, EPSILON)
+        assertEquals(expectedScale, childrenList[1].localScale.x, EPSILON)
+        assertEquals(expectedScale, childrenList[0].localScale.y, EPSILON)
+        assertEquals(expectedScale, childrenList[1].localScale.y, EPSILON)
+    }
+
+    @Test
+    fun `should set back initial scale on children when layout width updated to unlimited`() {
+        size = Vector2(1f, 0f) // 0 means dynamic
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
-        size.x = UiBaseLayout.WRAP_CONTENT_DIMENSION
+
+        size = Vector2(0f, 0f) // 0 means dynamic
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1f, childrenList[1].localScale.x, EPSILON)
+        assertEquals(1f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(1f, childrenList[1].localScale.y, EPSILON)
     }
 
     @Test
     fun `should apply previous scale when padding set back to 0`() {
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+        size = Vector2(1f, 0f) // 0 means dynamic
+        itemPadding = Padding(0.2f, 0.14f, 0.2f, 0.16f)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
+
         itemPadding = Padding(0f, 0f, 0f, 0f)
-        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
         assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
         assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
+        assertEquals(1 / 3f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(1 / 3f, childrenList[1].localScale.y, EPSILON)
     }
 
     private fun getLayoutParams() = GridLayoutParams(

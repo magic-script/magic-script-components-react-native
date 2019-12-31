@@ -39,7 +39,7 @@ class HorizontalLinearLayoutManagerTest {
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     // Layout params
-    private var size = Vector2(0f, 0f)
+    private var size = Vector2(0f, 0f) // 0 means dynamic
     private var itemPadding = Padding(0f, 0f, 0f, 0f)
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
     private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
@@ -63,18 +63,18 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should return correct layout bounds when horizontal`() {
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
-        size = Vector2(0f, 5f)
+        size = Vector2(0f, 5f) // 0 means dynamic
+
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         val boundsSize = linearManager.getLayoutBounds(getLayoutParams()).size()
-
         assertEquals(4.6f, boundsSize.x, EPSILON)
         assertEquals(5f, boundsSize.y, EPSILON)
     }
 
     @Test
-    fun `should position children correctly when parent size is dynamic`() {
-        size = Vector2(0f, 0f)
+    fun `should position children correctly when layout size is dynamic`() {
+        size = Vector2(0f, 0f) // 0 means dynamic
         itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -100,24 +100,21 @@ class HorizontalLinearLayoutManagerTest {
         assertEquals(-3f, childrenList[1].localPosition.y, EPSILON)
     }
 
-    /*
     @Test
-    fun `should layout correctly when children scaled down`() {
-        linearManager.parentWidth = 3.5f
-        linearManager.parentHeight = 6f
-        linearManager.itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-        linearManager.itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-        linearManager.itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+    fun `should correctly scale down children when layout size limited`() {
+        size = Vector2(4f, 6f)
+        itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+        itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+        itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
 
-        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, 50)
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
-
-        val child1Bounds = childrenBounds[0]
-        val child2Bounds = childrenBounds[1]
-
+        // scale = (layout width - horizontal sum padding) / children sum width
         assertEquals(0.5f, childrenList[0].localScale.x, EPSILON)
+        assertEquals(0.5f, childrenList[0].localScale.y, EPSILON)
+        assertEquals(0.5f, childrenList[1].localScale.x, EPSILON)
+        assertEquals(0.5f, childrenList[1].localScale.y, EPSILON)
     }
-    */
 
     @Test
     fun `should align children bottom-right`() {

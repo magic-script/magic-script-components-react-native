@@ -20,6 +20,8 @@ import android.content.Context
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.ArViewManager
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.UiScrollViewNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -38,6 +40,14 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
 
     init {
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+
+        if (ArViewManager.showLayoutBounds) {
+            background = context.getDrawable(R.drawable.debug_bg)
+        }
     }
 
     // Workaround for https://github.com/magic-script/magic-script-components-react-native/issues/7

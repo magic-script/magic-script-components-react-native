@@ -27,7 +27,7 @@ import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.logMessage
 
@@ -62,7 +62,7 @@ class UiDropdownListNode(
         listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
         properties.putString(PROP_ICON, "arrow-down")
 
-        listNode = UiLinearLayout(listProps, LinearLayoutManagerImpl())
+        listNode = UiLinearLayout(listProps, VerticalLinearLayoutManager())
     }
 
     override fun build() {

@@ -1,18 +1,17 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,39 +20,25 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UIRectLayoutTest {
 
-    private lateinit var rectLayoutManager: RectLayoutManager
+    private lateinit var layoutManager: LayoutManager<LayoutParams>
+
+    // local bounds of children inside the layout
+    private val layoutBounds = Bounding(1f, -2f, 3f, 1f)
 
     @Before
     fun setUp() {
-        rectLayoutManager = mock()
+        layoutManager = mock()
+        whenever(layoutManager.getLayoutBounds(any())).thenReturn(layoutBounds)
     }
 
     @Test
-    fun `should set center-center alignment when no alignment is passed`() {
-        val props = JavaOnlyMap()
-        val node = UiRectLayout(props, rectLayoutManager)
+    fun `should return layout bounds based on bounds returned by layout manager`() {
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "center-center"
+        )
+        val node = createNode(props)
         node.build()
-
-        verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-        verify(rectLayoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.CENTER
-    }
-
-    @Test
-    fun `should set passed alignment`() {
-        val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
-        val node = UiRectLayout(props, rectLayoutManager)
-        node.build()
-
-        verify(rectLayoutManager).contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        verify(rectLayoutManager).contentVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
-    }
-
-    @Test
-    fun `should return correct bounds`() {
-        val props = reactMapOf(UiLayout.PROP_WIDTH, 2.0, UiLayout.PROP_HEIGHT, 1.0)
-        val node = UiRectLayout(props, rectLayoutManager)
-        val expectedBounds = Bounding(-1F, -0.5F, 1F, 0.5F)
-        node.build() // invokes the layout loop
+        val expectedBounds = Bounding(left = -1f, bottom = -1.5f, right = 1f, top = 1.5f)
 
         val bounds = node.getBounding()
 
@@ -61,15 +46,30 @@ class UIRectLayoutTest {
     }
 
     @Test
-    fun `should rescale child if bigger than layout size`() {
-        val props = reactMapOf(UiLayout.PROP_WIDTH, 1.0, UiLayout.PROP_HEIGHT, 1.0)
-        val node = UiRectLayout(props, rectLayoutManager)
-        val childNode = NodeBuilder()
-            .withContentBounds(Bounding(0f, 0f, 2f, 1f))
-            .build()
-        node.addContent(childNode)
-        node.build() // invokes the layout loop
+    fun `should set top-left alignment when no alignment is passed`() {
+        val props = JavaOnlyMap()
+        val node = createNode(props)
+        node.build()
 
-        assertEquals(Vector3(0.5f, 0.5f, 1f), childNode.localScale)
+        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
+        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
     }
+
+    @Test
+    fun `should set passed content alignment`() {
+        val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
+        val node = createNode(props)
+        node.build()
+
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
+    }
+
+
+    private fun createNode(props: JavaOnlyMap): UiRectLayout {
+        return UiRectLayout(props, layoutManager)
+    }
+
 }

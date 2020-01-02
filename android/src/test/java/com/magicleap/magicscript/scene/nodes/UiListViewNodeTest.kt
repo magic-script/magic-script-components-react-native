@@ -20,19 +20,22 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldBeInstanceOf
+import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBeLessThan
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,6 +60,16 @@ class UiListViewNodeTest {
     }
 
     @Test
+    fun `should use linear layout as children container`() {
+        val node = createNodeWithViewSpy(reactMapOf())
+        node.build()
+
+        node.contentNode.children.size shouldNotBeLessThan 1
+        val containerNode = node.contentNode.children[0]
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+    }
+
+    @Test
     fun `should return correct bounds`() {
         val props = reactMapOf(
             TransformNode.PROP_LOCAL_POSITION, reactArrayOf(1.0, 1.0, 0.0),
@@ -75,11 +88,26 @@ class UiListViewNodeTest {
     fun `should apply orientation`() {
         val props = reactMapOf(UiListViewNode.PROP_ORIENTATION, "horizontal")
         val node = createNodeWithViewSpy(props)
-
         node.build()
+        val container = node.contentNode.children.first() as UiLinearLayout
 
         verify(viewSpy).scrollDirection = "horizontal"
+        container.getProperty(UiLinearLayout.PROP_ORIENTATION) shouldEqual "horizontal"
     }
+
+    @Test
+    fun `should update orientation`() {
+        val props = reactMapOf(UiListViewNode.PROP_ORIENTATION, "vertical")
+        val node = createNodeWithViewSpy(props)
+        node.build()
+        val container = node.contentNode.children.first() as UiLinearLayout
+
+        node.update(reactMapOf(UiListViewNode.PROP_ORIENTATION, "horizontal"))
+
+        verify(viewSpy).scrollDirection = "horizontal"
+        container.getProperty(UiLinearLayout.PROP_ORIENTATION) shouldEqual "horizontal"
+    }
+
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {
         return object : UiListViewNode(props, context, mock()) {

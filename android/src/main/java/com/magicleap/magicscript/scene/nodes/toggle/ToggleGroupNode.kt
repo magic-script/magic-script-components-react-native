@@ -20,7 +20,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.GroupNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
@@ -77,7 +77,7 @@ class ToggleGroupNode(initProps: ReadableMap) : GroupNode(initProps) {
     override fun addContent(child: TransformNode) {
         super.addContent(child)
 
-        if (child is UiLayout) {
+        if (child is UiBaseLayout<*>) {
             child.childrenList
                 .filterIsInstance<UiToggleNode>()
                 .forEach { toggle ->

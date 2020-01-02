@@ -82,7 +82,7 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
 
     override fun getLayoutParams(): LinearLayoutParams {
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
-        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
+        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
         val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
         val itemHorizontalAlignment = itemAlignment.horizontal
         val itemVerticalAlignment = itemAlignment.vertical

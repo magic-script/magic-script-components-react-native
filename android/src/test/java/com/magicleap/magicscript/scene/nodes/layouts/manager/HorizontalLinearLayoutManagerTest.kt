@@ -18,8 +18,9 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -39,7 +40,7 @@ class HorizontalLinearLayoutManagerTest {
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
     // Layout params
-    private var size = Vector2(0f, 0f) // 0 means dynamic
+    private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
     private var itemPadding = Padding(0f, 0f, 0f, 0f)
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
     private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
@@ -63,7 +64,7 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should return correct layout bounds`() {
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
-        size = Vector2(0f, 5f) // 0 means dynamic
+        size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
@@ -74,7 +75,7 @@ class HorizontalLinearLayoutManagerTest {
 
     @Test
     fun `should position children correctly when layout size is dynamic`() {
-        size = Vector2(0f, 0f) // 0 means dynamic
+        size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)

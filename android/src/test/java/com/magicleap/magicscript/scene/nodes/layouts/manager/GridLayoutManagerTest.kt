@@ -2,8 +2,9 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
-import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -26,7 +27,7 @@ class GridLayoutManagerTest {
     // Layout params
     private var columns = 0
     private var rows = 1
-    private var size = Vector2(1f, 0f) // 0 means dynamic
+    private var size = Vector2(1f, WRAP_CONTENT_DIMENSION)
     private var itemPadding = Padding(0f, 0f, 0f, 0f)
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
     private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
@@ -55,7 +56,7 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should scale down children proportionally to their size when layout size is limited`() {
-        size = Vector2(1f, 0f) // 0 means dynamic
+        size = Vector2(1f, WRAP_CONTENT_DIMENSION)
 
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
@@ -67,7 +68,7 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should correctly scale children when padding set`() {
-        size = Vector2(2.5f, 0f) // 0 means dynamic
+        size = Vector2(2.5f, WRAP_CONTENT_DIMENSION)
         itemPadding = Padding(0f, 0.04f, 0f, 0.06f)
 
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
@@ -82,10 +83,10 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should set back initial scale on children when layout width updated to unlimited`() {
-        size = Vector2(1f, 0f) // 0 means dynamic
+        size = Vector2(1f, WRAP_CONTENT_DIMENSION)
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        size = Vector2(0f, 0f) // 0 means dynamic
+        size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         assertEquals(1f, childrenList[0].localScale.x, EPSILON)
@@ -96,7 +97,7 @@ class GridLayoutManagerTest {
 
     @Test
     fun `should apply previous scale when padding set back to 0`() {
-        size = Vector2(1f, 0f) // 0 means dynamic
+        size = Vector2(1f, WRAP_CONTENT_DIMENSION)
         itemPadding = Padding(0.2f, 0.14f, 0.2f, 0.16f)
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 

@@ -19,9 +19,9 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -64,7 +64,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
     override fun getLayoutParams(): PageViewLayoutParams {
         val visiblePage = properties.getDouble(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE).toInt()
-        val padding = properties.read(PROP_PADDING) ?: Padding()
+        val padding = properties.read<Padding>(PROP_PADDING)!!
         val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
         val contentHorizontalAlignment = contentAlignment.horizontal
         val contentVerticalAlignment = contentAlignment.vertical

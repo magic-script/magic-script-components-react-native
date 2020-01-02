@@ -105,7 +105,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
     }
 
     override fun getLayoutParams(): GridLayoutParams {
-        val itemPadding = properties.read(PROP_DEFAULT_ITEM_PADDING) ?: Padding()
+        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
         val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
         val itemHorizontalAlignment = itemAlignment.horizontal
         val itemVerticalAlignment = itemAlignment.vertical

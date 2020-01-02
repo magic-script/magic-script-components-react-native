@@ -56,7 +56,7 @@ import SceneKit
                 self?.longpressTimer = nil
                 self?.state = .began
             }
-        }   else {
+        } else {
             state = .failed
         }
 

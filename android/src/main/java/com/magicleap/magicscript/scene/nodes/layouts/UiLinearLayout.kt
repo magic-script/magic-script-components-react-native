@@ -18,20 +18,20 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManagerImpl
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
-class UiLinearLayout @JvmOverloads constructor(
-    props: ReadableMap,
-    layoutManager: LinearLayoutManager = LinearLayoutManagerImpl()
-) : UiLayout(props, layoutManager) {
+class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayoutParams>) :
+    UiBaseLayout<LinearLayoutParams>(props, layoutManager) {
 
     companion object {
         // properties
@@ -59,13 +59,19 @@ class UiLinearLayout @JvmOverloads constructor(
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setOrientation(props)
-        setItemPadding(props)
-        setItemAlignment(props)
+
+        if (props.containsAny(
+                PROP_ORIENTATION,
+                PROP_DEFAULT_ITEM_ALIGNMENT,
+                PROP_DEFAULT_ITEM_PADDING
+            )
+        ) {
+            requestLayout()
+        }
     }
 
     override fun getContentBounding(): Bounding {
-        val layoutBounds = layoutManager.getLayoutBounds()
+        val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
         return Bounding(
             layoutBounds.left + contentNode.localPosition.x,
             layoutBounds.bottom + contentNode.localPosition.y,
@@ -74,31 +80,20 @@ class UiLinearLayout @JvmOverloads constructor(
         )
     }
 
-    private fun setOrientation(props: Bundle) {
-        if (props.containsKey(PROP_ORIENTATION)) {
-            val isVertical =
-                props.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION) == ORIENTATION_VERTICAL
-            (layoutManager as LinearLayoutManager).isVertical = isVertical
-            requestLayout()
-        }
-    }
+    override fun getLayoutParams(): LinearLayoutParams {
+        val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+        val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val itemHorizontalAlignment = itemAlignment.horizontal
+        val itemVerticalAlignment = itemAlignment.vertical
 
-    private fun setItemPadding(props: Bundle) {
-        val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
-        if (padding != null) {
-            (layoutManager as LinearLayoutManager).itemPadding = padding
-            requestLayout()
-        }
-    }
-
-    private fun setItemAlignment(props: Bundle) {
-        val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
-        if (alignment != null) {
-            (layoutManager as LinearLayoutManager)
-            layoutManager.itemVerticalAlignment = alignment.vertical
-            layoutManager.itemHorizontalAlignment = alignment.horizontal
-            requestLayout()
-        }
+        return LinearLayoutParams(
+            orientation = orientation,
+            size = Vector2(width, height),
+            itemPadding = itemPadding,
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment
+        )
     }
 
 }

@@ -19,9 +19,15 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.*
+import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,30 +40,37 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiLinearLayoutTest {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var layoutManager: LinearLayoutManager
+
+    // local bounds of children inside the layout
+    private val layoutBounds = Bounding(0f, -3f, 2f, 1f)
 
     @Before
     fun setUp() {
-        linearLayoutManager = mock()
-        whenever(linearLayoutManager.getLayoutBounds()).thenReturn(
-            Bounding(1f, 1f, 1f, 1f)
+        layoutManager = mock()
+        whenever(layoutManager.getLayoutBounds(any())).thenReturn(layoutBounds)
+    }
+
+    @Test
+    fun `should return layout bounds based on bounds returned by layout manager`() {
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "top-left"
         )
+        val node = createNode(props)
+        node.build()
+        val expectedBounds = Bounding(0f, -4f, 2f, 0f)
+
+        val bounds = node.getBounding()
+
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
-    fun `should layout children on build`() {
+    fun `should use vertical orientation by default`() {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(linearLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-    }
-
-    @Test
-    fun `should apply vertical orientation by default`() {
-        val node = createNode(JavaOnlyMap())
-        node.build()
-
-        verify(linearLayoutManager).isVertical = true
+        node.getProperty("orientation") shouldEqual "vertical"
     }
 
     @Test
@@ -67,11 +80,13 @@ class UiLinearLayoutTest {
         val node = createNode(props)
         node.build()
 
-        verify(linearLayoutManager).itemPadding = any()
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
-        return UiLinearLayout(props, linearLayoutManager)
+        return UiLinearLayout(props, layoutManager)
     }
 
 }

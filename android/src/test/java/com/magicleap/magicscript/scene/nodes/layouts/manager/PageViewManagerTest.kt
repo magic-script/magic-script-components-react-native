@@ -19,7 +19,11 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.ContentNode
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -31,9 +35,18 @@ class PageViewManagerTest {
 
     private lateinit var pageViewManager: PageViewLayoutManager
 
+    private val layoutParams =
+        PageViewLayoutParams(
+            visiblePage = 0,
+            size = Vector2(1f, 1f),
+            itemPadding = Padding(),
+            itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT,
+            itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+        )
+
     @Before
     fun setUp() {
-        this.pageViewManager = PageViewLayoutManagerImpl()
+        this.pageViewManager = PageViewLayoutManager()
     }
 
     @Test
@@ -45,7 +58,7 @@ class PageViewManagerTest {
             0 to Bounding(), 1 to Bounding()
         )
 
-        pageViewManager.layoutChildren(childrenList, boundsMap)
+        pageViewManager.layoutChildren(layoutParams, childrenList, boundsMap)
 
         child1.isVisible shouldEqual true
         child2.isVisible shouldEqual false

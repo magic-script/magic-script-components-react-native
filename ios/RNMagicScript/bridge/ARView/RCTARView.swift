@@ -153,37 +153,19 @@ import SceneKit
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
-        // #1. Add tap gesture
+        // Add tap gesture
         let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleTapAction(_:)))
-        tapGestureRecognizer.getCameraNode = { [weak self] in
-            return self?.arView.pointOfView
-        }
+        tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
-        // Set dependencies between custom tap gesture and debug camera tap gesture
-        // so that both gestures can be used in debug mode.
-//        view.gestureRecognizers?
-//            .filter { $0 is UITapGestureRecognizer }
-//            .forEach{ $0.require(toFail: tapGestureRecognizer) }
-
-        // #2. Add drag gesture
+        // Add drag gesture
         let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
-        dragGestureRecognizer.getCameraNode = { [weak self] in
-            return self?.arView.pointOfView
-        }
-//        addGestureRecognizer(dragGestureRecognizer)
+        dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
+        addGestureRecognizer(dragGestureRecognizer)
 
-        // Set dependencies between drag gesture and debug camera pan gesture
-        // so that both gestures can be used in debug mode.
-        view.gestureRecognizers?
-            .filter { $0 is UIPanGestureRecognizer }
-            .forEach{ $0.require(toFail: dragGestureRecognizer) }
-
-        // #3.Add long press gesture
+        // Add long press gesture
         let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
-        longPressGestureRecogrnizer.getCameraNode = { [weak self] in
-            return self?.arView.pointOfView
-        }
+        longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
     }
 

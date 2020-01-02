@@ -18,9 +18,9 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -40,7 +40,8 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
         // default values
-        const val COLUMNS_DEFAULT = 0.0 // 0 means unspecified (will grow with content)
+        const val DYNAMIC_VALUE = 0 // 0 means that number of columns / rows can grow
+        const val COLUMNS_DEFAULT = DYNAMIC_VALUE.toDouble()
         const val ROWS_DEFAULT = 1.0
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
@@ -57,13 +58,13 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
             val userSpecifiedRows = properties.getDouble(PROP_ROWS, ROWS_DEFAULT).toInt()
             val userSpecifiedColumns = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT).toInt()
 
-            // if both columns and rows = 0, 1 row should be used
-            return if (userSpecifiedRows == 0 && userSpecifiedColumns == 0) {
+            // if both columns and rows numbers are dynamic, 1 row should be used
+            return if (userSpecifiedRows == DYNAMIC_VALUE && userSpecifiedColumns == DYNAMIC_VALUE) {
                 1
-            } else if (userSpecifiedColumns == 0) {
+            } else if (userSpecifiedColumns == DYNAMIC_VALUE) {
                 userSpecifiedRows
             } else {
-                0
+                DYNAMIC_VALUE
             }
         }
 

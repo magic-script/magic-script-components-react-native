@@ -70,7 +70,7 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        node.columns shouldEqual 0 // 0 means dynamic
+        node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
     }
 
     @Test
@@ -82,17 +82,17 @@ class UiGridLayoutTest {
     }
 
     @Test
-    fun `should not be able to set 0 columns and rows together`() {
+    fun `should not be able to set dynamic columns and rows number together`() {
         val node = createNode(
             reactMapOf(
-                UiGridLayout.PROP_COLUMNS, 0,
-                UiGridLayout.PROP_ROWS, 0
+                UiGridLayout.PROP_COLUMNS, UiGridLayout.DYNAMIC_VALUE,
+                UiGridLayout.PROP_ROWS, UiGridLayout.DYNAMIC_VALUE
             )
         )
         node.build()
 
         node.rows shouldEqual 1
-        node.columns shouldEqual 0
+        node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
     }
 
     @Test
@@ -106,7 +106,7 @@ class UiGridLayoutTest {
         node.build()
 
         node.columns shouldEqual 2
-        node.rows shouldEqual 0
+        node.rows shouldEqual UiGridLayout.DYNAMIC_VALUE
     }
 
     @Test

@@ -76,33 +76,24 @@ class ViewController: UIViewController {
     fileprivate var rectScale: CGFloat = 1.0
     fileprivate var rectLayout: UiRectLayoutNode!
     fileprivate func setupRectLayoutTest() {
-        // Rect layout
-//        let rectLayoutId: String = "rect_layout"
-//        rectLayout = createComponent([
-//            "alignment": "top-center",
-//            "debug": true,
-//            "localPosition": [0, 0.7, 0],
-//            "height": rectSize.height,
-//            "width": rectSize.width
-//        ], nodeId: rectLayoutId, parentId: groupId)
-
-//        let button: UiButtonNode = createComponent([
-//            "enabled": true,
-//            "roundness": 0.5,
-//            "text": "Button",
-//            "textColor": [0,1,0,1],
-//            "textSize": 0.08,
-//            "width": rectSize.width,
-//            "height": rectSize.height
-//        ], nodeId: "button_id", parentId: groupId)
+        let button: UiButtonNode = createComponent([
+            "enabled": true,
+            "roundness": 0.5,
+            "text": "Button",
+            "textColor": [0,1,0,1],
+            "textSize": 0.08,
+            "width": rectSize.width,
+            "height": rectSize.height,
+            "localPosition": [0, 0.5, 0]
+        ], nodeId: "button_id", parentId: groupId)
 
         let _: UiCircleConfirmationNode = createComponent([
             "radius": rectSize.height / 2
         ], nodeId: "circleConfirmation_id", parentId: groupId)
 
-//        button.onActivate = {
-//            print($0)
-//        }
+        button.onActivate = {
+            print($0)
+        }
 
 //        let slider: UiSliderNode = createComponent([
 //            "localPosition": [0, 0.1, 0],

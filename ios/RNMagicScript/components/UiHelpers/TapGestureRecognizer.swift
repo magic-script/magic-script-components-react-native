@@ -20,7 +20,8 @@ import SceneKit
 
 @objc class TapGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: UiNodeSelector
-    var tappedNode: TransformNode?
+    fileprivate(set) var tappedNode: TransformNode?
+    fileprivate(set) var initialTouchLocation: CGPoint?
     var getCameraNode: (() -> SCNNode?)?
 
     init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
@@ -29,26 +30,60 @@ import SceneKit
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        print("BUKA \(self.classForCoder) \(#function)")
-        if let cameraNode = getCameraNode?(),
+        if touches.count != 1 {
+            state = .failed
+        }
+
+        if state == .possible,
+            let cameraNode = getCameraNode?(),
+            let firstTouch = touches.first,
             let ray = Ray(gesture: self, cameraNode: cameraNode) {
             tappedNode = nodeSelector.hitTest(ray: ray)
-            state = .began
+            initialTouchLocation = firstTouch.location(in: firstTouch.view)
+            if tappedNode == nil {
+                state = .failed
+            }
+        } else {
+            state = .failed
         }
+
+        if tappedNode != nil {
+            ignoreAllTouchesButFirst(touches, with: event)
+        }
+
+        super.touchesBegan(touches, with: event)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        if let firstTouch = touches.first,
+            let initialTouchLocation = initialTouchLocation {
+            let currentLocation = firstTouch.location(in: firstTouch.view)
+            let delta = (currentLocation - initialTouchLocation)
+            let distanceSq = delta.x * delta.x + delta.y + delta.y
+            if distanceSq > 400 {
+                state = .failed
+            }
+        } else {
+            state = .failed
+        }
+
+        super.touchesMoved(touches, with: event)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        print("BUKA \(self.classForCoder) \(#function)")
-        state = .ended
+        state = (state == .possible) ? .ended : .failed
+        super.touchesEnded(touches, with: event)
     }
 
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("BUKA \(self.classForCoder) \(#function)")
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .cancelled
+        super.touchesCancelled(touches, with: event)
     }
 
     override func reset() {
-        print("BUKA \(self.classForCoder) \(#function)")
         tappedNode = nil
+        initialTouchLocation = nil
+        super.reset()
     }
 }
+

@@ -153,25 +153,25 @@ import SceneKit
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
-        // Add tap gesture
+        // #1. Add tap gesture
         let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in
             return self?.arView.pointOfView
         }
         addGestureRecognizer(tapGestureRecognizer)
 
-        // Add drag gesture
+        // Set dependencies between custom tap gesture and debug camera tap gesture
+        // so that both gestures can be used in debug mode.
+//        view.gestureRecognizers?
+//            .filter { $0 is UITapGestureRecognizer }
+//            .forEach{ $0.require(toFail: tapGestureRecognizer) }
+
+        // #2. Add drag gesture
         let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in
             return self?.arView.pointOfView
         }
 //        addGestureRecognizer(dragGestureRecognizer)
-
-        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
-        longPressGestureRecogrnizer.getCameraNode = { [weak self] in
-            return self?.arView.pointOfView
-        }
-        addGestureRecognizer(longPressGestureRecogrnizer)
 
         // Set dependencies between drag gesture and debug camera pan gesture
         // so that both gestures can be used in debug mode.
@@ -179,10 +179,12 @@ import SceneKit
             .filter { $0 is UIPanGestureRecognizer }
             .forEach{ $0.require(toFail: dragGestureRecognizer) }
 
-        // Allow tapping components that are embedded in scrollable content
-        dragGestureRecognizer.require(toFail: tapGestureRecognizer)
-
-        longPressGestureRecogrnizer.require(toFail: tapGestureRecognizer)
+        // #3.Add long press gesture
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.getCameraNode = { [weak self] in
+            return self?.arView.pointOfView
+        }
+        addGestureRecognizer(longPressGestureRecogrnizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {

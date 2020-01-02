@@ -240,6 +240,8 @@
 		44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */; };
 		44DA5F55235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
 		44DA5F56235EF3900058212C /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DA5F54235EF3900058212C /* Plane.swift */; };
+		44DF5A6023BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */; };
+		44DF5A6123BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */; };
 		44DF644423946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
 		44DF644523946568005E0518 /* SCNCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644323946568005E0518 /* SCNCircle.swift */; };
 		44DF644923951405005E0518 /* UiNodeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DF644823951405005E0518 /* UiNodeAnimator.swift */; };
@@ -695,6 +697,7 @@
 		44D8FE9B233CA5CA007FD766 /* VideoActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoActionSpec.swift; sourceTree = "<group>"; };
 		44D8FE9D233CA5D7007FD766 /* VideoViewModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModeSpec.swift; sourceTree = "<group>"; };
 		44DA5F54235EF3900058212C /* Plane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extension.swift"; sourceTree = "<group>"; };
 		44DF644323946568005E0518 /* SCNCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNCircle.swift; sourceTree = "<group>"; };
 		44DF644823951405005E0518 /* UiNodeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeAnimator.swift; sourceTree = "<group>"; };
 		44DF644B23951823005E0518 /* String+Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Random.swift"; sourceTree = "<group>"; };
@@ -1260,8 +1263,9 @@
 				44AFAC2A232B9BCF005AC8EF /* Measures.swift */,
 				44444718236AFD5A00665D31 /* Dragging.swift */,
 				44E949352370337900BD0F32 /* DragGestureRecognizer.swift */,
-				C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */,
 				C450CD5D23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift */,
+				C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */,
+				44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -2146,6 +2150,7 @@
 				4425EE08236605A60064A2EA /* GridLayout.swift in Sources */,
 				C450CD5F23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
 				C450CD5C23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
+				44DF5A6123BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,
 				44AFAD17232BCAE3005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE05236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
@@ -2381,6 +2386,7 @@
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,
 				C450CD5E23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
 				C450CD5B23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
+				44DF5A6023BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,
 				C4A12B332361D19B009B7083 /* Date+Extension.swift in Sources */,
 				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,

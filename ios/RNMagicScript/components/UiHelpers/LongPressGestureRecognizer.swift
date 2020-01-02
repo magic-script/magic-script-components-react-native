@@ -20,13 +20,13 @@ import SceneKit
 
 @objc class LongPressGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: UiNodeSelector
-    var longPressedNode: TransformNode?
-    var getCameraNode: (() -> SCNNode?)?
-    
-    var minimumPressDuration: TimeInterval = 0.5
-    fileprivate var trackedTouch: (touch: UITouch, node: TransformNode?)?
+    fileprivate(set) var longPressedNode: TransformNode?
+    fileprivate(set) var initialTouchLocation: CGPoint?
     fileprivate var longpressTimer: Timer?
-    
+
+    var getCameraNode: (() -> SCNNode?)?
+    var minimumPressDuration: TimeInterval = 0.5
+
     init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         super.init(target: target, action: action)
@@ -35,45 +35,77 @@ import SceneKit
     deinit {
         longpressTimer?.invalidate()
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        print("BUKA \(self.classForCoder) \(#function)")
-        if let cameraNode = getCameraNode?(),
-            let ray = Ray(gesture: self, cameraNode: cameraNode),
-            state == .possible,
-            let touch = touches.first {
-            let hitNode = nodeSelector.hitTest(ray: ray)
-            trackedTouch = (touch, hitNode)
-            longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in
-                if self?.trackedTouch != nil, self?.trackedTouch?.touch == touch, self?.trackedTouch?.node == hitNode {
-                    self?.longpressTimer = nil
-                    self?.longPressedNode = hitNode
-                    self?.state = .began
-                }
-            }
+        if touches.count != 1 {
+            state = .failed
         }
+
+        if state == .possible,
+            let cameraNode = getCameraNode?(),
+            let firstTouch = touches.first,
+            let ray = Ray(gesture: self, cameraNode: cameraNode) {
+            longPressedNode = nodeSelector.hitTest(ray: ray)
+            initialTouchLocation = firstTouch.location(in: firstTouch.view)
+            if longPressedNode == nil {
+                state = .failed
+            }
+
+            longpressTimer?.invalidate()
+            longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in
+                self?.longpressTimer = nil
+                self?.state = .began
+            }
+        }   else {
+            state = .failed
+        }
+
+        if longPressedNode != nil {
+            ignoreAllTouchesButFirst(touches, with: event)
+        }
+
+        super.touchesBegan(touches, with: event)
     }
-    
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        if let firstTouch = touches.first,
+            let initialTouchLocation = initialTouchLocation {
+            let currentLocation = firstTouch.location(in: firstTouch.view)
+            let delta = (currentLocation - initialTouchLocation)
+            let distanceSq = delta.x * delta.x + delta.y + delta.y
+            if distanceSq > 400 {
+                state = .failed
+            }
+        } else {
+            state = .failed
+        }
+
+        super.touchesMoved(touches, with: event)
+    }
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        print("BUKA \(self.classForCoder) \(#function)")
         longpressTimer?.invalidate()
+        longpressTimer = nil
         longPressedNode = nil
-        trackedTouch = nil
-        state = .ended
+        initialTouchLocation = nil
+        state = (state == .began) ? .ended : .failed
+        super.touchesEnded(touches, with: event)
     }
-    
+
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        print("BUKA \(self.classForCoder) \(#function)")
         longpressTimer?.invalidate()
-        longPressedNode = nil
-        trackedTouch = nil
+        longpressTimer = nil
         state = .cancelled
+        super.touchesCancelled(touches, with: event)
     }
 
     override func reset() {
-        print("BUKA \(self.classForCoder) \(#function)")
         longpressTimer?.invalidate()
+        longpressTimer = nil
         longPressedNode = nil
-        trackedTouch = nil
+        initialTouchLocation = nil
+        super.reset()
     }
 }
+
+

@@ -24,9 +24,10 @@ import GLTFSceneKit
 
     @objc var url: URL? {
         didSet {
-            guard let url = url else { cleanNode(); return }
+            guard let url = url else { cleanNode(); setNeedsLayout(); return }
             downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
+                self?.setNeedsLayout()
             }
         }
     }
@@ -62,9 +63,9 @@ import GLTFSceneKit
             do {
                 let sceneSource = try sceneBuilder.build(path: modelURL.path, options: nil, extensions: nil)
                 let scene = try sceneSource.scene(options: nil)
-                contentNode.addChildNode(scene.rootNode)
+                scene.rootNode.childNodes.forEach { contentNode.addChildNode($0) }
             } catch {
-                print("[UiModelNode] \(error.localizedDescription) Path: \(modelURL.path)")
+                print("[\(self.classForCoder)] \(error.localizedDescription) Path: \(modelURL.path)")
                 return
             }
         } else {

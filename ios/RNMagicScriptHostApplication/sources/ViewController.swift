@@ -166,8 +166,8 @@ extension ViewController: RCTARViewObserving {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        DispatchQueue.main.async() { [weak self] in
-            UiNodesManager.instance.updateLayout()
-        }
+//        DispatchQueue.main.async() { [weak self] in
+//            UiNodesManager.instance.updateLayout()
+//        }
     }
 }

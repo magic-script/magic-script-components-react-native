@@ -23,6 +23,12 @@ import android.widget.FrameLayout;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.google.ar.core.Config;
+import com.google.ar.core.Session;
+import com.google.ar.core.exceptions.UnavailableApkTooOldException;
+import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
+import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.sceneform.Scene;
 import com.magicleap.magicscript.scene.CustomArFragment;
 import com.magicleap.magicscript.scene.UiNodesManager;
@@ -67,6 +73,27 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
             addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
             Scene scene = fragment.getArSceneView().getScene();
             UiNodesManager.Companion.getINSTANCE().registerScene(scene);
+
+            Session session = null;
+            try {
+                session = new Session(currentActivity);
+            } catch (UnavailableArcoreNotInstalledException e) {
+                e.printStackTrace();
+            } catch (UnavailableApkTooOldException e) {
+                e.printStackTrace();
+            } catch (UnavailableSdkTooOldException e) {
+                e.printStackTrace();
+            } catch (UnavailableDeviceNotCompatibleException e) {
+                e.printStackTrace();
+            }
+            if (session != null) {
+                Config.LightEstimationMode lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR;
+                Config config = new Config(session);
+                config.setLightEstimationMode(lightEstimationMode);
+                config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
+                session.configure(config);
+                fragment.getArSceneView().setupSession(session);
+            }
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }

@@ -45,9 +45,6 @@ class UiDropdownListItemNode(
     var id: Int = 0
         private set
 
-    var label: String = ""
-        private set
-
     var isSelected = false
         set(value) {
             field = value

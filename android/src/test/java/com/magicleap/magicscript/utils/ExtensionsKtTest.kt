@@ -18,6 +18,7 @@ package com.magicleap.magicscript.utils
 
 import android.app.DatePickerDialog
 import android.graphics.Color
+import android.os.Bundle
 import android.widget.DatePicker
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -98,4 +99,43 @@ class ExtensionsKtTest {
 
         date.getMinute() shouldEqual 55
     }
+
+    @Test
+    fun `containsAny should return true if bundle contain any passed key`() {
+        val bundle = Bundle().apply {
+            putDouble("width", 1.0)
+            putString("alignment", "top-left")
+        }
+
+        bundle.containsAny("alignment", "some") shouldEqual true
+    }
+
+    @Test
+    fun `containsAny should return false if bundle does not contain any passed key`() {
+        val bundle = Bundle().apply {
+            putDouble("abcdef", 0.1)
+            putString("prop2", "some value")
+        }
+
+        bundle.containsAny("abc", "some") shouldEqual false
+    }
+
+    @Test
+    fun `should calculate sum of floats`() {
+        val numbers = listOf(1.2f, 2.8f, 3f)
+
+        val sum = numbers.sumByFloat { it }
+
+        sum shouldEqual 7f
+    }
+
+    @Test
+    fun `sum by float should return 0 for empty list`() {
+        val numbers = listOf<Float>()
+
+        val sum = numbers.sumByFloat { it }
+
+        sum shouldEqual 0f
+    }
+
 }

@@ -83,10 +83,11 @@ import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManagerImpl;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
@@ -285,14 +286,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            GridLayoutManager layoutManager = new GridLayoutManagerImpl();
+            GridLayoutManager layoutManager = new GridLayoutManager();
             addNode(new UiGridLayout(props, layoutManager), nodeId);
         });
     }
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
+        VerticalLinearLayoutManager verticalManager = new VerticalLinearLayoutManager<LayoutParams>();
+        HorizontalLinearLayoutManager horizontalManager = new HorizontalLinearLayoutManager<LayoutParams>();
+        LinearLayoutManager manager = new LinearLayoutManager(verticalManager, horizontalManager);
+        mainHandler.post(() -> addNode(new UiLinearLayout(props, manager), nodeId));
     }
 
     @ReactMethod
@@ -330,7 +334,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createRectLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            RectLayoutManager layoutManager = new RectLayoutManagerImpl();
+            VerticalLinearLayoutManager<LayoutParams> layoutManager = new VerticalLinearLayoutManager<>();
             addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
     }
@@ -389,7 +393,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPageViewNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManagerImpl()), nodeId));
+        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManager()), nodeId));
     }
 
     @ReactMethod

@@ -133,7 +133,7 @@ import SceneKit
     @objc override func updatePivot() {
         super.updatePivot()
         if let container = innerLayout as? UiNode {
-            let size = getSize()
+            let size = getSize(scaled: false)
             let shift = container.alignment.shiftDirection
             contentNode.position -= SCNVector3(shift.x * size.width, shift.y * size.height, 0)
         }

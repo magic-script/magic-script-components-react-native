@@ -97,7 +97,9 @@ RCT_EXPORT_MODULE();
         // UiCircleConfirmationNode
         @"onConfirmationCompleted",
         @"onConfirmationUpdated",
-        @"onConfirmationCanceled"
+        @"onConfirmationCanceled",
+        // FilePicker
+        @"onFileSelected"
      ];
 }
 

@@ -51,7 +51,7 @@ import SceneKit
         return group.getSize()
     }
 
-    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
         let bounds = group.getBounds()
         let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(position.x), y: CGFloat(position.y)) : CGPoint.zero
         return bounds.offsetBy(dx: offset.x, dy: offset.y)

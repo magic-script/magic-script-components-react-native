@@ -21,14 +21,15 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import java.lang.Float.min
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager) :
-    TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
+abstract class UiBaseLayout<T : LayoutParams>(
+    initProps: ReadableMap,
+    protected val layoutManager: LayoutManager<T>
+) : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     companion object {
         const val WRAP_CONTENT_DIMENSION = 0F
@@ -46,16 +47,14 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     var onAddedToLayoutListener: ((node: Node) -> Unit)? = null
     var onRemovedFromLayoutListener: ((node: Node) -> Unit)? = null
 
-    protected var width: Float = WRAP_CONTENT_DIMENSION
-    protected var height: Float = WRAP_CONTENT_DIMENSION
+    val width: Float
+        get() = properties.getDouble(PROP_WIDTH, 0.0).toFloat()
 
-    protected var maxChildWidth: Float = Float.MAX_VALUE
-    protected var maxChildHeight: Float = Float.MAX_VALUE
+    val height: Float
+        get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
 
     // we should re-draw the grid after adding / removing a child
-    var redrawRequested = false
-        private set
-
+    private var redrawRequested = false
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
@@ -73,7 +72,10 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setLayoutSize(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            redrawRequested = true
+        }
     }
 
     // We should access children via [childrenList], because they may not have
@@ -87,18 +89,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                     child.hide()
                 }
             }
-    }
-
-    protected open fun setLayoutSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            if (props.containsKey(PROP_WIDTH)) {
-                width = props.getDouble(PROP_WIDTH).toFloat()
-            }
-            if (props.containsKey(PROP_HEIGHT)) {
-                height = props.getDouble(PROP_HEIGHT).toFloat()
-            }
-            redrawRequested = true
-        }
     }
 
     /**
@@ -131,6 +121,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             .forEach { it.setClipBounds(localBounds) }
     }
 
+    abstract fun getLayoutParams(): T
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
@@ -146,18 +138,15 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
      * at any time: we need to re-draw the layout in such case.
      */
     private fun layoutLoop() {
-        layoutManager.parentWidth = width
-        layoutManager.parentHeight = height
         measureChildren()
-        rescaleChildren(mChildrenList)
         if (redrawRequested) {
-            layoutManager.layoutChildren(mChildrenList, childrenBounds)
+            layoutManager.layoutChildren(getLayoutParams(), mChildrenList, childrenBounds)
             redrawRequested = false
 
             // Attach the child after position is calculated
-            mChildrenList.filter { it !in contentNode.children }
+            mChildrenList
+                .filter { it !in contentNode.children }
                 .forEach { contentNode.addChild(it) }
-
         }
 
         handler.postDelayed({
@@ -180,29 +169,4 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             }
         }
     }
-
-    private fun rescaleChildren(children: List<TransformNode>) {
-        for (i in children.indices) {
-            val child = children[i]
-            val childSize = (childrenBounds[i] ?: Bounding()).size()
-            if (child.localScale.x > 0 && child.localScale.y > 0) {
-                val childWidth = childSize.x / child.localScale.x
-                val childHeight = childSize.y / child.localScale.y
-                if (childWidth > 0 && childHeight > 0) {
-                    val userSpecifiedScale = readUserSpecifiedScale(child)
-                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
-                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
-                    val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
-                    child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
-                }
-            }
-        }
-    }
-
-    private fun readUserSpecifiedScale(node: TransformNode): Vector3 {
-        val scale = node.getProperty(PROP_LOCAL_SCALE) as? ArrayList<Double>
-            ?: return Vector3.one()
-        return Vector3(scale[0].toFloat(), scale[1].toFloat(), scale[2].toFloat())
-    }
-
 }

@@ -16,9 +16,12 @@
 
 package com.magicleap.magicscript;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -68,9 +71,11 @@ import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
 import com.magicleap.magicscript.scene.nodes.audio.AudioEngine;
+import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
+import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
@@ -78,10 +83,12 @@ import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManagerImpl;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManager;
-import com.magicleap.magicscript.scene.nodes.layouts.manager.RectLayoutManagerImpl;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
+import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
@@ -91,12 +98,12 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
-import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
-import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -108,7 +115,7 @@ import java.util.concurrent.Executors;
  * react-native-magic-script/components/platform/platform-factory.js
  */
 @SuppressWarnings("unused")
-public class ARComponentManager extends ReactContextBaseJavaModule implements LifecycleEventListener {
+public class ARComponentManager extends ReactContextBaseJavaModule implements LifecycleEventListener, ActivityEventListener {
 
     private static final String COMPONENT_NAME = "ARComponentManager";
     // All code inside react method must be called from main thread
@@ -128,6 +135,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private IconsRepository iconsRepo;
 
     private MediaPlayerPool mediaPlayerPool;
+    private List<ActivityResultObserver> activityResultObservers = new ArrayList();
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
                               MediaPlayerPool mediaPlayerPool) {
@@ -150,6 +158,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         this.iconsRepo = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
 
         context.addLifecycleEventListener(this);
+        context.addActivityEventListener(this);
     }
 
     @NotNull
@@ -277,14 +286,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createGridLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            GridLayoutManager layoutManager = new GridLayoutManagerImpl();
+            GridLayoutManager layoutManager = new GridLayoutManager();
             addNode(new UiGridLayout(props, layoutManager), nodeId);
         });
     }
 
     @ReactMethod
     public void createLinearLayoutNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiLinearLayout(props), nodeId));
+        VerticalLinearLayoutManager verticalManager = new VerticalLinearLayoutManager<LayoutParams>();
+        HorizontalLinearLayoutManager horizontalManager = new HorizontalLinearLayoutManager<LayoutParams>();
+        LinearLayoutManager manager = new LinearLayoutManager(verticalManager, horizontalManager);
+        mainHandler.post(() -> addNode(new UiLinearLayout(props, manager), nodeId));
     }
 
     @ReactMethod
@@ -322,7 +334,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createRectLayoutNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            RectLayoutManager layoutManager = new RectLayoutManagerImpl();
+            VerticalLinearLayoutManager<LayoutParams> layoutManager = new VerticalLinearLayoutManager<>();
             addNode(new UiRectLayout(props, layoutManager), nodeId);
         });
     }
@@ -381,7 +393,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPageViewNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManagerImpl()), nodeId));
+        mainHandler.post(() -> addNode(new PageViewNode(props, new PageViewLayoutManager()), nodeId));
     }
 
     @ReactMethod
@@ -393,6 +405,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             AudioFileProvider audioFileProvider = new UriAudioProvider(context);
             AudioNode node = new AudioNode(props, context, audioEngine, audioFileProvider);
             addNode(node, nodeId);
+        });
+    }
+
+    @ReactMethod
+    public void createFilePickerNode(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> {
+            NativeFilePickerNode filePicker = new NativeFilePickerNode(props, context, viewRenderableLoader, fontProvider, iconsRepo);
+            activityResultObservers.add(filePicker);
+            addNode(filePicker, nodeId);
         });
     }
 
@@ -576,6 +597,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> eventsManager.addOnConfirmationCanceledEventHandler(nodeId));
     }
 
+    @ReactMethod
+    public void addOnFileSelectedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnFileSelectedEventHandler(nodeId));
+    }
+
     // endregion
 
     @ReactMethod
@@ -601,5 +627,15 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @Override
     public void onHostDestroy() {
         mediaPlayerPool.destroy();
+    }
+
+    @Override
+    public void onActivityResult(final Activity activity, final int requestCode, final int resultCode, final Intent data) {
+        activityResultObservers.forEach(activityResultObserver -> activityResultObserver.onActivityResult(requestCode, resultCode, data));
+    }
+
+    @Override
+    public void onNewIntent(final Intent intent) {
+
     }
 }

@@ -14,18 +14,30 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes.layouts
+package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
 /**
  * Layout manager is responsible for placing the children nodes in
- * the correct positions inside [UiLayout]
+ * the correct positions inside a layout
  */
-interface LayoutManager {
-    var parentWidth: Float
-    var parentHeight: Float
+interface LayoutManager<T : LayoutParams> {
 
-    fun layoutChildren(children: List<Node>, childrenBounds: Map<Int, Bounding>)
+    /**
+     * Layouts the children based on calculated [childrenBounds]
+     */
+    fun layoutChildren(
+        layoutParams: T,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, Bounding>
+    )
+
+    /**
+     * Return the layout's local bounding (usually the sum of children bounds + padding)
+     */
+    fun getLayoutBounds(layoutParams: T): Bounding
+
 }

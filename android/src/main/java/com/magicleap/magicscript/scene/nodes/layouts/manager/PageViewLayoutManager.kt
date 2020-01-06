@@ -17,17 +17,31 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 
-interface PageViewLayoutManager : LayoutManager {
+class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>() {
 
-    var visiblePage: Int
+    override fun layoutChildren(
+        layoutParams: PageViewLayoutParams,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, Bounding>
+    ) {
+        val visiblePage = layoutParams.visiblePage
+        children.forEachIndexed { index, node ->
+            if (index == visiblePage) {
+                node.show()
+            } else {
+                node.hide()
+            }
+        }
+        if (children.size > visiblePage) {
+            val activeChild = children[visiblePage]
+            val bounds = mapOf(0 to childrenBounds[visiblePage]!!)
+            super.layoutChildren(layoutParams, listOf(activeChild), bounds)
+        }
 
-    var itemPadding: Padding
+    }
 
-    var contentHorizontalAlignment: Alignment.HorizontalAlignment
-
-    var contentVerticalAlignment: Alignment.VerticalAlignment
 }

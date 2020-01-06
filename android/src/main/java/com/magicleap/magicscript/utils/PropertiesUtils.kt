@@ -27,6 +27,7 @@ import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -113,14 +114,14 @@ fun readVector2(props: Bundle, propertyName: String): Vector2? {
 }
 
 fun readVector3(props: Bundle, propertyName: String): Vector3? {
-    val vector = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
-    if (vector.size == 3) {
-        val x = vector[0].toFloat()
-        val y = vector[1].toFloat()
-        val z = vector[2].toFloat()
-        return Vector3(x, y, z)
-    }
-    return null
+    val list = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
+    return getVectorFromList(list)
+}
+
+fun TransformNode.getUserSpecifiedScale(): Vector3? {
+    val scale = getProperty(TransformNode.PROP_LOCAL_SCALE)
+            as? java.util.ArrayList<Double> ?: return null
+    return getVectorFromList(scale)
 }
 
 fun readMatrix(props: Bundle, propertyName: String): Matrix? {
@@ -189,6 +190,26 @@ fun readAABB(props: Bundle, propertyName: String): AABB? {
     return AABB(min, max)
 }
 
+fun readSpatialSoundPosition(props: Bundle, propertyName: String): SpatialSoundPosition? {
+    val spatialSoundPositionBundle = props.getBundle(propertyName) ?: return null
+
+    return SpatialSoundPosition(
+        channel = spatialSoundPositionBundle.getDouble(SpatialSoundPosition::channel.name),
+        channelPosition = spatialSoundPositionBundle.read(SpatialSoundPosition::channelPosition.name)
+    )
+}
+
+fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundDistance? {
+    val spatialSoundDistance = props.getBundle(propertyName) ?: return null
+
+    return SpatialSoundDistance(
+        channel = spatialSoundDistance.getDouble(SpatialSoundDistance::channel.name),
+        maxDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::maxDistance.name).toFloat(),
+        minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
+        rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
+    )
+}
+
 private fun getFileUri(
     props: Bundle,
     propertyName: String,
@@ -222,23 +243,13 @@ private fun getFileUri(
     return null
 }
 
-fun readSpatialSoundPosition(props: Bundle, propertyName: String): SpatialSoundPosition? {
-    val spatialSoundPositionBundle = props.getBundle(propertyName) ?: return null
-
-    return SpatialSoundPosition(
-        channel = spatialSoundPositionBundle.getDouble(SpatialSoundPosition::channel.name),
-        channelPosition = spatialSoundPositionBundle.read(SpatialSoundPosition::channelPosition.name)
-    )
-}
-
-fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundDistance? {
-    val spatialSoundDistance = props.getBundle(propertyName) ?: return null
-
-    return SpatialSoundDistance(
-        channel = spatialSoundDistance.getDouble(SpatialSoundDistance::channel.name),
-        maxDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::maxDistance.name).toFloat(),
-        minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
-        rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
-    )
+private fun getVectorFromList(list: List<Double>): Vector3? {
+    if (list.size == 3) {
+        val x = list[0].toFloat()
+        val y = list[1].toFloat()
+        val z = list[2].toFloat()
+        return Vector3(x, y, z)
+    }
+    return null
 }
 

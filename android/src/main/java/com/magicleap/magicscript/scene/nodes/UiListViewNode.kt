@@ -23,6 +23,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.utils.Vector2
 
@@ -51,7 +54,9 @@ open class UiListViewNode(
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
         containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
         containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
-        containerNode = UiLinearLayout(containerProps)
+        val linearLayoutManager =
+            LinearLayoutManager(VerticalLinearLayoutManager(), HorizontalLinearLayoutManager())
+        containerNode = UiLinearLayout(containerProps, linearLayoutManager)
 
         onContentSizeChangedListener = { contentSize ->
             this.contentSize = contentSize
@@ -67,7 +72,10 @@ open class UiListViewNode(
 
     override fun applyProperties(props: Bundle) {
         if (props.containsKey(PROP_ORIENTATION)) {
-            props.putString(PROP_SCROLL_DIRECTION, props.getString(PROP_ORIENTATION))
+            val orientation = props.getString(PROP_ORIENTATION)
+            properties.putString(PROP_SCROLL_DIRECTION, orientation)
+            props.putString(PROP_SCROLL_DIRECTION, orientation)
+            containerNode.update(JavaOnlyMap.of(UiLinearLayout.PROP_ORIENTATION, orientation))
         }
         super.applyProperties(props)
 

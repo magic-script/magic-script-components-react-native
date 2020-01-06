@@ -18,14 +18,13 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.facebook.react.bridge.JavaOnlyMap
-import com.google.ar.sceneform.Node
-import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.ContentNode
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.magicleap.magicscript.utils.Vector2
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,26 +35,32 @@ class PageViewManagerTest {
 
     private lateinit var pageViewManager: PageViewLayoutManager
 
+    private val layoutParams =
+        PageViewLayoutParams(
+            visiblePage = 0,
+            size = Vector2(1f, 1f),
+            itemPadding = Padding(),
+            itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT,
+            itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+        )
+
     @Before
     fun setUp() {
-        this.pageViewManager = PageViewLayoutManagerImpl()
-        pageViewManager.contentHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-        pageViewManager.contentVerticalAlignment = Alignment.VerticalAlignment.TOP
-        pageViewManager.itemPadding = Padding(1F, 1F, 1F, 1F)
-    }
-
-    @Test(expected = Exception::class)
-    fun `should throw error if any of the children is not a content node`() {
-        val children: List<Node> = arrayListOf(ContentNode(reactMapOf()), Node())
-
-        pageViewManager.layoutChildren(children, mapOf(1 to Bounding()))
+        this.pageViewManager = PageViewLayoutManager()
     }
 
     @Test
-    fun `should not update children when children bounds map is empty`() {
-        val node: ContentNode = mock()
-        pageViewManager.layoutChildren(listOf(node), emptyMap())
+    fun `should hide all children but the first`() {
+        val child1 = ContentNode(JavaOnlyMap())
+        val child2 = ContentNode(JavaOnlyMap())
+        val childrenList = listOf(child1, child2)
+        val boundsMap = mapOf(
+            0 to Bounding(), 1 to Bounding()
+        )
 
-        verifyZeroInteractions(node)
+        pageViewManager.layoutChildren(layoutParams, childrenList, boundsMap)
+
+        child1.isVisible shouldEqual true
+        child2.isVisible shouldEqual false
     }
 }

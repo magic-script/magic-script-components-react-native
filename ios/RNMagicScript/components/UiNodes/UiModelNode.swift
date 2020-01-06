@@ -24,9 +24,10 @@ import GLTFSceneKit
 
     @objc var url: URL? {
         didSet {
-            guard let url = url else { cleanNode(); return }
+            guard let url = url else { cleanNode(); setNeedsLayout(); return }
             downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
+                self?.setNeedsLayout()
             }
         }
     }

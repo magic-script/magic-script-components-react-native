@@ -17,12 +17,12 @@
 package com.magicleap.magicscript;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
+import com.facebook.react.uimanager.annotations.ReactProp;
 import com.google.ar.sceneform.Scene;
 import com.magicleap.magicscript.scene.CustomArFragment;
 import com.magicleap.magicscript.scene.UiNodesManager;
@@ -31,18 +31,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 
+import javax.annotation.Nullable;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * View manager that is responsible for creating the AR Fragment
  */
 public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
-    public static WeakReference<AppCompatActivity> getActivityRef() {
-        return activityRef;
-    }
-
     private static final String REACT_CLASS = "RCTARView";
     private static final String LOG_TAG = "AR_LOG";
     private static WeakReference<AppCompatActivity> activityRef = new WeakReference<>(null);
+
+    public static WeakReference<AppCompatActivity> getActivityRef() {
+        return activityRef;
+    }
 
     @NotNull
     @Override
@@ -67,6 +71,11 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
         return mContainer;
+    }
+
+    @ReactProp(name = "planeDetection")
+    public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
+        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
     }
 
     @Override

@@ -138,7 +138,7 @@ import SceneKit
             backgroundGeometry.cornerRadius = 0.5 * size.height
         }
 
-        let barWidth = size.width * thumbSize
+        let barWidth = Swift.max(size.height, size.width * thumbSize)
         if let thumbGeometry = thumbNode.geometry as? SCNPlane {
             thumbGeometry.width = barWidth
             thumbGeometry.height = size.height

@@ -40,6 +40,7 @@ class UiModelNodeSpec: QuickSpec {
                 downloaderMock = DownloadingMock()
                 sceneBuilderMock = GLTFSceneSourceBuildingMock()
                 sceneMock = GLTFSceneSourceProtocolMock()
+                scene.rootNode.addChildNode(SCNNode())
                 node = UiModelNode()
                 node.downloader = downloaderMock
                 node.sceneBuilder = sceneBuilderMock

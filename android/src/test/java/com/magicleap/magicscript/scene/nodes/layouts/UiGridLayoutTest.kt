@@ -18,10 +18,16 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.*
+import com.magicleap.magicscript.shouldEqualInexact
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,30 +40,37 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiGridLayoutTest {
 
-    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var layoutManager: LayoutManager<GridLayoutParams>
+
+    // local bounds of children inside the layout
+    private val layoutBounds = Bounding(0f, -1f, 1f, 1f)
 
     @Before
     fun setUp() {
-        gridLayoutManager = mock()
-        whenever(gridLayoutManager.getLayoutBounds()).thenReturn(
-            Bounding(1f, 1f, 1f, 1f)
+        layoutManager = mock()
+        whenever(layoutManager.getLayoutBounds(any())).thenReturn(layoutBounds)
+    }
+
+    @Test
+    fun `should return layout bounds based on bounds returned by layout manager`() {
+        val props = reactMapOf(
+            TransformNode.PROP_ALIGNMENT, "bottom-center"
         )
+        val node = createNode(props)
+        node.build()
+        val expectedBounds = Bounding(left = -0.5f, bottom = 0.0f, right = 0.5f, top = 2.0f)
+
+        val bounds = node.getBounding()
+
+        bounds shouldEqualInexact expectedBounds
     }
 
     @Test
-    fun `should layout children on build`() {
+    fun `should use dynamic number of columns by default`() {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(gridLayoutManager, atLeastOnce()).layoutChildren(any(), any())
-    }
-
-    @Test
-    fun `should use dynamic sized column by default`() {
-        val node = createNode(JavaOnlyMap())
-        node.build()
-
-        verify(gridLayoutManager).columns = 0 // 0 means dynamic
+        node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
     }
 
     @Test
@@ -65,17 +78,47 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        verify(gridLayoutManager).rows = 1
+        node.rows shouldEqual 1
     }
 
     @Test
-    fun `should apply item alignment when item alignment property present`() {
+    fun `should not be able to set dynamic columns and rows number together`() {
+        val node = createNode(
+            reactMapOf(
+                UiGridLayout.PROP_COLUMNS, UiGridLayout.DYNAMIC_VALUE,
+                UiGridLayout.PROP_ROWS, UiGridLayout.DYNAMIC_VALUE
+            )
+        )
+        node.build()
+
+        node.rows shouldEqual 1
+        node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
+    }
+
+    @Test
+    fun `columns should take precedence over rows when both are set`() {
+        val node = createNode(
+            reactMapOf(
+                UiGridLayout.PROP_COLUMNS, 2,
+                UiGridLayout.PROP_ROWS, 3
+            )
+        )
+        node.build()
+
+        node.columns shouldEqual 2
+        node.rows shouldEqual UiGridLayout.DYNAMIC_VALUE
+    }
+
+    @Test
+    fun `should apply item alignment when passed`() {
         val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = createNode(props)
         node.build()
 
-        verify(gridLayoutManager).itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
-        verify(gridLayoutManager).itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
+        val layoutParams = node.getLayoutParams()
+
+        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.RIGHT
     }
 
     @Test
@@ -83,15 +126,16 @@ class UiGridLayoutTest {
         val node = createNode(JavaOnlyMap())
         node.build()
 
-        val columns = 3
-        val props = reactMapOf(UiGridLayout.PROP_COLUMNS, columns.toDouble())
+        val props = reactMapOf(UiGridLayout.PROP_COLUMNS, 3.0)
         node.update(props)
+        val layoutParams = node.getLayoutParams()
 
-        verify(gridLayoutManager).columns = columns
+        layoutParams.columns shouldEqual 3
     }
 
+
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
-        return UiGridLayout(props, gridLayoutManager)
+        return UiGridLayout(props, layoutManager)
     }
 
 }

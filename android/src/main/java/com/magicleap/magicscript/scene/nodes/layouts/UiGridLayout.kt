@@ -18,16 +18,19 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.base.UiLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.GridLayoutManager
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
-class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
-    UiLayout(initProps, layoutManager) {
+class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayoutParams>) :
+    UiBaseLayout<GridLayoutParams>(initProps, layoutManager) {
 
     companion object {
         // properties
@@ -37,35 +40,62 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
 
         // default values
-        const val COLUMNS_DEFAULT = 0
-        const val ROWS_DEFAULT = 1 // 0 means unspecified (will grow with content)
+        const val DYNAMIC_VALUE = 0 // 0 means that number of columns / rows can grow
+        const val COLUMNS_DEFAULT = DYNAMIC_VALUE.toDouble()
+        const val ROWS_DEFAULT = 1.0
         const val DEFAULT_ALIGNMENT = "top-left"
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
         // default padding for each item [top, right, bottom, left]
         val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
+    // the actual number of columns
+    val columns: Int get() = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT).toInt()
+
+    // the actual number of rows
+    val rows: Int
+        get() {
+            val userSpecifiedRows = properties.getDouble(PROP_ROWS, ROWS_DEFAULT).toInt()
+            val userSpecifiedColumns = properties.getDouble(PROP_COLUMNS, COLUMNS_DEFAULT).toInt()
+
+            // if both columns and rows numbers are dynamic, 1 row should be used
+            return if (userSpecifiedRows == DYNAMIC_VALUE && userSpecifiedColumns == DYNAMIC_VALUE) {
+                1
+            } else if (userSpecifiedColumns == DYNAMIC_VALUE) {
+                userSpecifiedRows
+            } else {
+                DYNAMIC_VALUE
+            }
+        }
+
     init {
         // set default values of properties
 
         // alignment of the grid itself (pivot)
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefault(PROP_COLUMNS, COLUMNS_DEFAULT.toDouble())
-        properties.putDefault(PROP_ROWS, ROWS_DEFAULT.toDouble())
+        properties.putDefault(PROP_COLUMNS, COLUMNS_DEFAULT)
+        properties.putDefault(PROP_ROWS, ROWS_DEFAULT)
         properties.putDefault(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        // default padding for each item [top, right, bottom, left]
         properties.putDefault(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setColumns(props)
-        setRows(props)
-        setItemPadding(props)
-        setItemAlignment(props)
+
+        if (props.containsAny(
+                PROP_COLUMNS,
+                PROP_ROWS,
+                PROP_DEFAULT_ITEM_PADDING,
+                PROP_DEFAULT_ITEM_ALIGNMENT
+            )
+        ) {
+            requestLayout()
+        }
     }
 
     override fun getContentBounding(): Bounding {
-        val layoutBounds = layoutManager.getLayoutBounds()
+        val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
         return Bounding(
             layoutBounds.left + contentNode.localPosition.x,
             layoutBounds.bottom + contentNode.localPosition.y,
@@ -74,36 +104,20 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: GridLayoutManager) :
         )
     }
 
-    private fun setColumns(props: Bundle) {
-        if (props.containsKey(PROP_COLUMNS)) {
-            (layoutManager as GridLayoutManager).columns = props.getDouble(PROP_COLUMNS).toInt()
-            requestLayout()
-        }
-    }
+    override fun getLayoutParams(): GridLayoutParams {
+        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+        val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val itemHorizontalAlignment = itemAlignment.horizontal
+        val itemVerticalAlignment = itemAlignment.vertical
 
-    private fun setRows(props: Bundle) {
-        if (props.containsKey(PROP_ROWS)) {
-            (layoutManager as GridLayoutManager).rows = props.getDouble(PROP_ROWS).toInt()
-            requestLayout()
-        }
-    }
-
-    private fun setItemPadding(props: Bundle) {
-        val padding = props.read<Padding>(PROP_DEFAULT_ITEM_PADDING)
-        if (padding != null) {
-            (layoutManager as GridLayoutManager).itemPadding = padding
-            requestLayout()
-        }
-    }
-
-    private fun setItemAlignment(props: Bundle) {
-        val alignment = props.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)
-        if (alignment != null) {
-            (layoutManager as GridLayoutManager)
-            layoutManager.itemVerticalAlignment = alignment.vertical
-            layoutManager.itemHorizontalAlignment = alignment.horizontal
-            requestLayout()
-        }
+        return GridLayoutParams(
+            columns = columns,
+            rows = rows,
+            size = Vector2(width, height),
+            itemHorizontalAlignment = itemHorizontalAlignment,
+            itemVerticalAlignment = itemVerticalAlignment,
+            itemPadding = itemPadding
+        )
     }
 
 }

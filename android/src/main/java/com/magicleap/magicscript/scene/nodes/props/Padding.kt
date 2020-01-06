@@ -17,8 +17,8 @@
 package com.magicleap.magicscript.scene.nodes.props
 
 data class Padding(
-    var top: Float = 0F,
-    var right: Float = 0F,
-    var bottom: Float = 0F,
-    var left: Float = 0F
+    val top: Float = 0F,
+    val right: Float = 0F,
+    val bottom: Float = 0F,
+    val left: Float = 0F
 )

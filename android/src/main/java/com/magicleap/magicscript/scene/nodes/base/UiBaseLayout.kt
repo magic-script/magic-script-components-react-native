@@ -21,12 +21,15 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
 // Base class for layouts (grid, linear, rect)
-abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: LayoutManager) :
-    TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
+abstract class UiBaseLayout<T : LayoutParams>(
+    initProps: ReadableMap,
+    protected val layoutManager: LayoutManager<T>
+) : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
 
     companion object {
         const val WRAP_CONTENT_DIMENSION = 0F
@@ -44,12 +47,14 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     var onAddedToLayoutListener: ((node: Node) -> Unit)? = null
     var onRemovedFromLayoutListener: ((node: Node) -> Unit)? = null
 
-    protected var width: Float = WRAP_CONTENT_DIMENSION
-    protected var height: Float = WRAP_CONTENT_DIMENSION
+    val width: Float
+        get() = properties.getDouble(PROP_WIDTH, 0.0).toFloat()
+
+    val height: Float
+        get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
 
     // we should re-draw the grid after adding / removing a child
-    var redrawRequested = false
-        private set
+    private var redrawRequested = false
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
@@ -67,7 +72,10 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setLayoutSize(props)
+
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+            redrawRequested = true
+        }
     }
 
     // We should access children via [childrenList], because they may not have
@@ -81,20 +89,6 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
                     child.hide()
                 }
             }
-    }
-
-    protected open fun setLayoutSize(props: Bundle) {
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
-            if (props.containsKey(PROP_WIDTH)) {
-                width = props.getDouble(PROP_WIDTH).toFloat()
-                layoutManager.parentWidth = width
-            }
-            if (props.containsKey(PROP_HEIGHT)) {
-                height = props.getDouble(PROP_HEIGHT).toFloat()
-                layoutManager.parentHeight = height
-            }
-            redrawRequested = true
-        }
     }
 
     /**
@@ -127,6 +121,8 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
             .forEach { it.setClipBounds(localBounds) }
     }
 
+    abstract fun getLayoutParams(): T
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
@@ -144,7 +140,7 @@ abstract class UiLayout(initProps: ReadableMap, protected val layoutManager: Lay
     private fun layoutLoop() {
         measureChildren()
         if (redrawRequested) {
-            layoutManager.layoutChildren(mChildrenList, childrenBounds)
+            layoutManager.layoutChildren(getLayoutParams(), mChildrenList, childrenBounds)
             redrawRequested = false
 
             // Attach the child after position is calculated

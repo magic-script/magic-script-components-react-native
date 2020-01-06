@@ -2,7 +2,7 @@ import { Events } from "../platform/platform-events";
 
 describe("Events", () => {
   test("should contain defined structure", () => {
-    expect(Events.length).toEqual(21);
+    expect(Events.length).toEqual(22);
   });
 
   test("event should be defined as object", () => {

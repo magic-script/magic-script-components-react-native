@@ -42,6 +42,17 @@ fun Any.logMessage(message: String, warn: Boolean = false) {
 }
 
 /**
+ * Returns the sum of all values produced by [selector] function applied to each element in the collection.
+ */
+inline fun <T> Iterable<T>.sumByFloat(selector: (T) -> Float): Float {
+    var sum: Float = 0.0f
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
+/**
  * android.widget.EditText
  */
 fun EditText.setTextAndMoveCursor(text: String) {
@@ -77,6 +88,18 @@ fun <T> Bundle.putDefault(key: String, value: T) {
             is Serializable -> putSerializable(key, value)
         }
     }
+}
+
+/**
+ * Returns true if bundle contains value for at least one passed key.
+ */
+fun Bundle.containsAny(vararg keys: String): Boolean {
+    for (key in keys) {
+        if (containsKey(key)) {
+            return true
+        }
+    }
+    return false
 }
 
 /*

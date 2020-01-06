@@ -124,8 +124,8 @@ import SceneKit
         return CGSize(width: widthContent, height: heightContent)
     }
 
-    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
-        let size = getSize()
+    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
+        let size = getSize(scaled: scaled)
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let offset = getOffset()
         return CGRect(origin: origin + offset, size: size)

@@ -30,7 +30,7 @@ class LinearLayoutManager(
         nodeInfo: NodeInfo,
         layoutInfo: LayoutInfo<T>
     ) {
-        val layoutParams = layoutInfo.layoutParams as LinearLayoutParams
+        val layoutParams = layoutInfo.params as LinearLayoutParams
         val manager = getOrientationAwareManager(layoutParams)
         manager.layoutNode(nodeInfo, layoutInfo)
     }

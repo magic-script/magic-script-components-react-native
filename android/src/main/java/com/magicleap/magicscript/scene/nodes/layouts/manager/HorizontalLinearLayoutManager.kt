@@ -29,7 +29,7 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         nodeInfo: NodeInfo,
         layoutInfo: LayoutInfo<T>
     ) {
-        val itemPadding = layoutInfo.layoutParams.itemPadding
+        val itemPadding = layoutInfo.params.itemPadding
 
         // calculating x position for a child
         val index = nodeInfo.index
@@ -38,10 +38,10 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
             it.size().x
         } + paddingSumX
 
-        val layoutSizeLimit = layoutInfo.layoutSizeLimit
+        val layoutSizeLimit = layoutInfo.sizeLimit
         val contentSize = layoutInfo.contentSize
 
-        val x = when (layoutInfo.layoutParams.itemHorizontalAlignment) {
+        val x = when (layoutInfo.params.itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 offsetX + nodeInfo.width / 2 + nodeInfo.pivotOffsetX
             }
@@ -56,7 +56,7 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         }
 
         // calculating y position for a child
-        val y = when (layoutInfo.layoutParams.itemVerticalAlignment) {
+        val y = when (layoutInfo.params.itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 -nodeInfo.height / 2 + nodeInfo.pivotOffsetY - itemPadding.top
             }

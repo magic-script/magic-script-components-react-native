@@ -87,7 +87,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         nodeInfo: NodeInfo,
         layoutInfo: LayoutInfo<T>
     ) {
-        val layoutParams = layoutInfo.layoutParams as GridLayoutParams
+        val layoutParams = layoutInfo.params as GridLayoutParams
         val col = getColumnIndex(nodeInfo.index, layoutParams)
         val row = getRowIndex(nodeInfo.index, layoutParams)
 

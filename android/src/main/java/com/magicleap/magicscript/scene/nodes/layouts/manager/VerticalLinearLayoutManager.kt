@@ -29,13 +29,13 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         nodeInfo: NodeInfo,
         layoutInfo: LayoutInfo<T>
     ) {
-        val itemPadding = layoutInfo.layoutParams.itemPadding
+        val itemPadding = layoutInfo.params.itemPadding
 
-        val layoutSizeLimit = layoutInfo.layoutSizeLimit
+        val layoutSizeLimit = layoutInfo.sizeLimit
         val contentSize = layoutInfo.contentSize
 
         // calculating x position for a child
-        val x = when (layoutInfo.layoutParams.itemHorizontalAlignment) {
+        val x = when (layoutInfo.params.itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
@@ -58,7 +58,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
             it.size().y
         } + paddingSumY)
 
-        val y = when (layoutInfo.layoutParams.itemVerticalAlignment) {
+        val y = when (layoutInfo.params.itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY
             }

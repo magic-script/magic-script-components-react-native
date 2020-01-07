@@ -7,6 +7,6 @@ import com.magicleap.magicscript.utils.Vector2
 data class LayoutInfo<T : LayoutParams>(
     val childrenBounds: Map<Int, Bounding>,
     val contentSize: Vector2,
-    val layoutSizeLimit: Vector2,
-    val layoutParams: T
+    val sizeLimit: Vector2,
+    val params: T
 )

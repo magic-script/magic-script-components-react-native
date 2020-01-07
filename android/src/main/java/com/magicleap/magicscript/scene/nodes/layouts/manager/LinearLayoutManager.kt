@@ -20,7 +20,6 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
-import com.magicleap.magicscript.utils.Vector2
 
 class LinearLayoutManager(
     private val verticalLinearLayoutManager: VerticalLinearLayoutManager<LayoutParams>,
@@ -29,15 +28,11 @@ class LinearLayoutManager(
 
     override fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2,
-        layoutParams: T
+        layoutInfo: LayoutInfo<T>
     ) {
-        layoutParams as LinearLayoutParams
-
+        val layoutParams = layoutInfo.layoutParams as LinearLayoutParams
         val manager = getOrientationAwareManager(layoutParams)
-        manager.layoutNode(nodeInfo, childrenBounds, contentSize, layoutSizeLimit, layoutParams)
+        manager.layoutNode(nodeInfo, layoutInfo)
     }
 
     override fun getContentWidth(

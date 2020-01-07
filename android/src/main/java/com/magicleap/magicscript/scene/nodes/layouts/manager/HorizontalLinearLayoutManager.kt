@@ -17,30 +17,31 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
 class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() {
 
     override fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2,
-        layoutParams: T
+        layoutInfo: LayoutInfo<T>
     ) {
-        val itemPadding = layoutParams.itemPadding
+        val itemPadding = layoutInfo.layoutParams.itemPadding
 
         // calculating x position for a child
         val index = nodeInfo.index
         val paddingSumX = itemPadding.left + index * (itemPadding.left + itemPadding.right)
-        val offsetX = childrenBounds.values.take(index).sumByFloat { it.size().x } + paddingSumX
+        val offsetX = layoutInfo.childrenBounds.values.take(index).sumByFloat {
+            it.size().x
+        } + paddingSumX
 
-        val x = when (layoutParams.itemHorizontalAlignment) {
+        val layoutSizeLimit = layoutInfo.layoutSizeLimit
+        val contentSize = layoutInfo.contentSize
+
+        val x = when (layoutInfo.layoutParams.itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 offsetX + nodeInfo.width / 2 + nodeInfo.pivotOffsetX
             }
@@ -55,7 +56,7 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         }
 
         // calculating y position for a child
-        val y = when (layoutParams.itemVerticalAlignment) {
+        val y = when (layoutInfo.layoutParams.itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 -nodeInfo.height / 2 + nodeInfo.pivotOffsetY - itemPadding.top
             }

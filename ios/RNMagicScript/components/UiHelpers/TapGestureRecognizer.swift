@@ -19,13 +19,15 @@ import UIKit
 import SceneKit
 
 @objc class TapGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelector
+    fileprivate let nodeSelector: UiNodeSelecting
     fileprivate(set) var tappedNode: TransformNode?
     fileprivate(set) var initialTouchLocation: CGPoint?
+    fileprivate var rayBuilder: RayBuilding
     var getCameraNode: (() -> SCNNode?)?
 
-    init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
+    init(nodeSelector: UiNodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
+        self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
     }
 
@@ -37,7 +39,7 @@ import SceneKit
         if state == .possible,
             let cameraNode = getCameraNode?(),
             let firstTouch = touches.first,
-            let ray = Ray(gesture: self, cameraNode: cameraNode) {
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
             tappedNode = nodeSelector.hitTest(ray: ray)
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
             if tappedNode == nil {

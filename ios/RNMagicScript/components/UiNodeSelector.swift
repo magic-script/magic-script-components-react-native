@@ -17,7 +17,7 @@
 import Foundation
 import SceneKit
 
-@objc open class UiNodeSelector: NSObject {
+class UiNodeSelector {
 
     let rootNode: SCNNode
 
@@ -25,7 +25,7 @@ import SceneKit
         self.rootNode = rootNode
     }
 
-    @objc func hitTest(ray: Ray) -> TransformNode? {
+    func hitTest(ray: Ray) -> TransformNode? {
         let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
         var hitNodes: [TransformNode] = []
 
@@ -46,7 +46,7 @@ import SceneKit
         return hitNodes.first
     }
 
-    @objc func draggingHitTest(ray: Ray) -> Dragging? {
+    func draggingHitTest(ray: Ray) -> Dragging? {
         guard let hitNode = hitTest(ray: ray) else { return nil }
 
         var node: SCNNode? = hitNode
@@ -61,3 +61,5 @@ import SceneKit
         return node as? Dragging
     }
 }
+
+extension UiNodeSelector: UiNodeSelecting { }

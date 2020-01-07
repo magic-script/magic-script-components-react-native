@@ -319,10 +319,15 @@
 		C47B32BB239A5677005B59BE /* RCTARViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */; };
 		C47B32C9239A829A005B59BE /* WeakReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32C8239A829A005B59BE /* WeakReference.swift */; };
 		C47B32CA239A829A005B59BE /* WeakReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32C8239A829A005B59BE /* WeakReference.swift */; };
+		C47E419623C46E4D00AB81C9 /* RayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419523C46E4D00AB81C9 /* RayBuilder.swift */; };
+		C47E419723C46E4D00AB81C9 /* RayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419523C46E4D00AB81C9 /* RayBuilder.swift */; };
 		C4809BB2234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
+		C4914ABF23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */; };
+		C4914AC123C30BDC00ABB297 /* UiNodeSelecting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914AC023C30BDC00ABB297 /* UiNodeSelecting.swift */; };
+		C4914AC223C30BDC00ABB297 /* UiNodeSelecting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914AC023C30BDC00ABB297 /* UiNodeSelecting.swift */; };
 		C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
 		C4A12B0D2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
 		C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */; };
@@ -765,10 +770,13 @@
 		C470ED04238C74A8002B8D91 /* ToggleTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTypeSpec.swift; sourceTree = "<group>"; };
 		C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewSpec.swift; sourceTree = "<group>"; };
 		C47B32C8239A829A005B59BE /* WeakReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakReference.swift; sourceTree = "<group>"; };
+		C47E419523C46E4D00AB81C9 /* RayBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RayBuilder.swift; sourceTree = "<group>"; };
 		C4809BB1234F57A600C4D22E /* UiLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNode.swift; sourceTree = "<group>"; };
 		C4816BF1234C9082001CCBDD /* DataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviding.swift; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
+		C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizerSpec.swift; sourceTree = "<group>"; };
+		C4914AC023C30BDC00ABB297 /* UiNodeSelecting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelecting.swift; sourceTree = "<group>"; };
 		C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNode.swift; sourceTree = "<group>"; };
 		C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNode.swift; sourceTree = "<group>"; };
 		C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNode.swift; sourceTree = "<group>"; };
@@ -1128,6 +1136,7 @@
 				44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */,
 				44C5D7272360993600AC0B6C /* UiNodeSelector.swift */,
 				44DF644823951405005E0518 /* UiNodeAnimator.swift */,
+				C4914AC023C30BDC00ABB297 /* UiNodeSelecting.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -1310,6 +1319,7 @@
 			children = (
 				44DA5F54235EF3900058212C /* Plane.swift */,
 				448586FA235DC1FD00D372CB /* Ray.swift */,
+				C47E419523C46E4D00AB81C9 /* RayBuilder.swift */,
 			);
 			path = Math;
 			sourceTree = "<group>";
@@ -1415,6 +1425,7 @@
 			children = (
 				C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */,
 				44F09319232D985A0081FF14 /* ConvertSpec.swift */,
+				C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -2149,8 +2160,10 @@
 				44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				4425EE08236605A60064A2EA /* GridLayout.swift in Sources */,
 				C450CD5F23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
+				C4914AC223C30BDC00ABB297 /* UiNodeSelecting.swift in Sources */,
 				C450CD5C23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
 				44DF5A6123BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,
+				C47E419723C46E4D00AB81C9 /* RayBuilder.swift in Sources */,
 				44AFAD17232BCAE3005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE05236605830064A2EA /* UiLinearLayoutNode.swift in Sources */,
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
@@ -2205,6 +2218,7 @@
 				44739B97239801BB00EC31A0 /* NumericExtensionSpec.swift in Sources */,
 				C465C268234DE34600157AA6 /* UiDropdownListNodeSpec.swift in Sources */,
 				C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */,
+				C4914ABF23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift in Sources */,
 				C4A12B192361B6F9009B7083 /* UiDatePickerNodeSpec.swift in Sources */,
 				44931E01237D855900E11972 /* SoundNodeSpec.swift in Sources */,
 				44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */,
@@ -2385,8 +2399,10 @@
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,
 				C450CD5E23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
+				C4914AC123C30BDC00ABB297 /* UiNodeSelecting.swift in Sources */,
 				C450CD5B23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
 				44DF5A6023BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,
+				C47E419623C46E4D00AB81C9 /* RayBuilder.swift in Sources */,
 				C4A12B332361D19B009B7083 /* Date+Extension.swift in Sources */,
 				C4A12B272361BC84009B7083 /* DatePickerDataProviding.swift in Sources */,
 				44D8FE88233A0E93007FD766 /* InputDataProviding.swift in Sources */,

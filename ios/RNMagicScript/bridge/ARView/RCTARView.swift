@@ -154,7 +154,7 @@ import SceneKit
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
         // Add tap gesture
-        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleTapAction(_:)))
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleTapAction(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
@@ -221,7 +221,6 @@ import SceneKit
 // MARK: - Event handlers
 extension RCTARView {
     @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
-        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         if sender.state == .ended {
             UiNodesManager.instance.handleNodeTap(sender.tappedNode)
             #if targetEnvironment(simulator)
@@ -243,14 +242,12 @@ extension RCTARView {
     }
 
     @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
-        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         if sender.state == UIGestureRecognizer.State.changed {
             sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
         }
     }
 
     @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
-        print("BUKA \(self.classForCoder) \(#function) \(sender.state.rawValue)")
         UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

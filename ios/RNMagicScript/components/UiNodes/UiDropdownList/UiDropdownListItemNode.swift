@@ -27,6 +27,7 @@ import SceneKit
         get { return labelNode.text }
         set { labelNode.text = alignTextLength(newValue, maxCharacterLimit); setNeedsLayout() }
     }
+    @objc var id: Int = 0
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; setNeedsLayout() }
     }
@@ -112,6 +113,10 @@ import SceneKit
 
         if let label = Convert.toString(props["label"]) {
             self.label = label
+        }
+
+        if let id = Convert.toInt(props["id"]) {
+            self.id = id
         }
 
         if let textColor = Convert.toColor(props["textColor"]) {

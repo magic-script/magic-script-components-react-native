@@ -76,6 +76,16 @@ open class AudioNode(
         super.onDestroy()
     }
 
+    override fun onPause() {
+        super.onPause()
+        audioEngine.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        audioEngine.resume()
+    }
+
     private fun applyValues(props: Bundle) {
         props.run {
             read<Boolean>(PROP_SOUND_LOOPING)?.let { isLooping ->

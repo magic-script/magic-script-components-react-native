@@ -70,7 +70,6 @@ import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
-import com.magicleap.magicscript.scene.nodes.audio.AudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
@@ -135,7 +134,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private IconsRepository iconsRepo;
 
     private MediaPlayerPool mediaPlayerPool;
-    private List<ActivityResultObserver> activityResultObservers = new ArrayList();
+    private List<ActivityResultObserver> activityResultObservers = new ArrayList<>();
+    private List<LifecycleEventListener> lifecycleEventListeners = new ArrayList<>();
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
                               MediaPlayerPool mediaPlayerPool) {
@@ -399,9 +399,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createAudioNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(new GvrAudioEngine(context,
-                                                                                                   GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY));
-            AudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
+            GvrAudioEngine gvrAudioEngine = new GvrAudioEngine(context, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
+            ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(gvrAudioEngine);
+            VrAudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
             AudioFileProvider audioFileProvider = new UriAudioProvider(context);
             AudioNode node = new AudioNode(props, context, audioEngine, audioFileProvider);
             addNode(node, nodeId);
@@ -616,12 +616,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @Override
     public void onHostResume() {
-
+        if (nodesManager instanceof LifecycleEventListener) {
+            ((LifecycleEventListener) nodesManager).onHostResume();
+        }
     }
 
     @Override
     public void onHostPause() {
-
+        if (nodesManager instanceof LifecycleEventListener) {
+            ((LifecycleEventListener) nodesManager).onHostPause();
+        }
     }
 
     @Override

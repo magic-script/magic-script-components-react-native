@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript.scene
 
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
@@ -28,7 +29,7 @@ import com.magicleap.magicscript.utils.logMessage
 /**
  * It manages nodes registration and attaching them to scene
  */
-open class UiNodesManager : NodesManager {
+open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
@@ -142,6 +143,18 @@ open class UiNodesManager : NodesManager {
             node.onDestroy()
         }
         nodesById.clear()
+    }
+
+    override fun onHostResume() {
+        nodesById.forEach { it.value.onResume() }
+    }
+
+    override fun onHostPause() {
+        nodesById.forEach { it.value.onPause() }
+    }
+
+    override fun onHostDestroy() {
+        // no-op
     }
 
     // removes node with descendants from the nodes map

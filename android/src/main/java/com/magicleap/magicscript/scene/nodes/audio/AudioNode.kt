@@ -57,6 +57,7 @@ open class AudioNode(
     }
 
     private var spatialSoundEnabled = DEFAULT_SPATIAL_SOUND_ENABLE
+    private var lastUserAction: String = ""
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -74,6 +75,18 @@ open class AudioNode(
         fileProvider.onDestroy()
         audioEngine.onDestroy()
         super.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        audioEngine.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (lastUserAction == AudioAction.START || lastUserAction == AudioAction.RESUME) {
+            audioEngine.resume()
+        }
     }
 
     private fun applyValues(props: Bundle) {
@@ -108,6 +121,7 @@ open class AudioNode(
 
     private fun applyActions(props: Bundle) {
         val action = props.read<String>(PROP_ACTION)
+        lastUserAction = action ?: lastUserAction
         when (action) {
             AudioAction.STOP -> audioEngine.stop()
             AudioAction.PAUSE -> audioEngine.pause()

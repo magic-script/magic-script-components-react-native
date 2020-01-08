@@ -59,7 +59,28 @@ class ARComponentManagerTest {
     }
 
     @Test
-    fun `should destroy media player when host activity destroyed`() {
+    fun `should notify nodes manager when activity is paused`() {
+        manager.onHostPause()
+
+        verify(nodesManager).onHostPause()
+    }
+
+    @Test
+    fun `should notify nodes manager when activity is resumed`() {
+        manager.onHostResume()
+
+        verify(nodesManager).onHostResume()
+    }
+
+    @Test
+    fun `should notify nodes manager when activity is destroyed`() {
+        manager.onHostDestroy()
+
+        verify(nodesManager).onHostDestroy()
+    }
+
+    @Test
+    fun `should destroy media player when activity is destroyed`() {
         manager.onHostDestroy()
 
         verify(mediaPlayerPool).destroy()

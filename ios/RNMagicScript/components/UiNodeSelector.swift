@@ -17,7 +17,13 @@
 import Foundation
 import SceneKit
 
-class UiNodeSelector {
+//sourcery: AutoMockable
+protocol NodeSelecting {
+    func hitTest(ray: Ray) -> TransformNode?
+    func draggingHitTest(ray: Ray) -> Dragging?
+}
+
+class UiNodeSelector: NodeSelecting  {
 
     let rootNode: SCNNode
 
@@ -61,5 +67,3 @@ class UiNodeSelector {
         return node as? Dragging
     }
 }
-
-extension UiNodeSelector: UiNodeSelecting { }

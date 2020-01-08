@@ -23,12 +23,12 @@ import SceneKit
 class DragGestureRecognizerSpec: QuickSpec {
     override func spec() {
         describe("DragGestureRecognizer") {
-            var nodeSelectorMock: UiNodeSelectingMock!
+            var nodeSelectorMock: NodeSelectingMock!
             var rayBuilderMock: RayBuildingMock!
             var sut: DragGestureRecognizer!
 
             beforeEach {
-                nodeSelectorMock = UiNodeSelectingMock()
+                nodeSelectorMock = NodeSelectingMock()
                 rayBuilderMock = RayBuildingMock()
                 sut = DragGestureRecognizer(nodeSelector: nodeSelectorMock, rayBuilder: rayBuilderMock, target: nil, action: nil)
                 sut.getCameraNode = {

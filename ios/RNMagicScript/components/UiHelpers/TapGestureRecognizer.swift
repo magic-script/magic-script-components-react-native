@@ -19,13 +19,13 @@ import UIKit
 import SceneKit
 
 @objc class TapGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelecting
+    fileprivate let nodeSelector: NodeSelecting
     fileprivate(set) var tappedNode: TransformNode?
     fileprivate(set) var initialTouchLocation: CGPoint?
     fileprivate var rayBuilder: RayBuilding
     var getCameraNode: (() -> SCNNode?)?
 
-    init(nodeSelector: UiNodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
+    init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         self.rayBuilder = rayBuilder
         super.init(target: target, action: action)

@@ -2470,6 +2470,204 @@ open class NodeAnimatingMock: NodeAnimating, Mock {
     }
 }
 
+// MARK: - NodeSelecting
+open class NodeSelectingMock: NodeSelecting, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func hitTest(ray: Ray) -> TransformNode? {
+        addInvocation(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`)))
+		let perform = methodPerformValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
+		perform?(`ray`)
+		var __value: TransformNode? = nil
+		do {
+		    __value = try methodReturnValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
+		} catch {
+			// do nothing
+		}
+		return __value
+    }
+
+    open func draggingHitTest(ray: Ray) -> Dragging? {
+        addInvocation(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`)))
+		let perform = methodPerformValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
+		perform?(`ray`)
+		var __value: Dragging? = nil
+		do {
+		    __value = try methodReturnValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
+		} catch {
+			// do nothing
+		}
+		return __value
+    }
+
+
+    fileprivate enum MethodType {
+        case m_hitTest__ray_ray(Parameter<Ray>)
+        case m_draggingHitTest__ray_ray(Parameter<Ray>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_hitTest__ray_ray(let lhsRay), .m_hitTest__ray_ray(let rhsRay)):
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
+                return true 
+            case (.m_draggingHitTest__ray_ray(let lhsRay), .m_draggingHitTest__ray_ray(let rhsRay)):
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
+                return true 
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_hitTest__ray_ray(p0): return p0.intValue
+            case let .m_draggingHitTest__ray_ray(p0): return p0.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+        public static func hitTest(ray: Parameter<Ray>, willReturn: TransformNode?...) -> MethodStub {
+            return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, willReturn: Dragging?...) -> MethodStub {
+            return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<TransformNode?>) -> Void) -> MethodStub {
+            let willReturn: [TransformNode?] = []
+			let given: Given = { return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (TransformNode?).self)
+			willProduce(stubber)
+			return given
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, willProduce: (Stubber<Dragging?>) -> Void) -> MethodStub {
+            let willReturn: [Dragging?] = []
+			let given: Given = { return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (Dragging?).self)
+			willProduce(stubber)
+			return given
+        }
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func hitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_hitTest__ray_ray(`ray`))}
+        public static func draggingHitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_draggingHitTest__ray_ray(`ray`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func hitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
+            return Perform(method: .m_hitTest__ray_ray(`ray`), performs: perform)
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
+            return Perform(method: .m_draggingHitTest__ray_ray(`ray`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - RCTARViewObserving
 open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -3793,204 +3991,6 @@ open class URLSessioningMock: URLSessioning, Mock {
 
         public static func downloadTask_(with url: Parameter<URL>, completionHandler: Parameter<(URL?, URLResponse?, Error?) -> Void>, perform: @escaping (URL, @escaping (URL?, URLResponse?, Error?) -> Void) -> Void) -> Perform {
             return Perform(method: .m_downloadTask__with_urlcompletionHandler_completionHandler(`url`, `completionHandler`), performs: perform)
-        }
-    }
-
-    public func given(_ method: Given) {
-        methodReturnValues.append(method)
-    }
-
-    public func perform(_ method: Perform) {
-        methodPerformValues.append(method)
-        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
-    }
-
-    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
-        let invocations = matchingCalls(method.method)
-        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
-    }
-
-    private func addInvocation(_ call: MethodType) {
-        invocations.append(call)
-    }
-    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
-        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
-        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
-        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
-        return product
-    }
-    private func methodPerformValue(_ method: MethodType) -> Any? {
-        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
-        return matched?.performs
-    }
-    private func matchingCalls(_ method: MethodType) -> [MethodType] {
-        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
-    }
-    private func matchingCalls(_ method: Verify) -> Int {
-        return matchingCalls(method.method).count
-    }
-    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
-        do {
-            return try methodReturnValue(method).casted()
-        } catch {
-            onFatalFailure(message)
-            Failure(message)
-        }
-    }
-    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
-        do {
-            return try methodReturnValue(method).casted()
-        } catch {
-            return nil
-        }
-    }
-    private func onFatalFailure(_ message: String) {
-        #if Mocky
-        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
-        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
-        #endif
-    }
-}
-
-// MARK: - UiNodeSelecting
-open class UiNodeSelectingMock: UiNodeSelecting, Mock {
-    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
-        SwiftyMockyTestObserver.setup()
-        self.sequencingPolicy = sequencingPolicy
-        self.stubbingPolicy = stubbingPolicy
-        self.file = file
-        self.line = line
-    }
-
-    var matcher: Matcher = Matcher.default
-    var stubbingPolicy: StubbingPolicy = .wrap
-    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
-    private var invocations: [MethodType] = []
-    private var methodReturnValues: [Given] = []
-    private var methodPerformValues: [Perform] = []
-    private var file: StaticString?
-    private var line: UInt?
-
-    public typealias PropertyStub = Given
-    public typealias MethodStub = Given
-    public typealias SubscriptStub = Given
-
-    /// Convenience method - call setupMock() to extend debug information when failure occurs
-    public func setupMock(file: StaticString = #file, line: UInt = #line) {
-        self.file = file
-        self.line = line
-    }
-
-    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
-    public func resetMock(_ scopes: MockScope...) {
-        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
-        if scopes.contains(.invocation) { invocations = [] }
-        if scopes.contains(.given) { methodReturnValues = [] }
-        if scopes.contains(.perform) { methodPerformValues = [] }
-    }
-
-
-
-
-
-    open func hitTest(ray: Ray) -> TransformNode? {
-        addInvocation(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`)))
-		let perform = methodPerformValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
-		perform?(`ray`)
-		var __value: TransformNode? = nil
-		do {
-		    __value = try methodReturnValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
-		} catch {
-			// do nothing
-		}
-		return __value
-    }
-
-    open func draggingHitTest(ray: Ray) -> Dragging? {
-        addInvocation(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`)))
-		let perform = methodPerformValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
-		perform?(`ray`)
-		var __value: Dragging? = nil
-		do {
-		    __value = try methodReturnValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
-		} catch {
-			// do nothing
-		}
-		return __value
-    }
-
-
-    fileprivate enum MethodType {
-        case m_hitTest__ray_ray(Parameter<Ray>)
-        case m_draggingHitTest__ray_ray(Parameter<Ray>)
-
-        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
-            switch (lhs, rhs) {
-            case (.m_hitTest__ray_ray(let lhsRay), .m_hitTest__ray_ray(let rhsRay)):
-                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
-                return true 
-            case (.m_draggingHitTest__ray_ray(let lhsRay), .m_draggingHitTest__ray_ray(let rhsRay)):
-                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
-                return true 
-            default: return false
-            }
-        }
-
-        func intValue() -> Int {
-            switch self {
-            case let .m_hitTest__ray_ray(p0): return p0.intValue
-            case let .m_draggingHitTest__ray_ray(p0): return p0.intValue
-            }
-        }
-    }
-
-    open class Given: StubbedMethod {
-        fileprivate var method: MethodType
-
-        private init(method: MethodType, products: [StubProduct]) {
-            self.method = method
-            super.init(products)
-        }
-
-
-        public static func hitTest(ray: Parameter<Ray>, willReturn: TransformNode?...) -> MethodStub {
-            return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
-        }
-        public static func draggingHitTest(ray: Parameter<Ray>, willReturn: Dragging?...) -> MethodStub {
-            return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
-        }
-        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<TransformNode?>) -> Void) -> MethodStub {
-            let willReturn: [TransformNode?] = []
-			let given: Given = { return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
-			let stubber = given.stub(for: (TransformNode?).self)
-			willProduce(stubber)
-			return given
-        }
-        public static func draggingHitTest(ray: Parameter<Ray>, willProduce: (Stubber<Dragging?>) -> Void) -> MethodStub {
-            let willReturn: [Dragging?] = []
-			let given: Given = { return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
-			let stubber = given.stub(for: (Dragging?).self)
-			willProduce(stubber)
-			return given
-        }
-    }
-
-    public struct Verify {
-        fileprivate var method: MethodType
-
-        public static func hitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_hitTest__ray_ray(`ray`))}
-        public static func draggingHitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_draggingHitTest__ray_ray(`ray`))}
-    }
-
-    public struct Perform {
-        fileprivate var method: MethodType
-        var performs: Any
-
-        public static func hitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
-            return Perform(method: .m_hitTest__ray_ray(`ray`), performs: perform)
-        }
-        public static func draggingHitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
-            return Perform(method: .m_draggingHitTest__ray_ray(`ray`), performs: perform)
         }
     }
 

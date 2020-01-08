@@ -23,12 +23,12 @@ import SceneKit
 class LongPressGestureRecognizerSpec: QuickSpec {
     override func spec() {
         describe("LongPressGestureRecognizer") {
-            var nodeSelectorMock: UiNodeSelectingMock!
+            var nodeSelectorMock: NodeSelectingMock!
             var rayBuilderMock: RayBuildingMock!
             var sut: LongPressGestureRecognizer!
 
             beforeEach {
-                nodeSelectorMock = UiNodeSelectingMock()
+                nodeSelectorMock = NodeSelectingMock()
                 rayBuilderMock = RayBuildingMock()
                 sut = LongPressGestureRecognizer(nodeSelector: nodeSelectorMock, rayBuilder: rayBuilderMock, target: nil, action: nil)
                 sut.getCameraNode = {

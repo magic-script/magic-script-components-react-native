@@ -19,7 +19,7 @@ import UIKit
 import SceneKit
 
 @objc class DragGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelecting
+    fileprivate let nodeSelector: NodeSelecting
     fileprivate var initialRay: Ray?
     fileprivate var rayBuilder: RayBuilding
     fileprivate(set) var dragNode: Dragging?
@@ -29,7 +29,7 @@ import SceneKit
     fileprivate(set) var dragDelta: CGFloat = 0
     var getCameraNode: (() -> SCNNode?)?
 
-    init(nodeSelector: UiNodeSelecting, rayBuilder: RayBuilding,  target: Any?, action: Selector?) {
+    init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding,  target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         self.rayBuilder = rayBuilder
         super.init(target: target, action: action)

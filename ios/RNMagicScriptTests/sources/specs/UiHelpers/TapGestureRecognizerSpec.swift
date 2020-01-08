@@ -23,12 +23,12 @@ import SceneKit
 class TapGestureRecognizerSpec: QuickSpec {
     override func spec() {
         describe("TapGestureRecognizer") {
-            var nodeSelectorMock: UiNodeSelectingMock!
+            var nodeSelectorMock: NodeSelectingMock!
             var rayBuilderMock: RayBuildingMock!
             var sut: TapGestureRecognizer!
 
             beforeEach {
-                nodeSelectorMock = UiNodeSelectingMock()
+                nodeSelectorMock = NodeSelectingMock()
                 rayBuilderMock = RayBuildingMock()
                 sut = TapGestureRecognizer(nodeSelector: nodeSelectorMock, rayBuilder: rayBuilderMock, target: nil, action: nil)
                 sut.getCameraNode = {

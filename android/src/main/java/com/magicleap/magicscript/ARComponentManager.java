@@ -630,6 +630,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @Override
     public void onHostDestroy() {
+        if (nodesManager instanceof LifecycleEventListener) {
+            ((LifecycleEventListener) nodesManager).onHostDestroy();
+        }
         mediaPlayerPool.destroy();
     }
 

@@ -1243,6 +1243,7 @@
 		44AFAC1B232B9BCF005AC8EF /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */,
 				C4C04ACD2334E85100C2725C /* AVPlayer+Extension.swift */,
 				441FC16B2362E9590004DBF1 /* CGPoint+Extension.swift */,
 				44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */,
@@ -1280,7 +1281,6 @@
 				44E949352370337900BD0F32 /* DragGestureRecognizer.swift */,
 				C450CD5D23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift */,
 				C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */,
-				44DF5A5F23BE30750024778E /* UIGestureRecognizer+Extension.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";

@@ -106,9 +106,3 @@ import SceneKit
         return CGFloat(point.distance(beginPoint)) * sign
     }
 }
-
-extension UIGestureRecognizer.State: CustomStringConvertible {
-    public var description: String {
-        return "UIGestureRecognizer.State.\(rawValue)"
-    }
-}

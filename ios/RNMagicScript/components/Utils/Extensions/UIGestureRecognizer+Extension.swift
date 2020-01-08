@@ -23,3 +23,9 @@ extension UIGestureRecognizer {
         touches.filter { $0 != firstTouch }.forEach { ignore($0, for: event) }
     }
 }
+
+extension UIGestureRecognizer.State: CustomStringConvertible {
+    public var description: String {
+        return "UIGestureRecognizer.State.\(rawValue)"
+    }
+}

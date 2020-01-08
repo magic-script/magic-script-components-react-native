@@ -17,26 +17,25 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
 open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() {
 
     override fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2,
-        layoutParams: T
+        layoutInfo: LayoutInfo<T>
     ) {
-        val itemPadding = layoutParams.itemPadding
+        val itemPadding = layoutInfo.params.itemPadding
+
+        val layoutSizeLimit = layoutInfo.sizeLimit
+        val contentSize = layoutInfo.contentSize
 
         // calculating x position for a child
-        val x = when (layoutParams.itemHorizontalAlignment) {
+        val x = when (layoutInfo.params.itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
@@ -55,9 +54,11 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         // calculating y position for a child
         val index = nodeInfo.index
         val paddingSumY = itemPadding.top + index * (itemPadding.top + itemPadding.bottom)
-        val offsetY = -(childrenBounds.values.take(index).sumByFloat { it.size().y } + paddingSumY)
+        val offsetY = -(layoutInfo.childrenBounds.values.take(index).sumByFloat {
+            it.size().y
+        } + paddingSumY)
 
-        val y = when (layoutParams.itemVerticalAlignment) {
+        val y = when (layoutInfo.params.itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY
             }

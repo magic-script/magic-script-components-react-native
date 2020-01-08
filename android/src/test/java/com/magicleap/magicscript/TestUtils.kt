@@ -20,9 +20,9 @@ import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.JavaOnlyMap
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.argThat
 import org.mockito.ArgumentMatcher
@@ -142,7 +142,7 @@ fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
  * @param childrenList children list
  * @param childrenBounds current children bounds map (pass an empty map)
  */
-private fun measureChildren(
+fun measureChildren(
     childrenList: List<TransformNode>,
     childrenBounds: MutableMap<Int, Bounding>
 ): Boolean {

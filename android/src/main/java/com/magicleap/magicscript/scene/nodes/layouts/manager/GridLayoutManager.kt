@@ -17,14 +17,13 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
 class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
@@ -86,12 +85,9 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     override fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2,
-        layoutParams: T
+        layoutInfo: LayoutInfo<T>
     ) {
-        layoutParams as GridLayoutParams
+        val layoutParams = layoutInfo.params as GridLayoutParams
         val col = getColumnIndex(nodeInfo.index, layoutParams)
         val row = getRowIndex(nodeInfo.index, layoutParams)
 

@@ -42,8 +42,8 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
 
         if (ArViewManager.showLayoutBounds) {
             background = context.getDrawable(R.drawable.debug_bg)

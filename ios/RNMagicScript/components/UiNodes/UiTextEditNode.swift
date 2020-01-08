@@ -147,9 +147,10 @@ import SceneKit
         outlineNode?.isHidden = false
     }
 
-    @objc override func leaveFocus() {
-        super.leaveFocus()
+    @objc override func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
+        let result = super.leaveFocus(onBehalfOf: node)
         outlineNode?.isHidden = true
+        return result
     }
 
     @objc override func setupNode() {

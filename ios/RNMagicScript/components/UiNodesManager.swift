@@ -69,18 +69,21 @@ import ARKit
     }
     
     @objc public func handleNodeTap(_ node: TransformNode?) {
-        
-        focusedNode?.leaveFocus()
-        if focusedNode != nil {
-            onInputUnfocused?()
+        let uiNode = node as? UiNode
+        print("handleNodeTap: \(uiNode?.classForCoder)")
+
+        if focusedNode?.leaveFocus(onBehalfOf: uiNode) ?? true {
+            if focusedNode != nil {
+                onInputUnfocused?()
+            }
+
+            focusedNode = uiNode
         }
-        
-        focusedNode = node as? UiNode
-        if let uiNode = focusedNode {
-            uiNode.enterFocus()
-            uiNode.onActivate?(uiNode)
-        }
-        if let input = focusedNode as? DataProviding {
+
+        uiNode?.activate()
+        uiNode?.enterFocus()
+
+        if let input = node as? DataProviding {
             onInputFocused?(input)
         }
     }

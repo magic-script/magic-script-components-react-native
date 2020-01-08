@@ -80,29 +80,17 @@ class ViewController: UIViewController {
             "debug": true,
             "localPosition": [0, 0.7, 0],
             "text": "DropDownList",
-            "textSize": 0.125
+            "textSize": 0.125,
+            "multiSelectMode": true
         ], nodeId: dropdownListId, parentId: groupId)
 
-        let length: CGFloat = 1.057 + 0.34
-        let hMargin: CGFloat = 0.15
-        let x1: CGFloat = -0.5 * length
-        let x2: CGFloat = x1 + 1.057
-        let x3: CGFloat = x2 + 0.34
-        let _: UiLineNode = createComponent([
-            "color": [1,1,0,1],
-            "points": [
-                [ x1, 0.43, 0],
-                [ x1 + 0.5 * hMargin, 0.43, 0],
-                [ x1 + 0.5 * hMargin, 0.4, 0],
-                [ x2 - 0.5 * hMargin, 0.4, 0],
-                [ x2 - 0.5 * hMargin, 0.43, 0],
-                [ x2 + 0.5 * hMargin, 0.43, 0],
-                [ x2 + 0.5 * hMargin, 0.4, 0],
-                [ x3 - 0.5 * hMargin, 0.4, 0],
-                [ x3 - 0.5 * hMargin, 0.43, 0],
-                [ x3, 0.43, 0],
-            ],
-        ], nodeId: "line_id", parentId: groupId)
+        for i in 0..<10 {
+            let _: UiDropdownListItemNode = createComponent([
+                "id": i,
+                "label": "item \(i + 1)",
+                "textSize": 0.125
+            ], nodeId: "item_\(i)", parentId: dropdownListId)
+        }
     }
 
     @discardableResult

@@ -22,11 +22,11 @@ extension UIFont {
         let name: String = UIFont.fontName(from: style, weight: weight)
         guard let font = UIFont(name: name, size: size) else {
             // return system font in case Lomino font not installed
-            let systemFont = UIFont.systemFont(ofSize: size, weight: .regular)
+            let systemFont = UIFont.systemFont(ofSize: size, weight: UIFont.UIFontWeight(from: weight))
             if style == .italic {
                 return systemFont.with(traits: .traitItalic)
             }
-
+            
             return systemFont
         }
         
@@ -41,7 +41,7 @@ extension UIFont {
         return UIFont(descriptor: descriptor, size: 0)
     }
 
-    static fileprivate func fontName(from style: FontStyle, weight: FontWeight) -> String {
+    fileprivate static func fontName(from style: FontStyle, weight: FontWeight) -> String {
         switch weight {
         case .extraLight:
             return (style == .normal) ? "LominoUIApp-Light" : "LominoUIApp-LightItalic"
@@ -55,6 +55,23 @@ extension UIFont {
             return (style == .normal) ? "LominoUIApp-Bold" : "LominoUIApp-BoldItalic"
         case .extraBold:
             return (style == .normal) ? "LominoUIApp-ExtraBold" : "LominoUIApp-ExtraBoldItalic"
+        }
+    }
+
+    public static func UIFontWeight(from weight: FontWeight) -> UIFont.Weight {
+        switch weight {
+        case .extraLight:
+            return UIFont.Weight.ultraLight
+        case .light:
+            return UIFont.Weight.light
+        case .regular:
+            return UIFont.Weight.regular
+        case .medium:
+            return UIFont.Weight.medium
+        case .bold:
+            return UIFont.Weight.bold
+        case .extraBold:
+            return UIFont.Weight.heavy
         }
     }
 }

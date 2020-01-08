@@ -321,6 +321,9 @@
 		C47B32CA239A829A005B59BE /* WeakReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32C8239A829A005B59BE /* WeakReference.swift */; };
 		C47E419623C46E4D00AB81C9 /* RayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419523C46E4D00AB81C9 /* RayBuilder.swift */; };
 		C47E419723C46E4D00AB81C9 /* RayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419523C46E4D00AB81C9 /* RayBuilder.swift */; };
+		C47E419923C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419823C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift */; };
+		C47E419B23C4A07B00AB81C9 /* CustomUITouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419A23C4A07B00AB81C9 /* CustomUITouch.swift */; };
+		C47E419D23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419C23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift */; };
 		C4809BB2234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4809BB3234F57A600C4D22E /* UiLabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4809BB1234F57A600C4D22E /* UiLabelNode.swift */; };
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
@@ -771,6 +774,9 @@
 		C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewSpec.swift; sourceTree = "<group>"; };
 		C47B32C8239A829A005B59BE /* WeakReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakReference.swift; sourceTree = "<group>"; };
 		C47E419523C46E4D00AB81C9 /* RayBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RayBuilder.swift; sourceTree = "<group>"; };
+		C47E419823C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressGestureRecognizerSpec.swift; sourceTree = "<group>"; };
+		C47E419A23C4A07B00AB81C9 /* CustomUITouch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITouch.swift; sourceTree = "<group>"; };
+		C47E419C23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureRecognizerSpec.swift; sourceTree = "<group>"; };
 		C4809BB1234F57A600C4D22E /* UiLabelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLabelNode.swift; sourceTree = "<group>"; };
 		C4816BF1234C9082001CCBDD /* DataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviding.swift; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
@@ -1426,6 +1432,8 @@
 				C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */,
 				44F09319232D985A0081FF14 /* ConvertSpec.swift */,
 				C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */,
+				C47E419823C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift */,
+				C47E419C23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift */,
 			);
 			path = UiHelpers;
 			sourceTree = "<group>";
@@ -1439,6 +1447,7 @@
 				44F0931F232D985A0081FF14 /* SharedData.swift */,
 				44F0931E232D985A0081FF14 /* Utils.swift */,
 				C4B73CA2238AE95A0080D3F3 /* TestsAppDelegate.swift */,
+				C47E419A23C4A07B00AB81C9 /* CustomUITouch.swift */,
 			);
 			path = misc;
 			sourceTree = "<group>";
@@ -2203,6 +2212,7 @@
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */,
+				C47E419923C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift in Sources */,
 				44D8FE9E233CA5D7007FD766 /* VideoViewModeSpec.swift in Sources */,
 				44A5893F237EB3A800934E5E /* SideSpec.swift in Sources */,
 				44F09323232D985A0081FF14 /* RenderNodeSpec.swift in Sources */,
@@ -2228,6 +2238,7 @@
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
 				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
+				C47E419D23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift in Sources */,
 				449B54992388017700D839CC /* WebViewActionSpec.swift in Sources */,
 				448F413623A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift in Sources */,
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
@@ -2269,6 +2280,7 @@
 				44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */,
 				44931E0B237D898C00E11972 /* UiSpinnerNodeSpec.swift in Sources */,
 				44A5893B237E8FA800934E5E /* UiAudioNodeSpec.swift in Sources */,
+				C47E419B23C4A07B00AB81C9 /* CustomUITouch.swift in Sources */,
 				449B549B2388021C00D839CC /* UiWebViewNodeSpec.swift in Sources */,
 				44F09329232D985A0081FF14 /* UiGridLayoutNodeSpec.swift in Sources */,
 				44931E0D237D898C00E11972 /* UiTextEditNodeSpec.swift in Sources */,

@@ -19,8 +19,9 @@ import UIKit
 import SceneKit
 
 @objc class DragGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelector
+    fileprivate let nodeSelector: UiNodeSelecting
     fileprivate var initialRay: Ray?
+    fileprivate var rayBuilder: RayBuilding
     fileprivate(set) var dragNode: Dragging?
     fileprivate var beginPoint: SCNVector3 = SCNVector3Zero
     fileprivate(set) var dragAxis: Ray?
@@ -28,8 +29,9 @@ import SceneKit
     fileprivate(set) var dragDelta: CGFloat = 0
     var getCameraNode: (() -> SCNNode?)?
 
-    init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
+    init(nodeSelector: UiNodeSelecting, rayBuilder: RayBuilding,  target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
+        self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
     }
 
@@ -41,7 +43,7 @@ import SceneKit
         // Capture the first touch and store some information about it.
         if state == .possible,
             let cameraNode = getCameraNode?(),
-            let ray = Ray(gesture: self, cameraNode: cameraNode),
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
             let node = nodeSelector.draggingHitTest(ray: ray),
             let axis = node.dragAxis,
             let point = axis.getClosestPointTo(ray: ray) {
@@ -65,7 +67,7 @@ import SceneKit
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         if let cameraNode = getCameraNode?(),
-            let ray = Ray(gesture: self, cameraNode: cameraNode),
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
             let dragRange = dragNode?.dragRange, dragRange > 0 {
             let delta = calculateDelta(for: ray)
             dragDelta = delta / dragRange
@@ -102,5 +104,11 @@ import SceneKit
         let dir = (point - beginPoint).normalized()
         let sign: CGFloat = (dir.dot(dragAxis.direction) >= 0) ? 1 : -1
         return CGFloat(point.distance(beginPoint)) * sign
+    }
+}
+
+extension UIGestureRecognizer.State: CustomStringConvertible {
+    public var description: String {
+        return "UIGestureRecognizer.State.\(rawValue)"
     }
 }

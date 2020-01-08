@@ -159,12 +159,12 @@ import SceneKit
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
-        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleDragAction(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(dragGestureRecognizer)
 
         // Add long press gesture
-        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleLongPressAction(_:)))
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleLongPressAction(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
     }

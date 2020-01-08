@@ -19,16 +19,18 @@ import UIKit
 import SceneKit
 
 @objc class LongPressGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelector
+    fileprivate let nodeSelector: UiNodeSelecting
     fileprivate(set) var longPressedNode: TransformNode?
     fileprivate(set) var initialTouchLocation: CGPoint?
+    fileprivate var rayBuilder: RayBuilding
     fileprivate var longpressTimer: Timer?
 
     var getCameraNode: (() -> SCNNode?)?
     var minimumPressDuration: TimeInterval = 0.5
 
-    init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
+    init(nodeSelector: UiNodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
+        self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
     }
 
@@ -44,7 +46,7 @@ import SceneKit
         if state == .possible,
             let cameraNode = getCameraNode?(),
             let firstTouch = touches.first,
-            let ray = Ray(gesture: self, cameraNode: cameraNode) {
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
             longPressedNode = nodeSelector.hitTest(ray: ray)
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
             if longPressedNode == nil {

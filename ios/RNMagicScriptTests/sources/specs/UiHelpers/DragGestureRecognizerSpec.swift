@@ -20,30 +20,34 @@ import SwiftyMocky
 import SceneKit
 @testable import RNMagicScriptHostApplication
 
-class TapGestureRecognizerSpec: QuickSpec {
+class DragGestureRecognizerSpec: QuickSpec {
     override func spec() {
-        describe("TapGestureRecognizer") {
+        describe("DragGestureRecognizer") {
             var nodeSelectorMock: UiNodeSelectingMock!
             var rayBuilderMock: RayBuildingMock!
-            var sut: TapGestureRecognizer!
+            var sut: DragGestureRecognizer!
 
             beforeEach {
                 nodeSelectorMock = UiNodeSelectingMock()
                 rayBuilderMock = RayBuildingMock()
-                sut = TapGestureRecognizer(nodeSelector: nodeSelectorMock, rayBuilder: rayBuilderMock, target: nil, action: nil)
+                sut = DragGestureRecognizer(nodeSelector: nodeSelectorMock, rayBuilder: rayBuilderMock, target: nil, action: nil)
                 sut.getCameraNode = {
                     return SCNNode()
                 }
             }
 
             let setInitialState = {
-                let hitNode = TransformNode()
-                nodeSelectorMock.given(.hitTest(ray: .any, willReturn: hitNode))
+                let draggedNode = DraggableNode()
+                let customRay = CustomizableRay(begin: SCNVector3(), direction: SCNVector3(), length: 1.0)
+                customRay.closestPoint = SCNVector3(0.125, 0.125, 0.125)
+                draggedNode.dragAxis = customRay
+                draggedNode.dragRange = 0.75
+                draggedNode.dragValue = 0.125
+                nodeSelectorMock.given(.draggingHitTest(ray: .any, willReturn: draggedNode))
                 let ray = Ray(begin: SCNVector3(), direction: SCNVector3(), length: 1.0)
                 rayBuilderMock.given(.build(gesture: .any, cameraNode: .any, willReturn: ray))
                 sut.touchesBegan([UITouch()], with: UIEvent())
-                expect(sut.initialTouchLocation).to(beCloseTo(CGPoint.zero))
-                expect(sut.tappedNode).to(equal(hitNode))
+                expect(sut.dragAxis).to(equal(customRay))
             }
 
 
@@ -59,8 +63,10 @@ class TapGestureRecognizerSpec: QuickSpec {
                         setInitialState()
 
                         sut.reset()
-                        expect(sut.initialTouchLocation).to(beNil())
-                        expect(sut.tappedNode).to(beNil())
+                        expect(sut.dragAxis).to(beNil())
+                        expect(sut.beginDragValue).to(beCloseTo(0.0))
+                        expect(sut.dragDelta).to(beCloseTo(0.0))
+                        expect(sut.state).to(equal(.began))
                     }
                 }
             }
@@ -74,7 +80,7 @@ class TapGestureRecognizerSpec: QuickSpec {
                 }
 
                 context("when correct touch") {
-                    it("should store tappedNode & touch location") {
+                    it("should store dragged & touch location") {
                         setInitialState()
                     }
                 }
@@ -85,45 +91,24 @@ class TapGestureRecognizerSpec: QuickSpec {
                         let ray = Ray(begin: SCNVector3(), direction: SCNVector3(), length: 1.0)
                         rayBuilderMock.given(.build(gesture: .any, cameraNode: .any, willReturn: ray))
                         sut.touchesBegan([UITouch()], with: UIEvent())
-                        expect(sut.initialTouchLocation).to(beCloseTo(CGPoint.zero))
-                        expect(sut.tappedNode).to(beNil())
+                        expect(sut.state).to(equal(.failed))
                     }
                 }
             }
 
             context("when touchesMoved") {
-                context("when distance less than possible margin") {
-                    it("should continue gesture") {
-                        setInitialState()
-                        let movedTouchPoint = CustomUITouch()
-                        movedTouchPoint.gestureLocation = CGPoint(x: 0.125, y: 0.125)
-                        sut.touchesMoved([movedTouchPoint], with: UIEvent())
-                        expect(sut.state).toNot(equal(.failed))
-                    }
-                }
-
-                context("when distance more than possible margin") {
-                    it("should set gesture as failed") {
-                        setInitialState()
-                        let movedTouchPoint = CustomUITouch()
-                        movedTouchPoint.gestureLocation = CGPoint(x: 25.0, y: 25.0)
-                        sut.touchesMoved([movedTouchPoint], with: UIEvent())
-                        expect(sut.state).to(equal(.failed))
-                    }
-                }
-
-                context("when no moved touch") {
-                    it("should set gesture as failed") {
-                        setInitialState()
-                        sut.touchesMoved([], with: UIEvent())
-                        expect(sut.state).to(equal(.failed))
-                    }
+                it("should continue gesture") {
+                    setInitialState()
+                    let movedTouchPoint = CustomUITouch()
+                    movedTouchPoint.gestureLocation = CGPoint(x: 0.125, y: 0.125)
+                    sut.touchesMoved([movedTouchPoint], with: UIEvent())
+                    expect(sut.state).to(equal(.changed))
                 }
 
                 context("when no gesture started") {
                     it("should set gesture as failed") {
                         sut.touchesMoved([UITouch()], with: UIEvent())
-                        expect(sut.state).to(equal(.failed))
+                        expect(sut.state).to(equal(.began))
                     }
                 }
             }
@@ -134,7 +119,7 @@ class TapGestureRecognizerSpec: QuickSpec {
                         sut.state = .changed
 
                         sut.touchesEnded([UITouch()], with: UIEvent())
-                        expect(sut.state).to(equal(.cancelled))
+                        expect(sut.state).to(equal(.ended))
                     }
                 }
 
@@ -156,4 +141,19 @@ class TapGestureRecognizerSpec: QuickSpec {
             }
         }
     }
+}
+
+
+fileprivate class CustomizableRay: Ray {
+    var closestPoint: SCNVector3?
+
+    override func getClosestPointTo(ray: Ray) -> SCNVector3? {
+        return closestPoint
+    }
+}
+
+fileprivate class DraggableNode: TransformNode, Dragging {
+    var dragAxis: Ray?
+    var dragRange: CGFloat = 0.0
+    var dragValue: CGFloat = 0.0
 }

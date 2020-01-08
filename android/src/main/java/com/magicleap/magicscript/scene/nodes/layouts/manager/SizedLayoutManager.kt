@@ -70,19 +70,17 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
             val boundsCenterY = nodeBounds.top - nodeHeight / 2
             val pivotOffsetY = node.localPosition.y - boundsCenterY // aligning according to center
 
-            val nodeData = NodeInfo(node, i, nodeWidth, nodeHeight, pivotOffsetX, pivotOffsetY)
+            val nodeInfo = NodeInfo(node, i, nodeWidth, nodeHeight, pivotOffsetX, pivotOffsetY)
+            val layoutInfo = LayoutInfo(childrenBounds, contentSize, layoutSizeLimit, layoutParams)
 
-            layoutNode(nodeData, childrenBounds, contentSize, layoutSizeLimit, layoutParams)
+            layoutNode(nodeInfo, layoutInfo)
         }
     }
 
     // sets the proper position for the child node
     abstract fun <T : LayoutParams> layoutNode(
         nodeInfo: NodeInfo,
-        childrenBounds: Map<Int, Bounding>,
-        contentSize: Vector2,
-        layoutSizeLimit: Vector2,
-        layoutParams: T
+        layoutInfo: LayoutInfo<T>
     )
 
     /**

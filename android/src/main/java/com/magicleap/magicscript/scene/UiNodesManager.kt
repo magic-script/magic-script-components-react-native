@@ -154,7 +154,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     override fun onHostDestroy() {
-
+        // no-op
     }
 
     // removes node with descendants from the nodes map

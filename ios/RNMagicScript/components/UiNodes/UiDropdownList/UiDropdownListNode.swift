@@ -31,13 +31,7 @@ import SceneKit
         didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
     @objc var textSize: CGFloat = 0 {
-        didSet {
-            reloadOutline = true
-            labelNode.textSize = textSize
-            itemsList.forEach { $0.textSize = textSize }
-            updateLabelTextSizeBasedOnHeight()
-            setNeedsLayout()
-        }
+        didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var width: CGFloat = 0 {
         didSet { reloadOutline = true; setNeedsLayout() }
@@ -109,7 +103,7 @@ import SceneKit
 
         assert(labelNode == nil, "labelNode must not be initialized!")
         labelNode = LabelNode()
-        labelNode.textSize = UiDropdownListNode.defaultTextSize
+        labelNode.defaultTextSize = UiDropdownListNode.defaultTextSize
 
         iconNode = NodesFactory.createPlaneNode(width: 1, height: 1, image: SystemIcon("chevron-down").getImage())
         contentNode.addChildNode(labelNode)
@@ -132,7 +126,7 @@ import SceneKit
     @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
         guard let dropDownListItem = child as? UiDropdownListItemNode else { return false }
-        dropDownListItem.textSize = textSize
+        dropDownListItem.textSize = getPreferredTextHeight()
         dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
         dropDownListItem.tapHandler = self
@@ -246,13 +240,21 @@ import SceneKit
         listGridLayoutNode.setDebugMode(debug)
     }
 
-    fileprivate func updateLabelTextSizeBasedOnHeight() {
-        guard textSize == 0 && height > 0 else  {
-            labelNode.textSize = textSize
-            return
+    fileprivate func getPreferredTextHeight() -> CGFloat {
+        let textHeight: CGFloat
+        if textSize == 0 && height > 0 {
+            textHeight = max(0, 0.333 * height)
+        } else {
+            textHeight = (textSize > 0) ? textSize : labelNode.defaultTextSize
         }
 
-        labelNode.textSize = max(0, 0.333 * height)
+        return textHeight
+    }
+
+    fileprivate func updateLabelTextSizeBasedOnHeight() {
+        let textHeight = getPreferredTextHeight()
+        labelNode.textSize = textHeight
+        itemsList.forEach { $0.textSize = textHeight }
     }
 
     fileprivate func reloadOutlineNode() {
@@ -268,12 +270,12 @@ import SceneKit
     }
 
     fileprivate func toggleListNodeVisibility() {
+        listGridLayoutNode.layoutIfNeeded()
+
         let buttonSize = getButtonSize(includeOutline: true)
         let listSize = listGridLayoutNode.getSize()
         listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
         outlineNode?.isHidden = !listGridLayoutNode.visible
-
-        listGridLayoutNode.layoutIfNeeded()
         listGridLayoutNode.visible = !listGridLayoutNode.visible
         updateBackground()
     }
@@ -295,14 +297,13 @@ import SceneKit
 
         guard listSize.width > 0 && listSize.height > 0 && isVisible else { return }
 
-        let inset: CGFloat = 0.3
+        let inset: CGFloat = min(0.5, 0.8 * min(listSize.width, listSize.height))
         let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         let imageCaps = UIEdgeInsets(top: 208, left: 137, bottom: 208, right: 137)
         let width: CGFloat = listSize.width + 1.5 * inset
         let height: CGFloat = listSize.height + 1.5 * inset
         backgroundNode = NodesFactory.createNinePatchNode(width: width, height: height, geometryCaps: geometryCaps, image: ImageAsset.dropdownListBackground.image, imageCaps: imageCaps)
         backgroundNode?.geometry?.firstMaterial?.readsFromDepthBuffer = false
-        backgroundNode?.opacity = 0.6
         backgroundNode?.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
         backgroundNode?.renderingOrder = 0
         listNode.insertChildNode(backgroundNode!, at: 0)

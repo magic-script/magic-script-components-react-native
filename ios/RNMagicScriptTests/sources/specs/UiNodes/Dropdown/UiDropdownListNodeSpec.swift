@@ -135,78 +135,175 @@ class UiDropdownListNodeSpec: QuickSpec {
                 }
             }
 
-            /*context("focus") {
-                it("should maintaing focus state") {
+            context("focus") {
+                it("should not leave focus on behalf of UiDropdownListItemNode") {
                     node.enterFocus()
                     expect(node.hasFocus).to(beTrue())
 
-                    node.leaveFocus()
+                    let itemNode = UiDropdownListItemNode()
+                    let result = node.leaveFocus(onBehalfOf: itemNode)
+                    expect(result).to(beFalse())
+                    expect(node.hasFocus).to(beTrue())
+                }
+
+                it("should not leave focus on behalf of self node") {
+                    node.enterFocus()
+                    expect(node.hasFocus).to(beTrue())
+
+                    let result = node.leaveFocus(onBehalfOf: node)
+                    expect(result).to(beFalse())
+                    expect(node.hasFocus).to(beTrue())
+                }
+
+                it("should leave focus on behalf of other nodes") {
+                    node.enterFocus()
+                    expect(node.hasFocus).to(beTrue())
+
+                    let result1 = node.leaveFocus(onBehalfOf: nil)
+                    expect(result1).to(beTrue())
+                    expect(node.hasFocus).to(beFalse())
+
+                    node.enterFocus()
+                    expect(node.hasFocus).to(beTrue())
+
+                    let buttonNode = UiButtonNode()
+                    let result2 = node.leaveFocus(onBehalfOf: buttonNode)
+                    expect(result2).to(beTrue())
                     expect(node.hasFocus).to(beFalse())
                 }
 
                 context("when entering/leaving focus") {
                     it("should maintain list visibility") {
+                        let listNode = self.getListNode(node)
                         node.enterFocus()
-                        expect(node.listGridLayoutNode.visible).to(beTrue())
+                        expect(listNode.isHidden).to(beFalse())
+                        expect(node.isListExpanded).to(beTrue())
 
-                        node.leaveFocus()
-                        expect(node.listGridLayoutNode.visible).to(beFalse())
+                        node.leaveFocus(onBehalfOf: nil)
+                        expect(listNode.isHidden).to(beTrue())
+                        expect(node.isListExpanded).to(beFalse())
                     }
                 }
             }
 
             context("when item added") {
-                context("when item is DropdownList item") {
-                    it("should add it to the list node") {
-                        let itemNode = UiDropdownListItemNode()
-                        node.addChild(itemNode)
-                        expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
-                        expect(itemNode.tapHandler).toNot(beNil())
+                it("should add UiDropdownListItemNode to the list") {
+                    let initialNodesCount = node.contentNode.childNodes.count
+                    let listNode = self.getListNode(node)
+                    let gridLayoutNode = listNode.childNodes[0] as! UiGridLayoutNode
+                    expect(gridLayoutNode.itemsCount).to(equal(0))
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount))
 
-                        let otherNode = TransformNode()
-                        node.addChild(otherNode)
-                        expect(node.listGridLayoutNode.contentNode.childNodes.count).to(equal(1))
-                    }
+                    let itemNode = UiDropdownListItemNode()
+                    node.addChild(itemNode)
+                    expect(gridLayoutNode.itemsCount).to(equal(1))
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount))
+                    expect(itemNode.tapHandler).toNot(beNil())
+                }
+
+                it("should add other type of nodes as standard sub-components") {
+                    let initialNodesCount = node.contentNode.childNodes.count
+                    let listNode = self.getListNode(node)
+                    let gridLayoutNode = listNode.childNodes[0] as! UiGridLayoutNode
+                    expect(gridLayoutNode.itemsCount).to(equal(0))
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount))
+
+                    let transformNode = TransformNode()
+                    node.addChild(transformNode)
+                    expect(gridLayoutNode.itemsCount).to(equal(0))
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount + 1))
                 }
             }
 
             context("when item removed") {
-                it("should remove it from the list node") {
+                it("should remove UiDropdownListItemNode from the list") {
                     let itemNode = UiDropdownListItemNode()
                     node.addChild(itemNode)
-                    expect(node.listGridLayoutNode.itemsCount).to(equal(1))
+
+                    let listNode = self.getListNode(node)
+                    let gridLayoutNode = listNode.childNodes[0] as! UiGridLayoutNode
+                    expect(gridLayoutNode.itemsCount).to(equal(1))
 
                     let otherNode = TransformNode()
                     node.removeChild(otherNode)
-                    expect(node.listGridLayoutNode.itemsCount).to(equal(1))
+                    expect(gridLayoutNode.itemsCount).to(equal(1))
 
                     node.removeChild(itemNode)
-                    expect(node.listGridLayoutNode.itemsCount).to(equal(0))
+                    expect(gridLayoutNode.itemsCount).to(equal(0))
                     expect(itemNode.tapHandler).to(beNil())
+                }
+
+                it("should remove other type of nodes from the nodes hierarchy") {
+                    let initialNodesCount = node.contentNode.childNodes.count
+                    let transformNode = TransformNode()
+                    node.addChild(transformNode)
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount + 1))
+
+                    node.removeChild(transformNode)
+                    expect(node.contentNode.childNodes.count).to(equal(initialNodesCount))
                 }
             }
 
             context("when handling item tap") {
-                it("should maintain selection state - selection") {
-                    let dummyItemNode = UiDropdownListItemNode()
-                    node.handleTap(dummyItemNode)
+                context("single selection mode") {
+                    it("should select item") {
+                        let dummyItemNode1 = UiDropdownListItemNode()
+                        let dummyItemNode2 = UiDropdownListItemNode()
 
-                    expect(node.selectedItem).to(equal(dummyItemNode))
-                    expect(dummyItemNode.isSelected).to(beTrue())
+                        node.handleTap(dummyItemNode1)
+                        expect(node.selectedItems).to(contain(dummyItemNode1))
+                        expect(dummyItemNode1.isSelected).to(beTrue())
+
+                        node.handleTap(dummyItemNode2)
+                        expect(node.selectedItems).notTo(contain(dummyItemNode1))
+                        expect(dummyItemNode1.isSelected).to(beFalse())
+
+                        expect(node.selectedItems).to(contain(dummyItemNode2))
+                        expect(dummyItemNode2.isSelected).to(beTrue())
+                    }
+
+                    it("should not deselect item") {
+                        let dummyItemNode = UiDropdownListItemNode()
+                        node.handleTap(dummyItemNode)
+                        node.handleTap(dummyItemNode)
+
+                        expect(node.selectedItems).to(contain(dummyItemNode))
+                        expect(dummyItemNode.isSelected).to(beTrue())
+                    }
                 }
 
-                it("should maintain selection state - deselection") {
-                    let dummyItemNode = UiDropdownListItemNode()
-                    node.handleTap(dummyItemNode)
-                    node.handleTap(dummyItemNode)
+                context("multi selection mode") {
+                    it("should select items") {
+                        node.multiSelectMode = true
+                        let dummyItemNode1 = UiDropdownListItemNode()
+                        let dummyItemNode2 = UiDropdownListItemNode()
 
-                    expect(node.selectedItem).to(beNil())
-                    expect(dummyItemNode.isSelected).to(beFalse())
+                        node.handleTap(dummyItemNode1)
+                        expect(node.selectedItems).to(contain(dummyItemNode1))
+                        expect(dummyItemNode1.isSelected).to(beTrue())
+
+                        node.handleTap(dummyItemNode2)
+                        expect(node.selectedItems).to(contain(dummyItemNode1))
+                        expect(dummyItemNode1.isSelected).to(beTrue())
+
+                        expect(node.selectedItems).to(contain(dummyItemNode2))
+                        expect(dummyItemNode2.isSelected).to(beTrue())
+                    }
+
+                    it("should deselect item") {
+                        node.multiSelectMode = true
+                        let dummyItemNode = UiDropdownListItemNode()
+                        node.handleTap(dummyItemNode)
+                        node.handleTap(dummyItemNode)
+
+                        expect(node.selectedItems).notTo(contain(dummyItemNode))
+                        expect(dummyItemNode.isSelected).to(beFalse())
+                    }
                 }
 
                 it("notify upper layer") {
                     var upperLayerNotified = false
-                    node.onSelectionChanged = { sender, selecctedItems in
+                    node.onSelectionChanged = { sender, selectedItems in
                         upperLayerNotified = true
                     }
                     let dummyItemNode = UiDropdownListItemNode()
@@ -216,12 +313,56 @@ class UiDropdownListNodeSpec: QuickSpec {
             }
 
             context("when asked for size") {
-                it("should calculate return it based on width and height") {
-                    node.update(["width": 1.75, "height" : 0.25])
-                    /* correctness of calculation should be checked in spec for derived classes */
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 1.75, height: 0.25)))
+                it("should return it based on width and height") {
+                    let referenceSize = CGSize(width: 1.75, height: 0.25)
+                    node.update(["width": referenceSize.width, "height" : referenceSize.height])
+                    node.layoutIfNeeded()
+                    expect(node.getSize()).to(beCloseTo(referenceSize))
                 }
-            }*/
+            }
+
+            context("debug mode") {
+                it("should set debug mode") {
+                    let labelNode = self.getLabelNode(node)
+                    expect(labelNode).notTo(beNil())
+                    let referenceLabelNodeChildNodesCount: Int = labelNode.childNodes.count
+                    node.setDebugMode(true)
+                    expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
+                }
+            }
+
+            context("hitTest") {
+                it("should return nil") {
+                    self.prepareSampleDropdownList(node: node)
+
+                    let ray = Ray(begin: SCNVector3(0, 10, 1), direction: SCNVector3(1, 0, 0), length: 2)
+                    expect(node.hitTest(ray: ray)).to(beNil())
+                }
+
+                it("should return self") {
+                    self.prepareSampleDropdownList(node: node)
+                    expect(node.isListExpanded).to(beFalse())
+
+                    let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 2)
+                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+
+                    node.enterFocus()
+                    expect(node.isListExpanded).to(beTrue())
+                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+                }
+
+                it("should return item node") {
+                    let items = self.prepareSampleDropdownList(node: node)
+                    node.enterFocus()
+                    let size = node.getSize()
+
+                    let textHeight: CGFloat = self.getLabelNode(node).defaultTextSize
+                    let x = -0.5 * size.width
+                    let y = -0.5 * (size.height + textHeight)
+                    let ray = Ray(begin: SCNVector3(x, y, 1), direction: SCNVector3(0, 0, -1), length: 2)
+                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(items[0]))
+                }
+            }
         }
     }
 
@@ -231,5 +372,23 @@ class UiDropdownListNodeSpec: QuickSpec {
 
     fileprivate func getIconNode(_ node: UiDropdownListNode) -> SCNNode {
         return node.contentNode.childNodes[1]
+    }
+
+    fileprivate func getListNode(_ node: UiDropdownListNode) -> SCNNode {
+        return node.contentNode.childNodes[2]
+    }
+
+    @discardableResult
+    fileprivate func prepareSampleDropdownList(node: UiDropdownListNode) -> [UiDropdownListItemNode] {
+        node.text = "Dropdown List"
+        var items: [UiDropdownListItemNode] = []
+        for i in 0..<10 {
+            let itemNode = UiDropdownListItemNode(props: ["label": "Item \(i + 1)"])
+            node.addChild(itemNode)
+            items.append(itemNode)
+        }
+        node.layoutIfNeeded()
+
+        return items
     }
 }

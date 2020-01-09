@@ -49,23 +49,22 @@ import SceneKit
         }
     }
     @objc var multiSelectMode: Bool = false
-
+    @objc var isListExpanded: Bool { return !listNode.isHidden }
+    
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItems: [UiDropdownListItemNode]) -> (Void))?
+
 
     fileprivate var outlineNode: SCNNode!
     fileprivate var labelNode: LabelNode!
     fileprivate var iconNode: SCNNode!
 
     fileprivate var itemsList: [UiDropdownListItemNode] = []
-    fileprivate var selectedItems: [UiDropdownListItemNode] = []
+    fileprivate(set) var selectedItems: [UiDropdownListItemNode] = []
     fileprivate var listNode: SCNNode!
     fileprivate var backgroundNode: SCNNode?
     fileprivate var listGridLayoutNode: UiGridLayoutNode!
 
     fileprivate var reloadOutline: Bool = true
-    fileprivate var isListExpanded: Bool {
-        return listGridLayoutNode.visible
-    }
 
     deinit {
         contentNode.removeAllAnimations()
@@ -82,6 +81,7 @@ import SceneKit
         toggleListNodeVisibility()
     }
 
+    @discardableResult
     @objc override func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
         if node != nil && node is UiDropdownListItemNode {
             return false
@@ -112,10 +112,10 @@ import SceneKit
 
         // List items node
         listNode = SCNNode()
+        listNode.isHidden = true
         contentNode.addChildNode(listNode)
 
         listGridLayoutNode = UiGridLayoutNode()
-        listGridLayoutNode.isHidden = true
         listGridLayoutNode.columns = 1
         listGridLayoutNode.defaultItemPadding = UIEdgeInsets.zero
         listGridLayoutNode.defaultItemAlignment = Alignment.centerLeft
@@ -126,7 +126,10 @@ import SceneKit
 
     @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
-        guard let dropDownListItem = child as? UiDropdownListItemNode else { return false }
+        guard let dropDownListItem = child as? UiDropdownListItemNode else {
+            return super.addChild(child)
+        }
+        
         dropDownListItem.textSize = getPreferredTextHeight()
         dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
@@ -137,7 +140,11 @@ import SceneKit
     }
 
     @objc override func removeChild(_ child: TransformNode) {
-        guard let dropDownListItem = child as? UiDropdownListItemNode else { return }
+        guard let dropDownListItem = child as? UiDropdownListItemNode else {
+            super.removeChild(child)
+            return
+        }
+
         itemsList.removeAll { $0 == dropDownListItem }
         dropDownListItem.tapHandler = nil
         listGridLayoutNode.removeChild(child)
@@ -276,14 +283,14 @@ import SceneKit
         let buttonSize = getButtonSize(includeOutline: true)
         let listSize = listGridLayoutNode.getSize()
         listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
-        outlineNode?.isHidden = !listGridLayoutNode.visible
-        listGridLayoutNode.visible = !listGridLayoutNode.visible
+        listNode.isHidden = !listNode.isHidden
+        outlineNode?.isHidden = !listNode.isHidden
         updateBackground()
     }
 
     fileprivate func updateBackground() {
         let listSize = listGridLayoutNode.getSize()
-        let isVisible = listGridLayoutNode.visible
+        let isVisible = !listNode.isHidden
         if let bgNode = backgroundNode,
             let bgGeometry = bgNode.geometry as? SCNNinePatch,
             isVisible,

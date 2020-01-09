@@ -99,6 +99,7 @@ import SceneKit
         hasFocus = true
     }
 
+    @discardableResult
     @objc func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
         if node != self {
             hasFocus = false

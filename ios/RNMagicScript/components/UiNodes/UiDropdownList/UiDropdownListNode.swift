@@ -39,8 +39,9 @@ import SceneKit
     @objc var height: CGFloat = 0 {
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
-    fileprivate var roundness: CGFloat = 1.0
-    @objc var maxHeight: CGFloat = 0.0
+    @objc var maxHeight: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
     @objc var maxCharacterLimit: Int = 0 {
         didSet {
             itemsList.forEach { $0.maxCharacterLimit = maxCharacterLimit }
@@ -104,9 +105,9 @@ import SceneKit
         assert(labelNode == nil, "labelNode must not be initialized!")
         labelNode = LabelNode()
         labelNode.defaultTextSize = UiDropdownListNode.defaultTextSize
+        contentNode.addChildNode(labelNode)
 
         iconNode = NodesFactory.createPlaneNode(width: 1, height: 1, image: SystemIcon("chevron-down").getImage())
-        contentNode.addChildNode(labelNode)
         contentNode.addChildNode(iconNode)
 
         // List items node
@@ -262,7 +263,7 @@ import SceneKit
 
         outlineNode?.removeFromParentNode()
 
-        let radius: CGFloat = 0.5 * min(size.width, size.height) * roundness
+        let radius: CGFloat = 0.5 * min(size.width, size.height)
         let thickness: CGFloat = 0.045 * min(size.width, size.height)
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)

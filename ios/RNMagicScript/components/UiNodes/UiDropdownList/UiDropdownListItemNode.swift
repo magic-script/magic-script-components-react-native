@@ -33,10 +33,7 @@ import SceneKit
         didSet { labelNode.textSize = textSize; setNeedsLayout() }
     }
     @objc var maxCharacterLimit: Int = 0 {
-        didSet {
-            labelNode.text = alignTextLength(label, maxCharacterLimit)
-            setNeedsLayout()
-        }
+        didSet { labelNode.text = alignTextLength(label, maxCharacterLimit); setNeedsLayout() }
     }
 
     var tapHandler: DropdownListItemTapHandling?
@@ -49,10 +46,6 @@ import SceneKit
         }
     }
     fileprivate var labelNode: LabelNode!
-
-    @objc override var canHaveFocus: Bool {
-        return false
-    }
 
     @objc override func activate() {
         super.activate()
@@ -75,10 +68,6 @@ import SceneKit
 
         if let id = Convert.toInt(props["id"]) {
             self.id = id
-        }
-
-        if let maxCharacterLimit = Convert.toInt(props["maxCharacterLimit"]) {
-            self.maxCharacterLimit = maxCharacterLimit
         }
     }
 

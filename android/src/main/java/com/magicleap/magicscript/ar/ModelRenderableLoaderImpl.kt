@@ -18,24 +18,38 @@ package com.magicleap.magicscript.ar
 
 import android.content.Context
 import android.net.Uri
+import android.util.TypedValue
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.utils.logMessage
 
 class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableLoader {
 
-    override fun loadRenderable(modelUri: Uri, resultCallback: (result: RenderableResult) -> Unit) {
-        ModelRenderable.builder()
-            .setSource(
-                context, RenderableSource.builder().setSource(
-                    context,
-                    modelUri,
-                    RenderableSource.SourceType.GLB
-                ) // GLB (binary) or GLTF (text)
+    override fun loadRenderable(
+        modelUri: Uri,
+        resultCallback: (
+            result: RenderableResult<ModelRenderable>
+        ) -> Unit
+    ) {
+        val modelType = detectModelType(modelUri)
+        val builder = ModelRenderable.builder()
+
+        if (modelType == ModelType.GLB) {
+            builder.setSource(
+                context, RenderableSource.builder()
+                    .setSource(
+                        context,
+                        modelUri,
+                        RenderableSource.SourceType.GLB // GLB (binary) or GLTF (text)
+                    )
                     .setRecenterMode(RenderableSource.RecenterMode.CENTER)
                     .build()
             )
-            .setRegistryId(modelUri)
+        } else {
+            builder.setSource(context, modelUri)
+        }
+
+        builder.setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
                 renderable.isShadowReceiver = false
@@ -47,6 +61,39 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
                 resultCallback(RenderableResult.Error(throwable))
                 null
             }
+    }
+
+    private fun detectModelType(uri: Uri): ModelType {
+        if (uri.toString().contains("android.resource://")) { // release build
+            val resourceName = uri.lastPathSegment
+            logMessage("model res name=$resourceName")
+
+            val resourceId =
+                context.resources.getIdentifier(resourceName, "raw", context.packageName)
+            if (resourceId == 0) { // does not exists
+                return ModelType.UNKNOWN
+            }
+
+            val value = TypedValue()
+            context.resources.getValue(resourceId, value, true)
+            val resWithExtension = value.string
+            if (resWithExtension.endsWith(".glb")) {
+                return ModelType.GLB
+            }
+            if (resWithExtension.endsWith(".sfb")) {
+                return ModelType.SFB
+            }
+            return ModelType.UNKNOWN
+        } else { // localhost path
+            if (uri.toString().contains(".glb")) {
+                return ModelType.GLB
+            }
+            if (uri.toString().contains(".sfb")) {
+                return ModelType.SFB
+            }
+            return ModelType.UNKNOWN
+        }
 
     }
+
 }

@@ -19,8 +19,9 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -45,7 +46,7 @@ class ModelNode(
 
     // localScale without importScale correction
     private var scale = localScale
-    private var renderableCopy: Renderable? = null
+    private var renderableCopy: ModelRenderable? = null
     private var hidden = false
 
     override fun applyProperties(props: Bundle) {
@@ -120,6 +121,15 @@ class ModelNode(
                     this.renderableCopy = result.renderable
                     if (!hidden) { // model can be (re)loaded after setting clip bounds
                         contentNode.renderable = renderableCopy
+
+                        val animationsNumber = result.renderable.animationDataCount
+                        if (animationsNumber > 0) {
+                            val animation = result.renderable.getAnimationData(0)
+                            val animator = ModelAnimator(animation, result.renderable)
+                            if (!animator.isStarted) {
+                                animator.start()
+                            }
+                        }
                     }
                 }
             }

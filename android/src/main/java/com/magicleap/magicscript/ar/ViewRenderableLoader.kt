@@ -17,11 +17,15 @@
 package com.magicleap.magicscript.ar
 
 import android.view.View
+import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 
 interface ViewRenderableLoader {
 
-    fun loadRenderable(config: Config, resultCallback: ((result: RenderableResult) -> Unit))
+    fun loadRenderable(
+        config: Config,
+        resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
+    )
 
     data class Config(
         val view: View,

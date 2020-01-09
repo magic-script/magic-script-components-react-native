@@ -46,9 +46,7 @@ import SceneKit
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     fileprivate var roundness: CGFloat = 1.0
-    @objc var maxHeight: CGFloat = 0.0 {
-        didSet { listGridLayoutNode.update(["height" : maxHeight]); setNeedsLayout() }
-    }
+    @objc var maxHeight: CGFloat = 0.0
     @objc var maxCharacterLimit: Int = 0 {
         didSet {
             itemsList.forEach { $0.maxCharacterLimit = maxCharacterLimit }
@@ -66,7 +64,7 @@ import SceneKit
     fileprivate var itemsList: [UiDropdownListItemNode] = []
     fileprivate var selectedItems: [UiDropdownListItemNode] = []
     fileprivate var listNode: SCNNode!
-    fileprivate var backgroundNode: SCNNode!
+    fileprivate var backgroundNode: SCNNode?
     fileprivate var listGridLayoutNode: UiGridLayoutNode!
 
     fileprivate var reloadOutline: Bool = true
@@ -120,12 +118,6 @@ import SceneKit
         // List items node
         listNode = SCNNode()
         contentNode.addChildNode(listNode)
-
-        backgroundNode = NodesFactory.createPlaneNode(width: 0, height: 0, image: ImageAsset.dropdownListBackground.image)
-        backgroundNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
-        backgroundNode.isHidden = true
-        backgroundNode.renderingOrder = 0
-        listNode.addChildNode(backgroundNode)
 
         listGridLayoutNode = UiGridLayoutNode()
         listGridLayoutNode.isHidden = true
@@ -240,11 +232,7 @@ import SceneKit
         }
         iconNode.position = SCNVector3(0.5 * buttonSize.width - 0.5 * iconSize.width, 0, 0)
 
-        if let plane = backgroundNode.geometry as? SCNPlane {
-            let size = listGridLayoutNode.getSize()
-            plane.width = size.width
-            plane.height = size.height
-        }
+        updateBackground()
 
         if reloadOutline {
             reloadOutline = false
@@ -283,17 +271,41 @@ import SceneKit
         let buttonSize = getButtonSize(includeOutline: true)
         let listSize = listGridLayoutNode.getSize()
         listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
-        if let plane = backgroundNode.geometry as? SCNPlane {
-            plane.width = listSize.width
-            plane.height = listSize.height
-        }
-
-        backgroundNode.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
-        backgroundNode.isHidden = listGridLayoutNode.visible
         outlineNode?.isHidden = !listGridLayoutNode.visible
 
         listGridLayoutNode.layoutIfNeeded()
         listGridLayoutNode.visible = !listGridLayoutNode.visible
+        updateBackground()
+    }
+
+    fileprivate func updateBackground() {
+        let listSize = listGridLayoutNode.getSize()
+        let isVisible = listGridLayoutNode.visible
+        if let bgNode = backgroundNode,
+            let bgGeometry = bgNode.geometry as? SCNNinePatch,
+            isVisible,
+            bgGeometry.width == listSize.width,
+            bgGeometry.height == listSize.height {
+            // no need to update
+            return
+        }
+
+        backgroundNode?.removeFromParentNode()
+        backgroundNode = nil
+
+        guard listSize.width > 0 && listSize.height > 0 && isVisible else { return }
+
+        let inset: CGFloat = 0.3
+        let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        let imageCaps = UIEdgeInsets(top: 208, left: 137, bottom: 208, right: 137)
+        let width: CGFloat = listSize.width + 1.5 * inset
+        let height: CGFloat = listSize.height + 1.5 * inset
+        backgroundNode = NodesFactory.createNinePatchNode(width: width, height: height, geometryCaps: geometryCaps, image: ImageAsset.dropdownListBackground.image, imageCaps: imageCaps)
+        backgroundNode?.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        backgroundNode?.opacity = 0.6
+        backgroundNode?.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
+        backgroundNode?.renderingOrder = 0
+        listNode.insertChildNode(backgroundNode!, at: 0)
     }
 }
 

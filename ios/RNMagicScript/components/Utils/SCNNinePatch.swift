@@ -17,10 +17,13 @@
 import SceneKit
 
 class SCNNinePatch : SCNGeometry {
-
     var width: CGFloat = 0
     var height: CGFloat = 0
 
+    // For both 'geometryCaps' and 'texCoordsCaps' all properties
+    // should be in range [0..1] and follow the following rules:
+    // •  0 <= left <= right <= 1
+    // •  0 <= bottom <= top <= 1
     convenience init(size: CGSize, geometryCaps: UIEdgeInsets, texCoordsCaps: UIEdgeInsets) {
         let geom = SCNNinePatch.createGeometry(size: size, geometryCaps: geometryCaps, texCoordsCaps: texCoordsCaps)
         self.init(sources: geom.sources, elements: geom.elements)
@@ -62,7 +65,7 @@ class SCNNinePatch : SCNGeometry {
         ]
 
         // Indices
-        let indicesEnd: [Int16] = [
+        let indices: [Int16] = [
             0, 4, 1,    1, 4, 5,
             1, 5, 2,    2, 5, 6,
             2, 6, 3,    3, 6, 7,
@@ -81,7 +84,7 @@ class SCNNinePatch : SCNGeometry {
             SCNGeometrySource(textureCoordinates: texCoords)
         ]
         let elements = [
-            SCNGeometryElement(indices: indicesEnd, primitiveType: .triangles),
+            SCNGeometryElement(indices: indices, primitiveType: .triangles),
         ]
 
         return (sources: sources, elements: elements)

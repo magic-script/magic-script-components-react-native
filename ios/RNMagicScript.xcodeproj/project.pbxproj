@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		272FE9888C2A3646A0ED2AF1 /* Pods_RNMagicScriptTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */; };
+		4415977C23C8868C008EDD3C /* SCNNinePatchSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */; };
 		4415DA3023A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
 		4415DA3123A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
 		441EA5A22347797A00EDD033 /* SystemIcon+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */; };
@@ -553,6 +554,7 @@
 		1A61E7861901EBA64142B714 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.debug.xcconfig"; sourceTree = "<group>"; };
 		35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DB5B657C16E1BE134F81C5A /* Pods-RNMagicScriptTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNinePatchSpec.swift; sourceTree = "<group>"; };
 		4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Enumerate.swift"; sourceTree = "<group>"; };
 		441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemIcon+Names.swift"; sourceTree = "<group>"; };
 		441FC16B2362E9590004DBF1 /* CGPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extension.swift"; sourceTree = "<group>"; };
@@ -1433,6 +1435,7 @@
 				44C5D719235F3FCC00AC0B6C /* Maths */,
 				44F09317232D985A0081FF14 /* FileDownloaderSpec.swift */,
 				44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */,
+				4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */,
 				44F0933F232DA5530081FF14 /* SCNRectangleSpec.swift */,
 				44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */,
 				C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */,
@@ -2277,6 +2280,7 @@
 				C4C1D47823840CB500437249 /* DialogFactorySpec.swift in Sources */,
 				44931E07237D898C00E11972 /* UiLineNodeSpec.swift in Sources */,
 				44931E09237D898C00E11972 /* UiProgressBarNodeSpec.swift in Sources */,
+				4415977C23C8868C008EDD3C /* SCNNinePatchSpec.swift in Sources */,
 				C4596A85237421B0000E88C1 /* UiListViewItemNodeSpec.swift in Sources */,
 				44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */,
 				44F0932F232D985A0081FF14 /* beCloseTo.swift in Sources */,

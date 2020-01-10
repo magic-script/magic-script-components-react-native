@@ -78,12 +78,16 @@ class UiDropdownListNodeSpec: QuickSpec {
                 }
 
                 it("should update 'textSize' prop") {
+                    let items = self.prepareSampleDropdownList(node: node)
                     let referenceTextSize = 11.0
                     node.update(["textSize" : referenceTextSize])
                     expect(node.textSize).to(beCloseTo(referenceTextSize))
                     expect(node.isLayoutNeeded).to(beTrue())
 
                     expect(self.getLabelNode(node).textSize).to(beCloseTo(referenceTextSize))
+                    for item in items {
+                        expect(item.textSize).to(beCloseTo(referenceTextSize))
+                    }
                 }
 
                 it("should update 'width' prop") {
@@ -321,6 +325,29 @@ class UiDropdownListNodeSpec: QuickSpec {
                 }
             }
 
+            context("backgroundNode") {
+                it("should reuse backgroundNode when layout is updated multiple times") {
+                    self.prepareSampleDropdownList(node: node)
+                    expect(self.getBackgroundNode(node)).to(beNil())
+                    node.setNeedsLayout()
+                    node.layoutIfNeeded()
+                    expect(self.getBackgroundNode(node)).to(beNil())
+
+                    // open dropdown list
+                    node.enterFocus()
+                    let backgroundNode = self.getBackgroundNode(node)
+                    print("backgroundNode: \(backgroundNode!.classForCoder)")
+                    expect(backgroundNode).notTo(beNil())
+
+                    // update background by updating layout
+                    node.setNeedsLayout()
+                    node.layoutIfNeeded()
+                    let backgroundNode2 = self.getBackgroundNode(node)
+                    print("backgroundNode2: \(backgroundNode2!.classForCoder)")
+                    expect(self.getBackgroundNode(node)).to(beIdenticalTo(backgroundNode))
+                }
+            }
+
             context("debug mode") {
                 it("should set debug mode") {
                     let labelNode = self.getLabelNode(node)
@@ -355,7 +382,6 @@ class UiDropdownListNodeSpec: QuickSpec {
                     let items = self.prepareSampleDropdownList(node: node)
                     node.enterFocus()
                     let size = node.getSize()
-
                     let textHeight: CGFloat = self.getLabelNode(node).defaultTextSize
                     let x = -0.5 * size.width
                     let y = -0.5 * (size.height + textHeight)
@@ -376,6 +402,11 @@ class UiDropdownListNodeSpec: QuickSpec {
 
     fileprivate func getListNode(_ node: UiDropdownListNode) -> SCNNode {
         return node.contentNode.childNodes[2]
+    }
+
+    fileprivate func getBackgroundNode(_ node: UiDropdownListNode) -> SCNNode? {
+        let childNodes = getListNode(node).childNodes
+        return childNodes.count == 2 ? childNodes.first : nil
     }
 
     @discardableResult

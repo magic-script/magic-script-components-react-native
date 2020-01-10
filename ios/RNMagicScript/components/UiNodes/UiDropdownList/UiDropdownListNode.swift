@@ -213,9 +213,9 @@ import SceneKit
         if includeOutline {
             let dropdownToTextHeightMultiplier: CGFloat = 2.3
             return CGSize(width: contentWidth + dropdownToTextHeightMultiplier * contentHeight, height: dropdownToTextHeightMultiplier * contentHeight)
-        } else {
-            return CGSize(width: contentWidth, height: contentHeight)
         }
+
+        return CGSize(width: contentWidth, height: contentHeight)
     }
 
     @objc override func updateLayout() {
@@ -291,11 +291,16 @@ import SceneKit
     fileprivate func updateBackground() {
         let listSize = listGridLayoutNode.getSize()
         let isVisible = !listNode.isHidden
+        let inset: CGFloat = min(0.5, 0.8 * min(listSize.width, listSize.height))
+        let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        let imageCaps = UIEdgeInsets(top: 208, left: 137, bottom: 208, right: 137)
+        let width: CGFloat = listSize.width + 1.5 * inset
+        let height: CGFloat = listSize.height + 1.5 * inset
         if let bgNode = backgroundNode,
             let bgGeometry = bgNode.geometry as? SCNNinePatch,
             isVisible,
-            bgGeometry.width == listSize.width,
-            bgGeometry.height == listSize.height {
+            abs(bgGeometry.width - width) < 0.0001,
+            abs(bgGeometry.height - height) < 0.0001 {
             // no need to update
             return
         }
@@ -303,13 +308,8 @@ import SceneKit
         backgroundNode?.removeFromParentNode()
         backgroundNode = nil
 
-        guard listSize.width > 0 && listSize.height > 0 && isVisible else { return }
+        guard itemsList.count > 0 && listSize.width > 0 && listSize.height > 0 && isVisible else { return }
 
-        let inset: CGFloat = min(0.5, 0.8 * min(listSize.width, listSize.height))
-        let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-        let imageCaps = UIEdgeInsets(top: 208, left: 137, bottom: 208, right: 137)
-        let width: CGFloat = listSize.width + 1.5 * inset
-        let height: CGFloat = listSize.height + 1.5 * inset
         backgroundNode = NodesFactory.createNinePatchNode(width: width, height: height, geometryCaps: geometryCaps, image: ImageAsset.dropdownListBackground.image, imageCaps: imageCaps)
         backgroundNode?.geometry?.firstMaterial?.readsFromDepthBuffer = false
         backgroundNode?.position = SCNVector3(0, -0.5 * listSize.height, -0.01)

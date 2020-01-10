@@ -21,8 +21,8 @@ import SceneKit
     @objc var allowAllOff: Bool = false
     @objc var allTogglesOff: Bool = false // not implemented
 
-    fileprivate(set) weak var innerLayout: TransformNode?
-    fileprivate(set) var innerGroup: GroupContainer?
+    fileprivate(set) weak var customNodeContainer: TransformNode?
+    fileprivate(set) var defaultNodeContainer: GroupContainer?
     fileprivate(set) var itemsList: Array<UiToggleNode> = []
 
     @objc override func update(_ props: [String: Any]) {
@@ -43,21 +43,21 @@ import SceneKit
 
     @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
-        if let toggleNode = child as? UiToggleNode, innerLayout == nil {
-            if innerGroup == nil {
-                innerGroup = GroupContainer()
-                contentNode.addChildNode(innerGroup!.container)
+        if let toggleNode = child as? UiToggleNode, customNodeContainer == nil {
+            if defaultNodeContainer == nil {
+                defaultNodeContainer = GroupContainer()
+                contentNode.addChildNode(defaultNodeContainer!.container)
             }
 
-            innerGroup?.addItem(toggleNode)
+            defaultNodeContainer?.addItem(toggleNode)
             registerToggleGroupHandler(toggleNode)
             itemsList.append(toggleNode)
             setNeedsLayout()
             return true
         }
 
-        if innerGroup == nil && innerLayout == nil && child is TransformNodeContainer {
-            innerLayout = child
+        if defaultNodeContainer == nil && customNodeContainer == nil && child is TransformNodeContainer {
+            customNodeContainer = child
         }
 
         contentNode.addChildNode(child)
@@ -70,14 +70,14 @@ import SceneKit
         if let toggleItem = child as? UiToggleNode {
             itemsList.removeAll { $0 == toggleItem }
             if itemsList.isEmpty {
-                innerGroup = nil
+                defaultNodeContainer = nil
             }
             setNeedsLayout()
         }
 
-        if let storedInnerLayout = self.innerLayout, storedInnerLayout == child {
-            storedInnerLayout.removeFromParentNode()
-            innerLayout = nil
+        if self.customNodeContainer == child {
+            child.removeFromParentNode()
+            customNodeContainer = nil
             setNeedsLayout()
         }
 
@@ -86,9 +86,9 @@ import SceneKit
 
     override func hitTest(ray: Ray) -> TransformNode? {
         guard let _ = selfHitTest(ray: ray) else { return nil }
-        if let layout = innerLayout, let result = layout.hitTest(ray: ray) {
+        if let container = customNodeContainer, let result = container.hitTest(ray: ray) {
             return result
-        } else if let group = innerGroup, let result = group.hitTest(ray: ray) {
+        } else if let container = defaultNodeContainer, let result = container.hitTest(ray: ray) {
             return result
         }
 
@@ -96,10 +96,10 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        if innerLayout != nil {
-            return innerLayout!.getSize()
-        } else if innerGroup != nil {
-            return innerGroup!.getSize()
+        if customNodeContainer != nil {
+            return customNodeContainer!.getSize()
+        } else if defaultNodeContainer != nil {
+            return defaultNodeContainer!.getSize()
         }
 
         return CGSize.zero
@@ -107,25 +107,25 @@ import SceneKit
 
     @objc override func updateLayout() {
         _ = getSize()
-        innerLayout?.updateLayout()
+        customNodeContainer?.updateLayout()
     }
 
     @objc override func updatePivot() {
         super.updatePivot()
-        if let container = innerLayout as? UiNode {
+        if let container = customNodeContainer as? UiNode {
             let size = getSize(scaled: false)
             let shift = container.alignment.shiftDirection
             contentNode.position -= SCNVector3(shift.x * size.width, shift.y * size.height, 0)
-        } else if let group = innerGroup {
-            let bounds = group.getBounds()
+        } else if let container = defaultNodeContainer {
+            let bounds = container.getBounds()
             contentNode.position -= SCNVector3(bounds.midX, bounds.midY, 0)
         }
     }
 
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
-        innerLayout?.setNeedsLayout()
-        innerGroup?.invalidate()
+        customNodeContainer?.setNeedsLayout()
+        defaultNodeContainer?.invalidate()
     }
 
     fileprivate func registerToggleGroupHandler(_ node: UiToggleNode) {

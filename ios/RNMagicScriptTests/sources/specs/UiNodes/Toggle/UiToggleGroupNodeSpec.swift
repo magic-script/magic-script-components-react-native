@@ -76,7 +76,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should manage it internally") {
                         let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
-                        expect(node.innerLayout).to(equal(layoutNode))
+                        expect(node.customNodeContainer).to(equal(layoutNode))
                     }
                 }
             }
@@ -118,10 +118,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should manage it internally") {
                         let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
-                        expect(node.innerLayout).to(equal(layoutNode))
+                        expect(node.customNodeContainer).to(equal(layoutNode))
 
                         node.removeChild(layoutNode)
-                        expect(node.innerLayout).to(beNil())
+                        expect(node.customNodeContainer).to(beNil())
                     }
                 }
             }

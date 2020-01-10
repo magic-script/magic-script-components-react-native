@@ -169,10 +169,10 @@ RCT_EXPORT_MODULE();
 - (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItems:(NSArray<UiDropdownListItemNode *> *)selectedItems {
     NSMutableArray *items = [@[] mutableCopy];
     for (int i = 0; i < selectedItems.count; ++i) {
-        items.addObject(@{
-            @"id", items[i].id,
-            @"label", items[i].label
-        });
+        [items addObject:@{
+//            @"id": @(selectedItems[i].id),
+//            @"label": selectedItems[i].label
+        }];
     }
     [self onEventWithName:@"onSelectionChanged" sender:sender body:@{ @"SelectedItems": items }];
 }

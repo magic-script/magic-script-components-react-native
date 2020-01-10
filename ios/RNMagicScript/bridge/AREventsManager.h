@@ -22,6 +22,7 @@
 @class UiVideoNode;
 @class UiSliderNode;
 @class UiDropdownListNode;
+@class UiDropdownListItemNode;
 @class UiDatePickerNode;
 @class UiTimePickerNode;
 @class UiColorPickerNode;

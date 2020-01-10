@@ -60,8 +60,10 @@ import ARKit
             focusedNode = uiNode
         }
 
-        uiNode?.activate()
-        uiNode?.enterFocus()
+        if uiNode?.enabled ?? false {
+            uiNode?.activate()
+            uiNode?.enterFocus()
+        }
 
         if let input = node as? DataProviding {
             onInputFocused?(input)

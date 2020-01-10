@@ -76,14 +76,14 @@ import SceneKit
     }
 
     @objc override var canHaveFocus: Bool {
-        return enabled
+        return true
     }
 
     @objc override func enterFocus() {
         super.enterFocus()
         guard hasFocus else { return }
 
-        setListNodeVisible(true)
+        setListNodeVisible(!isListExpanded)
     }
 
     @discardableResult

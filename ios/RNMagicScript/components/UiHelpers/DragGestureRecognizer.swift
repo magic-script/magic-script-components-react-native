@@ -19,9 +19,9 @@ import UIKit
 import SceneKit
 
 @objc class DragGestureRecognizer: UIGestureRecognizer {
-    fileprivate let nodeSelector: UiNodeSelector
-    fileprivate var trackedTouch: UITouch?
+    fileprivate let nodeSelector: NodeSelecting
     fileprivate var initialRay: Ray?
+    fileprivate var rayBuilder: RayBuilding
     fileprivate(set) var dragNode: Dragging?
     fileprivate var beginPoint: SCNVector3 = SCNVector3Zero
     fileprivate(set) var dragAxis: Ray?
@@ -29,8 +29,9 @@ import SceneKit
     fileprivate(set) var dragDelta: CGFloat = 0
     var getCameraNode: (() -> SCNNode?)?
 
-    init(nodeSelector: UiNodeSelector, target: Any?, action: Selector?) {
+    init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding,  target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
+        self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
     }
 
@@ -40,60 +41,60 @@ import SceneKit
         }
 
         // Capture the first touch and store some information about it.
-        if trackedTouch == nil {
-            if let firstTouch = touches.first,
-               let cameraNode = getCameraNode?(),
-               let ray = Ray(gesture: self, cameraNode: cameraNode),
-               let node = nodeSelector.draggingHitTest(ray: ray),
-               let axis = node.dragAxis,
-               let point = axis.getClosestPointTo(ray: ray) {
-                trackedTouch = firstTouch
-                initialRay = ray
-                dragNode = node
-                dragAxis = axis
-                beginPoint = point
-                beginDragValue = node.dragValue
-                dragDelta = 0
-                state = .began
-            } else {
-                state = .failed
-            }
+        if state == .possible,
+            let cameraNode = getCameraNode?(),
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
+            let node = nodeSelector.draggingHitTest(ray: ray),
+            let axis = node.dragAxis,
+            let point = axis.getClosestPointTo(ray: ray) {
+            initialRay = ray
+            dragNode = node
+            dragAxis = axis
+            beginPoint = point
+            beginDragValue = node.dragValue
+            dragDelta = 0
+            state = .began
         } else {
-            // Ignore all but the first touch.
-            for touch in touches {
-                if touch != trackedTouch {
-                    ignore(touch, for: event)
-                }
-            }
+            state = .failed
         }
+
+        if dragNode != nil {
+            ignoreAllTouchesButFirst(touches, with: event)
+        }
+
+        super.touchesBegan(touches, with: event)
     }
 
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         if let cameraNode = getCameraNode?(),
-            let ray = Ray(gesture: self, cameraNode: cameraNode),
+            let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
             let dragRange = dragNode?.dragRange, dragRange > 0 {
             let delta = calculateDelta(for: ray)
             dragDelta = delta / dragRange
         }
+
         state = .changed
+        super.touchesMoved(touches, with: event)
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .ended
+        super.touchesEnded(touches, with: event)
     }
 
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .cancelled
+        super.touchesCancelled(touches, with: event)
     }
 
     override func reset() {
-        trackedTouch = nil
         initialRay = nil
         dragNode = nil
         dragAxis = nil
         beginPoint = SCNVector3Zero
         beginDragValue = 0
         dragDelta = 0
+        super.reset()
     }
 
     fileprivate func calculateDelta(for ray: Ray) -> CGFloat {

@@ -209,6 +209,20 @@ abstract class TransformNode(
     }
 
     /**
+     * Should pause any media related to the node
+     */
+    open fun onPause() {
+
+    }
+
+    /**
+     * Should resume any media related to the node
+     */
+    open fun onResume() {
+
+    }
+
+    /**
      * Should return position of the content (relative to this node's parent)
      */
     open fun getContentPosition(): Vector2 {

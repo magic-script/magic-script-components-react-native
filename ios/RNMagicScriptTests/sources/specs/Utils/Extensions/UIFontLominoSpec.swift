@@ -47,6 +47,22 @@ class UIFontLominoSpec: QuickSpec {
                     expect(font1).to(beIdenticalTo(font2))
                 }
             }
+
+            context("UIFontWeight") {
+                it("should return proper UIFont.Weight") {
+                    let weightsMap: [FontWeight: UIFont.Weight] = [
+                        FontWeight.extraLight: UIFont.Weight.ultraLight,
+                        FontWeight.light: UIFont.Weight.light,
+                        FontWeight.regular: UIFont.Weight.regular,
+                        FontWeight.medium: UIFont.Weight.medium,
+                        FontWeight.bold: UIFont.Weight.bold,
+                        FontWeight.extraBold: UIFont.Weight.heavy
+                    ]
+                    for (key, value) in weightsMap {
+                        expect(UIFont.UIFontWeight(from: key)).to(equal(value))
+                    }
+                }
+            }
         }
     }
 }

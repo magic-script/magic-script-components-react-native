@@ -130,6 +130,7 @@ class UiNodesManagerTest {
         val scene = spy<Scene>()
 
         nodesManager.registerScene(scene)
+
         nodesManager.onArFragmentReady()
 
         scene.children.isNotEmpty()
@@ -141,9 +142,9 @@ class UiNodesManagerTest {
         val scene = spy<Scene>()
 
         nodesManager.planeDetection = true
-
         nodesManager.registerScene(scene)
         nodesManager.onArFragmentReady()
+
         nodesManager.onTapArPlane(anchor)
 
         (scene.children[0] as AnchorNode).anchor shouldBe anchor
@@ -155,9 +156,9 @@ class UiNodesManagerTest {
         val scene = spy<Scene>()
 
         nodesManager.planeDetection = false
-
         nodesManager.registerScene(scene)
         nodesManager.onArFragmentReady()
+
         nodesManager.onTapArPlane(anchor)
 
         (scene.children[0] as AnchorNode).anchor shouldNotBe anchor
@@ -178,20 +179,20 @@ class UiNodesManagerTest {
     fun `should attachRenderable for all nodes with renderable when ArFragmentReady`() {
         val node1 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
+            nodesManager.registerNode(this.mock, "1")
         }
         val node2 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
+            nodesManager.registerNode(this.mock, "2")
         }
         val nodeWithoutRenderable = mock<TransformNode> {
             on { hasRenderable } itReturns false
+            nodesManager.registerNode(this.mock, "3")
         }
-
-        nodesManager.registerNode(node1, "1")
-        nodesManager.registerNode(node2, "2")
-        nodesManager.registerNode(nodeWithoutRenderable, "3")
-
         val scene = mock<Scene>()
+
         nodesManager.registerScene(scene)
+
         nodesManager.onArFragmentReady()
 
         verify(node1).attachRenderable()
@@ -200,20 +201,27 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should addNodeToRoot`() {
+    fun `rootNode shouldn't have register nodes at the beginning`() {
         val scene = spy<Scene>()
-
-        nodesManager.planeDetection = false
 
         nodesManager.registerScene(scene)
         nodesManager.onArFragmentReady()
 
         val root = scene.children[0]
         root.children.shouldBeEmpty()
+    }
 
+    @Test
+    fun `should addNodeToRoot`() {
+        val scene = spy<Scene>()
+
+        nodesManager.registerScene(scene)
+        nodesManager.onArFragmentReady()
         nodesManager.registerNode(mock(), "1")
+
         nodesManager.addNodeToRoot("1")
 
+        val root = scene.children[0]
         root.children.size shouldEqual 1
     }
 
@@ -221,6 +229,7 @@ class UiNodesManagerTest {
     fun `should updateNode properties`() {
         val node = mock<TransformNode>()
         val props = JavaOnlyMap.of()
+
         nodesManager.registerNode(node, "1")
 
         nodesManager.updateNode("1", props)

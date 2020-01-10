@@ -245,7 +245,6 @@ import SceneKit
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
         labelNode.setDebugMode(debug)
-        listGridLayoutNode.setDebugMode(debug)
     }
 
     fileprivate func getPreferredTextHeight() -> CGFloat {

@@ -47,7 +47,6 @@ class ModelNode(
     // localScale without importScale correction
     private var scale = localScale
     private var renderableCopy: ModelRenderable? = null
-    private var hidden = false
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -69,13 +68,9 @@ class ModelNode(
         if (contentPosition.x in clipBounds.left..clipBounds.right
             && contentPosition.y in clipBounds.bottom..clipBounds.top
         ) {
-            if (contentNode.renderable == null) {
-                contentNode.renderable = renderableCopy
-            }
-            hidden = false
+            show()
         } else {
-            contentNode.renderable = null
-            hidden = true
+            hide()
         }
     }
 
@@ -119,19 +114,23 @@ class ModelNode(
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {
                     this.renderableCopy = result.renderable
-                    if (!hidden) { // model can be (re)loaded after setting clip bounds
+                    handleAnimation(result.renderable)
+                    if (isVisible) { // model can be (re)loaded after setting clip bounds
                         contentNode.renderable = renderableCopy
-
-                        val animationsNumber = result.renderable.animationDataCount
-                        if (animationsNumber > 0) {
-                            val animation = result.renderable.getAnimationData(0)
-                            val animator = ModelAnimator(animation, result.renderable)
-                            if (!animator.isStarted) {
-                                animator.start()
-                            }
-                        }
                     }
                 }
+            }
+        }
+    }
+
+    private fun handleAnimation(modelRenderable: ModelRenderable) {
+        val animationsNumber = modelRenderable.animationDataCount
+        if (animationsNumber > 0) {
+            val animation = modelRenderable.getAnimationData(0)
+            val animator = ModelAnimator(animation, modelRenderable)
+            animator.repeatCount = ModelAnimator.INFINITE
+            if (!animator.isStarted) {
+                animator.start()
             }
         }
     }

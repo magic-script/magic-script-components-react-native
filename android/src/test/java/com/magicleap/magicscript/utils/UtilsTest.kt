@@ -17,14 +17,19 @@
 package com.magicleap.magicscript.utils
 
 import android.content.Context
+import android.net.Uri
 import android.util.DisplayMetrics
+import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
@@ -36,6 +41,13 @@ class UtilsTest {
 
     // epsilon
     private val eps = 1e-5f
+
+    private lateinit var appContext: Context
+
+    @Before
+    fun setUp() {
+        this.appContext = ApplicationProvider.getApplicationContext<Context>()
+    }
 
     @Test
     fun shouldReturnCorrectNumberOfPixels() {
@@ -134,6 +146,24 @@ class UtilsTest {
         val bounding = Utils.findMinimumBounding(points)
 
         bounding shouldEqualInexact expectedBounding
+    }
+
+    @Test
+    fun `should detect sfb model type when URL ends with sfb`() {
+        val modelPath = Uri.parse("http://sample-models/model.sfb")
+
+        val modelType = Utils.detectModelType(modelPath, appContext)
+
+        modelType shouldEqual ModelType.SFB
+    }
+
+    @Test
+    fun `should detect glb model type when URL contains glb extension`() {
+        val modelPath = Uri.parse("https://sample-models/model.glb?param=123")
+
+        val modelType = Utils.detectModelType(modelPath, appContext)
+
+        modelType shouldEqual ModelType.GLB
     }
 
 }

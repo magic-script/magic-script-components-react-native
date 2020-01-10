@@ -43,7 +43,7 @@ class ViewController: UIViewController {
 
     let groupId: String = "group"
     fileprivate func setupScene() {
-        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+        let _: UiGroupNode = createComponent(["debug": true, "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
         setupDropdownListTest()
         UiNodesManager.instance.updateLayout()
     }
@@ -75,7 +75,7 @@ class ViewController: UIViewController {
     fileprivate func setupDropdownListTest() {
         // Rect layout
         let dropdownListId: String = "dropdown_list_id"
-        let _: UiDropdownListNode = createComponent([
+        let dropdown: UiDropdownListNode = createComponent([
             "alignment": "top-center",
             "debug": true,
             "localPosition": [0, 0.7, 0],
@@ -90,6 +90,17 @@ class ViewController: UIViewController {
                 "id": i,
                 "label": "item \(i + 1)",
             ], nodeId: "item_\(i)", parentId: dropdownListId)
+        }
+
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0, -0.4, 0],
+            "text": "multiSelectMode",
+            "textSize": 0.08,
+            "height": 0.1,
+            "debug": true
+        ], nodeId: "toggle_id", parentId: groupId)
+        toggle.onChanged = { sender, on in
+            dropdown.multiSelectMode = on
         }
     }
 

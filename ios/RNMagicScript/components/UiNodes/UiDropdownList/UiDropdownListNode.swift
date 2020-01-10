@@ -48,7 +48,12 @@ import SceneKit
             setNeedsLayout()
         }
     }
-    @objc var multiSelectMode: Bool = false
+    @objc var multiSelectMode: Bool = false {
+        didSet {
+            selectedItems.forEach { $0.toggleSelection() }
+            selectedItems.removeAll()
+        }
+    }
     @objc var isListExpanded: Bool { return !listNode.isHidden }
     
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItems: [UiDropdownListItemNode]) -> (Void))?
@@ -78,7 +83,7 @@ import SceneKit
         super.enterFocus()
         guard hasFocus else { return }
 
-        toggleListNodeVisibility()
+        setListNodeVisible(true)
     }
 
     @discardableResult
@@ -89,7 +94,7 @@ import SceneKit
 
         let result = super.leaveFocus(onBehalfOf: node)
         if result {
-            toggleListNodeVisibility()
+            setListNodeVisible(false)
         }
         return result
     }
@@ -276,14 +281,14 @@ import SceneKit
         contentNode.addChildNode(outlineNode)
     }
 
-    fileprivate func toggleListNodeVisibility() {
+    fileprivate func setListNodeVisible(_ visible: Bool) {
         listGridLayoutNode.layoutIfNeeded()
 
         let buttonSize = getButtonSize(includeOutline: true)
         let listSize = listGridLayoutNode.getSize()
         listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
-        listNode.isHidden = !listNode.isHidden
-        outlineNode?.isHidden = !listNode.isHidden
+        listNode.isHidden = !visible
+        outlineNode?.isHidden = visible
         updateBackground()
     }
 
@@ -335,7 +340,7 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
         onSelectionChanged?(self, selectedItems)
 
         if !multiSelectMode {
-            toggleListNodeVisibility()
+            setListNodeVisible(false)
         }
     }
 }

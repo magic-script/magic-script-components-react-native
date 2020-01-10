@@ -42,9 +42,6 @@ import SceneKit
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
             tappedNode = nodeSelector.hitTest(ray: ray)
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
-            if tappedNode == nil {
-                state = .failed
-            }
         } else {
             state = .failed
         }

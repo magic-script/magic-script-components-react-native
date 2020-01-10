@@ -64,12 +64,11 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should add it to the list") {
                         let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
-                        expect(node.itemsList.count).to(equal(1))
-
+                        expect(node.itemsCount).to(equal(1))
 
                         let otherNode = TransformNode()
                         node.addChild(otherNode)
-                        expect(node.itemsList.count).to(equal(1))
+                        expect(node.itemsCount).to(equal(1))
                     }
                 }
 
@@ -77,7 +76,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should manage it internally") {
                         let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
-                        expect(node.innerLayout).to(equal(layoutNode))
+                        expect(node.customNodeContainer).to(equal(layoutNode))
                     }
                 }
             }
@@ -87,7 +86,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should add it to the list") {
                         let toggleNode = UiToggleNode()
                         node.childPresent(toggleNode: toggleNode)
-                        expect(node.itemsList.count).to(equal(1))
+                        expect(node.itemsCount).to(equal(1))
                     }
                 }
 
@@ -95,10 +94,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should do nothing") {
                         let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
-                        expect(node.itemsList.count).to(equal(1))
+                        expect(node.itemsCount).to(equal(1))
 
                         node.childPresent(toggleNode: toggleNode)
-                        expect(node.itemsList.count).to(equal(1))
+                        expect(node.itemsCount).to(equal(1))
                     }
                 }
             }
@@ -108,10 +107,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should remove it from the list") {
                         let toggleNode = UiToggleNode()
                         node.addChild(toggleNode)
-                        expect(node.itemsList.count).to(equal(1))
+                        expect(node.itemsCount).to(equal(1))
 
                         node.removeChild(toggleNode)
-                        expect(node.itemsList.count).to(equal(0))
+                        expect(node.itemsCount).to(equal(0))
                     }
                 }
 
@@ -119,10 +118,10 @@ class UiToggleGroupNodeSpec: QuickSpec {
                     it("should manage it internally") {
                         let layoutNode = UiLinearLayoutNode()
                         node.addChild(layoutNode)
-                        expect(node.innerLayout).to(equal(layoutNode))
+                        expect(node.customNodeContainer).to(equal(layoutNode))
 
                         node.removeChild(layoutNode)
-                        expect(node.innerLayout).to(beNil())
+                        expect(node.customNodeContainer).to(beNil())
                     }
                 }
             }
@@ -230,6 +229,105 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         expect(toggleNode1.on).to(beTrue())
                         expect(toggleNode2.on).to(beFalse())
                         expect(toggleNode3.on).to(beFalse())
+                    }
+                }
+
+                context("layout") {
+                    it("should need layout after setNeedsLayout") {
+                        node.setNeedsLayout()
+                        expect(node.isLayoutNeeded).to(beTrue())
+                        node.layoutIfNeeded()
+                        expect(node.isLayoutNeeded).to(beFalse())
+                    }
+
+                    it("should need layout after add toggle") {
+                        let toggleNode = UiToggleNode()
+                        node.addChild(toggleNode)
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node.layoutIfNeeded()
+                        expect(node.isLayoutNeeded).to(beFalse())
+                    }
+
+                    it("should need layout after add toggles container") {
+                        let layoutNode = UiLinearLayoutNode()
+                        node.addChild(layoutNode)
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node.layoutIfNeeded()
+                        expect(node.isLayoutNeeded).to(beFalse())
+                    }
+
+                    it("should need layout after remove toggle") {
+                        let toggleNode = UiToggleNode()
+                        node.addChild(toggleNode)
+                        node.layoutIfNeeded()
+                        expect(node.isLayoutNeeded).to(beFalse())
+
+                        node.removeChild(toggleNode)
+                        expect(node.isLayoutNeeded).to(beTrue())
+                    }
+                }
+
+                context("hitTest") {
+                    it("should return nil") {
+                        let toggleNode = UiToggleNode()
+                        toggleNode.layoutIfNeeded()
+
+                        node.addChild(toggleNode)
+                        node.layoutIfNeeded()
+
+                        let ray = Ray(begin: SCNVector3(-5, 5, -1), direction: SCNVector3(0, 0, 1), length: 2)
+                        expect(node.hitTest(ray: ray)).to(beNil())
+                    }
+
+                    it("should return toggle (without toggles container)") {
+                        let toggleNode = UiToggleNode()
+                        toggleNode.type = .radio
+                        toggleNode.layoutIfNeeded()
+
+                        // set alignment to 'center-center' so that ray that begins at [0,0,-1] hits the toggleNode
+                        node.alignment = .centerCenter
+                        node.addChild(toggleNode)
+                        node.layoutIfNeeded()
+
+                        let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
+                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(toggleNode))
+                    }
+
+                    it("should return toggle (with toggles container)") {
+                        let toggleNode = UiToggleNode()
+                        toggleNode.type = .radio
+                        toggleNode.layoutIfNeeded()
+
+                        let layoutNode = UiLinearLayoutNode()
+                        layoutNode.addChild(toggleNode)
+                        layoutNode.layoutIfNeeded()
+
+                        // set alignment to 'center-center' so that ray that begins at [0,0,-1] hits the toggleNode
+                        node.alignment = .centerCenter
+                        node.addChild(layoutNode)
+                        node.layoutIfNeeded()
+
+                        let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
+                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(toggleNode))
+                    }
+
+                    it("should return toggle group") {
+                        let toggleNode1 = UiToggleNode(props: ["type": "radio", "localPosition": [-1, 0, 0]])
+                        toggleNode1.layoutIfNeeded()
+
+                        let toggleNode2 = UiToggleNode(props: ["type": "radio", "localPosition": [1, 0, 0]])
+                        toggleNode2.layoutIfNeeded()
+
+                        // set alignment to 'center-center' so that ray that begins at [0,0,-1] hits the node
+                        node.alignment = .centerCenter
+                        node.addChild(toggleNode1)
+                        node.addChild(toggleNode2)
+                        node.layoutIfNeeded()
+
+                        let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
+                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
                     }
                 }
             }

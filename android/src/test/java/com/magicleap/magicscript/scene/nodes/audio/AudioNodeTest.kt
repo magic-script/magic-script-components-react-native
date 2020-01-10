@@ -131,6 +131,62 @@ class AudioNodeTest {
     }
 
     @Test
+    fun `should pause audio when node is paused`() {
+        tested.onPause()
+
+        verify(audioEngine).pause()
+    }
+
+    @Test
+    fun `should resume audio when node is resumed after pausing and last user action is start`() {
+        tested.update(
+            reactMapOf()
+                .action(AudioAction.START)
+        )
+
+        tested.onPause()
+        tested.onResume()
+
+        verify(audioEngine).resume()
+    }
+
+    @Test
+    fun `should resume audio when node is resumed after pausing and last user action is resume`() {
+        tested.update(
+            reactMapOf()
+                .action(AudioAction.PAUSE)
+        )
+
+        tested.update(
+            reactMapOf()
+                .action(AudioAction.RESUME)
+        )
+
+        tested.onPause()
+        tested.onResume()
+
+        verify(audioEngine, times(2)).resume()
+    }
+
+    @Test
+    fun `should not resume audio when node is resumed after pausing and last user action is pause`() {
+        tested.update(
+            reactMapOf()
+                .action(AudioAction.START)
+        )
+
+        tested.update(
+            reactMapOf()
+                .action(AudioAction.PAUSE)
+        )
+
+        tested.onPause()
+        tested.onResume()
+
+        verify(audioEngine, never()).resume()
+    }
+
+    @Test
     fun `should apply SpatialSoundPosition`() {
         tested.update(
             reactMapOf()

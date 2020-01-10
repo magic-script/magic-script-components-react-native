@@ -2470,6 +2470,204 @@ open class NodeAnimatingMock: NodeAnimating, Mock {
     }
 }
 
+// MARK: - NodeSelecting
+open class NodeSelectingMock: NodeSelecting, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func hitTest(ray: Ray) -> TransformNode? {
+        addInvocation(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`)))
+		let perform = methodPerformValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
+		perform?(`ray`)
+		var __value: TransformNode? = nil
+		do {
+		    __value = try methodReturnValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
+		} catch {
+			// do nothing
+		}
+		return __value
+    }
+
+    open func draggingHitTest(ray: Ray) -> Dragging? {
+        addInvocation(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`)))
+		let perform = methodPerformValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
+		perform?(`ray`)
+		var __value: Dragging? = nil
+		do {
+		    __value = try methodReturnValue(.m_draggingHitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
+		} catch {
+			// do nothing
+		}
+		return __value
+    }
+
+
+    fileprivate enum MethodType {
+        case m_hitTest__ray_ray(Parameter<Ray>)
+        case m_draggingHitTest__ray_ray(Parameter<Ray>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_hitTest__ray_ray(let lhsRay), .m_hitTest__ray_ray(let rhsRay)):
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
+                return true 
+            case (.m_draggingHitTest__ray_ray(let lhsRay), .m_draggingHitTest__ray_ray(let rhsRay)):
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
+                return true 
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_hitTest__ray_ray(p0): return p0.intValue
+            case let .m_draggingHitTest__ray_ray(p0): return p0.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+        public static func hitTest(ray: Parameter<Ray>, willReturn: TransformNode?...) -> MethodStub {
+            return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, willReturn: Dragging?...) -> MethodStub {
+            return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<TransformNode?>) -> Void) -> MethodStub {
+            let willReturn: [TransformNode?] = []
+			let given: Given = { return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (TransformNode?).self)
+			willProduce(stubber)
+			return given
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, willProduce: (Stubber<Dragging?>) -> Void) -> MethodStub {
+            let willReturn: [Dragging?] = []
+			let given: Given = { return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (Dragging?).self)
+			willProduce(stubber)
+			return given
+        }
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func hitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_hitTest__ray_ray(`ray`))}
+        public static func draggingHitTest(ray: Parameter<Ray>) -> Verify { return Verify(method: .m_draggingHitTest__ray_ray(`ray`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func hitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
+            return Perform(method: .m_hitTest__ray_ray(`ray`), performs: perform)
+        }
+        public static func draggingHitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
+            return Perform(method: .m_draggingHitTest__ray_ray(`ray`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - RCTARViewObserving
 open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -2615,65 +2813,65 @@ open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_renderer__rendererdidAdd_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidAdd_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererwillUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererwillUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidRemove_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidRemove_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessiondidFailWithError_error(let lhsSession, let lhsError), .m_session__sessiondidFailWithError_error(let rhsSession, let rhsError)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsError, rhs: rhsError, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsError, rhs: rhsError, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessioncameraDidChangeTrackingState_camera(let lhsSession, let lhsCamera), .m_session__sessioncameraDidChangeTrackingState_camera(let rhsSession, let rhsCamera)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsCamera, rhs: rhsCamera, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsCamera, rhs: rhsCamera, with: matcher) else { return false } 
+                return true 
             case (.m_sessionWasInterrupted__session(let lhsSession), .m_sessionWasInterrupted__session(let rhsSession)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                return true 
             case (.m_sessionInterruptionEnded__session(let lhsSession), .m_sessionInterruptionEnded__session(let rhsSession)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let lhsSession, let lhsAudiosamplebuffer), .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let rhsSession, let rhsAudiosamplebuffer)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAudiosamplebuffer, rhs: rhsAudiosamplebuffer, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAudiosamplebuffer, rhs: rhsAudiosamplebuffer, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererupdateAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererupdateAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidApplyAnimationsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidApplyAnimationsAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidSimulatePhysicsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidSimulatePhysicsAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererwillRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererwillRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererdidRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             default: return false
             }
         }
@@ -2773,6 +2971,172 @@ open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
         }
         public static func renderer(_ renderer: Parameter<SCNSceneRenderer>, didRenderScene scene: Parameter<SCNScene>, atTime time: Parameter<TimeInterval>, perform: @escaping (SCNSceneRenderer, SCNScene, TimeInterval) -> Void) -> Perform {
             return Perform(method: .m_renderer__rendererdidRenderScene_sceneatTime_time(`renderer`, `scene`, `time`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - RayBuilding
+open class RayBuildingMock: RayBuilding, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func build(gesture: UIGestureRecognizer, cameraNode: SCNNode) -> Ray? {
+        addInvocation(.m_build__gesture_gesturecameraNode_cameraNode(Parameter<UIGestureRecognizer>.value(`gesture`), Parameter<SCNNode>.value(`cameraNode`)))
+		let perform = methodPerformValue(.m_build__gesture_gesturecameraNode_cameraNode(Parameter<UIGestureRecognizer>.value(`gesture`), Parameter<SCNNode>.value(`cameraNode`))) as? (UIGestureRecognizer, SCNNode) -> Void
+		perform?(`gesture`, `cameraNode`)
+		var __value: Ray? = nil
+		do {
+		    __value = try methodReturnValue(.m_build__gesture_gesturecameraNode_cameraNode(Parameter<UIGestureRecognizer>.value(`gesture`), Parameter<SCNNode>.value(`cameraNode`))).casted()
+		} catch {
+			// do nothing
+		}
+		return __value
+    }
+
+
+    fileprivate enum MethodType {
+        case m_build__gesture_gesturecameraNode_cameraNode(Parameter<UIGestureRecognizer>, Parameter<SCNNode>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_build__gesture_gesturecameraNode_cameraNode(let lhsGesture, let lhsCameranode), .m_build__gesture_gesturecameraNode_cameraNode(let rhsGesture, let rhsCameranode)):
+                guard Parameter.compare(lhs: lhsGesture, rhs: rhsGesture, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false } 
+                return true 
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_build__gesture_gesturecameraNode_cameraNode(p0, p1): return p0.intValue + p1.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+        public static func build(gesture: Parameter<UIGestureRecognizer>, cameraNode: Parameter<SCNNode>, willReturn: Ray?...) -> MethodStub {
+            return Given(method: .m_build__gesture_gesturecameraNode_cameraNode(`gesture`, `cameraNode`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func build(gesture: Parameter<UIGestureRecognizer>, cameraNode: Parameter<SCNNode>, willProduce: (Stubber<Ray?>) -> Void) -> MethodStub {
+            let willReturn: [Ray?] = []
+			let given: Given = { return Given(method: .m_build__gesture_gesturecameraNode_cameraNode(`gesture`, `cameraNode`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (Ray?).self)
+			willProduce(stubber)
+			return given
+        }
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func build(gesture: Parameter<UIGestureRecognizer>, cameraNode: Parameter<SCNNode>) -> Verify { return Verify(method: .m_build__gesture_gesturecameraNode_cameraNode(`gesture`, `cameraNode`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func build(gesture: Parameter<UIGestureRecognizer>, cameraNode: Parameter<SCNNode>, perform: @escaping (UIGestureRecognizer, SCNNode) -> Void) -> Perform {
+            return Perform(method: .m_build__gesture_gesturecameraNode_cameraNode(`gesture`, `cameraNode`), performs: perform)
         }
     }
 

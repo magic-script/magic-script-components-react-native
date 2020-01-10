@@ -42,7 +42,6 @@ import SceneKit
     @objc var on: Bool = false {
         didSet { toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset() }
     }
-
     @objc var type: ToggleType = .default {
         didSet { setNeedsLayout() }
     }
@@ -191,7 +190,7 @@ import SceneKit
         case .checkbox:
             return on ? ImageAsset.checkboxChecked.image : ImageAsset.checkboxUnchecked.image
         case .radio:
-                return on ? ImageAsset.radioChecked.image : ImageAsset.radioUnchecked.image
+            return on ? ImageAsset.radioChecked.image : ImageAsset.radioUnchecked.image
         default:
             return on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image
         }

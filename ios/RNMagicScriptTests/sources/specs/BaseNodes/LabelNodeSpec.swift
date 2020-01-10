@@ -102,6 +102,12 @@ class LabelNodeSpec: QuickSpec {
                     expect(textString).to(equal(referenceText.uppercased()))
                 }
             }
+
+//            context("getFont") {
+//                it("should return proper font") {
+//                    node.getFont()
+//                }
+//            }
         }
     }
 }

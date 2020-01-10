@@ -26,7 +26,10 @@ import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readFilePath
 
 class VideoNode(
     initProps: ReadableMap,
@@ -57,6 +60,8 @@ class VideoNode(
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
     private val initialWidth = 1F // meters
     private val initialHeight = 1F // meters
+
+    private var lastUserAction: String = ""
 
     /**
      * Set default clipping (all renderable visible).
@@ -102,6 +107,20 @@ class VideoNode(
             applyMaterialClipping()
         } else {
             contentNode.renderable = null
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (videoPlayer.isPlaying) {
+            videoPlayer.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (lastUserAction == ACTION_START) {
+            videoPlayer.start()
         }
     }
 
@@ -157,6 +176,7 @@ class VideoNode(
 
     private fun setAction(props: Bundle) {
         val action = props.getString(PROP_ACTION)
+        lastUserAction = action ?: lastUserAction
         if (!videoPlayer.isReady) {
             return
         }

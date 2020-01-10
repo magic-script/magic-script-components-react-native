@@ -160,7 +160,7 @@ class ExtensionsKtTest {
         val vector1 = Vector3(1f, 2f, 3f)
         val scale = 2f
 
-        vector1 / scale shouldEqual vector1.scaled(1f / scale)
+        vector1 / scale shouldEqual Vector3(0.5f, 1f, 1.5f)
     }
 
     @Test
@@ -245,28 +245,6 @@ class ExtensionsKtTest {
         bundle.putDefault("key", arrayListOf(3.0, 4.0))
 
         bundle.getSerializable("key") as ArrayList<Double> shouldEqual arrayListOf(1.0, 2.0)
-    }
-
-    @Test
-    fun `containsAny should return true if key exist in bundle`() {
-        val bundle = Bundle().apply {
-            putBoolean("key", true)
-            putBoolean("key2", true)
-            putBoolean("key3", true)
-        }
-
-        bundle.containsAny("key2") shouldEqual true
-    }
-
-    @Test
-    fun `containsAny should return false if key not exist in bundle`() {
-        val bundle = Bundle().apply {
-            putBoolean("key", true)
-            putBoolean("key2", true)
-            putBoolean("key3", true)
-        }
-
-        bundle.containsAny("key4", "key5", "asd") shouldEqual false
     }
 
     @Test

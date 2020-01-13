@@ -55,7 +55,7 @@ import SceneKit
         }
     }
     @objc var isListExpanded: Bool { return !listNode.isHidden }
-    
+
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItems: [UiDropdownListItemNode]) -> (Void))?
 
 
@@ -134,7 +134,7 @@ import SceneKit
         guard let dropDownListItem = child as? UiDropdownListItemNode else {
             return super.addChild(child)
         }
-        
+
         dropDownListItem.textSize = getPreferredTextHeight()
         dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
@@ -209,10 +209,10 @@ import SceneKit
 
     fileprivate func getButtonSize(includeOutline: Bool = true) -> CGSize {
         let labelSize = labelNode.getSize()
-        let iconSize = CGSize(width: labelSize.height, height: labelSize.height)
+        let iconSize = getIconSize(height: labelSize.height)
 
         let contentHeight = max(labelSize.height, iconSize.height)
-        let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.1 * contentHeight : 0
+        let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.4 * contentHeight : 0
         let contentWidth = labelSize.width + gap + iconSize.width
 
         if includeOutline {
@@ -221,6 +221,10 @@ import SceneKit
         }
 
         return CGSize(width: contentWidth, height: contentHeight)
+    }
+
+    fileprivate func getIconSize(height: CGFloat) -> CGSize {
+        return 0.6 * CGSize(width: height, height: height)
     }
 
     @objc override func updateLayout() {
@@ -232,7 +236,7 @@ import SceneKit
         let labelSize = labelNode.getSize()
         labelNode.position = SCNVector3(-0.5 * buttonSize.width + 0.5 * labelSize.width, 0, 0)
 
-        let iconSize = CGSize(width: labelSize.height, height: labelSize.height)
+        let iconSize = getIconSize(height: labelSize.height)
         if let iconPlane = iconNode.geometry as? SCNPlane {
             iconPlane.width = iconSize.width
             iconPlane.height = iconSize.height

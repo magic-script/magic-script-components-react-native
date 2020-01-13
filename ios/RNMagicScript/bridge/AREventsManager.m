@@ -170,8 +170,8 @@ RCT_EXPORT_MODULE();
     NSMutableArray *items = [@[] mutableCopy];
     for (int i = 0; i < selectedItems.count; ++i) {
         [items addObject:@{
-//            @"id": @(selectedItems[i].id),
-//            @"label": selectedItems[i].label
+            @"id": @(selectedItems[i].id),
+            @"label": selectedItems[i].label
         }];
     }
     [self onEventWithName:@"onSelectionChanged" sender:sender body:@{ @"SelectedItems": items }];

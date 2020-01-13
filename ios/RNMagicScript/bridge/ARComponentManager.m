@@ -361,7 +361,7 @@ RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
 RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
     TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDropdownListNode class]]) {
-        ((UiDropdownListNode *)node).onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<UiDropdownItemNode *> *selectedItems) {
+        ((UiDropdownListNode *)node).onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<UiDropdownListItemNode *> *selectedItems) {
             ARLog(@"DropdownList item selected");
             [[AREventsManager instance] onSelectionChangedEventReceived:sender selectedItems:selectedItems];
         };

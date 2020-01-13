@@ -225,10 +225,11 @@ import SceneKit
         isActive = hasFocus
     }
 
-    @objc override func leaveFocus() {
-        super.leaveFocus()
-
+    @discardableResult
+    @objc override func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
+        let result = super.leaveFocus(onBehalfOf: node)
         isActive = hasFocus
+        return result
     }
 }
 

@@ -173,11 +173,8 @@ extension UiImageNode {
         dataTask = URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in
             self?.dataTask = nil
             guard let data = data, error == nil else { DispatchQueue.main.async() { completion(nil) }; return }
-            if let downloadedImage = UIImage(data: data) {
-                DispatchQueue.main.async() { completion(downloadedImage) }
-            } else {
-                DispatchQueue.main.async() { completion(nil) }
-            }
+            let downloadedImage = UIImage(data: data)
+            DispatchQueue.main.async() { completion(downloadedImage) }
         }
         dataTask?.resume()
     }

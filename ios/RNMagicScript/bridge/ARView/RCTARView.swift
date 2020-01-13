@@ -154,28 +154,19 @@ import SceneKit
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
         // Add tap gesture
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapAction(_:)))
-        tapGestureRecognizer.numberOfTapsRequired = 1
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleTapAction(_:)))
+        tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
-        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, target: self, action: #selector(handleDragAction(_:)))
-        dragGestureRecognizer.getCameraNode = { [weak self] in
-            return self?.arView.pointOfView
-        }
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleDragAction(_:)))
+        dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(dragGestureRecognizer)
 
-        let longPressGestureRecogrnizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressAction(_:)))
+        // Add long press gesture
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleLongPressAction(_:)))
+        longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
-
-        // Set dependencies between drag gesture and debug camera pan gesture
-        // so that both gestures can be used in debug mode.
-        view.gestureRecognizers?
-            .filter { $0 is UIPanGestureRecognizer }
-            .forEach{ $0.require(toFail: dragGestureRecognizer) }
-
-        // Allow tapping components that are embedded in scrollable content
-        dragGestureRecognizer.require(toFail: tapGestureRecognizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {
@@ -186,11 +177,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleTapAction(ray: nil)
+            UiNodesManager.instance.handleNodeTap(nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleTapAction(ray: nil)
+            UiNodesManager.instance.handleNodeTap(nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView
@@ -229,24 +220,25 @@ import SceneKit
 
 // MARK: - Event handlers
 extension RCTARView {
-    @objc fileprivate func handleTapAction(_ sender: UITapGestureRecognizer) {
-        guard let cameraNode = cameraNode,
-            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
+    @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
+        if sender.state == .ended {
+            UiNodesManager.instance.handleNodeTap(sender.tappedNode)
+            #if targetEnvironment(simulator)
+            guard let cameraNode = cameraNode,
+                let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
 
-        UiNodesManager.instance.handleTapAction(ray: ray)
+            if debug && rayCastNode == nil {
+                rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
+                scene.rootNode.addChildNode(rayCastNode!)
+            }
 
-    #if targetEnvironment(simulator)
-        if debug && rayCastNode == nil {
-            rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
-            scene.rootNode.addChildNode(rayCastNode!)
+            if let node = rayCastNode {
+                node.position = ray.begin
+                node.orientUpVectorAlong(ray.direction)
+                node.scale = SCNVector3(1, ray.length, 1)
+            }
+            #endif
         }
-
-        if let node = rayCastNode {
-            node.position = ray.begin
-            node.orientUpVectorAlong(ray.direction)
-            node.scale = SCNVector3(1, ray.length, 1)
-        }
-    #endif
     }
 
     @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
@@ -255,9 +247,7 @@ extension RCTARView {
         }
     }
 
-    @objc fileprivate func handleLongPressAction(_ sender: UILongPressGestureRecognizer) {
-        guard let cameraNode = cameraNode,
-            let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
-        UiNodesManager.instance.handleLongPressAction(ray: ray, state: sender.state)
+    @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
+        UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

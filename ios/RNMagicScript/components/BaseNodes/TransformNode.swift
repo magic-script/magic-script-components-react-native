@@ -138,10 +138,15 @@ import SceneKit
         }
     }
 
-    @objc func getSize() -> CGSize {
+    @objc func getSize(scaled: Bool = true) -> CGSize {
         if currentSize == nil {
             currentSize = _calculateSize()
         }
+
+        if scaled {
+            return currentSize! * CGSize(width: CGFloat(scale.x), height: CGFloat(scale.y))
+        }
+
         return currentSize!
     }
 
@@ -149,9 +154,9 @@ import SceneKit
         return CGSize.zero
     }
 
-    @objc func getBounds(parentSpace: Bool = false) -> CGRect {
-        let size = getSize()
-        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(contentNode.position.x), y: CGFloat(contentNode.position.y)) : CGPoint.zero
+    @objc func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
+        let size = getSize(scaled: scaled)
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let offset = CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
         return CGRect(origin: origin + offset, size: size)
     }
@@ -268,7 +273,7 @@ extension TransformNode {
 
         // border
         borderNode?.removeFromParentNode()
-        let bounds = getBounds()
+        let bounds = getBounds(scaled: false)
         borderNode = NodesFactory.createOutlineNode(size: bounds.size, cornerRadius: 0, thickness: 0, color: UIColor.yellow)
         borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
         addChildNode(borderNode!)

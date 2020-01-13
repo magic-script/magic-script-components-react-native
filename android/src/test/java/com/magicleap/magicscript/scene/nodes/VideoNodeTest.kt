@@ -18,18 +18,14 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
-import com.magicleap.magicscript.scene.nodes.video.VideoNode
-import com.magicleap.magicscript.scene.nodes.video.VideoPlayer
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.video.VideoNode
+import com.magicleap.magicscript.scene.nodes.video.VideoPlayer
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -61,14 +57,14 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultVolume() {
+    fun `should have default volume`() {
         val volume = videoNode.getProperty(VideoNode.PROP_VOLUME)
 
         assertEquals(VideoNode.DEFAULT_VOLUME, volume)
     }
 
     @Test
-    fun shouldAdjustContentNodeScaleWhenSizePropertySent() {
+    fun `should adjust content node scale when size property sent`() {
         val size = reactArrayOf(3, 2)
         val props = reactMapOf(VideoNode.PROP_SIZE, size)
 
@@ -78,7 +74,7 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldStartPlayerWhenStartActionSentAndPlayerIsReady() {
+    fun `should start player when start action sent and player is ready`() {
         whenever(videoPlayer.isReady).thenReturn(true)
         val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
 
@@ -88,7 +84,7 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldNotStartPlayerWhenNotReady() {
+    fun `should not be possible to start player when it is not ready`() {
         whenever(videoPlayer.isReady).thenReturn(false)
         val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
 
@@ -98,7 +94,7 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldPausePlayerWhenPauseActionSentAndIsPlaying() {
+    fun `should pause player when pause action sent and is playing`() {
         whenever(videoPlayer.isReady).thenReturn(true)
         whenever(videoPlayer.isPlaying).thenReturn(true)
         val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_PAUSE)
@@ -109,7 +105,7 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldStopPlayerWhenStopActionSentAndIsPlaying() {
+    fun `should stop player when stop action sent and is playing`() {
         whenever(videoPlayer.isReady).thenReturn(true)
         whenever(videoPlayer.isPlaying).thenReturn(true)
         val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_STOP)
@@ -120,7 +116,7 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldSetLoopingWhenLoopingPropertySent() {
+    fun `should set looping when looping property updated to true`() {
         val props = reactMapOf(VideoNode.PROP_LOOPING, true)
 
         videoNode.update(props)
@@ -129,7 +125,29 @@ class VideoNodeTest {
     }
 
     @Test
-    fun shouldReleasePlayerWhenResourcesCleared() {
+    fun `should pause player when node is paused`() {
+        whenever(videoPlayer.isPlaying).thenReturn(true)
+
+        videoNode.onPause()
+
+        verify(videoPlayer).pause()
+    }
+
+    @Test
+    fun `should resume player when node is resumed after pausing and last user action is start`() {
+        whenever(videoPlayer.isReady).thenReturn(true)
+        whenever(videoPlayer.isPlaying).thenReturn(false)
+        val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
+        videoNode.update(props)
+
+        videoNode.onPause()
+        videoNode.onResume()
+
+        verify(videoPlayer, times(2)).start()
+    }
+
+    @Test
+    fun `should release player when node is destroyed`() {
         videoNode.onDestroy()
 
         verify(videoPlayer).release()

@@ -42,7 +42,6 @@ import SceneKit
     @objc var on: Bool = false {
         didSet { toggleGeometry.firstMaterial?.diffuse.contents = getToggleAsset() }
     }
-
     @objc var type: ToggleType = .default {
         didSet { setNeedsLayout() }
     }
@@ -124,8 +123,8 @@ import SceneKit
         return CGSize(width: widthContent, height: heightContent)
     }
 
-    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
-        let size = getSize()
+    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
+        let size = getSize(scaled: scaled)
         let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         let offset = getOffset()
         return CGRect(origin: origin + offset, size: size)
@@ -191,7 +190,7 @@ import SceneKit
         case .checkbox:
             return on ? ImageAsset.checkboxChecked.image : ImageAsset.checkboxUnchecked.image
         case .radio:
-                return on ? ImageAsset.radioChecked.image : ImageAsset.radioUnchecked.image
+            return on ? ImageAsset.radioChecked.image : ImageAsset.radioUnchecked.image
         default:
             return on ? ImageAsset.toggleOn.image : ImageAsset.toggleOff.image
         }

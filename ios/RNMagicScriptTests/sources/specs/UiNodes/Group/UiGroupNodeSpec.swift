@@ -99,6 +99,33 @@ class UiGroupNodeSpec: QuickSpec {
                 }
             }
 
+            context("add/removeChild") {
+                it("should add children") {
+                    expect(node.itemsCount).to(equal(0))
+                    let referenceItemsCount = 5
+                    for _ in 0..<referenceItemsCount {
+                        node.addChild(TransformNode())
+                    }
+
+                    expect(node.itemsCount).to(equal(referenceItemsCount))
+                }
+
+                it("should remove children") {
+                    expect(node.itemsCount).to(equal(0))
+                    let referenceItems = [TransformNode(), TransformNode(), TransformNode()]
+                    for item in referenceItems {
+                        node.addChild(item)
+                    }
+
+                    expect(node.itemsCount).to(equal(referenceItems.count))
+                    for item in referenceItems {
+                        node.removeChild(item)
+                    }
+
+                    expect(node.itemsCount).to(equal(0))
+                }
+            }
+
             context("getBounds") {
                 it("should return group's bounds") {
                     let imageSize: CGFloat = 0.5

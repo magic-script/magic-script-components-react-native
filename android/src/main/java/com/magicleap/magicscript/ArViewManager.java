@@ -43,6 +43,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     private static final String REACT_CLASS = "RCTARView";
     private static final String LOG_TAG = "AR_LOG";
     private static WeakReference<AppCompatActivity> activityRef = new WeakReference<>(null);
+    public static Boolean showLayoutBounds = false;
 
     public static WeakReference<AppCompatActivity> getActivityRef() {
         return activityRef;
@@ -76,6 +77,11 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     @ReactProp(name = "planeDetection")
     public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
         UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
+    }
+
+    @ReactProp(name = "showLayoutBounds")
+    public void setShowLayoutBounds(View view, @Nullable Boolean showLayoutBounds) {
+        ArViewManager.showLayoutBounds = showLayoutBounds;
     }
 
     @Override

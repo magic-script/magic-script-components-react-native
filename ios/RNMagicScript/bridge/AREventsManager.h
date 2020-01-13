@@ -22,6 +22,7 @@
 @class UiVideoNode;
 @class UiSliderNode;
 @class UiDropdownListNode;
+@class UiDropdownListItemNode;
 @class UiDatePickerNode;
 @class UiTimePickerNode;
 @class UiColorPickerNode;
@@ -43,7 +44,7 @@
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text;
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value;
 - (void)onVideoPreparedEventReceived:(UiVideoNode *)sender videoURL:(NSString *)videoURL;
-- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes;
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItems:(NSArray<UiDropdownListItemNode *> *)selectedItems;
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value;
 - (void)onDateChangedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;
 - (void)onDateConfirmedEventReceived:(UiDatePickerNode *)sender value:(NSString *)value;

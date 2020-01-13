@@ -31,6 +31,19 @@ import SceneKit
         return NodesFactory.createPlaneNode(size: CGSize(width: width, height: height), color: color, image: image)
     }
 
+    @objc static func createNinePatchNode(size: CGSize, geometryCaps: UIEdgeInsets, image: UIImage, imageCaps: UIEdgeInsets) -> SCNNode {
+        let texCoordsCaps = UIEdgeInsets(top: imageCaps.top / image.size.height, left: imageCaps.left / image.size.width, bottom: imageCaps.bottom / image.size.height, right: imageCaps.right / image.size.width)
+        let geometry = SCNNinePatch(size: size, geometryCaps: geometryCaps, texCoordsCaps: texCoordsCaps)
+        geometry.firstMaterial?.lightingModel = .constant
+        geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        geometry.firstMaterial?.diffuse.contents = image
+        return SCNNode(geometry: geometry)
+    }
+
+    @objc static func createNinePatchNode(width: CGFloat, height: CGFloat, geometryCaps: UIEdgeInsets, image: UIImage, imageCaps: UIEdgeInsets) -> SCNNode {
+        return NodesFactory.createNinePatchNode(size: CGSize(width: width, height: height), geometryCaps: geometryCaps, image: image, imageCaps: imageCaps)
+    }
+
     @objc static func createOutlineNode(size: CGSize, cornerRadius: CGFloat, thickness: CGFloat = 0, color: UIColor = UIColor.white) -> SCNNode {
         let geometry = SCNRectangle(size: size, thickness: thickness, radius: cornerRadius)
         geometry.firstMaterial?.lightingModel = .constant

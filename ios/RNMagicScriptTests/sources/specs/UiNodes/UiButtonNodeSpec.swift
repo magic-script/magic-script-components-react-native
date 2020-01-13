@@ -43,7 +43,7 @@ class UiButtonNodeSpec: QuickSpec {
                     expect(node.width).to(beCloseTo(0.0))
                     expect(node.height).to(beCloseTo(0.0))
                     expect(node.roundness).to(beCloseTo(1.0))
-                    expect(node.canHaveFocus).to(beTrue())
+                    expect(node.canHaveFocus).to(beFalse())
                 }
             }
 

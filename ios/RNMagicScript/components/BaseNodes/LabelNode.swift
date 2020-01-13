@@ -155,10 +155,6 @@ class LabelNode: SCNNode {
         return platformScaleFactor * ((textSize > 0) ? textSize : defaultTextSize)
     }
 
-    fileprivate func getFont() -> UIFont {
-        return labelGeometry.font
-    }
-
     func getSize() -> CGSize {
         guard let text = text, !text.isEmpty else { return boundsSize }
 

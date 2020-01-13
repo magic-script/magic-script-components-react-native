@@ -61,6 +61,7 @@ class ViewController: UIViewController {
                 debugPrint("Unable to load \(filename) model.")
             }
         }
+
         UiNodesManager.instance.updateLayout()
     }
 
@@ -100,51 +101,6 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-    }
-
-    fileprivate let rectSize = CGSize(width: 0.4, height: 0.2)
-    fileprivate var rectScale: CGFloat = 1.0
-    fileprivate var rectLayout: UiRectLayoutNode!
-    fileprivate func setupRectLayoutTest() {
-        // Rect layout
-        let rectLayoutId: String = "rect_layout"
-        rectLayout = createComponent([
-            "alignment": "top-center",
-            "debug": true,
-            "localPosition": [0, 0.7, 0],
-            "height": rectSize.height,
-            "width": rectSize.width
-        ], nodeId: rectLayoutId, parentId: groupId)
-
-        let _: UiButtonNode = createComponent([
-            "enabled": false,
-            "roundness": 0.5,
-            "text": "Button",
-            "textColor": [0,1,0,1],
-            "textSize": 0.08,
-            "width": rectSize.width,
-            "height": rectSize.height
-        ], nodeId: "button_id", parentId: rectLayoutId)
-
-        let slider: UiSliderNode = createComponent([
-            "localPosition": [0, 0.1, 0],
-            "value": rectScale,
-            "min": 0.3,
-            "max": 2.0,
-            "width": 1.0,
-            "height": 0.06,
-        ], nodeId: "slider_id", parentId: groupId)
-
-        slider.onSliderChanged = { [weak self] sender, value in
-            self?.rectScale = value
-            self?.updateRectLayout()
-        }
-    }
-
-    fileprivate func updateRectLayout() {
-        rectLayout.width = rectScale * rectSize.width
-        rectLayout.height = rectScale * rectSize.height
-        rectLayout.layoutIfNeeded()
     }
 
     @discardableResult

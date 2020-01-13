@@ -150,13 +150,12 @@ import SceneKit
         return CGSize(width: width, height: height)
     }
 
-    @objc override func getBounds(parentSpace: Bool = false) -> CGRect {
+    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
         guard let scrollBounds = scrollBounds else { return CGRect.zero }
         let min = scrollBounds.min
-        let max = scrollBounds.max
-        let size = CGSize(width: CGFloat(max.x - min.x), height: CGFloat(max.y - min.y))
+        let size = getSize(scaled: scaled)
         let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
-        let offset = parentSpace ? CGPoint(x: CGFloat(position.x), y: CGFloat(position.y)) : CGPoint.zero
+        let offset = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         return CGRect(origin: origin + offset, size: size)
     }
 

@@ -45,42 +45,27 @@ import ARKit
         nodeSelector = UiNodeSelector(rootNode)
     }
     
-    @objc public func handleTapAction(ray: Ray?) {
-        if let ray = ray {
-            let hitNode = nodeSelector?.hitTest(ray: ray)
-            handleNodeTap(hitNode)
-            #if targetEnvironment(simulator)
-            if let node = hitNode {
-                print("hitTest: \(type(of: node))")
-            }
-            #endif
-        } else {
-            handleNodeTap(nil)
-        }
-    }
-    
-    @objc public func handleLongPressAction(ray: Ray?, state: UIGestureRecognizer.State) {
-        if let ray = ray {
-            let hitNode = nodeSelector?.hitTest(ray: ray)
-            handleNodeLongPress(hitNode, state)
-        } else {
-            handleNodeLongPress(nil, state)
-        }
-    }
-    
     @objc public func handleNodeTap(_ node: TransformNode?) {
-        
-        focusedNode?.leaveFocus()
-        if focusedNode != nil {
-            onInputUnfocused?()
+        let uiNode = node as? UiNode
+        #if targetEnvironment(simulator)
+        let nodeType: String = (uiNode != nil) ? "\(uiNode!.classForCoder)" : "nil"
+        print("handleNodeTap: \(nodeType)")
+        #endif
+
+        if focusedNode?.leaveFocus(onBehalfOf: uiNode) ?? true {
+            if focusedNode != nil {
+                onInputUnfocused?()
+            }
+
+            focusedNode = uiNode
         }
-        
-        focusedNode = node as? UiNode
-        if let uiNode = focusedNode {
-            uiNode.enterFocus()
-            uiNode.onActivate?(uiNode)
+
+        if uiNode?.enabled ?? false {
+            uiNode?.activate()
+            uiNode?.enterFocus()
         }
-        if let input = focusedNode as? DataProviding {
+
+        if let input = node as? DataProviding {
             onInputFocused?(input)
         }
     }

@@ -193,33 +193,33 @@ class GridLayoutSpec: QuickSpec {
                     }
 
                     // If neither rows or columns are set, the grid layout will have 1 row and add columns as needed.
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth, height: referenceHeight)))
 
                     layout.columns = 2
                     layout.rows = 2
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: 2 * referenceHeight)))
 
                     layout.columns = 3
                     layout.rows = 3
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 3 * referenceWidth, height: 2 * referenceHeight)))
 
                     // If both 'columns' and 'rows' props are set to be non-zero, the columns will take precedence.
                     layout.columns = 1
                     layout.rows = 1
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: 4 * referenceHeight)))
 
                     layout.columns = 0
                     layout.rows = 1
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth, height: referenceHeight)))
 
                     layout.columns = 1
                     layout.rows = 0
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: 4 * referenceHeight)))
                 }
 
@@ -239,33 +239,33 @@ class GridLayoutSpec: QuickSpec {
                     }
 
                     // If neither rows or columns are set, the grid layout will have 1 row and add columns as needed.
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
 
                     layout.columns = 2
                     layout.rows = 2
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
 
                     layout.columns = 3
                     layout.rows = 3
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
 
                     // If both 'columns' and 'rows' props are set to be non-zero, the columns will take precedence.
                     layout.columns = 1
                     layout.rows = 1
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
 
                     layout.columns = 0
                     layout.rows = 1
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
 
                     layout.columns = 1
                     layout.rows = 0
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(referenceSize))
                 }
 
@@ -288,11 +288,11 @@ class GridLayoutSpec: QuickSpec {
                         referenceHeight = referenceNode.getSize().height
                     }
 
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth, height: referenceHeight)))
 
                     layout.skipInvisibleItems = true
-                    layout.recalculate()
+                    layout.recalculateIfNeeded()
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: referenceHeight)))
                 }
             }
@@ -309,7 +309,7 @@ class GridLayoutSpec: QuickSpec {
             gridLayout.addItem(node)
         }
         gridLayout.columns = 2
-        gridLayout.recalculate()
+        gridLayout.recalculateIfNeeded()
         gridLayout.updateLayout()
         return nodes
     }

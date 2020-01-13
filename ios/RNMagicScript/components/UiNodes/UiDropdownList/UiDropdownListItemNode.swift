@@ -17,33 +17,75 @@
 import SceneKit
 
 @objc open class UiDropdownListItemNode: UiNode {
-    static fileprivate let defaultTextSize: CGFloat = 0.065
-
     @objc override var alignment: Alignment {
         get { return .centerCenter }
         set { }
     }
-    @objc var label: String? {
-        get { return labelNode.text }
-        set { labelNode.text = alignTextLength(newValue, maxCharacterLimit); setNeedsLayout() }
+    fileprivate var _label: String?
+    @objc open var label: String? {
+        get { return _label }
+        set {
+            _label = newValue
+            labelNode.text = alignTextLength(newValue, maxCharacterLimit)
+            setNeedsLayout()
+        }
     }
+    @objc open var id: Int = 0
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; setNeedsLayout() }
     }
     @objc var textSize: CGFloat = 0 {
-        didSet { labelNode.textSize = textSize; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
-    }
-    @objc var width: CGFloat = 0 {
-        didSet { setNeedsLayout() }
-    }
-    @objc var height: CGFloat = 0 {
-        didSet { setNeedsLayout() }
+        didSet { labelNode.textSize = textSize; setNeedsLayout() }
     }
     @objc var maxCharacterLimit: Int = 0 {
+        didSet { labelNode.text = alignTextLength(label, maxCharacterLimit); setNeedsLayout() }
+    }
+
+    var tapHandler: DropdownListItemTapHandling?
+
+    @objc fileprivate(set) var isSelected: Bool = false {
         didSet {
-            labelNode.text = alignTextLength(label, maxCharacterLimit)
+            labelNode.fontWeight = isSelected ? .bold : .regular
+            labelNode.textColor = UIColor(white: isSelected ? 1.0 : 0.75, alpha: 1.0)
             setNeedsLayout()
         }
+    }
+    fileprivate var labelNode: LabelNode!
+
+    @objc override func activate() {
+        super.activate()
+        tapHandler?.handleTap(self)
+    }
+
+    @objc override func setupNode() {
+        super.setupNode()
+        assert(labelNode == nil, "Node must not be initialized!")
+        labelNode = LabelNode()
+        contentNode.addChildNode(labelNode)
+    }
+
+    @objc override func update(_ props: [String: Any]) {
+        super.update(props)
+
+        if let label = Convert.toString(props["label"]) {
+            self.label = label
+        }
+
+        if let id = Convert.toInt(props["id"]) {
+            self.id = id
+        }
+    }
+
+    @objc override func _calculateSize() -> CGSize {
+        let buttonToTextHeightMultiplier: CGFloat = 1.4
+        let labelSize = labelNode.getSize()
+        let contentWidth: CGFloat = labelSize.width + buttonToTextHeightMultiplier * labelSize.height
+        let contentHeight: CGFloat = buttonToTextHeightMultiplier * labelSize.height
+        return CGSize(width: contentWidth, height: contentHeight)
+    }
+
+    @objc override func updateLayout() {
+        labelNode.reload()
     }
 
     fileprivate func alignTextLength(_ text: String?, _ maxCharacterLimit: Int) -> String? {
@@ -55,118 +97,8 @@ import SceneKit
         return text
     }
 
-    var tapHandler: DropdownListItemTapHandling?
-
-    @objc override var canHaveFocus: Bool {
-        return true
-    }
-
-    @objc override func enterFocus() {
-        super.enterFocus()
-        guard hasFocus else { return }
-        tapHandler?.handleTap(self)
-    }
-
-    @objc override func setNeedsLayout() {
-        super.setNeedsLayout()
-        labelNode.setNeedsLayout()
-        gridLayoutNode.setNeedsLayout()
-    }
-
-    @objc fileprivate(set) var isSelected: Bool = false
-
-    fileprivate var gridLayoutNode: UiGridLayoutNode!
-    fileprivate(set) var labelNode: UiLabelNode!
-
-    fileprivate var backgroundNode: SCNNode!
-    fileprivate var backgroundGeometry: SCNPlane!
-
-    @objc override func setupNode() {
-        super.setupNode()
-        assert(labelNode == nil, "Node must not be initialized!")
-        labelNode = UiLabelNode()
-        labelNode.textSize = UiDropdownListItemNode.defaultTextSize
-        labelNode.layoutIfNeeded()
-
-        gridLayoutNode = UiGridLayoutNode(props: [
-            "columns": 2,
-            "rows": 1,
-            "defaultItemPadding": [0.005, 0.005, 0.005, 0.005],
-            "alignment": "center-center"
-        ])
-        gridLayoutNode.addChild(labelNode)
-        gridLayoutNode.layoutIfNeeded()
-
-        backgroundGeometry = SCNPlane(width: gridLayoutNode.getSize().width, height: gridLayoutNode.getSize().height)
-        backgroundGeometry.firstMaterial?.lightingModel = .constant
-        backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
-        backgroundGeometry.firstMaterial?.diffuse.contents = UIColor(red: 236.0/256.0, green: 240.0/256.0, blue: 241.0/256.0, alpha: 0.5)
-        backgroundNode = SCNNode(geometry: backgroundGeometry)
-
-        gridLayoutNode.renderingOrder = 1
-        contentNode.addChildNode(gridLayoutNode)
-    }
-
-    @objc override func update(_ props: [String: Any]) {
-        super.update(props)
-
-        if let label = Convert.toString(props["label"]) {
-            self.label = label
-        }
-
-        if let textColor = Convert.toColor(props["textColor"]) {
-            self.textColor = textColor
-        }
-
-        if let textSize = Convert.toCGFloat(props["textSize"]) {
-            self.textSize = textSize
-        }
-
-        if let width = Convert.toCGFloat(props["width"]) {
-            self.width = width
-        }
-
-        if let height = Convert.toCGFloat(props["height"]) {
-            self.height = height
-        }
-
-        if let maxCharacterLimit = Convert.toInt(props["maxCharacterLimit"]) {
-            self.maxCharacterLimit = maxCharacterLimit
-        }
-    }
-
-    @objc override func _calculateSize() -> CGSize {
-        let buttonToTextHeightMultiplier: CGFloat = 1.4
-        let contentWidth: CGFloat = (width > 0) ? width : gridLayoutNode.getSize().width + buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
-        let contentHeight: CGFloat = (height > 0) ? height : buttonToTextHeightMultiplier * gridLayoutNode.getSize().height
-        return CGSize(width: contentWidth, height: contentHeight)
-    }
-
-    @objc override func updateLayout() {
-        labelNode.layoutIfNeeded()
-        gridLayoutNode.layoutIfNeeded()
-
-        if isSelected {
-            backgroundGeometry.width = gridLayoutNode.getSize().width
-            backgroundGeometry.height = gridLayoutNode.getSize().height
-            contentNode.addChildNode(backgroundNode)
-        } else {
-            backgroundNode.removeFromParentNode()
-        }
-    }
-
-    fileprivate func updateLabelTextSizeBasedOnHeight() {
-        guard textSize == 0 && height > 0 else  {
-            labelNode.textSize = textSize
-            return
-        }
-
-        labelNode.textSize = max(0, 0.333 * height)
-    }
-
     func toggleSelection() {
         isSelected = !isSelected
-        setNeedsLayout()
         layoutIfNeeded()
     }
 }

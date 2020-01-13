@@ -76,6 +76,15 @@ import SceneKit
         contentNode.position = SCNVector3(shift.x * size.width, shift.y * size.height, 0)
     }
 
+    // MARK: - Activate
+    @objc func activate() {
+        if let simulator = self as? TapSimulating {
+            simulator.simulateTap()
+        }
+
+        onActivate?(self)
+    }
+
     // MARK: - Focus
     @objc var canHaveFocus: Bool {
         return false
@@ -88,14 +97,16 @@ import SceneKit
     @objc func enterFocus() {
         guard canHaveFocus else { return }
         hasFocus = true
-
-        if let simulator = self as? TapSimulating {
-            simulator.simulateTap()
-        }
     }
 
-    @objc func leaveFocus() {
-        hasFocus = false
+    @discardableResult
+    @objc func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
+        if node != self {
+            hasFocus = false
+            return true
+        }
+        
+        return false
     }
 
     @objc var canBeLongPressed: Bool {

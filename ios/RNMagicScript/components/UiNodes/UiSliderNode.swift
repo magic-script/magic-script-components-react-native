@@ -72,9 +72,11 @@ import SceneKit
         reloadOutlineNode()
     }
 
-    @objc override func leaveFocus() {
-        super.leaveFocus()
+    @discardableResult
+    @objc override func leaveFocus(onBehalfOf node: UiNode? = nil) -> Bool {
+        let result = super.leaveFocus(onBehalfOf: node)
         outlineNode?.removeFromParentNode()
+        return result
     }
 
     fileprivate var _min: CGFloat = 0.0

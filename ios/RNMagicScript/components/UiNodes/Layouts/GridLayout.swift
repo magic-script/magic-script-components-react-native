@@ -117,15 +117,14 @@ import SceneKit
         return hitNode?.hitTest(ray: ray) ?? node
     }
 
-    @objc func recalculate() {
-        gridDescriptor = calculateGridDescriptor()
+    @objc func recalculateIfNeeded() {
+        if gridDescriptor == nil {
+            gridDescriptor = calculateGridDescriptor()
+        }
     }
 
     @objc func getSize() -> CGSize {
-        if gridDescriptor == nil {
-            recalculate()
-        }
-
+        recalculateIfNeeded()
         return gridDescriptor?.realSize ?? CGSize.zero
     }
 

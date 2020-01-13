@@ -49,9 +49,6 @@ import SceneKit
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
             longPressedNode = nodeSelector.hitTest(ray: ray)
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
-            if longPressedNode == nil {
-                state = .failed
-            }
 
             longpressTimer?.invalidate()
             longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in

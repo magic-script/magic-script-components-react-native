@@ -43,8 +43,8 @@ class ViewController: UIViewController {
 
     let groupId: String = "group"
     fileprivate func setupScene() {
-        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupToggleGroupTest()
+        let _: UiGroupNode = createComponent(["debug": true, "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+        setupDropdownListTest()
         UiNodesManager.instance.updateLayout()
     }
 
@@ -72,29 +72,35 @@ class ViewController: UIViewController {
         ])
     }
 
-    fileprivate func setupToggleGroupTest() {
-        // Toggle group layout
-        let toggleGroupId: String = "rect_layout"
-        let _: UiToggleGroupNode = createComponent([
-            "alignment": "center-center",
+    fileprivate func setupDropdownListTest() {
+        // Rect layout
+        let dropdownListId: String = "dropdown_list_id"
+        let dropdown: UiDropdownListNode = createComponent([
+            "alignment": "top-center",
             "debug": true,
-        ], nodeId: toggleGroupId, parentId: groupId)
+            "localPosition": [0, 0.7, 0],
+            "text": "DropDownList",
+//            "textSize": 0.015,
+//            "multiSelectMode": true,
+//            "maxCharacterLimit": 4
+        ], nodeId: dropdownListId, parentId: groupId)
 
-        let texts = ["Item 1", "Item 2", "Item 3"]
-        let positions = [
-            [-0.125, -0.125, 0.0],
-            [0, -0.25, 0.0],
-            [0.125, -0.375, 0.0]
-        ]
-        for i in 0..<3 {
-            let _: UiToggleNode = createComponent([
-                "localPosition": positions[i],
-                "debug": true,
-                "text": texts[i],
-                "textSize": 0.075,
-                "height": 0.075,
-                "type": "radio"
-            ], nodeId: "toggle_id_\(i)", parentId: toggleGroupId)
+        for i in 0..<10 {
+            let _: UiDropdownListItemNode = createComponent([
+                "id": i,
+                "label": "item \(i + 1)",
+            ], nodeId: "item_\(i)", parentId: dropdownListId)
+        }
+
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0, -0.4, 0],
+            "text": "multiSelectMode",
+            "textSize": 0.08,
+            "height": 0.1,
+            "debug": true
+        ], nodeId: "toggle_id", parentId: groupId)
+        toggle.onChanged = { sender, on in
+            dropdown.multiSelectMode = on
         }
     }
 

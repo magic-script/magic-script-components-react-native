@@ -72,16 +72,6 @@ import SceneKit
         contentNode.removeAllAnimations()
     }
 
-    @objc override var canHaveFocus: Bool {
-        return enabled
-    }
-
-    @objc override func enterFocus() {
-        super.enterFocus()
-        guard hasFocus else { return }
-        leaveFocus()
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 

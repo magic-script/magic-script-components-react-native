@@ -37,7 +37,7 @@ import SceneKit
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         if touches.count != 1 {
-          state = .failed
+            state = .failed
         }
 
         // Capture the first touch and store some information about it.

@@ -166,8 +166,15 @@ RCT_EXPORT_MODULE();
     [self onEventWithName:@"onVideoPrepared" sender:sender body:@{ @"videoURL": videoURL }];
 }
 
-- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItemsIndexes:(NSArray<NSNumber *> *)selectedItemsIndexes {
-    [self onEventWithName:@"onSelectionChanged" sender:sender body:@{ @"selectedItems": selectedItemsIndexes }];
+- (void)onSelectionChangedEventReceived:(UiDropdownListNode *)sender selectedItems:(NSArray<UiDropdownListItemNode *> *)selectedItems {
+    NSMutableArray *items = [@[] mutableCopy];
+    for (int i = 0; i < selectedItems.count; ++i) {
+        [items addObject:@{
+            @"id": @(selectedItems[i].id),
+            @"label": selectedItems[i].label
+        }];
+    }
+    [self onEventWithName:@"onSelectionChanged" sender:sender body:@{ @"SelectedItems": items }];
 }
 
 - (void)onSliderChangedEventReceived:(UiSliderNode *)sender value:(CGFloat)value {

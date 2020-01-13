@@ -21,6 +21,7 @@ import android.net.Uri
 import android.util.TypedValue
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.collision.CollisionShape
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Material
@@ -90,12 +91,13 @@ class Utils {
 
         /**
          * Calculates local bounds of a basic node [Node] using its collision shape.
+         * @param collShape collision shape of a node (or its renderable) or null if
+         * node has no renderable
          */
-        fun calculateBoundsOfNode(node: Node): Bounding {
+        fun calculateBoundsOfNode(node: Node, collShape: CollisionShape?): Bounding {
             // TODO (optionally) add Sphere collision shape support (currently never used)
             val offsetX = node.localPosition.x
             val offsetY = node.localPosition.y
-            val collShape = node.collisionShape
             return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y
@@ -126,7 +128,7 @@ class Utils {
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
                 } else {
-                    calculateBoundsOfNode(node)
+                    calculateBoundsOfNode(node, node.collisionShape)
                 }
 
                 sumBounds.left = min(childBounds.left, sumBounds.left)

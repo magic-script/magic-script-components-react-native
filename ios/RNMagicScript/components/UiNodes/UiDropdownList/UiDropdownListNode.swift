@@ -58,7 +58,6 @@ import SceneKit
 
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItems: [UiDropdownListItemNode]) -> (Void))?
 
-
     fileprivate var outlineNode: SCNNode!
     fileprivate var labelNode: LabelNode!
     fileprivate var iconNode: SCNNode!

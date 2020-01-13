@@ -133,9 +133,18 @@ class UiDropdownListNodeSpec: QuickSpec {
                 }
 
                 it("should update 'multiSelectMode' prop") {
+                    let items = self.prepareSampleDropdownList(node: node)
+                    expect(node.multiSelectMode).to(beFalse())
+
                     node.update(["multiSelectMode" : true])
                     expect(node.multiSelectMode).to(beTrue())
                     expect(node.isLayoutNeeded).to(beFalse())
+
+                    items.forEach { node.handleTap($0) }
+                    items.forEach { expect($0.isSelected).to(beTrue()) }
+
+                    node.multiSelectMode = false
+                    items.forEach { expect($0.isSelected).to(beFalse()) }
                 }
             }
 
@@ -336,14 +345,12 @@ class UiDropdownListNodeSpec: QuickSpec {
                     // open dropdown list
                     node.enterFocus()
                     let backgroundNode = self.getBackgroundNode(node)
-                    print("backgroundNode: \(backgroundNode!.classForCoder)")
                     expect(backgroundNode).notTo(beNil())
 
                     // update background by updating layout
                     node.setNeedsLayout()
                     node.layoutIfNeeded()
                     let backgroundNode2 = self.getBackgroundNode(node)
-                    print("backgroundNode2: \(backgroundNode2!.classForCoder)")
                     expect(self.getBackgroundNode(node)).to(beIdenticalTo(backgroundNode))
                 }
             }

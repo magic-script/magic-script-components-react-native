@@ -122,7 +122,10 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                         let referenceLimit = 7
                         node.label = referenceText
                         node.maxCharacterLimit = referenceLimit
-                        expect(node.label).to(equal(referenceText.prefix(referenceLimit) + "..."))
+
+                        let labelNode: LabelNode = node.contentNode.childNodes[0] as! LabelNode
+                        expect(labelNode.text).to(equal(referenceText.prefix(referenceLimit) + "..."))
+                        expect(node.label).to(equal(referenceText))
                     }
                 }
             }

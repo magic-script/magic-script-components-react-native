@@ -10,6 +10,7 @@ jobs:
     strategy:
         matrix:
           destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 11 Pro']
+          xcode: ['/Applications/Xcode_11.1.app/Contents/Developer']
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -24,6 +25,7 @@ jobs:
           xcodebuild clean build test -workspace RNMagicScript.xcworkspace -scheme RNMagicScriptHostApplication -destination "${destination}" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -derivedDataPath Build/ -enableCodeCoverage YES | xcpretty --test --color
         env:
          destination: ${{ matrix.destination }}
+         DEVELOPER_DIR: ${{ matrix.xcode }}
       - name: Code Coverage
         run: |
           echo "Total coverage (based on lines): `find . -name \*.xccovreport -exec xcrun xccov view {} \; | grep '.app' | head -1 | perl -pe 's/.+?(\d+\.\d+%).+/\1/'`"

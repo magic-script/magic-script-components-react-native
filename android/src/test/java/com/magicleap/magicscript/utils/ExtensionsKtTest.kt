@@ -20,6 +20,7 @@ import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.DatePicker
+import com.google.ar.sceneform.math.Vector3
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -136,6 +137,120 @@ class ExtensionsKtTest {
         val sum = numbers.sumByFloat { it }
 
         sum shouldEqual 0f
+    }
+
+    @Test
+    fun `should add Vector3`() {
+        val vector1 = Vector3(1f, 2f, 3f)
+        val vector2 = Vector3(2f, 3f, 4f)
+
+        vector1 + vector2 shouldEqual Vector3.add(vector1, vector2)
+    }
+
+    @Test
+    fun `should substract Vector3`() {
+        val vector1 = Vector3(1f, 2f, 3f)
+        val vector2 = Vector3(2f, 3f, 4f)
+
+        vector1 - vector2 shouldEqual Vector3.subtract(vector1, vector2)
+    }
+
+    @Test
+    fun `should div Vector3`() {
+        val vector1 = Vector3(1f, 2f, 3f)
+        val scale = 2f
+
+        vector1 / scale shouldEqual Vector3(0.5f, 1f, 1.5f)
+    }
+
+    @Test
+    fun `should put default Boolean`() {
+        val bundle = Bundle()
+
+        bundle.putDefault("key", true)
+
+        bundle.getBoolean("key") shouldEqual true
+    }
+
+
+    @Test
+    fun `put default Boolean shouldn't override value`() {
+        val bundle = Bundle().apply {
+            putBoolean("key", true)
+        }
+
+        bundle.putDefault("key", false)
+
+        bundle.getBoolean("key") shouldEqual true
+    }
+
+    @Test
+    fun `should put default Double`() {
+        val bundle = Bundle()
+
+        bundle.putDefault("key", 1.0)
+
+        bundle.getDouble("key") shouldEqual 1.0
+    }
+
+
+    @Test
+    fun `put default Double shouldn't override value`() {
+        val bundle = Bundle().apply {
+            putDouble("key", 1.0)
+        }
+
+        bundle.putDefault("key", 2.0)
+
+        bundle.getDouble("key") shouldEqual 1.0
+    }
+
+    @Test
+    fun `should put default String`() {
+        val bundle = Bundle()
+
+        bundle.putDefault("key", "test")
+
+        bundle.getString("key") shouldEqual "test"
+    }
+
+
+    @Test
+    fun `put default String shouldn't override value`() {
+        val bundle = Bundle().apply {
+            putString("key", "test")
+        }
+
+        bundle.putDefault("key", "test2")
+
+        bundle.getString("key") shouldEqual "test"
+    }
+
+    @Test
+    fun `should put default Serializable`() {
+        val bundle = Bundle()
+
+        bundle.putDefault("key", arrayListOf(1.0, 2.0))
+
+        bundle.getSerializable("key") as ArrayList<Double> shouldEqual arrayListOf(1.0, 2.0)
+    }
+
+
+    @Test
+    fun `put default Serializable shouldn't override value`() {
+        val bundle = Bundle().apply {
+            putSerializable("key", arrayListOf(1.0, 2.0))
+        }
+
+        bundle.putDefault("key", arrayListOf(3.0, 4.0))
+
+        bundle.getSerializable("key") as ArrayList<Double> shouldEqual arrayListOf(1.0, 2.0)
+    }
+
+    @Test
+    fun `limited function should limit charters and add dots`() {
+        val tested = "ABCDEFG"
+        tested.limited(3) shouldEqual "ABC…"
     }
 
 }

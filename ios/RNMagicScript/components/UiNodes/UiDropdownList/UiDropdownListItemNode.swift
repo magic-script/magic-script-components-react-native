@@ -21,9 +21,14 @@ import SceneKit
         get { return .centerCenter }
         set { }
     }
+    fileprivate var _label: String?
     @objc open var label: String? {
-        get { return labelNode.text }
-        set { labelNode.text = alignTextLength(newValue, maxCharacterLimit); setNeedsLayout() }
+        get { return _label }
+        set {
+            _label = newValue
+            labelNode.text = alignTextLength(newValue, maxCharacterLimit)
+            setNeedsLayout()
+        }
     }
     @objc open var id: Int = 0
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
@@ -56,7 +61,6 @@ import SceneKit
         super.setupNode()
         assert(labelNode == nil, "Node must not be initialized!")
         labelNode = LabelNode()
-        labelNode.multiline = true
         contentNode.addChildNode(labelNode)
     }
 

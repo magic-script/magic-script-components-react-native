@@ -23,6 +23,7 @@ import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -34,7 +35,8 @@ import com.magicleap.magicscript.utils.readFilePath
 class ModelNode(
     initProps: ReadableMap,
     private val context: Context,
-    private val modelRenderableLoader: ModelRenderableLoader
+    private val modelRenderableLoader: ModelRenderableLoader,
+    private val renderableAnimator: RenderableAnimator
 ) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
@@ -125,23 +127,11 @@ class ModelNode(
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {
                     this.renderableCopy = result.renderable
-                    handleAnimation(result.renderable)
+                    renderableAnimator.play(result.renderable)
                     if (isVisible) {
                         contentNode.renderable = renderableCopy
                     }
                 }
-            }
-        }
-    }
-
-    private fun handleAnimation(modelRenderable: ModelRenderable) {
-        val animationsNumber = modelRenderable.animationDataCount
-        if (animationsNumber > 0) {
-            val animation = modelRenderable.getAnimationData(0)
-            val animator = ModelAnimator(animation, modelRenderable)
-            animator.repeatCount = ModelAnimator.INFINITE
-            if (!animator.isStarted) {
-                animator.start()
             }
         }
     }

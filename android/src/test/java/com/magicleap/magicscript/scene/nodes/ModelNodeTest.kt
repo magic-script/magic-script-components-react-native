@@ -21,14 +21,17 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import junit.framework.Assert.assertEquals
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,11 +46,13 @@ class ModelNodeTest {
 
     private lateinit var context: Context
     private lateinit var modelRenderableLoader: ModelRenderableLoader
+    private lateinit var renderableAnimator: RenderableAnimator
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         modelRenderableLoader = mock()
+        renderableAnimator = mock()
     }
 
     @Test
@@ -93,8 +98,22 @@ class ModelNodeTest {
         assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
     }
 
+    @Test
+    fun `should hide the node when its center is outside of clip bounds`() {
+        val props = reactMapOf(
+            TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-4f, -4f, 0f)
+        )
+        val node = createNode(props)
+        node.build()
+        val clipBounds = Bounding(left = 2f, bottom = -1f, right = 5f, top = 1f)
+
+        node.setClipBounds(clipBounds)
+
+        node.isVisible shouldEqual false
+    }
+
     private fun createNode(props: JavaOnlyMap): ModelNode {
-        return ModelNode(props, context, modelRenderableLoader)
+        return ModelNode(props, context, modelRenderableLoader, renderableAnimator)
     }
 
 }

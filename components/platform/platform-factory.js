@@ -1,6 +1,6 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
 
-import { Image, NativeEventEmitter, NativeModules, processColor } from 'react-native';
+import { Image, NativeEventEmitter, NativeModules, Platform, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';
 import generateId from '../utils/generateId';
 import { Log } from '../utils/logger';
@@ -118,6 +118,9 @@ export class PlatformFactory extends NativeFactory {
             properties['text'] = child.toString();
         }
 
+        const isAndroid = Platform.OS === 'android';
+        const modifiedId = isAndroid ? `${properties.id}` : properties.id;
+        
         return ({
             ...properties,
             ...(properties.color ? { color: this._processColor(properties.color) } : {}),
@@ -126,6 +129,7 @@ export class PlatformFactory extends NativeFactory {
             ...(properties.filePath ? { filePath: this._processAssetSource(properties.filePath) } : {}),
             ...(properties.videoPath ? { videoPath: this._processAssetSource(properties.videoPath) } : {}),
             ...(properties.fileName ? { fileName: this._processAssetSource(properties.fileName) } : {}),
+            ...(properties.id ? { id: modifiedId } : {}),
         });
     }
 

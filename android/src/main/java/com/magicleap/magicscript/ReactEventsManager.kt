@@ -71,7 +71,9 @@ class ReactEventsManager(
         const val EVENT_ARG_NODE_ID = "nodeId"
         const val EVENT_ARG_TEXT = "text"
         const val EVENT_ARG_TOGGLE_ACTIVE = "On"
-        const val EVENT_ARG_SELECTED_ITEMS = "selectedItemsIndexes"
+        const val EVENT_ARG_SELECTED_ITEMS = "SelectedItems"
+        const val EVENT_ARG_SELECTED_ITEM_ID = "id"
+        const val EVENT_ARG_SELECTED_ITEM_LABEL = "label"
         const val EVENT_ARG_SLIDER_VALUE = "Value"
         const val EVENT_ARG_COLOR = "color"
         const val EVENT_ARG_DATE = "date"
@@ -243,11 +245,18 @@ class ReactEventsManager(
     override fun addOnSelectionChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is UiDropdownListNode) {
-            node.onSelectionChangedListener = { itemIndex: Int ->
+            node.onSelectionChangedListener = { selectedItems ->
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
-                val selectedItems = arrayListOf(itemIndex)
-                params.putSerializable(EVENT_ARG_SELECTED_ITEMS, selectedItems)
+                val selectedItemsArray = arrayListOf<Bundle>()
+                selectedItems.forEach { item ->
+                    val itemInfo = Bundle().apply {
+                        putInt(EVENT_ARG_SELECTED_ITEM_ID, item.id)
+                        putString(EVENT_ARG_SELECTED_ITEM_LABEL, item.label)
+                    }
+                    selectedItemsArray.add(itemInfo)
+                }
+                params.putSerializable(EVENT_ARG_SELECTED_ITEMS, selectedItemsArray)
                 sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params)
             }
         }

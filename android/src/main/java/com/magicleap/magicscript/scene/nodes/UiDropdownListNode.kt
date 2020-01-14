@@ -29,7 +29,6 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.logMessage
 
 class UiDropdownListNode(
     initProps: ReadableMap,
@@ -49,7 +48,7 @@ class UiDropdownListNode(
     }
 
     // Events
-    var onSelectionChangedListener: ((itemIndex: Int) -> Unit)? = null
+    var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: UiLinearLayout
@@ -89,9 +88,7 @@ class UiDropdownListNode(
             child.onSelectedListener = {
                 lastSelectedItem?.isSelected = false
                 lastSelectedItem = child
-                val index = listNode.contentNode.children.size
-                onSelectionChangedListener?.invoke(index)
-                logMessage("on item selected, index= $index")
+                onSelectionChangedListener?.invoke(listOf(child))
             }
             listNode.addContent(child)
         } else {

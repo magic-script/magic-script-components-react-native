@@ -25,6 +25,7 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.limited
+import com.magicleap.magicscript.utils.read
 
 class UiDropdownListItemNode(
     initProps: ReadableMap,
@@ -43,6 +44,9 @@ class UiDropdownListItemNode(
     var onSelectedListener: (() -> Unit)? = null
 
     var id: Int = 0
+        private set
+
+    var label: String = ""
         private set
 
     var isSelected = false
@@ -78,9 +82,9 @@ class UiDropdownListItemNode(
     }
 
     override fun setText(props: Bundle) {
-        if (props.containsKey(PROP_LABEL)) {
-            val label = props.getString(PROP_LABEL)!!
-            val limited = if (maxCharacters > 0) label.limited(maxCharacters) else label
+        props.read<String>(PROP_LABEL)?.let { lbl ->
+            this.label = lbl
+            val limited = if (maxCharacters > 0) lbl.limited(maxCharacters) else lbl
             props.putString(PROP_TEXT, limited)
         }
         super.setText(props)

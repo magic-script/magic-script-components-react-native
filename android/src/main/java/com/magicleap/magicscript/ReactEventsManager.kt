@@ -25,6 +25,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
+import com.magicleap.magicscript.utils.logMessage
 
 class ReactEventsManager(
     private val eventsEmitter: EventsEmitter,
@@ -257,6 +258,7 @@ class ReactEventsManager(
                     selectedItemsArray.add(itemInfo)
                 }
                 params.putSerializable(EVENT_ARG_SELECTED_ITEMS, selectedItemsArray)
+                logMessage("onSelectionChanged: $params")
                 sendEvent(EVENT_DROPDOWN_SELECTION_CHANGED, params)
             }
         }

@@ -41,7 +41,7 @@ class UiDropdownListItemNode(
         private const val PADDING_FACTOR = 1.2F
     }
 
-    var onSelectedListener: (() -> Unit)? = null
+    var onClicked: (() -> Unit)? = null
 
     var id: Int = 0
         private set
@@ -92,13 +92,12 @@ class UiDropdownListItemNode(
 
     override fun onViewClick() {
         super.onViewClick()
-        onSelectedListener?.invoke()
-        isSelected = !isSelected
+        onClicked?.invoke()
     }
 
     private fun setId(props: Bundle) {
         if (props.containsKey(PROP_ID)) {
-            this.id = props.getDouble(PROP_ID).toInt()
+            this.id = props.getString(PROP_ID)?.toInt() ?: 0
         }
     }
 }

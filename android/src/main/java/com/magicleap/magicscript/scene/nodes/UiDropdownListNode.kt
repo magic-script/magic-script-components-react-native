@@ -29,6 +29,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.utils.read
 
 class UiDropdownListNode(
     initProps: ReadableMap,
@@ -52,7 +53,9 @@ class UiDropdownListNode(
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: UiLinearLayout
-    private var lastSelectedItem: UiDropdownListItemNode? = null
+    private var selectedItems = mutableListOf<UiDropdownListItemNode>()
+
+    private var multiSelect = false
 
     init {
         val listProps = JavaOnlyMap()
@@ -79,16 +82,33 @@ class UiDropdownListNode(
 
         val listItems = contentNode.children.filterIsInstance<UiDropdownListItemNode>()
         configureListItems(listItems, props)
+
         setShowList(props)
+        setMultiSelect(props)
     }
 
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
-            child.onSelectedListener = {
-                lastSelectedItem?.isSelected = false
-                lastSelectedItem = child
-                onSelectionChangedListener?.invoke(listOf(child))
+            child.onClicked = {
+                if (multiSelect) {
+                    child.isSelected = !child.isSelected
+                    if (child.isSelected) {
+                        selectedItems.add(child)
+                    } else {
+                        selectedItems.remove(child)
+                    }
+                } else {
+                    val lastSelectedItem = selectedItems.firstOrNull()
+                    lastSelectedItem?.isSelected = false
+
+                    selectedItems = mutableListOf(child)
+                    if (listNode.isVisible) {
+                        hideList()
+                    }
+                }
+
+                onSelectionChangedListener?.invoke(selectedItems)
             }
             listNode.addContent(child)
         } else {
@@ -99,8 +119,8 @@ class UiDropdownListNode(
     override fun removeContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
-            if (child == lastSelectedItem) {
-                lastSelectedItem = null
+            if (selectedItems.contains(child)) {
+                selectedItems.remove(child)
             }
         } else {
             super.removeContent(child)
@@ -145,6 +165,13 @@ class UiDropdownListNode(
             items.forEach { item ->
                 item.maxCharacters = charsLimit
             }
+        }
+    }
+
+    private fun setMultiSelect(props: Bundle) {
+        val multiSelect = props.read<Boolean>(PROP_MULTI_SELECT)
+        if (multiSelect != null) {
+            this.multiSelect = multiSelect
         }
     }
 

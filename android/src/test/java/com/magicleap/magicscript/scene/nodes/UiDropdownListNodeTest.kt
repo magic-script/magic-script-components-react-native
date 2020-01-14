@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.Typeface
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -31,6 +30,7 @@ import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,13 +45,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiDropdownListNodeTest {
 
+    private lateinit var tested: UiDropdownListNode
+    private lateinit var item1: UiDropdownListItemNode
+    private lateinit var item2: UiDropdownListItemNode
+
     private lateinit var context: Context
     private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
-
-    private lateinit var item1: UiDropdownListItemNode
-    private lateinit var item2: UiDropdownListItemNode
 
     @Before
     fun setUp() {
@@ -67,26 +68,84 @@ class UiDropdownListNodeTest {
         whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
 
         item1 = createDropdownItem(reactMapOf().id(0).label("item 1"))
+        item1.build()
         item2 = createDropdownItem(reactMapOf().id(1).label("item 2"))
+        item2.build()
+
+        tested = UiDropdownListNode(JavaOnlyMap(), context, mock(), fontProvider, iconsRepo)
+        tested.build()
+        tested.addContent(item1)
+        tested.addContent(item2)
+    }
+
+
+    @Test
+    fun `should notify listener when item selected`() {
+        var selectedItemsList = listOf<UiDropdownListItemNode>()
+        tested.onSelectionChangedListener = { selectedItems ->
+            selectedItemsList = selectedItems
+        }
+
+        item2.onClicked?.invoke()
+
+        selectedItemsList.size shouldEqual 1
+        selectedItemsList.first() shouldEqual item2
     }
 
     @Test
-    fun `should be able to select only one item when multi select option disabled`() {
-        val props = reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, false)
-        val node = createNode(props)
-        node.build()
-        node.addContent(item1)
-        node.addContent(item2)
+    fun `should select only the last clicked item when multi select disabled`() {
+        tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, false))
 
-        item1.isSelected = true
-        item2.isSelected = true
+        item1.onClicked?.invoke()
+        item2.onClicked?.invoke()
 
         item1.isSelected shouldBe false
         item2.isSelected shouldBe true
     }
 
-    private fun createNode(props: ReadableMap): UiDropdownListNode {
-        return UiDropdownListNode(props, context, mock(), fontProvider, iconsRepo)
+    @Test
+    fun `should be able to select multiple items when multi select enabled`() {
+        tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, true))
+
+        item1.onClicked?.invoke()
+        item2.onClicked?.invoke()
+
+        item1.isSelected shouldBe true
+        item2.isSelected shouldBe true
+    }
+
+    @Test
+    fun `should hide dropdown list when item selected if multi select disabled`() {
+        val props = reactMapOf(
+            UiDropdownListNode.PROP_MULTI_SELECT, false,
+            UiDropdownListNode.PROP_SHOW_LIST, true
+        )
+        tested.update(props)
+        var listVisible = true
+        tested.onListVisibilityChanged = { isVisible ->
+            listVisible = isVisible
+        }
+
+        item1.onClicked?.invoke()
+
+        listVisible shouldBe false
+    }
+
+    @Test
+    fun `should not hide dropdown list when item selected if multi select enabled`() {
+        val props = reactMapOf(
+            UiDropdownListNode.PROP_MULTI_SELECT, true,
+            UiDropdownListNode.PROP_SHOW_LIST, true
+        )
+        tested.update(props)
+        var listVisible = true
+        tested.onListVisibilityChanged = { isVisible ->
+            listVisible = isVisible
+        }
+
+        item1.onClicked?.invoke()
+
+        listVisible shouldBe true
     }
 
     private fun createDropdownItem(props: JavaOnlyMap): UiDropdownListItemNode {

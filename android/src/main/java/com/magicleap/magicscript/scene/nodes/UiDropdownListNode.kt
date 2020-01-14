@@ -29,6 +29,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
 class UiDropdownListNode(
@@ -46,6 +47,8 @@ class UiDropdownListNode(
         const val PROP_MULTI_SELECT = "multiSelect"
         const val PROP_SHOW_LIST = "showList"
         const val PROP_SELECTED = "selected"
+
+        const val Z_ORDER_OFFSET = 2e-5F
     }
 
     // Events
@@ -56,6 +59,7 @@ class UiDropdownListNode(
     private var selectedItems = mutableListOf<UiDropdownListItemNode>()
 
     private var multiSelect = false
+    private var listNodeAdded = false
 
     init {
         val listProps = JavaOnlyMap()
@@ -65,14 +69,18 @@ class UiDropdownListNode(
         properties.putString(PROP_ICON, "arrow-down")
 
         listNode = UiLinearLayout(listProps, VerticalLinearLayoutManager())
+
+        properties.putDefault(PROP_SHOW_LIST, false)
     }
 
     override fun build() {
         super.build()
 
-        listNode.build()
-        addContent(listNode)
-        hideList()
+        if (!listNodeAdded) {
+            listNode.build()
+            addContent(listNode)
+            listNodeAdded = true
+        }
 
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
     }
@@ -102,6 +110,7 @@ class UiDropdownListNode(
                     val lastSelectedItem = selectedItems.firstOrNull()
                     lastSelectedItem?.isSelected = false
 
+                    child.isSelected = true
                     selectedItems = mutableListOf(child)
                     if (listNode.isVisible) {
                         hideList()
@@ -131,8 +140,12 @@ class UiDropdownListNode(
         super.onViewClick()
         if (listNode.isVisible) {
             hideList()
+            // in case of node rebuild (e.g. text change) we must read updated value,
+            // when applying properties again
+            properties.putBoolean(PROP_SHOW_LIST, false)
         } else {
             showList()
+            properties.putBoolean(PROP_SHOW_LIST, true)
         }
     }
 
@@ -142,7 +155,8 @@ class UiDropdownListNode(
         val bounding = getContentBounding()
         val listX = bounding.left
         val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
-        listNode.localPosition = Vector3(listX, listY, 0F)
+        // Moving content forward, so it'll receive touch events first
+        listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {
@@ -180,7 +194,7 @@ class UiDropdownListNode(
             val show = props.getBoolean(PROP_SHOW_LIST)
             if (show && !listNode.isVisible) {
                 showList()
-            } else if (listNode.isVisible) {
+            } else if (!show && listNode.isVisible) {
                 hideList()
             }
         }

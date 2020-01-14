@@ -118,10 +118,11 @@ export class PlatformFactory extends NativeFactory {
             properties['text'] = child.toString();
         }
 
+        // For Android we have to change the type of id property to String,
+        // because React internally expects it (without this the DropdownListItem crashed).
         const isAndroid = Platform.OS === 'android';
         const modifiedId = isAndroid ? `${properties.id}` : properties.id;
-        console.log('name: ', name);
-
+        
         return ({
             ...properties,
             ...(properties.color ? { color: this._processColor(properties.color) } : {}),

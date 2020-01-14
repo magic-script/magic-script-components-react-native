@@ -38,7 +38,7 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     expect(node.textColor).to(beCloseTo(referenceTextColor))
                     expect(node.textSize).to(beCloseTo(0.0))
                     expect(node.canHaveFocus).to(beFalse())
-                    expect(node.isSelected).to(beFalse())
+                    expect(node.selected).to(beFalse())
                 }
             }
 
@@ -66,6 +66,13 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     let referenceId: Int = 17
                     node.update(["id" : referenceId])
                     expect(node.id).to(equal(referenceId))
+                }
+
+                it("should update 'selected' prop") {
+                    node.update(["selected": true])
+                    expect(node.selected).to(beTrue())
+                    node.update(["selected": false])
+                    expect(node.selected).to(beFalse())
                 }
 
                 context("when editing 'textColor' prop") {
@@ -101,13 +108,6 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                     }
                 }
 
-                it("should not update 'isSelected' prop") {
-                    node.update(["isSelected": true])
-                    expect(node.isSelected).to(beFalse())
-                    node.update(["isSelected": true])
-                    expect(node.isSelected).to(beFalse())
-                }
-
                 context("when updating 'maxCharacterLimit' prop") {
                     it("should not update stored value") {
                         let referenceLimit = 11
@@ -134,9 +134,9 @@ class UiDropdownListItemNodeSpec: QuickSpec {
                 it("should maintain selection state") {
                     node.toggleSelection()
                     expect(node.isLayoutNeeded).to(beFalse())
-                    expect(node.isSelected).to(beTrue())
+                    expect(node.selected).to(beTrue())
                     node.toggleSelection()
-                    expect(node.isSelected).to(beFalse())
+                    expect(node.selected).to(beFalse())
                 }
             }
 

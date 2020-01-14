@@ -81,7 +81,7 @@ class ViewController: UIViewController {
             "localPosition": [0, 0.7, 0],
             "text": "DropDownList",
 //            "textSize": 0.015,
-//            "multiSelectMode": true,
+            "multiSelectMode": true,
 //            "maxCharacterLimit": 4
         ], nodeId: dropdownListId, parentId: groupId)
 
@@ -89,6 +89,7 @@ class ViewController: UIViewController {
             let _: UiDropdownListItemNode = createComponent([
                 "id": i,
                 "label": "item \(i + 1)",
+                "selected": i % 2 == 0
             ], nodeId: "item_\(i)", parentId: dropdownListId)
         }
 

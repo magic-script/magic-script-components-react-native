@@ -191,7 +191,7 @@ abstract class TransformNode(
      * the parent node position).
      */
     open fun getContentBounding(): Bounding {
-        return Utils.calculateBoundsOfNode(contentNode)
+        return Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
     }
 
     /**

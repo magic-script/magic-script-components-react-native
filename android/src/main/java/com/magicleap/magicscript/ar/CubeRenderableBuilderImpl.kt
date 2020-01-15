@@ -20,6 +20,7 @@ import android.content.Context
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.MaterialFactory
+import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ShapeFactory
 import com.magicleap.magicscript.utils.logMessage
 
@@ -29,7 +30,7 @@ class CubeRenderableBuilderImpl(private val context: Context) : CubeRenderableBu
         cubeSize: Vector3,
         cubeCenter: Vector3,
         color: Color,
-        resultCallback: (result: RenderableResult) -> Unit
+        resultCallback: (result: RenderableResult<Renderable>) -> Unit
     ) {
         MaterialFactory
             .makeOpaqueWithColor(context, color)

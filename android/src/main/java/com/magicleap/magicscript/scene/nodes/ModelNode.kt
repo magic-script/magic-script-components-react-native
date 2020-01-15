@@ -19,19 +19,24 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 import com.magicleap.magicscript.utils.readFilePath
 
 class ModelNode(
     initProps: ReadableMap,
     private val context: Context,
-    private val modelRenderableLoader: ModelRenderableLoader
+    private val modelRenderableLoader: ModelRenderableLoader,
+    private val renderableAnimator: RenderableAnimator
 ) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
@@ -43,10 +48,11 @@ class ModelNode(
         const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
-    // localScale without importScale correction
-    private var scale = localScale
-    private var renderableCopy: Renderable? = null
-    private var hidden = false
+    private var renderableCopy: ModelRenderable? = null
+
+    init {
+        properties.putDefault(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE)
+    }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -65,16 +71,24 @@ class ModelNode(
 
     override fun setClipBounds(clipBounds: Bounding) {
         val contentPosition = getContentPosition()
-        if (contentPosition.x in clipBounds.left..clipBounds.right
-            && contentPosition.y in clipBounds.bottom..clipBounds.top
+        val bounds = getBounding()
+        val centerOffsetX = bounds.center().x - contentPosition.x
+        val centerOffsetY = bounds.center().y - contentPosition.y
+
+        if (contentPosition.x + centerOffsetX in clipBounds.left..clipBounds.right
+            && contentPosition.y + centerOffsetY in clipBounds.bottom..clipBounds.top
         ) {
-            if (contentNode.renderable == null) {
-                contentNode.renderable = renderableCopy
-            }
-            hidden = false
+            show()
         } else {
-            contentNode.renderable = null
-            hidden = true
+            hide()
+        }
+    }
+
+    override fun getContentBounding(): Bounding {
+        return if (isVisible) {
+            Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
+        } else { // calculate bounding based on [renderableCopy]
+            Utils.calculateBoundsOfNode(contentNode, renderableCopy?.collisionShape)
         }
     }
 
@@ -99,16 +113,11 @@ class ModelNode(
     }
 
     private fun setImportScale(props: Bundle) {
-        if (props.containsKey(PROP_IMPORT_SCALE)) {
-            adjustLocalScale()
-        }
-    }
-
-    override fun setLocalScale(props: Bundle) {
-        val localScale = props.read<Vector3>(PROP_LOCAL_SCALE)
-        if (localScale != null) {
-            this.scale = localScale
-            adjustLocalScale()
+        val importScale = props.read<Double>(PROP_IMPORT_SCALE)?.toFloat()
+        if (importScale != null) {
+            // applying the import scale on content node for simplicity, because
+            // localScale may be changed by a layout that has limited size
+            contentNode.localScale = Vector3(importScale, importScale, importScale)
         }
     }
 
@@ -118,17 +127,13 @@ class ModelNode(
             modelRenderableLoader.loadRenderable(modelUri) { result ->
                 if (result is RenderableResult.Success) {
                     this.renderableCopy = result.renderable
-                    if (!hidden) { // model can be (re)loaded after setting clip bounds
+                    renderableAnimator.play(result.renderable)
+                    if (isVisible) {
                         contentNode.renderable = renderableCopy
                     }
                 }
             }
         }
-    }
-
-    private fun adjustLocalScale() {
-        val importScale = properties.getDouble(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE).toFloat()
-        localScale = Vector3(scale.x * importScale, scale.y * importScale, scale.z * importScale)
     }
 
 }

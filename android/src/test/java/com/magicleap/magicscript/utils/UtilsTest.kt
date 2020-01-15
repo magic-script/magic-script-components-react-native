@@ -17,14 +17,19 @@
 package com.magicleap.magicscript.utils
 
 import android.content.Context
+import android.net.Uri
 import android.util.DisplayMetrics
+import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
@@ -34,8 +39,12 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UtilsTest {
 
-    // epsilon
-    private val eps = 1e-5f
+    private lateinit var appContext: Context
+
+    @Before
+    fun setUp() {
+        this.appContext = ApplicationProvider.getApplicationContext<Context>()
+    }
 
     @Test
     fun shouldReturnCorrectNumberOfPixels() {
@@ -72,46 +81,55 @@ class UtilsTest {
     }
 
     @Test
-    fun shouldReturnBasicBoundingWhenCollisionShapeIsNotBox() {
+    fun `should return bounding based on node position and collision shape`() {
         val node = Node()
-        node.localPosition = Vector3(1f, 1f, 1f)
+        node.localPosition = Vector3(-1f, 2f, 1f)
+        val center = Vector3.zero()
+        val size = Vector3(2f, 4f, 0.2f)
+        val collisionShape = Box(size, center)
+        val expectedBounding = Bounding(left = -2f, bottom = 0f, right = 0f, top = 4f)
 
-        val bounding = Utils.calculateBoundsOfNode(node)
+        val bounding = Utils.calculateBoundsOfNode(node, collisionShape)
 
-        assertNotNull(bounding)
-        assertEquals(node.localPosition.x, bounding.left, eps)
-        assertEquals(node.localPosition.x, bounding.right, eps)
-        assertEquals(node.localPosition.y, bounding.top, eps)
-        assertEquals(node.localPosition.y, bounding.bottom, eps)
+        bounding shouldEqualInexact expectedBounding
     }
 
     @Test
-    fun shouldReturnBoundingWithWidestAndHighestAreaOfAllNodes() {
+    fun `should return bounding based on position only when there is no collision shape`() {
+        val node = Node()
+        node.localPosition = Vector3(1f, 1f, 1f)
+        val expectedBounding = Bounding(left = 1f, bottom = 1f, right = 1f, top = 1f)
+
+        val bounding = Utils.calculateBoundsOfNode(node, null)
+
+        bounding shouldEqualInexact expectedBounding
+    }
+
+    @Test
+    fun `should return bounding with widest and highest area of all nodes`() {
         val testNode1 = Node()
         val testNode2 = Node()
         val testNode3 = Node()
         testNode1.localPosition = Vector3(1f, 2f, 3f)
         testNode2.localPosition = Vector3(10f, 20f, 30f)
         testNode3.localPosition = Vector3(100f, 200f, 300f)
+        val expectedBounding = Bounding(left = 1f, bottom = 2f, right = 100f, top = 200f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode1, testNode2, testNode3))
 
-        assertNotNull(bounding)
-        assertEquals(1f, bounding.left, eps)
-        assertEquals(100f, bounding.right, eps)
-        assertEquals(2f, bounding.bottom, eps)
-        assertEquals(200f, bounding.top, eps)
+        bounding shouldEqualInexact expectedBounding
     }
 
     @Test
-    fun shouldReturnEmptyBoundingWhenListOfNodesIsEmpty() {
+    fun `should return empty bounding when list of nodes is empty`() {
         val bounding = Utils.calculateSumBounds(emptyList())
+        val expectedBounding = Bounding(0f, 0f, 0f, 0f)
 
-        assertEquals(Bounding(0f, 0f, 0f, 0f), bounding)
+        bounding shouldEqualInexact expectedBounding
     }
 
     @Test
-    fun shouldReturnFirstNodeBoundingIfListContainsOnlyOneNode() {
+    fun `should return first node bounding if list contains only one node`() {
         val testNode = Node()
         testNode.localPosition = Vector3(1f, 1f, 1f)
         val expectedBounding = Bounding(1f, 1f, 1f, 1f)
@@ -122,7 +140,7 @@ class UtilsTest {
     }
 
     @Test
-    fun shouldReturnMinimumBoundingForListOfPoints() {
+    fun `should return minimum bounding for list of points`() {
         val points = listOf(
             Vector3(-1f, 2f, 0f),
             Vector3(-1f, -1f, 0f),
@@ -134,6 +152,24 @@ class UtilsTest {
         val bounding = Utils.findMinimumBounding(points)
 
         bounding shouldEqualInexact expectedBounding
+    }
+
+    @Test
+    fun `should detect sfb model type when URL ends with sfb`() {
+        val modelPath = Uri.parse("http://sample-models/model.sfb")
+
+        val modelType = Utils.detectModelType(modelPath, appContext)
+
+        modelType shouldEqual ModelType.SFB
+    }
+
+    @Test
+    fun `should detect glb model type when URL contains glb extension`() {
+        val modelPath = Uri.parse("https://sample-models/model.glb?param=123")
+
+        val modelType = Utils.detectModelType(modelPath, appContext)
+
+        modelType shouldEqual ModelType.GLB
     }
 
 }

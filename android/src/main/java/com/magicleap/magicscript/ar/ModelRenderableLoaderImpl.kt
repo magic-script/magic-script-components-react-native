@@ -20,21 +20,29 @@ import android.content.Context
 import android.net.Uri
 import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
+import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.logMessage
 
 class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableLoader {
 
-    override fun loadRenderable(modelUri: Uri, resultCallback: (result: RenderableResult) -> Unit) {
-        ModelRenderable.builder()
-            .setSource(
-                context, RenderableSource.builder().setSource(
-                    context,
-                    modelUri,
-                    RenderableSource.SourceType.GLB
-                ) // GLB (binary) or GLTF (text)
-                    .setRecenterMode(RenderableSource.RecenterMode.CENTER)
-                    .build()
-            )
+    override fun loadRenderable(
+        modelUri: Uri,
+        resultCallback: (result: RenderableResult<ModelRenderable>) -> Unit
+    ) {
+        val builder = ModelRenderable.builder()
+        val modelType = Utils.detectModelType(modelUri, context)
+        when (modelType) {
+            ModelType.GLB -> setGLBSource(builder, modelUri)
+            ModelType.SFB -> setSFBSource(builder, modelUri)
+            ModelType.UNKNOWN -> {
+                val errorMessage = "Unresolved model type"
+                logMessage(errorMessage, true)
+                resultCallback(RenderableResult.Error(Exception(errorMessage)))
+                return
+            }
+        }
+
+        builder
             .setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
@@ -47,6 +55,18 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
                 resultCallback(RenderableResult.Error(throwable))
                 null
             }
-
     }
+
+    private fun setGLBSource(builder: ModelRenderable.Builder, uri: Uri) {
+        val source = RenderableSource.builder()
+            .setSource(context, uri, RenderableSource.SourceType.GLB)
+            .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+            .build()
+        builder.setSource(context, source)
+    }
+
+    private fun setSFBSource(builder: ModelRenderable.Builder, uri: Uri) {
+        builder.setSource(context, uri)
+    }
+
 }

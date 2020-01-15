@@ -98,24 +98,11 @@ class UiDropdownListNode(
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
-            child.onSelectionChanged = {
-                if (multiSelect) {
-                    if (child.isSelected) {
-                        selectedItems.add(child)
-                    } else {
-                        selectedItems.remove(child)
-                    }
-                } else {
-                    val lastSelectedItem = selectedItems.firstOrNull()
-                    lastSelectedItem?.deselect(silently = true)
-                    child.select(silently = true)
-                    selectedItems = mutableListOf(child)
-                    if (listNode.isVisible) {
-                        hideList()
-                    }
-                }
-
-                onSelectionChangedListener?.invoke(selectedItems)
+            if (child.isSelected) {
+                selectedItems.add(child)
+            }
+            child.onSelectionChanged = { isSelected ->
+                handleChildSelectionChanged(child, isSelected)
             }
             listNode.addContent(child)
         } else {
@@ -204,6 +191,25 @@ class UiDropdownListNode(
         listNode.hide()
         properties.putBoolean(PROP_SHOW_LIST, false)
         onListVisibilityChanged?.invoke(false)
+    }
+
+    private fun handleChildSelectionChanged(child: UiDropdownListItemNode, isSelected: Boolean) {
+        if (multiSelect) {
+            if (isSelected) {
+                selectedItems.add(child)
+            } else {
+                selectedItems.remove(child)
+            }
+        } else {
+            val lastSelectedItem = selectedItems.firstOrNull()
+            lastSelectedItem?.deselect(silently = true)
+            child.select(silently = true)
+            selectedItems = mutableListOf(child)
+            if (listNode.isVisible) {
+                hideList()
+            }
+        }
+        onSelectionChangedListener?.invoke(selectedItems)
     }
 
 }

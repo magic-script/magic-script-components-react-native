@@ -20,16 +20,14 @@ import android.content.Context
 import android.graphics.Typeface
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.magicleap.magicscript.R
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.id
-import com.magicleap.magicscript.label
-import com.magicleap.magicscript.reactMapOf
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -67,10 +65,8 @@ class UiDropdownListNodeTest {
         val sampleIcon = context.getDrawable(R.drawable.add)
         whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
 
-        item1 = createDropdownItem(reactMapOf().id(0).label("item 1"))
-        item1.build()
-        item2 = createDropdownItem(reactMapOf().id(1).label("item 2"))
-        item2.build()
+        item1 = buildDropdownItem(reactMapOf().id(0).label("item 1"))
+        item2 = buildDropdownItem(reactMapOf().id(1).label("item 2"))
 
         tested = UiDropdownListNode(JavaOnlyMap(), context, mock(), fontProvider, iconsRepo)
         tested.build()
@@ -80,7 +76,12 @@ class UiDropdownListNodeTest {
 
 
     @Test
-    fun `should notify listener when item selected`() {
+    fun `should notify listener about all selected items when multi select active`() {
+        tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, true))
+        val item3 = buildDropdownItem(
+            reactMapOf().id(312).label("item 3").selected(true)
+        )
+        tested.addContent(item3)
         var selectedItemsList = listOf<UiDropdownListItemNode>()
         tested.onSelectionChangedListener = { selectedItems ->
             selectedItemsList = selectedItems
@@ -88,8 +89,9 @@ class UiDropdownListNodeTest {
 
         item2.select()
 
-        selectedItemsList.size shouldEqual 1
-        selectedItemsList.first() shouldEqual item2
+        selectedItemsList.size shouldEqual 2
+        selectedItemsList shouldContain item2
+        selectedItemsList shouldContain item3
     }
 
     @Test
@@ -148,8 +150,10 @@ class UiDropdownListNodeTest {
         listVisible shouldBe true
     }
 
-    private fun createDropdownItem(props: JavaOnlyMap): UiDropdownListItemNode {
-        return UiDropdownListItemNode(props, context, mock(), fontProvider)
+    private fun buildDropdownItem(props: JavaOnlyMap): UiDropdownListItemNode {
+        val item = UiDropdownListItemNode(props, context, mock(), fontProvider)
+        item.build()
+        return item
     }
 
 }

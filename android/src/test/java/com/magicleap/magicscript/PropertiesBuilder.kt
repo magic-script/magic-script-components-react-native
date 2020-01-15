@@ -211,6 +211,11 @@ fun JavaOnlyMap.label(label: String): JavaOnlyMap {
     return this
 }
 
+fun JavaOnlyMap.selected(selected: Boolean): JavaOnlyMap {
+    putBoolean("selected", selected)
+    return this
+}
+
 fun JavaOnlyMap.timeFormat(timeFormat: String): JavaOnlyMap {
     putString("timeFormat", timeFormat)
     return this

@@ -17,21 +17,24 @@
 package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.limited
 import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.readFontParams
 
-class UiDropdownListItemNode(
+open class UiDropdownListItemNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    fontProvider: FontProvider
+    private val fontProvider: FontProvider
 ) : UiTextNode(initProps, context, viewRenderableLoader, fontProvider) {
 
     companion object {
@@ -53,8 +56,7 @@ class UiDropdownListItemNode(
     var isSelected = false
         private set(value) {
             field = value
-            val bgColor = if (value) Color.GRAY else Color.TRANSPARENT
-            view.setBackgroundColor(bgColor)
+            adjustFont()
         }
 
     var maxCharacters = 0 // 0 means unlimited
@@ -131,6 +133,20 @@ class UiDropdownListItemNode(
             select()
         } else if (selected == false) {
             deselect()
+        }
+    }
+
+    private fun adjustFont() {
+        val fontParams = readFontParams(properties, PROP_FONT_PARAMS)
+        if (isSelected) {
+            val boldParams = if (fontParams != null) {
+                FontParams(FontWeight.EXTRA_BOLD, fontParams.style, fontParams.allCaps)
+            } else {
+                FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
+            }
+            (view as TextView).typeface = fontProvider.provideFont(boldParams)
+        } else {
+            (view as TextView).typeface = fontProvider.provideFont(fontParams)
         }
     }
 

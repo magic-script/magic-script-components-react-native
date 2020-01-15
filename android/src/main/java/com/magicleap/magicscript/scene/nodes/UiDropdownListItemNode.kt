@@ -37,11 +37,12 @@ class UiDropdownListItemNode(
     companion object {
         const val PROP_ID = "id"
         const val PROP_LABEL = "label"
+        const val PROP_SELECTED = "selected"
 
         private const val PADDING_FACTOR = 1.2F
     }
 
-    var onClicked: (() -> Unit)? = null
+    var onSelectionChanged: ((selected: Boolean) -> Unit)? = null
 
     var id: Int = 0
         private set
@@ -50,7 +51,7 @@ class UiDropdownListItemNode(
         private set
 
     var isSelected = false
-        set(value) {
+        private set(value) {
             field = value
             val bgColor = if (value) Color.GRAY else Color.TRANSPARENT
             view.setBackgroundColor(bgColor)
@@ -61,6 +62,24 @@ class UiDropdownListItemNode(
             field = value
             setNeedsRebuild()
         }
+
+    fun select(silently: Boolean = false) {
+        if (!isSelected) {
+            isSelected = true
+            if (!silently) {
+                onSelectionChanged?.invoke(true)
+            }
+        }
+    }
+
+    fun deselect(silently: Boolean = false) {
+        if (isSelected) {
+            isSelected = false
+            if (!silently) {
+                onSelectionChanged?.invoke(false)
+            }
+        }
+    }
 
     override fun setupView() {
         super.setupView()
@@ -79,6 +98,7 @@ class UiDropdownListItemNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setId(props)
+        setSelected(props)
     }
 
     override fun setText(props: Bundle) {
@@ -92,7 +112,11 @@ class UiDropdownListItemNode(
 
     override fun onViewClick() {
         super.onViewClick()
-        onClicked?.invoke()
+        if (isSelected) {
+            deselect()
+        } else {
+            select()
+        }
     }
 
     private fun setId(props: Bundle) {
@@ -100,4 +124,14 @@ class UiDropdownListItemNode(
             this.id = props.getString(PROP_ID)?.toInt() ?: 0
         }
     }
+
+    private fun setSelected(props: Bundle) {
+        val selected: Boolean? = props.read(PROP_SELECTED)
+        if (selected == true) {
+            select()
+        } else if (selected == false) {
+            deselect()
+        }
+    }
+
 }

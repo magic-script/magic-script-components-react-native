@@ -98,9 +98,8 @@ class UiDropdownListNode(
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
-            child.onClicked = {
+            child.onSelectionChanged = {
                 if (multiSelect) {
-                    child.isSelected = !child.isSelected
                     if (child.isSelected) {
                         selectedItems.add(child)
                     } else {
@@ -108,9 +107,8 @@ class UiDropdownListNode(
                     }
                 } else {
                     val lastSelectedItem = selectedItems.firstOrNull()
-                    lastSelectedItem?.isSelected = false
-
-                    child.isSelected = true
+                    lastSelectedItem?.deselect(silently = true)
+                    child.select(silently = true)
                     selectedItems = mutableListOf(child)
                     if (listNode.isVisible) {
                         hideList()
@@ -140,12 +138,8 @@ class UiDropdownListNode(
         super.onViewClick()
         if (listNode.isVisible) {
             hideList()
-            // in case of node rebuild (e.g. text change) we must read updated value,
-            // when applying properties again
-            properties.putBoolean(PROP_SHOW_LIST, false)
         } else {
             showList()
-            properties.putBoolean(PROP_SHOW_LIST, true)
         }
     }
 
@@ -202,11 +196,13 @@ class UiDropdownListNode(
 
     private fun showList() {
         listNode.show()
+        properties.putBoolean(PROP_SHOW_LIST, true)
         onListVisibilityChanged?.invoke(true)
     }
 
     private fun hideList() {
         listNode.hide()
+        properties.putBoolean(PROP_SHOW_LIST, false)
         onListVisibilityChanged?.invoke(false)
     }
 

@@ -29,16 +29,20 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
         modelUri: Uri,
         resultCallback: (result: RenderableResult<ModelRenderable>) -> Unit
     ) {
+        val builder = ModelRenderable.builder()
         val modelType = Utils.detectModelType(modelUri, context)
-        if (modelType == ModelType.UNKNOWN) {
-            val errorMessage = "Unresolved model type"
-            logMessage(errorMessage, true)
-            resultCallback(RenderableResult.Error(Exception(errorMessage)))
-            return
+        when (modelType) {
+            ModelType.GLB -> setGLBSource(builder, modelUri)
+            ModelType.SFB -> setSFBSource(builder, modelUri)
+            ModelType.UNKNOWN -> {
+                val errorMessage = "Unresolved model type"
+                logMessage(errorMessage, true)
+                resultCallback(RenderableResult.Error(Exception(errorMessage)))
+                return
+            }
         }
 
-        ModelRenderable.builder()
-            .setSource(modelUri, modelType)
+        builder
             .setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
@@ -53,18 +57,16 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
             }
     }
 
-    private fun ModelRenderable.Builder.setSource(uri: Uri, modelType: ModelType)
-            : ModelRenderable.Builder {
-        if (modelType == ModelType.GLB) {
-            val source = RenderableSource.builder()
-                .setSource(context, uri, RenderableSource.SourceType.GLB)
-                .setRecenterMode(RenderableSource.RecenterMode.CENTER)
-                .build()
-            setSource(context, source)
-        } else {
-            setSource(context, uri)
-        }
-        return this
+    private fun setGLBSource(builder: ModelRenderable.Builder, uri: Uri) {
+        val source = RenderableSource.builder()
+            .setSource(context, uri, RenderableSource.SourceType.GLB)
+            .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+            .build()
+        builder.setSource(context, source)
+    }
+
+    private fun setSFBSource(builder: ModelRenderable.Builder, uri: Uri) {
+        builder.setSource(context, uri)
     }
 
 }

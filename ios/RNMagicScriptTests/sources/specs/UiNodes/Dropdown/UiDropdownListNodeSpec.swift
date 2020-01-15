@@ -42,7 +42,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.canHaveFocus).to(beTrue())
                     expect(node.maxHeight).to(beCloseTo(0.0))
                     expect(node.maxCharacterLimit).to(equal(0))
-                    expect(node.multiSelectMode).to(beFalse())
+                    expect(node.multiSelect).to(beFalse())
                 }
             }
 
@@ -132,18 +132,18 @@ class UiDropdownListNodeSpec: QuickSpec {
                     }
                 }
 
-                it("should update 'multiSelectMode' prop") {
+                it("should update 'multiSelect' prop") {
                     let items = self.prepareSampleDropdownList(node: node)
-                    expect(node.multiSelectMode).to(beFalse())
+                    expect(node.multiSelect).to(beFalse())
 
-                    node.update(["multiSelectMode" : true])
-                    expect(node.multiSelectMode).to(beTrue())
+                    node.update(["multiSelect" : true])
+                    expect(node.multiSelect).to(beTrue())
                     expect(node.isLayoutNeeded).to(beFalse())
 
                     items.forEach { node.handleTap($0) }
                     items.forEach { expect($0.selected).to(beTrue()) }
 
-                    node.multiSelectMode = false
+                    node.multiSelect = false
                     items.forEach { expect($0.selected).to(beFalse()) }
                 }
             }
@@ -292,7 +292,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                         let items = self.prepareSampleDropdownList(node: node)
                         let dummyItemNode1 = items[0]
                         let dummyItemNode2 = items[1]
-                        node.multiSelectMode = true
+                        node.multiSelect = true
 
                         node.handleTap(dummyItemNode1)
                         expect(node.selectedItems).to(contain(dummyItemNode1))
@@ -307,7 +307,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     }
 
                     it("should deselect item") {
-                        node.multiSelectMode = true
+                        node.multiSelect = true
                         let dummyItemNode = UiDropdownListItemNode()
                         node.handleTap(dummyItemNode)
                         node.handleTap(dummyItemNode)

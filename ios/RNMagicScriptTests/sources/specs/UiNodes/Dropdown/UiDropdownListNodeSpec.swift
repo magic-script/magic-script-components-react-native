@@ -141,10 +141,10 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
 
                     items.forEach { node.handleTap($0) }
-                    items.forEach { expect($0.isSelected).to(beTrue()) }
+                    items.forEach { expect($0.selected).to(beTrue()) }
 
                     node.multiSelectMode = false
-                    items.forEach { expect($0.isSelected).to(beFalse()) }
+                    items.forEach { expect($0.selected).to(beFalse()) }
                 }
             }
 
@@ -260,47 +260,50 @@ class UiDropdownListNodeSpec: QuickSpec {
             context("when handling item tap") {
                 context("single selection mode") {
                     it("should select item") {
-                        let dummyItemNode1 = UiDropdownListItemNode()
-                        let dummyItemNode2 = UiDropdownListItemNode()
+                        let items = self.prepareSampleDropdownList(node: node)
+                        let dummyItemNode1 = items[0]
+                        let dummyItemNode2 = items[1]
 
                         node.handleTap(dummyItemNode1)
                         expect(node.selectedItems).to(contain(dummyItemNode1))
-                        expect(dummyItemNode1.isSelected).to(beTrue())
+                        expect(dummyItemNode1.selected).to(beTrue())
 
                         node.handleTap(dummyItemNode2)
                         expect(node.selectedItems).notTo(contain(dummyItemNode1))
-                        expect(dummyItemNode1.isSelected).to(beFalse())
+                        expect(dummyItemNode1.selected).to(beFalse())
 
                         expect(node.selectedItems).to(contain(dummyItemNode2))
-                        expect(dummyItemNode2.isSelected).to(beTrue())
+                        expect(dummyItemNode2.selected).to(beTrue())
                     }
 
                     it("should not deselect item") {
-                        let dummyItemNode = UiDropdownListItemNode()
+                        let items = self.prepareSampleDropdownList(node: node)
+                        let dummyItemNode = items[0]
                         node.handleTap(dummyItemNode)
                         node.handleTap(dummyItemNode)
 
                         expect(node.selectedItems).to(contain(dummyItemNode))
-                        expect(dummyItemNode.isSelected).to(beTrue())
+                        expect(dummyItemNode.selected).to(beTrue())
                     }
                 }
 
                 context("multi selection mode") {
                     it("should select items") {
+                        let items = self.prepareSampleDropdownList(node: node)
+                        let dummyItemNode1 = items[0]
+                        let dummyItemNode2 = items[1]
                         node.multiSelectMode = true
-                        let dummyItemNode1 = UiDropdownListItemNode()
-                        let dummyItemNode2 = UiDropdownListItemNode()
 
                         node.handleTap(dummyItemNode1)
                         expect(node.selectedItems).to(contain(dummyItemNode1))
-                        expect(dummyItemNode1.isSelected).to(beTrue())
+                        expect(dummyItemNode1.selected).to(beTrue())
 
                         node.handleTap(dummyItemNode2)
                         expect(node.selectedItems).to(contain(dummyItemNode1))
-                        expect(dummyItemNode1.isSelected).to(beTrue())
+                        expect(dummyItemNode1.selected).to(beTrue())
 
                         expect(node.selectedItems).to(contain(dummyItemNode2))
-                        expect(dummyItemNode2.isSelected).to(beTrue())
+                        expect(dummyItemNode2.selected).to(beTrue())
                     }
 
                     it("should deselect item") {
@@ -310,7 +313,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                         node.handleTap(dummyItemNode)
 
                         expect(node.selectedItems).notTo(contain(dummyItemNode))
-                        expect(dummyItemNode.isSelected).to(beFalse())
+                        expect(dummyItemNode.selected).to(beFalse())
                     }
                 }
 
@@ -350,7 +353,6 @@ class UiDropdownListNodeSpec: QuickSpec {
                     // update background by updating layout
                     node.setNeedsLayout()
                     node.layoutIfNeeded()
-                    let backgroundNode2 = self.getBackgroundNode(node)
                     expect(self.getBackgroundNode(node)).to(beIdenticalTo(backgroundNode))
                 }
             }

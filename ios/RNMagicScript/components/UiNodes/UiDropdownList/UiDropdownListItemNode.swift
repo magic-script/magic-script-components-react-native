@@ -40,16 +40,16 @@ import SceneKit
     @objc var maxCharacterLimit: Int = 0 {
         didSet { labelNode.text = alignTextLength(label, maxCharacterLimit); setNeedsLayout() }
     }
-
-    var tapHandler: DropdownListItemTapHandling?
-
-    @objc fileprivate(set) var isSelected: Bool = false {
+    @objc var selected: Bool = false {
         didSet {
-            labelNode.fontWeight = isSelected ? .bold : .regular
-            labelNode.textColor = UIColor(white: isSelected ? 1.0 : 0.75, alpha: 1.0)
+            labelNode.fontWeight = selected ? .bold : .regular
+            labelNode.textColor = UIColor(white: selected ? 1.0 : 0.75, alpha: 1.0)
             setNeedsLayout()
         }
     }
+
+    var tapHandler: DropdownListItemTapHandling?
+
     fileprivate var labelNode: LabelNode!
 
     @objc override func activate() {
@@ -73,6 +73,10 @@ import SceneKit
 
         if let id = Convert.toInt(props["id"]) {
             self.id = id
+        }
+
+        if let selected = Convert.toBool(props["selected"]) {
+            self.selected = selected
         }
     }
 
@@ -98,7 +102,7 @@ import SceneKit
     }
 
     func toggleSelection() {
-        isSelected = !isSelected
+        selected = !selected
         layoutIfNeeded()
     }
 }

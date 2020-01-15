@@ -6,8 +6,8 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 class LoopedAnimator : RenderableAnimator {
 
     override fun play(modelRenderable: ModelRenderable) {
-        val animationsNumber = modelRenderable.animationDataCount
-        if (animationsNumber > 0) {
+        val animationsCount = modelRenderable.animationDataCount
+        if (animationsCount > 0) {
             val animation = modelRenderable.getAnimationData(0)
             val animator = ModelAnimator(animation, modelRenderable)
             animator.repeatCount = ModelAnimator.INFINITE

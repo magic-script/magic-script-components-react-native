@@ -27,9 +27,7 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
 
     override fun loadRenderable(
         modelUri: Uri,
-        resultCallback: (
-            result: RenderableResult<ModelRenderable>
-        ) -> Unit
+        resultCallback: (result: RenderableResult<ModelRenderable>) -> Unit
     ) {
         val modelType = Utils.detectModelType(modelUri, context)
         if (modelType == ModelType.UNKNOWN) {
@@ -39,24 +37,9 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
             return
         }
 
-        val builder = ModelRenderable.builder()
-
-        if (modelType == ModelType.GLB) {
-            builder.setSource(
-                context, RenderableSource.builder()
-                    .setSource(
-                        context,
-                        modelUri,
-                        RenderableSource.SourceType.GLB // GLB (binary) or GLTF (text)
-                    )
-                    .setRecenterMode(RenderableSource.RecenterMode.CENTER)
-                    .build()
-            )
-        } else {
-            builder.setSource(context, modelUri)
-        }
-
-        builder.setRegistryId(modelUri)
+        ModelRenderable.builder()
+            .setSource(modelUri, modelType)
+            .setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
                 renderable.isShadowReceiver = false
@@ -68,6 +51,20 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
                 resultCallback(RenderableResult.Error(throwable))
                 null
             }
+    }
+
+    private fun ModelRenderable.Builder.setSource(uri: Uri, modelType: ModelType)
+            : ModelRenderable.Builder {
+        if (modelType == ModelType.GLB) {
+            val source = RenderableSource.builder()
+                .setSource(context, uri, RenderableSource.SourceType.GLB)
+                .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+                .build()
+            setSource(context, source)
+        } else {
+            setSource(context, uri)
+        }
+        return this
     }
 
 }

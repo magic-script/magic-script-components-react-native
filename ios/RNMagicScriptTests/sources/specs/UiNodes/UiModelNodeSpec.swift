@@ -26,10 +26,11 @@ class UiModelNodeSpec: QuickSpec {
         describe("ModelNode") {
 
             var node: UiModelNode!
-            let glbModelPath = "resources/assets/models/glb/box.glb"
-            let glbAnimatedModelPath = "resources/assets/models/glb/hedra_anim.glb"
-            let gltfModelPath = "resources/assets/models/glb/hedra_05.gltf"
-            let objModelPath = "resources/assets/models/obj/hedra.obj"
+            let glbModelPath = "resources/assets/models/glb/static.glb"
+            let glbAnimatedModelPath = "resources/assets/models/glb/animated.glb"
+            let gltfModelPath = "resources/assets/models/gltf/static.gltf"
+            let gltfAnimatedModelPath = "resources/assets/models/gltf/animated.gltf"
+            let objModelPath = "resources/assets/models/obj/static.obj"
             var downloaderMock: DownloadingMock!
             var sceneBuilderMock: GLTFSceneSourceBuildingMock!
             var sceneMock: GLTFSceneSourceProtocolMock!
@@ -39,6 +40,7 @@ class UiModelNodeSpec: QuickSpec {
                 downloaderMock = DownloadingMock()
                 sceneBuilderMock = GLTFSceneSourceBuildingMock()
                 sceneMock = GLTFSceneSourceProtocolMock()
+                scene.rootNode.addChildNode(SCNNode())
                 node = UiModelNode()
                 node.downloader = downloaderMock
                 node.sceneBuilder = sceneBuilderMock
@@ -97,9 +99,19 @@ class UiModelNodeSpec: QuickSpec {
                     sceneBuilderMock.verify(.build(path: .any, options: .any, extensions: .any))
                 }
 
-                // TODO: gltf does not load properly, needs further investigation
                 it("should load .gltf model") {
                     let url: URL? = urlForRelativePath(gltfModelPath)
+                    validateInitialExpectation(url, node)
+
+                    prepareMocksExpectations()
+                    node.url = url
+
+                    validatePostExpectation(node)
+                    sceneBuilderMock.verify(.build(path: .any, options: .any, extensions: .any))
+                }
+
+                it("should load .gltf model with animation") {
+                    let url: URL? = urlForRelativePath(gltfAnimatedModelPath)
                     validateInitialExpectation(url, node)
 
                     prepareMocksExpectations()

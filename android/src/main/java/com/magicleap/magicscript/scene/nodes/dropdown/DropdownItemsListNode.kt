@@ -3,7 +3,6 @@ package com.magicleap.magicscript.scene.nodes.dropdown
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
@@ -21,13 +20,23 @@ class DropdownItemsListNode(
     viewRenderableLoader: ViewRenderableLoader
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
+    companion object {
+        const val DEFAULT_ITEMS_TEXT_SIZE = 0.0167F
+    }
+
     var maxHeight = WRAP_CONTENT_DIMENSION
         set(value) {
             field = value
             setNeedsRebuild(true)
         }
 
-    private val itemsNames = mutableListOf<String>()
+    var itemsTextSize: Float = DEFAULT_ITEMS_TEXT_SIZE
+        set(value) {
+            field = value
+            setNeedsRebuild(true)
+        }
+
+    private val items = mutableListOf<UiDropdownListItemNode>()
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.list_view, null)
@@ -35,7 +44,7 @@ class DropdownItemsListNode(
 
     override fun provideDesiredSize(): Vector2 {
         val size = calculateItemsSize()
-        if (maxHeight != WRAP_CONTENT_DIMENSION) {
+        if (maxHeight != WRAP_CONTENT_DIMENSION && size.y > maxHeight) {
             size.y = maxHeight
         }
         return size
@@ -49,7 +58,7 @@ class DropdownItemsListNode(
     override fun addContent(child: TransformNode) {
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
-            itemsNames.add(child.label)
+            items.add(child)
             refreshAdapter()
             setNeedsRebuild(true)
         }
@@ -58,17 +67,15 @@ class DropdownItemsListNode(
     override fun removeContent(child: TransformNode) {
         super.removeContent(child)
         if (child is UiDropdownListItemNode) {
-            itemsNames.add(child.label)
+            items.add(child)
             refreshAdapter()
             setNeedsRebuild(true)
         }
     }
 
     private fun refreshAdapter() {
-        val adapter = ArrayAdapter<String>(
-            context, android.R.layout.simple_list_item_1, android
-                .R.id.text1, itemsNames
-        )
+        val adapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
+        adapter.textSizePx = Utils.metersToFontPx(itemsTextSize, context)
         (view as ListView).adapter = adapter
     }
 

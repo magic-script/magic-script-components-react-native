@@ -152,10 +152,7 @@ class UiDropdownListNode(
 
     private fun setListTextSize(items: List<UiDropdownListItemNode>, props: Bundle) {
         if (props.containsKey(PROP_LIST_TEXT_SIZE)) {
-            val textSize = props.getDouble(PROP_LIST_TEXT_SIZE)
-            items.forEach { item ->
-                item.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize))
-            }
+            listNode.itemsTextSize = props.getDouble(PROP_LIST_TEXT_SIZE).toFloat()
         }
     }
 

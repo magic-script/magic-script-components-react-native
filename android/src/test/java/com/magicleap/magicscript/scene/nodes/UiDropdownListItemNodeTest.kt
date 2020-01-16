@@ -30,6 +30,7 @@ import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.id
 import com.magicleap.magicscript.label
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode
 import com.magicleap.magicscript.selected
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy

@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.dropdown
 
 import android.content.Context
 import android.os.Bundle
@@ -22,12 +22,13 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.UiButtonNode
+import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
@@ -55,7 +56,7 @@ class UiDropdownListNode(
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
-    private val listNode: UiLinearLayout
+    private val listNode: DropdownItemsListNode
     private var selectedItems = mutableListOf<UiDropdownListItemNode>()
 
     private var multiSelect = false
@@ -64,12 +65,9 @@ class UiDropdownListNode(
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
-        listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
-        listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
+        listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
+
         properties.putString(PROP_ICON, "arrow-down")
-
-        listNode = UiLinearLayout(listProps, VerticalLinearLayoutManager())
-
         properties.putDefault(PROP_SHOW_LIST, false)
     }
 
@@ -85,6 +83,11 @@ class UiDropdownListNode(
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
     }
 
+    override fun loadRenderable() {
+        super.loadRenderable()
+        listNode.attachRenderable()
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
@@ -93,7 +96,9 @@ class UiDropdownListNode(
 
         setShowList(props)
         setMultiSelect(props)
+        setMaxListHeight(props)
     }
+
 
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
@@ -178,6 +183,13 @@ class UiDropdownListNode(
             } else if (!show && listNode.isVisible) {
                 hideList()
             }
+        }
+    }
+
+    private fun setMaxListHeight(props: Bundle) {
+        val maxListHeight = props.read<Double>(PROP_LIST_MAX_HEIGHT)
+        if (maxListHeight != null) {
+            listNode.maxHeight = maxListHeight.toFloat()
         }
     }
 

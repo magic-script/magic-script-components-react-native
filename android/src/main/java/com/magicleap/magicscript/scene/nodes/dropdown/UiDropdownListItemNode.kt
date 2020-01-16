@@ -14,28 +14,22 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.dropdown
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
-import com.magicleap.magicscript.font.FontStyle
-import com.magicleap.magicscript.font.FontWeight
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.limited
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.read
-import com.magicleap.magicscript.utils.readFontParams
 
 open class UiDropdownListItemNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     private val fontProvider: FontProvider
-) : UiTextNode(initProps, context, viewRenderableLoader, fontProvider) {
+) : TransformNode(initProps, false, false) {
 
     companion object {
         const val PROP_ID = "id"
@@ -62,7 +56,7 @@ open class UiDropdownListItemNode(
     var maxCharacters = 0 // 0 means unlimited
         set(value) {
             field = value
-            setNeedsRebuild()
+            //  setNeedsRebuild()
         }
 
     fun select(silently: Boolean = false) {
@@ -83,6 +77,7 @@ open class UiDropdownListItemNode(
         }
     }
 
+    /*
     override fun setupView() {
         super.setupView()
 
@@ -97,21 +92,24 @@ open class UiDropdownListItemNode(
         }
     }
 
+     */
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
+        setText(props)
         setId(props)
         setSelected(props)
     }
 
-    override fun setText(props: Bundle) {
+    private fun setText(props: Bundle) {
         props.read<String>(PROP_LABEL)?.let { lbl ->
             this.label = lbl
-            val limited = if (maxCharacters > 0) lbl.limited(maxCharacters) else lbl
-            props.putString(PROP_TEXT, limited)
+            //  val limited = if (maxCharacters > 0) lbl.limited(maxCharacters) else lbl
+            //props.putString(PROP_TEXT, limited)
         }
-        super.setText(props)
     }
 
+    /*
     override fun onViewClick() {
         super.onViewClick()
         if (isSelected) {
@@ -120,6 +118,8 @@ open class UiDropdownListItemNode(
             select()
         }
     }
+
+     */
 
     private fun setId(props: Bundle) {
         if (props.containsKey(PROP_ID)) {
@@ -137,7 +137,8 @@ open class UiDropdownListItemNode(
     }
 
     private fun adjustFont() {
-        val fontParams = readFontParams(properties, PROP_FONT_PARAMS)
+        /*
+        val fontParams = readFontParams(properties, "fontParams")
         if (isSelected) {
             val boldParams = if (fontParams != null) {
                 FontParams(FontWeight.EXTRA_BOLD, fontParams.style, fontParams.allCaps)
@@ -148,6 +149,8 @@ open class UiDropdownListItemNode(
         } else {
             (view as TextView).typeface = fontProvider.provideFont(fontParams)
         }
+
+         */
     }
 
 }

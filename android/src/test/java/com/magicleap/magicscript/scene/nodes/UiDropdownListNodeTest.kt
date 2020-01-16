@@ -24,6 +24,8 @@ import com.magicleap.magicscript.*
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
@@ -68,7 +70,14 @@ class UiDropdownListNodeTest {
         item1 = buildDropdownItem(reactMapOf().id(0).label("item 1"))
         item2 = buildDropdownItem(reactMapOf().id(1).label("item 2"))
 
-        tested = UiDropdownListNode(JavaOnlyMap(), context, mock(), fontProvider, iconsRepo)
+        tested =
+            UiDropdownListNode(
+                JavaOnlyMap(),
+                context,
+                mock(),
+                fontProvider,
+                iconsRepo
+            )
         tested.build()
         tested.addContent(item1)
         tested.addContent(item2)
@@ -151,7 +160,13 @@ class UiDropdownListNodeTest {
     }
 
     private fun buildDropdownItem(props: JavaOnlyMap): UiDropdownListItemNode {
-        val item = UiDropdownListItemNode(props, context, mock(), fontProvider)
+        val item =
+            UiDropdownListItemNode(
+                props,
+                context,
+                mock(),
+                fontProvider
+            )
         item.build()
         return item
     }

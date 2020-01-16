@@ -23,6 +23,7 @@ import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
@@ -366,6 +367,9 @@ abstract class UiNode(
     }
 
     private fun setupViewListeners() {
+        if (view is AdapterView<*>) {
+            return
+        }
         view.setOnClickListener {
             onViewClick()
             onClickListener?.invoke()

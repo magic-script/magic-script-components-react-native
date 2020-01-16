@@ -1,6 +1,6 @@
 {
   "name": "magic-script-components-react-native",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Magic Script Components package for React Native.",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "react": "16.8.6",
-    "react-reconciler": "0.20.4"
+    "react-reconciler": "0.20.4",
+    "chroma-js": "^2.1.0"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "3.2.0",

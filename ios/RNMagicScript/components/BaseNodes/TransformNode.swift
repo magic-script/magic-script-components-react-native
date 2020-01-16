@@ -47,7 +47,7 @@ import SceneKit
         get { return self.transform }
         set { self.transform = newValue; setNeedsLayout() }
     }
-    @objc var anchorUuid: String = "rootUuid";
+    @objc var anchorUuid: String = "";
     // var cursorHoverState: CursorHoverState // ignore in mobile
     // var offset: SCNVector3 // ???
     @objc var debug: Bool = false {

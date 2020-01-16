@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 29.08.2019 12:44:30
 
-newmtl Hedra_001
+newmtl material_1
 	Ns 10.000000
 	Ni 1.500000
 	d 1.000000
@@ -12,7 +12,7 @@ newmtl Hedra_001
 	Kd 0.588000 0.588000 0.588000
 	Ks 0.000000 0.000000 0.000000
 	Ke 0.000000 0.000000 0.000000
-	map_Ka maps\hedra_001_BaseColor.png
-	map_Kd maps\hedra_001_BaseColor.png
-	map_bump maps\hedra_001_Normal.png
-	bump maps\hedra_001_Normal.png
+	map_Ka maps\static_obj_BaseColor.png
+	map_Kd maps\static_obj_BaseColor.png
+	map_bump maps\static_obj_Normal.png
+	bump maps\static_obj_Normal.png

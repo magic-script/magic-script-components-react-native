@@ -93,6 +93,9 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             logMessage("cannot add node: not found")
             return
         }
+        if (tryAddNodeToAnchor(node)) {
+            return
+        }
         rootNode.addChild(node)
     }
 
@@ -105,11 +108,28 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             logMessage("cannot add node: not found")
             return
         }
+        if (tryAddNodeToAnchor(node)) {
+            return
+        }
         if (parentNode == null) {
             logMessage("cannot add node: parent not found")
             return
         }
         parentNode.addContent(node)
+    }
+
+    private fun tryAddNodeToAnchor(node: TransformNode): Boolean {
+        if (node.anchorUuid.isEmpty()) {
+            return false
+        }
+        val anchorNode = scene.findByName(node.anchorUuid)
+        return if (anchorNode is AnchorNode) {
+            anchorNode.addChild(node)
+            true
+        } else {
+            logMessage("tryAddNodeToAnchor anchorUuid not found: ${node.anchorUuid}")
+            false
+        }
     }
 
     @Synchronized

@@ -18,7 +18,7 @@ package com.magicleap.magicscript.ar
 
 import com.google.ar.sceneform.rendering.Renderable
 
-sealed class RenderableResult {
-    data class Success(val renderable: Renderable) : RenderableResult()
-    data class Error(val error: Throwable) : RenderableResult()
+sealed class RenderableResult<out T : Renderable> {
+    data class Success<out T : Renderable>(val renderable: T) : RenderableResult<T>()
+    data class Error(val error: Throwable) : RenderableResult<Nothing>()
 }

@@ -43,9 +43,40 @@ class ViewController: UIViewController {
 
     let groupId: String = "group"
     fileprivate func setupScene() {
-        let _: UiGroupNode = createComponent(["debug": true, "localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
-        setupDropdownListTest()
+        let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
+
+        let filenames = [
+            "static.obj",
+            "static.obj",
+            "static.gltf",
+            "animated.gltf",
+            "static.glb",
+            "animated.glb"
+        ]
+        for (index, filename) in filenames.enumerated() {
+            if let path = Bundle.main.path(forResource: filename, ofType: nil),
+                FileManager.default.fileExists(atPath: path) {
+                loadModel(path, index: index)
+            } else {
+                debugPrint("Unable to load \(filename) model.")
+            }
+        }
+
         UiNodesManager.instance.updateLayout()
+    }
+
+    fileprivate func loadModel(_ filePath: String, index: Int) {
+        let columns: Int = 2
+        let x: CGFloat = -0.3 + CGFloat(index % columns) * 0.3
+        let y: CGFloat = 0.3 - CGFloat(index / columns) * 0.3
+        let scale: CGFloat = 0.1
+        let nodeId = "model_id_\(Date().timeIntervalSince1970)"
+        let _: UiModelNode = createComponent([
+            "modelPath": "file://\(filePath)",
+            "debug": true,
+            "localPosition": [x, y, 0],
+            "localScale": [scale, scale, scale]
+        ], nodeId: nodeId, parentId: groupId)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -81,7 +112,7 @@ class ViewController: UIViewController {
             "localPosition": [0, 0.7, 0],
             "text": "DropDownList",
 //            "textSize": 0.015,
-            "multiSelectMode": true,
+            "multiSelect": true,
 //            "maxCharacterLimit": 4
         ], nodeId: dropdownListId, parentId: groupId)
 
@@ -95,13 +126,13 @@ class ViewController: UIViewController {
 
         let toggle: UiToggleNode = createComponent([
             "localPosition": [0, -0.4, 0],
-            "text": "multiSelectMode",
+            "text": "Multi select mode",
             "textSize": 0.08,
             "height": 0.1,
             "debug": true
         ], nodeId: "toggle_id", parentId: groupId)
         toggle.onChanged = { sender, on in
-            dropdown.multiSelectMode = on
+            dropdown.multiSelect = on
         }
     }
 

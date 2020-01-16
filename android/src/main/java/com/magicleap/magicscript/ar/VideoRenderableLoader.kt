@@ -16,6 +16,8 @@
 
 package com.magicleap.magicscript.ar
 
+import com.google.ar.sceneform.rendering.Renderable
+
 interface VideoRenderableLoader {
-    fun loadRenderable(resultCallback: ((result: RenderableResult) -> Unit))
+    fun loadRenderable(resultCallback: ((result: RenderableResult<Renderable>) -> Unit))
 }

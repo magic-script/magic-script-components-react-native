@@ -290,19 +290,18 @@ describe("platformFactory", () => {
 
   describe("_processColor", () => {
     var platformFactory = new PlatformFactory(nativeComponentMapping);
-    describe("when arg is array", () => {
-      test("should return array", () => {
-        const colorArray = [];
-        expect(platformFactory._processColor(colorArray)).toEqual(colorArray);
-      });
-    });
 
     describe("when arg is string", () => {
       test("should return array", () => {
-        const colorString = "white";
-        const expectedColor = 4294967295; // should be updated: https://chinloongtan.com/blog/processcolor/
-        expect(platformFactory._processColor(colorString)).toEqual(
-          expectedColor
+        const textColorString = "white";
+        const expectedColor_fromText = [1.0, 1.0, 1.0, 1.0];
+        expect(platformFactory._processColor(textColorString)).toEqual(
+          expectedColor_fromText
+        );
+        const hexColorString = "#FFFFFF";
+        const expectedColor_fromHex = [1.0, 1.0, 1.0, 1.0];
+        expect(platformFactory._processColor(hexColorString)).toEqual(
+          expectedColor_fromHex
         );
       });
     });

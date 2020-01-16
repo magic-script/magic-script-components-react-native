@@ -113,6 +113,7 @@ dependencies {
     // Google Sceneform Tools (Android Studio plugin). Source files are located in /sources folder.
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.13.0" // AR Core
     implementation 'com.google.ar.sceneform:assets:1.13.0' //runtime models loading
+    implementation 'com.google.ar.sceneform:animation:1.13.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2' // 1.1.0 is not working with React
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

@@ -52,6 +52,7 @@ abstract class TransformNode(
         const val PROP_LOCAL_ROTATION = "localRotation"
         const val PROP_LOCAL_TRANSFORM = "localTransform"
         const val PROP_ALIGNMENT = "alignment"
+        const val PROP_ANCHOR_UUID = "anchorUuid"
 
         /**
          * Indicates how often we measure bounding and (if necessary)
@@ -68,6 +69,9 @@ abstract class TransformNode(
      * Renderable and / or child nodes should be added to it.
      */
     val contentNode = Node()
+
+    var anchorUuid: String = ""
+        private set
 
     /**
      * Alignment used to position a Renderable or [contentNode]
@@ -191,7 +195,7 @@ abstract class TransformNode(
      * the parent node position).
      */
     open fun getContentBounding(): Bounding {
-        return Utils.calculateBoundsOfNode(contentNode)
+        return Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
     }
 
     /**
@@ -308,6 +312,7 @@ abstract class TransformNode(
         setLocalRotation(props)
         setLocalTransform(props)
         setAlignment(props)
+        setAnchorUuid(props)
     }
 
     /**
@@ -368,6 +373,12 @@ abstract class TransformNode(
         contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
     }
 
+    private fun setAnchorUuid(props: Bundle) {
+        val anchorUuid = props.read<String>(PROP_ANCHOR_UUID)
+        if (anchorUuid != null) {
+            this.anchorUuid = anchorUuid;
+        }
+    }
 
     private fun setLocalPosition(props: Bundle) {
         val registeredParent = parent?.parent // first parent is a content node

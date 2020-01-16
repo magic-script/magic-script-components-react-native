@@ -17,11 +17,15 @@
 package com.magicleap.magicscript.utils
 
 import android.content.Context
+import android.net.Uri
+import android.util.TypedValue
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.collision.CollisionShape
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Material
+import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
@@ -87,12 +91,13 @@ class Utils {
 
         /**
          * Calculates local bounds of a basic node [Node] using its collision shape.
+         * @param collShape collision shape of a node (or its renderable) or null if
+         * node has no renderable
          */
-        fun calculateBoundsOfNode(node: Node): Bounding {
+        fun calculateBoundsOfNode(node: Node, collShape: CollisionShape?): Bounding {
             // TODO (optionally) add Sphere collision shape support (currently never used)
             val offsetX = node.localPosition.x
             val offsetY = node.localPosition.y
-            val collShape = node.collisionShape
             return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y
@@ -123,7 +128,7 @@ class Utils {
                 val childBounds = if (node is TransformNode) {
                     node.getBounding()
                 } else {
-                    calculateBoundsOfNode(node)
+                    calculateBoundsOfNode(node, node.collisionShape)
                 }
 
                 sumBounds.left = min(childBounds.left, sumBounds.left)
@@ -209,6 +214,35 @@ class Utils {
             }
         }
 
+        fun detectModelType(modelUri: Uri, context: Context): ModelType {
+            if (modelUri.toString().contains("android.resource://")) { // release build
+                val resourceName = modelUri.lastPathSegment
+                val resourceId =
+                    context.resources.getIdentifier(resourceName, "raw", context.packageName)
+                if (resourceId == 0) { // does not exists
+                    return ModelType.UNKNOWN
+                }
+
+                val value = TypedValue()
+                context.resources.getValue(resourceId, value, true)
+                val resWithExtension = value.string
+                if (resWithExtension.endsWith(".glb")) {
+                    return ModelType.GLB
+                }
+                if (resWithExtension.endsWith(".sfb")) {
+                    return ModelType.SFB
+                }
+                return ModelType.UNKNOWN
+            } else { // localhost path
+                if (modelUri.toString().contains(".glb")) {
+                    return ModelType.GLB
+                }
+                if (modelUri.toString().contains(".sfb")) {
+                    return ModelType.SFB
+                }
+                return ModelType.UNKNOWN
+            }
+        }
     }
 
 }

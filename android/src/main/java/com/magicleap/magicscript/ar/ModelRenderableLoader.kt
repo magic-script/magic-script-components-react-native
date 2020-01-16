@@ -17,7 +17,11 @@
 package com.magicleap.magicscript.ar
 
 import android.net.Uri
+import com.google.ar.sceneform.rendering.ModelRenderable
 
 interface ModelRenderableLoader {
-    fun loadRenderable(modelUri: Uri, resultCallback: ((result: RenderableResult) -> Unit))
+    fun loadRenderable(
+        modelUri: Uri,
+        resultCallback: ((result: RenderableResult<ModelRenderable>) -> Unit)
+    )
 }

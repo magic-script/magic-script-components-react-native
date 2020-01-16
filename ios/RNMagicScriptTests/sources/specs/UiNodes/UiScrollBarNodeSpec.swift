@@ -33,8 +33,8 @@ class UiScrollBarNodeSpec: QuickSpec {
             context("initial properties") {
                 it("should have set default values") {
                     expect(node.alignment).to(equal(Alignment.centerCenter))
-                    expect(node.width).to(beCloseTo(0.0))
-                    expect(node.height).to(beCloseTo(0.0))
+                    expect(node.length).to(beCloseTo(0.0))
+                    expect(node.thickness).to(beCloseTo(0.0))
                     expect(node.thumbSize).to(beCloseTo(0.1))
                     expect(node.thumbPosition).to(beCloseTo(0.0))
                     expect(node.scrollOrientation).to(equal(.vertical))
@@ -60,19 +60,19 @@ class UiScrollBarNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beFalse())
                 }
 
-                it("should update 'width' prop") {
-                    let referenceWidth: CGFloat = 0.6
-                    node.update(["width" : referenceWidth])
-                    expect(node.width).to(beCloseTo(referenceWidth))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultThickness, height: referenceWidth)))
+                it("should update 'length' prop") {
+                    let referenceLength: CGFloat = 0.6
+                    node.update(["length" : referenceLength])
+                    expect(node.length).to(beCloseTo(referenceLength))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: UiScrollBarNode.defaultThickness, height: referenceLength)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'height' prop") {
-                    let referenceHeight: CGFloat = 0.2
-                    node.update(["height" : referenceHeight])
-                    expect(node.height).to(beCloseTo(referenceHeight))
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceHeight, height: UiScrollBarNode.defaultLength)))
+                it("should update 'thickness' prop") {
+                    let referenceThickness: CGFloat = 0.2
+                    node.update(["thickness" : referenceThickness])
+                    expect(node.thickness).to(beCloseTo(referenceThickness))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceThickness, height: UiScrollBarNode.defaultLength)))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 

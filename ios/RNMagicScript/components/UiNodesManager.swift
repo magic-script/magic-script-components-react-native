@@ -19,23 +19,25 @@ import SceneKit
 import ARKit
 
 @objc open class UiNodesManager: NSObject {
-    @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], nodeByAnchorUuid: [:], focusedNode: nil)
+    @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
     @objc public private (set) var rootNode: TransformNode
     
     var onInputFocused: ((_ input: DataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
     
     fileprivate var nodesById: [String: TransformNode]
-    fileprivate var nodeByAnchorUuid: [String: TransformNode]
+    fileprivate var transformNodeByAnchorUuid: [String: TransformNode]
+    fileprivate var anchorNodeByAnchorUuid: [String: SCNNode]
     fileprivate var focusedNode: UiNode?
     fileprivate var longPressedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
     var dialogPresenter: DialogPresenting?
     
-    init(rootNode: TransformNode, nodesById: [String: TransformNode], nodeByAnchorUuid: [String: TransformNode], focusedNode: UiNode?) {
+    init(rootNode: TransformNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
         self.nodesById = nodesById
-        self.nodeByAnchorUuid = nodeByAnchorUuid
+        self.transformNodeByAnchorUuid = transformNodeByAnchorUuid
+        self.anchorNodeByAnchorUuid = anchorNodeByAnchorUuid
         self.focusedNode = focusedNode
     }
 
@@ -94,14 +96,17 @@ import ARKit
     }
     
     @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
-        return nodeByAnchorUuid[nodeId]
+        return transformNodeByAnchorUuid[nodeId]
     }
     
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
-        if (node.anchorUuid != "rootUuid") {
-            nodeByAnchorUuid[node.anchorUuid] = node;
+        if !node.anchorUuid.isEmpty {
+            transformNodeByAnchorUuid[node.anchorUuid] = node;
+            if let anchorNode = anchorNodeByAnchorUuid[node.anchorUuid] {
+                applyTransform(from: anchorNode, to: node)
+            }
         }
     }
     
@@ -109,6 +114,9 @@ import ARKit
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
+            if !node.anchorUuid.isEmpty {
+                transformNodeByAnchorUuid.removeValue(forKey: node.anchorUuid)
+            }
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)
             }
@@ -206,18 +214,31 @@ import ARKit
             textEdit.text = text
         }
     }
+
+    fileprivate func applyTransform(from anchorNode: SCNNode, to transformNode: TransformNode) {
+        transformNode.transform = anchorNode.convertTransform(anchorNode.transform, to: transformNode)
+    }
 }
 
 extension UiNodesManager: RCTARViewObserving {
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        if let name = anchor.name {
+            anchorNodeByAnchorUuid[name] = node
+        }
         if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            transformNode.transform = node.convertTransform(node.transform, to: transformNode)
+            applyTransform(from: node, to: transformNode)
         }
     }
 
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            transformNode.transform = node.convertTransform(node.transform, to: transformNode)
+            applyTransform(from: node, to: transformNode)
+        }
+    }
+
+    @objc internal func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        if let name = anchor.name {
+            anchorNodeByAnchorUuid.removeValue(forKey: name)
         }
     }
 }

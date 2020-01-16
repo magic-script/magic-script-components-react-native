@@ -28,13 +28,13 @@ import SceneKit
 
     // The length of the scrollbar. This is a little bit longer than the scroll range
     // (which is the range the thumb will run).
-    @objc var width: CGFloat = 0.0 {
+    @objc var length: CGFloat = 0.0 {
         didSet { setNeedsLayout() }
     }
 
     // This is how wide the scrollbar will be. A user should normally not care about this
     // unless they intend to change the skin of an app.
-    @objc var height: CGFloat = 0.0 {
+    @objc var thickness: CGFloat = 0.0 {
         didSet { setNeedsLayout() }
     }
 
@@ -75,14 +75,14 @@ import SceneKit
 
         assert(backgroundNode == nil, "Node must not be initialized!")
 
-        let backgroundGeometry = SCNPlane(width: width, height: height)
+        let backgroundGeometry = SCNPlane(width: length, height: thickness)
         backgroundGeometry.firstMaterial?.lightingModel = .constant
         backgroundGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         backgroundGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
         backgroundNode = SCNNode(geometry: backgroundGeometry)
         contentNode.addChildNode(backgroundNode)
 
-        let thumbGeometry = SCNPlane(width: thumbSize * width, height: height)
+        let thumbGeometry = SCNPlane(width: thumbSize * length, height: thickness)
         thumbGeometry.firstMaterial?.lightingModel = .constant
         thumbGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         thumbGeometry.firstMaterial?.diffuse.contents = UIColor.white
@@ -96,12 +96,12 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
 
-        if let width = Convert.toCGFloat(props["width"]) {
-            self.width = width
+        if let length = Convert.toCGFloat(props["length"]) {
+            self.length = length
         }
 
-        if let height = Convert.toCGFloat(props["height"]) {
-            self.height = height
+        if let thickness = Convert.toCGFloat(props["thickness"]) {
+            self.thickness = thickness
         }
 
         if let thumbSize = Convert.toCGFloat(props["thumbSize"]) {
@@ -118,14 +118,14 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let length: CGFloat = (width > 0.0001) ? width : UiScrollBarNode.defaultLength
-        let thickness: CGFloat = (height > 0.0001) ? height : UiScrollBarNode.defaultThickness
-        _localScrollBarSize = CGSize(width: length, height: thickness)
+        let barLength: CGFloat = (length > 0.0001) ? length : UiScrollBarNode.defaultLength
+        let barThickness: CGFloat = (thickness > 0.0001) ? thickness : UiScrollBarNode.defaultThickness
+        _localScrollBarSize = CGSize(width: barLength, height: barThickness)
         if scrollOrientation == .horizontal {
             return _localScrollBarSize
         }
 
-        return CGSize(width: thickness, height: length)
+        return CGSize(width: barThickness, height: barLength)
     }
 
     @objc override func updateLayout() {

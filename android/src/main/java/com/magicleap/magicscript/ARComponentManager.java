@@ -30,8 +30,10 @@ import com.facebook.react.bridge.ReadableMap;
 import com.google.vr.sdk.audio.GvrAudioEngine;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
+import com.magicleap.magicscript.ar.LoopedAnimator;
 import com.magicleap.magicscript.ar.ModelRenderableLoader;
 import com.magicleap.magicscript.ar.ModelRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.RenderableAnimator;
 import com.magicleap.magicscript.ar.VideoRenderableLoader;
 import com.magicleap.magicscript.ar.VideoRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.ViewRenderableLoader;
@@ -223,7 +225,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader), nodeId));
+        RenderableAnimator animator = new LoopedAnimator();
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator), nodeId));
     }
 
     @ReactMethod

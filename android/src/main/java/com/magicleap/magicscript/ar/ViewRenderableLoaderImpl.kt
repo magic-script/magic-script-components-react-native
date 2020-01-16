@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.ar
 
 import android.content.Context
+import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.R
 
@@ -24,7 +25,7 @@ class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoa
 
     override fun loadRenderable(
         config: ViewRenderableLoader.Config,
-        resultCallback: ((result: RenderableResult) -> Unit)
+        resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
     ) {
 
         val builder = ViewRenderable

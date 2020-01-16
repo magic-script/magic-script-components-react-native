@@ -149,7 +149,7 @@ class VideoNode(
             }
 
             videoRenderableLoader.loadRenderable { result ->
-                if (result is RenderableResult.Success) {
+                if (result is RenderableResult.Success<Renderable>) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
                     if (isVisible) {
                         contentNode.renderable = result.renderable

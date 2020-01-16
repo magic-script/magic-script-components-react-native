@@ -18,11 +18,12 @@ package com.magicleap.magicscript.ar
 
 import android.content.Context
 import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.logMessage
 
 class VideoRenderableLoaderImpl(private val context: Context) : VideoRenderableLoader {
-    override fun loadRenderable(resultCallback: (result: RenderableResult) -> Unit) {
+    override fun loadRenderable(resultCallback: (result: RenderableResult<Renderable>) -> Unit) {
         ModelRenderable.builder()
             .setSource(context, R.raw.chroma_key_video)
             .build()

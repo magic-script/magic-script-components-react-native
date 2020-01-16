@@ -48,13 +48,13 @@ import SceneKit
             setNeedsLayout()
         }
     }
-    @objc var multiSelectMode: Bool = false {
-        didSet {
-            selectedItems.forEach { $0.toggleSelection() }
-            selectedItems.removeAll()
-        }
+    @objc var multiSelect: Bool = false {
+        didSet { selectedItems.forEach { $0.toggleSelection() } }
     }
     @objc var isListExpanded: Bool { return !listNode.isHidden }
+    @objc var selectedItems: [UiDropdownListItemNode] {
+        return itemsList.filter { $0.selected }
+    }
 
     @objc public var onSelectionChanged: ((_ sender: UiDropdownListNode, _ selectedItems: [UiDropdownListItemNode]) -> (Void))?
 
@@ -63,7 +63,6 @@ import SceneKit
     fileprivate var iconNode: SCNNode!
 
     fileprivate var itemsList: [UiDropdownListItemNode] = []
-    fileprivate(set) var selectedItems: [UiDropdownListItemNode] = []
     fileprivate var listNode: SCNNode!
     fileprivate var backgroundNode: SCNNode?
     fileprivate var listGridLayoutNode: UiGridLayoutNode!
@@ -194,8 +193,8 @@ import SceneKit
             self.maxCharacterLimit = maxCharacterLimit
         }
 
-        if let multiSelectMode = Convert.toBool(props["multiSelectMode"]) {
-            self.multiSelectMode = multiSelectMode
+        if let multiSelect = Convert.toBool(props["multiSelect"]) {
+            self.multiSelect = multiSelect
         }
     }
 
@@ -327,22 +326,16 @@ import SceneKit
 
 extension UiDropdownListNode: DropdownListItemTapHandling {
     func handleTap(_ sender: UiDropdownListItemNode) {
-        if !multiSelectMode {
+        if !multiSelect {
             selectedItems.forEach { $0.toggleSelection() }
-            selectedItems.removeAll()
         }
 
         sender.toggleSelection()
-        if sender.isSelected {
-            selectedItems.append(sender)
-        } else {
-            selectedItems.removeAll { $0 == sender }
-        }
 
         // notify about item selection
         onSelectionChanged?(self, selectedItems)
 
-        if !multiSelectMode {
+        if !multiSelect {
             setListNodeVisible(false)
         }
     }

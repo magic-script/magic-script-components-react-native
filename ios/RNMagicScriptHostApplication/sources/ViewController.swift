@@ -103,6 +103,39 @@ class ViewController: UIViewController {
         ])
     }
 
+    fileprivate func setupDropdownListTest() {
+        // Rect layout
+        let dropdownListId: String = "dropdown_list_id"
+        let dropdown: UiDropdownListNode = createComponent([
+            "alignment": "top-center",
+            "debug": true,
+            "localPosition": [0, 0.7, 0],
+            "text": "DropDownList",
+//            "textSize": 0.015,
+            "multiSelect": true,
+//            "maxCharacterLimit": 4
+        ], nodeId: dropdownListId, parentId: groupId)
+
+        for i in 0..<10 {
+            let _: UiDropdownListItemNode = createComponent([
+                "id": i,
+                "label": "item \(i + 1)",
+                "selected": i % 2 == 0
+            ], nodeId: "item_\(i)", parentId: dropdownListId)
+        }
+
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0, -0.4, 0],
+            "text": "Multi select mode",
+            "textSize": 0.08,
+            "height": 0.1,
+            "debug": true
+        ], nodeId: "toggle_id", parentId: groupId)
+        toggle.onChanged = { sender, on in
+            dropdown.multiSelect = on
+        }
+    }
+
     @discardableResult
     fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)

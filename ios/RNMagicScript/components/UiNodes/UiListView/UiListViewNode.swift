@@ -53,7 +53,7 @@ import SceneKit
         linearLayout.alignment = .centerCenter
 
         scrollBar = UiScrollBarNode()
-        scrollBar.height = 0.04
+        scrollBar.thickness = 0.04
 
         scrollView = UiScrollViewNode()
         scrollView.scrollBarVisibility = .always
@@ -108,12 +108,12 @@ import SceneKit
         scrollView.scrollBounds = (min: min, max: max)
         scrollView.layoutIfNeeded()
 
-        scrollBar.width = (layoutOrientation == .vertical) ? size.height : size.width
+        scrollBar.length = (layoutOrientation == .vertical) ? size.height : size.width
         let bounds: CGRect = scrollView.getBounds()
         if layoutOrientation == .vertical {
-            scrollBar.localPosition = SCNVector3(bounds.maxX - 0.5 * scrollBar.height, bounds.midY, 0)
+            scrollBar.localPosition = SCNVector3(bounds.maxX - 0.5 * scrollBar.thickness, bounds.midY, 0)
         } else {
-            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.height, 0)
+            scrollBar.localPosition = SCNVector3(bounds.midX, bounds.minY + 0.5 * scrollBar.thickness, 0)
         }
         scrollBar.layoutIfNeeded()
     }

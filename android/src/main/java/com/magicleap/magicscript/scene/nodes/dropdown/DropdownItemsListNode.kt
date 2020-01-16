@@ -21,7 +21,7 @@ class DropdownItemsListNode(
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
-        const val DEFAULT_ITEMS_TEXT_SIZE = 0.0167F
+        const val DEFAULT_ITEMS_TEXT_SIZE = 0.025F
     }
 
     var maxHeight = WRAP_CONTENT_DIMENSION
@@ -37,12 +37,14 @@ class DropdownItemsListNode(
         }
 
     private val items = mutableListOf<UiDropdownListItemNode>()
+    private var itemsAdapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.list_view, null)
+        return LayoutInflater.from(context).inflate(R.layout.dropdown_list_view, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
+        itemsAdapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
         val size = calculateItemsSize()
         if (maxHeight != WRAP_CONTENT_DIMENSION && size.y > maxHeight) {
             size.y = maxHeight
@@ -59,7 +61,7 @@ class DropdownItemsListNode(
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
-            refreshAdapter()
+            // refreshAdapter()
             setNeedsRebuild(true)
         }
     }
@@ -68,7 +70,7 @@ class DropdownItemsListNode(
         super.removeContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
-            refreshAdapter()
+            // refreshAdapter()
             setNeedsRebuild(true)
         }
     }
@@ -81,11 +83,11 @@ class DropdownItemsListNode(
 
     // Calculates list view size based on list items size
     private fun calculateItemsSize(): Vector2 {
-        val list = view as ListView
         var width = 0f
         var height = 0f
-        for (i in 0 until list.count) {
-            val childView = list.adapter.getView(i, null, list)
+        val listView = view as ListView
+        for (i in 0 until itemsAdapter.count) {
+            val childView = itemsAdapter.getView(i, null, listView)
             val size =
                 childView.getSizeInMeters(context, WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
             if (size.x > width) {
@@ -93,8 +95,7 @@ class DropdownItemsListNode(
             }
             height += size.y
         }
-        //dividers height
-        height += Utils.pxToMeters(list.dividerHeight * list.count, context)
+        height += Utils.pxToMeters(listView.dividerHeight * itemsAdapter.count, context)
         return Vector2(width, height)
     }
 

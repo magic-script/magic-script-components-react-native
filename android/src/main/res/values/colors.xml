@@ -32,7 +32,6 @@
     <color name="dialog_background">#00000000</color>
     <color name="circle_confirmation_background">#BF9C9C9C</color>
     <color name="circle_confirmation_color">#FFC6D8E5</color>
-    <color name="dropdown_background">#FF3F3852</color>
 
     <!-- The order matters (colors appear clockwise) -->
     <string-array name="circe_confirmation_colors">

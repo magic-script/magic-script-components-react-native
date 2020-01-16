@@ -37,15 +37,14 @@ class DropdownItemsListNode(
         }
 
     private val items = mutableListOf<UiDropdownListItemNode>()
-    private var itemsAdapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.dropdown_list_view, null)
+        return LayoutInflater.from(context).inflate(R.layout.dropdown_list, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
-        itemsAdapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
-        val size = calculateItemsSize()
+        val itemsAdapter = buildAdapter()
+        val size = calculateItemsSize(itemsAdapter)
         if (maxHeight != WRAP_CONTENT_DIMENSION && size.y > maxHeight) {
             size.y = maxHeight
         }
@@ -54,14 +53,13 @@ class DropdownItemsListNode(
 
     override fun setupView() {
         super.setupView()
-        refreshAdapter()
+        (view as ListView).adapter = buildAdapter()
     }
 
     override fun addContent(child: TransformNode) {
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
-            // refreshAdapter()
             setNeedsRebuild(true)
         }
     }
@@ -70,19 +68,13 @@ class DropdownItemsListNode(
         super.removeContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
-            // refreshAdapter()
             setNeedsRebuild(true)
         }
     }
 
-    private fun refreshAdapter() {
-        val adapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
-        adapter.textSizePx = Utils.metersToFontPx(itemsTextSize, context)
-        (view as ListView).adapter = adapter
-    }
 
     // Calculates list view size based on list items size
-    private fun calculateItemsSize(): Vector2 {
+    private fun calculateItemsSize(itemsAdapter: DropdownItemsAdapter): Vector2 {
         var width = 0f
         var height = 0f
         val listView = view as ListView
@@ -95,8 +87,14 @@ class DropdownItemsListNode(
             }
             height += size.y
         }
-        height += Utils.pxToMeters(listView.dividerHeight * itemsAdapter.count, context)
+        // height += Utils.pxToMeters(listView.dividerHeight * itemsAdapter.count, context)
         return Vector2(width, height)
+    }
+
+    private fun buildAdapter(): DropdownItemsAdapter {
+        val adapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
+        adapter.textSizePx = Utils.metersToFontPx(itemsTextSize, context)
+        return adapter
     }
 
 }

@@ -32,7 +32,7 @@ class DropdownItemsAdapter(
 ) : ArrayAdapter<UiDropdownListItemNode>(context, layoutRes, items) {
 
     // in pixels
-    var textSizePx = 12
+    var textSizePx = 24
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(layoutRes, null)
@@ -42,8 +42,9 @@ class DropdownItemsAdapter(
             view.text = item.label
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx.toFloat())
 
-            val padding = textSizePx / 2
-            view.setPadding(padding, padding, padding, padding)
+            val paddingHorizontal = textSizePx
+            val paddingVertical = paddingHorizontal / 2
+            view.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
         }
 
         return view

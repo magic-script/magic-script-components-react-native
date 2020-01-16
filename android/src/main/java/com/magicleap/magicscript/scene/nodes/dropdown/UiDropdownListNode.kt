@@ -147,13 +147,19 @@ class UiDropdownListNode(
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {
-        setListTextSize(items, props)
+        setListTextSize(props)
         setCharactersLimit(items, props)
     }
 
-    private fun setListTextSize(items: List<UiDropdownListItemNode>, props: Bundle) {
+    private fun setListTextSize(props: Bundle) {
         if (props.containsKey(PROP_LIST_TEXT_SIZE)) {
             listNode.itemsTextSize = props.getDouble(PROP_LIST_TEXT_SIZE).toFloat()
+            return
+        }
+
+        if (props.containsKey(PROP_TEXT_SIZE)) {
+            listNode.itemsTextSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
+            return
         }
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -37,10 +38,6 @@ open class UiListViewItemNode(
 
     init {
         properties.putDefault(PROP_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR)
-
-        onViewLoadedListener = { renderable ->
-            renderable.renderPriority = RENDER_PRIORITY
-        }
     }
 
     override fun provideView(context: Context): View {
@@ -51,6 +48,11 @@ open class UiListViewItemNode(
         val width = max(lastContentBounds.size().x, minSize.x)
         val height = max(lastContentBounds.size().y, minSize.y)
         return Vector2(width, height)
+    }
+
+    override fun onViewLoaded(viewRenderable: Renderable) {
+        super.onViewLoaded(viewRenderable)
+        viewRenderable.renderPriority = RENDER_PRIORITY
     }
 
     override fun applyProperties(props: Bundle) {

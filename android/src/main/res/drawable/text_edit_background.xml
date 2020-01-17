@@ -18,7 +18,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="270"
-        android:startColor="@color/text_edit_background_start"
-        android:endColor="@color/text_edit_background_end"
+        android:startColor="@color/violet_gradient_start"
+        android:endColor="@color/violet_gradient_end"
         android:type="linear" />
 </shape>

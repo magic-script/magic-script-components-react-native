@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +17,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="270"
-        android:startColor="@color/text_edit_background_start"
-        android:endColor="@color/text_edit_background_end"
+        android:endColor="@color/violet_gradient_end"
+        android:startColor="@color/violet_gradient_start"
         android:type="linear" />
 </shape>

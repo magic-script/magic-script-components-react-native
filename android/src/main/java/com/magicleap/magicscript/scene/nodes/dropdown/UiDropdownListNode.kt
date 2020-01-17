@@ -29,7 +29,7 @@ import com.magicleap.magicscript.scene.nodes.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
 
 class UiDropdownListNode(
@@ -52,7 +52,6 @@ class UiDropdownListNode(
 
     // Events
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
-    var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: DropdownItemsListNode
     private var listNodeAdded = false
@@ -63,15 +62,18 @@ class UiDropdownListNode(
         listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
 
         properties.putString(PROP_ICON, "arrow-down")
-        properties.putDefault(PROP_SHOW_LIST, false)
+        // properties.putDefault(PROP_SHOW_LIST, false)
     }
 
     override fun build() {
         super.build()
 
         if (!listNodeAdded) {
-            listNode.onSelectionChangedListener = onSelectionChangedListener
+            listNode.onSelectionChangedListener = { selectedItems ->
+                onSelectionChangedListener?.invoke(selectedItems)
+            }
             listNode.build()
+            listNode.hide()
             addContent(listNode)
             listNodeAdded = true
         }
@@ -187,14 +189,13 @@ class UiDropdownListNode(
 
     private fun showList() {
         listNode.show()
-        properties.putBoolean(PROP_SHOW_LIST, true)
-        onListVisibilityChanged?.invoke(true)
+        // properties.putBoolean(PROP_SHOW_LIST, true)
     }
 
     private fun hideList() {
+        logMessage("hide called")
         listNode.hide()
-        properties.putBoolean(PROP_SHOW_LIST, false)
-        onListVisibilityChanged?.invoke(false)
+        // properties.putBoolean(PROP_SHOW_LIST, false)
     }
 
 }

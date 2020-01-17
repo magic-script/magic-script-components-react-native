@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ListView
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -21,6 +22,8 @@ class DropdownItemsListNode(
 
     companion object {
         const val DEFAULT_ITEMS_TEXT_SIZE = 0.025F
+
+        const val RENDER_PRIORITY = 5 // 4 is default, 5 means we draw at top of other views
     }
 
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
@@ -66,6 +69,11 @@ class DropdownItemsListNode(
         }
     }
 
+    override fun onViewLoaded(viewRenderable: Renderable) {
+        super.onViewLoaded(viewRenderable)
+        viewRenderable.renderPriority = RENDER_PRIORITY
+    }
+
     override fun addContent(child: TransformNode) {
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
@@ -86,6 +94,16 @@ class DropdownItemsListNode(
             items.add(child)
             setNeedsRebuild(true)
         }
+    }
+
+    override fun show() {
+        super.show()
+
+    }
+
+    override fun hide() {
+        super.hide()
+
     }
 
     // Calculates list view size based on list items size

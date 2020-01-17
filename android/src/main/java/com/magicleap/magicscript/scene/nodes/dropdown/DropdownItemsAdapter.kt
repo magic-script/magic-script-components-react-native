@@ -24,11 +24,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.magicleap.magicscript.utils.limited
 
 class DropdownItemsAdapter(
     context: Context,
     @LayoutRes private val layoutRes: Int,
-    items: List<UiDropdownListItemNode>
+    var items: List<UiDropdownListItemNode>
 ) : ArrayAdapter<UiDropdownListItemNode>(context, layoutRes, items) {
 
     // in pixels
@@ -39,8 +40,13 @@ class DropdownItemsAdapter(
         view as TextView
 
         getItem(position)?.let { item ->
-            view.text = item.label
+            view.text = if (item.maxCharacters != UiDropdownListItemNode.MAX_CHARACTERS_UNLIMITED) {
+                item.label.limited(item.maxCharacters)
+            } else {
+                item.label
+            }
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx.toFloat())
+            view.typeface = if (item.isSelected) item.typefaceBold else item.typefaceNormal
 
             val paddingHorizontal = textSizePx
             val paddingVertical = paddingHorizontal / 2

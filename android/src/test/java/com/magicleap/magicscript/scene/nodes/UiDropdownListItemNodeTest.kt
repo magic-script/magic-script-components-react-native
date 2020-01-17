@@ -102,7 +102,7 @@ class UiDropdownListItemNodeTest {
     fun `should use extra bold font for selected item`() {
         Mockito.reset(viewSpy)
 
-        tested.select()
+        tested.toggleItem()
 
         verify(viewSpy).typeface = Typeface.DEFAULT_BOLD
     }

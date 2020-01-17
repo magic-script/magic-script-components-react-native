@@ -16,19 +16,19 @@
 
 package com.magicleap.magicscript.scene.nodes.dropdown
 
-import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.read
 
 open class UiDropdownListItemNode(
     initProps: ReadableMap,
-    context: Context,
-    viewRenderableLoader: ViewRenderableLoader,
-    private val fontProvider: FontProvider
+    fontProvider: FontProvider
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -36,10 +36,10 @@ open class UiDropdownListItemNode(
         const val PROP_LABEL = "label"
         const val PROP_SELECTED = "selected"
 
-        private const val PADDING_FACTOR = 1.2F
+        const val MAX_CHARACTERS_UNLIMITED = 0
     }
 
-    var onSelectionChanged: ((selected: Boolean) -> Unit)? = null
+    var onSelectionChangeRequest: ((select: Boolean) -> Unit)? = null
 
     var id: Int = 0
         private set
@@ -48,78 +48,35 @@ open class UiDropdownListItemNode(
         private set
 
     var isSelected = false
-        private set(value) {
-            field = value
-            adjustFont()
-        }
 
-    var maxCharacters = 0 // 0 means unlimited
-        set(value) {
-            field = value
-            //  setNeedsRebuild()
-        }
-
-    fun select(silently: Boolean = false) {
-        if (!isSelected) {
-            isSelected = true
-            if (!silently) {
-                onSelectionChanged?.invoke(true)
-            }
-        }
-    }
-
-    fun deselect(silently: Boolean = false) {
-        if (isSelected) {
-            isSelected = false
-            if (!silently) {
-                onSelectionChanged?.invoke(false)
-            }
-        }
-    }
-
-    /*
-    override fun setupView() {
-        super.setupView()
-
-        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
-        val textSizePx = Utils.metersToPx(textSize, context)
-        val padding = (textSizePx * PADDING_FACTOR).toInt()
-        view.setPadding(padding, padding, padding, padding)
-
-        if (maxCharacters > 0) {
-            val textView = view as TextView
-            textView.text = textView.text.toString().limited(maxCharacters)
-        }
-    }
-
+    /**
+     * The [PROP_SELECTED] does not always have effect (e.g. when multi select mode is off then
+     * only one item can be selected at the time)
      */
+    val selectRequested get() = properties.read(PROP_SELECTED) ?: false
+
+    var maxCharacters = MAX_CHARACTERS_UNLIMITED
+
+    private val defaultBoldParams = FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
+
+    var typefaceNormal: Typeface = fontProvider.provideFont()
+        private set
+
+    var typefaceBold: Typeface = fontProvider.provideFont(defaultBoldParams)
+        private set
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
-        setText(props)
         setId(props)
+        setText(props)
         setSelected(props)
     }
 
     private fun setText(props: Bundle) {
         props.read<String>(PROP_LABEL)?.let { lbl ->
             this.label = lbl
-            //  val limited = if (maxCharacters > 0) lbl.limited(maxCharacters) else lbl
-            //props.putString(PROP_TEXT, limited)
         }
     }
-
-    /*
-    override fun onViewClick() {
-        super.onViewClick()
-        if (isSelected) {
-            deselect()
-        } else {
-            select()
-        }
-    }
-
-     */
 
     private fun setId(props: Bundle) {
         if (props.containsKey(PROP_ID)) {
@@ -128,29 +85,8 @@ open class UiDropdownListItemNode(
     }
 
     private fun setSelected(props: Bundle) {
-        val selected: Boolean? = props.read(PROP_SELECTED)
-        if (selected == true) {
-            select()
-        } else if (selected == false) {
-            deselect()
-        }
-    }
-
-    private fun adjustFont() {
-        /*
-        val fontParams = readFontParams(properties, "fontParams")
-        if (isSelected) {
-            val boldParams = if (fontParams != null) {
-                FontParams(FontWeight.EXTRA_BOLD, fontParams.style, fontParams.allCaps)
-            } else {
-                FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
-            }
-            (view as TextView).typeface = fontProvider.provideFont(boldParams)
-        } else {
-            (view as TextView).typeface = fontProvider.provideFont(fontParams)
-        }
-
-         */
+        val select = props.read<Boolean>(PROP_SELECTED) ?: return
+        onSelectionChangeRequest?.invoke(select)
     }
 
 }

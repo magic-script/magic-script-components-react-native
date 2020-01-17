@@ -46,7 +46,6 @@ class UiDropdownListNode(
         const val PROP_CHARACTERS_LIMIT = "maxCharacterLimit" // for list item
         const val PROP_MULTI_SELECT = "multiSelect"
         const val PROP_SHOW_LIST = "showList"
-        const val PROP_SELECTED = "selected"
 
         const val Z_ORDER_OFFSET = 2e-5F
     }
@@ -56,9 +55,6 @@ class UiDropdownListNode(
     var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
 
     private val listNode: DropdownItemsListNode
-    private var selectedItems = mutableListOf<UiDropdownListItemNode>()
-
-    private var multiSelect = false
     private var listNodeAdded = false
 
     init {
@@ -74,6 +70,7 @@ class UiDropdownListNode(
         super.build()
 
         if (!listNodeAdded) {
+            listNode.onSelectionChangedListener = onSelectionChangedListener
             listNode.build()
             addContent(listNode)
             listNodeAdded = true
@@ -100,28 +97,19 @@ class UiDropdownListNode(
         setMaxListHeight(props)
     }
 
-
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
-            if (child.isSelected) {
-                selectedItems.add(child)
-            }
-            child.onSelectionChanged = { isSelected ->
-                handleChildSelectionChanged(child, isSelected)
-            }
             listNode.addContent(child)
         } else {
             super.addContent(child)
         }
+
     }
 
     override fun removeContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
-            if (selectedItems.contains(child)) {
-                selectedItems.remove(child)
-            }
         } else {
             super.removeContent(child)
         }
@@ -175,7 +163,7 @@ class UiDropdownListNode(
     private fun setMultiSelect(props: Bundle) {
         val multiSelect = props.read<Boolean>(PROP_MULTI_SELECT)
         if (multiSelect != null) {
-            this.multiSelect = multiSelect
+            listNode.multiSelect = multiSelect
         }
     }
 
@@ -207,25 +195,6 @@ class UiDropdownListNode(
         listNode.hide()
         properties.putBoolean(PROP_SHOW_LIST, false)
         onListVisibilityChanged?.invoke(false)
-    }
-
-    private fun handleChildSelectionChanged(child: UiDropdownListItemNode, isSelected: Boolean) {
-        if (multiSelect) {
-            if (isSelected) {
-                selectedItems.add(child)
-            } else {
-                selectedItems.remove(child)
-            }
-        } else {
-            val lastSelectedItem = selectedItems.firstOrNull()
-            lastSelectedItem?.deselect(silently = true)
-            child.select(silently = true)
-            selectedItems = mutableListOf(child)
-            if (listNode.isVisible) {
-                hideList()
-            }
-        }
-        onSelectionChangedListener?.invoke(selectedItems)
     }
 
 }

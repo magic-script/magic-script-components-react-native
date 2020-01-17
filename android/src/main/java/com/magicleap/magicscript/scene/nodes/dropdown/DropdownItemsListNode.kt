@@ -13,7 +13,6 @@ import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getSizeInMeters
 
-
 class DropdownItemsListNode(
     initProps: ReadableMap,
     context: Context,
@@ -23,6 +22,8 @@ class DropdownItemsListNode(
     companion object {
         const val DEFAULT_ITEMS_TEXT_SIZE = 0.025F
     }
+
+    var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
 
     var maxHeight = WRAP_CONTENT_DIMENSION
         set(value) {
@@ -36,15 +37,18 @@ class DropdownItemsListNode(
             setNeedsRebuild(true)
         }
 
+    var multiSelect = false
+
     private val items = mutableListOf<UiDropdownListItemNode>()
+    private lateinit var itemsAdapter: DropdownItemsAdapter
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.dropdown_list, null)
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val itemsAdapter = buildAdapter()
-        val size = calculateItemsSize(itemsAdapter)
+        val tempAdapter = buildAdapter()
+        val size = calculateItemsSize(tempAdapter)
         if (maxHeight != WRAP_CONTENT_DIMENSION && size.y > maxHeight) {
             size.y = maxHeight
         }
@@ -53,13 +57,25 @@ class DropdownItemsListNode(
 
     override fun setupView() {
         super.setupView()
-        (view as ListView).adapter = buildAdapter()
+        val listView = view as ListView
+        itemsAdapter = buildAdapter()
+        listView.adapter = itemsAdapter
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val item = items[position]
+            handleSelectionChangeRequest(item, !item.isSelected)
+        }
     }
 
     override fun addContent(child: TransformNode) {
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
+            if (child.selectRequested) {
+                handleSelectionChangeRequest(child, true)
+            }
+            child.onSelectionChangeRequest = { select ->
+                handleSelectionChangeRequest(child, select)
+            }
             setNeedsRebuild(true)
         }
     }
@@ -71,7 +87,6 @@ class DropdownItemsListNode(
             setNeedsRebuild(true)
         }
     }
-
 
     // Calculates list view size based on list items size
     private fun calculateItemsSize(itemsAdapter: DropdownItemsAdapter): Vector2 {
@@ -95,6 +110,36 @@ class DropdownItemsListNode(
         val adapter = DropdownItemsAdapter(context, R.layout.dropdown_item, items)
         adapter.textSizePx = Utils.metersToFontPx(itemsTextSize, context)
         return adapter
+    }
+
+    private fun handleSelectionChangeRequest(item: UiDropdownListItemNode, select: Boolean) {
+        var selectionChanged = false
+
+        if (multiSelect) {
+            if (item.isSelected != select) {
+                selectionChanged = true
+            }
+            item.isSelected = select
+        } else {
+            if (select) { // cannot deselect an item when multiSelect mode inactive
+                val lastSelectedItem = items.find { it.isSelected }
+                if (item != lastSelectedItem) {
+                    lastSelectedItem?.isSelected = false
+                    item.isSelected = true
+                    selectionChanged = true
+                }
+            }
+            if (isVisible) {
+                hide()
+            }
+        }
+        if (selectionChanged) {
+            itemsAdapter.notifyDataSetChanged()
+            (view as ListView).invalidateViews()
+            val selectedItems = items.filter { it.isSelected }
+            onSelectionChangedListener?.invoke(selectedItems)
+        }
+
     }
 
 }

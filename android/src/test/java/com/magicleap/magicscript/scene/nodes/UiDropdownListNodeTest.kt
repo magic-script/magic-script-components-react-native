@@ -96,7 +96,7 @@ class UiDropdownListNodeTest {
             selectedItemsList = selectedItems
         }
 
-        item2.select()
+        item2.toggleItem()
 
         selectedItemsList.size shouldEqual 2
         selectedItemsList shouldContain item2
@@ -107,8 +107,8 @@ class UiDropdownListNodeTest {
     fun `should select only the last clicked item when multi select disabled`() {
         tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, false))
 
-        item1.select()
-        item2.select()
+        item1.toggleItem()
+        item2.toggleItem()
 
         item1.isSelected shouldBe false
         item2.isSelected shouldBe true
@@ -118,8 +118,8 @@ class UiDropdownListNodeTest {
     fun `should be able to select multiple items when multi select enabled`() {
         tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, true))
 
-        item1.select()
-        item2.select()
+        item1.toggleItem()
+        item2.toggleItem()
 
         item1.isSelected shouldBe true
         item2.isSelected shouldBe true
@@ -137,7 +137,7 @@ class UiDropdownListNodeTest {
             listVisible = isVisible
         }
 
-        item1.select()
+        item1.toggleItem()
 
         listVisible shouldBe false
     }
@@ -154,7 +154,7 @@ class UiDropdownListNodeTest {
             listVisible = isVisible
         }
 
-        item1.select()
+        item1.toggleItem()
 
         listVisible shouldBe true
     }

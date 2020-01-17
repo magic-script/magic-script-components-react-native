@@ -298,10 +298,112 @@ describe("platformFactory", () => {
         expect(platformFactory._processColor(textColorString)).toEqual(
           expectedColor_fromText
         );
-        const hexColorString = "#FFFFFF";
-        const expectedColor_fromHex = [1.0, 1.0, 1.0, 1.0];
-        expect(platformFactory._processColor(hexColorString)).toEqual(
-          expectedColor_fromHex
+        const lowercaseHexColorString = "#ff3399";
+        const expectedColor_fromLowercaseHex = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(lowercaseHexColorString)).toEqual(
+          expectedColor_fromLowercaseHex
+        );
+        const uppercaseHexColorString = "#FF3399";
+        const expectedColor_fromUppercaseHex = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(uppercaseHexColorString)).toEqual(
+          expectedColor_fromUppercaseHex
+        );
+        const shortLowercaseHexColorString = "f39";
+        const expectedColor_fromShortLowercaseHex = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(shortLowercaseHexColorString)).toEqual(
+          expectedColor_fromShortLowercaseHex
+        );
+        const shortUppercaseHexColorString = "F39";
+        const expectedColor_fromShortUppercaseHex = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(shortUppercaseHexColorString)).toEqual(
+          expectedColor_fromShortUppercaseHex
+        );
+      });
+    });
+
+    describe("when arg is number", () => {
+      test("should return array", () => {
+        const colorNumber = 0xff3399;
+        const expectedColor_fromNumber = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(colorNumber)).toEqual(
+          expectedColor_fromNumber
+        );
+      });
+    });
+
+    describe("when arg is object", () => {
+      test("should return array", () => {
+        const colorHsl = { h:330, s:1, l:0.6 };
+        const expectedColor_fromHsl = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(colorHsl)).toEqual(
+          expectedColor_fromHsl
+        );
+
+        const colorLch = { l:80, c:25, h:200 };
+        const expectedColor_fromLch = [0.52289, 0.82946, 0.83698, 1.0];
+        const result_lch = platformFactory._processColor(colorLch);
+        result_lch.every((x, i) => expect(x).toBeCloseTo(expectedColor_fromLch[i]));
+
+        const colorCmyk = { c:1, m:0.5, y:0, k:0.2 };
+        const expectedColor_fromCmyk = [0.0, 0.4, 0.8, 1.0];
+        expect(platformFactory._processColor(colorCmyk)).toEqual(
+          expectedColor_fromCmyk
+        );
+
+        const colorRgb = { r:255, g:51, b:153 };
+        const expectedColor_fromRgb = [1.0, 0.2, 0.6, 1.0];
+        expect(platformFactory._processColor(colorRgb)).toEqual(
+          expectedColor_fromRgb
+        );
+
+        const colorRgba = { r:255, g:51, b:153, a:0.8 };
+        const expectedColor_fromRgba = [1.0, 0.2, 0.6, 0.8];
+        expect(platformFactory._processColor(colorRgba)).toEqual(
+          expectedColor_fromRgba
+        );
+      });
+    });
+  });
+
+  describe("_processColors", () => {
+    var platformFactory = new PlatformFactory(nativeComponentMapping);
+
+    describe("when arg contains keys ending with 'color'", () => {
+      test("should convert colors to GL format", () => {
+        const properties = {
+          fooColor: "red",
+          color: "f39",
+          value: 34,
+        };
+        const expectedProperties = {
+          fooColor: [1.0, 0.0, 0.0, 1.0],
+          color: [1.0, 0.2, 0.6, 1.0],
+          value: 34,
+        }
+        expect(platformFactory._processColors(properties)).toEqual(
+          expectedProperties
+        );
+      });
+    });
+
+    describe("when arg contains 'progressColor' key", () => {
+      test("should convert colors to GL format", () => {
+        const properties = {
+          progressColor: {
+            beginColor: "blue",
+            endColor: "white"
+          },
+          count: 37,
+        };
+        const expectedProperties = {
+          progressColor: {
+            beginColor: [0.0, 0.0, 1.0, 1.0],
+            endColor: [1.0, 1.0, 1.0, 1.0]
+          },
+          count: 37,
+        }
+        expect(platformFactory._processColors(properties)).toEqual(
+          expectedProperties
         );
       });
     });

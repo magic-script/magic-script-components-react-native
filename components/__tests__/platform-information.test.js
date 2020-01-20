@@ -17,11 +17,17 @@ describe("PlatformInformation module", () => {
     setPlatform("iOS", "");
     const plarformInformation = new PlatformInformation();
     expect(plarformInformation.platformName()).toEqual("iOS");
+
+    setPlatform("platformName", "");
+    expect(plarformInformation.platformName()).toEqual("platformName");
   });
 
   test("Should provide correct platform version", () => {
     setPlatform("", "13.12.11");
     const plarformInformation = new PlatformInformation();
     expect(plarformInformation.platformVersion()).toEqual("13.12.11");
+
+    setPlatform("", "version.string");
+    expect(plarformInformation.platformVersion()).toEqual("version.string");
   });
 });

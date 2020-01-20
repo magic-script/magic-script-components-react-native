@@ -96,16 +96,6 @@ class DropdownItemsListNode(
         }
     }
 
-    override fun show() {
-        super.show()
-
-    }
-
-    override fun hide() {
-        super.hide()
-
-    }
-
     // Calculates list view size based on list items size
     private fun calculateItemsSize(itemsAdapter: DropdownItemsAdapter): Vector2 {
         var width = 0f

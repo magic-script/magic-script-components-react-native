@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
+import com.magicleap.magicscript.scene.nodes.model.ItemPaddingMap
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
@@ -38,6 +39,8 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         const val PROP_ORIENTATION = "orientation"
         const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
+        const val PROP_ITEM_PADDING = "itemPadding"
+        const val PROP_ITEM_ALIGNMENT = "itemAlignment"
 
         // default values
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
@@ -63,7 +66,9 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         if (props.containsAny(
                 PROP_ORIENTATION,
                 PROP_DEFAULT_ITEM_ALIGNMENT,
-                PROP_DEFAULT_ITEM_PADDING
+                PROP_DEFAULT_ITEM_PADDING,
+                PROP_ITEM_ALIGNMENT,
+                PROP_ITEM_PADDING
             )
         ) {
             requestLayout()
@@ -82,17 +87,19 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
 
     override fun getLayoutParams(): LinearLayoutParams {
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
-        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
-        val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
-        val itemHorizontalAlignment = itemAlignment.horizontal
-        val itemVerticalAlignment = itemAlignment.vertical
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+        val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
+        val itemHorizontalAlignment = defaultItemsAlignment.horizontal
+        val itemVerticalAlignment = defaultItemsAlignment.vertical
 
         return LinearLayoutParams(
             orientation = orientation,
             size = Vector2(width, height),
-            itemPadding = itemPadding,
+            defaultItemPadding = defaultItemsPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,
-            itemVerticalAlignment = itemVerticalAlignment
+            itemVerticalAlignment = itemVerticalAlignment,
+            itemsPadding = itemsPadding
         )
     }
 

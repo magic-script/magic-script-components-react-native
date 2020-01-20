@@ -28,6 +28,7 @@ import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.model.ItemPaddingMap
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -41,6 +42,9 @@ private const val PROP_WEIGHT = "weight"
 private const val PROP_STYLE = "style"
 private const val PROP_ALL_CAPS = "allCaps"
 private const val FILE_URI_PROPERTY = "uri"
+private const val PROP_INDEX = "index"
+private const val PROP_PADDING = "padding"
+
 
 inline fun <reified T : Any> Bundle.read(key: String): T? =
     if (containsKey(key))
@@ -57,6 +61,7 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             FontParams::class -> readFontParams(this, key) as T?
             SpatialSoundPosition::class -> readSpatialSoundPosition(this, key) as T?
             SpatialSoundDistance::class -> readSpatialSoundDistance(this, key) as T?
+            ItemPaddingMap::class -> readItemPaddingList(this, key) as T?
             else -> {
                 logMessage("Unknown class ${T::class.java.name}", true)
                 null
@@ -208,6 +213,21 @@ fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundD
         minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
         rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
     )
+}
+
+fun readItemPaddingList(props: Bundle, propertyName: String): ItemPaddingMap {
+    val paddingsMap = mutableMapOf<Int, Padding>()
+
+    props.getParcelableArrayList<Bundle>(propertyName)
+        ?.filter { it.containsKey(PROP_INDEX) && it.containsKey(PROP_PADDING) }
+        ?.forEach {
+            paddingsMap.put(
+                it.read<Double>(PROP_INDEX)!!.toInt(),
+                readPadding(it, PROP_PADDING)!!
+            )
+        }
+
+    return ItemPaddingMap(paddingsMap)
 }
 
 private fun getFileUri(

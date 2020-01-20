@@ -99,11 +99,11 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         var sizeX = parentSize.x
         var sizeY = parentSize.y
 
-        val itemPadding = layoutParams.itemPadding
-        var leftOffset = -itemPadding.left
-        var bottomOffset = -itemPadding.bottom
-        var rightOffset = itemPadding.right
-        var topOffset = itemPadding.top
+        val defaultItemPadding = layoutParams.defaultItemPadding
+        var leftOffset = -defaultItemPadding.left
+        var bottomOffset = -defaultItemPadding.bottom
+        var rightOffset = defaultItemPadding.right
+        var topOffset = defaultItemPadding.top
 
         if (parentSize.x == WRAP_CONTENT_DIMENSION) {
             sizeX = childrenBounds.size().x
@@ -182,5 +182,12 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
             }
         }
     }
+
+    protected fun <T : LayoutParams> findItemPadding(
+        params: T,
+        index: Int
+    ) = params.itemsPadding?.itemPaddings?.get(index)
+
+
 
 }

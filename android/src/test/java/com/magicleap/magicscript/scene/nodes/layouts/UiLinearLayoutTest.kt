@@ -82,7 +82,7 @@ class UiLinearLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+        layoutParams.defaultItemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {

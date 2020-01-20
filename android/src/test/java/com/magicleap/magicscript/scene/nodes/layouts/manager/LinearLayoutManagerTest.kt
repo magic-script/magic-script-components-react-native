@@ -117,11 +117,12 @@ class LinearLayoutManagerTest {
 
     private fun getLayoutParams() =
         LinearLayoutParams(
+            orientation = orientation,
             size = size,
-            itemPadding = itemPadding,
+            defaultItemPadding = itemPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,
             itemVerticalAlignment = itemVerticalAlignment,
-            orientation = orientation
+            itemsPadding = null
         )
 
 }

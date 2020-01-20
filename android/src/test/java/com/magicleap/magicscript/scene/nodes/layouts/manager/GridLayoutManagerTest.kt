@@ -115,9 +115,10 @@ class GridLayoutManagerTest {
             columns = columns,
             rows = rows,
             size = size,
-            itemPadding = itemPadding,
+            defaultItemPadding = itemPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,
-            itemVerticalAlignment = itemVerticalAlignment
+            itemVerticalAlignment = itemVerticalAlignment,
+            itemsPadding = null
         )
 
 }

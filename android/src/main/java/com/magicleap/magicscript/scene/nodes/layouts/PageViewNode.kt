@@ -72,9 +72,10 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
         return PageViewLayoutParams(
             visiblePage = visiblePage,
             size = Vector2(width, height),
-            itemPadding = padding,
+            defaultItemPadding = padding,
             itemHorizontalAlignment = contentHorizontalAlignment,
-            itemVerticalAlignment = contentVerticalAlignment
+            itemVerticalAlignment = contentVerticalAlignment,
+            itemsPadding = null
         )
     }
 

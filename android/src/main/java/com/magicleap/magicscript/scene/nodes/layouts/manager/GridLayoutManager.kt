@@ -60,7 +60,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             }
         }
 
-        val itemPadding = layoutParams.itemPadding
+        val itemPadding = layoutParams.defaultItemPadding
         val layoutSize = layoutParams.size
         if (layoutSize.x != WRAP_CONTENT_DIMENSION) {
             val paddingHorizontal = itemPadding.left + itemPadding.right
@@ -88,10 +88,18 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         layoutInfo: LayoutInfo<T>
     ) {
         val layoutParams = layoutInfo.params as GridLayoutParams
-        val col = getColumnIndex(nodeInfo.index, layoutParams)
-        val row = getRowIndex(nodeInfo.index, layoutParams)
 
-        val itemPadding = layoutParams.itemPadding
+        val index = nodeInfo.index
+
+        var itemPadding = findItemPadding(layoutParams, index)
+
+        if (itemPadding == null) {
+            itemPadding = layoutParams.defaultItemPadding
+        }
+
+        val col = getColumnIndex(index, layoutParams)
+        val row = getRowIndex(index, layoutParams)
+
         val columnWidth =
             maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
 
@@ -140,7 +148,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         childrenBounds: Map<Int, Bounding>,
         layoutParams: GridLayoutParams
     ): Float {
-        val itemPadding = layoutParams.itemPadding
+        val itemPadding = layoutParams.defaultItemPadding
         val paddingHorizontal = itemPadding.left + itemPadding.right
         val paddingSum = childrenBounds.size * paddingHorizontal
         return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
@@ -150,7 +158,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         childrenBounds: Map<Int, Bounding>,
         layoutParams: GridLayoutParams
     ): Float {
-        val itemPadding = layoutParams.itemPadding
+        val itemPadding = layoutParams.defaultItemPadding
         val paddingVertical = itemPadding.top + itemPadding.bottom
         val paddingSum = childrenBounds.size * paddingVertical
         return childrenBounds.values.sumByFloat { it.size().y } + paddingSum

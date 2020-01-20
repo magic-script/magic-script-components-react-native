@@ -12,26 +12,22 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
+import Foundation
 import SceneKit
 
-@objc open class UiScrollViewNode: UiNode {
-
-    @objc override var alignment: Alignment {
-        get { return .centerCenter }
-        set { }
-    }
-    @objc var scrollDirection: ScrollDirection = .horizontal {
+open class ScrollView {
+    var scrollDirection: ScrollDirection = .horizontal {
         didSet { setNeedsLayout() }
     }
     // Scroll speed in scene units per second.
-    @objc var scrollSpeed: CGFloat = 0.1
-    @objc var scrollOffset: SCNVector3 = SCNVector3Zero {
+    var scrollSpeed: CGFloat = 0.1
+    var scrollOffset: SCNVector3 = SCNVector3Zero {
         didSet { setNeedsLayout() }
     }
     fileprivate var _scrollValue: CGFloat = 0
-    @objc var scrollValue: CGFloat {
+    var scrollValue: CGFloat {
         get { return _scrollValue }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, 0.0, 1.0)
@@ -42,129 +38,101 @@ import SceneKit
             }
         }
     }
-    //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
         didSet { invalidateClippingPlanes = true; setNeedsLayout() }
     }
-    @objc var scrollBarVisibility: ScrollBarVisibility = .auto {
+    var scrollBarVisibility: ScrollBarVisibility = .auto {
         didSet { updateScrollBarVisibility() }
     }
 
-    @objc public var onScrollChanged: ((_ sender: UiNode, _ value: CGFloat) -> (Void))?
+    var onScrollChanged: ((_ sender: ScrollView, _ value: CGFloat) -> (Void))?
 
-    fileprivate weak var scrollBar: UiScrollBarNode?
-    fileprivate weak var scrollContent: TransformNode?
-    fileprivate var proxyNode: SCNNode!
+    fileprivate(set) weak var ownerNode: UiNode?
+    let contentNode = SCNNode()
+    fileprivate let proxyNode = SCNNode()
+    fileprivate(set) weak var scrollBar: UiScrollBarNode?
+    fileprivate(set) weak var scrollContent: TransformNode?
+    fileprivate var updateLayoutNeeded: Bool = false
     fileprivate var invalidateClippingPlanes: Bool = false
 
-    deinit {
-        scrollContent?.resetClippingPlanes()
-    }
-
-    @objc override func setupNode() {
-        super.setupNode()
-
-        proxyNode = SCNNode()
+    init(ownerNode: UiNode) {
+        self.ownerNode = ownerNode
         contentNode.addChildNode(proxyNode)
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
-        guard let _ = selfHitTest(ray: ray) else { return nil }
+    deinit {
+        contentNode.removeFromParentNode()
+    }
 
-        let nodes: [TransformNode?] = [scrollContent, scrollBar]
+    @objc func hitTest(ray: Ray) -> TransformNode? {
+        guard let _ = scrollBounds else { return nil }
+        let nodes: [TransformNode] = [scrollContent, scrollBar].compactMap { $0 }
         for node in nodes {
-            if let hitNode = node?.hitTest(ray: ray) {
+            if let hitNode = node.hitTest(ray: ray) {
                 return hitNode
             }
         }
 
-        return self
+        return nil
     }
 
-    @objc override func update(_ props: [String: Any]) {
-        super.update(props)
-
-        if let scrollDirection = Convert.toScrollDirection(props["scrollDirection"]) {
-            self.scrollDirection = scrollDirection
-        }
-
-        if let scrollSpeed = Convert.toCGFloat(props["scrollSpeed"]) {
-            self.scrollSpeed = scrollSpeed
-        }
-
-        if let scrollOffset = Convert.toVector3(props["scrollOffset"]) {
-            self.scrollOffset = scrollOffset
-        }
-
-        if let scrollValue = Convert.toCGFloat(props["scrollValue"]) {
-            self.scrollValue = scrollValue
-        }
-
-        if let scrollBounds = props["scrollBounds"] as? [String: Any],
-            let min = Convert.toVector3(scrollBounds["min"]),
-            let max = Convert.toVector3(scrollBounds["max"]) {
-            self.scrollBounds = (min: min, max: max)
-        }
-
-        if let scrollBarVisibility = Convert.toScrollBarVisibility(props["scrollBarVisibility"]) {
-            self.scrollBarVisibility = scrollBarVisibility
-        }
-    }
-
-    @discardableResult
-    @objc override func addChild(_ child: TransformNode) -> Bool {
-        if child is UiScrollBarNode {
+    func addItem(_ item: TransformNode) -> Bool {
+        if item is UiScrollBarNode {
             guard scrollBar == nil else { return false }
-            scrollBar = child as? UiScrollBarNode
-            contentNode.addChildNode(child)
+            scrollBar = item as? UiScrollBarNode
+            contentNode.addChildNode(item)
             setNeedsLayout()
             updateScrollBarVisibility()
             return true
         }
 
         guard scrollContent == nil else { return false }
-        scrollContent = child
-        proxyNode.addChildNode(child)
+        scrollContent = item
+        proxyNode.addChildNode(item)
         invalidateClippingPlanes = true
         setNeedsLayout()
+
         return true
     }
 
-    @objc override func removeChild(_ child: TransformNode) {
-        if child == scrollBar {
+    func removeItem(_ item: TransformNode) -> Bool {
+        if item == scrollBar {
             scrollBar?.removeFromParentNode()
             scrollBar = nil
             setNeedsLayout()
-        } else if child == scrollContent {
+            return true
+        } else if item == scrollContent {
             scrollContent?.removeFromParentNode()
             scrollContent = nil
             invalidateClippingPlanes = true
             setNeedsLayout()
+            return true
         }
+
+        return false
     }
 
-    @objc override func _calculateSize() -> CGSize {
+    func getSize() -> CGSize {
         guard let scrollBounds = scrollBounds else { return CGSize.zero }
         let width: CGFloat = CGFloat(scrollBounds.max.x - scrollBounds.min.x)
         let height: CGFloat = CGFloat(scrollBounds.max.y - scrollBounds.min.y)
         return CGSize(width: width, height: height)
     }
 
-    @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
-        guard let scrollBounds = scrollBounds else { return CGRect.zero }
-        let min = scrollBounds.min
-        let size = getSize(scaled: scaled)
-        let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
-        let offset = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
-        return CGRect(origin: origin + offset, size: size)
+    func setNeedsLayout() {
+        updateLayoutNeeded = true
     }
 
-    @objc override func updateLayout() {
+    func updateLayout() {
+        guard let ownerNode = ownerNode else { return }
+        guard updateLayoutNeeded else { return }
+        updateLayoutNeeded = false
+
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
         // Update scroll content
-        let bounds = getBounds()
+        let bounds = ownerNode.getBounds()
         let scrollSize = bounds.size
         let contentSize: CGSize
         if let scrollContent = scrollContent {
@@ -190,7 +158,8 @@ import SceneKit
         scrollBar?.thumbPosition = scrollValue
     }
 
-    @objc override func postUpdate() {
+    func updateClippingPlanes() {
+        guard let ownerNode = ownerNode else { return }
         guard let scrollBounds = scrollBounds else { return }
 
         // Update clipping planes
@@ -208,11 +177,10 @@ import SceneKit
                 SCNVector4(0, 0,-1, max.z),
             ]
 
-            let worldSpacePlanes: [SCNVector4] = planes.map { convertPlane(Plane(vector: $0), to: nil).toVector4() }
+            let worldSpacePlanes: [SCNVector4] = planes.map { ownerNode.convertPlane(Plane(vector: $0), to: nil).toVector4() }
             scrollContent?.setClippingPlanes(worldSpacePlanes)
         }
     }
-
 
     fileprivate func updateScrollBarVisibility() {
         switch scrollBarVisibility {
@@ -228,7 +196,7 @@ import SceneKit
     }
 }
 
-extension UiScrollViewNode: Dragging {
+extension ScrollView: Dragging {
     var dragAxis: Ray? {
         guard let scrollBounds = scrollBounds else { return nil }
         let min = scrollBounds.min
@@ -256,7 +224,7 @@ extension UiScrollViewNode: Dragging {
             let prevScrollValue = scrollValue
             scrollValue = newValue
             if prevScrollValue != scrollValue {
-                layoutIfNeeded()
+                updateLayout()
                 onScrollChanged?(self, scrollValue)
 
                 if scrollBarVisibility == .auto {

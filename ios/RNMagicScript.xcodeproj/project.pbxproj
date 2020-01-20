@@ -99,6 +99,8 @@
 		44A3FD052366365D00402912 /* UiRectLayoutNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD042366365D00402912 /* UiRectLayoutNodeSpec.swift */; };
 		44A3FD0723663D8F00402912 /* UiLayoutNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */; };
 		44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */; };
+		44A48C3C23D5D2B000A57BD4 /* ScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A48C3B23D5D2B000A57BD4 /* ScrollView.swift */; };
+		44A48C3D23D5D2B000A57BD4 /* ScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A48C3B23D5D2B000A57BD4 /* ScrollView.swift */; };
 		44A5893B237E8FA800934E5E /* UiAudioNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */; };
 		44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893C237EB34B00934E5E /* AudioActionSpec.swift */; };
 		44A5893F237EB3A800934E5E /* SideSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5893E237EB3A800934E5E /* SideSpec.swift */; };
@@ -613,6 +615,7 @@
 		44A3FD042366365D00402912 /* UiRectLayoutNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiRectLayoutNodeSpec.swift; sourceTree = "<group>"; };
 		44A3FD0623663D8F00402912 /* UiLayoutNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiLayoutNodeSpec.swift; sourceTree = "<group>"; };
 		44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelectorSpec.swift; sourceTree = "<group>"; };
+		44A48C3B23D5D2B000A57BD4 /* ScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollView.swift; sourceTree = "<group>"; };
 		44A5893A237E8FA800934E5E /* UiAudioNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiAudioNodeSpec.swift; sourceTree = "<group>"; };
 		44A5893C237EB34B00934E5E /* AudioActionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioActionSpec.swift; sourceTree = "<group>"; };
 		44A5893E237EB3A800934E5E /* SideSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideSpec.swift; sourceTree = "<group>"; };
@@ -974,6 +977,15 @@
 			path = Layouts;
 			sourceTree = "<group>";
 		};
+		44A48C3A23D5D29300A57BD4 /* ScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				44A48C3B23D5D2B000A57BD4 /* ScrollView.swift */,
+				44556550234C997300301AB3 /* UiScrollViewNode.swift */,
+			);
+			path = ScrollView;
+			sourceTree = "<group>";
+		};
 		44A59E83233DF83F006A15D0 /* InputAccessoryViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -1203,6 +1215,7 @@
 				44301CC023AC1505001A1766 /* Group */,
 				4425EDFC2366052F0064A2EA /* Layouts */,
 				C4A12B142361B69B009B7083 /* Pickers */,
+				44A48C3A23D5D29300A57BD4 /* ScrollView */,
 				C400D4402387F4C8002A38CB /* Toggle */,
 				C428C0AC237D5F9400771FBC /* UiDialog */,
 				C465C25E234DC89200157AA6 /* UiDropdownList */,
@@ -1219,7 +1232,6 @@
 				44AFAC11232B9BCE005AC8EF /* UiSliderNode.swift */,
 				44AFAC10232B9BCE005AC8EF /* UiSpinnerNode.swift */,
 				4455654D234C996600301AB3 /* UiScrollBarNode.swift */,
-				44556550234C997300301AB3 /* UiScrollViewNode.swift */,
 				44AFAC06232B9BCE005AC8EF /* UiTextNode.swift */,
 				44AFAC0E232B9BCE005AC8EF /* UiTextEditNode.swift */,
 				44AFAC0D232B9BCE005AC8EF /* UiVideoNode.swift */,
@@ -2123,6 +2135,7 @@
 				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
 				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
+				44A48C3D23D5D2B000A57BD4 /* ScrollView.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
@@ -2366,6 +2379,7 @@
 				44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44AFAC49232B9BCF005AC8EF /* FontStyle.swift in Sources */,
 				C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */,
+				44A48C3C23D5D2B000A57BD4 /* ScrollView.swift in Sources */,
 				C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */,
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,

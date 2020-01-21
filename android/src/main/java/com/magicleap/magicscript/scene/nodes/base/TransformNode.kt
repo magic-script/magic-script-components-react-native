@@ -376,7 +376,7 @@ abstract class TransformNode(
     private fun setAnchorUuid(props: Bundle) {
         val anchorUuid = props.read<String>(PROP_ANCHOR_UUID)
         if (anchorUuid != null) {
-            this.anchorUuid = anchorUuid;
+            this.anchorUuid = anchorUuid
         }
     }
 

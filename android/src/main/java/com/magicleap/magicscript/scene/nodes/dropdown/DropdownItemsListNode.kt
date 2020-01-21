@@ -30,14 +30,20 @@ class DropdownItemsListNode(
 
     var maxHeight = WRAP_CONTENT_DIMENSION
         set(value) {
+            val changed = field != value
             field = value
-            setNeedsRebuild(true)
+            if (changed) {
+                setNeedsRebuild(force = true)
+            }
         }
 
     var itemsTextSize: Float = DEFAULT_ITEMS_TEXT_SIZE
         set(value) {
+            val changed = field != value
             field = value
-            setNeedsRebuild(true)
+            if (changed) {
+                setNeedsRebuild(force = true)
+            }
         }
 
     var multiSelect = false

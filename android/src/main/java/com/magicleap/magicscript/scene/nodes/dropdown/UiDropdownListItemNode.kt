@@ -28,7 +28,7 @@ import com.magicleap.magicscript.utils.read
 
 open class UiDropdownListItemNode(
     initProps: ReadableMap,
-    fontProvider: FontProvider
+    private val fontProvider: FontProvider
 ) : TransformNode(initProps, false, false) {
 
     companion object {
@@ -50,29 +50,35 @@ open class UiDropdownListItemNode(
     var isSelected = false
 
     /**
-     * The [PROP_SELECTED] does not always have effect (e.g. when multi select mode is off then
-     * only one item can be selected at the time)
+     * The [PROP_SELECTED] value does not always have effect (e.g. when multi select mode is off
+     * then only one item can be selected at the time)
      */
     val selectRequested get() = properties.read(PROP_SELECTED) ?: false
 
     var maxCharacters = MAX_CHARACTERS_UNLIMITED
 
-    private val defaultBoldParams = FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
+    private val typefaceNormal: Typeface by lazy { fontProvider.provideFont() }
 
-    var typefaceNormal: Typeface = fontProvider.provideFont()
-        private set
+    private val typefaceBold: Typeface by lazy {
+        val boldFontParams = FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
+        fontProvider.provideFont(boldFontParams)
+    }
 
-    var typefaceBold: Typeface = fontProvider.provideFont(defaultBoldParams)
-        private set
+    val typeface: Typeface
+        get() = if (isSelected) {
+            typefaceBold
+        } else {
+            typefaceNormal
+        }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setId(props)
-        setText(props)
+        setLabel(props)
         setSelected(props)
     }
 
-    private fun setText(props: Bundle) {
+    private fun setLabel(props: Bundle) {
         props.read<String>(PROP_LABEL)?.let { lbl ->
             this.label = lbl
         }

@@ -29,7 +29,7 @@ import com.magicleap.magicscript.utils.limited
 class DropdownItemsAdapter(
     context: Context,
     @LayoutRes private val layoutRes: Int,
-    var items: List<UiDropdownListItemNode>
+    items: List<UiDropdownListItemNode>
 ) : ArrayAdapter<UiDropdownListItemNode>(context, layoutRes, items) {
 
     // in pixels
@@ -46,7 +46,7 @@ class DropdownItemsAdapter(
                 item.label
             }
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx.toFloat())
-            view.typeface = if (item.isSelected) item.typefaceBold else item.typefaceNormal
+            view.typeface = item.typeface
 
             val paddingHorizontal = textSizePx
             val paddingVertical = paddingHorizontal / 2

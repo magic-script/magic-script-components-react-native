@@ -201,8 +201,8 @@ fun JavaOnlyMap.orientation(orientation: String): JavaOnlyMap {
     return this
 }
 
-fun JavaOnlyMap.id(id: Int): JavaOnlyMap {
-    putDouble("id", id.toDouble())
+fun JavaOnlyMap.id(id: String): JavaOnlyMap {
+    putString("id", id)
     return this
 }
 

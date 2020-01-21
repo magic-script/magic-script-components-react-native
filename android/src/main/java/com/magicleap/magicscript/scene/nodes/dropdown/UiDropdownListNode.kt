@@ -29,7 +29,6 @@ import com.magicleap.magicscript.scene.nodes.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
 
 class UiDropdownListNode(
@@ -61,8 +60,7 @@ class UiDropdownListNode(
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
 
-        properties.putString(PROP_ICON, "arrow-down")
-        // properties.putDefault(PROP_SHOW_LIST, false)
+        properties.putString(PROP_ICON, "chevron-down")
     }
 
     override fun build() {
@@ -189,13 +187,10 @@ class UiDropdownListNode(
 
     private fun showList() {
         listNode.show()
-        // properties.putBoolean(PROP_SHOW_LIST, true)
     }
 
     private fun hideList() {
-        logMessage("hide called")
         listNode.hide()
-        // properties.putBoolean(PROP_SHOW_LIST, false)
     }
 
 }

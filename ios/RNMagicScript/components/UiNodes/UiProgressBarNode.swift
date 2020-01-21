@@ -139,7 +139,7 @@ import SceneKit
             progressGeometry.firstMaterial?.diffuse.contents = progressImage
         }
 
-        let progressWidth = size.width * progress
+        let progressWidth = Swift.max(size.width * progress, size.height)
         progressGeometry.width = progressWidth
         progressGeometry.height = size.height
         progressGeometry.cornerRadius = 0.5 * size.height

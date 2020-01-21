@@ -122,7 +122,8 @@ class LinearLayoutManagerTest {
             defaultItemPadding = itemPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,
             itemVerticalAlignment = itemVerticalAlignment,
-            itemsPadding = null
+            itemsPadding = null,
+            itemsAlignment = null
         )
 
 }

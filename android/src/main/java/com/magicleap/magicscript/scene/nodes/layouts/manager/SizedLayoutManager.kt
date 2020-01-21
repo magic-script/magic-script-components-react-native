@@ -21,6 +21,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
@@ -186,8 +187,66 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     protected fun <T : LayoutParams> findItemPadding(
         params: T,
         index: Int
-    ) = params.itemsPadding?.itemPaddings?.get(index)
+    ) = params.itemsPadding?.paddings?.get(index) ?: params.defaultItemPadding
+
+    protected fun <T : LayoutParams> findItemHorizontalAlignment(
+        params: T,
+        index: Int
+    ) = params.itemsAlignment?.alignments?.get(index)?.horizontal ?: params.itemHorizontalAlignment
 
 
+    protected fun <T : LayoutParams> findItemVerticalAlignment(
+        params: T,
+        index: Int
+    ) = params.itemsAlignment?.alignments?.get(index)?.vertical ?: params.itemVerticalAlignment
+
+    protected fun getMaxHorizontalPadding(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = getMaxLeftPaddings(itemDefaultPadding, itemsPadding) +
+            getMaxRightPaddings(itemDefaultPadding, itemsPadding)
+
+    protected fun getMaxVerticalPadding(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = getMaxTopPadding(itemDefaultPadding, itemsPadding) +
+            getMaxBottomPadding(itemDefaultPadding, itemsPadding)
+
+
+    protected fun getMaxTopPadding(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = mutableListOf(itemDefaultPadding.top).also { topPaddings ->
+        itemsPadding?.map { it.top }?.asIterable()?.let {
+            topPaddings.addAll(it)
+        }
+    }.max() ?: 0f
+
+    protected fun getMaxLeftPaddings(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = mutableListOf(itemDefaultPadding.left).also { leftPaddings ->
+        itemsPadding?.map { it.left }?.asIterable()?.let {
+            leftPaddings.addAll(it)
+        }
+    }.max() ?: 0f
+
+    protected fun getMaxRightPaddings(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = mutableListOf(itemDefaultPadding.right).also { rightPaddings ->
+        itemsPadding?.map { it.right }?.asIterable()?.let {
+            rightPaddings.addAll(it)
+        }
+    }.max() ?: 0f
+
+    protected fun getMaxBottomPadding(
+        itemDefaultPadding: Padding,
+        itemsPadding: Collection<Padding>?
+    ) = mutableListOf(itemDefaultPadding.bottom).also { bottomPaddings ->
+        itemsPadding?.map { it.bottom }?.asIterable()?.let {
+            bottomPaddings.addAll(it)
+        }
+    }.max() ?: 0f
 
 }

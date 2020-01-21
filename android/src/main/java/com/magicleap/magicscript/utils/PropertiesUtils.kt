@@ -28,10 +28,7 @@ import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.model.ItemPaddingMap
-import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 
 /**
  * File containing functions that parse common nodes' properties from Bundle
@@ -44,6 +41,7 @@ private const val PROP_ALL_CAPS = "allCaps"
 private const val FILE_URI_PROPERTY = "uri"
 private const val PROP_INDEX = "index"
 private const val PROP_PADDING = "padding"
+private const val PROP_ALIGNMENT = "alignment"
 
 
 inline fun <reified T : Any> Bundle.read(key: String): T? =
@@ -61,7 +59,8 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             FontParams::class -> readFontParams(this, key) as T?
             SpatialSoundPosition::class -> readSpatialSoundPosition(this, key) as T?
             SpatialSoundDistance::class -> readSpatialSoundDistance(this, key) as T?
-            ItemPaddingMap::class -> readItemPaddingList(this, key) as T?
+            ItemPaddingMap::class -> readItemPaddingMap(this, key) as T?
+            ItemAlignmentMap::class -> readItemAlignmentMap(this, key) as T?
             else -> {
                 logMessage("Unknown class ${T::class.java.name}", true)
                 null
@@ -215,19 +214,34 @@ fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundD
     )
 }
 
-fun readItemPaddingList(props: Bundle, propertyName: String): ItemPaddingMap {
-    val paddingsMap = mutableMapOf<Int, Padding>()
+fun readItemPaddingMap(props: Bundle, propertyName: String): ItemPaddingMap {
+    val paddings = mutableMapOf<Int, Padding>()
 
     props.getParcelableArrayList<Bundle>(propertyName)
         ?.filter { it.containsKey(PROP_INDEX) && it.containsKey(PROP_PADDING) }
         ?.forEach {
-            paddingsMap.put(
+            paddings.put(
                 it.read<Double>(PROP_INDEX)!!.toInt(),
                 readPadding(it, PROP_PADDING)!!
             )
         }
 
-    return ItemPaddingMap(paddingsMap)
+    return ItemPaddingMap(paddings)
+}
+
+fun readItemAlignmentMap(props: Bundle, propertyName: String): ItemAlignmentMap {
+    val alignments = mutableMapOf<Int, Alignment>()
+
+    props.getParcelableArrayList<Bundle>(propertyName)
+        ?.filter { it.containsKey(PROP_INDEX) && it.containsKey(PROP_ALIGNMENT) }
+        ?.forEach {
+            alignments.put(
+                it.read<Double>(PROP_INDEX)!!.toInt(),
+                readAlignment(it, PROP_ALIGNMENT)!!
+            )
+        }
+
+    return ItemAlignmentMap(alignments)
 }
 
 private fun getFileUri(

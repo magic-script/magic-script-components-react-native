@@ -21,11 +21,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
-import com.magicleap.magicscript.scene.nodes.model.ItemPaddingMap
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
@@ -90,6 +86,7 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
         val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
         val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
+        val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
         val itemHorizontalAlignment = defaultItemsAlignment.horizontal
         val itemVerticalAlignment = defaultItemsAlignment.vertical
 
@@ -99,7 +96,8 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
             defaultItemPadding = defaultItemsPadding,
             itemHorizontalAlignment = itemHorizontalAlignment,
             itemVerticalAlignment = itemVerticalAlignment,
-            itemsPadding = itemsPadding
+            itemsPadding = itemsPadding,
+            itemsAlignment = itemsAlignment
         )
     }
 

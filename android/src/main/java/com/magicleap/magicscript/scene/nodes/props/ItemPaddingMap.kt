@@ -14,8 +14,6 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes.model
+package com.magicleap.magicscript.scene.nodes.props
 
-import com.magicleap.magicscript.scene.nodes.props.Padding
-
-data class ItemPaddingMap(val itemPaddings: Map<Int, Padding>?)
+data class ItemPaddingMap(val paddings: Map<Int, Padding>?)

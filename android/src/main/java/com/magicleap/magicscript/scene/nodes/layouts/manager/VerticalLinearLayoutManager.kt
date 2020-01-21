@@ -34,15 +34,12 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
 
         var itemPadding = findItemPadding(params, index)
 
-        if (itemPadding == null) {
-            itemPadding = params.defaultItemPadding
-        }
-
         val layoutSizeLimit = layoutInfo.sizeLimit
         val contentSize = layoutInfo.contentSize
 
         // calculating x position for a child
-        val x = when (layoutInfo.params.itemHorizontalAlignment) {
+        val itemHorizontalAlignment = findItemHorizontalAlignment(params, index)
+        val x = when (itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
@@ -64,7 +61,8 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
             it.size().y
         } + paddingSumY)
 
-        val y = when (layoutInfo.params.itemVerticalAlignment) {
+        val itemVerticalAlignment = findItemVerticalAlignment(params, index)
+        val y = when (itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY
             }
@@ -83,16 +81,22 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
     }
 
     override fun getContentWidth(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float {
-        val itemPadding = layoutParams.defaultItemPadding
-        val paddingHorizontal = itemPadding.left + itemPadding.right
+        val itemDefaultPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+        val paddingHorizontal = getMaxHorizontalPadding(itemDefaultPadding, itemsPadding)
         val widestChildSize = childrenBounds.values.maxBy { it.size().x }?.size()
+
         return (widestChildSize?.x ?: 0f) + paddingHorizontal
     }
 
     override fun getContentHeight(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float {
-        val itemPadding = layoutParams.defaultItemPadding
-        val paddingVertical = itemPadding.top + itemPadding.bottom
+        val itemDefaultPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+        val paddingVertical = getMaxVerticalPadding(itemDefaultPadding, itemsPadding)
         val paddingSum = childrenBounds.size * paddingVertical
+
         return childrenBounds.values.sumByFloat { it.size().y } + paddingSum
     }
 
@@ -105,8 +109,13 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         return if (parentWidth == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
-            val itemPadding = layoutParams.defaultItemPadding
-            parentWidth - itemPadding.left - itemPadding.right
+            val itemDefaultPadding = layoutParams.defaultItemPadding
+            val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+            val maxLeftPaddings = getMaxLeftPaddings(itemDefaultPadding, itemsPadding)
+            val maxRightPaddings = getMaxRightPaddings(itemDefaultPadding, itemsPadding)
+
+            parentWidth - maxLeftPaddings - maxRightPaddings
         }
     }
 
@@ -121,8 +130,10 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         }
 
         val contentHeightNoPadding = childrenBounds.values.sumByFloat { it.size().y }
-        val itemPadding = layoutParams.defaultItemPadding
-        val paddingVertical = itemPadding.top + itemPadding.bottom
+        val itemDefaultPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+        val paddingVertical = getMaxVerticalPadding(itemDefaultPadding, itemsPadding)
         val paddingSum = childrenBounds.size * paddingVertical
         val scale = (parentHeight - paddingSum) / contentHeightNoPadding
 

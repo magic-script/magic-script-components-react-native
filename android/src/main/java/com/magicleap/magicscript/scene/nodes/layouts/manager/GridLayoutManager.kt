@@ -60,10 +60,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             }
         }
 
-        val itemPadding = layoutParams.defaultItemPadding
+        val defaultItemPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
         val layoutSize = layoutParams.size
+
         if (layoutSize.x != WRAP_CONTENT_DIMENSION) {
-            val paddingHorizontal = itemPadding.left + itemPadding.right
+            val paddingHorizontal = getMaxHorizontalPadding(defaultItemPadding, itemsPadding)
             val columnsSumWidth =
                 maxChildWidthInColumnMap.values.sum() + maxChildWidthInColumnMap.size * paddingHorizontal
             val columnsScale = layoutSize.x / columnsSumWidth
@@ -73,7 +75,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
 
         if (layoutSize.y != WRAP_CONTENT_DIMENSION) {
-            val paddingVertical = itemPadding.top + itemPadding.bottom
+            val paddingVertical = getMaxVerticalPadding(defaultItemPadding, itemsPadding)
             val rowsSumHeight =
                 maxChildHeightInRowMap.values.sum() + maxChildHeightInRowMap.size * paddingVertical
             val rowsScale = layoutSize.y / rowsSumHeight
@@ -87,18 +89,14 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         nodeInfo: NodeInfo,
         layoutInfo: LayoutInfo<T>
     ) {
-        val layoutParams = layoutInfo.params as GridLayoutParams
+        val params = layoutInfo.params as GridLayoutParams
 
         val index = nodeInfo.index
 
-        var itemPadding = findItemPadding(layoutParams, index)
+        val itemPadding = findItemPadding(params, index)
 
-        if (itemPadding == null) {
-            itemPadding = layoutParams.defaultItemPadding
-        }
-
-        val col = getColumnIndex(index, layoutParams)
-        val row = getRowIndex(index, layoutParams)
+        val col = getColumnIndex(index, params)
+        val row = getRowIndex(index, params)
 
         val columnWidth =
             maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
@@ -107,8 +105,9 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         // calculating x position for a child
         val columnX = getColumnX(col, itemPadding)
+        val itemHorizontalAlignment = findItemHorizontalAlignment(params, index)
 
-        val x = when (layoutParams.itemHorizontalAlignment) {
+        val x = when (itemHorizontalAlignment) {
             Alignment.HorizontalAlignment.LEFT -> {
                 columnX + nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
@@ -125,7 +124,9 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         // calculating y position for a child
         val rowY = getRowY(row, itemPadding)
-        val y = when (layoutParams.itemVerticalAlignment) {
+        val itemVerticalAlignment = findItemVerticalAlignment(params, index)
+
+        val y = when (itemVerticalAlignment) {
             Alignment.VerticalAlignment.TOP -> {
                 rowY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY - itemPadding.top
             }
@@ -148,9 +149,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         childrenBounds: Map<Int, Bounding>,
         layoutParams: GridLayoutParams
     ): Float {
-        val itemPadding = layoutParams.defaultItemPadding
-        val paddingHorizontal = itemPadding.left + itemPadding.right
+        val itemDefaultPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+        val paddingHorizontal = getMaxHorizontalPadding(itemDefaultPadding, itemsPadding)
         val paddingSum = childrenBounds.size * paddingHorizontal
+
         return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
     }
 
@@ -158,9 +162,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         childrenBounds: Map<Int, Bounding>,
         layoutParams: GridLayoutParams
     ): Float {
-        val itemPadding = layoutParams.defaultItemPadding
-        val paddingVertical = itemPadding.top + itemPadding.bottom
+        val itemDefaultPadding = layoutParams.defaultItemPadding
+        val itemsPadding = layoutParams.itemsPadding?.paddings?.values
+
+        val paddingVertical = getMaxVerticalPadding(itemDefaultPadding, itemsPadding)
         val paddingSum = childrenBounds.size * paddingVertical
+
         return childrenBounds.values.sumByFloat { it.size().y } + paddingSum
     }
 
@@ -221,5 +228,4 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             childIdx / layoutParams.columns
         }
     }
-
 }

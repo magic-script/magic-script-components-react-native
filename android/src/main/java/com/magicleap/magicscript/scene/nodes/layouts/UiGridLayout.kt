@@ -21,10 +21,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
-import com.magicleap.magicscript.scene.nodes.model.ItemPaddingMap
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
@@ -113,6 +110,7 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
         val itemHorizontalAlignment = itemAlignment.horizontal
         val itemVerticalAlignment = itemAlignment.vertical
         val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
+        val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
 
         return GridLayoutParams(
             columns = columns,
@@ -121,7 +119,8 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
             itemHorizontalAlignment = itemHorizontalAlignment,
             itemVerticalAlignment = itemVerticalAlignment,
             defaultItemPadding = defaultItemPadding,
-            itemsPadding = itemsPadding
+            itemsPadding = itemsPadding,
+            itemsAlignment = itemsAlignment
         )
     }
 

@@ -66,8 +66,8 @@ describe("platformFactory", () => {
         fileName: "fileName"
       };
       expect(processCustomProps("", customProps)).toEqual({
-        color: "color",
-        textColor: "textColor",
+        color: "ok",
+        textColor: "ok",
         modelPath: "ok",
         filePath: "ok",
         videoPath: "ok",

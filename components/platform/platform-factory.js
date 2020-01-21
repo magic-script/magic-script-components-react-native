@@ -109,12 +109,19 @@ export class PlatformFactory extends NativeFactory {
           properties = { ...properties, ...{ [key]: newValue } };
         } else if (key.toLowerCase().endsWith('color')) {
           const value = properties[key];
-          if (ColorProperty.validate(value)) {
-            properties = { ...properties, ...{ [key]: ColorProperty.parse(value) } };  
-          }
+          const newValue = this._processColor(value);
+          properties = { ...properties, ...{ [key]: newValue } };  
         }
       }
       return properties;
+    }
+
+    _processColor(value) {
+      if (ColorProperty.validate(value)) {
+        return ColorProperty.parse(value);
+      }
+
+      return value;
     }
 
     _processAssetSource(path) {

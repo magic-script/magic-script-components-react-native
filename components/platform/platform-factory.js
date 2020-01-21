@@ -2,8 +2,8 @@
 
 import { Image, NativeEventEmitter, NativeModules, Platform, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';
+import { ColorPropery, ColorProperty } from '../platform/elements/properties/color-property';
 import generateId from '../utils/generateId';
-import chroma from 'chroma-js';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 import { Events } from './platform-events';
@@ -109,20 +109,12 @@ export class PlatformFactory extends NativeFactory {
           properties = { ...properties, ...{ [key]: newValue } };
         } else if (key.toLowerCase().endsWith('color')) {
           const value = properties[key];
-          const newValue = this._processColor(value);
-          properties = { ...properties, ...{ [key]: newValue } };
+          if (ColorProperty.validate(value)) {
+            properties = { ...properties, ...{ [key]: ColorProperty.parse(value) } };  
+          }
         }
       }
       return properties;
-    }
-
-    _processColor(value) {
-      if (chroma.valid(value)) {
-        const [r, g, b, a] = chroma(value).rgba(false);
-        return [r / 255, g / 255, b / 255, a];
-      }
-
-      return value;
     }
 
     _processAssetSource(path) {

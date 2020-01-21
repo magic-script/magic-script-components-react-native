@@ -2,7 +2,7 @@
 
 import { Image, NativeEventEmitter, NativeModules, Platform, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';
-import { ColorPropery, ColorProperty } from '../platform/elements/properties/color-property';
+import { ColorProperty } from '../platform/elements/properties/color-property';
 import generateId from '../utils/generateId';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';

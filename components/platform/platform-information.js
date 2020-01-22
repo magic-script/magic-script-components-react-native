@@ -1,11 +1,11 @@
 import { Platform } from "react-native";
 
 export default class PlatformInformation {
-    platformName() {
+    name() {
         return Platform.OS
     }
 
-    platformVersion() {
+    version() {
         return Platform.Version
     }
 }

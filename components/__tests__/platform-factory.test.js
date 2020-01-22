@@ -54,7 +54,7 @@ describe("platformFactory", () => {
       ).toEqual({ p1: 1, p2: "a", p3: {} });
     });
 
-    test("custom props should be processed and updated value should be returned", () => {
+    test("custom props should be processed and updated value should be returned (except colors)", () => {
       platformFactory._processColor = jest.fn(x => "ok");
       platformFactory._processAssetSource = jest.fn(x => "ok");
       const customProps = {
@@ -288,20 +288,45 @@ describe("platformFactory", () => {
     });
   });
 
-  describe("_processColor", () => {
+  describe("_processColors", () => {
     var platformFactory = new PlatformFactory(nativeComponentMapping);
 
-    describe("when arg is string", () => {
-      test("should return array", () => {
-        const textColorString = "white";
-        const expectedColor_fromText = [1.0, 1.0, 1.0, 1.0];
-        expect(platformFactory._processColor(textColorString)).toEqual(
-          expectedColor_fromText
+    describe("when arg contains keys ending with 'color'", () => {
+      test("should convert colors to GL format", () => {
+        const properties = {
+          fooColor: "red",
+          color: "f39",
+          value: 34,
+        };
+        const expectedProperties = {
+          fooColor: [1.0, 0.0, 0.0, 1.0],
+          color: [1.0, 0.2, 0.6, 1.0],
+          value: 34,
+        }
+        expect(platformFactory._processColors(properties)).toEqual(
+          expectedProperties
         );
-        const hexColorString = "#FFFFFF";
-        const expectedColor_fromHex = [1.0, 1.0, 1.0, 1.0];
-        expect(platformFactory._processColor(hexColorString)).toEqual(
-          expectedColor_fromHex
+      });
+    });
+
+    describe("when arg contains 'progressColor' key", () => {
+      test("should convert colors to GL format", () => {
+        const properties = {
+          progressColor: {
+            beginColor: "blue",
+            endColor: "white"
+          },
+          count: 37,
+        };
+        const expectedProperties = {
+          progressColor: {
+            beginColor: [0.0, 0.0, 1.0, 1.0],
+            endColor: [1.0, 1.0, 1.0, 1.0]
+          },
+          count: 37,
+        }
+        expect(platformFactory._processColors(properties)).toEqual(
+          expectedProperties
         );
       });
     });

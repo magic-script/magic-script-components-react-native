@@ -21,6 +21,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -32,6 +33,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 class UiNodesManagerTest {
@@ -212,17 +214,37 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should addNodeToRoot`() {
+    fun `should add node to scene root when anchor UUID absent`() {
         val scene = spy<Scene>()
-
         nodesManager.registerScene(scene)
         nodesManager.onArFragmentReady()
-        nodesManager.registerNode(mock(), "1")
+        val node = NodeBuilder().build()
 
+        nodesManager.registerNode(node, "1")
         nodesManager.addNodeToRoot("1")
 
         val root = scene.children[0]
         root.children.size shouldEqual 1
+    }
+
+    @Test
+    fun `should add node to specified anchor when anchor UUID present and anchor node exists`() {
+        val scene = spy<Scene>()
+        nodesManager.registerScene(scene)
+        nodesManager.onArFragmentReady()
+        val uuid = UUID.randomUUID().toString()
+        val anchorNode = AnchorNode()
+        anchorNode.name = uuid
+        scene.addChild(anchorNode)
+        val childNode = NodeBuilder()
+            .withProps(reactMapOf(TransformNode.PROP_ANCHOR_UUID, uuid))
+            .build()
+
+        nodesManager.registerNode(childNode, "999")
+        nodesManager.addNodeToParent("999", parentId = "")
+
+        anchorNode.children.size shouldEqual 1
+        anchorNode.children.first() shouldEqual childNode
     }
 
     @Test

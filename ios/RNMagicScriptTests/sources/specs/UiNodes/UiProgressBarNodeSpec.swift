@@ -191,7 +191,7 @@ class UiProgressBarNodeSpec: QuickSpec {
 
                     let progressBarNode: SCNNode = node.contentNode.childNodes[1]
                     let plane: SCNPlane = progressBarNode.geometry as! SCNPlane
-                    expect(plane.width).to(beCloseTo(0))
+                    expect(plane.width).to(beCloseTo(UiProgressBarNode.defaultHeight))
                 }
             }
         }

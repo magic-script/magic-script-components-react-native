@@ -115,11 +115,10 @@ import SceneKit
     @objc override func _calculateSize() -> CGSize {
         let labelSize = labelNode.getSize()
         let toggleSize = getToggleSize()
-        let textToggleGap: CGFloat = 0.5 * toggleSize.width
-        let textMargin: CGFloat = (labelSize.width > 0 && labelSize.height > 0) ? textToggleGap : 0
+        let textToggleGap: CGFloat = getTextToggleGap(labelSize: labelSize, toggleSize: toggleSize)
 
         let heightContent: CGFloat = max(toggleSize.height, labelSize.height)
-        let widthContent: CGFloat = toggleSize.width + labelSize.width + textMargin
+        let widthContent: CGFloat = toggleSize.width + labelSize.width + textToggleGap
         return CGSize(width: widthContent, height: heightContent)
     }
 
@@ -183,6 +182,11 @@ import SceneKit
 
     fileprivate func getDefaultSize() -> CGSize {
         return type == ToggleType.default ? UiToggleNode.defaultRectangleSize : UiToggleNode.defaultSquareSize
+    }
+
+    fileprivate func getTextToggleGap(labelSize: CGSize, toggleSize: CGSize) -> CGFloat {
+        guard labelSize.width > 0 && labelSize.height > 0 else { return  0 }
+        return (type == ToggleType.default) ? 0.82 * toggleSize.width : toggleSize.width
     }
 
     fileprivate func getToggleAsset() -> UIImage {

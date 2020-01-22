@@ -90,7 +90,6 @@ class TimePickerInputView: UIView {
     }
 }
 
-
 // MARK: - Event handlers
 extension TimePickerInputView {
     @objc func valueChanged(_ sender: UIDatePicker) {

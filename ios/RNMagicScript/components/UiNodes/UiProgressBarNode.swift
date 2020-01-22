@@ -17,8 +17,8 @@
 import SceneKit
 
 @objc open class UiProgressBarNode: UiNode {
-    static fileprivate let defaultWidth: CGFloat = 0.5
-    static fileprivate let defaultHeight: CGFloat = 0.004
+    static let defaultWidth: CGFloat = 0.5
+    static let defaultHeight: CGFloat = 0.004
     
     @objc override var alignment: Alignment {
         get { return .centerCenter }

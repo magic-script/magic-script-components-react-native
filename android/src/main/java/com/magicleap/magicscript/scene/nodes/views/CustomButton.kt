@@ -73,6 +73,13 @@ class CustomButton @JvmOverloads constructor(
             }
         }
 
+    var borderEnabled = true
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
     private val defaultIconHeightFactor = 0.65F // relative to button height
@@ -110,8 +117,14 @@ class CustomButton @JvmOverloads constructor(
 
         // read text area size (caution: textBounds is non zero for empty text)
         textPaint.getTextBounds(text, 0, text.length, textBounds)
-        val textWidth = textBounds.width() + 2F * textPaddingHorizontal
-        val textHeight = textBounds.height() + 2F * textPaddingVertical
+
+        var textWidth = textBounds.width().toFloat()
+        var textHeight = textBounds.height().toFloat()
+
+        if (borderEnabled) {
+            textWidth += 2F * textPaddingHorizontal
+            textHeight += 2F * textPaddingVertical
+        }
 
         // set default icon size
         iconBitmap?.let { icon ->
@@ -159,7 +172,9 @@ class CustomButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        drawBackground(canvas)
+        if (borderEnabled) {
+            drawBorder(canvas)
+        }
 
         // draw icon if provided
         iconBitmap?.let {
@@ -217,7 +232,7 @@ class CustomButton @JvmOverloads constructor(
         requestLayout()
     }
 
-    private fun drawBackground(canvas: Canvas) {
+    private fun drawBorder(canvas: Canvas) {
         val strokeSize = borderWidthFactor * min(width, height)
         val radius = (height.toFloat() - strokeSize) / 2 * roundnessFactor
 

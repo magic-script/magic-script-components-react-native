@@ -6,12 +6,16 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
+import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 import kotlin.math.max
 
 open class UiListViewItemNode(
@@ -23,7 +27,6 @@ open class UiListViewItemNode(
     companion object {
         const val PROP_BACKGROUND_COLOR = "backgroundColor"
         const val CONTENT_Z_OFFSET = 1e-5f
-        const val RENDER_PRIORITY = 3 // 4 is default, 3 means we draw background firstly
 
         val DEFAULT_BACKGROUND_COLOR = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
@@ -52,7 +55,8 @@ open class UiListViewItemNode(
 
     override fun onViewLoaded(viewRenderable: Renderable) {
         super.onViewLoaded(viewRenderable)
-        viewRenderable.renderPriority = RENDER_PRIORITY
+        // we draw background firstly
+        viewRenderable.renderPriority = RenderPriority.UNDER_DEFAULT
     }
 
     override fun applyProperties(props: Bundle) {

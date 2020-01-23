@@ -7,6 +7,7 @@ import android.widget.ListView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -22,26 +23,22 @@ class DropdownItemsListNode(
 
     companion object {
         const val DEFAULT_ITEMS_TEXT_SIZE = 0.025F
-
-        const val RENDER_PRIORITY = 5 // 4 is default, 5 means we draw at top of other views
     }
 
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
 
     var maxHeight = WRAP_CONTENT_DIMENSION
         set(value) {
-            val changed = field != value
-            field = value
-            if (changed) {
+            if (field != value) {
+                field = value
                 setNeedsRebuild(force = true)
             }
         }
 
     var itemsTextSize: Float = DEFAULT_ITEMS_TEXT_SIZE
         set(value) {
-            val changed = field != value
-            field = value
-            if (changed) {
+            if (field != value) {
+                field = value
                 setNeedsRebuild(force = true)
             }
         }
@@ -69,7 +66,7 @@ class DropdownItemsListNode(
         val listView = view as ListView
         itemsAdapter = buildAdapter()
         listView.adapter = itemsAdapter
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             val item = items[position]
             handleSelectionChangeRequest(item, !item.isSelected)
         }
@@ -77,7 +74,8 @@ class DropdownItemsListNode(
 
     override fun onViewLoaded(viewRenderable: Renderable) {
         super.onViewLoaded(viewRenderable)
-        viewRenderable.renderPriority = RENDER_PRIORITY
+        // we draw at top of other views
+        viewRenderable.renderPriority = RenderPriority.ABOVE_DEFAULT
     }
 
     override fun addContent(child: TransformNode) {
@@ -116,7 +114,6 @@ class DropdownItemsListNode(
             }
             height += size.y
         }
-        // height += Utils.pxToMeters(listView.dividerHeight * itemsAdapter.count, context)
         return Vector2(width, height)
     }
 
@@ -128,21 +125,10 @@ class DropdownItemsListNode(
 
     private fun handleSelectionChangeRequest(item: UiDropdownListItemNode, select: Boolean) {
         var selectionChanged = false
-
         if (multiSelect) {
-            if (item.isSelected != select) {
-                selectionChanged = true
-            }
-            item.isSelected = select
+            selectionChanged = tryMultiSelectChange(item, select)
         } else {
-            if (select) { // cannot deselect an item when multiSelect mode inactive
-                val lastSelectedItem = items.find { it.isSelected }
-                if (item != lastSelectedItem) {
-                    lastSelectedItem?.isSelected = false
-                    item.isSelected = true
-                    selectionChanged = true
-                }
-            }
+            selectionChanged = trySingleSelectChange(item, select)
             if (isVisible) {
                 hide()
             }
@@ -154,6 +140,26 @@ class DropdownItemsListNode(
             onSelectionChangedListener?.invoke(selectedItems)
         }
 
+    }
+
+    private fun trySingleSelectChange(item: UiDropdownListItemNode, select: Boolean): Boolean {
+        if (select) {  // cannot deselect an item when multiSelect mode inactive
+            val lastSelectedItem = items.find { it.isSelected }
+            if (item != lastSelectedItem) {
+                lastSelectedItem?.isSelected = false
+                item.isSelected = true
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun tryMultiSelectChange(item: UiDropdownListItemNode, select: Boolean): Boolean {
+        if (item.isSelected == select) { // not changed
+            return false
+        }
+        item.isSelected = select
+        return true
     }
 
 }

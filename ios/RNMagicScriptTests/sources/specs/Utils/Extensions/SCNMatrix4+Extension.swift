@@ -91,6 +91,16 @@ class SCNMatrix4ExtensionSpec: QuickSpec {
                     expect(matrix.m43).to(beCloseTo(position.z))
                 }
             }
+
+            context("scale") {
+                it("should decompose scale vector"){
+                    expect(SCNMatrix4Identity.scale).to(beCloseTo(SCNVector3(1, 1, 1)))
+
+                    let referenceScale = SCNVector3(0.5, 1.0, 2.0)
+                    let matrix = SCNMatrix4MakeScale(referenceScale.x, referenceScale.y, referenceScale.z)
+                    expect(matrix.scale).to(beCloseTo(referenceScale))
+                }
+            }
         }
     }
 }

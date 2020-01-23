@@ -68,9 +68,18 @@ import SceneKit
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         if let cameraNode = getCameraNode?(),
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
+            let dragAxis = dragNode?.dragAxis,
             let dragRange = dragNode?.dragRange, dragRange > 0 {
             let delta = calculateDelta(for: ray)
-            dragDelta = delta / dragRange
+
+            var scale: CGFloat = 1.0
+            if let node = dragNode as? SCNNode {
+                let transform = node.convertTransform(node.transform, to: nil)
+                let scaleValue = abs(transform.scale.dot(dragAxis.direction))
+                scale = (scaleValue > 0.0001) ? CGFloat(scaleValue) : 1.0
+            }
+
+            dragDelta = delta / (scale * dragRange)
         }
 
         state = .changed

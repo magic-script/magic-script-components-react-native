@@ -37,7 +37,13 @@ import SceneKit
     }
     @objc var scrollValue: CGFloat {
         get { return scrollView.scrollValue }
-        set { scrollView.scrollValue = newValue; setNeedsLayout() }
+        set {
+            let prevValue = scrollView.scrollValue
+            scrollView.scrollValue = newValue
+            if (prevValue != scrollView.scrollValue) {
+                setNeedsLayout()
+            }
+        }
     }
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
         get { return scrollView.scrollBounds }
@@ -100,17 +106,21 @@ import SceneKit
 
     @discardableResult
     @objc override func addChild(_ child: TransformNode) -> Bool {
-        if !scrollView.addItem(child) {
-            return super.addChild(child)
+        if scrollView.addItem(child) {
+            setNeedsLayout()
+            return true
         }
 
-        return true
+        return super.addChild(child)
     }
 
     @objc override func removeChild(_ child: TransformNode) {
-        if !scrollView.removeItem(child) {
-            super.removeChild(child)
+        if scrollView.removeItem(child) {
+            setNeedsLayout()
+            return
         }
+
+        super.removeChild(child)
     }
 
     @objc override func _calculateSize() -> CGSize {

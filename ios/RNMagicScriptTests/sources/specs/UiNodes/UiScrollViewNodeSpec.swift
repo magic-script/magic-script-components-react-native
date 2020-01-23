@@ -175,21 +175,22 @@ class UiScrollViewNodeSpec: QuickSpec {
                     let internalNodesCount: Int = 1
                     let scrollBar1 = UiScrollBarNode()
                     node.addChild(scrollBar1)
-                    expect(node.contentNode.childNodes.count).to(equal(internalNodesCount + 1))
-                    expect(node.contentNode.childNodes.last).to(beIdenticalTo(scrollBar1))
+                    let contentNode = self.getScrollViewContentNode(node)
+                    expect(contentNode.childNodes.count).to(equal(internalNodesCount + 1))
+                    expect(contentNode.childNodes.last).to(beIdenticalTo(scrollBar1))
                     expect(node.isLayoutNeeded).to(beTrue())
 
                     let scrollBar2 = UiScrollBarNode()
                     node.addChild(scrollBar2)
-                    expect(node.contentNode.childNodes.count).to(equal(internalNodesCount + 1))
-                    expect(node.contentNode.childNodes.last).to(beIdenticalTo(scrollBar1))
+                    expect(contentNode.childNodes.count).to(equal(internalNodesCount + 1))
+                    expect(contentNode.childNodes.last).to(beIdenticalTo(scrollBar1))
 
                     node.layoutIfNeeded()
                     expect(node.isLayoutNeeded).to(beFalse())
 
                     node.removeChild(scrollBar2)
-                    expect(node.contentNode.childNodes.count).to(equal(internalNodesCount + 1))
-                    expect(node.isLayoutNeeded).to(beFalse())
+                    expect(contentNode.childNodes.count).to(equal(internalNodesCount + 1))
+                    expect(node.isLayoutNeeded).to(beTrue())
 
                     node.removeChild(scrollBar1)
                     expect(node.contentNode.childNodes.count).to(equal(internalNodesCount + 0))
@@ -197,7 +198,8 @@ class UiScrollViewNodeSpec: QuickSpec {
                 }
 
                 it("should add srcollContent child") {
-                    let proxyNode: SCNNode = node.contentNode.childNodes.first!
+                    let contentNode = self.getScrollViewContentNode(node)
+                    let proxyNode: SCNNode = contentNode.childNodes.first!
                     let contentNode1 = UiImageNode(props: ["icon": "calendar", "height": 0.5])
                     node.addChild(contentNode1)
                     expect(proxyNode.childNodes.count).to(equal(1))
@@ -214,7 +216,7 @@ class UiScrollViewNodeSpec: QuickSpec {
 
                     node.removeChild(contentNode2)
                     expect(proxyNode.childNodes.count).to(equal(1))
-                    expect(node.isLayoutNeeded).to(beFalse())
+                    expect(node.isLayoutNeeded).to(beTrue())
 
                     node.removeChild(contentNode1)
                     expect(proxyNode.childNodes.count).to(equal(0))
@@ -258,6 +260,10 @@ class UiScrollViewNodeSpec: QuickSpec {
                 }
             }
         }
+    }
+
+    fileprivate func getScrollViewContentNode(_ node: UiScrollViewNode) -> SCNNode {
+        return node.contentNode.childNodes[0]
     }
 }
 

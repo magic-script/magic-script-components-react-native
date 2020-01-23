@@ -47,7 +47,7 @@ open class UiDropdownListItemNode(
     var label: String = ""
         private set
 
-    var isSelected = false
+    var selected = false
 
     /**
      * The [PROP_SELECTED] value does not always have effect (e.g. when multi select mode is off
@@ -65,7 +65,7 @@ open class UiDropdownListItemNode(
     }
 
     val typeface: Typeface
-        get() = if (isSelected) {
+        get() = if (selected) {
             typefaceBold
         } else {
             typefaceNormal

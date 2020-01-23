@@ -68,7 +68,7 @@ class DropdownItemsListNode(
         listView.adapter = itemsAdapter
         listView.setOnItemClickListener { _, _, position, _ ->
             val item = items[position]
-            handleSelectionChangeRequest(item, !item.isSelected)
+            handleSelectionChangeRequest(item, !item.selected)
         }
     }
 
@@ -88,7 +88,7 @@ class DropdownItemsListNode(
             child.onSelectionChangeRequest = { select ->
                 handleSelectionChangeRequest(child, select)
             }
-            setNeedsRebuild(true)
+            setNeedsRebuild(force = true)
         }
     }
 
@@ -96,7 +96,7 @@ class DropdownItemsListNode(
         super.removeContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
-            setNeedsRebuild(true)
+            setNeedsRebuild(force = true)
         }
     }
 
@@ -136,7 +136,7 @@ class DropdownItemsListNode(
         if (selectionChanged) {
             itemsAdapter.notifyDataSetChanged()
             (view as ListView).invalidateViews()
-            val selectedItems = items.filter { it.isSelected }
+            val selectedItems = items.filter { it.selected }
             onSelectionChangedListener?.invoke(selectedItems)
         }
 
@@ -144,10 +144,10 @@ class DropdownItemsListNode(
 
     private fun trySingleSelectChange(item: UiDropdownListItemNode, select: Boolean): Boolean {
         if (select) {  // cannot deselect an item when multiSelect mode inactive
-            val lastSelectedItem = items.find { it.isSelected }
+            val lastSelectedItem = items.find { it.selected }
             if (item != lastSelectedItem) {
-                lastSelectedItem?.isSelected = false
-                item.isSelected = true
+                lastSelectedItem?.selected = false
+                item.selected = true
                 return true
             }
         }
@@ -155,10 +155,10 @@ class DropdownItemsListNode(
     }
 
     private fun tryMultiSelectChange(item: UiDropdownListItemNode, select: Boolean): Boolean {
-        if (item.isSelected == select) { // not changed
+        if (item.selected == select) { // not changed
             return false
         }
-        item.isSelected = select
+        item.selected = select
         return true
     }
 

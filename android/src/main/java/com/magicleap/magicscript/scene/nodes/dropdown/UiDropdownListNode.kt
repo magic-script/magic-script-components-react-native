@@ -47,6 +47,7 @@ class UiDropdownListNode(
         const val PROP_SHOW_LIST = "showList"
 
         const val Z_ORDER_OFFSET = 2e-5F
+        const val ICON_NAME = "chevron-down"
     }
 
     // Events
@@ -60,18 +61,14 @@ class UiDropdownListNode(
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
 
-        properties.putString(PROP_ICON, "chevron-down")
+        properties.putString(PROP_ICON, ICON_NAME)
     }
 
     override fun build() {
         super.build()
 
         if (!listNodeAdded) {
-            listNode.onSelectionChangedListener = { selectedItems ->
-                onSelectionChangedListener?.invoke(selectedItems)
-            }
-            listNode.build()
-            listNode.hide()
+            setupListNode()
             addContent(listNode)
             listNodeAdded = true
         }
@@ -183,6 +180,14 @@ class UiDropdownListNode(
         if (maxListHeight != null) {
             listNode.maxHeight = maxListHeight.toFloat()
         }
+    }
+
+    private fun setupListNode() {
+        listNode.onSelectionChangedListener = { selectedItems ->
+            onSelectionChangedListener?.invoke(selectedItems)
+        }
+        listNode.build()
+        listNode.hide()
     }
 
     private fun showList() {

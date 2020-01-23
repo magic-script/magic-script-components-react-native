@@ -25,11 +25,7 @@ import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldContain
-import org.amshove.kluent.shouldEqual
-import org.amshove.kluent.shouldNotBe
+import org.amshove.kluent.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,8 +45,6 @@ class UiDropdownListNodeTest {
     private lateinit var item1: UiDropdownListItemNode
     private lateinit var item2: UiDropdownListItemNode
 
-    private lateinit var context: Context
-    private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
 
@@ -61,19 +55,18 @@ class UiDropdownListNodeTest {
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        providerTypeface = Typeface.DEFAULT_BOLD
+        val context = ApplicationProvider.getApplicationContext<Context>()
         fontProvider = object : FontProvider {
             override fun provideFont(fontParams: FontParams?): Typeface {
-                return providerTypeface
+                return Typeface.DEFAULT_BOLD
             }
         }
-        iconsRepo = mock()
-        val sampleIcon = context.getDrawable(R.drawable.add)
-        whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
+        iconsRepo = mock {
+            on { getIcon(anyString(), anyBoolean()) } itReturns context.getDrawable(R.drawable.add)
+        }
 
-        item1 = buildDropdownItem(reactMapOf().id("0").label("item 1"))
-        item2 = buildDropdownItem(reactMapOf().id("1").label("item 2"))
+        item1 = buildDropdownItem("0")
+        item2 = buildDropdownItem("1")
 
         tested = UiDropdownListNode(JavaOnlyMap(), context, mock(), fontProvider, iconsRepo)
         tested.build()
@@ -85,9 +78,7 @@ class UiDropdownListNodeTest {
     @Test
     fun `should notify listener about all selected items when multi select active`() {
         tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, true))
-        val item3 = buildDropdownItem(
-            reactMapOf().id("312").label("item 3").selected(true)
-        )
+        val item3 = buildDropdownItem("312", selected = true)
         tested.addContent(item3)
         var selectedItemsList = listOf<UiDropdownListItemNode>()
         tested.onSelectionChangedListener = { selectedItems ->
@@ -108,8 +99,8 @@ class UiDropdownListNodeTest {
         item1.update(reactMapOf().selected(true))
         item2.update(reactMapOf().selected(true))
 
-        item1.isSelected shouldBe false
-        item2.isSelected shouldBe true
+        item1.selected shouldBe false
+        item2.selected shouldBe true
     }
 
     @Test
@@ -119,8 +110,8 @@ class UiDropdownListNodeTest {
         item1.update(reactMapOf().selected(true))
         item2.update(reactMapOf().selected(true))
 
-        item1.isSelected shouldBe true
-        item2.isSelected shouldBe true
+        item1.selected shouldBe true
+        item2.selected shouldBe true
     }
 
     @Test
@@ -151,7 +142,8 @@ class UiDropdownListNodeTest {
         listNode?.isVisible shouldBe true
     }
 
-    private fun buildDropdownItem(props: JavaOnlyMap): UiDropdownListItemNode {
+    private fun buildDropdownItem(id: String, selected: Boolean = false): UiDropdownListItemNode {
+        val props = reactMapOf().id(id).label("item $id").selected(selected)
         val item = UiDropdownListItemNode(props, fontProvider)
         item.build()
         return item

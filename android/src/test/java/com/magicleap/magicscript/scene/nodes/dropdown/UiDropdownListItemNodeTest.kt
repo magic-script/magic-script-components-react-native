@@ -70,7 +70,7 @@ class UiDropdownListItemNodeTest {
 
     @Test
     fun `should not be selected by default`() {
-        tested.isSelected shouldEqual false
+        tested.selected shouldEqual false
     }
 
     @Test
@@ -99,14 +99,14 @@ class UiDropdownListItemNodeTest {
 
     @Test
     fun `should use extra bold typeface when selected`() {
-        tested.isSelected = true
+        tested.selected = true
 
         tested.typeface shouldEqual extraBoldTypeface
     }
 
     @Test
     fun `should use normal typeface when not selected`() {
-        tested.isSelected = false
+        tested.selected = false
 
         tested.typeface shouldEqual normalTypeface
     }

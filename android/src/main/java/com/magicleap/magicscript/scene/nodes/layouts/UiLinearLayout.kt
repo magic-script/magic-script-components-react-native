@@ -88,10 +88,10 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
         val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
 
-        fillItemsWithPadding(defaultItemsPadding)
-        updateItemsPadding(itemsPadding?.paddings)
-        fillItemsWithAlignment(defaultItemsAlignment)
-        updateItemsAlignment(itemsAlignment?.alignments)
+        val childrenPadding =
+            calculateChildrenPadding(defaultItemsPadding, itemsPadding?.paddings)
+        val childrenAlignment =
+            calculateChildrenAlignment(defaultItemsAlignment, itemsAlignment?.alignments)
 
         return LinearLayoutParams(
             orientation = orientation,

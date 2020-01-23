@@ -38,7 +38,6 @@ class UIRectLayoutTest {
             TransformNode.PROP_ALIGNMENT, "center-center"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(left = -1f, bottom = -1.5f, right = 1f, top = 1.5f)
 
         val bounds = node.getBounding()
@@ -50,7 +49,6 @@ class UIRectLayoutTest {
     fun `should set top-left alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
         val node = createNode(props)
-        node.build()
 
         node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
         node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
@@ -60,7 +58,6 @@ class UIRectLayoutTest {
     fun `should set passed content alignment`() {
         val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
@@ -72,6 +69,8 @@ class UIRectLayoutTest {
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
         return UiRectLayout(props, layoutManager).apply {
             addContent(NodeBuilder().build())
+        }.apply {
+            build()
         }
     }
 

@@ -67,15 +67,16 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
     override fun getLayoutParams(): PageViewLayoutParams {
         val visiblePage = properties.getDouble(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE).toInt()
-        val defaultItemPadding = properties.read<Padding>(PROP_DEFAUL_PAGE_PADDING)!!
-        val defaultItemAlignment = properties.read<Alignment>(PROP_DEFAULT_CONTENT_ALIGNMENT)!!
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAUL_PAGE_PADDING)!!
+        val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_CONTENT_ALIGNMENT)!!
         val itemsPadding = properties.read<ItemPaddingMap>(UiLinearLayout.PROP_ITEM_PADDING)
         val itemsAlignment = properties.read<ItemAlignmentMap>(UiLinearLayout.PROP_ITEM_ALIGNMENT)
 
-        fillItemsWithPadding(defaultItemPadding)
-        updateItemsPadding(itemsPadding?.paddings)
-        fillItemsWithAlignment(defaultItemAlignment)
-        updateItemsAlignment(itemsAlignment?.alignments)
+        val childrenPadding =
+            calculateChildrenPadding(defaultItemsPadding, itemsPadding?.paddings)
+        val childrenAlignment =
+            calculateChildrenAlignment(defaultItemsAlignment, itemsAlignment?.alignments)
+
         return PageViewLayoutParams(
             visiblePage = visiblePage,
             size = Vector2(width, height),

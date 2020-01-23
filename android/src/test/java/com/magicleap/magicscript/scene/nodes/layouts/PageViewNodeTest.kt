@@ -55,7 +55,6 @@ class PageViewNodeTest {
             TransformNode.PROP_ALIGNMENT, "center-center"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(left = -1f, bottom = -1.5f, right = 1f, top = 1.5f)
 
         val bounds = node.getBounding()
@@ -67,7 +66,6 @@ class PageViewNodeTest {
     fun `should use top-left alignment by default`() {
         val props = JavaOnlyMap()
         val node = createNode(props)
-        node.build()
 
         node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
         node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
@@ -77,7 +75,6 @@ class PageViewNodeTest {
     fun `should apply passed content alignment`() {
         val node =
             createNode(reactMapOf(PageViewNode.PROP_DEFAULT_CONTENT_ALIGNMENT, "bottom-left"))
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
@@ -89,7 +86,6 @@ class PageViewNodeTest {
     fun `should set visible page when is passed`() {
         val props = reactMapOf(PageViewNode.PROP_VISIBLE_PAGE, 1.0)
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
@@ -99,6 +95,8 @@ class PageViewNodeTest {
     private fun createNode(props: JavaOnlyMap): PageViewNode {
         return PageViewNode(props, layoutManager).also {
             it.addContent(NodeBuilder().build())
+        }.apply {
+            build()
         }
     }
 }

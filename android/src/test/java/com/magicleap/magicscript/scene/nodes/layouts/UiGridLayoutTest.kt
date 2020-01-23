@@ -58,7 +58,6 @@ class UiGridLayoutTest {
             TransformNode.PROP_ALIGNMENT, "bottom-center"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(left = -0.5f, bottom = 0.0f, right = 0.5f, top = 2.0f)
 
         val bounds = node.getBounding()
@@ -69,7 +68,6 @@ class UiGridLayoutTest {
     @Test
     fun `should use dynamic number of columns by default`() {
         val node = createNode(JavaOnlyMap())
-        node.build()
 
         node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
     }
@@ -77,7 +75,6 @@ class UiGridLayoutTest {
     @Test
     fun `should use 1 row by default`() {
         val node = createNode(JavaOnlyMap())
-        node.build()
 
         node.rows shouldEqual 1
     }
@@ -90,7 +87,6 @@ class UiGridLayoutTest {
                 UiGridLayout.PROP_ROWS, UiGridLayout.DYNAMIC_VALUE
             )
         )
-        node.build()
 
         node.rows shouldEqual 1
         node.columns shouldEqual UiGridLayout.DYNAMIC_VALUE
@@ -104,7 +100,6 @@ class UiGridLayoutTest {
                 UiGridLayout.PROP_ROWS, 3
             )
         )
-        node.build()
 
         node.columns shouldEqual 2
         node.rows shouldEqual UiGridLayout.DYNAMIC_VALUE
@@ -114,7 +109,6 @@ class UiGridLayoutTest {
     fun `should apply item alignment when passed`() {
         val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
@@ -125,7 +119,6 @@ class UiGridLayoutTest {
     @Test
     fun `should update number of columns when columns property updated`() {
         val node = createNode(JavaOnlyMap())
-        node.build()
 
         val props = reactMapOf(UiGridLayout.PROP_COLUMNS, 3.0)
         node.update(props)
@@ -138,6 +131,8 @@ class UiGridLayoutTest {
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
         return UiGridLayout(props, layoutManager).apply {
             addContent(NodeBuilder().build())
+        }.apply {
+            build()
         }
     }
 

@@ -64,9 +64,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
 
-    protected var childrenPadding = mutableMapOf<Int, Padding>()
-    protected var childrenAlignment = mutableMapOf<Int, Alignment>()
-
     override fun build() {
         super.build()
         if (!loopStarted) {
@@ -175,27 +172,28 @@ abstract class UiBaseLayout<T : LayoutParams>(
         }
     }
 
-    protected fun fillItemsWithPadding(padding: Padding) {
+    protected fun calculateChildrenPadding(
+        defaultPadding: Padding,
+        childPaddings: Map<Int, Padding>? = null
+    ): MutableMap<Int, Padding> {
+        val result = mutableMapOf<Int, Padding>()
         for (i in childrenList.indices) {
-            childrenPadding[i] = padding
+            result[i] = childPaddings?.get(i) ?: defaultPadding
         }
+
+        return result
     }
 
-    protected fun updateItemsPadding(paddingMap: Map<Int, Padding>?) {
-        paddingMap?.forEach { (index, padding) ->
-            childrenPadding[index] = padding
-        }
-    }
-
-    protected fun fillItemsWithAlignment(alignment: Alignment) {
+    protected fun calculateChildrenAlignment(
+        defaultAlignment: Alignment,
+        childAlignments: Map<Int, Alignment>? = null
+    ): MutableMap<Int, Alignment> {
+        val result = mutableMapOf<Int, Alignment>()
         for (i in childrenList.indices) {
-            childrenAlignment[i] = alignment
+            result[i] = childAlignments?.get(i) ?: defaultAlignment
         }
+
+        return result
     }
 
-    protected fun updateItemsAlignment(alignmentMap: Map<Int, Alignment>?) {
-        alignmentMap?.forEach { (index, alignment) ->
-            childrenAlignment[index] = alignment
-        }
-    }
 }

@@ -58,7 +58,6 @@ class UiLinearLayoutTest {
             TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(0f, -4f, 2f, 0f)
 
         val bounds = node.getBounding()
@@ -69,7 +68,6 @@ class UiLinearLayoutTest {
     @Test
     fun `should use vertical orientation by default`() {
         val node = createNode(JavaOnlyMap())
-        node.build()
 
         node.getProperty("orientation") shouldEqual "vertical"
     }
@@ -79,7 +77,6 @@ class UiLinearLayoutTest {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
@@ -89,6 +86,8 @@ class UiLinearLayoutTest {
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
             addContent(NodeBuilder().build())
+        }.apply {
+            build()
         }
     }
 

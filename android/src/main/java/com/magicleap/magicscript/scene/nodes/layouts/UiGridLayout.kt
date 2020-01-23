@@ -105,15 +105,15 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
     }
 
     override fun getLayoutParams(): GridLayoutParams {
-        val defaultItemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
-        val defaultItemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+        val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
         val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
         val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
 
-        fillItemsWithPadding(defaultItemPadding)
-        updateItemsPadding(itemsPadding?.paddings)
-        fillItemsWithAlignment(defaultItemAlignment)
-        updateItemsAlignment(itemsAlignment?.alignments)
+        val childrenPadding =
+            calculateChildrenPadding(defaultItemsPadding, itemsPadding?.paddings)
+        val childrenAlignment =
+            calculateChildrenAlignment(defaultItemsAlignment, itemsAlignment?.alignments)
 
         return GridLayoutParams(
             columns = columns,

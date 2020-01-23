@@ -19,11 +19,9 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -79,7 +77,7 @@ open class UiButtonNode(
     }
 
     override fun provideView(context: Context): View {
-        return LayoutInflater.from(context).inflate(R.layout.button, null) as CustomButton
+        return CustomButton(context)
     }
 
     override fun provideDesiredSize(): Vector2 {

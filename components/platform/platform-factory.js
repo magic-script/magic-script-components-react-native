@@ -2,8 +2,8 @@
 
 import { Image, NativeEventEmitter, NativeModules, Platform, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';
+import { ColorProperty } from '../platform/elements/properties/color-property';
 import generateId from '../utils/generateId';
-import chroma from 'chroma-js';
 import omit from 'lodash/omit';
 import isEqual from 'lodash/isEqual';
 import { Events } from './platform-events';
@@ -100,9 +100,28 @@ export class PlatformFactory extends NativeFactory {
         return this._createElement(name, container, ...args)
     }
 
+    _processColors(properties) {
+      const keys = Object.keys(properties);
+      for (const key of keys) {
+        if (key.toLowerCase().endsWith('progresscolor')) {
+          const value = properties[key];
+          const newValue = this._processColors(value);
+          properties = { ...properties, ...{ [key]: newValue } };
+        } else if (key.toLowerCase().endsWith('color')) {
+          const value = properties[key];
+          const newValue = this._processColor(value);
+          properties = { ...properties, ...{ [key]: newValue } };  
+        }
+      }
+      return properties;
+    }
+
     _processColor(value) {
-      const [r, g, b, a] = chroma(value).rgba(false);
-      return [r / 255, g / 255, b / 255, a];
+      if (ColorProperty.validate(value)) {
+        return ColorProperty.parse(value);
+      }
+
+      return value;
     }
 
     _processAssetSource(path) {
@@ -113,11 +132,13 @@ export class PlatformFactory extends NativeFactory {
     }
 
     _processCustomProps(name, props) {
-        const properties = omit(props, 'children');
+        const noChildrenProps = omit(props, 'children');
         const child = props.children;
         if (typeof child === 'string' || typeof child === 'number') {
-            properties['text'] = child.toString();
+          noChildrenProps['text'] = child.toString();
         }
+
+        const properties = this._processColors(noChildrenProps);
 
         // For Android we have to change the type of id property to String,
         // because React internally expects it (without this the DropdownListItem crashed).
@@ -126,8 +147,6 @@ export class PlatformFactory extends NativeFactory {
         
         return ({
             ...properties,
-            ...(properties.color ? { color: this._processColor(properties.color) } : {}),
-            ...(properties.textColor ? { textColor: this._processColor(properties.textColor) } : {}),
             ...(properties.modelPath ? { modelPath: this._processAssetSource(properties.modelPath) } : {}),
             ...(properties.filePath ? { filePath: this._processAssetSource(properties.filePath) } : {}),
             ...(properties.videoPath ? { videoPath: this._processAssetSource(properties.videoPath) } : {}),

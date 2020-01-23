@@ -113,6 +113,7 @@ import SceneKit
         }
 
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
+        guard elementIndex < gridDescriptor.children.count else { return node }
         let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
         return hitNode?.hitTest(ray: ray) ?? node
     }

@@ -65,6 +65,11 @@ class NodeBuilder {
         return this
     }
 
+    fun withAnchorUUID(anchorUUID: String): NodeBuilder {
+        props.putString(TransformNode.PROP_ANCHOR_UUID, anchorUUID)
+        return this
+    }
+
     fun build(): TransformNode {
         val node = object : TransformNode(props, false, true) {
             override fun getContentBounding(): Bounding {

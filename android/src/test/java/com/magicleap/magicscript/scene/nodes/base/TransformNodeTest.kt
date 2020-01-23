@@ -23,10 +23,12 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.*
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -43,6 +45,13 @@ class TransformNodeTest {
         val node = NodeBuilder().build()
 
         assertEquals(Vector3.zero(), node.localPosition)
+    }
+
+    @Test
+    fun `anchor UUID should be empty by default`() {
+        val node = NodeBuilder().build()
+
+        node.anchorUuid shouldEqual ""
     }
 
     @Test
@@ -70,6 +79,15 @@ class TransformNodeTest {
 
         assertNotNull(node.getProperty(initialProperty))
         assertNotNull(node.getProperty(propertyToAdd))
+    }
+
+    @Test
+    fun `should set anchor UUID on build when property present`() {
+        val uuid = UUID.randomUUID().toString()
+
+        val node = NodeBuilder().withAnchorUUID(uuid).build()
+
+        node.anchorUuid shouldEqual uuid
     }
 
     @Test

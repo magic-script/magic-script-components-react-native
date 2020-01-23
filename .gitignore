@@ -49,3 +49,6 @@ yarn.lock
 
 # NPM
 package-lock.json
+
+# jest tests
+coverage/

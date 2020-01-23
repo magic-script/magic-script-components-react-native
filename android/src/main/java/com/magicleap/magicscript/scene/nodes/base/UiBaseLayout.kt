@@ -23,7 +23,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.Padding
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiBaseLayout<T : LayoutParams>(
@@ -61,6 +63,9 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
+
+    protected var childrenPadding = mutableMapOf<Int, Padding>()
+    protected var childrenAlignment = mutableMapOf<Int, Alignment>()
 
     override fun build() {
         super.build()
@@ -167,6 +172,30 @@ abstract class UiBaseLayout<T : LayoutParams>(
             if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
                 redrawRequested = true
             }
+        }
+    }
+
+    protected fun fillItemsWithPadding(padding: Padding) {
+        for (i in childrenList.indices) {
+            childrenPadding[i] = padding
+        }
+    }
+
+    protected fun updateItemsPadding(paddingMap: Map<Int, Padding>?) {
+        paddingMap?.forEach { (index, padding) ->
+            childrenPadding[index] = padding
+        }
+    }
+
+    protected fun fillItemsWithAlignment(alignment: Alignment) {
+        for (i in childrenList.indices) {
+            childrenAlignment[i] = alignment
+        }
+    }
+
+    protected fun updateItemsAlignment(alignmentMap: Map<Int, Alignment>?) {
+        alignmentMap?.forEach { (index, alignment) ->
+            childrenAlignment[index] = alignment
         }
     }
 }

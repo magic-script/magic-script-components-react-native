@@ -63,15 +63,14 @@ class UiRectLayout(
     override fun getLayoutParams(): LayoutParams {
         val padding = properties.read(PROP_ITEM_PADDING) ?: Padding()
         val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
-        val contentHorizontalAlignment = contentAlignment.horizontal
-        val contentVerticalAlignment = contentAlignment.vertical
+
+        fillItemsWithPadding(padding)
+        fillItemsWithAlignment(contentAlignment)
 
         return LayoutParams(
             size = Vector2(width, height),
-            defaultItemPadding = padding,
-            itemHorizontalAlignment = contentHorizontalAlignment,
-            itemVerticalAlignment = contentVerticalAlignment,
-            itemsPadding = null
+            itemsPadding = childrenPadding,
+            itemsAlignment = childrenAlignment
         )
     }
 

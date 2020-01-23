@@ -135,10 +135,14 @@ class HorizontalLinearLayoutManagerTest {
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
-            defaultItemPadding = itemPadding,
-            itemHorizontalAlignment = itemHorizontalAlignment,
-            itemVerticalAlignment = itemVerticalAlignment,
-            itemsPadding = null
+            itemsAlignment = mapOf(
+                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
+                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
+            ),
+            itemsPadding = mapOf(
+                Pair(0, itemPadding),
+                Pair(1, itemPadding)
+            )
         )
 
 }

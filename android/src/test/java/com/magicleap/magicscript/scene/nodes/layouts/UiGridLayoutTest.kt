@@ -17,10 +17,11 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -117,8 +118,8 @@ class UiGridLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.RIGHT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.RIGHT
     }
 
     @Test
@@ -135,7 +136,9 @@ class UiGridLayoutTest {
 
 
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
-        return UiGridLayout(props, layoutManager)
+        return UiGridLayout(props, layoutManager).apply {
+            addContent(NodeBuilder().build())
+        }
     }
 
 }

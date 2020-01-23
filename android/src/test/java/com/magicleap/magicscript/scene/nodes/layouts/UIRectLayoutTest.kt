@@ -1,10 +1,11 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -63,13 +64,15 @@ class UIRectLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
 
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
-        return UiRectLayout(props, layoutManager)
+        return UiRectLayout(props, layoutManager).apply {
+            addContent(NodeBuilder().build())
+        }
     }
 
 }

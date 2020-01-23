@@ -100,11 +100,16 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         var sizeX = parentSize.x
         var sizeY = parentSize.y
 
-        val defaultItemPadding = layoutParams.defaultItemPadding
-        var leftOffset = -defaultItemPadding.left
-        var bottomOffset = -defaultItemPadding.bottom
-        var rightOffset = defaultItemPadding.right
-        var topOffset = defaultItemPadding.top
+        val maxPadding = Padding(
+            getMaxTopPadding(layoutParams.itemsPadding),
+            getMaxRightPadding(layoutParams.itemsPadding),
+            getMaxBottomPadding(layoutParams.itemsPadding),
+            getMaxLeftPadding(layoutParams.itemsPadding)
+        )
+        var leftOffset = -maxPadding.left
+        var bottomOffset = -maxPadding.bottom
+        var rightOffset = maxPadding.right
+        var topOffset = maxPadding.top
 
         if (parentSize.x == WRAP_CONTENT_DIMENSION) {
             sizeX = childrenBounds.size().x
@@ -184,69 +189,28 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         }
     }
 
-    protected fun <T : LayoutParams> findItemPadding(
-        params: T,
-        index: Int
-    ) = params.itemsPadding?.paddings?.get(index) ?: params.defaultItemPadding
-
-    protected fun <T : LayoutParams> findItemHorizontalAlignment(
-        params: T,
-        index: Int
-    ) = params.itemsAlignment?.alignments?.get(index)?.horizontal ?: params.itemHorizontalAlignment
-
-
-    protected fun <T : LayoutParams> findItemVerticalAlignment(
-        params: T,
-        index: Int
-    ) = params.itemsAlignment?.alignments?.get(index)?.vertical ?: params.itemVerticalAlignment
-
     protected fun getMaxHorizontalPadding(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = getMaxLeftPaddings(itemDefaultPadding, itemsPadding) +
-            getMaxRightPaddings(itemDefaultPadding, itemsPadding)
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxLeftPadding(itemsPadding) + getMaxRightPadding(itemsPadding)
 
     protected fun getMaxVerticalPadding(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = getMaxTopPadding(itemDefaultPadding, itemsPadding) +
-            getMaxBottomPadding(itemDefaultPadding, itemsPadding)
-
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxTopPadding(itemsPadding) + getMaxBottomPadding(itemsPadding)
 
     protected fun getMaxTopPadding(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = mutableListOf(itemDefaultPadding.top).also { topPaddings ->
-        itemsPadding?.map { it.top }?.asIterable()?.let {
-            topPaddings.addAll(it)
-        }
-    }.max() ?: 0f
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.top }.max() ?: 0f
 
-    protected fun getMaxLeftPaddings(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = mutableListOf(itemDefaultPadding.left).also { leftPaddings ->
-        itemsPadding?.map { it.left }?.asIterable()?.let {
-            leftPaddings.addAll(it)
-        }
-    }.max() ?: 0f
+    protected fun getMaxLeftPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.left }.max() ?: 0f
 
-    protected fun getMaxRightPaddings(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = mutableListOf(itemDefaultPadding.right).also { rightPaddings ->
-        itemsPadding?.map { it.right }?.asIterable()?.let {
-            rightPaddings.addAll(it)
-        }
-    }.max() ?: 0f
+    protected fun getMaxRightPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.right }.max() ?: 0f
 
     protected fun getMaxBottomPadding(
-        itemDefaultPadding: Padding,
-        itemsPadding: Collection<Padding>?
-    ) = mutableListOf(itemDefaultPadding.bottom).also { bottomPaddings ->
-        itemsPadding?.map { it.bottom }?.asIterable()?.let {
-            bottomPaddings.addAll(it)
-        }
-    }.max() ?: 0f
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
 
 }

@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -82,11 +83,13 @@ class UiLinearLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.defaultItemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+        layoutParams.itemsPadding[0] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
-        return UiLinearLayout(props, layoutManager)
+        return UiLinearLayout(props, layoutManager).apply {
+            addContent(NodeBuilder().build())
+        }
     }
 
 }

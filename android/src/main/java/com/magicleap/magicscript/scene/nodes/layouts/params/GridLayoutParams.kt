@@ -1,8 +1,6 @@
 package com.magicleap.magicscript.scene.nodes.layouts.params
 
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.ItemAlignmentMap
-import com.magicleap.magicscript.scene.nodes.props.ItemPaddingMap
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 
@@ -10,18 +8,12 @@ class GridLayoutParams(
     val columns: Int,
     val rows: Int,
     size: Vector2,
-    defaultItemPadding: Padding,
-    itemHorizontalAlignment: Alignment.HorizontalAlignment,
-    itemVerticalAlignment: Alignment.VerticalAlignment,
-    itemsPadding: ItemPaddingMap?,
-    itemsAlignment: ItemAlignmentMap?
+    itemsPadding: Map<Int, Padding>,
+    itemsAlignment: Map<Int, Alignment>
 ) : LayoutParams(
-    size,
-    defaultItemPadding,
-    itemHorizontalAlignment,
-    itemVerticalAlignment,
-    itemsPadding,
-    itemsAlignment
+    size = size,
+    itemsPadding = itemsPadding,
+    itemsAlignment = itemsAlignment
 )
 
 

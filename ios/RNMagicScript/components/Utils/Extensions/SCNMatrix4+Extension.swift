@@ -34,6 +34,14 @@ extension SCNMatrix4 {
         get { return SCNVector3(m41, m42, m43) }
         set { m41 = newValue.x; m42 = newValue.y; m43 = newValue.z; }
     }
+    // Source from SO:
+    // https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati/417813
+    var scale: SCNVector3 {
+        let sx = SCNVector3(m11, m12, m13).length()
+        let sy = SCNVector3(m21, m22, m23).length()
+        let sz = SCNVector3(m31, m32, m33).length()
+        return SCNVector3(sx, sy, sz)
+    }
 
     public static func fromQuaternion(quat: SCNQuaternion) -> SCNMatrix4 {
         let q: GLKQuaternion = GLKQuaternionMake(Float(quat.x), Float(quat.y), Float(quat.z), Float(quat.w))
@@ -45,13 +53,5 @@ extension SCNMatrix4 {
         let matrix: GLKMatrix4 = SCNMatrix4ToGLKMatrix4(self)
         let q: GLKQuaternion = GLKQuaternionMakeWithMatrix4(matrix)
         return SCNQuaternion(x: q.x, y: q.y, z: q.z, w: q.w)
-    }
-
-    var scale: SCNVector3 {
-        let sx = SCNVector3(m11, m12, m13).length()
-        let sy = SCNVector3(m21, m22, m23).length()
-        let sz = SCNVector3(m31, m32, m33).length()
-
-        return SCNVector3(sx, sy, sz)
     }
 }

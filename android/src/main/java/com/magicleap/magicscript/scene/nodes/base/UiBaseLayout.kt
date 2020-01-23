@@ -23,9 +23,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiBaseLayout<T : LayoutParams>(
@@ -171,29 +169,4 @@ abstract class UiBaseLayout<T : LayoutParams>(
             }
         }
     }
-
-    protected fun calculateChildrenPadding(
-        defaultPadding: Padding,
-        childPaddings: Map<Int, Padding>? = null
-    ): MutableMap<Int, Padding> {
-        val result = mutableMapOf<Int, Padding>()
-        for (i in childrenList.indices) {
-            result[i] = childPaddings?.get(i) ?: defaultPadding
-        }
-
-        return result
-    }
-
-    protected fun calculateChildrenAlignment(
-        defaultAlignment: Alignment,
-        childAlignments: Map<Int, Alignment>? = null
-    ): MutableMap<Int, Alignment> {
-        val result = mutableMapOf<Int, Alignment>()
-        for (i in childrenList.indices) {
-            result[i] = childAlignments?.get(i) ?: defaultAlignment
-        }
-
-        return result
-    }
-
 }

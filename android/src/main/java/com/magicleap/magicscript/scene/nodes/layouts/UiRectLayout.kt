@@ -64,8 +64,16 @@ class UiRectLayout(
         val padding = properties.read(PROP_ITEM_PADDING) ?: Padding()
         val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
 
-        val childrenPadding = calculateChildrenPadding(padding)
-        val childrenAlignment = calculateChildrenAlignment(contentAlignment)
+        val childrenPadding =
+            LayoutUtils.createChildrenPaddingMap(
+                childrenList.size,
+                padding
+            )
+        val childrenAlignment =
+            LayoutUtils.createChildrenAlignmentMap(
+                childrenList.size,
+                contentAlignment
+            )
 
         return LayoutParams(
             size = Vector2(width, height),

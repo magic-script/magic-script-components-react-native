@@ -45,23 +45,24 @@ class ViewController: UIViewController {
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 
-        let filenames = [
-            "static.obj",
-            "static.obj",
-            "static.gltf",
-            "animated.gltf",
-            "static.glb",
-            "animated.glb"
-        ]
-        for (index, filename) in filenames.enumerated() {
-            if let path = Bundle.main.path(forResource: filename, ofType: nil),
-                FileManager.default.fileExists(atPath: path) {
-                loadModel(path, index: index)
-            } else {
-                debugPrint("Unable to load \(filename) model.")
-            }
-        }
-
+//        setupDropdownListTest()
+        setupScrollViewScene()
+//        let filenames = [
+//            "static.obj",
+//            "static.obj",
+//            "static.gltf",
+//            "animated.gltf",
+//            "static.glb",
+//            "animated.glb"
+//        ]
+//        for (index, filename) in filenames.enumerated() {
+//            if let path = Bundle.main.path(forResource: filename, ofType: nil),
+//                FileManager.default.fileExists(atPath: path) {
+//                loadModel(path, index: index)
+//            } else {
+//                debugPrint("Unable to load \(filename) model.")
+//            }
+//        }
         UiNodesManager.instance.updateLayout()
     }
 
@@ -104,7 +105,7 @@ class ViewController: UIViewController {
     }
 
     fileprivate func setupDropdownListTest() {
-        // Rect layout
+        // Dropdown list
         let dropdownListId: String = "dropdown_list_id"
         let dropdown: UiDropdownListNode = createComponent([
             "alignment": "top-center",
@@ -134,6 +135,80 @@ class ViewController: UIViewController {
         toggle.onChanged = { sender, on in
             dropdown.multiSelect = on
         }
+    }
+
+    fileprivate var scrollView: UiScrollViewNode!
+    fileprivate var scrollBar: UiScrollBarNode!
+    fileprivate var layout: UiLinearLayoutNode!
+    fileprivate var isVertical: Bool = true
+    fileprivate func setupScrollViewScene() {
+        let size: CGFloat = 1.0
+        let aabb = [
+            "min": [-0.5 * size, -0.5 * size, -0.1 * size],
+            "max": [0.5 * size, 0.5 * size, 0.1 * size]
+        ]
+        // Scroll view
+        let scrollViewId: String = "scroll_view_id"
+        scrollView = createComponent([
+            "alignment": "top-center",
+            "debug": true,
+            "localPosition": [0, 0.7, 0],
+            "scrollVarVisibility": "auto",
+            "scrollBounds": aabb
+        ], nodeId: scrollViewId, parentId: groupId)
+
+        scrollBar = createComponent([
+            "length": size,
+            "thickness": 0.04
+        ], nodeId: "scroll_bar_id", parentId: scrollViewId)
+
+        let layoutId = "layout_id"
+        layout = createComponent([
+            "alignment": "'center-center'",
+            "defaultItemAlignment": "center-center",
+        ], nodeId: layoutId, parentId: scrollViewId)
+        let colors: [Array<CGFloat>] = [
+            [1, 0, 0, 1],
+            [1, 1, 0, 1],
+            [1, 1, 1, 1],
+            [0, 1, 0, 1],
+            [0, 1, 1, 1],
+            [0, 0, 1, 1],
+            [0, 0, 0, 1],
+            [0.5, 0.5, 0.5, 1],
+        ]
+
+        for i in 0..<colors.count {
+            let _: UiImageNode = createComponent([
+                "color": colors[i],
+                "height": size,
+                "width": size
+            ], nodeId: "item_\(i)", parentId: layoutId)
+        }
+
+        let toggle: UiToggleNode = createComponent([
+            "localPosition": [0, -0.4, 0],
+            "text": "Horizontal",
+            "textSize": 0.08,
+            "height": 0.1
+        ], nodeId: "toggle_id", parentId: groupId)
+        toggle.onChanged = { [weak self] sender, on in
+            guard let strongSelf = self else { return }
+            strongSelf.isVertical = !strongSelf.isVertical
+            strongSelf.updateOrientation()
+        }
+
+        updateOrientation()
+    }
+
+    fileprivate func updateOrientation() {
+        let size = scrollView.getSize()
+        let barWidth = scrollBar.thickness
+        scrollView.scrollDirection = isVertical ? ScrollDirection.vertical : ScrollDirection.horizontal
+        scrollBar.scrollOrientation = isVertical ? Orientation.vertical : Orientation.horizontal
+        layout?.layoutOrientation = isVertical ? Orientation.vertical : Orientation.horizontal
+        scrollBar.localPosition = isVertical ? SCNVector3(0.5 * (size.width + barWidth), 0, 0) : SCNVector3(0, -0.5 * (size.height + barWidth), 0)
+        UiNodesManager.instance.updateLayout()
     }
 
     @discardableResult

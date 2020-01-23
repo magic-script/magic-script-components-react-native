@@ -39,7 +39,6 @@ import SceneKit
         get { return scrollView.scrollValue }
         set { scrollView.scrollValue = newValue; setNeedsLayout() }
     }
-
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
         get { return scrollView.scrollBounds }
         set { scrollView.scrollBounds = newValue; setNeedsLayout() }

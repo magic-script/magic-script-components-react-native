@@ -75,7 +75,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldUseTypefaceFromProvider() {
+    fun `should use typeface from provider`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         node.build()
@@ -84,7 +84,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultTextSize() {
+    fun `should have default text size`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val textSize = node.getProperty(UiButtonNode.PROP_TEXT_SIZE)
@@ -93,7 +93,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultRoundness() {
+    fun `should have default roundness`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         val roundness = node.getProperty(UiButtonNode.PROP_ROUNDNESS)
@@ -102,7 +102,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldApplyTextWhenTextPropertyPresent() {
+    fun `should apply text when text property present`() {
         val text = "ABC"
         val props = reactMapOf(UiButtonNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
@@ -113,7 +113,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+    fun `should apply text size when text size property present`() {
         val textSize = 0.05F
         val props = reactMapOf(UiButtonNode.PROP_TEXT_SIZE, textSize)
         val node = createNodeWithViewSpy(props)
@@ -125,7 +125,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresent() {
+    fun `should apply text color when color property present`() {
         val textColor = reactArrayOf(1.0, 1.0, 1.0, 1.0)
         val props = reactMapOf(UiButtonNode.PROP_TEXT_COLOR, textColor)
         val node = createNodeWithViewSpy(props)
@@ -136,7 +136,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldApplyRoundnessWhenRoundnessPropertyPresent() {
+    fun `should apply roundness when roundness property present`() {
         val roundness = 0.2
         val props = reactMapOf(UiButtonNode.PROP_ROUNDNESS, roundness)
         val node = createNodeWithViewSpy(props)
@@ -147,7 +147,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldSetIconWhenIconPropertyPresent() {
+    fun `should set icon when icon property present`() {
         val props = reactMapOf(UiButtonNode.PROP_ICON, "magic-icon")
         val node = createNodeWithViewSpy(props)
 
@@ -157,7 +157,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldSetIconColorWhenIconColorPropertyPresent() {
+    fun `should set icon color when icon color property present`() {
         val color = reactArrayOf(0.1, 0.2, 0.3, 0.4)
         val props = reactMapOf(
             UiButtonNode.PROP_ICON, "magic-icon",
@@ -171,7 +171,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldSetIconSizeWhenIconSizePropertyPresent() {
+    fun `should set icon size when icon size property present`() {
         val sizeInMeters = 0.1
         val iconSize = reactArrayOf(sizeInMeters, sizeInMeters)
         val props = reactMapOf(
@@ -187,7 +187,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldNotChangeHardcodedAlignment() {
+    fun `should not change hardcoded alignment`() {
         val props = reactMapOf(TransformNode.PROP_ALIGNMENT, "bottom-right")
         val node = createNodeWithViewSpy(props)
 
@@ -198,7 +198,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldReturnCorrectBounds() {
+    fun `should return correct bounds`() {
         val props = reactMapOf(
             TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-1.0, 1.0, 0.0),
             UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
@@ -212,7 +212,7 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun shouldReturnCorrectBoundsWhenScaled() {
+    fun `should return correct bounds when scaled`() {
         val scale = reactArrayOf(0.5, 0.5, 0.5)
         val props = reactMapOf(
             UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0,

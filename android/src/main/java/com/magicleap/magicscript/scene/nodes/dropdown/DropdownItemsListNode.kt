@@ -53,8 +53,8 @@ class DropdownItemsListNode(
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val tempAdapter = buildAdapter()
-        val size = calculateItemsSize(tempAdapter)
+        itemsAdapter = buildAdapter()
+        val size = calculateItemsSize()
         if (maxHeight != WRAP_CONTENT_DIMENSION && size.y > maxHeight) {
             size.y = maxHeight
         }
@@ -64,7 +64,6 @@ class DropdownItemsListNode(
     override fun setupView() {
         super.setupView()
         val listView = view as ListView
-        itemsAdapter = buildAdapter()
         listView.adapter = itemsAdapter
         listView.setOnItemClickListener { _, _, position, _ ->
             val item = items[position]
@@ -101,7 +100,7 @@ class DropdownItemsListNode(
     }
 
     // Calculates list view size based on list items size
-    private fun calculateItemsSize(itemsAdapter: DropdownItemsAdapter): Vector2 {
+    private fun calculateItemsSize(): Vector2 {
         var width = 0f
         var height = 0f
         val listView = view as ListView

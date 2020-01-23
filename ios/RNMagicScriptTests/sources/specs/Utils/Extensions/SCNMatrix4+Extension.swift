@@ -43,7 +43,7 @@ class SCNMatrix4ExtensionSpec: QuickSpec {
             }
 
             context("vectors") {
-                it("should get matrix directional vectors and position"){
+                it("should get matrix directional vectors and position") {
                     let matrix = SCNMatrix4Identity
                     expect(matrix.right).to(beCloseTo(SCNVector3(1, 0, 0)))
                     expect(matrix.up).to(beCloseTo(SCNVector3(0, 1, 0)))
@@ -93,12 +93,25 @@ class SCNMatrix4ExtensionSpec: QuickSpec {
             }
 
             context("scale") {
-                it("should decompose scale vector"){
+                it("should decompose scale vector") {
                     expect(SCNMatrix4Identity.scale).to(beCloseTo(SCNVector3(1, 1, 1)))
 
                     let referenceScale = SCNVector3(0.5, 1.0, 2.0)
-                    let matrix = SCNMatrix4MakeScale(referenceScale.x, referenceScale.y, referenceScale.z)
-                    expect(matrix.scale).to(beCloseTo(referenceScale))
+                    let scaleMatrix = SCNMatrix4MakeScale(referenceScale.x, referenceScale.y, referenceScale.z)
+                    let matrices: [SCNMatrix4] = [
+                        SCNMatrix4Identity,
+                        SCNMatrix4MakeTranslation(3.1, -0.5, -9.0),
+                        SCNMatrix4MakeRotation(0.5 * Float.pi, 1, 0, 0),
+                        SCNMatrix4MakeRotation(0.5 * Float.pi, 0, 1, 0),
+                        SCNMatrix4MakeRotation(0.5 * Float.pi, 0, 0, 1),
+                        SCNMatrix4MakeRotation(-0.25 * Float.pi, 0.7071, 0.7071, 0),
+                        SCNMatrix4MakeRotation(-0.25 * Float.pi, 0, 0.7071, 0.7071),
+                        SCNMatrix4MakeRotation(-0.25 * Float.pi, 0.7071, 0, 0.7071)
+                    ]
+                    for matrix in matrices {
+                        let mat = SCNMatrix4Mult(scaleMatrix, matrix)
+                        expect(mat.scale).to(beCloseTo(referenceScale))
+                    }
                 }
             }
         }

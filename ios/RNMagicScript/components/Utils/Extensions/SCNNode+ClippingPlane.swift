@@ -51,7 +51,6 @@ extension SCNNode {
                 let value = NSValue(scnVector4: plane)
                 node.geometry?.setValue(value, forKey: "clippingPlane\(index + 1)")
             }
-
         }
     }
 }

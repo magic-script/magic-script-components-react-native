@@ -234,6 +234,20 @@ class UiScrollViewNodeSpec: QuickSpec {
                 }
             }
 
+            context("postUpdate") {
+                it("should set clipping planes") {
+                    let imageNode = UiImageNode(props: ["icon": "address-book", "height": 0.5])
+                    node.addChild(imageNode)
+                    node.scrollBounds = (min: SCNVector3(-1, -1, -0.1), max: SCNVector3(1, 1, 0.1))
+                    node.layoutIfNeeded()
+
+                    let geometryNode = imageNode.contentNode.childNodes[0]
+                    expect(geometryNode.geometry?.shaderModifiers).to(beNil())
+                    node.postUpdate()
+                    expect(geometryNode.geometry?.shaderModifiers).notTo(beNil())
+                }
+            }
+
             context("hitTest") {
                 it("should return nil") {
                     node.scrollBounds = (min: SCNVector3(-1, -1, -0.1), max: SCNVector3(1, 1, 0.1))

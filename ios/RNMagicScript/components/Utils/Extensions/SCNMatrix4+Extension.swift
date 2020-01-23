@@ -48,9 +48,10 @@ extension SCNMatrix4 {
     }
 
     var scale: SCNVector3 {
-        let sx = SCNVector3(m11, m21, m31).length()
-        let sy = SCNVector3(m12, m22, m32).length()
-        let sz = SCNVector3(m13, m23, m33).length()
+        let sx = SCNVector3(m11, m12, m13).length()
+        let sy = SCNVector3(m21, m22, m23).length()
+        let sz = SCNVector3(m31, m32, m33).length()
+
         return SCNVector3(sx, sy, sz)
     }
 }

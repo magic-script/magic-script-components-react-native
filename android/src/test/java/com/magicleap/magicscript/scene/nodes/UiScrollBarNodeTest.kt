@@ -48,18 +48,18 @@ class UiScrollBarNodeTest {
     }
 
     @Test
-    fun `should update size`() {
-        val width = 0.6
-        val height = 0.02
+    fun `should update length and thickness`() {
+        val length = 0.6
+        val thickness = 0.02
         val props = reactMapOf(
-            UiScrollBarNode.PROP_WIDTH, width,
-            UiScrollBarNode.PROP_HEIGHT, height
+            UiScrollBarNode.PROP_LENGTH, length,
+            UiScrollBarNode.PROP_THICKNESS, thickness
         )
 
         node.update(props)
 
-        node.width shouldEqual width.toFloat()
-        node.height shouldEqual height.toFloat()
+        node.length shouldEqual length.toFloat()
+        node.thickness shouldEqual thickness.toFloat()
     }
 
     @Test

@@ -111,30 +111,3 @@ class SCNNodeEnumerateSpec: QuickSpec {
                        [j][k][l][m]
      */
 }
-/*
-extension SCNNode {
-    /// Enumerates SCNNode hierarchy in post order and invokes the block closure for each TransformNode.
-    @objc func enumerateTransformNodes(_ block: (TransformNode) -> Void) {
-        childNodes.forEach { child in
-            child.enumerateTransformNodes(block)
-        }
-
-        if let transformNode = self as? TransformNode {
-            block(transformNode)
-        }
-    }
-
-    /// Enumerates SCNNode hierarchy from given node (self) to the root.
-    /// Invokes the block closure for each TransformNode.
-    @objc func enumerateTransformNodesParents(block: (TransformNode) -> Void) {
-        var node: SCNNode! = parent
-        while node != nil {
-            if let transformNode = node as? TransformNode {
-                block(transformNode)
-            }
-            node = node.parent
-        }
-    }
-}
-
-*/

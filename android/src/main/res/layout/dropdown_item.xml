@@ -13,17 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="10dp"
-    android:shape="rectangle">
-    <corners android:radius="10dp" />
-    <gradient
-        android:angle="270"
-        android:endColor="@color/violet_gradient_end"
-        android:startColor="@color/violet_gradient_start"
-        android:type="linear" />
-    <stroke
-        android:width="1dp"
-        android:color="@color/text_edit_border_color" />
-</shape>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:singleLine="true"
+    android:textColor="@color/text_color_default" />

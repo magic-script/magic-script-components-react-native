@@ -1,20 +1,20 @@
 /*
- *  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.dropdown
 
 import android.content.Context
 import android.os.Bundle
@@ -22,14 +22,14 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.read
 
 class UiDropdownListNode(
     initProps: ReadableMap,
@@ -45,34 +45,42 @@ class UiDropdownListNode(
         const val PROP_CHARACTERS_LIMIT = "maxCharacterLimit" // for list item
         const val PROP_MULTI_SELECT = "multiSelect"
         const val PROP_SHOW_LIST = "showList"
-        const val PROP_SELECTED = "selected"
+
+        const val Z_ORDER_OFFSET = 2e-5F
+        const val ICON_NAME = "chevron-down"
     }
 
     // Events
-    var onSelectionChangedListener: ((itemIndex: Int) -> Unit)? = null
-    var onListVisibilityChanged: ((isVisible: Boolean) -> Unit)? = null
+    var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
 
-    private val listNode: UiLinearLayout
-    private var lastSelectedItem: UiDropdownListItemNode? = null
+    private val listNode: DropdownItemsListNode
+    private var listNodeAdded = false
 
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
-        listProps.putString(UiLinearLayout.PROP_ORIENTATION, "vertical")
-        listProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "top-left")
-        properties.putString(PROP_ICON, "arrow-down")
+        listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
 
-        listNode = UiLinearLayout(listProps, VerticalLinearLayoutManager())
+        properties.putString(PROP_ICON, ICON_NAME)
     }
 
     override fun build() {
         super.build()
 
-        listNode.build()
-        addContent(listNode)
-        hideList()
+        if (!listNodeAdded) {
+            setupListNode()
+            addContent(listNode)
+            listNodeAdded = true
+        }
 
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
+    }
+
+    override fun loadRenderable() {
+        super.loadRenderable()
+        if (!listNode.renderableRequested) {
+            listNode.attachRenderable()
+        }
     }
 
     override fun applyProperties(props: Bundle) {
@@ -80,31 +88,25 @@ class UiDropdownListNode(
 
         val listItems = contentNode.children.filterIsInstance<UiDropdownListItemNode>()
         configureListItems(listItems, props)
+
         setShowList(props)
+        setMultiSelect(props)
+        setMaxListHeight(props)
     }
 
     override fun addContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
-            child.onSelectedListener = {
-                lastSelectedItem?.isSelected = false
-                lastSelectedItem = child
-                val index = listNode.contentNode.children.size
-                onSelectionChangedListener?.invoke(index)
-                logMessage("on item selected, index= $index")
-            }
             listNode.addContent(child)
         } else {
             super.addContent(child)
         }
+
     }
 
     override fun removeContent(child: TransformNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
-            if (child == lastSelectedItem) {
-                lastSelectedItem = null
-            }
         } else {
             super.removeContent(child)
         }
@@ -125,20 +127,24 @@ class UiDropdownListNode(
         val bounding = getContentBounding()
         val listX = bounding.left
         val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
-        listNode.localPosition = Vector3(listX, listY, 0F)
+        // Moving content forward, so it'll receive touch events first
+        listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {
-        setListTextSize(items, props)
+        setListTextSize(props)
         setCharactersLimit(items, props)
     }
 
-    private fun setListTextSize(items: List<UiDropdownListItemNode>, props: Bundle) {
+    private fun setListTextSize(props: Bundle) {
         if (props.containsKey(PROP_LIST_TEXT_SIZE)) {
-            val textSize = props.getDouble(PROP_LIST_TEXT_SIZE)
-            items.forEach { item ->
-                item.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT_SIZE, textSize))
-            }
+            listNode.itemsTextSize = props.getDouble(PROP_LIST_TEXT_SIZE).toFloat()
+            return
+        }
+
+        if (props.containsKey(PROP_TEXT_SIZE)) {
+            listNode.itemsTextSize = props.getDouble(PROP_TEXT_SIZE).toFloat()
+            return
         }
     }
 
@@ -151,25 +157,45 @@ class UiDropdownListNode(
         }
     }
 
+    private fun setMultiSelect(props: Bundle) {
+        val multiSelect = props.read<Boolean>(PROP_MULTI_SELECT)
+        if (multiSelect != null) {
+            listNode.multiSelect = multiSelect
+        }
+    }
+
     private fun setShowList(props: Bundle) {
         if (props.containsKey(PROP_SHOW_LIST)) {
             val show = props.getBoolean(PROP_SHOW_LIST)
             if (show && !listNode.isVisible) {
                 showList()
-            } else if (listNode.isVisible) {
+            } else if (!show && listNode.isVisible) {
                 hideList()
             }
         }
     }
 
+    private fun setMaxListHeight(props: Bundle) {
+        val maxListHeight = props.read<Double>(PROP_LIST_MAX_HEIGHT)
+        if (maxListHeight != null) {
+            listNode.maxHeight = maxListHeight.toFloat()
+        }
+    }
+
+    private fun setupListNode() {
+        listNode.onSelectionChangedListener = { selectedItems ->
+            onSelectionChangedListener?.invoke(selectedItems)
+        }
+        listNode.build()
+        listNode.hide()
+    }
+
     private fun showList() {
         listNode.show()
-        onListVisibilityChanged?.invoke(true)
     }
 
     private fun hideList() {
         listNode.hide()
-        onListVisibilityChanged?.invoke(false)
     }
 
 }

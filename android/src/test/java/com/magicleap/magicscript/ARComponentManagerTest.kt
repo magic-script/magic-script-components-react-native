@@ -21,6 +21,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactApplicationContext
 import com.magicleap.magicscript.scene.UiNodesManager
 import com.magicleap.magicscript.scene.nodes.*
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout

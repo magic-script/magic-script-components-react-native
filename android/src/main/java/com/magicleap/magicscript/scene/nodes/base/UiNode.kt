@@ -23,6 +23,7 @@ import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
@@ -80,7 +81,6 @@ abstract class UiNode(
      * A view attached to the node
      */
     protected lateinit var view: View
-    protected var onViewLoadedListener: ((renderable: Renderable) -> Unit)? = null
 
     private lateinit var viewWrapper: ViewWrapper
     private val handler = Handler(Looper.getMainLooper())
@@ -285,6 +285,14 @@ abstract class UiNode(
         setupViewListeners()
     }
 
+    protected open fun onViewLoaded(viewRenderable: Renderable) {
+        if (isVisible) {
+            contentNode.renderable = viewRenderable
+        }
+        renderableCopy = viewRenderable
+        applyMaterialClipping()
+    }
+
     override fun applyAlignment() {
         if (useContentNodeAlignment) {
             super.applyAlignment()
@@ -327,12 +335,7 @@ abstract class UiNode(
         viewRenderableLoader.loadRenderable(config) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
-                if (isVisible) {
-                    contentNode.renderable = result.renderable
-                }
-                renderableCopy = result.renderable
-                applyMaterialClipping()
-                onViewLoadedListener?.invoke(result.renderable)
+                onViewLoaded(result.renderable)
             }
         }
     }
@@ -366,6 +369,9 @@ abstract class UiNode(
     }
 
     private fun setupViewListeners() {
+        if (view is AdapterView<*>) {
+            return
+        }
         view.setOnClickListener {
             onViewClick()
             onClickListener?.invoke()

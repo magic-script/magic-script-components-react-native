@@ -20,8 +20,8 @@
     <color name="text_color_hint">#BF8B8B8B</color>
     <color name="progress_bar_background">#BF9C9C9C</color>
     <color name="progress_bar_foreground">#FFF</color>
-    <color name="text_edit_background_start">#FF45454E</color>
-    <color name="text_edit_background_end">#FF3F3852</color>
+    <color name="violet_gradient_start">#FF45454E</color>
+    <color name="violet_gradient_end">#FF3F3852</color>
     <color name="text_edit_border_color">#7f84ab</color>
     <color name="scroll_bar_background">#BF9C9C9C</color>
     <color name="scroll_bar_thumb">#FFECECEC</color>

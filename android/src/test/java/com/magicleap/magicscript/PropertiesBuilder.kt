@@ -201,8 +201,18 @@ fun JavaOnlyMap.orientation(orientation: String): JavaOnlyMap {
     return this
 }
 
+fun JavaOnlyMap.id(id: String): JavaOnlyMap {
+    putString("id", id)
+    return this
+}
+
 fun JavaOnlyMap.label(label: String): JavaOnlyMap {
     putString("label", label)
+    return this
+}
+
+fun JavaOnlyMap.selected(selected: Boolean): JavaOnlyMap {
+    putBoolean("selected", selected)
     return this
 }
 

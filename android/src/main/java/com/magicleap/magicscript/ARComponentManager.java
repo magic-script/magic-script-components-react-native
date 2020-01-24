@@ -58,8 +58,6 @@ import com.magicleap.magicscript.scene.nodes.UiButtonNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode;
-import com.magicleap.magicscript.scene.nodes.UiDropdownListItemNode;
-import com.magicleap.magicscript.scene.nodes.UiDropdownListNode;
 import com.magicleap.magicscript.scene.nodes.UiImageNode;
 import com.magicleap.magicscript.scene.nodes.UiListViewItemNode;
 import com.magicleap.magicscript.scene.nodes.UiListViewNode;
@@ -79,6 +77,8 @@ import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode;
+import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout;
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout;
@@ -313,7 +313,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDropdownListItemNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDropdownListItemNode node = new UiDropdownListItemNode(props, context, viewRenderableLoader, fontProvider);
+            UiDropdownListItemNode node = new UiDropdownListItemNode(props, fontProvider);
             addNode(node, nodeId);
         });
     }

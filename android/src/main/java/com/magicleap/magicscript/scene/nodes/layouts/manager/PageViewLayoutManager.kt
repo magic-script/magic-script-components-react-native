@@ -17,8 +17,8 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 
 class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>() {
@@ -36,12 +36,7 @@ class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>(
                 node.hide()
             }
         }
-        if (children.size > visiblePage) {
-            val activeChild = children[visiblePage]
-            val bounds = mapOf(0 to childrenBounds[visiblePage]!!)
-            super.layoutChildren(layoutParams, listOf(activeChild), bounds)
-        }
-
+        super.layoutChildren(layoutParams, children, childrenBounds)
     }
 
 }

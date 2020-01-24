@@ -33,7 +33,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         val index = nodeInfo.index
         val params = layoutInfo.params
 
-        var itemPadding = params.itemsPadding[index] ?: Padding()
+        val itemPadding = params.itemsPadding[index] ?: Padding()
 
         val layoutSizeLimit = layoutInfo.sizeLimit
         val contentSize = layoutInfo.contentSize

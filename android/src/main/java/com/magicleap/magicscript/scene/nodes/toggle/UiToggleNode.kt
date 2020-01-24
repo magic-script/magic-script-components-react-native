@@ -143,7 +143,11 @@ open class UiToggleNode(
         val switchHeight = properties.getDouble(PROP_HEIGHT, DEFAULT_HEIGHT).toFloat()
         val switchWidth = toggleViewManager.getToggleWidth(type, switchHeight)
 
-        val x = contentNode.localPosition.x + pivotOffsetX - nodeWidth / 2 + switchWidth / 2
+        val x = if (type == TYPE_DEFAULT) {
+            contentNode.localPosition.x + pivotOffsetX - nodeWidth / 2 + switchWidth / 2
+        } else {
+            contentNode.localPosition.x + pivotOffsetX + nodeWidth / 2 - switchWidth / 2
+        }
         val pos = Vector3(x, contentNode.localPosition.y, contentNode.localPosition.z)
         contentNode.localPosition = pos
     }

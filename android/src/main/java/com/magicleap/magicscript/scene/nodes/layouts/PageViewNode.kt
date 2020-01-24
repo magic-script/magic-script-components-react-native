@@ -34,7 +34,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
     companion object {
         // properties
         const val PROP_VISIBLE_PAGE = "visiblePage"
-        const val PROP_DEFAUL_PAGE_PADDING = "defaultPagePadding"
+        const val PROP_DEFAULT_PAGE_PADDING = "defaultPagePadding"
         const val PROP_DEFAULT_CONTENT_ALIGNMENT = "defaultPageAlignment"
 
         // default values
@@ -48,7 +48,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
         // set default values of properties
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
         properties.putDefault(PROP_DEFAULT_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
-        properties.putDefault(PROP_DEFAUL_PAGE_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_DEFAULT_PAGE_PADDING, DEFAULT_ITEM_PADDING)
         properties.putDefault(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE)
     }
 
@@ -57,7 +57,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
         if (properties.containsAny(
                 PROP_VISIBLE_PAGE,
-                PROP_DEFAUL_PAGE_PADDING,
+                PROP_DEFAULT_PAGE_PADDING,
                 PROP_DEFAULT_CONTENT_ALIGNMENT
             )
         ) {
@@ -67,7 +67,7 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
     override fun getLayoutParams(): PageViewLayoutParams {
         val visiblePage = properties.getDouble(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE).toInt()
-        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAUL_PAGE_PADDING)!!
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_PAGE_PADDING)!!
         val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_CONTENT_ALIGNMENT)!!
         val itemsPadding = properties.read<ItemPaddingMap>(UiLinearLayout.PROP_ITEM_PADDING)
         val itemsAlignment = properties.read<ItemAlignmentMap>(UiLinearLayout.PROP_ITEM_ALIGNMENT)

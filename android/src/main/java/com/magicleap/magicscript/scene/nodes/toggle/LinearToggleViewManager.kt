@@ -37,8 +37,10 @@ class LinearToggleViewManager(
         const val RADIO_WIDTH_TO_HEIGHT_RATIO = 1F
         const val CHECKBOX_WIDTH_TO_HEIGHT_RATIO = 1F
 
-        // spacing from text (relative to switch width)
-        const val SWITCH_SPACING_RATIO = 0.75F
+        // spacing from text relative to icon width
+        const val DEFAULT_SPACING_RATIO = 1F
+        const val RADIO_SPACING_RATIO = 0.82F
+        const val CHECKBOX_SPACING_RATIO = 0.82F
     }
 
     private var isActive = false
@@ -71,7 +73,7 @@ class LinearToggleViewManager(
         val iconHeightPx = Utils.metersToPx(toggleConfig.toggleHeight, context)
         val iconWidthPx = iconHeightPx * getWidthToHeightRatio(toggleType).toInt()
         // text to toggle spacing
-        val spacing = (SWITCH_SPACING_RATIO * iconWidthPx).toInt()
+        val spacing = (getSpacingRatio() * iconWidthPx).toInt()
 
         toggleConfig.imageView.layoutParams =
             LinearLayout.LayoutParams(iconWidthPx, iconHeightPx).apply {
@@ -122,6 +124,14 @@ class LinearToggleViewManager(
     private fun refreshImage() {
         val iconId = toggleIconsProvider.provideIconId(toggleType, isActive)
         imageView?.setImageResource(iconId)
+    }
+
+    private fun getSpacingRatio(): Float {
+        return when (toggleType) {
+            UiToggleNode.TYPE_CHECKBOX -> CHECKBOX_SPACING_RATIO
+            UiToggleNode.TYPE_RADIO -> RADIO_SPACING_RATIO
+            else -> DEFAULT_SPACING_RATIO
+        }
     }
 
 }

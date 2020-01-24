@@ -19,18 +19,18 @@
     android:height="32dp"
     android:viewportWidth="32"
     android:viewportHeight="32">
-  <path
-      android:pathData="M12,0L20,0A12,12 0,0 1,32 12L32,20A12,12 0,0 1,20 32L12,32A12,12 0,0 1,0 20L0,12A12,12 0,0 1,12 0z"
-      android:strokeAlpha="0.4"
-      android:strokeWidth="1"
-      android:fillColor="#E7E2E1"
-      android:fillType="evenOdd"
-      android:strokeColor="#00000000"
-      android:fillAlpha="0.4"/>
-  <path
-      android:pathData="M8,16l5,5l12,-12"
-      android:strokeWidth="3"
-      android:fillColor="#00000000"
-      android:strokeColor="#FFFFFF"
-      android:fillType="evenOdd"/>
+    <path
+        android:fillAlpha="0.8"
+        android:fillColor="#B8B5B5"
+        android:fillType="evenOdd"
+        android:pathData="M12,0L20,0A12,12 0,0 1,32 12L32,20A12,12 0,0 1,20 32L12,32A12,12 0,0 1,0 20L0,12A12,12 0,0 1,12 0z"
+        android:strokeWidth="1"
+        android:strokeAlpha="0.6"
+        android:strokeColor="#00000000" />
+    <path
+        android:fillColor="#00000000"
+        android:fillType="evenOdd"
+        android:pathData="M8,16l5,5l12,-12"
+        android:strokeWidth="3"
+        android:strokeColor="#FFFFFF" />
 </vector>

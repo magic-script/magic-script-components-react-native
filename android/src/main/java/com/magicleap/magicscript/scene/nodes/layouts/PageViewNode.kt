@@ -22,9 +22,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
@@ -36,8 +34,8 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
     companion object {
         // properties
         const val PROP_VISIBLE_PAGE = "visiblePage"
-        const val PROP_PADDING = "defaultPagePadding"
-        const val PROP_CONTENT_ALIGNMENT = "defaultPageAlignment"
+        const val PROP_DEFAUL_PAGE_PADDING = "defaultPagePadding"
+        const val PROP_DEFAULT_CONTENT_ALIGNMENT = "defaultPageAlignment"
 
         // default values
         const val DEFAULT_ALIGNMENT = "top-left"
@@ -49,32 +47,49 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
     init {
         // set default values of properties
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefault(PROP_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
-        properties.putDefault(PROP_PADDING, DEFAULT_ITEM_PADDING)
+        properties.putDefault(PROP_DEFAULT_CONTENT_ALIGNMENT, DEFAULT_CONTENT_ALIGNMENT)
+        properties.putDefault(PROP_DEFAUL_PAGE_PADDING, DEFAULT_ITEM_PADDING)
         properties.putDefault(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE)
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (properties.containsAny(PROP_VISIBLE_PAGE, PROP_PADDING, PROP_CONTENT_ALIGNMENT)) {
+        if (properties.containsAny(
+                PROP_VISIBLE_PAGE,
+                PROP_DEFAUL_PAGE_PADDING,
+                PROP_DEFAULT_CONTENT_ALIGNMENT
+            )
+        ) {
             requestLayout()
         }
     }
 
     override fun getLayoutParams(): PageViewLayoutParams {
         val visiblePage = properties.getDouble(PROP_VISIBLE_PAGE, DEFAULT_VISIBLE_PAGE).toInt()
-        val padding = properties.read<Padding>(PROP_PADDING)!!
-        val contentAlignment = properties.read<Alignment>(PROP_CONTENT_ALIGNMENT)!!
-        val contentHorizontalAlignment = contentAlignment.horizontal
-        val contentVerticalAlignment = contentAlignment.vertical
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAUL_PAGE_PADDING)!!
+        val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_CONTENT_ALIGNMENT)!!
+        val itemsPadding = properties.read<ItemPaddingMap>(UiLinearLayout.PROP_ITEM_PADDING)
+        val itemsAlignment = properties.read<ItemAlignmentMap>(UiLinearLayout.PROP_ITEM_ALIGNMENT)
+
+        val childrenPadding =
+            LayoutUtils.createChildrenPaddingMap(
+                childrenList.size,
+                defaultItemsPadding,
+                itemsPadding?.paddings
+            )
+        val childrenAlignment =
+            LayoutUtils.createChildrenAlignmentMap(
+                childrenList.size,
+                defaultItemsAlignment,
+                itemsAlignment?.alignments
+            )
 
         return PageViewLayoutParams(
             visiblePage = visiblePage,
             size = Vector2(width, height),
-            itemPadding = padding,
-            itemHorizontalAlignment = contentHorizontalAlignment,
-            itemVerticalAlignment = contentVerticalAlignment
+            itemsPadding = childrenPadding,
+            itemsAlignment = childrenAlignment
         )
     }
 

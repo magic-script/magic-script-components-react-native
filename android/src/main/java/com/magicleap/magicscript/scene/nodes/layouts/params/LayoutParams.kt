@@ -6,8 +6,7 @@ import com.magicleap.magicscript.utils.Vector2
 
 open class LayoutParams(
     val size: Vector2,
-    val itemPadding: Padding,
-    val itemHorizontalAlignment: Alignment.HorizontalAlignment,
-    val itemVerticalAlignment: Alignment.VerticalAlignment
+    val itemsPadding: Map<Int, Padding>,
+    val itemsAlignment: Map<Int, Alignment>
 )
 

@@ -19,9 +19,10 @@ package com.magicleap.magicscript.scene.nodes.views
 import android.content.Context
 import android.graphics.Color
 import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.R
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.R
+import org.amshove.kluent.shouldBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,7 +41,7 @@ class CustomButtonTest {
     }
 
     @Test
-    fun shouldMeasureAndRedrawAfterSettingText() {
+    fun `should measure and redraw after setting text`() {
         button.text = "abc"
 
         verify(button).invalidate()
@@ -48,7 +49,7 @@ class CustomButtonTest {
     }
 
     @Test
-    fun shouldMeasureAndRedrawAfterSettingTextSize() {
+    fun `should measure and redraw after setting text size`() {
         button.setTextSize(18F)
 
         verify(button).invalidate()
@@ -56,7 +57,7 @@ class CustomButtonTest {
     }
 
     @Test
-    fun shouldMeasureAndRedrawAfterSettingTextPadding() {
+    fun `should measure and redraw after setting text padding`() {
         button.setTextPadding(10, 10)
 
         verify(button).invalidate()
@@ -64,7 +65,7 @@ class CustomButtonTest {
     }
 
     @Test
-    fun shouldMeasureAndRedrawAfterSettingIcon() {
+    fun `should measure and redraw after setting icon`() {
         val icon = context.getDrawable(R.drawable.arrow_down)
 
         button.setIcon(icon)
@@ -74,14 +75,27 @@ class CustomButtonTest {
     }
 
     @Test
-    fun shouldRedrawAfterSettingRoundnessFactor() {
+    fun `should measure and redraw after disabling border`() {
+        button.borderEnabled = false
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+    @Test
+    fun `border should be enabled by default`() {
+        button.borderEnabled shouldBe true
+    }
+
+    @Test
+    fun `should redraw after setting roundness factor`() {
         button.roundnessFactor = 0.5f
 
         verify(button).invalidate()
     }
 
     @Test
-    fun shouldRedrawAfterSettingTextColor() {
+    fun `should redraw after setting text color`() {
         button.setTextColor(Color.GREEN)
 
         verify(button).invalidate()

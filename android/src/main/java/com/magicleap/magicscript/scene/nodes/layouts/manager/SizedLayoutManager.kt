@@ -21,6 +21,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
@@ -99,9 +100,15 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         var sizeX = parentSize.x
         var sizeY = parentSize.y
 
-        val itemPadding = layoutParams.itemPadding
-        var paddingOffsetX = itemPadding.left + itemPadding.right
-        var paddingOffsetY = -itemPadding.top - itemPadding.bottom
+        val maxPadding = Padding(
+            getMaxTopPadding(layoutParams.itemsPadding),
+            getMaxRightPadding(layoutParams.itemsPadding),
+            getMaxBottomPadding(layoutParams.itemsPadding),
+            getMaxLeftPadding(layoutParams.itemsPadding)
+        )
+
+        var paddingOffsetX = maxPadding.left + maxPadding.right
+        var paddingOffsetY = -maxPadding.top - maxPadding.bottom
 
         if (parentSize.x == WRAP_CONTENT_DIMENSION) {
             sizeX = childrenBounds.size().x
@@ -178,5 +185,29 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
             }
         }
     }
+
+    protected fun getMaxHorizontalPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxLeftPadding(itemsPadding) + getMaxRightPadding(itemsPadding)
+
+    protected fun getMaxVerticalPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxTopPadding(itemsPadding) + getMaxBottomPadding(itemsPadding)
+
+    protected fun getMaxTopPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.top }.max() ?: 0f
+
+    protected fun getMaxLeftPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.left }.max() ?: 0f
+
+    protected fun getMaxRightPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.right }.max() ?: 0f
+
+    protected fun getMaxBottomPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
 
 }

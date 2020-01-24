@@ -192,7 +192,7 @@ fun JavaOnlyMap.defaultItemPadding(
     bottom: Double,
     left: Double
 ): JavaOnlyMap {
-    putArray("defaultItemAlignment", JavaOnlyArray.of(top, right, bottom, left))
+    putArray("defaultItemPadding", JavaOnlyArray.of(top, right, bottom, left))
     return this
 }
 

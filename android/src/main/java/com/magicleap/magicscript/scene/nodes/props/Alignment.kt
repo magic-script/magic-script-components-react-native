@@ -19,7 +19,10 @@ package com.magicleap.magicscript.scene.nodes.props
 /**
  * Alignment that represents the pivot point (anchor) of a Node or layout's content alignment.
  */
-data class Alignment(val vertical: VerticalAlignment, val horizontal: HorizontalAlignment) {
+data class Alignment(
+    val vertical: VerticalAlignment = VerticalAlignment.TOP,
+    val horizontal: HorizontalAlignment = HorizontalAlignment.LEFT
+) {
     /**
      * Horizontal alignment
      * @param centerOffset center offset factor relative to a node width

@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -57,7 +58,6 @@ class UiLinearLayoutTest {
             TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(0f, -4f, 2f, 0f)
 
         val bounds = node.getBounding()
@@ -68,7 +68,6 @@ class UiLinearLayoutTest {
     @Test
     fun `should use vertical orientation by default`() {
         val node = createNode(JavaOnlyMap())
-        node.build()
 
         node.getProperty("orientation") shouldEqual "vertical"
     }
@@ -78,15 +77,17 @@ class UiLinearLayoutTest {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemPadding shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+        layoutParams.itemsPadding[0] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
-        return UiLinearLayout(props, layoutManager)
+        return UiLinearLayout(props, layoutManager).apply {
+            build()
+            addContent(NodeBuilder().build())
+        }
     }
 
 }

@@ -42,16 +42,17 @@ import SceneKit
         set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
     }
 
-    fileprivate var gridLayout = GridLayout()
+    fileprivate var gridLayout: GridLayout!
 
     @objc override func setupNode() {
         super.setupNode()
+        gridLayout = GridLayout(ownerNode: self)
         updateOrientation()
         contentNode.addChildNode(gridLayout.container)
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
-        return gridLayout.hitTest(ray: ray, node: self)
+        return gridLayout.hitTest(ray: ray)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -99,7 +100,7 @@ import SceneKit
 
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
-        gridLayout.invalidate()
+        gridLayout.setNeedsLayout()
     }
 
     fileprivate func updateOrientation() {

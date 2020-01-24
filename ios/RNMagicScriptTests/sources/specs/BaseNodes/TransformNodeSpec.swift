@@ -122,14 +122,6 @@ class TransformNodeSpec: QuickSpec {
                     }
                 }
             }
-
-            context("when asked for size edge insets") {
-                it("should calculate it") {
-                    let node = TransformNode()
-                    /* correctness of calculation should be checked in spec for derived classes */
-                    expect(node.getEdgeInsets()).to(beCloseTo(UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)))
-                }
-            }
         }
     }
 }

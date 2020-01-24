@@ -45,25 +45,29 @@ class ViewController: UIViewController {
     fileprivate func setupScene() {
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId)
 
-//        setupDropdownListTest()
-        setupScrollViewScene()
-//        let filenames = [
-//            "static.obj",
-//            "static.obj",
-//            "static.gltf",
-//            "animated.gltf",
-//            "static.glb",
-//            "animated.glb"
-//        ]
-//        for (index, filename) in filenames.enumerated() {
-//            if let path = Bundle.main.path(forResource: filename, ofType: nil),
-//                FileManager.default.fileExists(atPath: path) {
-//                loadModel(path, index: index)
-//            } else {
-//                debugPrint("Unable to load \(filename) model.")
-//            }
-//        }
+        setupDropdownListTest()
+//        setupScrollViewScene()
+
         UiNodesManager.instance.updateLayout()
+    }
+
+    fileprivate func setupModelScene() {
+        let filenames = [
+            "static.obj",
+            "static.obj",
+            "static.gltf",
+            "animated.gltf",
+            "static.glb",
+            "animated.glb"
+        ]
+        for (index, filename) in filenames.enumerated() {
+            if let path = Bundle.main.path(forResource: filename, ofType: nil),
+                FileManager.default.fileExists(atPath: path) {
+                loadModel(path, index: index)
+            } else {
+                debugPrint("Unable to load \(filename) model.")
+            }
+        }
     }
 
     fileprivate func loadModel(_ filePath: String, index: Int) {
@@ -109,11 +113,11 @@ class ViewController: UIViewController {
         let dropdownListId: String = "dropdown_list_id"
         let dropdown: UiDropdownListNode = createComponent([
             "alignment": "top-center",
-            "debug": true,
-            "localPosition": [0, 0.7, 0],
+            "localPosition": [0, 0.8, 0],
             "text": "DropDownList",
 //            "textSize": 0.015,
             "multiSelect": true,
+            "maxHeight": 0.5
 //            "maxCharacterLimit": 4
         ], nodeId: dropdownListId, parentId: groupId)
 
@@ -126,11 +130,10 @@ class ViewController: UIViewController {
         }
 
         let toggle: UiToggleNode = createComponent([
-            "localPosition": [0, -0.4, 0],
+            "localPosition": [0.4, 1.0, 0],
             "text": "Multi select mode",
             "textSize": 0.08,
             "height": 0.1,
-            "debug": true
         ], nodeId: "toggle_id", parentId: groupId)
         toggle.onChanged = { sender, on in
             dropdown.multiSelect = on
@@ -142,6 +145,7 @@ class ViewController: UIViewController {
     fileprivate var layout: UiLinearLayoutNode!
     fileprivate var isVertical: Bool = true
     fileprivate func setupScrollViewScene() {
+        let position: [CGFloat] = [0, 0.1, 0]
         let size: CGFloat = 1.0
         let aabb = [
             "min": [-0.5 * size, -0.5 * size, -0.1 * size],
@@ -152,8 +156,8 @@ class ViewController: UIViewController {
         scrollView = createComponent([
             "alignment": "top-center",
             "debug": true,
-            "localPosition": [0, 0.7, 0],
-            "scrollVarVisibility": "auto",
+            "localPosition": position,
+            "scrollBarVisibility": "auto",
             "scrollBounds": aabb
         ], nodeId: scrollViewId, parentId: groupId)
 
@@ -186,8 +190,9 @@ class ViewController: UIViewController {
             ], nodeId: "item_\(i)", parentId: layoutId)
         }
 
+        let togglePosition: [CGFloat] = [position[0] + 0.4, position[1] - 0.6 * size, position[2]]
         let toggle: UiToggleNode = createComponent([
-            "localPosition": [0, -0.4, 0],
+            "localPosition": togglePosition,
             "text": "Horizontal",
             "textSize": 0.08,
             "height": 0.1
@@ -199,6 +204,10 @@ class ViewController: UIViewController {
         }
 
         updateOrientation()
+    }
+
+    fileprivate func rnd() -> CGFloat {
+        return (CGFloat(arc4random()) / 0xFFFFFFFF) - 0.5
     }
 
     fileprivate func updateOrientation() {

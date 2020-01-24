@@ -128,12 +128,9 @@ import SceneKit
     }
 
     @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
-        guard let scrollBounds = scrollView.scrollBounds else { return CGRect.zero }
-        let min = scrollBounds.min
-        let size = getSize(scaled: scaled)
-        let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
+        let bounds = scrollView.getBounds(parentSpace: parentSpace, scaled: scaled)
         let offset = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
-        return CGRect(origin: origin + offset, size: size)
+        return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 
     @objc override func updateLayout() {

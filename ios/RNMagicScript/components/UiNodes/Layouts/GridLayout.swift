@@ -19,44 +19,41 @@ import SceneKit
 
 @objc open class GridLayout: NSObject {
     @objc var width: CGFloat = 0 {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var height: CGFloat = 0 {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var columns: Int = 0 {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var rows: Int = 0 {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var defaultItemAlignment: Alignment = Alignment.topLeft {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var defaultItemPadding: UIEdgeInsets = UIEdgeInsets.zero {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
     @objc var skipInvisibleItems: Bool = false {
-        didSet { invalidate() }
+        didSet { setNeedsLayout() }
     }
 
     var itemsCount: Int {
         return container.childNodes.count
     }
 
-    var recalculateNeeded: Bool {
-        return gridDescriptor == nil
-    }
-
+    fileprivate(set) weak var ownerNode: UiNode?
     let container: SCNNode = SCNNode()
     fileprivate var gridDescriptor: GridLayoutDescriptor?
 
-    deinit {
-        container.removeFromParentNode()
+    init(ownerNode: UiNode) {
+        self.ownerNode = ownerNode
     }
 
-    @objc func invalidate() {
-        gridDescriptor = nil
+    deinit {
+        container.removeFromParentNode()
     }
 
     @objc func getItem(at index: Int) -> TransformNode? {
@@ -69,7 +66,7 @@ import SceneKit
         proxyNode.name = item.name
         container.addChildNode(proxyNode)
         proxyNode.addChildNode(item)
-        invalidate()
+        setNeedsLayout()
     }
 
     @discardableResult
@@ -78,17 +75,59 @@ import SceneKit
             let parent = proxyNode.parent, parent == container {
             proxyNode.removeFromParentNode()
             item.removeFromParentNode()
-            invalidate()
+            setNeedsLayout()
             return true
         }
 
         return false
     }
 
-    @objc func hitTest(ray: Ray, node: UiNode) -> TransformNode? {
+    @objc func updateLayout() {
+        guard let gridDescriptor = gridDescriptor else { return }
+
+        let size = gridDescriptor.realSize
+        let origin = CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
+        for i in 0..<gridDescriptor.children.count {
+            let result = getLocalPositionAndScaleForChild(at: i, desc: gridDescriptor)
+            gridDescriptor.children[i].position = SCNVector3(origin.x + result.position.x, origin.y - result.position.y, 0)
+            gridDescriptor.children[i].scale = SCNVector3(result.scale, result.scale, 1)
+        }
+    }
+}
+
+// MARK: - Layout
+extension GridLayout: Layouting {
+    @objc var layoutContentNode: SCNNode {
+        return container
+    }
+    @objc func getSize(scaled: Bool = true) -> CGSize {
+        layoutIfNeeded()
+        return gridDescriptor?.realSize ?? CGSize.zero
+    }
+    @objc func getBounds(parentSpace: Bool, scaled: Bool) -> CGRect {
+        let size = getSize()
+        return CGRect(origin: CGPoint.zero, size: size)
+    }
+    @objc func setNeedsLayout() {
+        gridDescriptor = nil
+    }
+    @objc var isLayoutNeeded: Bool {
+        return gridDescriptor == nil
+    }
+    @objc func layoutIfNeeded() {
+        if isLayoutNeeded {
+            gridDescriptor = calculateGridDescriptor()
+            updateLayout()
+        }
+    }
+}
+
+extension GridLayout: HitTesting {
+    @objc func hitTest(ray: Ray) -> TransformNode? {
+        guard let ownerNode = ownerNode else { return nil }
         guard let gridDescriptor = gridDescriptor else { return nil }
-        guard let hitPoint = node.getHitTestPoint(ray: ray) else { return nil }
-        let gridBounds = node.getBounds()
+        guard let hitPoint = ownerNode.getHitTestPoint(ray: ray) else { return nil }
+        let gridBounds = ownerNode.getBounds()
         let localPoint = CGPoint(x: CGFloat(hitPoint.x) - gridBounds.minX, y: gridBounds.height - (CGFloat(hitPoint.y) - gridBounds.minY))
         guard localPoint.x >= 0 && localPoint.x <= gridBounds.width,
             localPoint.y >= 0 && localPoint.y <= gridBounds.height else { return nil }
@@ -113,32 +152,9 @@ import SceneKit
         }
 
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
-        guard elementIndex < gridDescriptor.children.count else { return node }
+        guard elementIndex < gridDescriptor.children.count else { return ownerNode }
         let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
-        return hitNode?.hitTest(ray: ray) ?? node
-    }
-
-    @objc func recalculateIfNeeded() {
-        if gridDescriptor == nil {
-            gridDescriptor = calculateGridDescriptor()
-        }
-    }
-
-    @objc func getSize() -> CGSize {
-        recalculateIfNeeded()
-        return gridDescriptor?.realSize ?? CGSize.zero
-    }
-
-    @objc func updateLayout() {
-        guard let gridDescriptor = gridDescriptor else { return }
-
-        let size = gridDescriptor.realSize
-        let origin = CGPoint(x: -0.5 * size.width, y: 0.5 * size.height)
-        for i in 0..<gridDescriptor.children.count {
-            let result = getLocalPositionAndScaleForChild(at: i, desc: gridDescriptor)
-            gridDescriptor.children[i].position = SCNVector3(origin.x + result.position.x, origin.y - result.position.y, 0)
-            gridDescriptor.children[i].scale = SCNVector3(result.scale, result.scale, 1)
-        }
+        return hitNode?.hitTest(ray: ray) ?? ownerNode
     }
 }
 

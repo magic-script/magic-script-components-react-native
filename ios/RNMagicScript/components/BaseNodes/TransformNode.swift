@@ -16,6 +16,19 @@
 
 import SceneKit
 
+@objc protocol HitTesting {
+    @objc func hitTest(ray: Ray) -> TransformNode?
+}
+
+@objc protocol Layouting: AnyObject {
+    @objc var layoutContentNode: SCNNode { get }
+    @objc func getSize(scaled: Bool) -> CGSize
+    @objc func getBounds(parentSpace: Bool, scaled: Bool) -> CGRect
+    @objc func setNeedsLayout()
+    @objc var isLayoutNeeded: Bool { get }
+    @objc func layoutIfNeeded()
+}
+
 @objc open class TransformNode: SCNNode {
 
     // var name: String // native property
@@ -99,10 +112,6 @@ import SceneKit
         }
     }
 
-    @objc func hitTest(ray: Ray) -> TransformNode? {
-        return selfHitTest(ray: ray)
-    }
-
     @objc func update(_ props: [String: Any]) {
         assert(childNodes[0] == contentNode, "contentNode does not exist!")
 
@@ -138,40 +147,8 @@ import SceneKit
         }
     }
 
-    @objc func getSize(scaled: Bool = true) -> CGSize {
-        if currentSize == nil {
-            currentSize = _calculateSize()
-        }
-
-        if scaled {
-            return currentSize! * CGSize(width: CGFloat(scale.x), height: CGFloat(scale.y))
-        }
-
-        return currentSize!
-    }
-
     func _calculateSize() -> CGSize {
         return CGSize.zero
-    }
-
-    @objc func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
-        let size = getSize(scaled: scaled)
-        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
-        let offset = CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
-        return CGRect(origin: origin + offset, size: size)
-    }
-
-    @objc func getEdgeInsets() -> UIEdgeInsets {
-        let bounds: CGRect = getBounds()
-        return UIEdgeInsets(top: bounds.minY, left: bounds.minX, bottom: bounds.maxY, right: bounds.maxX)
-    }
-
-    fileprivate func invalidateParentContainers() {
-        enumerateTransformNodesParents { node in
-            if node is TransformNodeContainer {
-                node.setNeedsContainerLayout()
-            }
-        }
     }
 
     @objc func updateLayout() {
@@ -185,7 +162,28 @@ import SceneKit
 }
 
 // MARK: - Layout
-extension TransformNode {
+extension TransformNode: Layouting {
+    @objc var layoutContentNode: SCNNode {
+        return self
+    }
+    @objc func getSize(scaled: Bool = true) -> CGSize {
+        if currentSize == nil {
+            currentSize = _calculateSize()
+        }
+
+        if scaled {
+            return currentSize! * CGSize(width: CGFloat(scale.x), height: CGFloat(scale.y))
+        }
+
+        return currentSize!
+    }
+
+    @objc func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
+        let size = getSize(scaled: scaled)
+        let origin: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
+        let offset = CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
+        return CGRect(origin: origin + offset, size: size)
+    }
     @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
     @objc var isLayoutNeeded: Bool { return layoutNeeded }
     @objc func layoutIfNeeded() {
@@ -197,6 +195,17 @@ extension TransformNode {
             updateDebugLayout()
 #endif
             invalidateParentContainers()
+        }
+    }
+}
+
+// MARK: - Container Layout
+extension TransformNode {
+    fileprivate func invalidateParentContainers() {
+        enumerateTransformNodesParents { node in
+            if node is TransformNodeContainer {
+                node.setNeedsContainerLayout()
+            }
         }
     }
 
@@ -212,7 +221,11 @@ extension TransformNode {
 }
 
 // MARK: - HitTest
-extension TransformNode {
+extension TransformNode: HitTesting {
+    @objc func hitTest(ray: Ray) -> TransformNode? {
+        return selfHitTest(ray: ray)
+    }
+
     func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()

@@ -51,7 +51,7 @@ open class ScrollView {
     let contentNode = SCNNode()
     fileprivate let proxyNode = SCNNode()
     fileprivate(set) weak var scrollBar: UiScrollBarNode?
-    fileprivate(set) weak var scrollContent: TransformNode?
+    fileprivate(set) weak var scrollContent: Layouting?
     fileprivate var updateLayoutNeeded: Bool = false
     fileprivate var invalidateClippingPlanes: Bool = false
 
@@ -66,7 +66,7 @@ open class ScrollView {
 
     @objc func hitTest(ray: Ray) -> TransformNode? {
         guard let _ = scrollBounds else { return nil }
-        let nodes: [TransformNode] = [scrollContent, scrollBar].compactMap { $0 }
+        let nodes: [HitTesting] = [scrollContent, scrollBar].compactMap { $0 as? HitTesting }
         for node in nodes {
             if let hitNode = node.hitTest(ray: ray) {
                 return hitNode
@@ -76,11 +76,12 @@ open class ScrollView {
         return nil
     }
 
-    func addItem(_ item: TransformNode) -> Bool {
+    @discardableResult
+    func addItem(_ item: Layouting) -> Bool {
         if item is UiScrollBarNode {
             guard scrollBar == nil else { return false }
             scrollBar = item as? UiScrollBarNode
-            contentNode.addChildNode(item)
+            contentNode.addChildNode(scrollBar!)
             setNeedsLayout()
             updateScrollBarVisibility()
             return true
@@ -88,21 +89,21 @@ open class ScrollView {
 
         guard scrollContent == nil else { return false }
         scrollContent = item
-        proxyNode.addChildNode(item)
+        proxyNode.addChildNode(item.layoutContentNode)
         invalidateClippingPlanes = true
         setNeedsLayout()
 
         return true
     }
 
-    func removeItem(_ item: TransformNode) -> Bool {
-        if item == scrollBar {
+    func removeItem(_ item: Layouting) -> Bool {
+        if item === scrollBar {
             scrollBar?.removeFromParentNode()
             scrollBar = nil
             setNeedsLayout()
             return true
-        } else if item == scrollContent {
-            scrollContent?.removeFromParentNode()
+        } else if item === scrollContent {
+            item.layoutContentNode.removeFromParentNode()
             scrollContent = nil
             invalidateClippingPlanes = true
             setNeedsLayout()
@@ -110,17 +111,6 @@ open class ScrollView {
         }
 
         return false
-    }
-
-    func getSize() -> CGSize {
-        guard let scrollBounds = scrollBounds else { return CGSize.zero }
-        let width: CGFloat = CGFloat(scrollBounds.max.x - scrollBounds.min.x)
-        let height: CGFloat = CGFloat(scrollBounds.max.y - scrollBounds.min.y)
-        return CGSize(width: width, height: height)
-    }
-
-    func setNeedsLayout() {
-        updateLayoutNeeded = true
     }
 
     func updateLayout() {
@@ -136,8 +126,8 @@ open class ScrollView {
         let scrollSize = bounds.size
         let contentSize: CGSize
         if let scrollContent = scrollContent {
-            contentSize = scrollContent.getSize()
-            let contentBounds = scrollContent.getBounds(parentSpace: true)
+            contentSize = scrollContent.getSize(scaled: true)
+            let contentBounds = scrollContent.getBounds(parentSpace: true, scaled: true)
             let contentOffset = SCNVector3(bounds.minX - contentBounds.minX, bounds.maxY - contentBounds.maxY, 0)
             proxyNode.position = contentOffset
         } else {
@@ -159,13 +149,12 @@ open class ScrollView {
     }
 
     func updateClippingPlanes() {
-        guard let ownerNode = ownerNode else { return }
         guard let scrollBounds = scrollBounds else { return }
+        guard let scrollContentNode = scrollContent?.layoutContentNode else { return }
 
         // Update clipping planes
         if invalidateClippingPlanes {
             invalidateClippingPlanes = false
-
             let min = scrollBounds.min
             let max = scrollBounds.max
             let planes: [SCNVector4] = [
@@ -177,8 +166,8 @@ open class ScrollView {
                 SCNVector4(0, 0,-1, max.z),
             ]
 
-            let worldSpacePlanes: [SCNVector4] = planes.map { ownerNode.convertPlane(Plane(vector: $0), to: nil).toVector4() }
-            scrollContent?.setClippingPlanes(worldSpacePlanes)
+            let worldSpacePlanes: [SCNVector4] = planes.map { scrollContentNode.convertPlane(Plane(vector: $0), to: nil).toVector4() }
+            scrollContentNode.setClippingPlanes(worldSpacePlanes)
         }
     }
 
@@ -192,6 +181,37 @@ open class ScrollView {
                 }
             case .off:
                 scrollBar?.visible = false
+        }
+    }
+}
+
+extension ScrollView: Layouting {
+    @objc var layoutContentNode: SCNNode {
+        return contentNode
+    }
+    @objc func getSize(scaled: Bool = true) -> CGSize {
+        guard let scrollBounds = scrollBounds else { return CGSize.zero }
+        let width: CGFloat = CGFloat(scrollBounds.max.x - scrollBounds.min.x)
+        let height: CGFloat = CGFloat(scrollBounds.max.y - scrollBounds.min.y)
+        return CGSize(width: width, height: height)
+    }
+    @objc func getBounds(parentSpace: Bool, scaled: Bool) -> CGRect {
+        guard let scrollBounds = scrollBounds else { return CGRect.zero }
+        let min = scrollBounds.min
+        let size = getSize(scaled: scaled)
+        let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
+        return CGRect(origin: origin, size: size)
+    }
+    @objc func setNeedsLayout() {
+        updateLayoutNeeded = true
+    }
+    @objc var isLayoutNeeded: Bool {
+        return updateLayoutNeeded
+    }
+    @objc func layoutIfNeeded() {
+        if isLayoutNeeded {
+            updateLayoutNeeded = false
+            updateLayout()
         }
     }
 }
@@ -213,7 +233,7 @@ extension ScrollView: Dragging {
     }
 
     var dragRange: CGFloat {
-        guard let contentSize = scrollContent?.getSize() else { return 0 }
+        guard let contentSize = scrollContent?.getSize(scaled: true) else { return 0 }
         let size = getSize()
         return (scrollDirection == .horizontal) ? contentSize.width - size.width : contentSize.height - size.height
     }

@@ -39,7 +39,7 @@ import SceneKit
 
     var pagesCount: Int { return pages.count }
     fileprivate var pages: [TransformNode] = []
-    fileprivate var pageLayout = GridLayout()
+    fileprivate var pageLayout: GridLayout!
 
     @objc func getPage(at index: Int) -> TransformNode? {
         guard index >= 0 && index < pages.count else { return nil }
@@ -52,13 +52,14 @@ import SceneKit
 
     @objc override func setupNode() {
         super.setupNode()
+        pageLayout = GridLayout(ownerNode: self)
         contentNode.addChildNode(pageLayout.container)
         pageLayout.columns = 1
         pageLayout.rows = 1
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
-        return pageLayout.hitTest(ray: ray, node: self)
+        return pageLayout.hitTest(ray: ray)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -113,7 +114,7 @@ import SceneKit
 
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
-        pageLayout.invalidate()
+        pageLayout.setNeedsLayout()
     }
 
     fileprivate func updateVisiblePage(_ pageIndex: Int) {

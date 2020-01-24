@@ -65,7 +65,8 @@ import SceneKit
     fileprivate var itemsList: [UiDropdownListItemNode] = []
     fileprivate var listNode: SCNNode!
     fileprivate var backgroundNode: SCNNode?
-    fileprivate var listGridLayoutNode: UiGridLayoutNode!
+    fileprivate var scrollView: ScrollView!
+    fileprivate var listGridLayout: GridLayout!
 
     fileprivate var reloadOutline: Bool = true
 
@@ -97,11 +98,6 @@ import SceneKit
         return result
     }
 
-    @objc override func setNeedsLayout() {
-        super.setNeedsLayout()
-        listGridLayoutNode.setNeedsLayout()
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 
@@ -118,13 +114,29 @@ import SceneKit
         listNode.isHidden = true
         contentNode.addChildNode(listNode)
 
-        listGridLayoutNode = UiGridLayoutNode()
-        listGridLayoutNode.columns = 1
-        listGridLayoutNode.defaultItemPadding = UIEdgeInsets.zero
-        listGridLayoutNode.defaultItemAlignment = Alignment.centerLeft
-        listGridLayoutNode.alignment = Alignment.topCenter
-        listGridLayoutNode.renderingOrder = 1
-        listNode.addChildNode(listGridLayoutNode)
+        scrollView = ScrollView(ownerNode: self)
+        scrollView.scrollDirection = .vertical
+        scrollView.scrollBarVisibility = .always
+        scrollView.layoutContentNode.renderingOrder = 1
+        listNode.addChildNode(scrollView.contentNode)
+
+        let scrollBar = UiScrollBarNode()
+        scrollBar.scrollOrientation = .vertical
+        scrollBar.thickness = 0.02
+        scrollView.addItem(scrollBar)
+
+        listGridLayout = GridLayout(ownerNode: self)
+        listGridLayout.columns = 1
+        listGridLayout.defaultItemPadding = UIEdgeInsets.zero
+        listGridLayout.defaultItemAlignment = Alignment.centerLeft
+        scrollView.addItem(listGridLayout)
+
+
+//        let plane = SCNPlane(width: 2, height: 2)
+//        plane.materials.first?.diffuse.contents = UIColor.red
+//        let planeNode = SCNNode(geometry: plane)
+//        planeNode.position = SCNVector3(0, 0, -0.04)
+//        listGridLayout.layoutContentNode.addChildNode(planeNode)
     }
 
     @discardableResult
@@ -137,8 +149,9 @@ import SceneKit
         dropDownListItem.maxCharacterLimit = maxCharacterLimit
         itemsList.append(dropDownListItem)
         dropDownListItem.tapHandler = self
-        listGridLayoutNode.addChild(dropDownListItem)
+        listGridLayout.addItem(dropDownListItem)
         setNeedsLayout()
+
         return true
     }
 
@@ -150,13 +163,13 @@ import SceneKit
 
         itemsList.removeAll { $0 == dropDownListItem }
         dropDownListItem.tapHandler = nil
-        listGridLayoutNode.removeChild(child)
+        listGridLayout.removeItem(child)
         setNeedsLayout()
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
         if isListExpanded {
-            return listGridLayoutNode.hitTest(ray: ray) ?? selfHitTest(ray: ray)
+            return scrollView.hitTest(ray: ray) ?? selfHitTest(ray: ray)
         }
 
         return selfHitTest(ray: ray)
@@ -225,9 +238,35 @@ import SceneKit
         return 0.6 * CGSize(width: height, height: height)
     }
 
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        scrollView.setNeedsLayout()
+        scrollView.scrollBar?.setNeedsLayout()
+        listGridLayout.setNeedsLayout()
+    }
+
     @objc override func updateLayout() {
         labelNode.reload()
-        listGridLayoutNode.layoutIfNeeded()
+        listGridLayout.layoutIfNeeded()
+        let gridSize = listGridLayout.getSize()
+        let scrollWidth = gridSize.width
+        let scrollHeight = (maxHeight > 0) ? min(maxHeight, gridSize.height) : gridSize.height
+        scrollView.scrollBounds = (
+            min: SCNVector3(-0.5 * scrollWidth, -0.5 * scrollHeight, -0.1),
+            max: SCNVector3(0.5 * scrollWidth, 0.5 * scrollHeight, 0.1)
+        )
+        scrollView.layoutIfNeeded()
+
+        scrollView.contentNode.position = SCNVector3(0, -0.5 * scrollHeight, 0)
+
+        if let scrollBar = scrollView.scrollBar {
+            scrollBar.thumbSize = (gridSize.height > 0) ? (scrollHeight / gridSize.height) : 1.0
+            scrollBar.position = SCNVector3(0.5 * scrollWidth, 0, 0)
+            scrollBar.length = scrollHeight
+            scrollBar.layoutIfNeeded()
+        }
+
+        scrollView.updateClippingPlanes()
         _ = getSize()
 
         let buttonSize = getButtonSize(includeOutline: false)
@@ -247,6 +286,10 @@ import SceneKit
             reloadOutline = false
             reloadOutlineNode()
         }
+    }
+
+    @objc override func postUpdate() {
+        scrollView.updateClippingPlanes()
     }
 
     @objc override func setDebugMode(_ debug: Bool) {
@@ -284,24 +327,28 @@ import SceneKit
     }
 
     fileprivate func setListNodeVisible(_ visible: Bool) {
-        listGridLayoutNode.layoutIfNeeded()
+        listGridLayout.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+        scrollView.updateClippingPlanes()
 
         let buttonSize = getButtonSize(includeOutline: true)
-        let listSize = listGridLayoutNode.getSize()
+        let listSize = scrollView.getSize()
         listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
         listNode.isHidden = !visible
         outlineNode?.isHidden = visible
         updateBackground()
+        updateLayout()
     }
 
     fileprivate func updateBackground() {
-        let listSize = listGridLayoutNode.getSize()
+        let bgSize = scrollView.getSize()
+        print("bgSize: \(bgSize)")
         let isVisible = !listNode.isHidden
-        let inset: CGFloat = min(0.5, 0.8 * min(listSize.width, listSize.height))
+        let inset: CGFloat = min(0.5, 0.8 * min(bgSize.width, bgSize.height))
         let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         let imageCaps = UIEdgeInsets(top: 208, left: 137, bottom: 208, right: 137)
-        let width: CGFloat = listSize.width + 1.5 * inset
-        let height: CGFloat = listSize.height + 1.5 * inset
+        let width: CGFloat = bgSize.width + 1.5 * inset
+        let height: CGFloat = bgSize.height + 1.5 * inset
         if let bgNode = backgroundNode,
             let bgGeometry = bgNode.geometry as? SCNNinePatch,
             isVisible,
@@ -314,11 +361,11 @@ import SceneKit
         backgroundNode?.removeFromParentNode()
         backgroundNode = nil
 
-        guard itemsList.count > 0 && listSize.width > 0 && listSize.height > 0 && isVisible else { return }
+        guard itemsList.count > 0 && bgSize.width > 0 && bgSize.height > 0 && isVisible else { return }
 
         backgroundNode = NodesFactory.createNinePatchNode(width: width, height: height, geometryCaps: geometryCaps, image: ImageAsset.dropdownListBackground.image, imageCaps: imageCaps)
         backgroundNode?.geometry?.firstMaterial?.readsFromDepthBuffer = false
-        backgroundNode?.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
+        backgroundNode?.position = SCNVector3(0, -0.5 * bgSize.height, -0.01)
         backgroundNode?.renderingOrder = 0
         listNode.insertChildNode(backgroundNode!, at: 0)
     }

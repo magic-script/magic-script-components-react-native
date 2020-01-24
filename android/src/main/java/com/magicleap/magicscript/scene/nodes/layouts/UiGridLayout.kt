@@ -21,9 +21,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.containsAny
 import com.magicleap.magicscript.utils.putDefault
@@ -38,6 +36,8 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
         const val PROP_ROWS = "rows"
         const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
         const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
+        const val PROP_ITEM_PADDING = "itemPadding"
+        const val PROP_ITEM_ALIGNMENT = "itemAlignment"
 
         // default values
         const val DYNAMIC_VALUE = 0 // 0 means that number of columns / rows can grow
@@ -105,18 +105,31 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
     }
 
     override fun getLayoutParams(): GridLayoutParams {
-        val itemPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
-        val itemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
-        val itemHorizontalAlignment = itemAlignment.horizontal
-        val itemVerticalAlignment = itemAlignment.vertical
+        val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+        val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+        val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
+        val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
+
+        val childrenPadding =
+            LayoutUtils.createChildrenPaddingMap(
+                childrenList.size,
+                defaultItemsPadding,
+                itemsPadding?.paddings
+            )
+        val childrenAlignment =
+            LayoutUtils.createChildrenAlignmentMap(
+                childrenList.size,
+                defaultItemsAlignment,
+                itemsAlignment?.alignments
+            )
+
 
         return GridLayoutParams(
             columns = columns,
             rows = rows,
             size = Vector2(width, height),
-            itemHorizontalAlignment = itemHorizontalAlignment,
-            itemVerticalAlignment = itemVerticalAlignment,
-            itemPadding = itemPadding
+            itemsPadding = childrenPadding,
+            itemsAlignment = childrenAlignment
         )
     }
 

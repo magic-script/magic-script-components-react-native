@@ -104,9 +104,14 @@ class VerticalLinearLayoutManagerTest {
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
-            itemPadding = itemPadding,
-            itemHorizontalAlignment = itemHorizontalAlignment,
-            itemVerticalAlignment = itemVerticalAlignment
+            itemsAlignment = mapOf(
+                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
+                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
+            ),
+            itemsPadding = mapOf(
+                Pair(0, itemPadding),
+                Pair(1, itemPadding)
+            )
         )
 
 }

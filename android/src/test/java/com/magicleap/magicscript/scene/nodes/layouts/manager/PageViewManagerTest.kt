@@ -39,9 +39,20 @@ class PageViewManagerTest {
         PageViewLayoutParams(
             visiblePage = 0,
             size = Vector2(1f, 1f),
-            itemPadding = Padding(),
-            itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT,
-            itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+            itemsAlignment = mapOf(
+                Pair(
+                    0,
+                    Alignment(Alignment.VerticalAlignment.TOP, Alignment.HorizontalAlignment.LEFT)
+                ),
+                Pair(
+                    1,
+                    Alignment(Alignment.VerticalAlignment.TOP, Alignment.HorizontalAlignment.LEFT)
+                )
+            ),
+            itemsPadding = mapOf(
+                Pair(0, Padding()),
+                Pair(1, Padding())
+            )
         )
 
     @Before

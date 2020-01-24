@@ -1,10 +1,11 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -37,7 +38,6 @@ class UIRectLayoutTest {
             TransformNode.PROP_ALIGNMENT, "center-center"
         )
         val node = createNode(props)
-        node.build()
         val expectedBounds = Bounding(left = -1f, bottom = -1.5f, right = 1f, top = 1.5f)
 
         val bounds = node.getBounding()
@@ -49,7 +49,6 @@ class UIRectLayoutTest {
     fun `should set top-left alignment when no alignment is passed`() {
         val props = JavaOnlyMap()
         val node = createNode(props)
-        node.build()
 
         node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
         node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
@@ -59,17 +58,19 @@ class UIRectLayoutTest {
     fun `should set passed content alignment`() {
         val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = createNode(props)
-        node.build()
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemVerticalAlignment shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemHorizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.LEFT
     }
 
 
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
-        return UiRectLayout(props, layoutManager)
+        return UiRectLayout(props, layoutManager).apply {
+            build()
+            addContent(NodeBuilder().build())
+        }
     }
 
 }

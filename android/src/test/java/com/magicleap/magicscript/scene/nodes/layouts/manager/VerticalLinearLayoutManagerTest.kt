@@ -25,6 +25,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
 import org.amshove.kluent.shouldNotEqual
 import org.junit.Assert.assertEquals
@@ -78,13 +79,11 @@ class VerticalLinearLayoutManagerTest {
     fun `should return correct layout bounds`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
-
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        val boundsSize = linearManager.getLayoutBounds(getLayoutParams()).size()
+        val bounds = linearManager.getLayoutBounds(getLayoutParams())
 
-        assertEquals(2.3f, boundsSize.x, EPSILON)
-        assertEquals(5f, boundsSize.y, EPSILON)
+        bounds shouldEqualInexact Bounding(left = 0f, bottom = -5f, right = 2.3f, top = 0f)
     }
 
     @Test

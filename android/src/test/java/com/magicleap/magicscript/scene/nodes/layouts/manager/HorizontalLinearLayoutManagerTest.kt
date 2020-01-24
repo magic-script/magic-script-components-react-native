@@ -24,6 +24,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -65,12 +66,11 @@ class HorizontalLinearLayoutManagerTest {
     fun `should return correct layout bounds`() {
         itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
-
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        val boundsSize = linearManager.getLayoutBounds(getLayoutParams()).size()
-        assertEquals(4.6f, boundsSize.x, EPSILON)
-        assertEquals(5f, boundsSize.y, EPSILON)
+        val bounds = linearManager.getLayoutBounds(getLayoutParams())
+
+        bounds shouldEqualInexact Bounding(left = 0f, bottom = -5f, right = 4.6f, top = 0f)
     }
 
     @Test

@@ -106,30 +106,27 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
             getMaxBottomPadding(layoutParams.itemsPadding),
             getMaxLeftPadding(layoutParams.itemsPadding)
         )
-        var leftOffset = -maxPadding.left
-        var bottomOffset = -maxPadding.bottom
-        var rightOffset = maxPadding.right
-        var topOffset = maxPadding.top
+
+        var paddingOffsetX = maxPadding.left + maxPadding.right
+        var paddingOffsetY = -maxPadding.top - maxPadding.bottom
 
         if (parentSize.x == WRAP_CONTENT_DIMENSION) {
             sizeX = childrenBounds.size().x
         } else {
-            leftOffset = 0f
-            rightOffset = 0f
+            paddingOffsetX = 0f
         }
 
         if (parentSize.y == WRAP_CONTENT_DIMENSION) {
             sizeY = childrenBounds.size().y
         } else {
-            topOffset = 0f
-            bottomOffset = 0f
+            paddingOffsetY = 0f
         }
 
         return Bounding(
-            left = leftOffset,
-            bottom = -sizeY + bottomOffset,
-            right = sizeX + rightOffset,
-            top = topOffset
+            left = 0f,
+            bottom = -sizeY + paddingOffsetY,
+            right = sizeX + paddingOffsetX,
+            top = 0f
         )
     }
 

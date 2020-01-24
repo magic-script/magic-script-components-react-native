@@ -130,9 +130,8 @@ class UiGridLayoutTest {
 
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
         return UiGridLayout(props, layoutManager).apply {
-            addContent(NodeBuilder().build())
-        }.apply {
             build()
+            addContent(NodeBuilder().build())
         }
     }
 

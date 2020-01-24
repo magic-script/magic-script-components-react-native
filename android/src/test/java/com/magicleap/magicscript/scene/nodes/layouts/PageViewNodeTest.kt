@@ -93,10 +93,9 @@ class PageViewNodeTest {
     }
 
     private fun createNode(props: JavaOnlyMap): PageViewNode {
-        return PageViewNode(props, layoutManager).also {
-            it.addContent(NodeBuilder().build())
-        }.apply {
+        return PageViewNode(props, layoutManager).apply {
             build()
+            addContent(NodeBuilder().build())
         }
     }
 }

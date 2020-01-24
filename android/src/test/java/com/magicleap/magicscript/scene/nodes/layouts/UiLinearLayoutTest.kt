@@ -85,9 +85,8 @@ class UiLinearLayoutTest {
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
-            addContent(NodeBuilder().build())
-        }.apply {
             build()
+            addContent(NodeBuilder().build())
         }
     }
 

@@ -68,9 +68,8 @@ class UIRectLayoutTest {
 
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
         return UiRectLayout(props, layoutManager).apply {
-            addContent(NodeBuilder().build())
-        }.apply {
             build()
+            addContent(NodeBuilder().build())
         }
     }
 

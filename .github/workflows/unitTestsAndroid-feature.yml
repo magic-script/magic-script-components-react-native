@@ -1,7 +1,7 @@
 name: UTs_Android_feature
 on:
   pull_request:
-    branches-ignore:
+    branches:
       - master
 jobs:
   test:

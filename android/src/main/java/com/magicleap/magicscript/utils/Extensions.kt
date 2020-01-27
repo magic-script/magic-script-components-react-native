@@ -32,7 +32,6 @@ import java.util.*
 /**
  * ==========Extension methods============
  */
-
 fun Any.logMessage(message: String, warn: Boolean = false) {
     if (warn) {
         Log.w("AR_LOG", "${this.javaClass.name}: $message")

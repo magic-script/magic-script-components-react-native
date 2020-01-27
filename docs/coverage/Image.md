@@ -4,7 +4,7 @@
 **Inherited:**
 - localPosition
 - alignment
-- ~~localScale~~
+- localScale
 - ~~localRotation~~
 - ~~enabled~~
 - ~~onClick~~
@@ -15,3 +15,4 @@
 - filePath
 - color
 - useFrame
+- icon

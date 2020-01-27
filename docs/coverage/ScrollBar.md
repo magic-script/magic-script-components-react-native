@@ -6,11 +6,10 @@
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~
-- ~~onClick~~
 
 **Custom**
-- width
-- height
+- length
+- thickness
 - thumbPosition
 - thumbSize
 - orientation

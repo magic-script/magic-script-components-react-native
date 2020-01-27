@@ -1,9 +1,17 @@
 # Functional test coverage for ColorPicker
 ## Tested properties
 
-**Inherited**
-
+**Inherited:**
+- ~~localPosition~~
+- ~~alignment~~
+- ~~localScale~~
+- ~~localRotation~~
+- ~~enabled~~
 
 **Custom**
+- ~~height~~
 - color
 - startingColor
+- onColorChanged
+- onColorConfirmed
+- onColorCanceled

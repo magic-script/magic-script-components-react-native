@@ -2,11 +2,12 @@
 ## Tested properties
 
 **Inherited:**
-- localPosition
+- ~~localPosition~~
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~
 - ~~onClick~~
 
 **Custom:**
-- text / label
+- id
+- label

@@ -18,3 +18,5 @@
 - looping
 - volume
 - action
+- viewMode
+- ~~onVideoPrepared~~

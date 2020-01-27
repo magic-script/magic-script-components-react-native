@@ -6,17 +6,18 @@
 - ~~alignment~~
 - ~~localScale~~
 - ~~localRotation~~
+- ~~onScrollChanged~~
 
 **Custom:**
 - ~~cursorEdgeScrollMode~~
 - defaultItemAlignment
 - defaultItemPadding
+- ~~itemAlignment~~
+- ~~itemPadding~~
 - ~~orientation~~
 - ~~scrollBarVisibility~~
 - ~~scrollingEnabled~~
-- ~~scrollSpeed	number~~
-- ~~scrollValue	number~~
-- ~~scrollToItem	number~~
+- ~~scrollSpeed~~
+- ~~scrollValue~~
+- ~~scrollToItem~~
 - ~~skipInvisibleItems~~
-- ~~itemAlignment~~
-- ~~itemPadding~~

@@ -129,7 +129,7 @@ import SceneKit
 
     @objc override func getBounds(parentSpace: Bool = false, scaled: Bool = true) -> CGRect {
         let bounds = scrollView.getBounds(parentSpace: parentSpace, scaled: scaled)
-        let offset = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
+        let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
         return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 

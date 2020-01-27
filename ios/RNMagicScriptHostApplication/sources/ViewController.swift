@@ -113,6 +113,7 @@ class ViewController: UIViewController {
         let dropdownListId: String = "dropdown_list_id"
         let dropdown: UiDropdownListNode = createComponent([
             "alignment": "top-center",
+            "debug": true,
             "localPosition": [0, 0.8, 0],
             "text": "DropDownList",
 //            "textSize": 0.015,
@@ -124,8 +125,8 @@ class ViewController: UIViewController {
         for i in 0..<10 {
             let _: UiDropdownListItemNode = createComponent([
                 "id": i,
-                "label": "item \(i + 1)",
-                "selected": i % 2 == 0
+                "label": "lorem ipsum sin dolor item \(i + 1)",
+                "selected": dropdown.multiSelect ? (i % 2 == 0) : false
             ], nodeId: "item_\(i)", parentId: dropdownListId)
         }
 
@@ -134,6 +135,7 @@ class ViewController: UIViewController {
             "text": "Multi select mode",
             "textSize": 0.08,
             "height": 0.1,
+            "on": dropdown.multiSelect
         ], nodeId: "toggle_id", parentId: groupId)
         toggle.onChanged = { sender, on in
             dropdown.multiSelect = on

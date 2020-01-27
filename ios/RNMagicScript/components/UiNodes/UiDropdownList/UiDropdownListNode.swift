@@ -114,6 +114,7 @@ import SceneKit
         listNode.isHidden = true
         contentNode.addChildNode(listNode)
 
+        // Scroll view
         scrollView = ScrollView(ownerNode: self)
         scrollView.scrollDirection = .vertical
         scrollView.scrollBarVisibility = .always
@@ -125,12 +126,12 @@ import SceneKit
         scrollBar.thickness = 0.02
         scrollView.addItem(scrollBar)
 
+        // List view
         listGridLayout = GridLayout(ownerNode: self)
         listGridLayout.columns = 1
         listGridLayout.defaultItemPadding = UIEdgeInsets.zero
         listGridLayout.defaultItemAlignment = Alignment.centerLeft
         scrollView.addItem(listGridLayout)
-
 
 //        let plane = SCNPlane(width: 2, height: 2)
 //        plane.materials.first?.diffuse.contents = UIColor.red
@@ -213,12 +214,43 @@ import SceneKit
 
     @objc override func _calculateSize() -> CGSize {
         let buttonSize = getButtonSize()
-        let contentWidth: CGFloat = (width > 0) ? width : buttonSize.width
-        let contentHeight: CGFloat = (height > 0) ? height : buttonSize.height
-        return CGSize(width: contentWidth, height: contentHeight)
+        if isListExpanded {
+            let listSize = getListSize()
+            let expandedWidth: CGFloat = max(buttonSize.width, listSize.width)
+            let expandedHeight: CGFloat = buttonSize.height + listSize.height
+            return CGSize(width: expandedWidth, height: expandedHeight)
+        } else {
+            return CGSize(width: buttonSize.width, height: buttonSize.height)
+        }
+    }
+
+    @objc override func getBounds(parentSpace: Bool, scaled: Bool) -> CGRect {
+        let buttonSize = getButtonSize()
+        let buttonBounds = CGRect(x: -0.5 * buttonSize.width, y: -0.5 * buttonSize.height, width: buttonSize.width, height: buttonSize.height)
+
+        let bounds: CGRect
+        if isListExpanded {
+            let listSize = getListSize()
+            let listDx = 0.5 * (listSize.width - buttonSize.width)
+            let listDy = -0.5 * (buttonSize.height + listSize.height)
+            let listBounds: CGRect = scrollView.getBounds(parentSpace: parentSpace, scaled: scaled).offsetBy(dx: listDx, dy: listDy)
+            bounds = buttonBounds.union(listBounds)
+        } else {
+            bounds = buttonBounds
+        }
+
+        let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(localPosition.x), y: CGFloat(localPosition.y)) : CGPoint.zero
+        return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
 
     fileprivate func getButtonSize(includeOutline: Bool = true) -> CGSize {
+        let rawButtonSize = getRawButtonSize(includeOutline: includeOutline)
+        let contentWidth: CGFloat = (width > 0) ? width : rawButtonSize.width
+        let contentHeight: CGFloat = (height > 0) ? height : rawButtonSize.height
+        return CGSize(width: contentWidth, height: contentHeight)
+    }
+
+    fileprivate func getRawButtonSize(includeOutline: Bool = true) -> CGSize {
         let labelSize = labelNode.getSize()
         let iconSize = getIconSize(height: labelSize.height)
 
@@ -238,6 +270,13 @@ import SceneKit
         return 0.6 * CGSize(width: height, height: height)
     }
 
+    fileprivate func getListSize() -> CGSize {
+        let gridSize = listGridLayout.getSize()
+        let listWidth = gridSize.width
+        let listHeight = (maxHeight > 0) ? min(maxHeight, gridSize.height) : gridSize.height
+        return CGSize(width: listWidth, height: listHeight)
+    }
+
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         scrollView.setNeedsLayout()
@@ -249,24 +288,20 @@ import SceneKit
         labelNode.reload()
         listGridLayout.layoutIfNeeded()
         let gridSize = listGridLayout.getSize()
-        let scrollWidth = gridSize.width
-        let scrollHeight = (maxHeight > 0) ? min(maxHeight, gridSize.height) : gridSize.height
+        let listSize = getListSize()
         scrollView.scrollBounds = (
-            min: SCNVector3(-0.5 * scrollWidth, -0.5 * scrollHeight, -0.1),
-            max: SCNVector3(0.5 * scrollWidth, 0.5 * scrollHeight, 0.1)
+            min: SCNVector3(-0.5 * listSize.width, -0.5 * listSize.height, -0.1),
+            max: SCNVector3(0.5 * listSize.width, 0.5 * listSize.height, 0.1)
         )
         scrollView.layoutIfNeeded()
 
-        scrollView.contentNode.position = SCNVector3(0, -0.5 * scrollHeight, 0)
-
         if let scrollBar = scrollView.scrollBar {
-            scrollBar.thumbSize = (gridSize.height > 0) ? (scrollHeight / gridSize.height) : 1.0
-            scrollBar.position = SCNVector3(0.5 * scrollWidth, 0, 0)
-            scrollBar.length = scrollHeight
+            scrollBar.thumbSize = (gridSize.height > 0) ? (listSize.height / gridSize.height) : 1.0
+            scrollBar.position = SCNVector3(0.5 * (listSize.width - scrollBar.thickness), 0, 0)
+            scrollBar.length = listSize.height
             scrollBar.layoutIfNeeded()
         }
 
-        scrollView.updateClippingPlanes()
         _ = getSize()
 
         let buttonSize = getButtonSize(includeOutline: false)
@@ -286,6 +321,15 @@ import SceneKit
             reloadOutline = false
             reloadOutlineNode()
         }
+
+        scrollView.updateClippingPlanes()
+    }
+
+    @objc override func updateDebugLayout() {
+#if targetEnvironment(simulator)
+        super.updateDebugLayout()
+        scrollView.updateDebugLayout()
+#endif
     }
 
     @objc override func postUpdate() {
@@ -295,6 +339,7 @@ import SceneKit
     @objc override func setDebugMode(_ debug: Bool) {
         super.setDebugMode(debug)
         labelNode.setDebugMode(debug)
+        scrollView.setDebugMode(debug)
     }
 
     fileprivate func getPreferredTextHeight() -> CGFloat {
@@ -315,7 +360,7 @@ import SceneKit
     }
 
     fileprivate func reloadOutlineNode() {
-        let size = getSize()
+        let size = getButtonSize()
 
         outlineNode?.removeFromParentNode()
 
@@ -332,17 +377,24 @@ import SceneKit
         scrollView.updateClippingPlanes()
 
         let buttonSize = getButtonSize(includeOutline: true)
-        let listSize = scrollView.getSize()
-        listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -0.5 * buttonSize.height, 0.03)
+        let listSize = getListSize()
+        listNode.position = SCNVector3(0.5 * (listSize.width - buttonSize.width), -(buttonSize.height + 0.5 * listSize.height), 0.03)
         listNode.isHidden = !visible
         outlineNode?.isHidden = visible
-        updateBackground()
-        updateLayout()
+        if visible {
+            updateBackground()
+            updateLayout()
+            updateDebugLayout()
+
+            let listSize = getListSize()
+            let borderNode = NodesFactory.createOutlineNode(size: listSize, cornerRadius: 0, thickness: 0, color: UIColor.red)
+//            borderNode.position = SCNVector3(0.5 * listSize.width, -0.5 * listSize.height, 0.0)
+            listNode.addChildNode(borderNode)
+        }
     }
 
     fileprivate func updateBackground() {
-        let bgSize = scrollView.getSize()
-        print("bgSize: \(bgSize)")
+        let bgSize = getListSize()
         let isVisible = !listNode.isHidden
         let inset: CGFloat = min(0.5, 0.8 * min(bgSize.width, bgSize.height))
         let geometryCaps = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
@@ -365,7 +417,7 @@ import SceneKit
 
         backgroundNode = NodesFactory.createNinePatchNode(width: width, height: height, geometryCaps: geometryCaps, image: ImageAsset.dropdownListBackground.image, imageCaps: imageCaps)
         backgroundNode?.geometry?.firstMaterial?.readsFromDepthBuffer = false
-        backgroundNode?.position = SCNVector3(0, -0.5 * bgSize.height, -0.01)
+        backgroundNode?.position = SCNVector3(0, 0, -0.01)
         backgroundNode?.renderingOrder = 0
         listNode.insertChildNode(backgroundNode!, at: 0)
     }
@@ -384,8 +436,24 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
 
         if !multiSelect {
             setListNodeVisible(false)
+        } else {
+            setNeedsLayout()
+            layoutIfNeeded()
         }
     }
 }
 
 extension UiDropdownListNode: TapSimulating { }
+
+extension UiDropdownListNode: Dragging {
+    var dragAxis: Ray? {
+        return scrollView.dragAxis
+    }
+    var dragRange: CGFloat {
+        return isListExpanded ? scrollView.dragRange : 0
+    }
+    var dragValue: CGFloat {
+        get { return scrollView.dragValue }
+        set { scrollView.dragValue = newValue }
+    }
+}

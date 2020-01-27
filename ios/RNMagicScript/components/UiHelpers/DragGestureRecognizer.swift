@@ -46,6 +46,7 @@ import SceneKit
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode),
             let node = nodeSelector.draggingHitTest(ray: ray),
             let axis = node.dragAxis,
+            node.dragRange > 0,
             let point = axis.getClosestPointTo(ray: ray) {
             initialRay = ray
             dragNode = node
@@ -53,7 +54,7 @@ import SceneKit
             beginPoint = point
             beginDragValue = node.dragValue
             dragDelta = 0
-            state = .began
+//            state = .began
         } else {
             state = .failed
         }
@@ -87,7 +88,7 @@ import SceneKit
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .ended
+        state = (state == .changed) ? .ended : .failed
         super.touchesEnded(touches, with: event)
     }
 

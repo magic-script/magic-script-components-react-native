@@ -105,8 +105,10 @@ extension GridLayout: Layouting {
         return gridDescriptor?.realSize ?? CGSize.zero
     }
     @objc func getBounds(parentSpace: Bool, scaled: Bool) -> CGRect {
-        let size = getSize()
-        return CGRect(origin: CGPoint.zero, size: size)
+        let size = getSize(scaled: scaled)
+        let bounds = CGRect(origin: CGPoint(x: -0.5 * size.width, y: -0.5 * size.height), size: size)
+        let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(layoutContentNode.position.x), y: CGFloat(layoutContentNode.position.y)) : CGPoint.zero
+        return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
     @objc func setNeedsLayout() {
         gridDescriptor = nil
@@ -154,7 +156,7 @@ extension GridLayout: HitTesting {
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
         guard elementIndex < gridDescriptor.children.count else { return ownerNode }
         let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
-        return hitNode?.hitTest(ray: ray) ?? ownerNode
+        return hitNode//?.hitTest(ray: ray) ?? ownerNode
     }
 }
 

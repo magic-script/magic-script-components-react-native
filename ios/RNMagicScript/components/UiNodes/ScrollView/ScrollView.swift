@@ -114,15 +114,13 @@ open class ScrollView {
     }
 
     func updateLayout() {
-        guard let ownerNode = ownerNode else { return }
-        guard updateLayoutNeeded else { return }
-        updateLayoutNeeded = false
+//        guard let ownerNode = ownerNode else { return }
 
         scrollBar?.layoutIfNeeded()
         scrollContent?.layoutIfNeeded()
 
         // Update scroll content
-        let bounds = ownerNode.getBounds()
+        let bounds = getBounds(parentSpace: true, scaled: true)
         let scrollSize = bounds.size
         let contentSize: CGSize
         if let scrollContent = scrollContent {
@@ -143,6 +141,7 @@ open class ScrollView {
             shift.y = scrollValue * max(0, contentSize.height - scrollSize.height)
         }
         proxyNode.position += SCNVector3(shift.x, shift.y, 0)
+        print("proxyNode.position: \(proxyNode.position)")
 
         // Update scroll bar
         scrollBar?.thumbPosition = scrollValue
@@ -185,6 +184,7 @@ open class ScrollView {
     }
 }
 
+// MARK: - Layouting
 extension ScrollView: Layouting {
     @objc var layoutContentNode: SCNNode {
         return contentNode
@@ -200,7 +200,9 @@ extension ScrollView: Layouting {
         let min = scrollBounds.min
         let size = getSize(scaled: scaled)
         let origin = CGPoint(x: CGFloat(min.x), y: CGFloat(min.y))
-        return CGRect(origin: origin, size: size)
+        let bounds = CGRect(origin: origin, size: size)
+        let offset: CGPoint = parentSpace ? CGPoint(x: CGFloat(layoutContentNode.position.x), y: CGFloat(layoutContentNode.position.y)) : CGPoint.zero
+        return bounds.offsetBy(dx: offset.x, dy: offset.y)
     }
     @objc func setNeedsLayout() {
         updateLayoutNeeded = true
@@ -216,6 +218,7 @@ extension ScrollView: Layouting {
     }
 }
 
+// MARK: - Dragging
 extension ScrollView: Dragging {
     var dragAxis: Ray? {
         guard let scrollBounds = scrollBounds else { return nil }
@@ -256,3 +259,57 @@ extension ScrollView: Dragging {
         }
     }
 }
+
+// MARK: - Debug mode
+extension ScrollView {
+    fileprivate var debugNode: SCNNode? {
+        return contentNode.childNode(withName: "<!!debug_node!!>", recursively: false)
+    }
+    fileprivate var debugContentNode: SCNNode? {
+        return proxyNode.childNode(withName: "<!!debug_content_node!!>", recursively: false)
+    }
+    @objc func setDebugMode(_ debug: Bool) {
+#if targetEnvironment(simulator)
+        guard debug else {
+            debugNode?.removeFromParentNode()
+            return
+        }
+
+        // origin
+        if debugNode == nil {
+            let sphere = SCNSphere(radius: 0.008)
+            sphere.segmentCount = 4
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.diffuse.contents = UIColor.white
+            let originNode = SCNNode(geometry: sphere)
+            originNode.name = "<!!debug_node!!>"
+            contentNode.addChildNode(originNode)
+        }
+
+        if debugContentNode == nil {
+            let plane = SCNPlane(width: 1, height: 1)
+            plane.firstMaterial?.diffuse.contents = UIColor.yellow
+            let fillNode = SCNNode(geometry: plane)
+            fillNode.name = "<!!debug_content_node!!>"
+            fillNode.opacity = 0.1
+            proxyNode.addChildNode(fillNode)
+        }
+
+        updateDebugLayout()
+#endif
+    }
+
+    @objc func updateDebugLayout() {
+#if targetEnvironment(simulator)
+        guard let debugContentNode = debugContentNode else { return }
+
+        if let fillPlane = debugContentNode.geometry as? SCNPlane,
+            let scrollContent = scrollContent {
+            let size = scrollContent.getSize(scaled: true)
+            fillPlane.width = size.width
+            fillPlane.height = size.height
+        }
+#endif
+    }
+}
+

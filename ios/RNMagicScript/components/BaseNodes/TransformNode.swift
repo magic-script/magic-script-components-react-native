@@ -280,8 +280,8 @@ extension TransformNode {
 #endif
     }
 
+    @objc func updateDebugLayout() {
 #if targetEnvironment(simulator)
-    @objc fileprivate func updateDebugLayout() {
         guard debug else { return }
 
         // border
@@ -290,6 +290,6 @@ extension TransformNode {
         borderNode = NodesFactory.createOutlineNode(size: bounds.size, cornerRadius: 0, thickness: 0, color: UIColor.yellow)
         borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
         addChildNode(borderNode!)
-    }
 #endif
+    }
 }

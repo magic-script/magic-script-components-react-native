@@ -46,7 +46,7 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> TransformNode? {
-        return gridLayout.hitTest(ray: ray)
+        return gridLayout.hitTest(ray: ray)?.hitTest(ray: ray)
     }
 
     @objc override func update(_ props: [String: Any]) {

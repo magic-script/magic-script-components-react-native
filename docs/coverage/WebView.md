@@ -1,7 +1,17 @@
 # Functional test coverage for WebView
+
 ## Tested properties
 
-**Inherited**
+**Inherited:**
+- ~~localPosition~~
+- ~~localScale~~
+- ~~localRotation~~
+- ~~enabled~~
+- ~~onClick~~
 
-
-**Custom**
+**Custom:**
+- width
+- height
+- url
+- ~~action~~
+- ~~scrollBy~~

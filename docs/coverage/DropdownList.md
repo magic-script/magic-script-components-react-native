@@ -6,8 +6,12 @@
 - ~~localScale~~
 - ~~localRotation~~
 - ~~enabled~~
-- ~~onClick~~
 
 **Custom:**
 - text
+- textSize
+- maxCharacterLimit
+- maxHeight
+- multiSelect
 - onSelectionChanged
+- ~~onListVisibilityChanged~~

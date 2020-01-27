@@ -6,9 +6,13 @@
 - alignment
 - ~~localScale~~
 - ~~localRotation~~
+- width
+- height
 
 **Custom:**
 - columns
 - rows
 - defaultItemPadding
 - defaultItemAlignment
+- ~~itemAlignment~~
+- ~~itemPadding~~

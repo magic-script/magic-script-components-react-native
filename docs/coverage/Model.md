@@ -2,10 +2,11 @@
 ## Tested properties
 
 **Inherited:**
-- ~~localPosition~~
-- ~~alignment~~
-- ~~localScale~~
-- ~~localRotation~~
+- localPosition
+- alignment
+- localScale
+- localRotation
+- localTransform
 
 **Custom:**
 - modelPath

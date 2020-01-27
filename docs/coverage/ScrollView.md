@@ -9,7 +9,7 @@
 
 **Custom:**
 - scrollBarVisibility (only `auto`)
-- scrollDirection (
+- scrollDirection
 - ~~scrollMask~~
 - ~~scrollOffset~~
 - ~~scrollSpeed~~

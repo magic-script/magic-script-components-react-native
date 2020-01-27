@@ -1,7 +1,15 @@
 # Functional test coverage for RectLayout
+
 ## Tested properties
 
-**Inherited**
+**Inherited:**
+- localPosition
+- alignment
+- ~~localScale~~
+- ~~localRotation~~
+- width
+- height
 
-
-**Custom**
+**Custom:**
+- contentAlignment
+- padding

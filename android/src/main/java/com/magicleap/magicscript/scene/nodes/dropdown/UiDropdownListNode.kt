@@ -48,6 +48,7 @@ class UiDropdownListNode(
 
         const val Z_ORDER_OFFSET = 2e-5F
         const val ICON_NAME = "chevron-down"
+        const val Z_OFFSET_WHEN_EXPANDED = 0.05F
     }
 
     // Events
@@ -57,9 +58,14 @@ class UiDropdownListNode(
     private var listNodeAdded = false
 
     init {
+        animationEnabled = false
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
+        listNode.onListVisibilityChanged = { visible ->
+            val zOffset = if (visible) Z_OFFSET_WHEN_EXPANDED else -Z_OFFSET_WHEN_EXPANDED
+            localPosition = Vector3(localPosition.x, localPosition.y, localPosition.z + zOffset)
+        }
 
         properties.putString(PROP_ICON, ICON_NAME)
     }
@@ -72,8 +78,12 @@ class UiDropdownListNode(
             addContent(listNode)
             listNodeAdded = true
         }
+    }
 
+    override fun setupView() {
+        super.setupView()
         (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
+        (view as CustomButton).borderEnabled = false
     }
 
     override fun loadRenderable() {

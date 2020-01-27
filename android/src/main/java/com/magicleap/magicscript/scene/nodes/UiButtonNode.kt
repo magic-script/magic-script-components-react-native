@@ -57,6 +57,8 @@ open class UiButtonNode(
         const val PADDING_FACTOR_VERTICAL = 1.15F
     }
 
+    var animationEnabled = true
+
     private var playingAnim = false
 
     init {
@@ -102,7 +104,9 @@ open class UiButtonNode(
 
     override fun onViewClick() {
         super.onViewClick()
-        animate()
+        if (animationEnabled) {
+            animate()
+        }
     }
 
     override fun applyProperties(props: Bundle) {

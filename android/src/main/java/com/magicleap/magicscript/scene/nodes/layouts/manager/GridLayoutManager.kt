@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -45,8 +46,8 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         maxChildHeightInRowMap.clear()
         for (i in children.indices) {
             layoutParams as GridLayoutParams
-            val col = getColumnIndex(i, layoutParams)
-            val row = getRowIndex(i, layoutParams)
+            val col = LayoutUtils.getColumnIndex(i, layoutParams.columns, layoutParams.rows)
+            val row = LayoutUtils.getRowIndex(i, layoutParams.columns, layoutParams.rows)
             val bounds = childrenBounds[i]!!
 
             val width = bounds.size().x
@@ -94,8 +95,8 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         val itemPadding = params.itemsPadding[index] ?: Padding()
 
-        val col = getColumnIndex(index, params)
-        val row = getRowIndex(index, params)
+        val col = LayoutUtils.getColumnIndex(index, params.columns, params.rows)
+        val row = LayoutUtils.getRowIndex(index, params.columns, params.rows)
 
         val columnWidth =
             maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
@@ -175,7 +176,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         return if (layoutParams.size.x == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
-            maxChildWidthInColumnMap[getColumnIndex(childIdx, layoutParams)]!!
+            maxChildWidthInColumnMap[
+                    LayoutUtils.getColumnIndex(
+                        childIdx,
+                        layoutParams.columns,
+                        layoutParams.rows
+                    )]!!
         }
     }
 
@@ -187,7 +193,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         return if (layoutParams.size.y == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
-            maxChildHeightInRowMap[getRowIndex(childIdx, layoutParams)]!!
+            maxChildHeightInRowMap[
+                    LayoutUtils.getRowIndex(
+                        childIdx,
+                        layoutParams.columns,
+                        layoutParams.rows
+                    )]!!
         }
     }
 
@@ -207,21 +218,5 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             y -= (maxChildHeightInRowMap[i] ?: 0.0F) + itemPadding.top + itemPadding.bottom
         }
         return y
-    }
-
-    private fun getColumnIndex(childIdx: Int, layoutParams: GridLayoutParams): Int {
-        return if (layoutParams.rows != 0) {
-            childIdx / layoutParams.rows
-        } else {
-            childIdx % layoutParams.columns
-        }
-    }
-
-    private fun getRowIndex(childIdx: Int, layoutParams: GridLayoutParams): Int {
-        return if (layoutParams.rows != 0) {
-            childIdx % layoutParams.rows
-        } else {
-            childIdx / layoutParams.columns
-        }
     }
 }

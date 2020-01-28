@@ -55,9 +55,12 @@ open class UiButtonNode(
         // text padding = factor * text height
         private const val PADDING_FACTOR_HORIZONTAL = 1.55F
         const val PADDING_FACTOR_VERTICAL = 1.15F
+        const val ANIMATION_Z_OFFSET = -0.05f
+        const val ANIMATION_DURATION = 150L
     }
 
-    var animationEnabled = true
+    open val animationEnabled = true
+    open val charactersSpacing = 0.1F
 
     private var playingAnim = false
 
@@ -91,15 +94,19 @@ open class UiButtonNode(
     override fun setupView() {
         super.setupView()
 
-        val font = fontProvider.provideFont()
-        (view as CustomButton).setTypeface(font)
+        (view as CustomButton).apply {
+            val font = fontProvider.provideFont()
+            setTypeface(font)
 
-        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
-        // padding is added when button width or height is "wrap content"
-        val textHeightPx = Utils.metersToFontPx(textSize, context)
-        val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
-        val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
-        (view as CustomButton).setTextPadding(textPaddingHorizontal, textPaddingVertical)
+            val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
+            // padding is added when button width or height is "wrap content"
+            val textHeightPx = Utils.metersToFontPx(textSize, context)
+            val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
+            val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
+            setTextPadding(textPaddingHorizontal, textPaddingVertical)
+
+            setCharactersSpacing(charactersSpacing)
+        }
     }
 
     override fun onViewClick() {
@@ -133,12 +140,11 @@ open class UiButtonNode(
             return
         }
         playingAnim = true
-        val originalPos = localPosition
-        localPosition = Vector3(originalPos.x, originalPos.y, originalPos.z - 0.05f)
+        setContentZPosition(ANIMATION_Z_OFFSET)
         Handler().postDelayed({
-            localPosition = originalPos
+            setContentZPosition(0f)
             playingAnim = false
-        }, 150)
+        }, ANIMATION_DURATION)
     }
 
     private fun canResizeOnContentChange(): Boolean {
@@ -209,6 +215,12 @@ open class UiButtonNode(
             val heightPx = Utils.metersToPx(size.y, view.context).toFloat()
             (view as CustomButton).iconSize = Vector2(widthPx, heightPx)
         }
+    }
+
+    private fun setContentZPosition(z: Float) {
+        contentNode.localPosition = Vector3(
+            contentNode.localPosition.x, contentNode.localPosition.y, z
+        )
     }
 
 }

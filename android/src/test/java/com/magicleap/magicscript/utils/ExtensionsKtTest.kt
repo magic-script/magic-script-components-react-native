@@ -253,4 +253,26 @@ class ExtensionsKtTest {
         tested.limited(3) shouldEqual "ABC…"
     }
 
+    @Test
+    fun `containsAll should return false if any argument is missing`() {
+        val bundle = Bundle().apply {
+            putString("key", "test")
+            putString("key2", "test")
+            putString("key3", "test")
+        }
+
+        bundle.containsAll("key", "key2", "key3", "key4") shouldEqual false
+    }
+
+    @Test
+    fun `containsAll should return true if contains all args`() {
+        val bundle = Bundle().apply {
+            putString("key", "test")
+            putString("key2", "test")
+            putString("key3", "test")
+        }
+
+        bundle.containsAll("key", "key2") shouldEqual true
+    }
+
 }

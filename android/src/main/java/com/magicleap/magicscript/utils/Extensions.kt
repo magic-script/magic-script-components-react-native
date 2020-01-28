@@ -102,12 +102,7 @@ fun Bundle.containsAny(vararg keys: String): Boolean {
 }
 
 fun Bundle.containsAll(vararg keys: String): Boolean {
-    for (key in keys) {
-        if(!containsKey(key)) {
-            return false
-        }
-    }
-    return true
+    return keys.none { !containsKey(it) }
 }
 
 /*

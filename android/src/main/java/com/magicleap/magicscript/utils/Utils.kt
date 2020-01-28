@@ -40,7 +40,7 @@ class Utils {
 
         // Each text should be scaled down with this factor
         // to match Lumin's implementation
-        const val FONT_SCALE_FACTOR = 0.88f
+        const val FONT_SCALE_FACTOR = 0.8f
 
         // By default, every 250dp for the view becomes 1 meter for the renderable
         // https://developers.google.com/ar/develop/java/sceneform/create-renderables

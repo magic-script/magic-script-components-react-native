@@ -41,7 +41,7 @@ class LinearToggleViewManager(
         const val DEFAULT_SPACING_RATIO = 1F
         const val RADIO_SPACING_RATIO = 0.9F
         const val CHECKBOX_SPACING_RATIO = 0.9F
-        const val CHARACTERS_SPACING = 0.00499F
+        const val CHARACTERS_SPACING = 0.1F
     }
 
     private var isActive = false

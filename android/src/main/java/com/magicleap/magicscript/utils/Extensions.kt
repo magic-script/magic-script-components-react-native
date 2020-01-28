@@ -101,6 +101,10 @@ fun Bundle.containsAny(vararg keys: String): Boolean {
     return false
 }
 
+fun Bundle.containsAll(vararg keys: String): Boolean {
+    return keys.none { !containsKey(it) }
+}
+
 /*
  * Returns a string limited to [maxCharacters].
  * If length > [maxCharacters] it adds 3 dots at the end

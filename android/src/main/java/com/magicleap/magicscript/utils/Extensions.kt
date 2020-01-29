@@ -32,7 +32,6 @@ import java.util.*
 /**
  * ==========Extension methods============
  */
-
 fun Any.logMessage(message: String, warn: Boolean = false) {
     if (warn) {
         Log.w("AR_LOG", "${this.javaClass.name}: $message")
@@ -100,6 +99,10 @@ fun Bundle.containsAny(vararg keys: String): Boolean {
         }
     }
     return false
+}
+
+fun Bundle.containsAll(vararg keys: String): Boolean {
+    return keys.none { !containsKey(it) }
 }
 
 /*

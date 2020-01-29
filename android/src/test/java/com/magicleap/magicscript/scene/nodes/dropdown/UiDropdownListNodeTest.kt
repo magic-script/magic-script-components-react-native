@@ -18,13 +18,18 @@ package com.magicleap.magicscript.scene.nodes.dropdown
 
 import android.content.Context
 import android.graphics.Typeface
+import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import org.amshove.kluent.*
 import org.junit.Before
 import org.junit.Test
@@ -47,6 +52,8 @@ class UiDropdownListNodeTest {
 
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
+    private lateinit var viewSpy: CustomButton
+    private lateinit var context: Context
 
     private val listNode: DropdownItemsListNode?
         get() = tested.contentNode.children
@@ -55,7 +62,7 @@ class UiDropdownListNodeTest {
 
     @Before
     fun setUp() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+        context = ApplicationProvider.getApplicationContext<Context>()
         fontProvider = object : FontProvider {
             override fun provideFont(fontParams: FontParams?): Typeface {
                 return Typeface.DEFAULT_BOLD
@@ -68,12 +75,34 @@ class UiDropdownListNodeTest {
         item1 = buildDropdownItem("0")
         item2 = buildDropdownItem("1")
 
-        tested = UiDropdownListNode(JavaOnlyMap(), context, mock(), fontProvider, iconsRepo)
+        viewSpy = spy(CustomButton(context))
+        tested = createNodeWithViewSpy(JavaOnlyMap())
         tested.build()
         tested.addContent(item1)
         tested.addContent(item2)
     }
 
+    @Test
+    fun `should not use additional characters spacing`() {
+        verify(viewSpy).setCharactersSpacing(0F)
+    }
+
+    @Test
+    fun `should not use border`() {
+        verify(viewSpy).borderEnabled = false
+    }
+
+    @Test
+    fun `items list should be hidden by default`() {
+        listNode?.isVisible shouldBe false
+    }
+
+    @Test
+    fun `should display items list on click`() {
+        tested.performClick()
+
+        listNode?.isVisible shouldBe true
+    }
 
     @Test
     fun `should notify listener about all selected items when multi select active`() {
@@ -142,12 +171,40 @@ class UiDropdownListNodeTest {
         listNode?.isVisible shouldBe true
     }
 
+    @Test
+    fun `should move content node to top when list becomes visible`() {
+        val props = reactMapOf(UiDropdownListNode.PROP_SHOW_LIST, true)
+
+        tested.update(props)
+
+        tested.contentNode.localPosition.z shouldEqual UiDropdownListNode.Z_OFFSET_WHEN_EXPANDED
+    }
+
+    @Test
+    fun `should move content node back to 0 in z-axis when list becomes hidden`() {
+        val propsVisible = reactMapOf(UiDropdownListNode.PROP_SHOW_LIST, true)
+        tested.update(propsVisible)
+
+        val propsHidden = reactMapOf(UiDropdownListNode.PROP_SHOW_LIST, false)
+        tested.update(propsHidden)
+
+        tested.contentNode.localPosition.z shouldEqual 0f
+    }
+
+    private fun createNodeWithViewSpy(props: ReadableMap): UiDropdownListNode {
+        return object :
+            UiDropdownListNode(props, context, mock(), fontProvider, iconsRepo) {
+            override fun provideView(context: Context): View {
+                return viewSpy
+            }
+        }
+    }
+
     private fun buildDropdownItem(id: String, selected: Boolean = false): UiDropdownListItemNode {
         val props = reactMapOf().id(id).label("item $id").selected(selected)
         val item = UiDropdownListItemNode(props, fontProvider)
         item.build()
         return item
     }
-
 
 }

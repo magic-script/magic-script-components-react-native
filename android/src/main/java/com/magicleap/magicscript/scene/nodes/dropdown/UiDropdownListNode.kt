@@ -25,20 +25,21 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
 
-class UiDropdownListNode(
+open class UiDropdownListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo), Layoutable {
+) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, null),
+    Layoutable {
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
@@ -53,7 +54,6 @@ class UiDropdownListNode(
         const val ICON_HEIGHT_FACTOR_DEFAULT = 0.3F
     }
 
-    override val animationEnabled = false
     override val charactersSpacing = 0F
 
     // Events

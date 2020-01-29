@@ -42,8 +42,6 @@ class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoa
 
         builder.build()
             .thenAccept { renderable ->
-                renderable.isShadowReceiver = false
-                renderable.isShadowCaster = false
                 resultCallback(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->

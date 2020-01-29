@@ -33,6 +33,7 @@ class CustomArFragment : ArFragment() {
                 UiNodesManager.INSTANCE.onArFragmentReady()
                 onReadyCalled = true
             }
+
         }
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()
@@ -42,5 +43,7 @@ class CustomArFragment : ArFragment() {
         // Hide the instructions
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
+
+        arSceneView.scene.sunlight?.isEnabled = false
     }
 }

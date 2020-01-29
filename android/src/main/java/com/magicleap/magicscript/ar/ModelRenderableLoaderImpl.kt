@@ -46,8 +46,6 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
             .setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
-                renderable.isShadowReceiver = false
-                renderable.isShadowCaster = false
                 resultCallback(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->

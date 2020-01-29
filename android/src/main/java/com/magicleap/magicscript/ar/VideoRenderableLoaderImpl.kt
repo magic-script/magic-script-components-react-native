@@ -29,9 +29,6 @@ class VideoRenderableLoaderImpl(private val context: Context) : VideoRenderableL
             .build()
             .thenAccept { renderable ->
                 renderable.material.setBoolean("disableChromaKey", true)
-                // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
-                renderable.isShadowCaster = false
-                renderable.isShadowReceiver = false
                 resultCallback(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->

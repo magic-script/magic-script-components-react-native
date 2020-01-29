@@ -17,7 +17,6 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.os.Bundle
 import android.view.View
 import android.widget.DatePicker
 import android.widget.EditText
@@ -25,9 +24,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.*
-import com.magicleap.magicscript.createProperty
-import com.magicleap.magicscript.utils.VerySimpleDateFormat
+import com.magicleap.magicscript.performClick
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.DATE_FORMAT_DEFAULT
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.PROP_DATE
 import com.magicleap.magicscript.scene.nodes.UiDatePickerNode.Companion.PROP_DATE_FORMAT
@@ -39,7 +37,9 @@ import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Compa
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.utils.updateDate
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
 import org.junit.After
@@ -55,11 +55,11 @@ import java.util.*
 @RunWith(RobolectricTestRunner::class)
 class UiDatePickerNodeTest {
 
-    val datePicker: DatePicker = mock()
-    val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
+    private val datePicker: DatePicker = mock()
+    private val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
+    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
     }
     var tested: TestableUiDatePickerNode = TestableUiDatePickerNode(datePickerDialogProvider)
@@ -80,21 +80,21 @@ class UiDatePickerNodeTest {
     @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.updateProperties(createProperty(PROP_LABEL, label))
+        tested.update(reactMapOf(PROP_LABEL, label))
 
         verify(tested.titleText).text = label
     }
 
     @Test
     fun `should set vertical orientation when label side is top`() {
-        tested.updateProperties(createProperty(PROP_LABEL_SIDE, LABEL_SIDE_TOP))
+        tested.update(reactMapOf(PROP_LABEL_SIDE, LABEL_SIDE_TOP))
 
         verify(tested.mainView).orientation = LinearLayout.VERTICAL
     }
 
     @Test
     fun `should set horizontal orientation when label side is left`() {
-        tested.updateProperties(createProperty(PROP_LABEL_SIDE, LABEL_SIDE_LEFT))
+        tested.update(reactMapOf(PROP_LABEL_SIDE, LABEL_SIDE_LEFT))
 
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL
     }
@@ -102,35 +102,35 @@ class UiDatePickerNodeTest {
     @Test
     fun `dateFormat should update hint on date text`() {
         val dateFormat = "DD/YYYY"
-        tested.updateProperties(createProperty(PROP_DATE_FORMAT, dateFormat))
+        tested.update(reactMapOf(PROP_DATE_FORMAT, dateFormat))
 
         verify(tested.dateText).hint = dateFormat
     }
 
     @Test
     fun `on view click should create dialog with default date`() {
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePickerDialogProvider).provideDatePickerDialog(any())
     }
 
     @Test
     fun `on view click should should attach listeners to dialog`() {
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePickerDialog).setOnDateSetListener(any())
         verify(datePicker).setOnDateChangedListener(any())
@@ -138,9 +138,9 @@ class UiDatePickerNodeTest {
 
     @Test
     fun `if date and defaultDate is not set should apply current date in dialog`() {
-        tested.updateProperties(createProperty(PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
+        tested.update(reactMapOf(PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePickerDialog).updateDate(Date())
     }
@@ -148,8 +148,8 @@ class UiDatePickerNodeTest {
     @Test
     fun `if defaultDate is set should apply it to dialog`() {
         val textDate = "13/12/2011"
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, textDate,
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
@@ -157,7 +157,7 @@ class UiDatePickerNodeTest {
 
         val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(textDate)
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePickerDialog).updateDate(date)
     }
@@ -165,8 +165,8 @@ class UiDatePickerNodeTest {
     @Test
     fun `if date is set should apply it to dialog`() {
         val textDate = "10/11/2012"
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
                 PROP_DATE, textDate
@@ -175,7 +175,7 @@ class UiDatePickerNodeTest {
 
         val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(textDate)
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePickerDialog).updateDate(date)
     }
@@ -184,8 +184,8 @@ class UiDatePickerNodeTest {
     fun `should apply min and max year`() {
         val minYear = 2010
         val maxYear = 2030
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT,
                 PROP_YEAR_MIN, minYear,
@@ -193,7 +193,7 @@ class UiDatePickerNodeTest {
             )
         )
 
-        tested.forceClick()
+        tested.performClick()
 
         verify(datePicker).minDate = any()
         verify(datePicker).maxDate = any()
@@ -201,14 +201,14 @@ class UiDatePickerNodeTest {
 
     @Test
     fun `should update dateValue when date set`() {
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
 
-        tested.forceClick()
+        tested.performClick()
         tested.onDateConfirmed = mock()
         tested.provideDialogOnDateSetListener().invoke(datePicker, 2019, Calendar.NOVEMBER, 12)
         val dateFormat = VerySimpleDateFormat(
@@ -227,21 +227,12 @@ class UiDatePickerNodeTest {
         mock(),
         datePickerDialogProvider
     ) {
-
         val titleText: TextView = mock()
         val dateText: EditText = mock()
         val mainView = mock<LinearLayout>().also {
             this.view = it
             whenever(it.title).doReturn(titleText)
             whenever(it.value).doReturn(dateText)
-        }
-
-        fun updateProperties(props: Bundle) {
-            applyProperties(props)
-        }
-
-        fun forceClick() {
-            onViewClick()
         }
 
         override fun provideView(context: Context): View {

@@ -20,10 +20,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.Arguments
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.createProperty
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
@@ -31,7 +29,9 @@ import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.scrollBounds
+import com.magicleap.magicscript.toBundle
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.Assert.*
 import org.junit.Before
@@ -74,7 +74,7 @@ class PropertiesUtilsTest {
 
         val uri = propsBundle.readImagePath(prop, context)
 
-        assertTrue(expected == uri)
+        expected shouldEqual uri
     }
 
     @Test
@@ -120,7 +120,7 @@ class PropertiesUtilsTest {
         val vector = bundle.read<Vector3>(prop)
 
         assertNotNull(vector)
-        assertTrue(vector is Vector3)
+        vector shouldEqual Vector3(1.0f, 2.0f, 3.0f)
     }
 
     @Test
@@ -134,7 +134,9 @@ class PropertiesUtilsTest {
 
         val result = bundle.readVectorsList(prop)
 
-        assertTrue(result.isNotEmpty())
+        result.size shouldEqual 2
+        result[0] shouldEqual Vector3(1.5f, 1.5f, 1.5f)
+        result[1] shouldEqual Vector3(2.5f, 2.5f, 2.5f)
     }
 
     @Test
@@ -161,10 +163,12 @@ class PropertiesUtilsTest {
             13.0, 14.0, 15.0, 16.0
         )
         bundle.putSerializable(prop, list)
+        val expectedValues = list.map { it.toFloat() }.toFloatArray()
 
         val result = bundle.read<Matrix>(prop)
 
-        assertTrue(result is Matrix)
+        result shouldNotBe null
+        assertTrue(result?.data?.contentEquals(expectedValues) ?: false)
     }
 
     @Test
@@ -183,14 +187,12 @@ class PropertiesUtilsTest {
     fun `should return color if property is list and size is equal to 4`() {
         val bundle = Bundle()
         val prop = "PROP_NAME"
-        val list = arrayListOf(1.0, 2.0, 3.0, 4.0)
+        val list = arrayListOf(0.8, 0.2, 0.5, 0.75)
         bundle.putSerializable(prop, list)
 
         val color = bundle.readColor(prop)
 
-        assertNotNull(color)
-        assertTrue(color is Int)
-        assertTrue(color != 0)
+        color shouldEqual -1077136513
     }
 
     @Test
@@ -203,31 +205,34 @@ class PropertiesUtilsTest {
         val padding = bundle.read<Padding>(prop)
 
         assertNotNull(padding)
-        assertTrue(padding is Padding)
+        padding?.top shouldEqual 1.0f
+        padding?.right shouldEqual 2.0f
+        padding?.bottom shouldEqual 3.0f
+        padding?.left shouldEqual 4.0f
     }
 
     @Test
-    fun `should read scroll bounds using properties reader`() {
-        val scrollBounds = reactMapOf().scrollBounds(
-            min = arrayOf(1.2, 1.2), max = arrayOf(2.0, 2.0)
-        )
-        val bundle = Bundle().apply {
-            putBundle("scrollBounds", Arguments.toBundle(scrollBounds))
-        }
-        val expected = bundle.read<AABB>("scrollBounds")
+    fun `should read scroll bounds`() {
+        val bundle = reactMapOf().scrollBounds(
+            min = arrayOf(1.2, 1.2, -0.1), max = arrayOf(2.0, 2.0, 0.1)
+        ).toBundle()
 
-        bundle.read<AABB>("scrollBounds") shouldEqual expected
+        val scrollBounds = bundle.read<AABB>("scrollBounds")
+
+        scrollBounds shouldNotBe null
+        scrollBounds?.min shouldEqual Vector3(1.2f, 1.2f, -0.1f)
+        scrollBounds?.max shouldEqual Vector3(2.0f, 2.0f, 0.1f)
     }
 
     @Test
     fun `should read SpatialSoundPosition`() {
         val key = "spatialSoundPosition"
-        val spatialBundle = createProperty(
+        val spatialBundle = reactMapOf(
             key, reactMapOf(
                 "channel", 4.0,
                 "channelPosition", reactArrayOf(.1f, 1.1f, 2.1f)
             )
-        )
+        ).toBundle()
 
         val spatialSoundPosition = spatialBundle.read<SpatialSoundPosition>(key)
 
@@ -244,14 +249,14 @@ class PropertiesUtilsTest {
     @Test
     fun `should read SpatialSoundDistance`() {
         val key = "spatialSoundDistance"
-        val spatialBundle = createProperty(
+        val spatialBundle = reactMapOf(
             key, reactMapOf(
                 "channel", 4.0,
                 "minDistance", 1.0,
                 "maxDistance", 3.0,
                 "rolloffFactor", 2
             )
-        )
+        ).toBundle()
 
         val spatialSoundDistance = spatialBundle.read<SpatialSoundDistance>(key)
 

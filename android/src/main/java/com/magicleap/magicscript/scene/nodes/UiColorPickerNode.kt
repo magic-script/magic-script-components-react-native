@@ -27,6 +27,8 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.putDefault
@@ -40,8 +42,9 @@ open class UiColorPickerNode @JvmOverloads constructor(
     viewRenderableLoader: ViewRenderableLoader,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
+    clickAnimator: NodeAnimator,
     private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo) {
+) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, clickAnimator) {
 
     companion object {
         const val PROP_COLOR = "color"
@@ -112,7 +115,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
         colorPickerDialog.show()
     }
 
-    fun readColor(props: Bundle): Int {
+    private fun readColor(props: Bundle): Int {
         return props.readColor(PROP_COLOR)
             ?: (props.readColor(PROP_STARTING_COLOR) ?: Color.WHITE)
     }

@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript.scene
 
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
@@ -23,8 +24,12 @@ import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
+import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * It manages nodes registration and attaching them to scene
@@ -35,6 +40,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
+    private var prism: Prism? = null
     var planeDetection = false
 
     companion object {
@@ -42,13 +48,53 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     @Synchronized
-    fun onArFragmentReady() {
+    fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
+        prism = Prism(
+            JavaOnlyMap(),
+            CubeRenderableBuilderImpl(scene.view.context),
+            fragment.transformationSystem
+        )
+
+        prism?.translationController?.isEnabled = false
+
+        prism?.setParent(rootNode)
+        prism?.attachRenderable()
+
         rootNode.localPosition = Vector3(0f, 0f, 0f)
         scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
+            }
+        }
+    }
+
+    private var lastCameraPos: Vector3 = Vector3.zero()
+    private var firstTouch = true
+
+    @Synchronized
+    fun onCameraUpdated(cameraPosition: Vector3) {
+        prism?.apply {
+            if (beingTouched) {
+                if (firstTouch) {
+                    lastCameraPos = cameraPosition
+                    firstTouch = false
+                }
+
+                val cameraPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+                val dist =
+                    cameraPrismDiff.x.pow(2) + cameraPrismDiff.y.pow(2) + cameraPrismDiff.z.pow(2)
+
+                // Limiting the movement speed since sometimes the [dist] is near
+                // to infinity when moving device (ar core bug?)
+                val speed = min(1 + dist, 2f).pow(2)
+
+                val diff = Vector3.subtract(cameraPosition, lastCameraPos).scaled(speed)
+                localPosition = Vector3.add(localPosition, diff)
+                lastCameraPos = cameraPosition
+            } else {
+                firstTouch = true
             }
         }
     }

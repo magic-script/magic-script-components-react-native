@@ -21,6 +21,7 @@ import android.view.View
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 
+
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
@@ -30,9 +31,12 @@ class CustomArFragment : ArFragment() {
         arSceneView.scene.addOnUpdateListener {
             if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
                 // We can add AR objects after session is ready and camera is in tracking mode
-                UiNodesManager.INSTANCE.onArFragmentReady()
+                UiNodesManager.INSTANCE.onArFragmentReady(this)
                 onReadyCalled = true
             }
+
+            val cameraPosition = arSceneView.scene.camera.localPosition
+            UiNodesManager.INSTANCE.onCameraUpdated(cameraPosition)
         }
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             val anchor = hitResult.createAnchor()

@@ -413,7 +413,7 @@ abstract class UiNode(
         }
     }
 
-    class Test(private val uiNode: UiNode) {
+    class Test(val uiNode: UiNode) {
         fun performClick() {
             uiNode.onViewClick()
         }

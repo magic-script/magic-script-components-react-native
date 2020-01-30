@@ -434,7 +434,7 @@ abstract class TransformNode(
         }
     }
 
-    class Test(private val node: TransformNode) {
+    class Test(val node: TransformNode) {
         /**
          * Forces node update. For tests purposes.
          *

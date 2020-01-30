@@ -25,19 +25,21 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
 
-class UiDropdownListNode(
+open class UiDropdownListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo), Layoutable {
+) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, null),
+    Layoutable {
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
@@ -47,8 +49,12 @@ class UiDropdownListNode(
         const val PROP_SHOW_LIST = "showList"
 
         const val Z_ORDER_OFFSET = 2e-5F
-        const val ICON_NAME = "chevron-down"
+        const val ICON_NAME = "dropdown"
+        const val Z_OFFSET_WHEN_EXPANDED = 0.05F
+        const val ICON_HEIGHT_FACTOR_DEFAULT = 0.3F
     }
+
+    override val charactersSpacing = 0F
 
     // Events
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
@@ -56,10 +62,15 @@ class UiDropdownListNode(
     private val listNode: DropdownItemsListNode
     private var listNodeAdded = false
 
+    private val onListVisibilityChangedListener: (visible: Boolean) -> Unit = { visible ->
+        applyZTranslation(visible)
+    }
+
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
         listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
+        listNode.onListVisibilityChanged = onListVisibilityChangedListener
 
         properties.putString(PROP_ICON, ICON_NAME)
     }
@@ -72,8 +83,19 @@ class UiDropdownListNode(
             addContent(listNode)
             listNodeAdded = true
         }
+    }
 
-        (view as CustomButton).iconPosition = CustomButton.IconPosition.RIGHT
+    override fun provideDesiredSize(): Vector2 {
+        return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+    }
+
+    override fun setupView() {
+        super.setupView()
+        (view as CustomButton).apply {
+            iconPosition = CustomButton.IconPosition.RIGHT
+            borderEnabled = false
+            defaultIconHeightFactor = ICON_HEIGHT_FACTOR_DEFAULT
+        }
     }
 
     override fun loadRenderable() {
@@ -101,7 +123,6 @@ class UiDropdownListNode(
         } else {
             super.addContent(child)
         }
-
     }
 
     override fun removeContent(child: TransformNode) {
@@ -196,6 +217,12 @@ class UiDropdownListNode(
 
     private fun hideList() {
         listNode.hide()
+    }
+
+    private fun applyZTranslation(listVisible: Boolean) {
+        val position = contentNode.localPosition
+        position.z = if (listVisible) Z_OFFSET_WHEN_EXPANDED else 0f
+        contentNode.localPosition = position
     }
 
 }

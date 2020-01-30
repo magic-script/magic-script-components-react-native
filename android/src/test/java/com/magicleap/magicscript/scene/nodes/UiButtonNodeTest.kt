@@ -20,25 +20,22 @@ import android.content.Context
 import android.graphics.Typeface
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.*
-import com.magicleap.magicscript.R
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.reactArrayOf
-import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
-import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +55,7 @@ class UiButtonNodeTest {
     private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
+    private lateinit var animator: NodeAnimator
 
     @Before
     fun setUp() {
@@ -72,11 +70,12 @@ class UiButtonNodeTest {
         this.iconsRepo = mock()
         val sampleIcon = context.getDrawable(R.drawable.add)
         whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
+        animator = mock()
     }
 
     @Test
     fun `should use typeface from provider`() {
-        val node = createNodeWithViewSpy(JavaOnlyMap())
+        val node = createTestableNode(JavaOnlyMap())
 
         node.build()
 
@@ -85,16 +84,26 @@ class UiButtonNodeTest {
 
     @Test
     fun `should have default text size`() {
-        val node = createNodeWithViewSpy(JavaOnlyMap())
+        val node = createTestableNode(JavaOnlyMap())
+
+        node.build()
 
         val textSize = node.getProperty(UiButtonNode.PROP_TEXT_SIZE)
-
         assertEquals(UiButtonNode.DEFAULT_TEXT_SIZE, textSize)
     }
 
     @Test
+    fun `should have letters spacing`() {
+        val node = createTestableNode(JavaOnlyMap())
+
+        node.build()
+
+        verify(viewSpy).setCharactersSpacing(0.1F)
+    }
+
+    @Test
     fun `should have default roundness`() {
-        val node = createNodeWithViewSpy(JavaOnlyMap())
+        val node = createTestableNode(JavaOnlyMap())
 
         val roundness = node.getProperty(UiButtonNode.PROP_ROUNDNESS)
 
@@ -105,7 +114,7 @@ class UiButtonNodeTest {
     fun `should apply text when text property present`() {
         val text = "ABC"
         val props = reactMapOf(UiButtonNode.PROP_TEXT, text)
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -116,7 +125,7 @@ class UiButtonNodeTest {
     fun `should apply text size when text size property present`() {
         val textSize = 0.05F
         val props = reactMapOf(UiButtonNode.PROP_TEXT_SIZE, textSize)
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
         val textSizeInPixels = Utils.metersToFontPx(textSize, context).toFloat()
 
         node.build()
@@ -128,7 +137,7 @@ class UiButtonNodeTest {
     fun `should apply text color when color property present`() {
         val textColor = reactArrayOf(1.0, 1.0, 1.0, 1.0)
         val props = reactMapOf(UiButtonNode.PROP_TEXT_COLOR, textColor)
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -139,7 +148,7 @@ class UiButtonNodeTest {
     fun `should apply roundness when roundness property present`() {
         val roundness = 0.2
         val props = reactMapOf(UiButtonNode.PROP_ROUNDNESS, roundness)
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -149,7 +158,7 @@ class UiButtonNodeTest {
     @Test
     fun `should set icon when icon property present`() {
         val props = reactMapOf(UiButtonNode.PROP_ICON, "magic-icon")
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -163,7 +172,7 @@ class UiButtonNodeTest {
             UiButtonNode.PROP_ICON, "magic-icon",
             UiButtonNode.PROP_ICON_COLOR, color
         )
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -178,7 +187,7 @@ class UiButtonNodeTest {
             UiButtonNode.PROP_ICON, "magic-icon",
             UiButtonNode.PROP_ICON_SIZE, iconSize
         )
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -189,7 +198,7 @@ class UiButtonNodeTest {
     @Test
     fun `should not change hardcoded alignment`() {
         val props = reactMapOf(TransformNode.PROP_ALIGNMENT, "bottom-right")
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
 
         node.build()
 
@@ -203,7 +212,7 @@ class UiButtonNodeTest {
             TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-1.0, 1.0, 0.0),
             UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
         )
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
         val expectedBounds = Bounding(-2F, 0.5F, 0F, 1.5F)
 
         node.build()
@@ -218,7 +227,7 @@ class UiButtonNodeTest {
             UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0,
             TransformNode.PROP_LOCAL_SCALE, scale
         )
-        val node = createNodeWithViewSpy(props)
+        val node = createTestableNode(props)
         val expectedBounds = Bounding(-0.5F, -0.25F, 0.5F, 0.25F)
 
         node.build()
@@ -226,8 +235,18 @@ class UiButtonNodeTest {
         node.getBounding() shouldEqualInexact expectedBounds
     }
 
-    private fun createNodeWithViewSpy(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock(), fontProvider, iconsRepo) {
+    @Test
+    fun `should animate content node on click`() {
+        val node = createTestableNode(JavaOnlyMap())
+        node.build()
+
+        node.performClick()
+
+        verify(animator).play(eq(node.contentNode), any())
+    }
+
+    private fun createTestableNode(props: ReadableMap): UiButtonNode {
+        return object : UiButtonNode(props, context, mock(), fontProvider, iconsRepo, animator) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

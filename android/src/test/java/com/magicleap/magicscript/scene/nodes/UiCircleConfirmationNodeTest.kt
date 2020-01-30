@@ -22,6 +22,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.createActionDownEvent
+import com.magicleap.magicscript.forceUpdate
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
 import com.nhaarman.mockitokotlin2.mock

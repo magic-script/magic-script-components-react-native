@@ -23,12 +23,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -74,8 +74,13 @@ class LinearToggleViewManagerTest {
 
 
     @Test
-    fun `should use typeface from provider`() {
+    fun `text view should use typeface from provider`() {
         verify(textViewSpy).typeface = providerTypeface
+    }
+
+    @Test
+    fun `text view should have letters spacing`() {
+        verify(textViewSpy).letterSpacing = LinearToggleViewManager.CHARACTERS_SPACING
     }
 
     @Test

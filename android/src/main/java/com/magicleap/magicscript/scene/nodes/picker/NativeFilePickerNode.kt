@@ -29,7 +29,8 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.UiButtonNode
+import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.utils.read
 import java.util.*
 
@@ -38,8 +39,9 @@ class NativeFilePickerNode(
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     fontProvider: FontProvider,
-    iconsRepo: IconsRepository
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo),
+    iconsRepo: IconsRepository,
+    clickAnimator: NodeAnimator
+) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, clickAnimator),
     ActivityResultObserver {
 
     companion object {

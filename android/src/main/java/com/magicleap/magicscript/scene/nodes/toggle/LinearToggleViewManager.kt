@@ -39,8 +39,9 @@ class LinearToggleViewManager(
 
         // spacing from text relative to icon width
         const val DEFAULT_SPACING_RATIO = 1F
-        const val RADIO_SPACING_RATIO = 0.82F
-        const val CHECKBOX_SPACING_RATIO = 0.82F
+        const val RADIO_SPACING_RATIO = 0.9F
+        const val CHECKBOX_SPACING_RATIO = 0.9F
+        const val CHARACTERS_SPACING = 0.1F
     }
 
     private var isActive = false
@@ -53,6 +54,7 @@ class LinearToggleViewManager(
         this.textView = toggleConfig.textView
         this.imageView = toggleConfig.imageView
 
+        toggleConfig.textView.letterSpacing = CHARACTERS_SPACING
         toggleConfig.container.apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,

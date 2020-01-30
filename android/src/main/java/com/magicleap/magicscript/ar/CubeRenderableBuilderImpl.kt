@@ -33,7 +33,7 @@ class CubeRenderableBuilderImpl(private val context: Context) : CubeRenderableBu
         resultCallback: (result: RenderableResult<Renderable>) -> Unit
     ) {
         MaterialFactory
-            .makeOpaqueWithColor(context, color)
+            .makeTransparentWithColor(context, color)
             .thenAccept { material ->
                 val renderable = ShapeFactory.makeCube(cubeSize, cubeCenter, material)
                 renderable.isShadowReceiver = false

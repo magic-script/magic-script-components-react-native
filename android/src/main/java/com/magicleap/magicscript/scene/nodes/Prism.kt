@@ -46,10 +46,10 @@ class Prism(
      */
     private val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    private var volume: Vector3 = Vector3(0.5f, 0.5f, 0.5f)
+    private var volume: Vector3 = Vector3(1.5f, 1.5f, 0.5f)
 
     fun attachRenderable() {
-        val color = Color(1f, 0f, 0f, 0.5f)
+        val color = Color(1f, 0f, 0f, 0.25f)
         cubeRenderableBuilder.buildRenderable(volume, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
                 renderable = it.renderable
@@ -62,7 +62,6 @@ class Prism(
             MotionEvent.ACTION_DOWN -> beingTouched = true
             MotionEvent.ACTION_UP -> beingTouched = false
         }
-        return true
-        //  return super.onTouchEvent(hitTestResult, motionEvent)
+        return super.onTouchEvent(hitTestResult, motionEvent)
     }
 }

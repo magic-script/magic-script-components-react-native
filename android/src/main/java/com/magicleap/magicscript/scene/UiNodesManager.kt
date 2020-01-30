@@ -36,12 +36,15 @@ import kotlin.math.pow
  */
 open class UiNodesManager : NodesManager, LifecycleEventListener {
 
+    var planeDetection = false
+
     private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
     private var prism: Prism? = null
-    var planeDetection = false
+    private val prismContent by lazy { Node() }
+    private var lastCameraPosition: Vector3? = null
 
     companion object {
         val INSTANCE = UiNodesManager()
@@ -54,12 +57,14 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             JavaOnlyMap(),
             CubeRenderableBuilderImpl(scene.view.context),
             fragment.transformationSystem
-        )
-
-        prism?.translationController?.isEnabled = false
-
-        prism?.setParent(rootNode)
-        prism?.attachRenderable()
+        ).apply {
+            // disabling default translationController, because it only allows moving on planes
+            translationController.isEnabled = false
+            scaleController.isEnabled = false
+            setParent(rootNode)
+            addChild(prismContent)
+            attachRenderable()
+        }
 
         rootNode.localPosition = Vector3(0f, 0f, 0f)
         scene.addChild(rootNode)
@@ -70,32 +75,26 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         }
     }
 
-    private var lastCameraPos: Vector3 = Vector3.zero()
-    private var firstTouch = true
-
     @Synchronized
     fun onCameraUpdated(cameraPosition: Vector3) {
+        if (lastCameraPosition == null) {
+            lastCameraPosition = cameraPosition
+            return
+        }
         prism?.apply {
             if (beingTouched) {
-                if (firstTouch) {
-                    lastCameraPos = cameraPosition
-                    firstTouch = false
-                }
-
-                val cameraPrismDiff = Vector3.subtract(localPosition, cameraPosition)
-                val dist =
-                    cameraPrismDiff.x.pow(2) + cameraPrismDiff.y.pow(2) + cameraPrismDiff.z.pow(2)
+                val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+                val camToPrismDistance =
+                    camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
 
                 // Limiting the movement speed since sometimes the [dist] is near
                 // to infinity when moving device (ar core bug?)
-                val speed = min(1 + dist, 2f).pow(2)
+                val speed = min(1 + camToPrismDistance, 2f).pow(2)
 
-                val diff = Vector3.subtract(cameraPosition, lastCameraPos).scaled(speed)
+                val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
                 localPosition = Vector3.add(localPosition, diff)
-                lastCameraPos = cameraPosition
-            } else {
-                firstTouch = true
             }
+            lastCameraPosition = cameraPosition
         }
     }
 
@@ -142,7 +141,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         if (tryAddNodeToAnchor(node)) {
             return
         }
-        rootNode.addChild(node)
+        prismContent.addChild(node)
     }
 
     @Synchronized

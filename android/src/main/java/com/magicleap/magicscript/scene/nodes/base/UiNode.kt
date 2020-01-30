@@ -412,4 +412,11 @@ abstract class UiNode(
             }
         }
     }
+
+    class Test(val uiNode: UiNode) {
+        fun performClick() {
+            uiNode.onViewClick()
+        }
+    }
+
 }

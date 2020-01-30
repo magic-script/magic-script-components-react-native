@@ -22,6 +22,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 
 // As per documentation, UiTabNode is basically a limited button node.
@@ -30,8 +32,16 @@ class UiTabNode(
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     fontProvider: FontProvider,
-    iconsRepository: IconsRepository
-) : UiButtonNode(props, context, viewRenderableLoader, fontProvider, iconsRepository) {
+    iconsRepository: IconsRepository,
+    clickAnimator: NodeAnimator
+) : UiButtonNode(
+    props,
+    context,
+    viewRenderableLoader,
+    fontProvider,
+    iconsRepository,
+    clickAnimator
+) {
 
     override fun setupView() {
         super.setupView()

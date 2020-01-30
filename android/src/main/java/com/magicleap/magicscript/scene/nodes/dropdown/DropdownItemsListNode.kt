@@ -26,6 +26,7 @@ class DropdownItemsListNode(
     }
 
     var onSelectionChangedListener: ((selectedItems: List<UiDropdownListItemNode>) -> Unit)? = null
+    var onListVisibilityChanged: ((visible: Boolean) -> Unit)? = null
 
     var maxHeight = WRAP_CONTENT_DIMENSION
         set(value) {
@@ -97,6 +98,11 @@ class DropdownItemsListNode(
             items.add(child)
             setNeedsRebuild(force = true)
         }
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
+        onListVisibilityChanged?.invoke(visibility)
     }
 
     // Calculates list view size based on list items size

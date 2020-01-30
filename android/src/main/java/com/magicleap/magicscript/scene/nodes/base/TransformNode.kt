@@ -285,17 +285,6 @@ abstract class TransformNode(
             }
     }
 
-    /**
-     * Forces node update. For tests purposes.
-     *
-     * @param deltaSeconds seconds elapsed since last update
-     * You can pass any value to simulate time elapsed since the last frame
-     * and test behavior of ARCore's [Node.onUpdate] dependent code.
-     */
-    fun forceUpdate(deltaSeconds: Float) {
-        onUpdate(deltaSeconds)
-    }
-
     // Using custom onUpdate function in order to make it testable.
     final override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
@@ -444,4 +433,18 @@ abstract class TransformNode(
             }
         }
     }
+
+    class Test(val node: TransformNode) {
+        /**
+         * Forces node update. For tests purposes.
+         *
+         * @param deltaSeconds seconds elapsed since last update
+         * You can pass any value to simulate time elapsed since the last frame
+         * and test behavior of ARCore's [Node.onUpdate] dependent code.
+         */
+        fun forceUpdate(deltaSeconds: Float) {
+            node.onUpdate(deltaSeconds)
+        }
+    }
+
 }

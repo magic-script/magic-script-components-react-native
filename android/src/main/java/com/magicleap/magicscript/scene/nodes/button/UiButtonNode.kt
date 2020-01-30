@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.button
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.*
@@ -34,7 +33,8 @@ open class UiButtonNode(
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     private val fontProvider: FontProvider,
-    private val iconsRepo: IconsRepository
+    private val iconsRepo: IconsRepository,
+    private val clickAnimator: NodeAnimator?
 ) : UiNode(initProps, context, viewRenderableLoader) {
 
     companion object {
@@ -57,11 +57,16 @@ open class UiButtonNode(
         const val PADDING_FACTOR_VERTICAL = 1.15F
     }
 
+    protected open val charactersSpacing = 0.1F
+
     private var playingAnim = false
 
     init {
         // set default values of properties
-        properties.putDefault(PROP_ROUNDNESS, DEFAULT_ROUNDNESS)
+        properties.putDefault(
+            PROP_ROUNDNESS,
+            DEFAULT_ROUNDNESS
+        )
 
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             // calculate text size based on button height
@@ -70,7 +75,10 @@ open class UiButtonNode(
                 val textSize = height / 3
                 properties.putDouble(PROP_TEXT_SIZE, textSize)
             } else {
-                properties.putDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
+                properties.putDouble(
+                    PROP_TEXT_SIZE,
+                    DEFAULT_TEXT_SIZE
+                )
             }
         }
 
@@ -89,15 +97,22 @@ open class UiButtonNode(
     override fun setupView() {
         super.setupView()
 
-        val font = fontProvider.provideFont()
-        (view as CustomButton).setTypeface(font)
+        (view as CustomButton).apply {
+            val font = fontProvider.provideFont()
+            setTypeface(font)
 
-        val textSize = properties.getDouble(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE).toFloat()
-        // padding is added when button width or height is "wrap content"
-        val textHeightPx = Utils.metersToFontPx(textSize, context)
-        val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
-        val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
-        (view as CustomButton).setTextPadding(textPaddingHorizontal, textPaddingVertical)
+            val textSize = properties.getDouble(
+                PROP_TEXT_SIZE,
+                DEFAULT_TEXT_SIZE
+            ).toFloat()
+            // padding is added when button width or height is "wrap content"
+            val textHeightPx = Utils.metersToFontPx(textSize, context)
+            val textPaddingHorizontal = (PADDING_FACTOR_HORIZONTAL * textHeightPx).toInt()
+            val textPaddingVertical = (PADDING_FACTOR_VERTICAL * textHeightPx).toInt()
+            setTextPadding(textPaddingHorizontal, textPaddingVertical)
+
+            setCharactersSpacing(charactersSpacing)
+        }
     }
 
     override fun onViewClick() {
@@ -108,7 +123,10 @@ open class UiButtonNode(
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(
+                PROP_HEIGHT
+            )
+        ) {
             setNeedsRebuild()
         }
         setText(props)
@@ -125,16 +143,13 @@ open class UiButtonNode(
     }
 
     private fun animate() {
-        if (playingAnim) {
+        if (clickAnimator == null || playingAnim) {
             return
         }
         playingAnim = true
-        val originalPos = localPosition
-        localPosition = Vector3(originalPos.x, originalPos.y, originalPos.z - 0.05f)
-        Handler().postDelayed({
-            localPosition = originalPos
+        clickAnimator.play(contentNode, onCompletedListener = {
             playingAnim = false
-        }, 150)
+        })
     }
 
     private fun canResizeOnContentChange(): Boolean {
@@ -206,5 +221,6 @@ open class UiButtonNode(
             (view as CustomButton).iconSize = Vector2(widthPx, heightPx)
         }
     }
+
 
 }

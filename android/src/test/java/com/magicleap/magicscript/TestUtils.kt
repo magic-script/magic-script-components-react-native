@@ -16,11 +16,14 @@
 
 package com.magicleap.magicscript
 
+import android.os.Bundle
 import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -81,6 +84,10 @@ class NodeBuilder {
     }
 }
 
+fun JavaOnlyMap.toBundle(): Bundle {
+    return Arguments.toBundle(this) ?: Bundle()
+}
+
 fun View.createActionDownEvent(): MotionEvent {
     val coordinates = IntArray(2)
     getLocationOnScreen(coordinates)
@@ -107,6 +114,14 @@ fun matchesInexact(bounds: Bounding) = argThat(
         Bounding.equalInexact(argument, bounds)
     }
 )
+
+fun TransformNode.forceUpdate(deltaSeconds: Float) {
+    TransformNode.Test(this).forceUpdate(deltaSeconds)
+}
+
+fun UiNode.performClick() {
+    UiNode.Test(this).performClick()
+}
 
 // endregion
 

@@ -80,9 +80,16 @@ class CustomButton @JvmOverloads constructor(
             requestLayout()
         }
 
+    // relative to button height
+    var defaultIconHeightFactor: Float = 0.65F
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
-    private val defaultIconHeightFactor = 0.65F // relative to button height
     private val iconSpacingFactor = 0.3F // spacing offset from text (relative to icon width)
 
     private val textPaint: Paint = Paint(ANTI_ALIAS_FLAG).apply {
@@ -129,10 +136,10 @@ class CustomButton @JvmOverloads constructor(
         // set default icon size
         iconBitmap?.let { icon ->
             if (usingDefaultIconSize) {
-                val referenceHeight = if (widthMode == MeasureSpec.EXACTLY) {
+                val referenceHeight = if (heightMode == MeasureSpec.EXACTLY) {
                     heightSize.toFloat()
                 } else {
-                    textHeight
+                    textHeight + 2F * textPaddingVertical
                 }
                 val iconHeight = defaultIconHeightFactor * referenceHeight
                 val iconWidth = icon.width / icon.height * iconHeight
@@ -165,7 +172,6 @@ class CustomButton @JvmOverloads constructor(
         } else { // WRAP_CONTENT
             defaultHeight.toInt()
         }
-
         setMeasuredDimension(width, height)
     }
 
@@ -216,6 +222,15 @@ class CustomButton @JvmOverloads constructor(
 
     fun setTypeface(typeface: Typeface) {
         textPaint.typeface = typeface
+    }
+
+    /**
+     * Sets characters spacing in 'EM' units
+     */
+    fun setCharactersSpacing(spacing: Float) {
+        textPaint.letterSpacing = spacing
+        invalidate()
+        requestLayout() // need to measure the view
     }
 
     /**

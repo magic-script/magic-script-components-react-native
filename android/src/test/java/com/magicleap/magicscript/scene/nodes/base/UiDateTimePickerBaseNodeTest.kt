@@ -17,16 +17,15 @@ package com.magicleap.magicscript.scene.nodes.base
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.os.Bundle
 import android.view.View
 import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.nhaarman.mockitokotlin2.*
-import com.magicleap.magicscript.createProperty
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import org.amshove.kluent.shouldEqual
 import org.junit.After
@@ -37,11 +36,12 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class UiDateTimePickerBaseNodeTest {
-    val datePicker: DatePicker = mock()
-    val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS).also {
-        whenever(it.datePicker).thenReturn(datePicker)
-    }
-    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
+    private val datePicker: DatePicker = mock()
+    private val datePickerDialog =
+        mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS).also {
+            whenever(it.datePicker).thenReturn(datePicker)
+        }
+    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
     }
     var tested: TestableUiDateTimePickerBaseNode =
@@ -60,15 +60,15 @@ class UiDateTimePickerBaseNodeTest {
     @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.updateProperties(createProperty(UiDateTimePickerBaseNode.PROP_LABEL, label))
+        tested.update(reactMapOf(UiDateTimePickerBaseNode.PROP_LABEL, label))
 
         verify(tested.titleText).text = label
     }
 
     @Test
     fun `should set vertical orientation when label side is top`() {
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
                 UiDateTimePickerBaseNode.LABEL_SIDE_TOP
             )
@@ -79,8 +79,8 @@ class UiDateTimePickerBaseNodeTest {
 
     @Test
     fun `should set horizontal orientation when label side is left`() {
-        tested.updateProperties(
-            createProperty(
+        tested.update(
+            reactMapOf(
                 UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
                 UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
             )
@@ -102,10 +102,6 @@ class UiDateTimePickerBaseNodeTest {
         val mainView = mock<LinearLayout>().also {
             this.view = it
             whenever(it.title).doReturn(titleText)
-        }
-
-        fun updateProperties(props: Bundle) {
-            applyProperties(props)
         }
 
         override fun provideView(context: Context): View {

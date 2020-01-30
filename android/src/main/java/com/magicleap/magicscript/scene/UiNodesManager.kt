@@ -38,6 +38,12 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     var planeDetection = false
 
+    var showPrisms = false
+        set(value) {
+            field = value
+            prism?.visible = value
+        }
+
     private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false

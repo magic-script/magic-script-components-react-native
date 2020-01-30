@@ -23,6 +23,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
@@ -40,6 +41,16 @@ class Prism(
 
     var beingTouched = false
 
+    var visible: Boolean = false
+        set(value) {
+            field = value
+            renderable = if (value) {
+                renderableCopy
+            } else {
+                null
+            }
+        }
+
     /**
      * All node's properties (packed to Bundle to avoid "already consumed"
      * exceptions when reading from [ReadableMap])
@@ -48,14 +59,20 @@ class Prism(
 
     private var volume: Vector3 = Vector3(1.5f, 1.5f, 0.5f)
 
+    private var renderableCopy: Renderable? = null
+
     fun attachRenderable() {
         val color = Color(1f, 0f, 0f, 0.25f)
         cubeRenderableBuilder.buildRenderable(volume, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
-                renderable = it.renderable
+                renderableCopy = it.renderable
+                if (visible) {
+                    renderable = it.renderable
+                }
             }
         })
     }
+
 
     override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
         when (motionEvent.actionMasked) {

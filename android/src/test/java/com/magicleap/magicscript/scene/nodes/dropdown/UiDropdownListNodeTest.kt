@@ -206,9 +206,4 @@ class UiDropdownListNodeTest {
         item.build()
         return item
     }
-
-<<<<<<< HEAD
-=======
-
->>>>>>> Improve/Dropdown adjustments (#392)
 }

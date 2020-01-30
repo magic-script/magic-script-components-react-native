@@ -104,7 +104,7 @@ class DropdownItemsListNode(
         super.onVisibilityChanged(visibility)
         onListVisibilityChanged?.invoke(visibility)
     }
-    
+
     // Calculates list view size based on list items size
     private fun calculateItemsSize(): Vector2 {
         var width = 0f

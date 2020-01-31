@@ -25,8 +25,8 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
-import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.utils.logMessage
 import kotlin.math.min
 import kotlin.math.pow
@@ -40,22 +40,21 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         set(value) {
             field = value
             if (!value) {
-                rootNode.anchor = null
+                prism.anchor = null
             }
         }
 
     var showPrisms = false
         set(value) {
             field = value
-            prism?.visible = value
+            prism.visible = value
         }
 
-    private val rootNode by lazy { AnchorNode() }
+    // private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
-    private var prism: Prism? = null
-    private val prismContent by lazy { Node() }
+    private val prism by lazy { Prism(JavaOnlyMap()) }
     private var lastCameraPosition: Vector3? = null
 
     companion object {
@@ -65,21 +64,13 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     @Synchronized
     fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
-        prism = Prism(
-            JavaOnlyMap(),
-            CubeRenderableBuilderImpl(scene.view.context),
-            fragment.transformationSystem
-        ).apply {
-            // disabling default translationController, because it only allows moving on planes
-            translationController.isEnabled = false
-            scaleController.isEnabled = false
-            setParent(rootNode)
-            addChild(prismContent)
-            attachRenderable()
+
+        prism.apply {
+            val cubeBuilder = CubeRenderableBuilderImpl(fragment.arSceneView.context)
+            build(fragment.transformationSystem, cubeBuilder)
         }
 
-        rootNode.localPosition = Vector3(0f, 0f, 0f)
-        scene.addChild(rootNode)
+        scene.addChild(prism)
         nodesById.forEach { (_, node) ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
@@ -93,9 +84,9 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             lastCameraPosition = cameraPosition
             return
         }
-        prism?.apply {
+        prism.apply {
             if (beingTouched) {
-                val camToPrismDiff = Vector3.subtract(rootNode.localPosition, cameraPosition)
+                val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
                 val camToPrismDistance =
                     camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
 
@@ -104,7 +95,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
                 val speed = min(1 + camToPrismDistance, 2f).pow(2)
 
                 val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
-                rootNode.localPosition = Vector3.add(rootNode.localPosition, diff)
+                localPosition = Vector3.add(localPosition, diff)
             }
             lastCameraPosition = cameraPosition
         }
@@ -114,14 +105,14 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     override fun registerScene(scene: Scene) {
         this.scene = scene
         if (arReady) {
-            scene.addChild(rootNode)
+            scene.addChild(prism)
         }
     }
 
     @Synchronized
     override fun onTapArPlane(anchor: Anchor) {
         if (planeDetection) {
-            rootNode.anchor = anchor
+            prism.anchor = anchor
         }
     }
 
@@ -152,7 +143,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         if (tryAddNodeToAnchor(node)) {
             return
         }
-        prismContent.addChild(node)
+        prism.addContent(node)
     }
 
     @Synchronized

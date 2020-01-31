@@ -37,6 +37,12 @@ import kotlin.math.pow
 open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     var planeDetection = false
+        set(value) {
+            field = value
+            if (!value) {
+                rootNode.anchor = null
+            }
+        }
 
     var showPrisms = false
         set(value) {
@@ -89,7 +95,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         }
         prism?.apply {
             if (beingTouched) {
-                val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+                val camToPrismDiff = Vector3.subtract(rootNode.localPosition, cameraPosition)
                 val camToPrismDistance =
                     camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
 
@@ -98,7 +104,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
                 val speed = min(1 + camToPrismDistance, 2f).pow(2)
 
                 val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
-                localPosition = Vector3.add(localPosition, diff)
+                rootNode.localPosition = Vector3.add(rootNode.localPosition, diff)
             }
             lastCameraPosition = cameraPosition
         }
@@ -115,7 +121,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     @Synchronized
     override fun onTapArPlane(anchor: Anchor) {
         if (planeDetection) {
-            planeDetection = false
             rootNode.anchor = anchor
         }
     }

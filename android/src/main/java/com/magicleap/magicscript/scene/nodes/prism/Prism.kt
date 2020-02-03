@@ -61,7 +61,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
             if (value) {
                 anchor = null // removing the anchor, so we can change local position
             } else {
-                tryAnchorAtPosition(localPosition)
+                tryToAnchorAtPosition(localPosition)
             }
         }
 
@@ -73,6 +73,8 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
             } else {
                 null
             }
+
+            container?.rotationController?.isEnabled = value
         }
 
     /**
@@ -131,7 +133,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
         }
 
         requestedAnchorPosition?.let {
-            tryAnchorAtPosition(it)
+            tryToAnchorAtPosition(it)
         }
 
         if (lastCameraPosition == null) {
@@ -173,17 +175,17 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
 
     private fun setSize(props: Bundle) {
         props.read<Vector3>(PROP_SIZE)?.let { size ->
-
+            this.volume = size
         }
     }
 
     private fun setPosition(props: Bundle) {
         props.read<Vector3>(PROP_POSITION)?.let { position ->
-            tryAnchorAtPosition(position)
+            tryToAnchorAtPosition(position)
         }
     }
 
-    private fun tryAnchorAtPosition(position: Vector3) {
+    private fun tryToAnchorAtPosition(position: Vector3) {
         requestedAnchorPosition = position
 
         if (lastCameraState != TrackingState.TRACKING) {

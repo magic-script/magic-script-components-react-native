@@ -68,6 +68,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener, CameraObserver
         if (session != null) {
             val cubeBuilder = CubeRenderableBuilderImpl(fragment.arSceneView.context)
             prism.build(fragment.transformationSystem, session, cubeBuilder)
+            fragment.addCameraObserver(prism)
         } else {
             logMessage("Cannot build the prism - session not initialized", true)
         }

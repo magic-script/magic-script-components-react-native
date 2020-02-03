@@ -20,6 +20,10 @@ import android.os.Bundle
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.core.Anchor
+import com.google.ar.core.Pose
+import com.google.ar.core.Session
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
 import com.google.ar.sceneform.math.Vector3
@@ -32,18 +36,34 @@ import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
+import kotlin.math.min
+import kotlin.math.pow
 
-class Prism(initProps: ReadableMap) : AnchorNode() {
+class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
 
     companion object {
         const val PROP_SIZE = "size"
         const val PROP_POSITION = "position"
     }
 
-    private var container: CustomTransformableNode? = null
+    private var container: RotatableNode? = null
+    private var session: Session? = null
     private var content: TransformNode? = null
+    private var lastCameraPosition: Vector3? = null
+    private var lastCameraState: TrackingState? = null
+
+    private var requestedAnchorPosition: Vector3? = null
+    private var lastCreatedAnchor: Anchor? = null
 
     var beingTouched: Boolean = false
+        private set(value) {
+            field = value
+            if (value) {
+                anchor = null // removing the anchor, so we can change local position
+            } else {
+                tryAnchorAtPosition(localPosition)
+            }
+        }
 
     var visible: Boolean = false
         set(value) {
@@ -70,22 +90,23 @@ class Prism(initProps: ReadableMap) : AnchorNode() {
         setPosition(properties)
     }
 
-    fun build(transformationSystem: TransformationSystem, cubeBuilder: CubeRenderableBuilder) {
+    fun build(
+        transformationSystem: TransformationSystem,
+        session: Session,
+        cubeBuilder: CubeRenderableBuilder
+    ) {
+        this.session = session
+
         if (container != null) {
             return
         }
 
-        container = CustomTransformableNode(transformationSystem).also {
+        container = RotatableNode(transformationSystem).also {
             it.setParent(this)
             if (content != null) {
                 it.addChild(content)
             }
-        }.apply {
-            // disabling default translationController, because it only allows moving on planes
-            translationController.isEnabled = false
-            scaleController.isEnabled = false
         }
-
         attachRenderable(cubeBuilder)
     }
 
@@ -100,6 +121,42 @@ class Prism(initProps: ReadableMap) : AnchorNode() {
             it.setParent(this)
             it.addChild(node)
         }
+    }
+
+    override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
+        lastCameraState = state
+
+        if (state != TrackingState.TRACKING) {
+            return
+        }
+
+        requestedAnchorPosition?.let {
+            tryAnchorAtPosition(it)
+        }
+
+        if (lastCameraPosition == null) {
+            lastCameraPosition = cameraPosition
+            return
+        }
+
+        if (beingTouched) {
+            val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+            val camToPrismDistance =
+                camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
+
+            // Limiting the movement speed since sometimes the [dist] is near
+            // to infinity when moving device (ar core bug?)
+            val speed = min(1 + camToPrismDistance, 2f).pow(2)
+
+            val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
+            localPosition = Vector3.add(localPosition, diff)
+        }
+        lastCameraPosition = cameraPosition
+    }
+
+    override fun setAnchor(anchor: Anchor?) {
+        super.setAnchor(anchor)
+        requestedAnchorPosition = null
     }
 
     private fun attachRenderable(cubeBuilder: CubeRenderableBuilder) {
@@ -121,13 +178,40 @@ class Prism(initProps: ReadableMap) : AnchorNode() {
     }
 
     private fun setPosition(props: Bundle) {
-        props.read<Vector3>(PROP_POSITION)?.let { size ->
-
+        props.read<Vector3>(PROP_POSITION)?.let { position ->
+            tryAnchorAtPosition(position)
         }
     }
 
-    inner class CustomTransformableNode(transformationSystem: TransformationSystem) :
+    private fun tryAnchorAtPosition(position: Vector3) {
+        requestedAnchorPosition = position
+
+        if (lastCameraState != TrackingState.TRACKING) {
+            return
+        }
+
+        session?.let {
+            lastCreatedAnchor?.detach()
+
+            val positionArray = floatArrayOf(position.x, position.y, position.z)
+            val rotationArray =
+                floatArrayOf(localRotation.x, localRotation.y, localRotation.z, localRotation.w)
+
+            val pose = Pose(positionArray, rotationArray)
+            anchor = it.createAnchor(pose)
+            lastCreatedAnchor = anchor
+            requestedAnchorPosition = null
+        }
+    }
+
+    inner class RotatableNode(transformationSystem: TransformationSystem) :
         TransformableNode(transformationSystem) {
+
+        init {
+            // disabling default translationController, because it only allows moving on planes
+            translationController.isEnabled = false
+            scaleController.isEnabled = false
+        }
 
         override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
             // action up is for some reason not returned for AnchorNode, so we attach renderable and

@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene
 
 import android.os.Bundle
 import android.view.View
+import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 
@@ -25,26 +26,33 @@ import com.google.ar.sceneform.ux.ArFragment
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
+    private var lastTapAnchor: Anchor? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arSceneView.scene.addOnUpdateListener {
-            if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
-                // We can add AR objects after session is ready and camera is in tracking mode
-                UiNodesManager.INSTANCE.onArFragmentReady(this)
-                onReadyCalled = true
-            }
 
-            val cameraPosition = arSceneView.scene.camera.localPosition
-            UiNodesManager.INSTANCE.onCameraUpdated(cameraPosition)
+        arSceneView.scene.addOnUpdateListener {
+            arSceneView.arFrame?.camera?.let { camera ->
+                if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
+                    // We can add AR objects after session is ready and camera is in tracking mode
+                    UiNodesManager.INSTANCE.onArFragmentReady(this)
+                    onReadyCalled = true
+                }
+
+                val cameraPosition = arSceneView.scene.camera.localPosition
+                UiNodesManager.INSTANCE.onCameraUpdated(cameraPosition, camera.trackingState)
+            }
         }
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            lastTapAnchor?.detach()
             val anchor = hitResult.createAnchor()
             UiNodesManager.INSTANCE.onTapArPlane(anchor)
+            lastTapAnchor = anchor
         }
 
         // Hide the instructions
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
     }
+
 }

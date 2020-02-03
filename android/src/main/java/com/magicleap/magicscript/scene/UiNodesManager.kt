@@ -20,21 +20,21 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.prism.CameraObserver
 import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.utils.logMessage
-import kotlin.math.min
-import kotlin.math.pow
 
 /**
  * It manages nodes registration and attaching them to scene
  */
-open class UiNodesManager : NodesManager, LifecycleEventListener {
+open class UiNodesManager : NodesManager, LifecycleEventListener, CameraObserver {
 
     var planeDetection = false
         set(value) {
@@ -55,7 +55,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     private var arReady = false
     private lateinit var scene: Scene
     private val prism by lazy { Prism(JavaOnlyMap()) }
-    private var lastCameraPosition: Vector3? = null
 
     companion object {
         val INSTANCE = UiNodesManager()
@@ -65,9 +64,12 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
 
-        prism.apply {
+        val session = fragment.arSceneView.session
+        if (session != null) {
             val cubeBuilder = CubeRenderableBuilderImpl(fragment.arSceneView.context)
-            build(fragment.transformationSystem, cubeBuilder)
+            prism.build(fragment.transformationSystem, session, cubeBuilder)
+        } else {
+            logMessage("Cannot build the prism - session not initialized", true)
         }
 
         scene.addChild(prism)
@@ -79,26 +81,8 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     @Synchronized
-    fun onCameraUpdated(cameraPosition: Vector3) {
-        if (lastCameraPosition == null) {
-            lastCameraPosition = cameraPosition
-            return
-        }
-        prism.apply {
-            if (beingTouched) {
-                val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
-                val camToPrismDistance =
-                    camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
-
-                // Limiting the movement speed since sometimes the [dist] is near
-                // to infinity when moving device (ar core bug?)
-                val speed = min(1 + camToPrismDistance, 2f).pow(2)
-
-                val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
-                localPosition = Vector3.add(localPosition, diff)
-            }
-            lastCameraPosition = cameraPosition
-        }
+    override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
+        prism.onCameraUpdated(cameraPosition, state)
     }
 
     @Synchronized

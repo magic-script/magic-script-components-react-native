@@ -236,5 +236,6 @@ export class PlatformFactory extends NativeFactory {
     }
 
     createApp(appComponent) {
+        this.componentManager.createApp(appComponent.props)
     }
 }

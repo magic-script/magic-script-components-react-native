@@ -26,6 +26,7 @@ import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import java.io.Serializable
 import java.util.*
 
@@ -76,6 +77,15 @@ operator fun Vector3.div(other: Float): Vector3 {
 
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
+}
+
+fun Bounding.scaled(horizontalScale: Float, verticalScale: Float): Bounding {
+    return Bounding(
+        left = left * horizontalScale,
+        bottom = bottom * verticalScale,
+        right = right * horizontalScale,
+        top = top * verticalScale
+    )
 }
 
 fun <T> Bundle.putDefault(key: String, value: T) {

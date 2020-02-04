@@ -4,6 +4,7 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.scaled
 
 object LayoutUtils {
 
@@ -59,11 +60,7 @@ object LayoutUtils {
             }
         }
 
-    fun getColumnIndex(
-        childIdx: Int,
-        columns: Int,
-        rows: Int
-    ): Int {
+    fun getColumnIndex(childIdx: Int, columns: Int, rows: Int): Int {
         return if (rows != 0) {
             childIdx / rows
         } else {
@@ -71,11 +68,7 @@ object LayoutUtils {
         }
     }
 
-    fun getRowIndex(
-        childIdx: Int,
-        columns: Int,
-        rows: Int
-    ): Int {
+    fun getRowIndex(childIdx: Int, columns: Int, rows: Int): Int {
         return if (rows != 0) {
             childIdx % rows
         } else {
@@ -88,12 +81,11 @@ object LayoutUtils {
         if (scale.x <= 0 || scale.y <= 0) {
             return
         }
-        clipBounds.left = clipBounds.left / scale.x
-        clipBounds.right = clipBounds.right / scale.x
-        clipBounds.top = clipBounds.top / scale.y
-        clipBounds.bottom = clipBounds.bottom / scale.y
 
-        val localBounds = clipBounds.translate(-parent.getContentPosition())
+        val horizontalScale = 1 / scale.x
+        val verticalScale = 1 / scale.y
+        val scaledBounds = clipBounds.scaled(horizontalScale, verticalScale)
+        val localBounds = scaledBounds.translate(-parent.getContentPosition())
         parent.contentNode.children
             .filterIsInstance<TransformNode>()
             .forEach { it.setClipBounds(localBounds) }

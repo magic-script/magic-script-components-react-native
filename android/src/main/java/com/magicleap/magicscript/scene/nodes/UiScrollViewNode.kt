@@ -78,6 +78,7 @@ open class UiScrollViewNode(
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
+    private var clipBoundsSetByParent: Bounding? = null
 
     init {
         properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
@@ -197,6 +198,12 @@ open class UiScrollViewNode(
         )
     }
 
+    override fun setClipBounds(clipBounds: Bounding) {
+        super.setClipBounds(clipBounds)
+
+        this.clipBoundsSetByParent = clipBounds
+    }
+
     override fun setAlignment(props: Bundle) {
         // Alignment cannot be changed for scroll view according to Lumin.
         // It is hardcoded to center-center
@@ -274,9 +281,6 @@ open class UiScrollViewNode(
 
             requestedContentPosition = alignTopLeft + travel
 
-            val clipBounds = viewBounds.translate(-getContentPosition())
-            content.setClipBounds(clipBounds)
-
             // Moving content up in z-plane, so it'll receive touch events first.
             content.localPosition = Vector3(
                 requestedContentPosition.x,
@@ -284,6 +288,31 @@ open class UiScrollViewNode(
                 Z_ORDER_OFFSET
             )
 
+            applyContentClipping()
+        }
+    }
+
+    private fun applyContentClipping() {
+        content?.let { content ->
+            val contentPosition = getContentPosition()
+            val contentClipping = getScrollBounds().translate(-contentPosition)
+            val clipTranslation = -Vector2(
+                localPosition.x + contentPosition.x,
+                localPosition.y + contentPosition.y
+            )
+            val parentClipping = clipBoundsSetByParent?.translate(clipTranslation)
+
+            val clipBounds = if (parentClipping == null) {
+                contentClipping
+            } else {
+                val scale = localScale
+                val horizScale = if (scale.x > 0) 1 / scale.x else 0f
+                val vertScale = if (scale.y > 0) 1 / scale.y else 0f
+                val parentClippingScaled = parentClipping.scaled(horizScale, vertScale)
+                getMinBounds(contentClipping, parentClippingScaled)
+            }
+
+            content.setClipBounds(clipBounds)
         }
     }
 
@@ -307,6 +336,15 @@ open class UiScrollViewNode(
         if (value != null) {
             (view as CustomScrollView).scrollDirection = value
         }
+    }
+
+    private fun getMinBounds(boundsA: Bounding, boundsB: Bounding): Bounding {
+        return Bounding(
+            left = max(boundsA.left, boundsB.left),
+            bottom = max(boundsA.bottom, boundsB.bottom),
+            right = min(boundsA.right, boundsB.right),
+            top = min(boundsA.top, boundsB.top)
+        )
     }
 
 }

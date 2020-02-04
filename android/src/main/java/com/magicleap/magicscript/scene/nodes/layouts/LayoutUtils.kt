@@ -1,6 +1,8 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 
 object LayoutUtils {
@@ -80,4 +82,21 @@ object LayoutUtils {
             childIdx / columns
         }
     }
+
+    fun clipChildren(parent: TransformNode, clipBounds: Bounding) {
+        val scale = parent.localScale
+        if (scale.x <= 0 || scale.y <= 0) {
+            return
+        }
+        clipBounds.left = clipBounds.left / scale.x
+        clipBounds.right = clipBounds.right / scale.x
+        clipBounds.top = clipBounds.top / scale.y
+        clipBounds.bottom = clipBounds.bottom / scale.y
+
+        val localBounds = clipBounds.translate(-parent.getContentPosition())
+        parent.contentNode.children
+            .filterIsInstance<TransformNode>()
+            .forEach { it.setClipBounds(localBounds) }
+    }
+
 }

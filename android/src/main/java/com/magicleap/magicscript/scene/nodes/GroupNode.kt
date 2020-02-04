@@ -18,8 +18,10 @@ package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.logMessage
 
 /**
  * Container for other Nodes (<view>)
@@ -33,10 +35,7 @@ open class GroupNode(initProps: ReadableMap) :
     TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
     override fun setClipBounds(clipBounds: Bounding) {
-        val localBounds = clipBounds.translate(-getContentPosition())
-        contentNode.children
-            .filterIsInstance<TransformNode>()
-            .forEach { it.setClipBounds(localBounds) }
+        LayoutUtils.clipChildren(this, clipBounds)
     }
 
     override fun getContentBounding(): Bounding {

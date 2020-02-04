@@ -20,21 +20,18 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
-import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.prism.CameraObserver
 import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.utils.logMessage
 
 /**
  * It manages nodes registration and attaching them to scene
  */
-open class UiNodesManager : NodesManager, LifecycleEventListener, CameraObserver {
+open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     var planeDetection = false
         set(value) {
@@ -79,11 +76,6 @@ open class UiNodesManager : NodesManager, LifecycleEventListener, CameraObserver
                 node.attachRenderable()
             }
         }
-    }
-
-    @Synchronized
-    override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
-        prism.onCameraUpdated(cameraPosition, state)
     }
 
     @Synchronized

@@ -34,6 +34,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
 import kotlin.math.min
@@ -83,7 +84,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
      */
     private val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    private var volume: Vector3 = Vector3(1.5f, 1.5f, 0.5f)
+    private var volume: Vector3 = Vector3(0.6f, 0.6f, 0.1f)
 
     private var renderableCopy: Renderable? = null
 
@@ -110,6 +111,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
             }
         }
         attachRenderable(cubeBuilder)
+        applyClipBounds()
     }
 
     fun addContent(node: TransformNode) {
@@ -117,12 +119,12 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
             logMessage("Content already added", true)
             return
         }
-
         content = node
         container?.let {
             it.setParent(this)
             it.addChild(node)
         }
+        applyClipBounds()
     }
 
     override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
@@ -176,6 +178,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
     private fun setSize(props: Bundle) {
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             this.volume = size
+            applyClipBounds()
         }
     }
 
@@ -206,6 +209,19 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
         }
     }
 
+    private fun applyClipBounds() {
+        container?.let {
+            val clipBounds2d = Bounding(
+                left = -volume.x / 2,
+                bottom = -volume.y / 2,
+                right = volume.x / 2,
+                top = volume.y / 2
+            )
+            content?.setClipBounds(clipBounds2d)
+            logMessage("prism clip=$clipBounds2d")
+        }
+    }
+
     inner class RotatableNode(transformationSystem: TransformationSystem) :
         TransformableNode(transformationSystem) {
 
@@ -215,7 +231,10 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
             scaleController.isEnabled = false
         }
 
-        override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
+        override fun onTouchEvent(
+            hitTestResult: HitTestResult,
+            motionEvent: MotionEvent
+        ): Boolean {
             // action up is for some reason not returned for AnchorNode, so we attach renderable and
             // process click events of the container node
             when (motionEvent.actionMasked) {

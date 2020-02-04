@@ -11,6 +11,7 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
@@ -72,12 +73,7 @@ open class UiListViewItemNode(
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
-        super.setClipBounds(clipBounds)
-        // clip child item
-        val localBounds = clipBounds.translate(-getContentPosition())
-        contentNode.children
-            .filterIsInstance<TransformNode>()
-            .forEach { it.setClipBounds(localBounds) }
+        LayoutUtils.clipChildren(this, clipBounds)
     }
 
     override fun onUpdate(deltaSeconds: Float) {

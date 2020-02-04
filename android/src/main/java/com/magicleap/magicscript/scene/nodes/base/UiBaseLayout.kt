@@ -21,6 +21,7 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -115,10 +116,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
-        val localBounds = clipBounds.translate(-getContentPosition())
-        contentNode.children
-            .filterIsInstance<TransformNode>()
-            .forEach { it.setClipBounds(localBounds) }
+        LayoutUtils.clipChildren(this, clipBounds)
     }
 
     abstract fun getLayoutParams(): T

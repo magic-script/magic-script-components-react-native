@@ -88,7 +88,7 @@ object LayoutUtils {
         val localBounds = scaledBounds.translate(-parent.getContentPosition())
         parent.contentNode.children
             .filterIsInstance<TransformNode>()
-            .forEach { it.setClipBounds(localBounds) }
+            .forEach { it.clipBounds = localBounds }
     }
 
 }

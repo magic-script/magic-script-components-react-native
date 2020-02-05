@@ -217,7 +217,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
                 right = volume.x / 2,
                 top = volume.y / 2
             )
-            content?.setClipBounds(clipBounds2d)
+            content?.clipBounds = clipBounds2d
         }
     }
 

@@ -38,6 +38,13 @@ open class UiListViewItemNode(
             setNeedsRebuild(true)
         }
 
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            value?.let { LayoutUtils.clipChildren(this, it) }
+        }
+
     private var lastContentBounds = Bounding()
 
     init {
@@ -67,13 +74,15 @@ open class UiListViewItemNode(
 
     override fun addContent(child: TransformNode) {
         super.addContent(child)
+        clipBounds?.let { LayoutUtils.clipChildren(this, it) }
         if (contentNode.children.size > 1) {
             logMessage("Only one node can be added as list item child", true)
         }
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        LayoutUtils.clipChildren(this, clipBounds)
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        clipBounds?.let { LayoutUtils.clipChildren(this, it) }
     }
 
     override fun onUpdate(deltaSeconds: Float) {

@@ -54,13 +54,19 @@ abstract class UiBaseLayout<T : LayoutParams>(
     val height: Float
         get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
 
+
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            value?.let { LayoutUtils.clipChildren(this, it) }
+        }
+
     // we should re-draw the grid after adding / removing a child
     private var redrawRequested = false
 
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
-
-    private var clipBounds: Bounding? = null
 
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
@@ -120,11 +126,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
         }
         childrenBounds.clear() // indexes changed
         redrawRequested = true
-    }
-
-    override fun setClipBounds(clipBounds: Bounding) {
-        this.clipBounds = clipBounds
-        LayoutUtils.clipChildren(this, clipBounds)
     }
 
     abstract fun getLayoutParams(): T

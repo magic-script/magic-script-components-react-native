@@ -33,12 +33,12 @@ import com.magicleap.magicscript.utils.Utils
 open class GroupNode(initProps: ReadableMap) :
     TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
-    private var clipBounds: Bounding? = null
-
-    override fun setClipBounds(clipBounds: Bounding) {
-        this.clipBounds = clipBounds
-        LayoutUtils.clipChildren(this, clipBounds)
-    }
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            value?.let { LayoutUtils.clipChildren(this, it) }
+        }
 
     override fun onContentTransformed() {
         super.onContentTransformed()

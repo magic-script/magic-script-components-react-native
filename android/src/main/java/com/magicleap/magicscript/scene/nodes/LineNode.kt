@@ -45,6 +45,13 @@ class LineNode(
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            value?.let { applyClipBounds(it) }
+        }
+
     private val colorDefault = Color(1f, 1f, 1f)
 
     private var renderableCopies = mutableListOf<Renderable?>()
@@ -82,15 +89,6 @@ class LineNode(
         )
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        val localBounds = clipBounds.translate(-getContentPosition())
-
-        val center = localBounds.center().toVector3()
-        val size = localBounds.size().toVector3()
-        clipBox = BoundingBox(size, center)
-        drawLines(clipBox)
-    }
-
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for line
     }
@@ -107,6 +105,15 @@ class LineNode(
                 it.renderable = null
             }
         }
+    }
+
+    private fun applyClipBounds(clipBounds: Bounding) {
+        val localBounds = clipBounds.translate(-getContentPosition())
+
+        val center = localBounds.center().toVector3()
+        val size = localBounds.size().toVector3()
+        clipBox = BoundingBox(size, center)
+        drawLines(clipBox)
     }
 
     private fun drawLines(clipBox: BoundingBox) {

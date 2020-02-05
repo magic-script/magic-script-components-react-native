@@ -55,6 +55,14 @@ class VideoNode(
     }
 
     var onVideoPreparedListener: (() -> Unit)? = null
+
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            applyMaterialClipping()
+        }
+
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
@@ -68,8 +76,6 @@ class VideoNode(
      * Origin (0, 0) is at bottom-center. Values are relative to width and height.
      */
     private val defaultMaterialClipping = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
-
-    private var clipBounds: Bounding? = null
 
     init {
         // set default values of properties
@@ -95,11 +101,6 @@ class VideoNode(
 
     override fun loadRenderable() {
         loadVideo()
-    }
-
-    override fun setClipBounds(clipBounds: Bounding) {
-        this.clipBounds = clipBounds
-        applyMaterialClipping()
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {

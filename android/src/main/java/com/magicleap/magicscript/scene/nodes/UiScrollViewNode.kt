@@ -78,7 +78,6 @@ open class UiScrollViewNode(
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
-    private var clipBoundsSetByParent: Bounding? = null
 
     init {
         properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
@@ -198,12 +197,6 @@ open class UiScrollViewNode(
         )
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        super.setClipBounds(clipBounds)
-
-        this.clipBoundsSetByParent = clipBounds
-    }
-
     override fun setAlignment(props: Bundle) {
         // Alignment cannot be changed for scroll view according to Lumin.
         // It is hardcoded to center-center
@@ -300,9 +293,9 @@ open class UiScrollViewNode(
                 localPosition.x + contentPosition.x,
                 localPosition.y + contentPosition.y
             )
-            val parentClipping = clipBoundsSetByParent?.translate(clipTranslation)
+            val parentClipping = clipBounds?.translate(clipTranslation)
 
-            val clipBounds = if (parentClipping == null) {
+            val parentAwareClipping = if (parentClipping == null) {
                 contentClipping
             } else {
                 val scale = localScale
@@ -311,8 +304,7 @@ open class UiScrollViewNode(
                 val parentClippingScaled = parentClipping.scaled(horizScale, vertScale)
                 getMinBounds(contentClipping, parentClippingScaled)
             }
-
-            content.setClipBounds(clipBounds)
+            content.clipBounds = parentAwareClipping
         }
     }
 

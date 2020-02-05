@@ -95,6 +95,11 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
+    /**
+     *  If set, the node should hide this part of itself that is outside [clipBounds]
+     */
+    open var clipBounds: Bounding? = null
+
     var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
         onVisibilityChanged(new)
     }
@@ -246,11 +251,6 @@ abstract class TransformNode(
         val position = localPosition + contentNode.localPosition
         return Vector2(position.x, position.y)
     }
-
-    /**
-     * Should hide this part of node that is outside [clipBounds]
-     */
-    open fun setClipBounds(clipBounds: Bounding) {}
 
     /**
      * Called on AR core's [Node.onUpdate] method invocation.

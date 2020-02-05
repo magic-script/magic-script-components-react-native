@@ -47,8 +47,14 @@ class ModelNode(
         const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
+    override var clipBounds: Bounding?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            applyClipBounds()
+        }
+
     private var renderableCopy: ModelRenderable? = null
-    private var clipBounds: Bounding? = null
 
     init {
         properties.putDefault(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE)
@@ -67,11 +73,6 @@ class ModelNode(
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for Model
-    }
-
-    override fun setClipBounds(clipBounds: Bounding) {
-        this.clipBounds = clipBounds
-        applyClipBounds()
     }
 
     override fun onContentTransformed() {

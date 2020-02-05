@@ -21,7 +21,6 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.logMessage
 
 /**
  * Container for other Nodes (<view>)
@@ -34,8 +33,16 @@ import com.magicleap.magicscript.utils.logMessage
 open class GroupNode(initProps: ReadableMap) :
     TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
+    private var clipBounds: Bounding? = null
+
     override fun setClipBounds(clipBounds: Bounding) {
+        this.clipBounds = clipBounds
         LayoutUtils.clipChildren(this, clipBounds)
+    }
+
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        clipBounds?.let { LayoutUtils.clipChildren(this, it) }
     }
 
     override fun getContentBounding(): Bounding {

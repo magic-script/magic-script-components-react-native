@@ -108,6 +108,9 @@ abstract class TransformNode(
 
     init {
         addChild(contentNode)
+        contentNode.addTransformChangedListener { _, _ ->
+            onContentTransformed()
+        }
         logMessage("initial properties = ${this.properties}")
     }
 
@@ -116,6 +119,9 @@ abstract class TransformNode(
      */
     open fun build() {
         applyProperties(properties)
+        if (useContentNodeAlignment) {
+            applyAlignment()
+        }
     }
 
     /**
@@ -161,6 +167,13 @@ abstract class TransformNode(
 
     open fun removeContent(child: TransformNode) {
         contentNode.removeChild(child)
+    }
+
+    /**
+     * Called when content node was transformed(e.g. when position or rotation changed)
+     */
+    open fun onContentTransformed() {
+
     }
 
     /**

@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ModelRenderableLoader
@@ -49,6 +48,7 @@ class ModelNode(
     }
 
     private var renderableCopy: ModelRenderable? = null
+    private var clipBounds: Bounding? = null
 
     init {
         properties.putDefault(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE)
@@ -70,18 +70,13 @@ class ModelNode(
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
-        val contentPosition = getContentPosition()
-        val bounds = getBounding()
-        val centerOffsetX = bounds.center().x - contentPosition.x
-        val centerOffsetY = bounds.center().y - contentPosition.y
+        this.clipBounds = clipBounds
+        applyClipBounds()
+    }
 
-        if (contentPosition.x + centerOffsetX in clipBounds.left..clipBounds.right
-            && contentPosition.y + centerOffsetY in clipBounds.bottom..clipBounds.top
-        ) {
-            show()
-        } else {
-            hide()
-        }
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        applyClipBounds()
     }
 
     override fun getContentBounding(): Bounding {
@@ -100,6 +95,7 @@ class ModelNode(
             contentNode.renderable = null
         }
     }
+
 
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
@@ -132,6 +128,23 @@ class ModelNode(
                         contentNode.renderable = renderableCopy
                     }
                 }
+            }
+        }
+    }
+
+    private fun applyClipBounds() {
+        clipBounds?.let {
+            val contentPosition = getContentPosition()
+            val bounds = getBounding()
+            val centerOffsetX = bounds.center().x - contentPosition.x
+            val centerOffsetY = bounds.center().y - contentPosition.y
+
+            if (contentPosition.x + centerOffsetX in it.left..it.right
+                && contentPosition.y + centerOffsetY in it.bottom..it.top
+            ) {
+                show()
+            } else {
+                hide()
             }
         }
     }

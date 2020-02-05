@@ -84,7 +84,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
      */
     private val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    private var volume: Vector3 = Vector3(0.6f, 0.6f, 0.1f)
+    private var volume: Vector3 = Vector3(0.6f, 0.8f, 0.1f)
 
     private var renderableCopy: Renderable? = null
 
@@ -218,7 +218,6 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
                 top = volume.y / 2
             )
             content?.setClipBounds(clipBounds2d)
-            logMessage("prism clip=$clipBounds2d")
         }
     }
 

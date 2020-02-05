@@ -64,10 +64,12 @@ class VideoNode(
     private var lastUserAction: String = ""
 
     /**
-     * Set default clipping (all renderable visible).
-     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
+     * Default material clipping makes all the node visible.
+     * Origin (0, 0) is at bottom-center. Values are relative to width and height.
      */
-    private var materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+    private val defaultMaterialClipping = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+
+    private var clipBounds: Bounding? = null
 
     init {
         // set default values of properties
@@ -96,7 +98,7 @@ class VideoNode(
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
-        materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
+        this.clipBounds = clipBounds
         applyMaterialClipping()
     }
 
@@ -108,6 +110,11 @@ class VideoNode(
         } else {
             contentNode.renderable = null
         }
+    }
+
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        applyMaterialClipping()
     }
 
     override fun onPause() {
@@ -132,6 +139,12 @@ class VideoNode(
 
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
+            val bounds = clipBounds
+            val materialClip = if (bounds != null) {
+                Utils.calculateMaterialClipping(bounds, getBounding())
+            } else {
+                defaultMaterialClipping
+            }
             Utils.applyMaterialClipping(material, materialClip)
         }
     }
@@ -171,6 +184,7 @@ class VideoNode(
             val scaleX = widthMeters / initialWidth
             val scaleY = heightMeters / initialHeight
             contentNode.localScale = Vector3(scaleX, scaleY, 1F)
+            applyMaterialClipping()
         }
     }
 

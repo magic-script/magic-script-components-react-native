@@ -60,6 +60,8 @@ abstract class UiBaseLayout<T : LayoutParams>(
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, Bounding>()
 
+    private var clipBounds: Bounding? = null
+
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
 
@@ -92,6 +94,11 @@ abstract class UiBaseLayout<T : LayoutParams>(
             }
     }
 
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        clipBounds?.let { LayoutUtils.clipChildren(this, it) }
+    }
+
     /**
      * For layouts child is actually added with delay,
      * after position for it is calculated.
@@ -116,6 +123,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
     }
 
     override fun setClipBounds(clipBounds: Bounding) {
+        this.clipBounds = clipBounds
         LayoutUtils.clipChildren(this, clipBounds)
     }
 
@@ -145,6 +153,9 @@ abstract class UiBaseLayout<T : LayoutParams>(
             mChildrenList
                 .filter { it !in contentNode.children }
                 .forEach { contentNode.addChild(it) }
+
+            // need to clip materials, because content position has changed
+            clipBounds?.let { LayoutUtils.clipChildren(this, it) }
         }
 
         handler.postDelayed({

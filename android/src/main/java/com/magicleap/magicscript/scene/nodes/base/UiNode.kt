@@ -99,10 +99,12 @@ abstract class UiNode(
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
 
     /**
-     * Set default clipping (all renderable visible).
-     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
+     * Default material clipping makes all the node visible.
+     * Origin (0, 0) is at bottom-center. Values are relative to width and height.
      */
-    private var materialClipBounding = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+    private val defaultMaterialClipping = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+
+    private var clipBounds: Bounding? = null
 
     init {
         // set default values of properties
@@ -135,6 +137,9 @@ abstract class UiNode(
     override fun build() {
         initView()
         setup()
+        if (useContentNodeAlignment) {
+            applyAlignment()
+        }
         if (!rebuildLoopStarted) {
             rebuildLoop()
             rebuildLoopStarted = true
@@ -185,7 +190,7 @@ abstract class UiNode(
      */
     override fun setClipBounds(clipBounds: Bounding) {
         // clipping a texture
-        materialClipBounding = Utils.calculateMaterialClipping(clipBounds, getBounding())
+        this.clipBounds = clipBounds
         applyMaterialClipping()
 
         // clipping collision shape (regarding click events)
@@ -301,6 +306,11 @@ abstract class UiNode(
         }
     }
 
+    override fun onContentTransformed() {
+        super.onContentTransformed()
+        applyMaterialClipping()
+    }
+
     // build calls applyProperties, so we need to initialize the view before
     private fun initView() {
         viewWrapper = ViewWrapper(context, this)
@@ -364,7 +374,13 @@ abstract class UiNode(
 
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
-            Utils.applyMaterialClipping(material, materialClipBounding)
+            val bounds = clipBounds
+            val materialClip = if (bounds != null) {
+                Utils.calculateMaterialClipping(bounds, getBounding())
+            } else {
+                defaultMaterialClipping
+            }
+            Utils.applyMaterialClipping(material, materialClip)
         }
     }
 

@@ -28,6 +28,7 @@ import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
@@ -61,6 +62,8 @@ open class UiDropdownListNode(
 
     private val listNode: DropdownItemsListNode
     private var listNodeAdded = false
+
+    private var lastContentBounds = Bounding()
 
     private val onListVisibilityChangedListener: (visible: Boolean) -> Unit = { visible ->
         applyZTranslation(visible)
@@ -145,11 +148,19 @@ open class UiDropdownListNode(
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
 
-        val bounding = getContentBounding()
-        val listX = bounding.left
-        val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
-        // Moving content forward, so it'll receive touch events first
-        listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
+        updateListPosition()
+    }
+
+    private fun updateListPosition() {
+        val contentBounds = getContentBounding()
+        if (!Bounding.equalInexact(contentBounds, lastContentBounds)) {
+            val listX = contentBounds.left
+            val listY = contentBounds.bottom - (contentBounds.top - contentBounds.bottom) / 3
+            // Moving content forward, so it'll receive touch events first
+            listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
+        }
+
+        lastContentBounds = contentBounds
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {

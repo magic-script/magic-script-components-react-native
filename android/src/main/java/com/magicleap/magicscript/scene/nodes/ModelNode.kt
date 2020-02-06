@@ -75,8 +75,8 @@ class ModelNode(
         // according to Lumin we cannot change alignment for Model
     }
 
-    override fun onContentTransformed() {
-        super.onContentTransformed()
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
         applyClipBounds()
     }
 

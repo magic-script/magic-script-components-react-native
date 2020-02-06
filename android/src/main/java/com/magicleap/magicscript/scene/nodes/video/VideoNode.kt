@@ -113,8 +113,8 @@ class VideoNode(
         }
     }
 
-    override fun onContentTransformed() {
-        super.onContentTransformed()
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
         applyMaterialClipping()
     }
 

@@ -29,6 +29,8 @@ import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import java.io.Serializable
 import java.util.*
+import kotlin.math.abs
+
 
 /**
  * ==========Extension methods============
@@ -60,9 +62,17 @@ fun EditText.setTextAndMoveCursor(text: String) {
     this.append(text)
 }
 
+fun Float.closeTo(other: Float, epsilon: Float): Boolean {
+    return abs(this - other) <= epsilon
+}
+
 /**
  * com.google.ar.sceneform.math.Vector3
  */
+fun Vector3.equalInexact(other: Vector3, epsilon: Float): Boolean {
+    return x.closeTo(other.x, epsilon) && y.closeTo(other.y, epsilon) && z.closeTo(other.z, epsilon)
+}
+
 operator fun Vector3.plus(other: Vector3): Vector3 {
     return Vector3.add(this, other)
 }

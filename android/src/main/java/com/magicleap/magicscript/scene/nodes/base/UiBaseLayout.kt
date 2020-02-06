@@ -100,8 +100,8 @@ abstract class UiBaseLayout<T : LayoutParams>(
             }
     }
 
-    override fun onContentTransformed() {
-        super.onContentTransformed()
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
         clipBounds?.let { LayoutUtils.clipChildren(this, it) }
     }
 

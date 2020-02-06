@@ -60,7 +60,7 @@ open class UiScrollViewNode(
         const val HIDDEN_BAR_THICKNESS = 0
 
         const val LAYOUT_LOOP_DELAY = 50L
-        const val Z_ORDER_OFFSET = 1e-5F
+        const val Z_OFFSET = 1e-5F
     }
 
     var onScrollChangeListener: ((position: Float) -> Unit)? = null
@@ -274,14 +274,13 @@ open class UiScrollViewNode(
 
             requestedContentPosition = alignTopLeft + travel
 
-            // Moving content up in z-plane, so it'll receive touch events first.
-            content.localPosition = Vector3(
-                requestedContentPosition.x,
-                requestedContentPosition.y,
-                Z_ORDER_OFFSET
-            )
+            val position = Vector3(requestedContentPosition.x, requestedContentPosition.y, Z_OFFSET)
 
-            applyContentClipping()
+            if (!position.equalInexact(content.localPosition, epsilon = 1e-5f)) {
+                // Moving content up in z-plane, so it'll receive touch events first.
+                content.localPosition = position
+                applyContentClipping()
+            }
         }
     }
 

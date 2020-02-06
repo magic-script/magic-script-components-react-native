@@ -40,8 +40,8 @@ open class GroupNode(initProps: ReadableMap) :
             value?.let { LayoutUtils.clipChildren(this, it) }
         }
 
-    override fun onContentTransformed() {
-        super.onContentTransformed()
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
         clipBounds?.let { LayoutUtils.clipChildren(this, it) }
     }
 

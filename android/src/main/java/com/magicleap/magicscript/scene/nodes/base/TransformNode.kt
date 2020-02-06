@@ -43,7 +43,7 @@ abstract class TransformNode(
     initProps: ReadableMap,
     val hasRenderable: Boolean,
     protected val useContentNodeAlignment: Boolean
-) : Node() {
+) : TransformAwareNode() {
 
     companion object {
 
@@ -68,7 +68,7 @@ abstract class TransformNode(
      * Used as content node for alignment purpose.
      * Renderable and / or child nodes should be added to it.
      */
-    val contentNode = Node()
+    val contentNode = TransformAwareNode()
 
     var anchorUuid: String = ""
         private set
@@ -113,9 +113,11 @@ abstract class TransformNode(
 
     init {
         addChild(contentNode)
-        contentNode.addTransformChangedListener { _, _ ->
-            onContentTransformed()
-        }
+        contentNode.addOnTransformedListener(object : LocalTransformListener {
+            override fun onTransformed() {
+                onTransformedLocally()
+            }
+        })
         logMessage("initial properties = ${this.properties}")
     }
 
@@ -175,9 +177,10 @@ abstract class TransformNode(
     }
 
     /**
-     * Called when content node was transformed(e.g. when position or rotation changed)
+     * Called when local position, scale or rotation has been set
+     * for the node or for [contentNode]
      */
-    open fun onContentTransformed() {
+    open fun onTransformedLocally() {
 
     }
 
@@ -302,6 +305,11 @@ abstract class TransformNode(
     final override fun onUpdate(frameTime: FrameTime) {
         super.onUpdate(frameTime)
         this.onUpdate(frameTime.deltaSeconds)
+    }
+
+    final override fun onLocalTransformChanged() {
+        super.onLocalTransformChanged()
+        onTransformedLocally()
     }
 
     /**

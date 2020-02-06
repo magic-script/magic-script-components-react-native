@@ -27,6 +27,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Material
 import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
 import kotlin.math.min
@@ -243,6 +244,54 @@ class Utils {
                 return ModelType.UNKNOWN
             }
         }
+
+        /**
+         * Sets correct content node position based on [node] alignment
+         */
+        fun applyContentNodeAlignment(node: TransformNode) {
+            val bounds = node.getBounding()
+            val contentNode = node.contentNode
+
+            val nodeWidth = bounds.right - bounds.left
+            val nodeHeight = bounds.top - bounds.bottom
+            val boundsCenterX = bounds.left + nodeWidth / 2
+            val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
+            val boundsCenterY = bounds.top - nodeHeight / 2
+            val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
+
+            // calculating x position for content
+            val x = when (node.horizontalAlignment) {
+                Alignment.HorizontalAlignment.LEFT -> {
+                    contentNode.localPosition.x + nodeWidth / 2 + pivotOffsetX
+                }
+
+                Alignment.HorizontalAlignment.CENTER -> {
+                    contentNode.localPosition.x + pivotOffsetX
+                }
+
+                Alignment.HorizontalAlignment.RIGHT -> {
+                    contentNode.localPosition.x - nodeWidth / 2 + pivotOffsetX
+                }
+            }
+
+            // calculating y position for content
+            val y = when (node.verticalAlignment) {
+                Alignment.VerticalAlignment.TOP -> {
+                    contentNode.localPosition.y - nodeHeight / 2 + pivotOffsetY
+                }
+
+                Alignment.VerticalAlignment.CENTER -> {
+                    contentNode.localPosition.y + pivotOffsetY
+                }
+
+                Alignment.VerticalAlignment.BOTTOM -> {
+                    contentNode.localPosition.y + nodeHeight / 2 + pivotOffsetY
+                }
+            }
+
+            contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
+        }
+
     }
 
 }

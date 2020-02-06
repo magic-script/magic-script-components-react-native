@@ -333,46 +333,7 @@ abstract class TransformNode(
      * it only reloads the view with the new alignment setting.
      */
     protected open fun applyAlignment() {
-        val bounds = getBounding()
-
-        val nodeWidth = bounds.right - bounds.left
-        val nodeHeight = bounds.top - bounds.bottom
-        val boundsCenterX = bounds.left + nodeWidth / 2
-        val pivotOffsetX = localPosition.x - boundsCenterX // aligning according to center
-        val boundsCenterY = bounds.top - nodeHeight / 2
-        val pivotOffsetY = localPosition.y - boundsCenterY  // aligning according to center
-
-        // calculating x position for content
-        val x = when (horizontalAlignment) {
-            Alignment.HorizontalAlignment.LEFT -> {
-                contentNode.localPosition.x + nodeWidth / 2 + pivotOffsetX
-            }
-
-            Alignment.HorizontalAlignment.CENTER -> {
-                contentNode.localPosition.x + pivotOffsetX
-            }
-
-            Alignment.HorizontalAlignment.RIGHT -> {
-                contentNode.localPosition.x - nodeWidth / 2 + pivotOffsetX
-            }
-        }
-
-        // calculating y position for content
-        val y = when (verticalAlignment) {
-            Alignment.VerticalAlignment.TOP -> {
-                contentNode.localPosition.y - nodeHeight / 2 + pivotOffsetY
-            }
-
-            Alignment.VerticalAlignment.CENTER -> {
-                contentNode.localPosition.y + pivotOffsetY
-            }
-
-            Alignment.VerticalAlignment.BOTTOM -> {
-                contentNode.localPosition.y + nodeHeight / 2 + pivotOffsetY
-            }
-        }
-
-        contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
+        Utils.applyContentNodeAlignment(this)
     }
 
     private fun setAnchorUuid(props: Bundle) {

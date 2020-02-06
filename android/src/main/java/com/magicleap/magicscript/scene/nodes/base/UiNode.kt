@@ -252,7 +252,7 @@ abstract class UiNode(
 
     override fun applyAlignment() {
         if (useContentNodeAlignment) {
-            super.applyAlignment()
+            Utils.applyContentNodeAlignment(this)
         } else {
             setNeedsRebuild() // need to re-attach the renderable
         }

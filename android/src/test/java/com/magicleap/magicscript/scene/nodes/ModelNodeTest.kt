@@ -107,7 +107,7 @@ class ModelNodeTest {
         node.build()
         val clipBounds = Bounding(left = 2f, bottom = -1f, right = 5f, top = 1f)
 
-        node.setClipBounds(clipBounds)
+        node.clipBounds = clipBounds
 
         node.isVisible shouldEqual false
     }

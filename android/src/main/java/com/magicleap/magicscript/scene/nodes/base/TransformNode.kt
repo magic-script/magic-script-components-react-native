@@ -99,6 +99,10 @@ abstract class TransformNode(
      *  If set, the node should hide this part of itself that is outside [clipBounds]
      */
     open var clipBounds: Bounding? = null
+        set(value) {
+            field = value
+            clipChildren()
+        }
 
     var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
         onVisibilityChanged(new)
@@ -113,7 +117,7 @@ abstract class TransformNode(
 
     init {
         addChild(contentNode)
-        contentNode.addOnTransformedListener(object : LocalTransformListener {
+        contentNode.addOnLocalTransformChangedListener(object : LocalTransformListener {
             override fun onTransformed() {
                 onTransformedLocally()
             }
@@ -162,14 +166,14 @@ abstract class TransformNode(
     /**
      * Adds [child] to [contentNode]
      *
-     * To manage alignment correctly, we should use this method instead of
-     * attaching a child directly.
+     * To manage alignment correctly, we should use this method instead of [Node.addChild]
      */
     open fun addContent(child: TransformNode) {
         if (!isVisible) {
             child.hide()
         }
         contentNode.addChild(child)
+        clipChildren()
     }
 
     open fun removeContent(child: TransformNode) {
@@ -181,7 +185,7 @@ abstract class TransformNode(
      * for the node or for [contentNode]
      */
     open fun onTransformedLocally() {
-
+        clipChildren()
     }
 
     /**
@@ -414,6 +418,10 @@ abstract class TransformNode(
                 applyAlignment()
             }
         }
+    }
+
+    protected fun clipChildren() {
+        clipBounds?.let { Utils.clipChildren(this, it) }
     }
 
     class Test(val node: TransformNode) {

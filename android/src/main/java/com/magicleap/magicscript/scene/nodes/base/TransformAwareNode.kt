@@ -24,7 +24,7 @@ open class TransformAwareNode : Node() {
 
     private val onTransformListeners = mutableListOf<LocalTransformListener>()
 
-    fun addOnTransformedListener(listener: LocalTransformListener) {
+    fun addOnLocalTransformChangedListener(listener: LocalTransformListener) {
         onTransformListeners.add(listener)
     }
 

@@ -21,7 +21,6 @@ import android.os.Handler
 import android.os.Looper
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.Bounding
@@ -53,14 +52,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     val height: Float
         get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
-
-
-    override var clipBounds: Bounding?
-        get() = super.clipBounds
-        set(value) {
-            super.clipBounds = value
-            value?.let { LayoutUtils.clipChildren(this, it) }
-        }
 
     // we should re-draw the grid after adding / removing a child
     private var redrawRequested = false
@@ -98,11 +89,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
                     child.hide()
                 }
             }
-    }
-
-    override fun onTransformedLocally() {
-        super.onTransformedLocally()
-        clipBounds?.let { LayoutUtils.clipChildren(this, it) }
     }
 
     /**
@@ -156,7 +142,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
                 .forEach { contentNode.addChild(it) }
 
             // need to clip materials, because content position has changed
-            clipBounds?.let { LayoutUtils.clipChildren(this, it) }
+            clipChildren()
         }
 
         handler.postDelayed({

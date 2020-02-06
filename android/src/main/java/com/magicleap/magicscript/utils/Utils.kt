@@ -292,6 +292,21 @@ class Utils {
             contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
         }
 
+        fun clipChildren(parent: TransformNode, clipBounds: Bounding) {
+            val scale = parent.localScale
+            if (scale.x <= 0 || scale.y <= 0) {
+                return
+            }
+
+            val horizontalScale = 1 / scale.x
+            val verticalScale = 1 / scale.y
+            val scaledBounds = clipBounds.scaled(horizontalScale, verticalScale)
+            val localBounds = scaledBounds.translate(-parent.getContentPosition())
+            parent.contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.clipBounds = localBounds }
+        }
+
     }
 
 }

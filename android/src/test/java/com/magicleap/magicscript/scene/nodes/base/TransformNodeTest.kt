@@ -135,7 +135,7 @@ class TransformNodeTest {
         val bounds = Bounding(-2F, -2F, 2F, 2F)
         val node = NodeBuilder()
             .withPosition(2.0, 5.0, 0.0)
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
         val expected = Bounding(0F, 3F, 4F, 7F)
 
@@ -150,7 +150,7 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
         val expected = Bounding(-1F, 0F, 0F, 2F)
 
@@ -165,7 +165,7 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
         val expected = Bounding(0F, -1F, 0F, 1F)
 
@@ -180,7 +180,7 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
         val expected = Bounding(-1F, 0F, 1F, 0F)
 
@@ -195,7 +195,7 @@ class TransformNodeTest {
 
         val node = NodeBuilder()
             .withAlignment("top-right")
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
 
         assertEquals(-2.0F, node.contentNode.localPosition.x, eps)
@@ -209,7 +209,7 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(5.0, 3.0, 0.0)
             .withAlignment("bottom-right")
-            .withContentBounds(bounds)
+            .withRelativeContentBounds(bounds)
             .build()
 
         val contentPosition = node.getContentPosition()

@@ -236,6 +236,24 @@ class UiButtonNodeTest {
     }
 
     @Test
+    fun `should return correct bounding when rotated 90 degrees around Z`() {
+        val rotation = reactArrayOf(0.0, 0.0, 0.7071068, 0.7071068)
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_WIDTH, 2.0,
+                UiButtonNode.PROP_HEIGHT, 1.0,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+            )
+        )
+        node.build()
+        val expected = Bounding(-0.5F, -1F, 0.5F, 1F)
+
+        val result = node.getBounding()
+
+        result shouldEqualInexact expected
+    }
+
+    @Test
     fun `should animate content node on click`() {
         val node = createTestableNode(JavaOnlyMap())
         node.build()

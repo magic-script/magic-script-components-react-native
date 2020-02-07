@@ -54,11 +54,11 @@ class VerticalLinearLayoutManagerTest {
 
         childrenList = listOf(
             NodeBuilder()
-                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
                 .withAlignment("center-center")
                 .build(),
             NodeBuilder()
-                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
                 .withAlignment("center-center")
                 .build()
         )

@@ -38,8 +38,8 @@ class GridLayoutManagerTest {
 
         val child1Bounds = Bounding(0f, 0f, 2f, 1f)
         val child2Bounds = Bounding(0f, 0f, 1f, 1f)
-        val child1 = NodeBuilder().withContentBounds(child1Bounds).build()
-        val child2 = NodeBuilder().withContentBounds(child2Bounds).build()
+        val child1 = NodeBuilder().withRelativeContentBounds(child1Bounds).build()
+        val child2 = NodeBuilder().withRelativeContentBounds(child2Bounds).build()
         childrenList = listOf(child1, child2)
     }
 

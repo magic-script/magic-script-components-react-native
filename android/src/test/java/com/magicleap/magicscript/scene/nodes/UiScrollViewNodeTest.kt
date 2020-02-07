@@ -116,7 +116,7 @@ class UiScrollViewNodeTest {
         val contentBounds = Bounding(left = 0f, bottom = -0.8f, right = 0.8f, top = 0f)
         val contentNode = spy(
             NodeBuilder()
-                .withContentBounds(contentBounds)
+                .withRelativeContentBounds(contentBounds)
                 .build()
         )
         tested.addContent(contentNode)

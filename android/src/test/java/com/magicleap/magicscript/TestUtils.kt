@@ -58,7 +58,10 @@ class NodeBuilder {
         return this
     }
 
-    fun withContentBounds(bounds: Bounding): NodeBuilder {
+    /**
+     * Content bounds relative to content node position.
+     */
+    fun withRelativeContentBounds(bounds: Bounding): NodeBuilder {
         contentBounding = bounds
         return this
     }
@@ -76,7 +79,12 @@ class NodeBuilder {
     fun build(): TransformNode {
         val node = object : TransformNode(props, false, true) {
             override fun getContentBounding(): Bounding {
-                return contentBounding
+                return Bounding(
+                    left = contentBounding.left + contentNode.localPosition.x,
+                    bottom = contentBounding.bottom + contentNode.localPosition.y,
+                    right = contentBounding.right + contentNode.localPosition.x,
+                    top = contentBounding.top + contentNode.localPosition.y
+                )
             }
         }
         node.build()

@@ -62,7 +62,7 @@ fun EditText.setTextAndMoveCursor(text: String) {
     this.append(text)
 }
 
-fun Float.closeTo(other: Float, epsilon: Float): Boolean {
+fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
     return abs(this - other) <= epsilon
 }
 
@@ -70,7 +70,7 @@ fun Float.closeTo(other: Float, epsilon: Float): Boolean {
  * com.google.ar.sceneform.math.Vector3
  */
 fun Vector3.equalInexact(other: Vector3, epsilon: Float): Boolean {
-    return x.closeTo(other.x, epsilon) && y.closeTo(other.y, epsilon) && z.closeTo(other.z, epsilon)
+    return x.isCloseTo(other.x, epsilon) && y.isCloseTo(other.y, epsilon) && z.isCloseTo(other.z, epsilon)
 }
 
 operator fun Vector3.plus(other: Vector3): Vector3 {

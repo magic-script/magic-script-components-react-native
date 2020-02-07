@@ -103,13 +103,12 @@ import SceneKit
     }
 
     public init() {
-        self.gestureHandler = GestureHandler()
+        self.gestureHandler = GestureHandler(nodesManager: UiNodesManager.instance)
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         setupNodesManager(self.arView)
         setupGestureRecognizers(self.arView)
         PlaneDetector.instance.register(arView: self)
-        register(PlaneDetector.instance)
         RCTARView.instance = self
         resume()
     }

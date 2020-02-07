@@ -216,7 +216,7 @@ class Convert {
     }
 
     static func toPlaneDetection(_ value: Any?) -> ARWorldTrackingConfiguration.PlaneDetection {
-        guard let planeDetection = value as? [Any], planeDetection.count <= 2 else { return [] }
+        guard let planeDetection = value as? [Any] else { return [] }
         var result: ARWorldTrackingConfiguration.PlaneDetection = []
         for index in 0..<planeDetection.count {
             if let stringValue = planeDetection[index] as? String {

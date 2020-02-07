@@ -98,7 +98,7 @@ export default class NativePlaneDetector {
     }
 
     addOnPlaneTappedObserver(observer, observerCallback) {
-        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String] }
+        // observerCallback sample data: Plane: { normal: [x, y, z], center: [x, y, z], vertices: [[x, y, z]], id: UUID, type: [String], point: [x, y, z]}
         const subscriptionName = "onPlaneTapped";
         const subscription = this.arPlaneDetectorEventManager.addListener(subscriptionName, observerCallback);
 

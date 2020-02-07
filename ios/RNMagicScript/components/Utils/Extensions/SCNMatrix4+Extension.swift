@@ -50,7 +50,7 @@ extension SCNMatrix4 {
 
 func * (left: SCNMatrix4, right: SCNVector3) -> SCNVector3 {
     let matrix = float4x4(left)
-    let vector = float4(right)
+    let vector = SIMD4(right)
     let result = matrix * vector
 
     return SCNVector3(result)

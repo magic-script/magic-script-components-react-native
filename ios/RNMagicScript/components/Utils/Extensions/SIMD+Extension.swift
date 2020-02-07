@@ -20,15 +20,15 @@ import SceneKit
 extension float4x4 {
     init(_ matrix: SCNMatrix4) {
         self.init([
-            float4(matrix.m11, matrix.m12, matrix.m13, matrix.m14),
-            float4(matrix.m21, matrix.m22, matrix.m23, matrix.m24),
-            float4(matrix.m31, matrix.m32, matrix.m33, matrix.m34),
-            float4(matrix.m41, matrix.m42, matrix.m43, matrix.m44)
+            SIMD4<Float>(matrix.m11, matrix.m12, matrix.m13, matrix.m14),
+            SIMD4<Float>(matrix.m21, matrix.m22, matrix.m23, matrix.m24),
+            SIMD4<Float>(matrix.m31, matrix.m32, matrix.m33, matrix.m34),
+            SIMD4<Float>(matrix.m41, matrix.m42, matrix.m43, matrix.m44)
         ])
     }
 }
 
-extension float4 {
+extension SIMD4 where Scalar == Float {
     init(_ vector: SCNVector4) {
         self.init(vector.x, vector.y, vector.z, vector.w)
     }

@@ -18,6 +18,13 @@ import Foundation
 import UIKit
 import SceneKit
 
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol LongPressGestureRecognizing {
+    var longPressedNode: TransformNode? { get }
+    var state: UIGestureRecognizer.State { get }
+}
+
 @objc class LongPressGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: NodeSelecting
     fileprivate(set) var longPressedNode: TransformNode?
@@ -106,3 +113,5 @@ import SceneKit
         super.reset()
     }
 }
+
+extension LongPressGestureRecognizer: LongPressGestureRecognizing { }

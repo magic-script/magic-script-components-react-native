@@ -49,7 +49,7 @@ import ARKit
         nodeSelector = UiNodeSelector(rootNode)
     }
     
-    @objc public func handleNodeTap(_ node: TransformNode?) {
+    func handleNodeTap(_ node: TransformNode?) {
         let uiNode = node as? UiNode
         #if targetEnvironment(simulator)
         let nodeType: String = (uiNode != nil) ? "\(uiNode!.classForCoder)" : "nil"
@@ -74,7 +74,7 @@ import ARKit
         }
     }
     
-    @objc public func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
+    func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
         switch state {
         case .began:
             longPressedNode = node as? UiNode
@@ -243,4 +243,9 @@ extension UiNodesManager: RCTARViewObserving {
             anchorNodeByAnchorUuid.removeValue(forKey: name)
         }
     }
+}
+
+
+extension UiNodesManager: NodesManaging {
+
 }

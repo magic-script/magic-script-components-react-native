@@ -19,7 +19,6 @@ import ARKit
 
 class Surface: NSObject {
     fileprivate(set) var anchor: ARPlaneAnchor
-    fileprivate(set) var node: SCNNode
 
     var id: UUID {
         return anchor.identifier
@@ -27,7 +26,7 @@ class Surface: NSObject {
 
     var center: SCNVector3 {
         // transform center to world coordinates
-        return SCNMatrix4(anchor.transform) * SCNVector3(CGFloat(anchor.center.x), CGFloat(anchor.center.y), CGFloat(anchor.center.z))
+        return SCNVector3(anchor.transform * simd_float4(anchor.center, 1))
     }
 
     var normal: SCNVector3 {
@@ -37,8 +36,8 @@ class Surface: NSObject {
     var vertices: [SCNVector3] {
         // Convert vertices to correct format
         var result = [SCNVector3]()
-        for vertice in anchor.geometry.boundaryVertices {
-            result.append(SCNMatrix4(anchor.transform) * SCNVector3(vertice))
+        for vertex in anchor.geometry.boundaryVertices {
+            result.append(SCNMatrix4(anchor.transform) * SCNVector3(vertex))
         }
         return result
     }
@@ -51,13 +50,21 @@ class Surface: NSObject {
         return "Unknown"
     }
 
-    init(anchor: ARPlaneAnchor, node: SCNNode) {
+    init(anchor: ARPlaneAnchor) {
         self.anchor = anchor
-        self.node = node
     }
 
-    func update(anchor: ARPlaneAnchor, node: SCNNode) {
+    func update(anchor: ARPlaneAnchor) {
         self.anchor = anchor
-        self.node = node
+    }
+}
+
+extension Array where Element == SCNVector3 {
+    func toArrayOfCGFloat() -> [[CGFloat]] {
+        var vertices = [[CGFloat]]()
+        self.forEach {
+            vertices.append([CGFloat($0.x), CGFloat($0.y), CGFloat($0.z)])
+        }
+        return vertices
     }
 }

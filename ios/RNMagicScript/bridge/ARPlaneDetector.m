@@ -53,6 +53,7 @@ RCT_EXPORT_METHOD(getAllPlanes:(NSDictionary *)configuration callback:(RCTRespon
 
 RCT_EXPORT_METHOD(reset) {
     NSLog(@"reset");
+    [[PlaneDetector instance] reset];
 }
 
 RCT_EXPORT_METHOD(requestPlaneCast:(NSDictionary *)configuration callback:(RCTResponseSenderBlock)callback) {

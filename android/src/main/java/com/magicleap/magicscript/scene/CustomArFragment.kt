@@ -17,13 +17,17 @@
 package com.magicleap.magicscript.scene
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
+import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
+    private var lastTimestamp: Long = 0L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,8 +37,17 @@ class CustomArFragment : ArFragment() {
                 UiNodesManager.INSTANCE.onArFragmentReady()
                 onReadyCalled = true
             }
+            if(onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
+                val newFrame = arSceneView.session?.update()
+                if (newFrame != null && newFrame.timestamp != lastTimestamp) {
+                    lastTimestamp = newFrame.timestamp
+                    ARPlaneDetectorBridge.INSTANCE.onPlaneUpdate(newFrame.getUpdatedTrackables(Plane::class.java).toList())
+                }
+            }
         }
+
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            ARPlaneDetectorBridge.INSTANCE.onPlaneTapped(plane, hitResult)
             val anchor = hitResult.createAnchor()
             UiNodesManager.INSTANCE.onTapArPlane(anchor)
         }

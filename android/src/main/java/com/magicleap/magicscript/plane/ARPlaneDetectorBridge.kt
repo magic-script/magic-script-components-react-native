@@ -3,9 +3,11 @@ package com.magicleap.magicscript.plane
 import com.facebook.react.bridge.*
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
+import com.magicleap.magicscript.utils.NativeReactObjectsProvider
+import com.magicleap.magicscript.utils.ReactObjectsProvider
 import kotlin.math.abs
 
-class ARPlaneDetectorBridge {
+class ARPlaneDetectorBridge private constructor() {
     private var onUpdateListener: OnPlanesUpdated? = null
     private var onAddedListener: OnPlanesAdded? = null
     private var onRemovedListener: OnPlanesRemoved? = null
@@ -13,6 +15,7 @@ class ARPlaneDetectorBridge {
     private var lastPlanes: List<Plane>? = null
     private var isDetecting: Boolean = false
     private var detectionConfiguration: List<Plane.Type>? = null
+    var objectsProvider: ReactObjectsProvider = NativeReactObjectsProvider.INSTANCE
 
     companion object {
         private val ID = "id"
@@ -27,13 +30,13 @@ class ARPlaneDetectorBridge {
     }
 
     fun mapPlanesToWritableMap(plane: Plane): WritableMap {
-        val planeMap = WritableNativeMap()
-        val vertices = WritableNativeArray()
+        val planeMap = objectsProvider.createMap()
+        val vertices = objectsProvider.createArray()
         val polygonList = plane.polygon.array().toList()
         val centerPose = plane.centerPose
         polygonList.chunked(2).forEach {
             val point = centerPose.transformPoint(floatArrayOf(it[0], 0f, it[1]))
-            vertices.pushArray(WritableNativeArray().apply {
+            vertices.pushArray(objectsProvider.createArray().apply {
                 pushDouble(point[0].toDouble())
                 pushDouble(point[1].toDouble())
                 pushDouble(point[2].toDouble())
@@ -41,7 +44,7 @@ class ARPlaneDetectorBridge {
         }
         planeMap.putString(TYPE, plane.type.name)
         planeMap.putArray(VERTICES, vertices)
-        planeMap.putArray(CENTER, WritableNativeArray().apply {
+        planeMap.putArray(CENTER, objectsProvider.createArray().apply {
             pushDouble(plane.centerPose.tx().toDouble())
             pushDouble(plane.centerPose.ty().toDouble())
             pushDouble(plane.centerPose.tz().toDouble())
@@ -51,7 +54,7 @@ class ARPlaneDetectorBridge {
     }
 
     fun mapToError(errorMessage: String): WritableMap {
-        return WritableNativeMap().apply {
+        return objectsProvider.createMap().apply {
             putString(ERROR, errorMessage)
         }
     }
@@ -75,7 +78,7 @@ class ARPlaneDetectorBridge {
 
     fun onPlaneTapped(plane: Plane, hitTest: HitResult) {
         val payload = mapPlanesToWritableMap(plane)
-        payload.putArray("point", WritableNativeArray().apply {
+        payload.putArray("point", objectsProvider.createArray().apply {
             pushDouble(hitTest.hitPose.tx().toDouble())
             pushDouble(hitTest.hitPose.ty().toDouble())
             pushDouble(hitTest.hitPose.tz().toDouble())
@@ -108,7 +111,7 @@ class ARPlaneDetectorBridge {
         } else if(lastPlanes.isNullOrEmpty()) {
             callback.invoke(mapToError("The are no planes detected yet"), null)
         } else {
-            val planes = WritableNativeArray()
+            val planes = objectsProvider.createArray()
             lastPlanes!!
                     .filter { type.contains(it.type) }
                     .forEach { planes.pushMap(mapPlanesToWritableMap(it)) }

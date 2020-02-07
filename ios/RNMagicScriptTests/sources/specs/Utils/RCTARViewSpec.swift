@@ -32,7 +32,7 @@ class RCTARViewSpec: QuickSpec {
                         it("should store NodesManager as observer") {
                             let nodesManager = UiNodesManager.instance
                             arView = RCTARView()
-                            expect(arView.observers.count).to(equal(1))
+                            expect(arView.observers.count).to(equal(2))
                             let observer = arView.observers[0].value
                             expect(observer).to(beIdenticalTo(nodesManager))
                         }
@@ -42,12 +42,12 @@ class RCTARViewSpec: QuickSpec {
                             let registeredObserverMock1 = RCTARViewObservingMock()
                             let registeredObserverMock2 = RCTARViewObservingMock()
                             arView.register(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(2))
-                            arView.register(registeredObserverMock2)
                             expect(arView.observers.count).to(equal(3))
-                            let observer1 = arView.observers[1].value
+                            arView.register(registeredObserverMock2)
+                            expect(arView.observers.count).to(equal(4))
+                            let observer1 = arView.observers[2].value
                             expect(observer1).to(beIdenticalTo(registeredObserverMock1))
-                            let observer2 = arView.observers[2].value
+                            let observer2 = arView.observers[3].value
                             expect(observer2).to(beIdenticalTo(registeredObserverMock2))
                         }
 
@@ -67,9 +67,9 @@ class RCTARViewSpec: QuickSpec {
                             arView = RCTARView()
                             let registeredObserverMock1 = RCTARViewObservingMock()
                             arView.register(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(2))
+                            expect(arView.observers.count).to(equal(3))
                             arView.unregister(registeredObserverMock1)
-                            expect(arView.observers.count).to(equal(1))
+                            expect(arView.observers.count).to(equal(2))
                         }
                     }
                 }

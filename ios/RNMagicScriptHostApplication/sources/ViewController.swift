@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupARView()
-        setupScene()
+//        setupScene()
         arView.register(self)
     }
 
@@ -101,6 +101,7 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
     }
 
     fileprivate func setupDropdownListTest() {

@@ -31,8 +31,9 @@ import ARKit
     fileprivate var focusedNode: UiNode?
     fileprivate var longPressedNode: UiNode?
     fileprivate(set) var nodeSelector: UiNodeSelector!
+    fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
-    
+
     init(rootNode: TransformNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
         self.nodesById = nodesById
@@ -42,12 +43,13 @@ import ARKit
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
+        ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
     }
     
-    @objc public func handleNodeTap(_ node: TransformNode?) {
+    func handleNodeTap(_ node: TransformNode?) {
         let uiNode = node as? UiNode
         #if targetEnvironment(simulator)
         let nodeType: String = (uiNode != nil) ? "\(uiNode!.classForCoder)" : "nil"
@@ -72,7 +74,7 @@ import ARKit
         }
     }
     
-    @objc public func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
+    func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
         switch state {
         case .began:
             longPressedNode = node as? UiNode
@@ -241,4 +243,9 @@ extension UiNodesManager: RCTARViewObserving {
             anchorNodeByAnchorUuid.removeValue(forKey: name)
         }
     }
+}
+
+
+extension UiNodesManager: NodesManaging {
+
 }

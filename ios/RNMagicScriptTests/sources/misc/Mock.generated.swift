@@ -1332,6 +1332,224 @@ open class DownloadingMock: Downloading, Mock {
     }
 }
 
+// MARK: - DragGestureRecognizing
+open class DragGestureRecognizingMock: NSObject, DragGestureRecognizing, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var dragNode: Dragging? {
+		get {	invocations.append(.p_dragNode_get); return __p_dragNode ?? optionalGivenGetterValue(.p_dragNode_get, "DragGestureRecognizingMock - stub value for dragNode was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_dragNode = newValue }
+	}
+	private var __p_dragNode: (Dragging)?
+
+    public var beginPoint: SCNVector3 {
+		get {	invocations.append(.p_beginPoint_get); return __p_beginPoint ?? givenGetterValue(.p_beginPoint_get, "DragGestureRecognizingMock - stub value for beginPoint was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_beginPoint = newValue }
+	}
+	private var __p_beginPoint: (SCNVector3)?
+
+    public var dragAxis: Ray? {
+		get {	invocations.append(.p_dragAxis_get); return __p_dragAxis ?? optionalGivenGetterValue(.p_dragAxis_get, "DragGestureRecognizingMock - stub value for dragAxis was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_dragAxis = newValue }
+	}
+	private var __p_dragAxis: (Ray)?
+
+    public var beginDragValue: CGFloat {
+		get {	invocations.append(.p_beginDragValue_get); return __p_beginDragValue ?? givenGetterValue(.p_beginDragValue_get, "DragGestureRecognizingMock - stub value for beginDragValue was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_beginDragValue = newValue }
+	}
+	private var __p_beginDragValue: (CGFloat)?
+
+    public var dragDelta: CGFloat {
+		get {	invocations.append(.p_dragDelta_get); return __p_dragDelta ?? givenGetterValue(.p_dragDelta_get, "DragGestureRecognizingMock - stub value for dragDelta was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_dragDelta = newValue }
+	}
+	private var __p_dragDelta: (CGFloat)?
+
+    public var state: UIGestureRecognizer.State {
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "DragGestureRecognizingMock - stub value for state was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_state = newValue }
+	}
+	private var __p_state: (UIGestureRecognizer.State)?
+
+
+
+
+
+
+    fileprivate enum MethodType {
+        case p_dragNode_get
+        case p_beginPoint_get
+        case p_dragAxis_get
+        case p_beginDragValue_get
+        case p_dragDelta_get
+        case p_state_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.p_dragNode_get,.p_dragNode_get): return true
+            case (.p_beginPoint_get,.p_beginPoint_get): return true
+            case (.p_dragAxis_get,.p_dragAxis_get): return true
+            case (.p_beginDragValue_get,.p_beginDragValue_get): return true
+            case (.p_dragDelta_get,.p_dragDelta_get): return true
+            case (.p_state_get,.p_state_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .p_dragNode_get: return 0
+            case .p_beginPoint_get: return 0
+            case .p_dragAxis_get: return 0
+            case .p_beginDragValue_get: return 0
+            case .p_dragDelta_get: return 0
+            case .p_state_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func dragNode(getter defaultValue: Dragging?...) -> PropertyStub {
+            return Given(method: .p_dragNode_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func beginPoint(getter defaultValue: SCNVector3...) -> PropertyStub {
+            return Given(method: .p_beginPoint_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func dragAxis(getter defaultValue: Ray?...) -> PropertyStub {
+            return Given(method: .p_dragAxis_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func beginDragValue(getter defaultValue: CGFloat...) -> PropertyStub {
+            return Given(method: .p_beginDragValue_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func dragDelta(getter defaultValue: CGFloat...) -> PropertyStub {
+            return Given(method: .p_dragDelta_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func state(getter defaultValue: UIGestureRecognizer.State...) -> PropertyStub {
+            return Given(method: .p_state_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static var dragNode: Verify { return Verify(method: .p_dragNode_get) }
+        public static var beginPoint: Verify { return Verify(method: .p_beginPoint_get) }
+        public static var dragAxis: Verify { return Verify(method: .p_dragAxis_get) }
+        public static var beginDragValue: Verify { return Verify(method: .p_beginDragValue_get) }
+        public static var dragDelta: Verify { return Verify(method: .p_dragDelta_get) }
+        public static var state: Verify { return Verify(method: .p_state_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - DropdownListItemTapHandling
 open class DropdownListItemTapHandlingMock: DropdownListItemTapHandling, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -2057,6 +2275,185 @@ open class GLTFSceneSourceProtocolMock: GLTFSceneSourceProtocol, Mock {
     }
 }
 
+// MARK: - GestureHandling
+open class GestureHandlingMock: NSObject, GestureHandling, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func handleTapGesture(_ sender: TapGestureRecognizing) {
+        addInvocation(.m_handleTapGesture__sender(Parameter<TapGestureRecognizing>.value(`sender`)))
+		let perform = methodPerformValue(.m_handleTapGesture__sender(Parameter<TapGestureRecognizing>.value(`sender`))) as? (TapGestureRecognizing) -> Void
+		perform?(`sender`)
+    }
+
+    open func handleDragGesture(_ sender: DragGestureRecognizing) {
+        addInvocation(.m_handleDragGesture__sender(Parameter<DragGestureRecognizing>.value(`sender`)))
+		let perform = methodPerformValue(.m_handleDragGesture__sender(Parameter<DragGestureRecognizing>.value(`sender`))) as? (DragGestureRecognizing) -> Void
+		perform?(`sender`)
+    }
+
+    open func handleLongPressGesture(_ sender: LongPressGestureRecognizing) {
+        addInvocation(.m_handleLongPressGesture__sender(Parameter<LongPressGestureRecognizing>.value(`sender`)))
+		let perform = methodPerformValue(.m_handleLongPressGesture__sender(Parameter<LongPressGestureRecognizing>.value(`sender`))) as? (LongPressGestureRecognizing) -> Void
+		perform?(`sender`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_handleTapGesture__sender(Parameter<TapGestureRecognizing>)
+        case m_handleDragGesture__sender(Parameter<DragGestureRecognizing>)
+        case m_handleLongPressGesture__sender(Parameter<LongPressGestureRecognizing>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_handleTapGesture__sender(let lhsSender), .m_handleTapGesture__sender(let rhsSender)):
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
+            case (.m_handleDragGesture__sender(let lhsSender), .m_handleDragGesture__sender(let rhsSender)):
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
+            case (.m_handleLongPressGesture__sender(let lhsSender), .m_handleLongPressGesture__sender(let rhsSender)):
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_handleTapGesture__sender(p0): return p0.intValue
+            case let .m_handleDragGesture__sender(p0): return p0.intValue
+            case let .m_handleLongPressGesture__sender(p0): return p0.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func handleTapGesture(_ sender: Parameter<TapGestureRecognizing>) -> Verify { return Verify(method: .m_handleTapGesture__sender(`sender`))}
+        public static func handleDragGesture(_ sender: Parameter<DragGestureRecognizing>) -> Verify { return Verify(method: .m_handleDragGesture__sender(`sender`))}
+        public static func handleLongPressGesture(_ sender: Parameter<LongPressGestureRecognizing>) -> Verify { return Verify(method: .m_handleLongPressGesture__sender(`sender`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func handleTapGesture(_ sender: Parameter<TapGestureRecognizing>, perform: @escaping (TapGestureRecognizing) -> Void) -> Perform {
+            return Perform(method: .m_handleTapGesture__sender(`sender`), performs: perform)
+        }
+        public static func handleDragGesture(_ sender: Parameter<DragGestureRecognizing>, perform: @escaping (DragGestureRecognizing) -> Void) -> Perform {
+            return Perform(method: .m_handleDragGesture__sender(`sender`), performs: perform)
+        }
+        public static func handleLongPressGesture(_ sender: Parameter<LongPressGestureRecognizing>, perform: @escaping (LongPressGestureRecognizing) -> Void) -> Perform {
+            return Perform(method: .m_handleLongPressGesture__sender(`sender`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - InputDataProviding
 open class InputDataProvidingMock: InputDataProviding, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -2242,6 +2639,168 @@ open class InputDataProvidingMock: InputDataProviding, Mock {
         public static var autocapitalizationType: Verify { return Verify(method: .p_autocapitalizationType_get) }
         public static var keyboardType: Verify { return Verify(method: .p_keyboardType_get) }
         public static var textContentType: Verify { return Verify(method: .p_textContentType_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - LongPressGestureRecognizing
+open class LongPressGestureRecognizingMock: NSObject, LongPressGestureRecognizing, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var longPressedNode: TransformNode? {
+		get {	invocations.append(.p_longPressedNode_get); return __p_longPressedNode ?? optionalGivenGetterValue(.p_longPressedNode_get, "LongPressGestureRecognizingMock - stub value for longPressedNode was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_longPressedNode = newValue }
+	}
+	private var __p_longPressedNode: (TransformNode)?
+
+    public var state: UIGestureRecognizer.State {
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "LongPressGestureRecognizingMock - stub value for state was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_state = newValue }
+	}
+	private var __p_state: (UIGestureRecognizer.State)?
+
+
+
+
+
+
+    fileprivate enum MethodType {
+        case p_longPressedNode_get
+        case p_state_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.p_longPressedNode_get,.p_longPressedNode_get): return true
+            case (.p_state_get,.p_state_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .p_longPressedNode_get: return 0
+            case .p_state_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func longPressedNode(getter defaultValue: TransformNode?...) -> PropertyStub {
+            return Given(method: .p_longPressedNode_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func state(getter defaultValue: UIGestureRecognizer.State...) -> PropertyStub {
+            return Given(method: .p_state_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static var longPressedNode: Verify { return Verify(method: .p_longPressedNode_get) }
+        public static var state: Verify { return Verify(method: .p_state_get) }
     }
 
     public struct Perform {
@@ -2609,6 +3168,171 @@ open class NodeSelectingMock: NodeSelecting, Mock {
         }
         public static func draggingHitTest(ray: Parameter<Ray>, perform: @escaping (Ray) -> Void) -> Perform {
             return Perform(method: .m_draggingHitTest__ray_ray(`ray`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - NodesManaging
+open class NodesManagingMock: NodesManaging, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func handleNodeTap(_ node: TransformNode?) {
+        addInvocation(.m_handleNodeTap__node(Parameter<TransformNode?>.value(`node`)))
+		let perform = methodPerformValue(.m_handleNodeTap__node(Parameter<TransformNode?>.value(`node`))) as? (TransformNode?) -> Void
+		perform?(`node`)
+    }
+
+    open func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
+        addInvocation(.m_handleNodeLongPress__node_state(Parameter<TransformNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`)))
+		let perform = methodPerformValue(.m_handleNodeLongPress__node_state(Parameter<TransformNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`))) as? (TransformNode?, UIGestureRecognizer.State) -> Void
+		perform?(`node`, `state`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_handleNodeTap__node(Parameter<TransformNode?>)
+        case m_handleNodeLongPress__node_state(Parameter<TransformNode?>, Parameter<UIGestureRecognizer.State>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_handleNodeTap__node(let lhsNode), .m_handleNodeTap__node(let rhsNode)):
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                return true 
+            case (.m_handleNodeLongPress__node_state(let lhsNode, let lhsState), .m_handleNodeLongPress__node_state(let rhsNode, let rhsState)):
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsState, rhs: rhsState, with: matcher) else { return false } 
+                return true 
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_handleNodeTap__node(p0): return p0.intValue
+            case let .m_handleNodeLongPress__node_state(p0, p1): return p0.intValue + p1.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func handleNodeTap(_ node: Parameter<TransformNode?>) -> Verify { return Verify(method: .m_handleNodeTap__node(`node`))}
+        public static func handleNodeLongPress(_ node: Parameter<TransformNode?>, _ state: Parameter<UIGestureRecognizer.State>) -> Verify { return Verify(method: .m_handleNodeLongPress__node_state(`node`, `state`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func handleNodeTap(_ node: Parameter<TransformNode?>, perform: @escaping (TransformNode?) -> Void) -> Perform {
+            return Perform(method: .m_handleNodeTap__node(`node`), performs: perform)
+        }
+        public static func handleNodeLongPress(_ node: Parameter<TransformNode?>, _ state: Parameter<UIGestureRecognizer.State>, perform: @escaping (TransformNode?, UIGestureRecognizer.State) -> Void) -> Perform {
+            return Perform(method: .m_handleNodeLongPress__node_state(`node`, `state`), performs: perform)
         }
     }
 
@@ -3317,6 +4041,168 @@ open class SliderDataProvidingMock: SliderDataProviding, Mock {
 		public static func min(set newValue: Parameter<CGFloat>) -> Verify { return Verify(method: .p_min_set(newValue)) }
         public static var max: Verify { return Verify(method: .p_max_get) }
 		public static func max(set newValue: Parameter<CGFloat>) -> Verify { return Verify(method: .p_max_set(newValue)) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - TapGestureRecognizing
+open class TapGestureRecognizingMock: NSObject, TapGestureRecognizing, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var tappedNode: TransformNode? {
+		get {	invocations.append(.p_tappedNode_get); return __p_tappedNode ?? optionalGivenGetterValue(.p_tappedNode_get, "TapGestureRecognizingMock - stub value for tappedNode was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_tappedNode = newValue }
+	}
+	private var __p_tappedNode: (TransformNode)?
+
+    public var state: UIGestureRecognizer.State {
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "TapGestureRecognizingMock - stub value for state was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_state = newValue }
+	}
+	private var __p_state: (UIGestureRecognizer.State)?
+
+
+
+
+
+
+    fileprivate enum MethodType {
+        case p_tappedNode_get
+        case p_state_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.p_tappedNode_get,.p_tappedNode_get): return true
+            case (.p_state_get,.p_state_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .p_tappedNode_get: return 0
+            case .p_state_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func tappedNode(getter defaultValue: TransformNode?...) -> PropertyStub {
+            return Given(method: .p_tappedNode_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func state(getter defaultValue: UIGestureRecognizer.State...) -> PropertyStub {
+            return Given(method: .p_state_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static var tappedNode: Verify { return Verify(method: .p_tappedNode_get) }
+        public static var state: Verify { return Verify(method: .p_state_get) }
     }
 
     public struct Perform {

@@ -20,15 +20,14 @@ import SceneKit
 
 extension RCTARView: ARSCNViewDelegate {
     //MARK: ARSCNViewDelegate - this is dataSource rather than delegate
-    @objc public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        guard let _ = anchor.name else { return nil }
+    public func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         return SCNNode()
     }
 
     #warning("Should be updated according to expected behaviour")
     @available(iOS 11.3, *)
     public func sessionShouldAttemptRelocalization(_ session: ARSession) -> Bool {
-        return false
+        return true
     }
 
     //MARK: ARSCNViewDelegate
@@ -89,8 +88,8 @@ extension RCTARView: ARSCNViewDelegate {
     }
 
     #warning("Should be updated according to expected behaviour")
-    @objc @available(iOS 13.0, *)
-    public  func session(_ session: ARSession, didOutputCollaborationData data: ARSession.CollaborationData) {
+    @available(iOS 13.0, *)
+    public func session(_ session: ARSession, didOutputCollaborationData data: ARSession.CollaborationData) {
 //        for observer in observers {
 //            observer.value?.session?(session, didOutputCollaborationData: data)
 //        }
@@ -116,7 +115,7 @@ extension RCTARView: ARSCNViewDelegate {
     }
 
     #warning("Should be updated according to expected behaviour")
-    @objc @available(iOS 11.0, *)
+    @available(iOS 11.0, *)
     public func renderer(_ renderer: SCNSceneRenderer, didApplyConstraintsAtTime time: TimeInterval) {
 //        for observer in observers {
 //            observer.value?.renderer?(renderer, didApplyConstraintsAtTime: time)

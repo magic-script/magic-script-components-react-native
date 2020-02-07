@@ -15,6 +15,7 @@
 //
 
 import SceneKit
+import ARKit
 
 class Convert {
     static func toString(_ value: Any?) -> String? {
@@ -213,4 +214,18 @@ class Convert {
         guard let toggleType = value as? String else { return nil }
         return ToggleType(rawValue: toggleType)
     }
+
+    static func toPlaneDetection(_ value: Any?) -> ARWorldTrackingConfiguration.PlaneDetection {
+        guard let planeDetection = value as? [Any] else { return [] }
+        var result: ARWorldTrackingConfiguration.PlaneDetection = []
+        for index in 0..<planeDetection.count {
+            if let stringValue = planeDetection[index] as? String {
+                if stringValue == "vertical" { result.insert(.vertical) }
+                if stringValue == "horizontal" { result.insert(.horizontal) }
+            }
+        }
+
+        return result
+    }
+
 }

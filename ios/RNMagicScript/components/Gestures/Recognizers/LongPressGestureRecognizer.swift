@@ -18,17 +18,31 @@ import Foundation
 import UIKit
 import SceneKit
 
-@objc class TapGestureRecognizer: UIGestureRecognizer {
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol LongPressGestureRecognizing {
+    var longPressedNode: TransformNode? { get }
+    var state: UIGestureRecognizer.State { get }
+}
+
+@objc class LongPressGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: NodeSelecting
-    fileprivate(set) var tappedNode: TransformNode?
+    fileprivate(set) var longPressedNode: TransformNode?
     fileprivate(set) var initialTouchLocation: CGPoint?
     fileprivate var rayBuilder: RayBuilding
+    fileprivate var longpressTimer: Timer?
+
     var getCameraNode: (() -> SCNNode?)?
+    var minimumPressDuration: TimeInterval = 0.5
 
     init(nodeSelector: NodeSelecting, rayBuilder: RayBuilding, target: Any?, action: Selector?) {
         self.nodeSelector = nodeSelector
         self.rayBuilder = rayBuilder
         super.init(target: target, action: action)
+    }
+
+    deinit {
+        longpressTimer?.invalidate()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -40,13 +54,19 @@ import SceneKit
             let cameraNode = getCameraNode?(),
             let firstTouch = touches.first,
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
-            tappedNode = nodeSelector.hitTest(ray: ray)
+            longPressedNode = nodeSelector.hitTest(ray: ray)
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
+
+            longpressTimer?.invalidate()
+            longpressTimer = Timer.scheduledTimer(withTimeInterval: minimumPressDuration, repeats: false) { [weak self] _ in
+                self?.longpressTimer = nil
+                self?.state = .began
+            }
         } else {
             state = .failed
         }
 
-        if tappedNode != nil {
+        if longPressedNode != nil {
             ignoreAllTouchesButFirst(touches, with: event)
         }
 
@@ -70,19 +90,28 @@ import SceneKit
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = (state == .possible) ? .ended : .failed
+        longpressTimer?.invalidate()
+        longpressTimer = nil
+        longPressedNode = nil
+        initialTouchLocation = nil
+        state = (state == .began) ? .ended : .failed
         super.touchesEnded(touches, with: event)
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        longpressTimer?.invalidate()
+        longpressTimer = nil
         state = .cancelled
         super.touchesCancelled(touches, with: event)
     }
 
     override func reset() {
-        tappedNode = nil
+        longpressTimer?.invalidate()
+        longpressTimer = nil
+        longPressedNode = nil
         initialTouchLocation = nil
         super.reset()
     }
 }
 
+extension LongPressGestureRecognizer: LongPressGestureRecognizing { }

@@ -47,3 +47,11 @@ extension SCNMatrix4 {
         return SCNQuaternion(x: q.x, y: q.y, z: q.z, w: q.w)
     }
 }
+
+func * (left: SCNMatrix4, right: SCNVector3) -> SCNVector3 {
+    let matrix = float4x4(left)
+    let vector = SIMD4(right)
+    let result = matrix * vector
+
+    return SCNVector3(result)
+}

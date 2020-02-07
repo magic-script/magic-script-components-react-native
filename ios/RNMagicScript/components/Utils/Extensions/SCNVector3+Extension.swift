@@ -211,3 +211,13 @@ func / (vector: SCNVector3, scalar: Float) -> SCNVector3 {
 func /= (vector: inout SCNVector3, scalar: Float) {
     vector = vector / scalar
 }
+
+extension SCNVector3 {
+    init(_ vector: SIMD4<Float>) {
+        self.init(x: vector.x / vector.w, y: vector.y / vector.w, z: vector.z / vector.w)
+    }
+
+    var toArrayOfCGFloat: [CGFloat] {
+        return [CGFloat(x), CGFloat(y), CGFloat(z)]
+    }
+}

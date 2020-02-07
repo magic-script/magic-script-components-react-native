@@ -31,7 +31,7 @@ import SceneKit
         get { return self.pivot.position }
         set { self.pivot.position = newValue; setNeedsLayout() }
     }
-    @objc var localPosition: SCNVector3 {
+    @objc public var localPosition: SCNVector3 {
         get { return self.position }
         set { self.position = newValue; setNeedsLayout() }
     }

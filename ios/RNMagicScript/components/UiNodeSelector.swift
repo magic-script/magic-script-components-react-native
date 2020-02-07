@@ -24,7 +24,6 @@ protocol NodeSelecting {
 }
 
 class UiNodeSelector: NodeSelecting  {
-
     let rootNode: SCNNode
 
     init(_ rootNode: SCNNode) {

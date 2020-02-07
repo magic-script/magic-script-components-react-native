@@ -58,7 +58,6 @@ import SceneKit
 
         guard let _ = _configuration else  {
             _configuration = ARWorldTrackingConfiguration()
-            // _configuration.planeDetection = ARPlaneDetectionHorizontal;
             if #available(iOS 11.3, *) {
                 let videoFormatCount = ARWorldTrackingConfiguration.supportedVideoFormats.count
                 if videoFormatCount > 0 {
@@ -70,11 +69,25 @@ import SceneKit
             _configuration!.worldAlignment = ARConfiguration.WorldAlignment.gravity
             _configuration!.providesAudioData = false
 
+            _configuration!.planeDetection = []
+
             return _configuration
         }
 
         return _configuration
     }
+
+    func enablePlaneDetection(_ configuration: ARWorldTrackingConfiguration.PlaneDetection) {
+        self.configuration?.planeDetection = configuration
+        reset()
+    }
+
+    func disablePlaneDetection() {
+        self.configuration?.planeDetection = []
+        reset()
+    }
+
+    fileprivate let gestureHandler: GestureHandling
 
     //MARK: RCTARView Observable
     fileprivate(set) var observers: [WeakReference<RCTARViewObserving>] = []
@@ -90,10 +103,12 @@ import SceneKit
     }
 
     public init() {
+        self.gestureHandler = GestureHandler(nodesManager: UiNodesManager.instance)
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         setupNodesManager(self.arView)
         setupGestureRecognizers(self.arView)
+        PlaneDetector.instance.register(arView: self)
         RCTARView.instance = self
         resume()
     }
@@ -153,18 +168,29 @@ import SceneKit
     }
 
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
+        let rayBuilder = RayBuilder()
+
         // Add tap gesture
-        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleTapAction(_:)))
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                        rayBuilder: rayBuilder,
+                                                        target: gestureHandler,
+                                                        action: #selector(GestureHandling.handleTapGesture(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
-        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleDragAction(_:)))
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                          rayBuilder: rayBuilder,
+                                                          target: gestureHandler,
+                                                          action: #selector(GestureHandling.handleDragGesture(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(dragGestureRecognizer)
 
         // Add long press gesture
-        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector, rayBuilder: RayBuilder(), target: self, action: #selector(handleLongPressAction(_:)))
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+                                                                     rayBuilder: rayBuilder,
+                                                                     target: gestureHandler,
+                                                                     action: #selector(GestureHandling.handleLongPressGesture(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
     }
@@ -215,39 +241,5 @@ import SceneKit
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
-    }
-}
-
-// MARK: - Event handlers
-extension RCTARView {
-    @objc fileprivate func handleTapAction(_ sender: TapGestureRecognizer) {
-        if sender.state == .ended {
-            UiNodesManager.instance.handleNodeTap(sender.tappedNode)
-            #if targetEnvironment(simulator)
-            guard let cameraNode = cameraNode,
-                let ray = Ray(gesture: sender, cameraNode: cameraNode) else { return }
-
-            if debug && rayCastNode == nil {
-                rayCastNode = NodesFactory.createLinesNode(vertices: [SCNVector3(), SCNVector3(0,1,0)], color: UIColor.green)
-                scene.rootNode.addChildNode(rayCastNode!)
-            }
-
-            if let node = rayCastNode {
-                node.position = ray.begin
-                node.orientUpVectorAlong(ray.direction)
-                node.scale = SCNVector3(1, ray.length, 1)
-            }
-            #endif
-        }
-    }
-
-    @objc fileprivate func handleDragAction(_ sender: DragGestureRecognizer) {
-        if sender.state == UIGestureRecognizer.State.changed {
-            sender.dragNode?.dragValue = sender.beginDragValue + sender.dragDelta
-        }
-    }
-
-    @objc fileprivate func handleLongPressAction(_ sender: LongPressGestureRecognizer) {
-        UiNodesManager.instance.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

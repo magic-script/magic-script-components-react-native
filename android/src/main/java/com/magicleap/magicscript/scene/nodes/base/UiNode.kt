@@ -86,7 +86,7 @@ abstract class UiNode(
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
-            value?.let { applyClipBounds(it) }
+            applyClipBounds()
         }
 
     private lateinit var viewWrapper: ViewWrapper
@@ -191,6 +191,7 @@ abstract class UiNode(
             applyMaterialClipping()
         } else {
             contentNode.renderable = null
+            contentNode.collisionShape = null
         }
     }
 
@@ -333,49 +334,12 @@ abstract class UiNode(
     * for "vertexDomain" : object it means that coordinates are normalized relative
     * to a model size (0 - 1), origin (0, 0) is at bottom-center.
     */
-    private fun applyClipBounds(clipBounds: Bounding) {
-        // clipping a texture
+    private fun applyClipBounds() {
         applyMaterialClipping()
-
-        // clipping collision shape (regarding click events)
-        val pivotCenterOffset = Vector2(
-            -horizontalAlignment.centerOffset * size.x,
-            -verticalAlignment.centerOffset * size.y
-        )
-
-        val nodeCollisionShape = Bounding(
-            -size.x / 2 * localScale.x,
-            -size.y / 2 * localScale.y,
-            size.x / 2 * localScale.x,
-            size.y / 2 * localScale.y
-        ).translate(pivotCenterOffset)
-
-        val clipCollisionShape = clipBounds.translate(-getContentPosition())
-
-        var intersection = Bounding(
-            max(nodeCollisionShape.left, clipCollisionShape.left),
-            max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
-            min(nodeCollisionShape.right, clipCollisionShape.right),
-            min(nodeCollisionShape.top, clipCollisionShape.top)
-        )
-        if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
-            intersection = Bounding()
-        }
-
-        // collision shape is not aware of scale, we need to scale to original position
-        val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
-        val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
-        val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
-
-        val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
-        val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
-        val collisionShapeCenter = Vector3(centerX, centerY, 0F)
-
-        val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
-
-        contentNode.collisionShape = collisionShape
+        adjustCollisionShape()
     }
 
+    // clipping a texture
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
             val bounds = clipBounds
@@ -385,6 +349,52 @@ abstract class UiNode(
                 defaultMaterialClipping
             }
             Utils.applyMaterialClipping(material, materialClip)
+        }
+    }
+
+    // clipping collision shape (related to click events)
+    private fun adjustCollisionShape() {
+        if (!isVisible) {
+            return
+        }
+
+        clipBounds?.let { clipBounds ->
+            val pivotCenterOffset = Vector2(
+                -horizontalAlignment.centerOffset * size.x,
+                -verticalAlignment.centerOffset * size.y
+            )
+
+            val nodeCollisionShape = Bounding(
+                -size.x / 2 * localScale.x,
+                -size.y / 2 * localScale.y,
+                size.x / 2 * localScale.x,
+                size.y / 2 * localScale.y
+            ).translate(pivotCenterOffset)
+
+            val clipCollisionShape = clipBounds.translate(-getContentPosition())
+
+            var intersection = Bounding(
+                max(nodeCollisionShape.left, clipCollisionShape.left),
+                max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
+                min(nodeCollisionShape.right, clipCollisionShape.right),
+                min(nodeCollisionShape.top, clipCollisionShape.top)
+            )
+            if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
+                intersection = Bounding()
+            }
+
+            // collision shape is not aware of scale, we need to scale to original position
+            val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
+            val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
+            val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
+
+            val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
+            val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
+            val collisionShapeCenter = Vector3(centerX, centerY, 0F)
+
+            val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
+
+            contentNode.collisionShape = collisionShape
         }
     }
 

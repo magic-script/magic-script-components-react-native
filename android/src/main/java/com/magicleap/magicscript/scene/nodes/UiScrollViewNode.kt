@@ -202,6 +202,10 @@ open class UiScrollViewNode(
         // It is hardcoded to center-center
     }
 
+    override fun clipChildren() {
+        applyContentClipping()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // stop the layout loop

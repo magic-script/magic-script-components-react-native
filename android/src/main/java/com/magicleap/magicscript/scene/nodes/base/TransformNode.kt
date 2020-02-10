@@ -420,7 +420,7 @@ abstract class TransformNode(
         }
     }
 
-    protected fun clipChildren() {
+    protected open fun clipChildren() {
         clipBounds?.let { Utils.clipChildren(this, it) }
     }
 

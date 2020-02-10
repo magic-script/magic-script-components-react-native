@@ -84,7 +84,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
      */
     private val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    private var volume: Vector3 = Vector3(0.6f, 0.6f, 0.1f)
+    private var volume: Vector3 = Vector3(2f, 2f, 0.1f)
 
     private var renderableCopy: Renderable? = null
 
@@ -210,15 +210,13 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
     }
 
     private fun applyClipBounds() {
-        container?.let {
-            val clipBounds2d = Bounding(
-                left = -volume.x / 2,
-                bottom = -volume.y / 2,
-                right = volume.x / 2,
-                top = volume.y / 2
-            )
-            content?.clipBounds = clipBounds2d
-        }
+        val clipBounds2d = Bounding(
+            left = -volume.x / 2,
+            bottom = -volume.y / 2,
+            right = volume.x / 2,
+            top = volume.y / 2
+        )
+        content?.clipBounds = clipBounds2d
     }
 
     inner class RotatableNode(transformationSystem: TransformationSystem) :

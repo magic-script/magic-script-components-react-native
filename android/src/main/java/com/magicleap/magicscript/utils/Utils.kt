@@ -273,11 +273,12 @@ class Utils {
             if (scale.x <= 0 || scale.y <= 0) {
                 return
             }
-
             val horizontalScale = 1 / scale.x
             val verticalScale = 1 / scale.y
-            val scaledBounds = clipBounds.scaled(horizontalScale, verticalScale)
-            val localBounds = scaledBounds.translate(-parent.getContentPosition())
+            val localBounds = clipBounds
+                .translate(-parent.getContentPosition())
+                .scaled(horizontalScale, verticalScale)
+
             parent.contentNode.children
                 .filterIsInstance<TransformNode>()
                 .forEach { it.clipBounds = localBounds }

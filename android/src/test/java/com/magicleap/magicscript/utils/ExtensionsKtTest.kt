@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.DatePicker
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -128,7 +129,7 @@ class ExtensionsKtTest {
 
         val sum = numbers.sumByFloat { it }
 
-        sum shouldEqual 7f
+        sum shouldEqualInexact 7f
     }
 
     @Test
@@ -194,11 +195,19 @@ class ExtensionsKtTest {
     }
 
     @Test
-    fun `should substract Vector3`() {
+    fun `should subtract Vector3`() {
         val vector1 = Vector3(1f, 2f, 3f)
         val vector2 = Vector3(2f, 3f, 4f)
 
         vector1 - vector2 shouldEqual Vector3.subtract(vector1, vector2)
+    }
+
+    @Test
+    fun `should return opposite Vector3`() {
+        val vector = Vector3(1f, 2f, 3f)
+        val opposite = Vector3(-1f, -2f, -3f)
+
+        -vector shouldEqualInexact opposite
     }
 
     @Test

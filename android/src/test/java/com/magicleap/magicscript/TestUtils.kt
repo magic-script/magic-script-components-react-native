@@ -22,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
@@ -29,6 +30,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.equalInexact
 import com.magicleap.magicscript.utils.isCloseTo
 import kotlin.test.assertTrue
 
@@ -125,6 +127,11 @@ infix fun Float.shouldEqualInexact(other: Float) {
 
 infix fun Vector2.shouldEqualInexact(other: Vector2) {
     val equal = x.isCloseTo(other.x, EPSILON) && y.isCloseTo(other.y, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Vector3.shouldEqualInexact(other: Vector3) {
+    val equal = equalInexact(other, EPSILON)
     assertTrue(equal, "expected: $other, but was: $this")
 }
 

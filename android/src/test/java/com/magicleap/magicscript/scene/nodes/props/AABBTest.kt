@@ -46,8 +46,7 @@ class AABBTest {
     fun `should return correct width and height`() {
         val tested = AABB(min = Vector3(-2f, 1f, -0.5f), max = Vector3(1f, 3f, 0.5f))
 
-        tested.getWidth() shouldEqualInexact 3f
-        tested.getHeight() shouldEqualInexact 2f
+        tested.getSize() shouldEqualInexact Vector3(3f, 2f, 1f)
     }
 
     @Test

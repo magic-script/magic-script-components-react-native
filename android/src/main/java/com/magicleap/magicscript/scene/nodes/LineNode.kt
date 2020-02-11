@@ -28,6 +28,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
 
@@ -45,7 +46,7 @@ class LineNode(
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
-    override var clipBounds: Bounding?
+    override var clipBounds: AABB?
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
@@ -107,12 +108,11 @@ class LineNode(
         }
     }
 
-    private fun applyClipBounds(clipBounds: Bounding) {
+    private fun applyClipBounds(clipBounds: AABB) {
         val localBounds = clipBounds.translated(-getContentPosition())
+        val center = (localBounds.min + localBounds.max) / 2f
+        clipBox = BoundingBox(localBounds.getSize(), center)
 
-        val center = localBounds.center().toVector3()
-        val size = localBounds.size().toVector3()
-        clipBox = BoundingBox(size, center)
         drawLines(clipBox)
     }
 

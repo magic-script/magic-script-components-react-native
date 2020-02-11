@@ -25,6 +25,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.logMessage
@@ -56,7 +57,7 @@ class VideoNode(
 
     var onVideoPreparedListener: (() -> Unit)? = null
 
-    override var clipBounds: Bounding?
+    override var clipBounds: AABB?
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
@@ -142,7 +143,7 @@ class VideoNode(
         contentNode.renderable?.material?.let { material ->
             val bounds = clipBounds
             val materialClip = if (bounds != null) {
-                Utils.calculateMaterialClipping(bounds, getBounding())
+                Utils.calculateMaterialClipping(bounds.toBounding2d(), getBounding())
             } else {
                 defaultMaterialClipping
             }

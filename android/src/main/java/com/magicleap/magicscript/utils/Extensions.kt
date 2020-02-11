@@ -81,6 +81,10 @@ operator fun Vector3.minus(other: Vector3): Vector3 {
     return Vector3.subtract(this, other)
 }
 
+operator fun Vector3.unaryMinus(): Vector3 {
+    return Vector3(-x, -y, -z)
+}
+
 operator fun Vector3.div(other: Float): Vector3 {
     return this.scaled(1F / other)
 }

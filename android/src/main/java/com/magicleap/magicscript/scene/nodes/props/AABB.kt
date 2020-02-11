@@ -19,6 +19,8 @@ package com.magicleap.magicscript.scene.nodes.props
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.utils.equalInexact
 import com.magicleap.magicscript.utils.plus
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Axis aligned bounding box.
@@ -47,12 +49,8 @@ data class AABB(
         return min.equalInexact(other.min, EPSILON) && max.equalInexact(other.max, EPSILON)
     }
 
-    fun getWidth(): Float {
-        return max.x - min.x
-    }
-
-    fun getHeight(): Float {
-        return max.y - min.y
+    fun getSize(): Vector3 {
+        return Vector3(max.x - min.x, max.y - min.y, max.z - min.z)
     }
 
     /**
@@ -73,6 +71,19 @@ data class AABB(
 
     fun toBounding2d(): Bounding {
         return Bounding(left = min.x, bottom = min.y, right = max.x, top = max.y)
+    }
+
+    fun intersection(other: AABB): AABB {
+        val xMin = max(this.min.x, other.min.x)
+        val xMax = min(this.max.x, other.max.x)
+
+        val yMin = max(this.min.y, other.min.y)
+        val yMax = min(this.max.y, other.max.y)
+
+        val zMin = max(this.min.z, other.min.z)
+        val zMax = min(this.max.z, other.max.z)
+
+        return AABB(min = Vector3(xMin, yMin, zMin), max = Vector3(xMax, yMax, zMax))
     }
 
 }

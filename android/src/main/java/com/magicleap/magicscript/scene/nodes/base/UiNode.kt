@@ -31,6 +31,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
@@ -82,7 +83,7 @@ abstract class UiNode(
      */
     protected lateinit var view: View
 
-    override var clipBounds: Bounding?
+    override var clipBounds: AABB?
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
@@ -344,7 +345,7 @@ abstract class UiNode(
         contentNode.renderable?.material?.let { material ->
             val bounds = clipBounds
             val materialClip = if (bounds != null) {
-                Utils.calculateMaterialClipping(bounds, getBounding())
+                Utils.calculateMaterialClipping(bounds.toBounding2d(), getBounding())
             } else {
                 defaultMaterialClipping
             }
@@ -371,7 +372,9 @@ abstract class UiNode(
                 size.y / 2 * localScale.y
             ).translated(pivotCenterOffset)
 
-            val clipCollisionShape = clipBounds.translated(-getContentPosition())
+            val clipCollisionShape = clipBounds
+                .translated(-getContentPosition())
+                .toBounding2d()
 
             var intersection = Bounding(
                 max(nodeCollisionShape.left, clipCollisionShape.left),

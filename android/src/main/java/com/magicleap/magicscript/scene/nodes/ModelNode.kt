@@ -25,6 +25,7 @@ import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
@@ -47,7 +48,7 @@ class ModelNode(
         const val DEFAULT_IMPORT_SCALE = 1.0
     }
 
-    override var clipBounds: Bounding?
+    override var clipBounds: AABB?
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
@@ -140,8 +141,9 @@ class ModelNode(
             val centerOffsetX = bounds.center().x - contentPosition.x
             val centerOffsetY = bounds.center().y - contentPosition.y
 
-            if (contentPosition.x + centerOffsetX in it.left..it.right
-                && contentPosition.y + centerOffsetY in it.bottom..it.top
+            if (contentPosition.x + centerOffsetX in it.min.x..it.max.x
+                && contentPosition.y + centerOffsetY in it.min.y..it.max.y
+                && contentPosition.z + centerOffsetY in it.min.z..it.max.z
             ) {
                 show()
             } else {

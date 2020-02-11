@@ -27,6 +27,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Material
 import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
 import kotlin.math.min
@@ -276,16 +277,19 @@ class Utils {
             contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
         }
 
-        fun clipChildren(parent: TransformNode, clipBounds: Bounding) {
+        fun clipChildren(parent: TransformNode, clipBounds: AABB) {
             val scale = parent.localScale
-            if (scale.x <= 0 || scale.y <= 0) {
+            if (scale.x <= 0 || scale.y <= 0 || scale.z <= 0) {
                 return
             }
-            val horizontalScale = 1 / scale.x
-            val verticalScale = 1 / scale.y
+
+            val scaleX = 1 / scale.x
+            val scaleY = 1 / scale.y
+            val scaleZ = 1 / scale.z
+
             val localBounds = clipBounds
                 .translated(-parent.getContentPosition())
-                .scaled(horizontalScale, verticalScale)
+                .scaled(scaleX, scaleY, scaleZ)
 
             parent.contentNode.children
                 .filterIsInstance<TransformNode>()

@@ -34,7 +34,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
 import kotlin.math.min
@@ -210,13 +210,10 @@ class Prism(initProps: ReadableMap) : AnchorNode(), CameraObserver {
     }
 
     private fun applyClipBounds() {
-        val clipBounds2d = Bounding(
-            left = -volume.x / 2,
-            bottom = -volume.y / 2,
-            right = volume.x / 2,
-            top = volume.y / 2
-        )
-        content?.clipBounds = clipBounds2d
+        val min = Vector3(-volume.x / 2, -volume.y / 2, -volume.z / 2)
+        val max = Vector3(volume.x / 2, volume.y / 2, volume.z / 2)
+
+        content?.clipBounds = AABB(min, max)
     }
 
     inner class RotatableNode(transformationSystem: TransformationSystem) :

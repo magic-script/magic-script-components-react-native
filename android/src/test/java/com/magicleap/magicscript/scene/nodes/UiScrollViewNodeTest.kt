@@ -22,12 +22,13 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -68,7 +69,7 @@ class UiScrollViewNodeTest {
 
     @Test
     fun `should return correct bounds`() {
-        val scrollBoundsMap = getScrollBoundsMap(1.6, 0.4)
+        val scrollBoundsMap = getScrollBoundsMap(1.6, 0.4, 0.1)
         val tested = createNodeWithViewSpy(
             reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
@@ -107,12 +108,15 @@ class UiScrollViewNodeTest {
 
     @Test
     fun `should clip the content based on scroll view size`() {
-        val scrollBoundsMap = getScrollBoundsMap(0.8, 0.4)
+        val scrollBoundsMap = getScrollBoundsMap(0.8, 0.4, 0.2)
         val tested = createNodeWithViewSpy(
             reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build()
-        val expectedClipBounds = Bounding(left = -0.4f, bottom = -0.2f, right = 0.4f, top = 0.2f)
+        val expectedClipBounds = AABB(
+            min = Vector3(-0.4f, -0.2f, -0.1f),
+            max = Vector3(0.4f, 0.2f, 0.1f)
+        )
 
         val contentBounds = Bounding(left = 0f, bottom = -0.8f, right = 0.8f, top = 0f)
         val contentNode = spy(
@@ -134,10 +138,10 @@ class UiScrollViewNodeTest {
         }
     }
 
-    private fun getScrollBoundsMap(width: Double, height: Double): JavaOnlyMap {
+    private fun getScrollBoundsMap(width: Double, height: Double, thickness: Double): JavaOnlyMap {
         return reactMapOf(
             "min", reactArrayOf(0.0, 0.0, 0.0),
-            "max", reactArrayOf(width, height, 0.0)
+            "max", reactArrayOf(width, height, thickness)
         )
     }
 

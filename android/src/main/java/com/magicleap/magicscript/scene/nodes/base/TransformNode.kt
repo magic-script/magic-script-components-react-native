@@ -24,6 +24,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
@@ -98,7 +99,7 @@ abstract class TransformNode(
     /**
      *  If set, the node should hide this part of itself that is outside [clipBounds]
      */
-    open var clipBounds: Bounding? = null
+    open var clipBounds: AABB? = null
         set(value) {
             field = value
             clipChildren()
@@ -254,9 +255,8 @@ abstract class TransformNode(
     /**
      * Should return position of the content (relative to this node's parent)
      */
-    open fun getContentPosition(): Vector2 {
-        val position = localPosition + contentNode.localPosition
-        return Vector2(position.x, position.y)
+    open fun getContentPosition(): Vector3 {
+        return localPosition + contentNode.localPosition
     }
 
     /**

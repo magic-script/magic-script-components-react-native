@@ -25,8 +25,8 @@ import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -105,7 +105,10 @@ class ModelNodeTest {
         )
         val node = createNode(props)
         node.build()
-        val clipBounds = Bounding(left = 2f, bottom = -1f, right = 5f, top = 1f)
+        val clipBounds = AABB(
+            min = Vector3(2f, -1f, -1f),
+            max = Vector3(5f, 1f, 1f)
+        )
 
         node.clipBounds = clipBounds
 

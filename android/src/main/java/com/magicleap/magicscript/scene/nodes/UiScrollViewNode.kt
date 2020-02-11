@@ -53,6 +53,8 @@ open class UiScrollViewNode(
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
+        const val DEFAULT_THICKNESS = 1.0F
+
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
 
         const val BAR_THICKNESS_RATIO = 0.03F // relative to min (width, height)
@@ -86,7 +88,7 @@ open class UiScrollViewNode(
 
     // Function by which ViewWrapper delivers intercepted motion events.
     fun onTouchEvent(event: MotionEvent): Boolean {
-        val viewBounds = getScrollBounds()
+        val viewBounds = getScrollBounds().toBounding2d()
         event.setLocation(
             metersToPx(event.x - viewBounds.left, context).toFloat(),
             metersToPx(-event.y + viewBounds.top, context).toFloat()
@@ -105,7 +107,8 @@ open class UiScrollViewNode(
     override fun provideDesiredSize(): Vector2 {
         val propBounds = properties.read<AABB>(PROP_SCROLL_BOUNDS)
         return if (propBounds != null) {
-            Vector2(propBounds.getWidth(), propBounds.getHeight())
+            val size = propBounds.getSize()
+            Vector2(size.x, size.y)
         } else {
             Vector2(DEFAULT_WIDTH, DEFAULT_HEIGHT)
         }
@@ -181,7 +184,7 @@ open class UiScrollViewNode(
         }
     }
 
-    override fun getContentPosition(): Vector2 {
+    override fun getContentPosition(): Vector3 {
         // When translating clip bounds to node's local coordinate
         // system we use localPositions. However due to ARCore nature
         // localPosition of ScrollViewNode direct descendant can change
@@ -192,9 +195,10 @@ open class UiScrollViewNode(
         // Then, instead of zeroed child localPosition we use
         // requestedContentPosition.
         val position = content?.localPosition ?: Vector3()
-        return Vector2(
+        return Vector3(
             requestedContentPosition.x - position.x,
-            requestedContentPosition.y - position.y
+            requestedContentPosition.y - position.y,
+            position.z
         )
     }
 
@@ -263,7 +267,7 @@ open class UiScrollViewNode(
     private fun update(viewPosition: Vector2) {
         content?.let { content ->
             val contentBounds = content.getContentBounding()
-            val viewBounds = getScrollBounds()
+            val viewBounds = getScrollBounds().toBounding2d()
             val alignTopLeft = Vector2(
                 viewBounds.left - contentBounds.left,
                 viewBounds.top - contentBounds.top
@@ -293,9 +297,10 @@ open class UiScrollViewNode(
         content?.let { content ->
             val contentPosition = getContentPosition()
             val contentClipping = getScrollBounds().translated(-contentPosition)
-            val clipTranslation = -Vector2(
+            val clipTranslation = -Vector3(
                 localPosition.x + contentPosition.x,
-                localPosition.y + contentPosition.y
+                localPosition.y + contentPosition.y,
+                localPosition.z + contentPosition.z
             )
             val parentClipping = clipBounds?.translated(clipTranslation)
 
@@ -303,28 +308,35 @@ open class UiScrollViewNode(
                 contentClipping
             } else {
                 val scale = localScale
-                val horizScale = if (scale.x > 0) 1 / scale.x else 0f
-                val vertScale = if (scale.y > 0) 1 / scale.y else 0f
-                val parentClippingScaled = parentClipping.scaled(horizScale, vertScale)
-                getMinBounds(contentClipping, parentClippingScaled)
+                val scaleX = if (scale.x > 0) 1 / scale.x else 0f
+                val scaleY = if (scale.y > 0) 1 / scale.y else 0f
+                val scaleZ = if (scale.z > 0) 1 / scale.z else 0f
+                val parentClippingScaled = parentClipping.scaled(scaleX, scaleY, scaleZ)
+                contentClipping.intersection(parentClippingScaled)
             }
             content.clipBounds = parentAwareClipping
         }
     }
 
-    private fun getScrollBounds(): Bounding {
+    private fun getScrollBounds(): AABB {
         val hBarHeightPx = (view as CustomScrollView).hBar?.height ?: 0
         val vBarWidthPx = (view as CustomScrollView).vBar?.width ?: 0
-
         val hBarHeightMeters = pxToMeters(hBarHeightPx, context)
         val vBarWidthPxMeters = pxToMeters(vBarWidthPx, context)
 
-        return Bounding(
-            -size.x / 2F,
-            -size.y / 2F + hBarHeightMeters,
-            size.x / 2F - vBarWidthPxMeters,
-            size.y / 2F
-        )
+        val xMin = -size.x / 2F
+        val xMax = size.x / 2F - vBarWidthPxMeters
+
+        val yMin = -size.y / 2F + hBarHeightMeters
+        val yMax = size.y / 2F
+
+        val propBounds = properties.read<AABB>(PROP_SCROLL_BOUNDS)
+        val sizeZ = propBounds?.getSize()?.z ?: DEFAULT_THICKNESS
+
+        val zMin = -sizeZ / 2
+        val zMax = sizeZ / 2
+
+        return AABB(min = Vector3(xMin, yMin, zMin), max = Vector3(xMax, yMax, zMax))
     }
 
     private fun setScrollDirection(props: Bundle) {
@@ -332,15 +344,6 @@ open class UiScrollViewNode(
         if (value != null) {
             (view as CustomScrollView).scrollDirection = value
         }
-    }
-
-    private fun getMinBounds(boundsA: Bounding, boundsB: Bounding): Bounding {
-        return Bounding(
-            left = max(boundsA.left, boundsB.left),
-            bottom = max(boundsA.bottom, boundsB.bottom),
-            right = min(boundsA.right, boundsB.right),
-            top = min(boundsA.top, boundsB.top)
-        )
     }
 
 }

@@ -249,13 +249,21 @@ class Utils {
          */
         fun applyContentNodeAlignment(node: TransformNode) {
             val bounds = node.getBounding()
+
+            val rot = node.localRotation.inverted()
+            val p1 = Vector3(bounds.left, bounds.top, node.localPosition.z).rotatedBy(rot)
+            val p2 = Vector3(bounds.left, bounds.bottom, node.localPosition.z).rotatedBy(rot)
+            val p3 = Vector3(bounds.right, bounds.bottom, node.localPosition.z).rotatedBy(rot)
+            val p4 = Vector3(bounds.right, bounds.top, node.localPosition.z).rotatedBy(rot)
+            val boundsBeforeRotation = findMinimumBounding(listOf(p1, p2, p3, p4))
+
             val contentNode = node.contentNode
 
-            val nodeWidth = bounds.right - bounds.left
-            val nodeHeight = bounds.top - bounds.bottom
-            val boundsCenterX = bounds.left + nodeWidth / 2
+            val nodeWidth = boundsBeforeRotation.right - boundsBeforeRotation.left
+            val nodeHeight = boundsBeforeRotation.top - boundsBeforeRotation.bottom
+            val boundsCenterX = boundsBeforeRotation.left + nodeWidth / 2
             val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
-            val boundsCenterY = bounds.top - nodeHeight / 2
+            val boundsCenterY = boundsBeforeRotation.top - nodeHeight / 2
             val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
 
             // calculating x and y position for content
@@ -276,7 +284,7 @@ class Utils {
             val horizontalScale = 1 / scale.x
             val verticalScale = 1 / scale.y
             val localBounds = clipBounds
-                .translate(-parent.getContentPosition())
+                .translated(-parent.getContentPosition())
                 .scaled(horizontalScale, verticalScale)
 
             parent.contentNode.children

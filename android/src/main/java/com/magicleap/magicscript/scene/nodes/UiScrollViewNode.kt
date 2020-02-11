@@ -292,12 +292,12 @@ open class UiScrollViewNode(
     private fun applyContentClipping() {
         content?.let { content ->
             val contentPosition = getContentPosition()
-            val contentClipping = getScrollBounds().translate(-contentPosition)
+            val contentClipping = getScrollBounds().translated(-contentPosition)
             val clipTranslation = -Vector2(
                 localPosition.x + contentPosition.x,
                 localPosition.y + contentPosition.y
             )
-            val parentClipping = clipBounds?.translate(clipTranslation)
+            val parentClipping = clipBounds?.translated(clipTranslation)
 
             val parentAwareClipping = if (parentClipping == null) {
                 contentClipping

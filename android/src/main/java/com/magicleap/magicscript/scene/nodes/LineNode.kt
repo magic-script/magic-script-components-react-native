@@ -108,7 +108,7 @@ class LineNode(
     }
 
     private fun applyClipBounds(clipBounds: Bounding) {
-        val localBounds = clipBounds.translate(-getContentPosition())
+        val localBounds = clipBounds.translated(-getContentPosition())
 
         val center = localBounds.center().toVector3()
         val size = localBounds.size().toVector3()

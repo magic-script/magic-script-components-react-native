@@ -58,7 +58,7 @@ data class Bounding(
     }
 
     // Get new Bounding equal to this translated by 2D vector.
-    fun translate(translation: Vector2): Bounding {
+    fun translated(translation: Vector2): Bounding {
         return Bounding(
             left + translation.x,
             bottom + translation.y,

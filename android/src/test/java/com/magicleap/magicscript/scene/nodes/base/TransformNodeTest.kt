@@ -150,6 +150,7 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
+            .withAlignment("bottom-left")
             .withRelativeContentBounds(bounds)
             .build()
         val expected = Bounding(-1F, 0F, 0F, 2F)

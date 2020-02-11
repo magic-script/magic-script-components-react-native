@@ -369,9 +369,9 @@ abstract class UiNode(
                 -size.y / 2 * localScale.y,
                 size.x / 2 * localScale.x,
                 size.y / 2 * localScale.y
-            ).translate(pivotCenterOffset)
+            ).translated(pivotCenterOffset)
 
-            val clipCollisionShape = clipBounds.translate(-getContentPosition())
+            val clipCollisionShape = clipBounds.translated(-getContentPosition())
 
             var intersection = Bounding(
                 max(nodeCollisionShape.left, clipCollisionShape.left),

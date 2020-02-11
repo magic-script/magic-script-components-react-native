@@ -29,20 +29,18 @@ data class Bounding(
     var top: Float = 0f
 ) {
     companion object {
+        private const val EPSILON = 1e-5f
+    }
 
-        private const val eps = 1e-5 // epsilon
-
-        /**
-         * Compares 2 bounds and returns true if they are the same
-         * with the accuracy of [eps]
-         */
-        fun equalInexact(a: Bounding, b: Bounding): Boolean {
-            return abs(a.left - b.left) < eps
-                    && abs(a.right - b.right) < eps
-                    && abs(a.bottom - b.bottom) < eps
-                    && abs(a.top - b.top) < eps
-
-        }
+    /**
+     * Compares the bounds with [other] and returns true if they are the same
+     * with the accuracy of [EPSILON]
+     */
+    fun equalInexact(other: Bounding): Boolean {
+        return abs(left - other.left) < EPSILON
+                && abs(right - other.right) < EPSILON
+                && abs(bottom - other.bottom) < EPSILON
+                && abs(top - other.top) < EPSILON
     }
 
     fun size(): Vector2 {

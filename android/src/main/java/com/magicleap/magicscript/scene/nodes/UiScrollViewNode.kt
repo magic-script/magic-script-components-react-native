@@ -240,7 +240,7 @@ open class UiScrollViewNode(
             content?.let { it ->
                 // check if content bounds changed
                 val newContentBounds = it.getContentBounding()
-                if (!Bounding.equalInexact(contentBounds, newContentBounds)) {
+                if (!contentBounds.equalInexact(newContentBounds)) {
                     this.contentBounds = newContentBounds
                     onContentSizeChangedListener?.invoke(newContentBounds.size())
                 }

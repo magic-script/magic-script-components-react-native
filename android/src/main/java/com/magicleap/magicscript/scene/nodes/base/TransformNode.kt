@@ -272,7 +272,7 @@ abstract class TransformNode(
         if (timeSinceLastAlignment >= ALIGNMENT_INTERVAL) {
             timeSinceLastAlignment = 0F
             val currentBounding = getBounding()
-            if (!Bounding.equalInexact(currentBounding, bounding)) {
+            if (!currentBounding.equalInexact(bounding)) {
                 // Refreshing alignment from a loop, because:
                 // - we don't know node size at beginning,
                 // - node size may have changed,

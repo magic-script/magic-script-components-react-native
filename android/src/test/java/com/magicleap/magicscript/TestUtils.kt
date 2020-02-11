@@ -26,10 +26,13 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.argThat
-import org.mockito.ArgumentMatcher
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.isCloseTo
 import kotlin.test.assertTrue
+
+private const val EPSILON = 1e-5f
 
 class NodeBuilder {
     private var props = JavaOnlyMap()
@@ -114,14 +117,22 @@ fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
 }
 
 // region Custom matchers
-infix fun Bounding.shouldEqualInexact(other: Bounding) =
-    assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
 
-fun matchesInexact(bounds: Bounding) = argThat(
-    ArgumentMatcher<Bounding> { argument ->
-        Bounding.equalInexact(argument, bounds)
-    }
-)
+infix fun Float.shouldEqualInexact(other: Float) {
+    val equal = isCloseTo(other, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Vector2.shouldEqualInexact(other: Vector2) {
+    val equal = x.isCloseTo(other.x, EPSILON) && y.isCloseTo(other.y, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Bounding.shouldEqualInexact(other: Bounding) =
+    assertTrue(equalInexact(other), "expected: $other, but was: $this")
+
+infix fun AABB.shouldEqualInexact(other: AABB) =
+    assertTrue(equalInexact(other), "expected: $other, but was: $this")
 
 fun TransformNode.forceUpdate(deltaSeconds: Float) {
     TransformNode.Test(this).forceUpdate(deltaSeconds)
@@ -178,9 +189,10 @@ fun measureChildren(
     for (i in childrenList.indices) {
         val node = childrenList[i]
         val oldBounds = childrenBounds[i] ?: Bounding()
-        childrenBounds[i] = node.getBounding()
+        val newBounds = node.getBounding()
+        childrenBounds[i] = newBounds
 
-        if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+        if (!newBounds.equalInexact(oldBounds)) {
             changed = true
         }
     }

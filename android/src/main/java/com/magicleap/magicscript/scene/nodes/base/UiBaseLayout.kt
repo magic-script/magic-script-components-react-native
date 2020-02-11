@@ -158,9 +158,10 @@ abstract class UiBaseLayout<T : LayoutParams>(
         for (i in 0 until mChildrenList.size) {
             val node = mChildrenList[i]
             val oldBounds = childrenBounds[i] ?: Bounding()
-            childrenBounds[i] = node.getBounding()
+            val newBounds = node.getBounding()
+            childrenBounds[i] = newBounds
 
-            if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+            if (!newBounds.equalInexact(oldBounds)) {
                 redrawRequested = true
             }
         }

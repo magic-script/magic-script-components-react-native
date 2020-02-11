@@ -11,7 +11,6 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
@@ -79,7 +78,7 @@ open class UiListViewItemNode(
         val content = contentNode.children.firstOrNull() as? TransformNode
         if (content != null) {
             val contentBounds = content.getBounding()
-            if (!Bounding.equalInexact(contentBounds, lastContentBounds)) {
+            if (!contentBounds.equalInexact(lastContentBounds)) {
                 val offsetX = content.localPosition.x - contentBounds.center().x
                 val offsetY = content.localPosition.y - contentBounds.center().y
                 content.localPosition = Vector3(offsetX, offsetY, CONTENT_Z_OFFSET)

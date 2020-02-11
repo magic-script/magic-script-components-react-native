@@ -37,7 +37,7 @@ import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Assert
+import org.amshove.kluent.shouldBe
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -214,7 +214,7 @@ class UiTextNodeTest {
         node.update(reactMapOf(UiTextNode.PROP_TEXT, "longer text"))
         node.build() // rebuild to update bounds
 
-        Assert.assertFalse(Bounding.equalInexact(initialBounds, node.getBounding()))
+        initialBounds.equalInexact(node.getBounding()) shouldBe false
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {

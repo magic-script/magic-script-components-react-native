@@ -153,7 +153,7 @@ open class UiDropdownListNode(
 
     private fun updateListPosition() {
         val contentBounds = getContentBounding()
-        if (!Bounding.equalInexact(contentBounds, lastContentBounds)) {
+        if (!contentBounds.equalInexact(lastContentBounds)) {
             val listX = contentBounds.left
             val listY = contentBounds.bottom - (contentBounds.top - contentBounds.bottom) / 3
             // Moving content forward, so it'll receive touch events first

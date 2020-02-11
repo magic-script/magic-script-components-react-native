@@ -106,12 +106,13 @@ class UiScrollViewNodeTest {
     }
 
     @Test
-    fun `should correctly clip the content when scrolled`() {
+    fun `should clip the content based on scroll view size`() {
         val scrollBoundsMap = getScrollBoundsMap(0.8, 0.4)
         val tested = createNodeWithViewSpy(
             reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build()
+        val expectedClipBounds = Bounding(left = -0.4f, bottom = -0.2f, right = 0.4f, top = 0.2f)
 
         val contentBounds = Bounding(left = 0f, bottom = -0.8f, right = 0.8f, top = 0f)
         val contentNode = spy(
@@ -120,10 +121,6 @@ class UiScrollViewNodeTest {
                 .build()
         )
         tested.addContent(contentNode)
-
-        // scroll vertically by 50% of possible movement
-        viewSpy.onScrollChangeListener?.invoke(Vector2(0f, 0.5f))
-        val expectedClipBounds = Bounding(left = 0f, bottom = -0.6f, right = 0.8f, top = -0.2f)
 
         contentNode.clipBounds shouldNotBe null
         contentNode.clipBounds!! shouldEqualInexact expectedClipBounds

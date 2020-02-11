@@ -159,6 +159,7 @@ open class UiScrollViewNode(
 
         if (content == null) {
             this.content = child
+            applyContentClipping()
         } else {
             child.hide()
             logMessage("ScrollView should have only one direct child", true)
@@ -278,10 +279,10 @@ open class UiScrollViewNode(
 
             requestedContentPosition = alignTopLeft + travel
 
+            // Moving content up in z-plane, so it'll receive touch events first
             val position = Vector3(requestedContentPosition.x, requestedContentPosition.y, Z_OFFSET)
 
             if (!position.equalInexact(content.localPosition, epsilon = 1e-5f)) {
-                // Moving content up in z-plane, so it'll receive touch events first.
                 content.localPosition = position
                 applyContentClipping()
             }

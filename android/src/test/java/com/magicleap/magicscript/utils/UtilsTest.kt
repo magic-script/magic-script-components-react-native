@@ -24,6 +24,7 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ModelType
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.whenever
@@ -174,36 +175,39 @@ class UtilsTest {
 
     @Test
     fun `should correctly calculate material clipping`() {
-        val clipBounds2d = Bounding(left = -1f, bottom = 0f, right = 1f, top = 3f)
+        val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
         val nodeBounds = Bounding(left = -2f, bottom = 0f, right = 2f, top = 6f)
+        val nodeZPosition = 0f
         // Fully visible node has material clipping equal to Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
         // with origin at bottom-center, so clipping must be proportional to it.
         val expectedClipping = Bounding(left = -0.25f, bottom = 0f, right = 0.25f, top = 0.5f)
 
-        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, nodeZPosition, clipBounds)
 
         clipping shouldEqualInexact expectedClipping
     }
 
     @Test
     fun `should correctly calculate material clipping (case 2)`() {
-        val clipBounds2d = Bounding(left = -1f, bottom = -2f, right = 1f, top = 2f)
+        val clipBounds = AABB(min = Vector3(-1f, -2f, -1f), max = Vector3(1f, 2f, 1f))
         val nodeBounds = Bounding(left = -10f, bottom = 0f, right = -8f, top = 1f)
-        // node should be completely invisible (all values equal to 0)
+        val nodeZPosition = 0f
+        // node should be completely invisible
         val expectedClipping = Bounding(left = 0f, bottom = 0f, right = 0f, top = 0f)
 
-        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, nodeZPosition, clipBounds)
 
         clipping shouldEqualInexact expectedClipping
     }
 
     @Test
     fun `should correctly calculate material clipping (case 3)`() {
-        val clipBounds2d = Bounding(left = 0f, bottom = 0f, right = 5f, top = 3f)
+        val clipBounds = AABB(min = Vector3(0f, 0f, -1f), max = Vector3(5f, 3f, 1f))
+        val nodeZPosition = 0f
         val nodeBounds = Bounding(left = 3f, bottom = -1f, right = 6f, top = 1f)
         val expectedClipping = Bounding(left = -0.5f, bottom = 0.5f, right = 1 / 6f, top = 1f)
 
-        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, nodeZPosition, clipBounds)
 
         clipping shouldEqualInexact expectedClipping
     }

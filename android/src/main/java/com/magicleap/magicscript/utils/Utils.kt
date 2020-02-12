@@ -179,8 +179,18 @@ class Utils {
             return Vector3.add(sum1, p3)
         }
 
-        fun calculateMaterialClipping(clipBounds: Bounding, nodeBounds: Bounding): Bounding {
-            val intersecting = !nodeBounds.intersection(clipBounds).equalInexact(Bounding())
+        fun calculateMaterialClipping(
+            nodeBounds: Bounding,
+            nodeZPosition: Float,
+            clipBounds: AABB
+        ): Bounding {
+            if (nodeZPosition !in clipBounds.min.z..clipBounds.max.z) {
+                return Bounding()
+            }
+
+            // calculate 2d clipping
+            val clipBounds2d = clipBounds.toBounding2d()
+            val intersecting = !nodeBounds.intersection(clipBounds2d).equalInexact(Bounding())
             if (!intersecting) {
                 return Bounding()
             }
@@ -193,16 +203,16 @@ class Utils {
 
             val materialClip = Bounding()
 
-            val offsetLeft = nodeBounds.left - clipBounds.left
+            val offsetLeft = nodeBounds.left - clipBounds2d.left
             materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
 
-            val offsetRight = nodeBounds.right - clipBounds.right
+            val offsetRight = nodeBounds.right - clipBounds2d.right
             materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
 
-            val offsetBottom = nodeBounds.bottom - clipBounds.bottom
+            val offsetBottom = nodeBounds.bottom - clipBounds2d.bottom
             materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
 
-            val offsetTop = nodeBounds.top - clipBounds.top
+            val offsetTop = nodeBounds.top - clipBounds2d.top
             materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
 
             return materialClip

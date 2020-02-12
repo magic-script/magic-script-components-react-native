@@ -141,9 +141,9 @@ class VideoNode(
 
     private fun applyMaterialClipping() {
         contentNode.renderable?.material?.let { material ->
-            val bounds = clipBounds
-            val materialClip = if (bounds != null) {
-                Utils.calculateMaterialClipping(bounds.toBounding2d(), getBounding())
+            val clipping = clipBounds
+            val materialClip = if (clipping != null) {
+                Utils.calculateMaterialClipping(getBounding(), localPosition.z, clipping)
             } else {
                 defaultMaterialClipping
             }

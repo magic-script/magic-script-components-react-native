@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
 package com.magicleap.magicscript.plane
 
 import com.facebook.react.bridge.*
@@ -23,6 +39,7 @@ class ARPlaneDetectorBridge private constructor() {
         private val VERTICES = "vertices"
         private val TYPE = "type"
         private val ERROR = "error"
+        private val POINT = "point"
         val PLANE_TYPE = "planeType"
         val PLANE_TYPE_VERTICAL = "vertical"
         val PLANE_TYPE_HORIZONTAL = "horizontal"
@@ -78,7 +95,7 @@ class ARPlaneDetectorBridge private constructor() {
 
     fun onPlaneTapped(plane: Plane, hitTest: HitResult) {
         val payload = mapPlanesToWritableMap(plane)
-        payload.putArray("point", objectsProvider.createArray().apply {
+        payload.putArray(POINT, objectsProvider.createArray().apply {
             pushDouble(hitTest.hitPose.tx().toDouble())
             pushDouble(hitTest.hitPose.ty().toDouble())
             pushDouble(hitTest.hitPose.tz().toDouble())
@@ -150,33 +167,24 @@ class ARPlaneDetectorBridge private constructor() {
     }
 
     private fun filterAddedPlanes(planes: List<Plane>) {
-        if (lastPlanes != null) {
-            val added = planes.minus(lastPlanes!!)
-            if (added.isNotEmpty()) {
-                added.forEach {
-                    onAddedListener?.invoke(mapPlanesToWritableMap(it))
-                }
+        lastPlanes?.let {
+            planes.minus(it).forEach {
+                onAddedListener?.invoke(mapPlanesToWritableMap(it))
             }
         }
     }
 
     private fun filterRemovedPlanes(planes: List<Plane>) {
-        if (lastPlanes != null) {
-            val removed = lastPlanes!!.minus(planes)
-            if (removed.isNotEmpty()) {
-                removed.forEach {
-                    onRemovedListener?.invoke(mapPlanesToWritableMap(it))
-                }
+        lastPlanes?.let {
+            it.minus(planes).forEach {
+                onRemovedListener?.invoke(mapPlanesToWritableMap(it))
             }
         }
     }
 
     private fun filterUpdatedPlanes(planes: List<Plane>) {
-        val updated = lastPlanes?.filter { planes.contains(it) }
-        if (updated != null && updated.isNotEmpty()) {
-            updated.forEach {
-                onUpdateListener?.invoke(mapPlanesToWritableMap(it))
-            }
+        lastPlanes?.filter { planes.contains(it) }?.forEach {
+            onUpdateListener?.invoke(mapPlanesToWritableMap(it))
         }
     }
 

@@ -47,8 +47,8 @@ public class ArPackage implements ReactPackage {
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
         ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool);
-        ARPlaneDetectorEventsManager arEventsManager = new ARPlaneDetectorEvents(reactContext);
-        ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext, arEventsManager, ARPlaneDetectorBridge.Companion.getINSTANCE());
+        ARPlaneDetectorEventsManager arPlaneEventsManager = new ARPlaneDetectorEvents(reactContext);
+        ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext, arPlaneEventsManager, ARPlaneDetectorBridge.Companion.getINSTANCE());
         return Arrays.<NativeModule>asList(arComponentManager, arPlaneDetector);
     }
 

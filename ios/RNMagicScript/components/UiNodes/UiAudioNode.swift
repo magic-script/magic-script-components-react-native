@@ -54,16 +54,22 @@ import SceneKit
     @objc var streamedFileOffset: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
-    var spatialSoundPosition: SpatialSoundPosition? {
-        didSet { soundNode.position = spatialSoundPosition?.position ?? SCNVector3Zero }
+    var spatialSoundPosition: [SpatialSoundPosition] = [] {
+        didSet {
+            guard spatialSoundPosition.isEmpty else { soundNode.position = SCNVector3Zero; return }
+            soundNode.position = spatialSoundPosition[0].position
+        }
     }
-    var spatialSoundDirection: SpatialSoundDirection? {
-        didSet { soundNode.direction = spatialSoundDirection?.direction ?? SCNQuaternionIdentity }
+    var spatialSoundDirection: [SpatialSoundDirection] = [] {
+        didSet {
+            guard spatialSoundDirection.isEmpty else { soundNode.direction = SCNQuaternionIdentity; return }
+            soundNode.direction = spatialSoundDirection[0].direction
+        }
     }
-    //var spatialSoundDistance: SpatialSoundDistance?
-    //var spatialSoundRadiation: SpatialSoundRadiation?
-    //var spatialSoundDirectSendLevels: SpatialSoundSendLevels?
-    //var spatialSoundRoomSendLevels: SpatialSoundSendLevels?
+    //var spatialSoundDistance: [SpatialSoundDistance]
+    //var spatialSoundRadiation: [SpatialSoundRadiation]
+    //var spatialSoundDirectSendLevels: [SpatialSoundSendLevels]
+    //var spatialSoundRoomSendLevels: [SpatialSoundSendLevels]
 
     fileprivate var soundNode: SoundNode!
 
@@ -104,18 +110,26 @@ import SceneKit
             self.streamedFileOffset = streamedFileOffset
         }
 
-        if let spatialSoundPositionParams = props["spatialSoundPosition"] as? [String: Any] {
-            if let channel = Convert.toInt(spatialSoundPositionParams["channel"]),
-                let position = Convert.toVector3(spatialSoundPositionParams["channelPosition"]) {
-                spatialSoundPosition = SpatialSoundPosition(channel: channel, position: position)
+        if let spatialSoundPositionParams = props["spatialSoundPosition"] as? [[String: Any]] {
+            var elements: [SpatialSoundPosition] = []
+            for param in spatialSoundPositionParams {
+                if let channel = Convert.toInt(param["channel"]),
+                    let position = Convert.toVector3(param["channelPosition"]) {
+                    elements.append(SpatialSoundPosition(channel: channel, position: position))
+                }
             }
+            spatialSoundPosition = elements
         }
 
-        if let spatialSoundDirectionParams = props["spatialSoundDirection"] as? [String: Any] {
-            if let channel = Convert.toInt(spatialSoundDirectionParams["channel"]),
-                let direction = Convert.toQuaternion(spatialSoundDirectionParams["channelDirection"]) {
-                spatialSoundDirection = SpatialSoundDirection(channel: channel, direction: direction)
+        if let spatialSoundDirectionParams = props["spatialSoundDirection"] as? [[String: Any]] {
+            var elements: [SpatialSoundDirection] = []
+            for param in spatialSoundDirectionParams {
+                if let channel = Convert.toInt(param["channel"]),
+                    let direction = Convert.toQuaternion(param["channelDirection"]) {
+                    elements.append(SpatialSoundDirection(channel: channel, direction: direction))
+                }
             }
+            spatialSoundDirection = elements
         }
 
         if let action = Convert.toAudioAction(props["action"]) {

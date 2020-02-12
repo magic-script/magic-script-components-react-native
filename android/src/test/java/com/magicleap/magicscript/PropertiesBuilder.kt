@@ -266,31 +266,33 @@ fun JavaOnlyMap.soundLooping(soundLooping: Boolean): JavaOnlyMap {
     return this
 }
 
-fun JavaOnlyMap.spatialSoundPosition(channel: Int, channelPosition: Array<Double>): JavaOnlyMap {
-    putMap(
-        "spatialSoundPosition", reactMapOf(
-            "channel", channel,
-            "channelPosition", reactArrayOf(*channelPosition)
+fun JavaOnlyMap.spatialSoundPosition(channel: Double, channelPosition: Array<Double>): JavaOnlyMap {
+    putArray(
+        "spatialSoundPosition", reactArrayOf(
+            reactMapOf(
+                "channel", channel,
+                "channelPosition", reactArrayOf(*channelPosition)
+            )
         )
     )
-
     return this
 }
 
 fun JavaOnlyMap.spatialSoundDistance(
-    channel: Int,
+    channel: Double,
     minDistance: Double,
     maxDistance: Double,
-    rolloffFactor: Int
+    rolloffFactor: Double
 ): JavaOnlyMap {
-    putMap(
-        "spatialSoundDistance", reactMapOf(
-            "channel", channel,
-            "minDistance", minDistance,
-            "maxDistance", maxDistance,
-            "rolloffFactor", rolloffFactor
+    putArray(
+        "spatialSoundDistance", reactArrayOf(
+            reactMapOf(
+                "channel", channel,
+                "minDistance", minDistance,
+                "maxDistance", maxDistance,
+                "rolloffFactor", rolloffFactor
+            )
         )
     )
-
     return this
 }

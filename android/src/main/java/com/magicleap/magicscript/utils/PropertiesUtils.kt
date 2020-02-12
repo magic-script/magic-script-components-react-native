@@ -204,23 +204,31 @@ fun readAABB(props: Bundle, propertyName: String): AABB? {
 }
 
 fun readSpatialSoundPosition(props: Bundle, propertyName: String): SpatialSoundPosition? {
-    val spatialSoundPositionBundle = props.getBundle(propertyName) ?: return null
+    val positionArray = props.getSerializable(propertyName) as? ArrayList<*> ?: return null
 
-    return SpatialSoundPosition(
-        channel = spatialSoundPositionBundle.getDouble(SpatialSoundPosition::channel.name),
-        channelPosition = spatialSoundPositionBundle.read(SpatialSoundPosition::channelPosition.name)
-    )
+    (positionArray.firstOrNull() as Bundle?)?.let { spatialSoundPosition ->
+        return SpatialSoundPosition(
+            channel = spatialSoundPosition.getDouble(SpatialSoundPosition::channel.name),
+            channelPosition = spatialSoundPosition.read(SpatialSoundPosition::channelPosition.name)
+        )
+    }
+
+    return null
 }
 
 fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundDistance? {
-    val spatialSoundDistance = props.getBundle(propertyName) ?: return null
+    val distanceArray = props.getSerializable(propertyName) as? ArrayList<*> ?: return null
 
-    return SpatialSoundDistance(
-        channel = spatialSoundDistance.getDouble(SpatialSoundDistance::channel.name),
-        maxDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::maxDistance.name).toFloat(),
-        minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
-        rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
-    )
+    (distanceArray.firstOrNull() as? Bundle)?.let { spatialSoundDistance ->
+        return SpatialSoundDistance(
+            channel = spatialSoundDistance.getDouble(SpatialSoundDistance::channel.name),
+            maxDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::maxDistance.name).toFloat(),
+            minDistance = spatialSoundDistance.getDouble(SpatialSoundDistance::minDistance.name).toFloat(),
+            rolloffFactor = spatialSoundDistance.getDouble(SpatialSoundDistance::rolloffFactor.name).toInt()
+        )
+    }
+
+    return null
 }
 
 fun readItemListPaddingMap(props: Bundle, propertyName: String): ItemListPaddingMap {

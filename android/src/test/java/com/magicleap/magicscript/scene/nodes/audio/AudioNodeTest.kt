@@ -191,7 +191,7 @@ class AudioNodeTest {
         tested.update(
             reactMapOf()
                 .spatialSoundEnable(true)
-                .spatialSoundPosition(4, arrayOf(0.0, 1.0, 2.0))
+                .spatialSoundPosition(4.0, arrayOf(0.0, 1.0, 2.0))
         )
 
         verify(audioEngine).setSoundObjectPosition(Vector3(0f, 1f, 2f))
@@ -202,7 +202,7 @@ class AudioNodeTest {
         tested.update(
             reactMapOf()
                 .spatialSoundEnable(true)
-                .spatialSoundDistance(4, 1.0, 3.0, 2)
+                .spatialSoundDistance(4.0, 1.0, 3.0, 2.0)
         )
 
         verify(audioEngine).setSoundObjectDistanceRolloffModel(

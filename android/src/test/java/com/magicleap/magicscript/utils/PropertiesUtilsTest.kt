@@ -22,14 +22,11 @@ import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.reactArrayOf
-import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.scrollBounds
-import com.magicleap.magicscript.toBundle
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBe
 import org.amshove.kluent.shouldNotBeNull
@@ -226,15 +223,11 @@ class PropertiesUtilsTest {
 
     @Test
     fun `should read SpatialSoundPosition`() {
-        val key = "spatialSoundPosition"
-        val spatialBundle = reactMapOf(
-            key, reactMapOf(
-                "channel", 4.0,
-                "channelPosition", reactArrayOf(.1f, 1.1f, 2.1f)
-            )
-        ).toBundle()
+        val bundle = reactMapOf()
+            .spatialSoundPosition(channel = 4.0, channelPosition = arrayOf(.1, 1.1, 2.1))
+            .toBundle()
 
-        val spatialSoundPosition = spatialBundle.read<SpatialSoundPosition>(key)
+        val spatialSoundPosition = bundle.read<SpatialSoundPosition>("spatialSoundPosition")
 
         spatialSoundPosition.shouldNotBeNull()
         spatialSoundPosition.channel shouldEqual 4.0
@@ -248,17 +241,11 @@ class PropertiesUtilsTest {
 
     @Test
     fun `should read SpatialSoundDistance`() {
-        val key = "spatialSoundDistance"
-        val spatialBundle = reactMapOf(
-            key, reactMapOf(
-                "channel", 4.0,
-                "minDistance", 1.0,
-                "maxDistance", 3.0,
-                "rolloffFactor", 2
-            )
-        ).toBundle()
+        val bundle = reactMapOf()
+            .spatialSoundDistance(4.0, 1.0, 3.0, 2.0)
+            .toBundle()
 
-        val spatialSoundDistance = spatialBundle.read<SpatialSoundDistance>(key)
+        val spatialSoundDistance = bundle.read<SpatialSoundDistance>("spatialSoundDistance")
 
         spatialSoundDistance.shouldNotBeNull()
         spatialSoundDistance.channel shouldEqual 4.0

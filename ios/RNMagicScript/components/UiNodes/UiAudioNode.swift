@@ -55,16 +55,10 @@ import SceneKit
         didSet { setNeedsLayout() }
     }
     var spatialSoundPosition: [SpatialSoundPosition] = [] {
-        didSet {
-            guard spatialSoundPosition.isEmpty else { soundNode.position = SCNVector3Zero; return }
-            soundNode.position = spatialSoundPosition[0].position
-        }
+        didSet { soundNode.position = spatialSoundPosition.first?.position ?? SCNVector3Zero }
     }
     var spatialSoundDirection: [SpatialSoundDirection] = [] {
-        didSet {
-            guard spatialSoundDirection.isEmpty else { soundNode.direction = SCNQuaternionIdentity; return }
-            soundNode.direction = spatialSoundDirection[0].direction
-        }
+        didSet { soundNode.direction = spatialSoundDirection.first?.direction ?? SCNQuaternionIdentity }
     }
     //var spatialSoundDistance: [SpatialSoundDistance]
     //var spatialSoundRadiation: [SpatialSoundRadiation]

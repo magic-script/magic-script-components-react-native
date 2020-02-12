@@ -40,8 +40,8 @@ class UiAudioNodeSpec: QuickSpec {
                     expect(node.soundVolumeLinear).to(beCloseTo(8))
                     expect(node.spatialSoundEnable).to(beFalse())
                     expect(node.streamedFileOffset).to(beCloseTo(0))
-                    expect(node.spatialSoundPosition).to(beNil())
-                    expect(node.spatialSoundDirection).to(beNil())
+                    expect(node.spatialSoundPosition.isEmpty).to(beTrue())
+                    expect(node.spatialSoundDirection.isEmpty).to(beTrue())
                 }
             }
 
@@ -104,35 +104,37 @@ class UiAudioNodeSpec: QuickSpec {
                     let referenceChannel: Int = 0
                     let referencePosition = SCNVector3(1, 2, 3)
                     node.update([
-                        "spatialSoundPosition" : [
+                        "spatialSoundPosition" : [[
                             "channel": referenceChannel,
                             "channelPosition": [referencePosition.x, referencePosition.y, referencePosition.z]
-                        ]
+                        ]]
                     ])
-                    expect(node.spatialSoundPosition?.channel).to(equal(referenceChannel))
-                    expect(node.spatialSoundPosition?.position).to(beCloseTo(referencePosition))
+                    expect(node.spatialSoundPosition[0].channel).to(equal(referenceChannel))
+                    expect(node.spatialSoundPosition[0].position).to(beCloseTo(referencePosition))
                     expect(node.isLayoutNeeded).to(beFalse())
 
-                    node.spatialSoundPosition = nil
-                    expect(node.spatialSoundPosition?.channel).to(beNil())
-                    expect(node.spatialSoundPosition?.position).to(beNil())
+                    let soundNode = self.getSoundNode(node)
+                    expect(soundNode.position).to(beCloseTo(referencePosition))
+
+                    node.spatialSoundPosition = []
+                    expect(soundNode.position).to(beCloseTo(SCNVector3Zero))
                 }
                 it("should update spatialSoundDirection value") {
                     let referenceChannel: Int = 0
                     let referenceDirection = SCNQuaternion.fromAxis(SCNVector3(0.707, 0.707, 0), andAngle: Float.pi)
                     node.update([
-                        "spatialSoundDirection" : [
+                        "spatialSoundDirection" : [[
                             "channel": referenceChannel,
                             "channelDirection": [referenceDirection.x, referenceDirection.y, referenceDirection.z, referenceDirection.w]
-                        ]
+                        ]]
                     ])
-                    expect(node.spatialSoundDirection?.channel).to(equal(referenceChannel))
-                    expect(node.spatialSoundDirection?.direction).to(beCloseTo(referenceDirection))
+                    expect(node.spatialSoundDirection[0].channel).to(equal(referenceChannel))
+                    expect(node.spatialSoundDirection[0].direction).to(beCloseTo(referenceDirection))
                     expect(node.isLayoutNeeded).to(beFalse())
 
-                    node.spatialSoundDirection = nil
-                    expect(node.spatialSoundDirection?.channel).to(beNil())
-                    expect(node.spatialSoundDirection?.direction).to(beNil())
+                    let soundNode = self.getSoundNode(node)
+                    node.spatialSoundDirection = []
+                    expect(soundNode.direction).to(beCloseTo(SCNQuaternionIdentity))
                 }
             }
 
@@ -148,7 +150,7 @@ class UiAudioNodeSpec: QuickSpec {
 
             context("debug mode") {
                 it("should set debug mode") {
-                    let soundNode: SoundNode! = node.contentNode.childNodes.first as? SoundNode
+                    let soundNode = self.getSoundNode(node)
                     expect(soundNode).notTo(beNil())
                     expect(soundNode.childNodes.isEmpty).to(beTrue())
                     node.setDebugMode(true)
@@ -160,5 +162,9 @@ class UiAudioNodeSpec: QuickSpec {
                 }
             }
         }
+    }
+
+    fileprivate func getSoundNode(_ node: UiAudioNode) -> SoundNode {
+        return node.contentNode.childNodes.first as! SoundNode
     }
 }

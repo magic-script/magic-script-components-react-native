@@ -37,8 +37,6 @@ import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
 import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -376,15 +374,7 @@ abstract class UiNode(
                 .translated(-getContentPosition())
                 .toBounding2d()
 
-            var intersection = Bounding(
-                max(nodeCollisionShape.left, clipCollisionShape.left),
-                max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
-                min(nodeCollisionShape.right, clipCollisionShape.right),
-                min(nodeCollisionShape.top, clipCollisionShape.top)
-            )
-            if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
-                intersection = Bounding()
-            }
+            val intersection = nodeCollisionShape.intersection(clipCollisionShape)
 
             // collision shape is not aware of scale, we need to scale to original position
             val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F

@@ -172,4 +172,40 @@ class UtilsTest {
         modelType shouldEqual ModelType.GLB
     }
 
+    @Test
+    fun `should correctly calculate material clipping`() {
+        val clipBounds2d = Bounding(left = -1f, bottom = 0f, right = 1f, top = 3f)
+        val nodeBounds = Bounding(left = -2f, bottom = 0f, right = 2f, top = 6f)
+        // Fully visible node has material clipping equal to Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+        // with origin at bottom-center, so clipping must be proportional to it.
+        val expectedClipping = Bounding(left = -0.25f, bottom = 0f, right = 0.25f, top = 0.5f)
+
+        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    @Test
+    fun `should correctly calculate material clipping (case 2)`() {
+        val clipBounds2d = Bounding(left = -1f, bottom = -2f, right = 1f, top = 2f)
+        val nodeBounds = Bounding(left = -10f, bottom = 0f, right = -8f, top = 1f)
+        // node should be completely invisible (all values equal to 0)
+        val expectedClipping = Bounding(left = 0f, bottom = 0f, right = 0f, top = 0f)
+
+        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    @Test
+    fun `should correctly calculate material clipping (case 3)`() {
+        val clipBounds2d = Bounding(left = 0f, bottom = 0f, right = 5f, top = 3f)
+        val nodeBounds = Bounding(left = 3f, bottom = -1f, right = 6f, top = 1f)
+        val expectedClipping = Bounding(left = -0.5f, bottom = 0.5f, right = 1 / 6f, top = 1f)
+
+        val clipping = Utils.calculateMaterialClipping(clipBounds2d, nodeBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
 }

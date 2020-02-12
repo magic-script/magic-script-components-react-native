@@ -18,6 +18,8 @@ package com.magicleap.magicscript.scene.nodes.props
 
 import com.magicleap.magicscript.utils.Vector2
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Represents bounds of a node
@@ -64,4 +66,18 @@ data class Bounding(
             top + translation.y
         )
     }
+
+    fun intersection(other: Bounding): Bounding {
+        val xMin = max(left, other.left)
+        val xMax = min(right, other.right)
+        val yMin = max(bottom, other.bottom)
+        val yMax = min(top, other.top)
+
+        if (xMin > xMax || yMin > yMax) {
+            return Bounding()
+        }
+
+        return Bounding(left = xMin, bottom = yMin, right = xMax, top = yMax)
+    }
+
 }

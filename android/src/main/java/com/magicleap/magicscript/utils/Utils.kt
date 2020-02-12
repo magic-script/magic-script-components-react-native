@@ -180,25 +180,31 @@ class Utils {
         }
 
         fun calculateMaterialClipping(clipBounds: Bounding, nodeBounds: Bounding): Bounding {
-            val materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+            val intersecting = !nodeBounds.intersection(clipBounds).equalInexact(Bounding())
+            if (!intersecting) {
+                return Bounding()
+            }
+
             val sizeX = nodeBounds.size().x
             val sizeY = nodeBounds.size().y
-
-            if (sizeX > 0) {
-                val offsetLeft = nodeBounds.left - clipBounds.left
-                materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
-
-                val offsetRight = nodeBounds.right - clipBounds.right
-                materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
+            if (sizeX <= 0f || sizeY <= 0f) {
+                return Bounding()
             }
 
-            if (sizeY > 0) {
-                val offsetBottom = nodeBounds.bottom - clipBounds.bottom
-                materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+            val materialClip = Bounding()
 
-                val offsetTop = nodeBounds.top - clipBounds.top
-                materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
-            }
+            val offsetLeft = nodeBounds.left - clipBounds.left
+            materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
+
+            val offsetRight = nodeBounds.right - clipBounds.right
+            materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
+
+            val offsetBottom = nodeBounds.bottom - clipBounds.bottom
+            materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+
+            val offsetTop = nodeBounds.top - clipBounds.top
+            materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+
             return materialClip
         }
 

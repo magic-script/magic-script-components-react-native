@@ -83,6 +83,10 @@ data class AABB(
         val zMin = max(this.min.z, other.min.z)
         val zMax = min(this.max.z, other.max.z)
 
+        if (xMin > xMax || yMin > yMax || zMin > zMax) {
+            return AABB(min = Vector3.zero(), max = Vector3.zero())
+        }
+
         return AABB(min = Vector3(xMin, yMin, zMin), max = Vector3(xMax, yMax, zMax))
     }
 

@@ -65,4 +65,24 @@ class BoundingTest {
         bounds.translated(Vector2(-1f, 1f)) shouldEqualInexact expected
     }
 
+    @Test
+    fun `should calculate intersection correctly`() {
+        val boundsA = Bounding(left = -4f, bottom = -2f, right = 3f, top = 6f)
+        val boundsB = Bounding(left = -10f, bottom = -1f, right = 10f, top = 8f)
+
+        val intersection = boundsA.intersection(boundsB)
+
+        intersection shouldEqualInexact Bounding(-4f, -1f, 3f, 6f)
+    }
+
+    @Test
+    fun `should return empty intersection`() {
+        val boundsA = Bounding(left = -4f, bottom = -2f, right = 3f, top = 6f)
+        val boundsB = Bounding(left = -40f, bottom = -2f, right = -30f, top = 6f)
+
+        val intersection = boundsA.intersection(boundsB)
+
+        intersection shouldEqualInexact Bounding(0f, 0f, 0f, 0f)
+    }
+
 }

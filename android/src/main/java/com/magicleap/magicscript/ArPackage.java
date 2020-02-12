@@ -26,6 +26,11 @@ import com.magicleap.magicscript.scene.UiNodesManager;
 import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 
+import com.magicleap.magicscript.plane.ARPlaneDetector;
+import com.magicleap.magicscript.plane.ARPlaneDetectorBridge;
+import com.magicleap.magicscript.plane.ARPlaneDetectorEvents;
+import com.magicleap.magicscript.plane.ARPlaneDetectorEventsManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -42,7 +47,9 @@ public class ArPackage implements ReactPackage {
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
         ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool);
-        return Arrays.<NativeModule>asList(arComponentManager);
+        ARPlaneDetectorEventsManager arPlaneEventsManager = new ARPlaneDetectorEvents(reactContext);
+        ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext, arPlaneEventsManager, ARPlaneDetectorBridge.Companion.getINSTANCE());
+        return Arrays.<NativeModule>asList(arComponentManager, arPlaneDetector);
     }
 
     // Deprecated from RN 0.47

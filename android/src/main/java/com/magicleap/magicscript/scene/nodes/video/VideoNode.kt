@@ -143,8 +143,7 @@ class VideoNode(
         contentNode.renderable?.material?.let { material ->
             val clipping = clipBounds
             val materialClip = if (clipping != null) {
-                val bounding2d = getBounding().toBounding2d()
-                Utils.calculateMaterialClipping(bounding2d, localPosition.z, clipping)
+                Utils.calculateMaterialClipping(getBounding(), clipping)
             } else {
                 defaultMaterialClipping
             }

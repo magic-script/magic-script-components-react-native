@@ -149,7 +149,7 @@ class ModelNode(
 
         val centerOffsetX = bounds.center().x - contentPosition.x
         val centerOffsetY = bounds.center().y - contentPosition.y
-        val centerOffsetZ = bounds.center().y - contentPosition.y
+        val centerOffsetZ = bounds.center().z - contentPosition.z
 
         return contentPosition.x + centerOffsetX in clipBounds.min.x..clipBounds.max.x
                 && contentPosition.y + centerOffsetY in clipBounds.min.y..clipBounds.max.y

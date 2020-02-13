@@ -25,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
@@ -359,36 +358,7 @@ abstract class UiNode(
         }
 
         clipBounds?.let { clipBounds ->
-            val pivotCenterOffset = Vector2(
-                -horizontalAlignment.centerOffset * size.x,
-                -verticalAlignment.centerOffset * size.y
-            )
-
-            val nodeCollisionShape = Bounding(
-                -size.x / 2 * localScale.x,
-                -size.y / 2 * localScale.y,
-                size.x / 2 * localScale.x,
-                size.y / 2 * localScale.y
-            ).translated(pivotCenterOffset)
-
-            val clipCollisionShape = clipBounds
-                .translated(-getContentPosition())
-                .toBounding2d()
-
-            val intersection = nodeCollisionShape.intersection(clipCollisionShape)
-
-            // collision shape is not aware of scale, we need to scale to original position
-            val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
-            val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
-            val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
-
-            val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
-            val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
-            val collisionShapeCenter = Vector3(centerX, centerY, 0F)
-
-            val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
-
-            contentNode.collisionShape = collisionShape
+            contentNode.collisionShape = Utils.createClippedCollisionShape(this, clipBounds)
         }
     }
 

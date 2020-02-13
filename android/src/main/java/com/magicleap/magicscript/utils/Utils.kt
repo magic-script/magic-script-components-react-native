@@ -27,6 +27,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Material
 import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
@@ -222,6 +223,45 @@ class Utils {
             materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
 
             return materialClip
+        }
+
+        fun createClippedCollisionShape(node: UiNode, clipBounds: AABB):
+                CollisionShape {
+
+            // no intersection in 3d space, returning empty box
+            if (node.getBounding().intersection(clipBounds).equalInexact(AABB())) {
+                return Box(Vector3.zero(), Vector3.zero())
+            }
+
+            val pivotCenterOffset = Vector2(
+                -node.horizontalAlignment.centerOffset * node.size.x,
+                -node.verticalAlignment.centerOffset * node.size.y
+            )
+
+            val nodeCollisionShape = Bounding(
+                -node.size.x / 2 * node.localScale.x,
+                -node.size.y / 2 * node.localScale.y,
+                node.size.x / 2 * node.localScale.x,
+                node.size.y / 2 * node.localScale.y
+            ).translated(pivotCenterOffset)
+
+            val clipCollisionShape = clipBounds
+                .translated(-node.getContentPosition())
+                .toBounding2d()
+
+            val intersection = nodeCollisionShape.intersection(clipCollisionShape)
+
+            // collision shape is not aware of scale, we need to scale to original position
+            val scale = node.localScale
+            val sizeX = if (scale.x > 0) intersection.size().x / scale.x else 0F
+            val sizeY = if (scale.y > 0) intersection.size().y / scale.y else 0F
+            val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
+
+            val centerX = if (scale.x > 0) intersection.center().x / scale.x else 0F
+            val centerY = if (scale.y > 0) intersection.center().y / scale.y else 0F
+            val collisionShapeCenter = Vector3(centerX, centerY, 0F)
+
+            return Box(collisionShapeSize, collisionShapeCenter)
         }
 
         /**

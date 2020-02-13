@@ -224,6 +224,13 @@ abstract class TransformNode(
     }
 
     /**
+     * Should return position of the content (relative to this node's parent)
+     */
+    fun getContentPosition(): Vector3 {
+        return localPosition + contentNode.localPosition
+    }
+
+    /**
      * Returns the value for a given [propertyName]
      */
     fun getProperty(propertyName: String): Any? {
@@ -249,13 +256,6 @@ abstract class TransformNode(
      */
     open fun onResume() {
 
-    }
-
-    /**
-     * Should return position of the content (relative to this node's parent)
-     */
-    open fun getContentPosition(): Vector3 {
-        return localPosition + contentNode.localPosition
     }
 
     /**

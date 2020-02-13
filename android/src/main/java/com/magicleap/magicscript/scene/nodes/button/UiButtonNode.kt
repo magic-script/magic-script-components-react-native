@@ -118,6 +118,7 @@ open class UiButtonNode(
     override fun onViewClick() {
         super.onViewClick()
         animate()
+        logMessage("button clicked")
     }
 
     override fun applyProperties(props: Bundle) {

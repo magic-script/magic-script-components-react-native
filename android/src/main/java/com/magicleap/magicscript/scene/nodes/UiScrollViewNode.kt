@@ -183,24 +183,6 @@ open class UiScrollViewNode(
         }
     }
 
-    override fun getContentPosition(): Vector3 {
-        // When translating clip bounds to node's local coordinate
-        // system we use localPositions. However due to ARCore nature
-        // localPosition of ScrollViewNode direct descendant can change
-        // randomly for some milliseconds after being written to. Thus
-        // we can't reliably use it. To solve the problem we add child
-        // localPosition to translation - the child node will subtract
-        // it in it's setClipBounds method, effectively zeroing it.
-        // Then, instead of zeroed child localPosition we use
-        // requestedContentPosition.
-        val position = content?.localPosition ?: Vector3()
-        return Vector3(
-            requestedContentPosition.x - position.x,
-            requestedContentPosition.y - position.y,
-            position.z
-        )
-    }
-
     override fun setAlignment(props: Bundle) {
         // Alignment cannot be changed for scroll view according to Lumin.
         // It is hardcoded to center-center
@@ -294,7 +276,24 @@ open class UiScrollViewNode(
 
     private fun applyContentClipping() {
         content?.let { content ->
-            val contentPosition = getContentPosition()
+
+            // When translating clip bounds to node's local coordinate
+            // system we use localPositions. However due to ARCore nature
+            // localPosition of ScrollViewNode direct descendant can change
+            // randomly for some milliseconds after being written to. Thus
+            // we can't reliably use it. To solve the problem we add child
+            // localPosition to translation - the child node will subtract
+            // it in it's setClipBounds method, effectively zeroing it.
+            // Then, instead of zeroed child localPosition we use
+            // requestedContentPosition.
+
+            val position = content.localPosition
+            val contentPosition = Vector3(
+                requestedContentPosition.x - position.x,
+                requestedContentPosition.y - position.y,
+                position.z
+            )
+
             val contentClipping = getScrollBounds().translated(-contentPosition)
             val clipTranslation = -Vector3(
                 localPosition.x + contentPosition.x,

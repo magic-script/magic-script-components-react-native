@@ -199,7 +199,7 @@ class UiDropdownListNodeTest {
             }
         }
     }
-
+    
     private fun buildDropdownItem(id: String, selected: Boolean = false): UiDropdownListItemNode {
         val props = reactMapOf().id(id).label("item $id").selected(selected)
         val item = UiDropdownListItemNode(props, fontProvider)

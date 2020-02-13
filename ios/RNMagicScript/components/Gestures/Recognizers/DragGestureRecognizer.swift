@@ -12,18 +12,29 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import Foundation
 import UIKit
 import SceneKit
+
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol DragGestureRecognizing {
+    var dragNode: Dragging? { get }
+    var beginPoint: SCNVector3  { get }
+    var dragAxis: Ray? { get }
+    var beginDragValue: CGFloat  { get }
+    var dragDelta: CGFloat { get }
+    var state: UIGestureRecognizer.State { get }
+}
 
 @objc class DragGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: NodeSelecting
     fileprivate var initialRay: Ray?
     fileprivate var rayBuilder: RayBuilding
     fileprivate(set) var dragNode: Dragging?
-    fileprivate var beginPoint: SCNVector3 = SCNVector3Zero
+    fileprivate(set) var beginPoint: SCNVector3 = SCNVector3Zero
     fileprivate(set) var dragAxis: Ray?
     fileprivate(set) var beginDragValue: CGFloat = 0
     fileprivate(set) var dragDelta: CGFloat = 0
@@ -106,3 +117,5 @@ import SceneKit
         return CGFloat(point.distance(beginPoint)) * sign
     }
 }
+
+extension DragGestureRecognizer: DragGestureRecognizing { }

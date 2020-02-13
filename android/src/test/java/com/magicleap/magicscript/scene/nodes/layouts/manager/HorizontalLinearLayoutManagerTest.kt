@@ -16,13 +16,14 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
@@ -38,7 +39,7 @@ class HorizontalLinearLayoutManagerTest {
     private lateinit var linearManager: HorizontalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
@@ -50,13 +51,16 @@ class HorizontalLinearLayoutManagerTest {
     fun setUp() {
         this.linearManager = HorizontalLinearLayoutManager()
 
+        val child1Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
+        val child2Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
+
         childrenList = listOf(
             NodeBuilder()
-                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(child1Bounds)
                 .withAlignment("center-center")
                 .build(),
             NodeBuilder()
-                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(child2Bounds)
                 .withAlignment("center-center")
                 .build()
         )
@@ -68,9 +72,10 @@ class HorizontalLinearLayoutManagerTest {
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        val bounds = linearManager.getLayoutBounds(getLayoutParams())
+        val bounding = linearManager.getLayoutBounds(getLayoutParams())
 
-        bounds shouldEqualInexact Bounding(left = 0f, bottom = -5f, right = 4.6f, top = 0f)
+        bounding.min shouldEqualInexact Vector3(0f, -5f, 0f)
+        bounding.max shouldEqualInexact Vector3(4.6f, 0f, 0f)
     }
 
     @Test

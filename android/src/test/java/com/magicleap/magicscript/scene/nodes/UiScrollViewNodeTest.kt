@@ -74,11 +74,11 @@ class UiScrollViewNodeTest {
             reactMapOf(UiScrollViewNode.PROP_SCROLL_BOUNDS, scrollBoundsMap)
         )
         tested.build() // need to recreate the view
-        val expectedBounds = Bounding(-0.8f, -0.2f, 0.8f, 0.2f)
 
-        val bounds = tested.getBounding()
+        val bounding = tested.getBounding()
 
-        bounds shouldEqualInexact expectedBounds
+        bounding.min shouldEqualInexact Vector3(-0.8f, -0.2f, 0f)
+        bounding.max shouldEqualInexact Vector3(0.8f, 0.2f, 0f)
     }
 
     @Test
@@ -117,8 +117,7 @@ class UiScrollViewNodeTest {
             min = Vector3(-0.4f, -0.2f, -0.1f),
             max = Vector3(0.4f, 0.2f, 0.1f)
         )
-
-        val contentBounds = Bounding(left = 0f, bottom = -0.8f, right = 0.8f, top = 0f)
+        val contentBounds = AABB(min= Vector3(0f, -0.8f, 0f), max=Vector3(0.8f, 0f, 0f))
         val contentNode = spy(
             NodeBuilder()
                 .withRelativeContentBounds(contentBounds)

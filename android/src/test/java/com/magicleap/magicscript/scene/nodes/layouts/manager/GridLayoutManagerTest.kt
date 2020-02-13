@@ -1,12 +1,13 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 import org.junit.Assert.assertEquals
@@ -22,7 +23,7 @@ class GridLayoutManagerTest {
     private lateinit var manager: GridLayoutManager
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var columns = 0
@@ -36,8 +37,9 @@ class GridLayoutManagerTest {
     fun setUp() {
         manager = GridLayoutManager()
 
-        val child1Bounds = Bounding(0f, 0f, 2f, 1f)
-        val child2Bounds = Bounding(0f, 0f, 1f, 1f)
+        val child1Bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 1f, 0f))
+        val child2Bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 0f))
+
         val child1 = NodeBuilder().withRelativeContentBounds(child1Bounds).build()
         val child2 = NodeBuilder().withRelativeContentBounds(child2Bounds).build()
         childrenList = listOf(child1, child2)

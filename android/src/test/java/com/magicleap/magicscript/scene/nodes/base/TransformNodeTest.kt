@@ -20,8 +20,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.*
@@ -132,68 +132,67 @@ class TransformNodeTest {
 
     @Test
     fun `get bounding should return content bounding with position offset`() {
-        val bounds = Bounding(-2F, -2F, 2F, 2F)
+        val bounds = AABB(min = Vector3(-2f, -2f, 0f), max = Vector3(2f, 2f, 0f))
         val node = NodeBuilder()
             .withPosition(2.0, 5.0, 0.0)
             .withRelativeContentBounds(bounds)
             .build()
-        val expected = Bounding(0F, 3F, 4F, 7F)
 
-        val result = node.getBounding()
+        val bounding = node.getBounding()
 
-        result shouldEqualInexact expected
+        bounding.min shouldEqualInexact Vector3(0f, 3f, 0f)
+        bounding.max shouldEqualInexact Vector3(4f, 7f, 0f)
     }
 
     @Test
     fun `should return correct bounding when rotated 90 degrees around Z`() {
-        val bounds = Bounding(0F, 0F, 2F, 1F)
+        val bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 1f, 0f))
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
             .withAlignment("bottom-left")
             .withRelativeContentBounds(bounds)
             .build()
-        val expected = Bounding(-1F, 0F, 0F, 2F)
 
-        val result = node.getBounding()
+        val bounding = node.getBounding()
 
-        result shouldEqualInexact expected
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(0f, 2f, 0f)
     }
 
     @Test
     fun `should return zero-width bounding when rotated 90 degrees around Y`() {
-        val bounds = Bounding(-1F, -1F, 1F, 1F)
+        val bounds = AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 1f, 0f))
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
             .withRelativeContentBounds(bounds)
             .build()
-        val expected = Bounding(0F, -1F, 0F, 1F)
 
-        val result = node.getBounding()
+        val bounding = node.getBounding()
 
-        result shouldEqualInexact expected
+        bounding.min shouldEqualInexact Vector3(0f, -1f, -1f)
+        bounding.max shouldEqualInexact Vector3(0f, 1f, 1f)
     }
 
     @Test
     fun `should return zero-height bounding when rotated 90 degrees around X`() {
-        val bounds = Bounding(-1F, -1F, 1F, 1F)
+        val bounds = AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 1f, 0f))
         val node = NodeBuilder()
             .withPosition(0.0, 0.0, 0.0)
             .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
             .withRelativeContentBounds(bounds)
             .build()
-        val expected = Bounding(-1F, 0F, 1F, 0F)
 
-        val result = node.getBounding()
+        val bounding = node.getBounding()
 
-        result shouldEqualInexact expected
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, -1f)
+        bounding.max shouldEqualInexact Vector3(1f, 0f, 1f)
     }
 
     @Test
     fun `should align content node when using content node alignment`() {
-        val bounds = Bounding(-2F, -5F, 2F, 5F)
-
+        val bounds = AABB(min = Vector3(-2f, -5f, 0f), max = Vector3(2f, 5f, 0f))
         val node = NodeBuilder()
             .withAlignment("top-right")
             .withRelativeContentBounds(bounds)
@@ -206,7 +205,7 @@ class TransformNodeTest {
 
     @Test
     fun `should return proper content position`() {
-        val bounds = Bounding(-2F, -1F, 2F, 1F)
+        val bounds = AABB(min = Vector3(-2f, -1f, 0f), max = Vector3(2f, 1f, 0f))
         val node = NodeBuilder()
             .withPosition(5.0, 3.0, 0.0)
             .withAlignment("bottom-right")

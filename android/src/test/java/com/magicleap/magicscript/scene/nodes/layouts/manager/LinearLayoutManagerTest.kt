@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.measureChildren
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -38,7 +39,7 @@ class LinearLayoutManagerTest {
 
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var orientation: String = ORIENTATION_VERTICAL
@@ -53,13 +54,16 @@ class LinearLayoutManagerTest {
         this.horizontalManager = mock()
         this.linearManager = LinearLayoutManager(verticalManager, horizontalManager)
 
+        val child1Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
+        val child2Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
+
         childrenList = listOf(
             NodeBuilder()
-                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(child1Bounds)
                 .withAlignment("center-center")
                 .build(),
             NodeBuilder()
-                .withRelativeContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+                .withRelativeContentBounds(child2Bounds)
                 .withAlignment("center-center")
                 .build()
         )

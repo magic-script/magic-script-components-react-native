@@ -88,22 +88,22 @@ class UtilsTest {
         val center = Vector3.zero()
         val size = Vector3(2f, 4f, 0.2f)
         val collisionShape = Box(size, center)
-        val expectedBounding = Bounding(left = -2f, bottom = 0f, right = 0f, top = 4f)
 
         val bounding = Utils.calculateBoundsOfNode(node, collisionShape)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(-2f, 0f, 0.9f)
+        bounding.max shouldEqualInexact Vector3(0f, 4f, 1.1f)
     }
 
     @Test
     fun `should return bounding based on position only when there is no collision shape`() {
         val node = Node()
         node.localPosition = Vector3(1f, 1f, 1f)
-        val expectedBounding = Bounding(left = 1f, bottom = 1f, right = 1f, top = 1f)
 
         val bounding = Utils.calculateBoundsOfNode(node, null)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 1f, 1f)
+        bounding.max shouldEqualInexact Vector3(1f, 1f, 1f)
     }
 
     @Test
@@ -114,45 +114,44 @@ class UtilsTest {
         testNode1.localPosition = Vector3(1f, 2f, 3f)
         testNode2.localPosition = Vector3(10f, 20f, 30f)
         testNode3.localPosition = Vector3(100f, 200f, 300f)
-        val expectedBounding = Bounding(left = 1f, bottom = 2f, right = 100f, top = 200f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode1, testNode2, testNode3))
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 2f, 3f)
+        bounding.max shouldEqualInexact Vector3(100f, 200f, 300f)
     }
 
     @Test
     fun `should return empty bounding when list of nodes is empty`() {
         val bounding = Utils.calculateSumBounds(emptyList())
-        val expectedBounding = Bounding(0f, 0f, 0f, 0f)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding shouldEqualInexact AABB(Vector3.zero(), Vector3.zero())
     }
 
     @Test
     fun `should return first node bounding if list contains only one node`() {
         val testNode = Node()
         testNode.localPosition = Vector3(1f, 1f, 1f)
-        val expectedBounding = Bounding(1f, 1f, 1f, 1f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode))
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 1f, 1f)
+        bounding.max shouldEqualInexact Vector3(1f, 1f, 1f)
     }
 
     @Test
     fun `should return minimum bounding for list of points`() {
         val points = listOf(
-            Vector3(-1f, 2f, 0f),
+            Vector3(-1f, 2f, -4f),
             Vector3(-1f, -1f, 0f),
-            Vector3(4f, -1f, 0f),
+            Vector3(4f, -1f, 7f),
             Vector3(5f, 4f, 0f)
         )
-        val expectedBounding = Bounding(-1f, -1f, 5f, 4f)
 
         val bounding = Utils.findMinimumBounding(points)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(-1f, -1f, -4f)
+        bounding.max shouldEqualInexact Vector3(5f, 4f, 7f)
     }
 
     @Test

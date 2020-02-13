@@ -32,13 +32,14 @@ import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.equalInexact
 import com.magicleap.magicscript.utils.isCloseTo
+import com.magicleap.magicscript.utils.plus
 import kotlin.test.assertTrue
 
 private const val EPSILON = 1e-5f
 
 class NodeBuilder {
     private var props = JavaOnlyMap()
-    private var contentBounding = Bounding()
+    private var contentBounding = AABB()
 
     fun withProps(initProps: JavaOnlyMap): NodeBuilder {
         props = initProps
@@ -66,7 +67,7 @@ class NodeBuilder {
     /**
      * Content bounds relative to content node position.
      */
-    fun withRelativeContentBounds(bounds: Bounding): NodeBuilder {
+    fun withRelativeContentBounds(bounds: AABB): NodeBuilder {
         contentBounding = bounds
         return this
     }
@@ -83,13 +84,11 @@ class NodeBuilder {
 
     fun build(): TransformNode {
         val node = object : TransformNode(props, false, true) {
-            override fun getContentBounding(): Bounding {
-                return Bounding(
-                    left = contentBounding.left + contentNode.localPosition.x,
-                    bottom = contentBounding.bottom + contentNode.localPosition.y,
-                    right = contentBounding.right + contentNode.localPosition.x,
-                    top = contentBounding.top + contentNode.localPosition.y
-                )
+            override fun getContentBounding(): AABB {
+                val minEdge = contentBounding.min + contentNode.localPosition
+                val maxEdge = contentBounding.max + contentNode.localPosition
+
+                return AABB(minEdge, maxEdge)
             }
         }
         node.build()
@@ -166,7 +165,7 @@ fun UiNode.performClick() {
  */
 fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, Bounding>,
+    childrenBounds: MutableMap<Int, AABB>,
     layoutParams: T,
     maxIterations: Int
 ) {
@@ -190,12 +189,12 @@ fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
  */
 fun measureChildren(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, Bounding>
+    childrenBounds: MutableMap<Int, AABB>
 ): Boolean {
     var changed = false
     for (i in childrenList.indices) {
         val node = childrenList[i]
-        val oldBounds = childrenBounds[i] ?: Bounding()
+        val oldBounds = childrenBounds[i] ?: AABB()
         val newBounds = node.getBounding()
         childrenBounds[i] = newBounds
 

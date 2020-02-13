@@ -26,7 +26,6 @@ import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
@@ -81,7 +80,7 @@ class ModelNode(
         applyClipBounds()
     }
 
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         return if (isVisible) {
             Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
         } else { // calculate bounding based on [renderableCopy]
@@ -136,20 +135,25 @@ class ModelNode(
 
     private fun applyClipBounds() {
         clipBounds?.let {
-            val contentPosition = getContentPosition()
-            val bounds = getBounding()
-            val centerOffsetX = bounds.center().x - contentPosition.x
-            val centerOffsetY = bounds.center().y - contentPosition.y
-
-            if (contentPosition.x + centerOffsetX in it.min.x..it.max.x
-                && contentPosition.y + centerOffsetY in it.min.y..it.max.y
-                && contentPosition.z + centerOffsetY in it.min.z..it.max.z
-            ) {
+            if (insideClipBounds(it)) {
                 show()
             } else {
                 hide()
             }
         }
+    }
+
+    private fun insideClipBounds(clipBounds: AABB): Boolean {
+        val contentPosition = getContentPosition()
+        val bounds = getBounding()
+
+        val centerOffsetX = bounds.center().x - contentPosition.x
+        val centerOffsetY = bounds.center().y - contentPosition.y
+        val centerOffsetZ = bounds.center().y - contentPosition.y
+
+        return contentPosition.x + centerOffsetX in clipBounds.min.x..clipBounds.max.x
+                && contentPosition.y + centerOffsetY in clipBounds.min.y..clipBounds.max.y
+                && contentPosition.z + centerOffsetZ in clipBounds.min.z..clipBounds.max.z
     }
 
 }

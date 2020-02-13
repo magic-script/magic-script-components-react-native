@@ -30,7 +30,6 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.*
@@ -67,7 +66,7 @@ open class UiScrollViewNode(
 
     var onScrollChangeListener: ((position: Float) -> Unit)? = null
 
-    protected var onContentSizeChangedListener: ((contentSize: Vector2) -> Unit)? = null
+    protected var onContentSizeChangedListener: ((contentSize: Vector3) -> Unit)? = null
 
     protected var vBarNode: UiScrollBarNode? = null
         private set
@@ -76,7 +75,7 @@ open class UiScrollViewNode(
         private set
 
     private var content: TransformNode? = null
-    private var contentBounds = Bounding()
+    private var contentBounds = AABB()
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
@@ -107,7 +106,7 @@ open class UiScrollViewNode(
     override fun provideDesiredSize(): Vector2 {
         val propBounds = properties.read<AABB>(PROP_SCROLL_BOUNDS)
         return if (propBounds != null) {
-            val size = propBounds.getSize()
+            val size = propBounds.size()
             Vector2(size.x, size.y)
         } else {
             Vector2(DEFAULT_WIDTH, DEFAULT_HEIGHT)
@@ -217,13 +216,13 @@ open class UiScrollViewNode(
         looperHandler.removeCallbacksAndMessages(null)
     }
 
-    protected fun calculateBarThickness(containerSize: Vector2): Float {
-        val parentBasedThickness = min(containerSize.x, containerSize.y) * BAR_THICKNESS_RATIO
+    protected fun calculateBarThickness(containerWidth: Float, containerHeight: Float): Float {
+        val parentBasedThickness = min(containerWidth, containerHeight) * BAR_THICKNESS_RATIO
         return max(parentBasedThickness, BAR_MINIMUM_THICKNESS)
     }
 
     private fun setupScrollBar(scrollBarNode: UiScrollBarNode) {
-        val thickness = calculateBarThickness(size)
+        val thickness = calculateBarThickness(size.x, size.y)
         val thicknessPx = metersToPx(thickness, context)
         val barToSetup: CustomScrollBar? =
             if (scrollBarNode.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
@@ -266,7 +265,7 @@ open class UiScrollViewNode(
 
     private fun update(viewPosition: Vector2) {
         content?.let { content ->
-            val contentBounds = content.getContentBounding()
+            val contentBounds = content.getContentBounding().toBounding2d()
             val viewBounds = getScrollBounds().toBounding2d()
             val alignTopLeft = Vector2(
                 viewBounds.left - contentBounds.left,
@@ -331,7 +330,7 @@ open class UiScrollViewNode(
         val yMax = size.y / 2F
 
         val propBounds = properties.read<AABB>(PROP_SCROLL_BOUNDS)
-        val sizeZ = propBounds?.getSize()?.z ?: DEFAULT_THICKNESS
+        val sizeZ = propBounds?.size()?.z ?: DEFAULT_THICKNESS
 
         val zMin = -sizeZ / 2
         val zMax = sizeZ / 2

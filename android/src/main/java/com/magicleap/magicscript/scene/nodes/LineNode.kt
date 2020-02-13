@@ -29,7 +29,6 @@ import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
 
 // Node that represents a chain of lines
@@ -56,7 +55,7 @@ class LineNode(
     private val colorDefault = Color(1f, 1f, 1f)
 
     private var renderableCopies = mutableListOf<Renderable?>()
-    private var linesBounding = Bounding()
+    private var linesBounding = AABB()
     private var clipBox = BoundingBox(
         Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE),
         Vector3()
@@ -81,13 +80,11 @@ class LineNode(
     }
 
 
-    override fun getContentBounding(): Bounding {
-        return Bounding(
-            linesBounding.left + contentNode.localPosition.x,
-            linesBounding.bottom + contentNode.localPosition.y,
-            linesBounding.right + contentNode.localPosition.x,
-            linesBounding.top + contentNode.localPosition.y
-        )
+    override fun getContentBounding(): AABB {
+        val minEdge = linesBounding.min + contentNode.localPosition
+        val maxEdge = linesBounding.max + contentNode.localPosition
+
+        return AABB(minEdge, maxEdge)
     }
 
     override fun setAlignment(props: Bundle) {
@@ -111,7 +108,7 @@ class LineNode(
     private fun applyClipBounds(clipBounds: AABB) {
         val localBounds = clipBounds.translated(-getContentPosition())
         val center = (localBounds.min + localBounds.max) / 2f
-        clipBox = BoundingBox(localBounds.getSize(), center)
+        clipBox = BoundingBox(localBounds.size(), center)
 
         drawLines(clipBox)
     }

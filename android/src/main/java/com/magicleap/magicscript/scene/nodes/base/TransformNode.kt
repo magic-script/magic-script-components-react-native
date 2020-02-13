@@ -26,7 +26,6 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
 import kotlin.properties.Delegates
 
@@ -112,7 +111,7 @@ abstract class TransformNode(
     protected var updatingProperties = false
         private set
 
-    private var bounding = Bounding(0F, 0F, 0F, 0F) // default
+    private var bounding = AABB() // default
 
     private var timeSinceLastAlignment = 0F
 
@@ -193,34 +192,34 @@ abstract class TransformNode(
      * Returns 2D bounding of the node (the minimum rectangle
      * that includes the node).
      */
-    fun getBounding(): Bounding {
+    fun getBounding(): AABB {
         val contentBounds = getContentBounding()
 
-        // bounding vertices
-        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z)
-            .rotatedBy(localRotation)
-        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z)
-            .rotatedBy(localRotation)
-        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z)
-            .rotatedBy(localRotation)
-        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z)
-            .rotatedBy(localRotation)
+        val minEdgeRotated = contentBounds.min.rotatedBy(localRotation)
+        val maxEdgeRotated = contentBounds.max.rotatedBy(localRotation)
 
-        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
+        val minimumBounds = Utils.findMinimumBounding(listOf(minEdgeRotated, maxEdgeRotated))
 
-        return Bounding(
-            left = minimumBounds.left * localScale.x + localPosition.x,
-            bottom = minimumBounds.bottom * localScale.y + localPosition.y,
-            right = minimumBounds.right * localScale.x + localPosition.x,
-            top = minimumBounds.top * localScale.y + localPosition.y
+        val minEdge = Vector3(
+            minimumBounds.min.x * localScale.x + localPosition.x,
+            minimumBounds.min.y * localScale.y + localPosition.y,
+            minimumBounds.min.z * localScale.z + localPosition.z
         )
+
+        val maxEdge = Vector3(
+            minimumBounds.max.x * localScale.x + localPosition.x,
+            minimumBounds.max.y * localScale.y + localPosition.y,
+            minimumBounds.max.z * localScale.z + localPosition.z
+        )
+
+        return AABB(minEdge, maxEdge)
     }
 
     /**
      * Should return 2D bounding of the [contentNode] (relative to
      * the parent node position).
      */
-    open fun getContentBounding(): Bounding {
+    open fun getContentBounding(): AABB {
         return Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
     }
 

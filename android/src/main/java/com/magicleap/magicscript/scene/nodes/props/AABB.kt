@@ -49,8 +49,15 @@ data class AABB(
         return min.equalInexact(other.min, EPSILON) && max.equalInexact(other.max, EPSILON)
     }
 
-    fun getSize(): Vector3 {
+    fun size(): Vector3 {
         return Vector3(max.x - min.x, max.y - min.y, max.z - min.z)
+    }
+
+    fun center(): Vector3 {
+        val x = (min.x + max.x) / 2f
+        val y = (min.y + max.y) / 2f
+        val z = (min.z + max.z) / 2f
+        return Vector3(x, y, z)
     }
 
     /**

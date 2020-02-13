@@ -11,7 +11,7 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
@@ -37,7 +37,7 @@ open class UiListViewItemNode(
             setNeedsRebuild(true)
         }
 
-    private var lastContentBounds = Bounding()
+    private var lastContentBounds = AABB()
 
     init {
         properties.putDefault(PROP_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR)

@@ -18,8 +18,9 @@ package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.plus
 
 /**
  * Container for other Nodes (<view>)
@@ -32,14 +33,12 @@ import com.magicleap.magicscript.utils.Utils
 open class GroupNode(initProps: ReadableMap) :
     TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
 
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         val childBounds = Utils.calculateSumBounds(contentNode.children)
-        return Bounding(
-            childBounds.left + contentNode.localPosition.x,
-            childBounds.bottom + contentNode.localPosition.y,
-            childBounds.right + contentNode.localPosition.x,
-            childBounds.top + contentNode.localPosition.y
-        )
+        val minEdge = childBounds.min + contentNode.localPosition
+        val maxEdge = childBounds.max + contentNode.localPosition
+
+        return AABB(minEdge, maxEdge)
     }
 }
 

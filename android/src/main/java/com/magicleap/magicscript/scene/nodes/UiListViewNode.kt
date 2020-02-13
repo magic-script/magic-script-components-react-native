@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
@@ -47,7 +48,7 @@ open class UiListViewNode(
     }
 
     private var contentAdded = false
-    private var contentSize = Vector2()
+    private var contentSize = Vector3()
 
     init {
         val containerProps = JavaOnlyMap()
@@ -90,14 +91,18 @@ open class UiListViewNode(
         val width = if (size.x != WRAP_CONTENT_DIMENSION) {
             size.x
         } else {
-            val vBarThickness = if (vBarNode != null) calculateBarThickness(contentSize) else 0F
+            val vBarThickness = if (vBarNode != null) {
+                calculateBarThickness(contentSize.x, contentSize.y)
+            } else 0F
             contentSize.x + vBarThickness
         }
 
         val height = if (size.y != WRAP_CONTENT_DIMENSION) {
             size.y
         } else {
-            val hBarThickness = if (hBarNode != null) calculateBarThickness(contentSize) else 0F
+            val hBarThickness = if (hBarNode != null) {
+                calculateBarThickness(contentSize.x, contentSize.y)
+            } else 0F
             contentSize.y + hBarThickness
         }
         return Vector2(width, height)

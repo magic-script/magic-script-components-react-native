@@ -166,7 +166,7 @@ abstract class UiNode(
      * so at the beginning it's equal to 1m x 1m, which is usually incorrect and cause
      * layouts artifacts
      */
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         val centerX = contentNode.localPosition.x
         val centerY = contentNode.localPosition.y
 
@@ -176,11 +176,12 @@ abstract class UiNode(
         val offsetX = -horizontalAlignment.centerOffset * size.x
         val offsetY = -verticalAlignment.centerOffset * size.y
 
-        val left = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
-        val right = centerX * scaleX + (size.x * scaleX) / 2 + offsetX
-        val top = centerY * scaleY + (size.y * scaleY) / 2 + offsetY
-        val bottom = centerY * scaleY - (size.y * scaleY) / 2 + offsetY
-        return Bounding(left, bottom, right, top)
+        val xMin = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
+        val xMax = centerX * scaleX + (size.x * scaleX) / 2 + offsetX
+        val yMin = centerY * scaleY - (size.y * scaleY) / 2 + offsetY
+        val yMax = centerY * scaleY + (size.y * scaleY) / 2 + offsetY
+
+        return AABB(min = Vector3(xMin, yMin, 0f), max = Vector3(xMax, yMax, 0f))
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
@@ -343,7 +344,8 @@ abstract class UiNode(
         contentNode.renderable?.material?.let { material ->
             val clipping = clipBounds
             val materialClip = if (clipping != null) {
-                Utils.calculateMaterialClipping(getBounding(), localPosition.z, clipping)
+                val bounding2d = getBounding().toBounding2d()
+                Utils.calculateMaterialClipping(bounding2d, localPosition.z, clipping)
             } else {
                 defaultMaterialClipping
             }

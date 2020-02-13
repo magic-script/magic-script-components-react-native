@@ -23,7 +23,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiBaseLayout<T : LayoutParams>(
@@ -57,7 +57,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
     private var redrawRequested = false
 
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
@@ -157,7 +157,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
     private fun measureChildren() {
         for (i in 0 until mChildrenList.size) {
             val node = mChildrenList[i]
-            val oldBounds = childrenBounds[i] ?: Bounding()
+            val oldBounds = childrenBounds[i] ?: AABB()
             val newBounds = node.getBounding()
             childrenBounds[i] = newBounds
 

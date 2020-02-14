@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript
 
+import android.content.Context
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.MotionEvent
@@ -23,23 +24,22 @@ import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.equalInexact
-import com.magicleap.magicscript.utils.isCloseTo
-import com.magicleap.magicscript.utils.plus
+import com.magicleap.magicscript.utils.*
+import com.nhaarman.mockitokotlin2.mock
 import kotlin.test.assertTrue
 
 private const val EPSILON = 1e-5f
 
-class NodeBuilder {
-    private var props = JavaOnlyMap()
-    private var contentBounding = AABB()
+open class NodeBuilder {
+    protected var props = JavaOnlyMap()
+    protected var contentBounding = AABB()
 
     fun withProps(initProps: JavaOnlyMap): NodeBuilder {
         props = initProps
@@ -65,7 +65,7 @@ class NodeBuilder {
     }
 
     /**
-     * Content bounds relative to content node position.
+     * Content bounds relative to content node position
      */
     fun withRelativeContentBounds(bounds: AABB): NodeBuilder {
         contentBounding = bounds
@@ -82,7 +82,7 @@ class NodeBuilder {
         return this
     }
 
-    fun build(): TransformNode {
+    open fun build(): TransformNode {
         val node = object : TransformNode(props, false, true) {
             override fun getContentBounding(): AABB {
                 val minEdge = contentBounding.min + contentNode.localPosition
@@ -90,6 +90,36 @@ class NodeBuilder {
 
                 return AABB(minEdge, maxEdge)
             }
+        }
+        node.build()
+        return node
+    }
+}
+
+class UiNodeBuilder(
+    private val context: Context,
+    private val viewRenderableLoader: ViewRenderableLoader? = null
+) : NodeBuilder() {
+
+    override fun build(): UiNode {
+        val node = object : UiNode(props, context, viewRenderableLoader ?: mock()) {
+
+            override fun provideView(context: Context): View {
+                return View(context)
+            }
+
+            override fun provideDesiredSize(): Vector2 {
+                val size = contentBounding.max - contentBounding.min
+                return Vector2(size.x, size.y)
+            }
+
+            override fun getContentBounding(): AABB {
+                val minEdge = contentBounding.min + contentNode.localPosition
+                val maxEdge = contentBounding.max + contentNode.localPosition
+
+                return AABB(minEdge, maxEdge)
+            }
+
         }
         node.build()
         return node

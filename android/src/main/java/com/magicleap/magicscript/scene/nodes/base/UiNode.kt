@@ -358,7 +358,7 @@ abstract class UiNode(
         }
 
         clipBounds?.let { clipBounds ->
-            contentNode.collisionShape = Utils.createClippedCollisionShape(this, clipBounds)
+            contentNode.collisionShape = Utils.createClippedCollider(this, clipBounds)
         }
     }
 

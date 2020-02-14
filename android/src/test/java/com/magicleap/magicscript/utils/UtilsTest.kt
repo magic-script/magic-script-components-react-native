@@ -23,7 +23,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ModelType
+import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
@@ -172,8 +174,27 @@ class UtilsTest {
         modelType shouldEqual ModelType.GLB
     }
 
+
+    /*
+             ^
+             |
+             |
+             |
+        +---------+
+        |    |    | Node bounds
+        |    |    |
+        |    |    |
+        |  +---+  |
+        |  | | |  |
+        |  | C |  |
+        |  | | |  |
+    ----+--+---+--+--------------->
+             |
+             |
+
+     */
     @Test
-    fun `should correctly calculate material clipping`() {
+    fun `should return correct material clipping (case 1)`() {
         val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
         val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
         // Fully visible node has material clipping equal to Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
@@ -185,8 +206,77 @@ class UtilsTest {
         clipping shouldEqualInexact expectedClipping
     }
 
+    /*
+             ^
+             |
+             |
+             |
+        +---------+
+        |    |    | Clip bounds
+        |    |    |
+        |    |    |
+        |  +---+  |
+        |  | | |  |
+        |  | N |  |
+        |  | | |  |
+    ----+--+---+--+--------------->
+             |
+             |
+
+     */
     @Test
-    fun `should correctly calculate material clipping (case 2)`() {
+    fun `should not clip material when node bounds inside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        val nodeBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val expectedClipping = Bounding(left = -0.5f, bottom = 0f, right = 0.5f, top = 1f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    /*
+         ^
+         |  Clip bounds
+         +-----------------+
+         |                 |
+         |                 |
+         |            +------+
+         |            |    | | Node
+     ------------------------------->
+         |            |      |
+         |            +------+
+         |
+     */
+    @Test
+    fun `should return correct material clipping (case 2)`() {
+        val clipBounds = AABB(min = Vector3(0f, 0f, -1f), max = Vector3(5f, 3f, 1f))
+        val nodeBounds = AABB(min = Vector3(3f, -1f, 0f), max = Vector3(6f, 1f, 0f))
+        val expectedClipping = Bounding(left = -0.5f, bottom = 0.5f, right = 1 / 6f, top = 1f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+
+    /*
+                                                  ^
+                                                  |
+                                              +-------+
+                                              |   |   | Clip bounds
+             Node                             |       |
+         +-----------+                        |   |   |
+         |           |                        |   |   |
+       --+-----------+----------------------------------------------->
+                                              |   |   |
+                                              |   |   |
+                                              |   |   |
+                                              +-------+
+                                                  |
+     */
+    @Test
+    fun `should return empty material clipping horizontally outside clip bounds`() {
         val clipBounds = AABB(min = Vector3(-1f, -2f, -1f), max = Vector3(1f, 2f, 1f))
         val nodeBounds = AABB(min = Vector3(-10f, 0f, 0f), max = Vector3(-8f, 1f, 0f))
         // node should be completely invisible
@@ -197,19 +287,9 @@ class UtilsTest {
         clipping shouldEqualInexact expectedClipping
     }
 
-    @Test
-    fun `should correctly calculate material clipping (case 3)`() {
-        val clipBounds = AABB(min = Vector3(0f, 0f, -1f), max = Vector3(5f, 3f, 1f))
-        val nodeBounds = AABB(min = Vector3(3f, -1f, 0f), max = Vector3(6f, 1f, 0f))
-        val expectedClipping = Bounding(left = -0.5f, bottom = 0.5f, right = 1 / 6f, top = 1f)
-
-        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
-
-        clipping shouldEqualInexact expectedClipping
-    }
 
     @Test
-    fun `should correctly calculate material clipping (case 4)`() {
+    fun `should return empty material clipping when z position outside clip bounds`() {
         val clipBounds = AABB(min = Vector3(-4f, -4f, -1f), max = Vector3(4f, 4f, 1f))
         val nodeBounds = AABB(min = Vector3(-1f, -1f, -5f), max = Vector3(1f, 1f, -4f))
         val expectedClipping = Bounding(left = 0f, bottom = 0f, right = 0f, top = 0f)
@@ -217,6 +297,116 @@ class UtilsTest {
         val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
 
         clipping shouldEqualInexact expectedClipping
+    }
+
+    /*
+             ^
+             |
+             |
+             |
+        +---------+
+        |    |    | Node bounds
+        |    |    |
+        |    |    |
+        |  +---+  |
+        |  | | |  |
+        |  | C |  |
+        |  | | |  |
+    ----+--+---+--+--------------->
+             |
+             |
+     */
+    @Test
+    fun `should correctly create clipped collider`() {
+        val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        val node = createUiNode(nodeBounds)
+
+        val collider = Utils.createClippedCollider(node, clipBounds)
+
+        collider.center shouldEqualInexact Vector3(0f, 1.5f, 0f)
+        collider.size shouldEqualInexact Vector3(2f, 3f, 0f)
+    }
+
+
+    /*
+               ^
+               |
+               |
+               |
+          +---------+
+          |    |    | Clip bounds
+          |    |    |
+          |    |    |
+          |  +---+  |
+          |  | | |  |
+          |  | N |  |
+          |  | | |  |
+      ----+--+---+--+--------------->
+               |
+               |
+   */
+    @Test
+    fun `should create full size collider if node bounds inside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        val nodeBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val node = createUiNode(nodeBounds)
+
+        val collider = Utils.createClippedCollider(node, clipBounds)
+
+        collider.center shouldEqualInexact Vector3(0f, 1.5f, 0f)
+        collider.size shouldEqualInexact Vector3(2f, 3f, 0f)
+    }
+
+    @Test
+    fun `should create empty collider when z position outside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        val node = createUiNode(nodeBounds)
+        node.localPosition = Vector3(0f, 0f, -2f)
+
+        val collider = Utils.createClippedCollider(node, clipBounds)
+
+        collider.center shouldEqualInexact Vector3(0f, 0f, 0f)
+        collider.size shouldEqualInexact Vector3(0f, 0f, 0f)
+    }
+
+
+    /*
+          ^
+          |
+          +---------------------+
+          |                     | Node bounds (scaled)
+          |                     |
+          |                     |
+          |                     |
+          +-----------+         |
+          |           |         |
+          |           |         |
+          |Clip bounds|         |
+          |           |         |
+    ------------------+---------+------->
+          |
+          |
+          |
+     */
+    @Test
+    fun `should create correct collider when node is scaled`() {
+        val clipBounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 2f, 0f))
+        val nodeBoundsBeforeScaling = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 0f))
+        val node = createUiNode(nodeBoundsBeforeScaling)
+        node.localScale = Vector3(4f, 4f, 1f)
+
+        val collider = Utils.createClippedCollider(node, clipBounds)
+
+        collider.center shouldEqualInexact Vector3(0.25f, 0.25f, 0f)
+        collider.size shouldEqualInexact Vector3(0.5f, 0.5f, 0f)
+    }
+
+    private fun createUiNode(relativeContentBounds: AABB): UiNode {
+        return UiNodeBuilder(appContext)
+            .withRelativeContentBounds(relativeContentBounds)
+            .build() as UiNode
     }
 
 }

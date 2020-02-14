@@ -225,15 +225,20 @@ class Utils {
             return materialClip
         }
 
-        fun createClippedCollisionShape(node: UiNode, clipBounds: AABB): CollisionShape {
+        fun createClippedCollider(node: UiNode, clipBounds: AABB): Box {
             // no intersection in 3d space, returning empty box
             if (node.getBounding().intersection(clipBounds).equalInexact(AABB())) {
                 return Box(Vector3.zero(), Vector3.zero())
             }
 
+            val contentBounds = node.getContentBounding()
+
+            val relativeOffsetX = 0f // node.contentNode.localPosition.x - contentBounds.center().x
+            val relativeOffsetY = 0f // node.contentNode.localPosition.y - contentBounds.center().y
+
             val pivotCenterOffset = Vector2(
-                -node.horizontalAlignment.centerOffset * node.size.x,
-                -node.verticalAlignment.centerOffset * node.size.y
+                -node.horizontalAlignment.centerOffset * node.size.x - relativeOffsetX,
+                -node.verticalAlignment.centerOffset * node.size.y - relativeOffsetY
             )
 
             val nodeCollisionShape = Bounding(

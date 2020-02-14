@@ -17,12 +17,11 @@
 package com.magicleap.magicscript.scene.nodes.base
 
 import android.content.Context
-import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.update
-import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -48,16 +47,7 @@ class UiNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        node = object : UiNode(JavaOnlyMap(), context, viewRenderableLoader) {
-            override fun provideView(context: Context): View {
-                return mock()
-            }
-
-            override fun provideDesiredSize(): Vector2 {
-                return Vector2(0F, 0F)
-            }
-        }
-        node.build()
+        node = UiNodeBuilder(context, viewRenderableLoader).build()
     }
 
     @Test

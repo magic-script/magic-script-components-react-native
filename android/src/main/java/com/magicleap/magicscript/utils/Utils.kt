@@ -225,9 +225,7 @@ class Utils {
             return materialClip
         }
 
-        fun createClippedCollisionShape(node: UiNode, clipBounds: AABB):
-                CollisionShape {
-
+        fun createClippedCollisionShape(node: UiNode, clipBounds: AABB): CollisionShape {
             // no intersection in 3d space, returning empty box
             if (node.getBounding().intersection(clipBounds).equalInexact(AABB())) {
                 return Box(Vector3.zero(), Vector3.zero())

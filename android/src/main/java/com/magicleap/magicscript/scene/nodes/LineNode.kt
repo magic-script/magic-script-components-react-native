@@ -58,8 +58,11 @@ class LineNode(
     private var linesBounding = AABB()
     private var clipBox = BoundingBox(
         Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE),
-        Vector3()
+        Vector3.zero()
     )
+
+    private val pointsList = mutableListOf<Vector3>()
+    private val cubeLoadTasks = mutableListOf<Long>()
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -76,9 +79,7 @@ class LineNode(
 
     override fun loadRenderable() {
         drawLines(clipBox)
-        updateLinesBounding()
     }
-
 
     override fun getContentBounding(): AABB {
         val minEdge = linesBounding.min + contentNode.localPosition
@@ -114,10 +115,9 @@ class LineNode(
     }
 
     private fun drawLines(clipBox: BoundingBox) {
-        // clear the old line segments in case of update
-        for (i in contentNode.children.size - 1 downTo 0) {
-            contentNode.removeChild(contentNode.children[i])
-        }
+        // clear old lines in case of points list update
+        clearLines()
+        cancelCubeLoadTasks()
 
         // draw each line segment
         val points = properties.readVectorsList(PROP_POINTS)
@@ -130,9 +130,12 @@ class LineNode(
             if (clipped != null) {
                 val (start, end) = clipped
                 drawLineSegment(start, end, color)
+                this.pointsList.add(start)
             }
             idx++
         }
+
+        updateLinesBounding()
     }
 
     private fun clipLineSegment(start: Vector3, end: Vector3, clipBox: BoundingBox)
@@ -170,23 +173,40 @@ class LineNode(
         val direction = diff.normalized()
         val rotation = Quaternion.lookRotation(direction, Vector3.up())
         val lineSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, diff.length())
-        cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
-            if (result is RenderableResult.Success) {
-                contentNode.addChild(lineSegment)
-                if (isVisible) {
-                    lineSegment.renderable = result.renderable
-                    renderableCopies.add(result.renderable)
-                } else {
-                    renderableCopies.add(result.renderable)
+        val taskId =
+            cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
+                if (result is RenderableResult.Success) {
+                    contentNode.addChild(lineSegment)
+                    if (isVisible) {
+                        lineSegment.renderable = result.renderable
+                        renderableCopies.add(result.renderable)
+                    } else {
+                        renderableCopies.add(result.renderable)
+                    }
+                    lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
+                    lineSegment.localRotation = rotation
                 }
-                lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
-                lineSegment.localRotation = rotation
             }
-        }
+
+        cubeLoadTasks.add(taskId)
     }
 
     private fun updateLinesBounding() {
-        val points = properties.readVectorsList(PROP_POINTS)
-        linesBounding = Utils.findMinimumBounding(points)
+        linesBounding = Utils.findMinimumBounding(pointsList)
     }
+
+    private fun clearLines() {
+        for (i in contentNode.children.size - 1 downTo 0) {
+            contentNode.removeChild(contentNode.children[i])
+        }
+        pointsList.clear()
+    }
+
+    private fun cancelCubeLoadTasks() {
+        cubeLoadTasks.forEach { taskId ->
+            cubeRenderableBuilder.cancel(taskId)
+        }
+        cubeLoadTasks.clear()
+    }
+
 }

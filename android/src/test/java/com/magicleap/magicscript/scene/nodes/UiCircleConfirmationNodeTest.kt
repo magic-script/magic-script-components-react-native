@@ -109,7 +109,7 @@ class UiCircleConfirmationNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiCircleConfirmationNode {
-        return object : UiCircleConfirmationNode(props, context, mock()) {
+        return object : UiCircleConfirmationNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

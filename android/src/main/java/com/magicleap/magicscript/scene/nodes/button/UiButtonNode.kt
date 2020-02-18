@@ -20,6 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -32,10 +33,11 @@ open class UiButtonNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    materialClipper: MaterialClipper,
     private val fontProvider: FontProvider,
     private val iconsRepo: IconsRepository,
     private val clickAnimator: NodeAnimator?
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
 
     companion object {
         // properties

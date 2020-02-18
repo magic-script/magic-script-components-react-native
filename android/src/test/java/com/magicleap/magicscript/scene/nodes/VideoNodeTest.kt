@@ -52,7 +52,7 @@ class VideoNodeTest {
 
         val videoUri = "http://video.com/sample.mp4"
         val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
-        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader)
+        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader, mock())
         videoNode.build()
     }
 

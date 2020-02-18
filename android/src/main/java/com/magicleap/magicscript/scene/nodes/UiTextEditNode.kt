@@ -31,6 +31,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -44,8 +45,9 @@ open class UiTextEditNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    materialClipper: MaterialClipper,
     private val fontProvider: FontProvider
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
 
     companion object {
         // properties

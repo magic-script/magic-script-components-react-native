@@ -129,7 +129,7 @@ class UiScrollViewNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {
-        return object : UiScrollViewNode(props, context, mock()) {
+        return object : UiScrollViewNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

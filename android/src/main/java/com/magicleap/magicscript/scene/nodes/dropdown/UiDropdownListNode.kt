@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
@@ -37,10 +38,17 @@ open class UiDropdownListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    materialClipper: MaterialClipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, null),
-    Layoutable {
+) : UiButtonNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    materialClipper,
+    fontProvider,
+    iconsRepo, null
+), Layoutable {
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
@@ -72,7 +80,12 @@ open class UiDropdownListNode(
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
-        listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
+        listNode = DropdownItemsListNode(
+            listProps,
+            context,
+            ViewRenderableLoaderImpl(context),
+            materialClipper
+        )
         listNode.onListVisibilityChanged = onListVisibilityChangedListener
 
         properties.putString(PROP_ICON, ICON_NAME)

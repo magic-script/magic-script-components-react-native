@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomSlider
@@ -31,8 +32,9 @@ import com.magicleap.magicscript.utils.putDefault
 open class UiSliderNode(
     initProps: ReadableMap,
     context: Context,
-    viewRenderableLoader: ViewRenderableLoader
-) : UiNode(initProps, context, viewRenderableLoader) {
+    viewRenderableLoader: ViewRenderableLoader,
+    materialClipper: MaterialClipper
+) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
 
     companion object {
         // properties

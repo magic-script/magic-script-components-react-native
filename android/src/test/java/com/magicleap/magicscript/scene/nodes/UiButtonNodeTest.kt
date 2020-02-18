@@ -266,7 +266,8 @@ class UiButtonNodeTest {
     }
 
     private fun createTestableNode(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock(), fontProvider, iconsRepo, animator) {
+        return object :
+            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo, animator) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

@@ -110,7 +110,7 @@ class UiListViewNodeTest {
 
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {
-        return object : UiListViewNode(props, context, mock()) {
+        return object : UiListViewNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

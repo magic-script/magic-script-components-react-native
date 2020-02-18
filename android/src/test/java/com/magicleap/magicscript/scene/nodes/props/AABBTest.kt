@@ -43,7 +43,7 @@ class AABBTest {
     }
 
     @Test
-    fun `should return correct width and height`() {
+    fun `should return correct size`() {
         val tested = AABB(min = Vector3(-2f, 1f, -0.5f), max = Vector3(1f, 3f, 0.5f))
 
         tested.size() shouldEqualInexact Vector3(3f, 2f, 1f)
@@ -75,6 +75,25 @@ class AABBTest {
         val expectedBounds = Bounding(left = -2f, bottom = 1f, right = 1f, top = 3f)
 
         tested.toBounding2d() shouldEqualInexact expectedBounds
+    }
+
+    @Test
+    fun `should correctly return center`() {
+        val tested = AABB(min = Vector3(-8f, -5f, -5f), max = Vector3(4f, 3f, 9f))
+
+        val center = tested.center()
+
+        center shouldEqualInexact Vector3(-2f, -1f, 2f)
+    }
+
+    @Test
+    fun `should correctly calculate intersection of two AABBs`() {
+        val box1 = AABB(min = Vector3(-4f, -6f, -2f), max = Vector3(4f, 6f, 2f))
+        val box2 = AABB(min = Vector3(-8f, -5f, 1f), max = Vector3(2f, 3f, 33f))
+        val expected = AABB(min = Vector3(-4f, -5f, 1f), max = Vector3(2f, 3f, 2f))
+
+        box1.intersection(box2) shouldEqualInexact expected
+        box2.intersection(box1) shouldEqualInexact expected
     }
 
 }

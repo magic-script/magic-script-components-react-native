@@ -19,14 +19,18 @@ package com.magicleap.magicscript.scene.nodes.base
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.update
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeInstanceOf
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -195,6 +199,34 @@ class UiNodeTest {
 
         assertEquals(3f, contentPosition.x, EPSILON)
         assertEquals(4f, contentPosition.y, EPSILON)
+    }
+
+    @Test
+    fun `should clip collision shape when clip bounds are set`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .build()
+
+        node.clipBounds = AABB(min = Vector3(-1f, -1f, -1f), max = Vector3(1f, 1f, 1f))
+
+        val collisionShape = node.contentNode.collisionShape
+        collisionShape shouldBeInstanceOf Box::class
+        (collisionShape as Box).size shouldEqualInexact Vector3(2f, 2f, 0f)
+        collisionShape.center shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should not set collision shape after setting clip bounds if node is hidden`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .build()
+        node.hide()
+
+        node.clipBounds = AABB(min = Vector3(-1f, -1f, -1f), max = Vector3(1f, 1f, 1f))
+
+        node.contentNode.collisionShape shouldBe null
     }
 
 }

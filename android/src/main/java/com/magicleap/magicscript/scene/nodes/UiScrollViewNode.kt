@@ -26,6 +26,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -41,9 +42,15 @@ import kotlin.math.min
 open class UiScrollViewNode(
     initProps: ReadableMap,
     context: Context,
-    viewRenderableLoader: ViewRenderableLoader
-) :
-    UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
+    viewRenderableLoader: ViewRenderableLoader,
+    materialClipper: MaterialClipper
+) : UiNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    materialClipper,
+    useContentNodeAlignment = false
+) {
 
     companion object {
         // properties

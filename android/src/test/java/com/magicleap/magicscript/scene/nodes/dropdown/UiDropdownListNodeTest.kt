@@ -193,13 +193,13 @@ class UiDropdownListNodeTest {
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiDropdownListNode {
         return object :
-            UiDropdownListNode(props, context, mock(), fontProvider, iconsRepo) {
+            UiDropdownListNode(props, context, mock(), mock(), fontProvider, iconsRepo) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }
         }
     }
-    
+
     private fun buildDropdownItem(id: String, selected: Boolean = false): UiDropdownListItemNode {
         val props = reactMapOf().id(id).label("item $id").selected(selected)
         val item = UiDropdownListItemNode(props, fontProvider)

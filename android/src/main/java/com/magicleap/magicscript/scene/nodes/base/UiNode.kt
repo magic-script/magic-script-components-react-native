@@ -28,6 +28,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
+import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -44,6 +45,7 @@ abstract class UiNode(
     initProps: ReadableMap,
     protected val context: Context,
     private val viewRenderableLoader: ViewRenderableLoader,
+    private val materialClipper: MaterialClipper,
     useContentNodeAlignment: Boolean = false
 ) : TransformNode(initProps, true, useContentNodeAlignment) {
 
@@ -102,12 +104,6 @@ abstract class UiNode(
      * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
      */
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    /**
-     * Default material clipping makes all the node visible.
-     * Origin (0, 0) is at bottom-center. Values are relative to width and height.
-     */
-    private val defaultMaterialClipping = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
     init {
         // set default values of properties
@@ -349,15 +345,7 @@ abstract class UiNode(
 
     // clipping a texture
     private fun applyMaterialClipping() {
-        contentNode.renderable?.material?.let { material ->
-            val clipping = clipBounds
-            val materialClip = if (clipping != null) {
-                Utils.calculateMaterialClipping(getBounding(), clipping)
-            } else {
-                defaultMaterialClipping
-            }
-            Utils.applyMaterialClipping(material, materialClip)
-        }
+        materialClipper.applyClipBounds(this, clipBounds)
     }
 
     // clipping collision shape (related to click events)

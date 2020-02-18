@@ -219,7 +219,7 @@ class UiTextNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
-        return object : UiTextNode(props, context, mock(), fontProvider) {
+        return object : UiTextNode(props, context, mock(), mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

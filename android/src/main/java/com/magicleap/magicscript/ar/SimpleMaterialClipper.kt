@@ -31,6 +31,15 @@ class SimpleMaterialClipper : MaterialClipper {
      */
     private val defaultMaterialClipping = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
+    /**
+     * Setting clip bounds at a shader level (shader is contained inside material
+     * from which android_view.sfb is built)
+     *
+     * https://google.github.io/filament/Materials.md.html
+     * By default getPosition() returns NDC - Normalized Device Coordinates;
+     * for "vertexDomain" : object it means that coordinates are normalized relative
+     * to a model size (0 - 1), origin (0, 0) is at bottom-center.
+     */
     override fun applyClipBounds(node: TransformNode, clipBounds: AABB?) {
         node.contentNode.renderable?.material?.let { material ->
             val materialClip = if (clipBounds != null) {

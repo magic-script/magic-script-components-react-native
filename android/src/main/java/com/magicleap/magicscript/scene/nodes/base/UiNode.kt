@@ -33,7 +33,6 @@ import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
 import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
@@ -192,7 +191,7 @@ abstract class UiNode(
         super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
-            applyMaterialClipping()
+            applyClipBounds()
         } else {
             contentNode.renderable = null
             contentNode.collisionShape = null
@@ -252,7 +251,7 @@ abstract class UiNode(
             contentNode.renderable = viewRenderable
         }
         renderableCopy = viewRenderable
-        applyMaterialClipping()
+        applyClipBounds()
     }
 
     override fun applyAlignment() {
@@ -265,7 +264,7 @@ abstract class UiNode(
 
     override fun onTransformedLocally() {
         super.onTransformedLocally()
-        applyMaterialClipping()
+        applyClipBounds()
     }
 
     // build calls applyProperties, so we need to initialize the view before
@@ -329,15 +328,6 @@ abstract class UiNode(
         handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
-    /*
-    * Setting clip bounds at a shader level (shader is contained inside material
-    * from which android_view.sfb is built)
-    *
-    * https://google.github.io/filament/Materials.md.html
-    * By default getPosition() returns NDC - Normalized Device Coordinates;
-    * for "vertexDomain" : object it means that coordinates are normalized relative
-    * to a model size (0 - 1), origin (0, 0) is at bottom-center.
-    */
     private fun applyClipBounds() {
         applyMaterialClipping()
         adjustCollisionShape()

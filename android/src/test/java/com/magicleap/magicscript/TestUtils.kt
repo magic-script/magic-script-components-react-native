@@ -39,7 +39,7 @@ import kotlin.test.assertTrue
 
 private const val EPSILON = 1e-5f
 
-open class NodeBuilder {
+open class NodeBuilder(protected val useContentNodeAlignment: Boolean = true) {
     protected var props = JavaOnlyMap()
 
     fun withProps(initProps: JavaOnlyMap): NodeBuilder {
@@ -76,7 +76,7 @@ open class NodeBuilder {
     }
 
     open fun build(): TransformNode {
-        val node = object : TransformNode(props, false, true) {}
+        val node = object : TransformNode(props, false, useContentNodeAlignment) {}
         node.build()
         return node
     }
@@ -84,12 +84,11 @@ open class NodeBuilder {
 
 class UiNodeBuilder(
     private val context: Context,
-    private val useContentNodeAlignment: Boolean = true,
+    useContentNodeAlignment: Boolean = false,
     private val viewRenderableLoader: ViewRenderableLoader? = null
-) : NodeBuilder() {
+) : NodeBuilder(useContentNodeAlignment) {
     private var width = UiNode.WRAP_CONTENT_DIMENSION
     private var height = UiNode.WRAP_CONTENT_DIMENSION
-    // in unit tests we should always use content node alignment, because we don't load renderables
 
     fun withSize(width: Float, height: Float): UiNodeBuilder {
         this.width = width

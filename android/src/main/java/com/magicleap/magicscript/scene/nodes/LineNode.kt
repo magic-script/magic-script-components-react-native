@@ -194,7 +194,6 @@ class LineNode(
 
     private fun updateLinesBounding() {
         linesBounding = Utils.findMinimumBounding(pointsList)
-        val test = linesBounding
     }
 
     private fun clearLines() {

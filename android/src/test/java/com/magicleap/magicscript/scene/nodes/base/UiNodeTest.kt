@@ -51,7 +51,11 @@ class UiNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        node = UiNodeBuilder(context, true, viewRenderableLoader).build()
+        node = UiNodeBuilder(
+            context = context,
+            useContentNodeAlignment = true,
+            viewRenderableLoader = viewRenderableLoader
+        ).build()
     }
 
     @Test
@@ -180,7 +184,7 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should return proper content position`() {
+    fun `should return proper content position when using content node alignment`() {
         val node = UiNodeBuilder(context, useContentNodeAlignment = true)
             .withSize(4f, 2f)
             .withPosition(5.0, 3.0, 0.0)

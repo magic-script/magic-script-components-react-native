@@ -131,6 +131,7 @@ class LineNode(
                 val (start, end) = clipped
                 drawLineSegment(start, end, color)
                 this.pointsList.add(start)
+                this.pointsList.add(end)
             }
             idx++
         }
@@ -193,6 +194,7 @@ class LineNode(
 
     private fun updateLinesBounding() {
         linesBounding = Utils.findMinimumBounding(pointsList)
+        val test = linesBounding
     }
 
     private fun clearLines() {

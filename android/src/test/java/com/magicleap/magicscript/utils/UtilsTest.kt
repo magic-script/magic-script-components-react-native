@@ -319,12 +319,14 @@ class UtilsTest {
     @Test
     fun `should correctly create clipped collider`() {
         val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
-        val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
-        val node = createUiNode(nodeBounds)
+        val node = UiNodeBuilder(appContext, useContentNodeAlignment = true)
+            .withSize(4f, 6f)
+            .withAlignment("bottom-center")
+            .build() as UiNode
 
         val collider = Utils.createClippedCollider(node, clipBounds)
 
-        collider.center shouldEqualInexact Vector3(0f, 1.5f, 0f)
+        collider.center shouldEqualInexact Vector3(0f, 0f, 0f)
         collider.size shouldEqualInexact Vector3(2f, 3f, 0f)
     }
 
@@ -349,20 +351,24 @@ class UtilsTest {
     @Test
     fun `should create full size collider if node bounds inside clip bounds`() {
         val clipBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
-        val nodeBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
-        val node = createUiNode(nodeBounds)
+        val node = UiNodeBuilder(appContext, useContentNodeAlignment = true)
+            .withSize(2f, 3f)
+            .withAlignment("bottom-center")
+            .build() as UiNode
 
         val collider = Utils.createClippedCollider(node, clipBounds)
 
-        collider.center shouldEqualInexact Vector3(0f, 1.5f, 0f)
+        collider.center shouldEqualInexact Vector3(0f, 0f, 0f)
         collider.size shouldEqualInexact Vector3(2f, 3f, 0f)
     }
 
     @Test
     fun `should create empty collider when z position outside clip bounds`() {
         val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
-        val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
-        val node = createUiNode(nodeBounds)
+        val node = UiNodeBuilder(appContext, useContentNodeAlignment = true)
+            .withSize(4f, 6f)
+            .withAlignment("bottom-center")
+            .build() as UiNode
         node.localPosition = Vector3(0f, 0f, -2f)
 
         val collider = Utils.createClippedCollider(node, clipBounds)
@@ -370,7 +376,6 @@ class UtilsTest {
         collider.center shouldEqualInexact Vector3(0f, 0f, 0f)
         collider.size shouldEqualInexact Vector3(0f, 0f, 0f)
     }
-
 
     /*
           ^
@@ -393,20 +398,16 @@ class UtilsTest {
     @Test
     fun `should create correct collider when node is scaled`() {
         val clipBounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 2f, 0f))
-        val nodeBoundsBeforeScaling = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 0f))
-        val node = createUiNode(nodeBoundsBeforeScaling)
+        val node = UiNodeBuilder(appContext, useContentNodeAlignment = true)
+            .withSize(1f, 1f)
+            .withAlignment("bottom-left")
+            .build() as UiNode
         node.localScale = Vector3(4f, 4f, 1f)
 
         val collider = Utils.createClippedCollider(node, clipBounds)
 
-        collider.center shouldEqualInexact Vector3(0.25f, 0.25f, 0f)
+        collider.center shouldEqualInexact Vector3(0f, 0f, 0f)
         collider.size shouldEqualInexact Vector3(0.5f, 0.5f, 0f)
-    }
-
-    private fun createUiNode(relativeContentBounds: AABB): UiNode {
-        return UiNodeBuilder(appContext)
-            .withRelativeContentBounds(relativeContentBounds)
-            .build() as UiNode
     }
 
 }

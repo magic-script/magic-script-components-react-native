@@ -19,8 +19,10 @@ package com.magicleap.magicscript.scene.nodes.base
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.update
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -39,6 +41,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiNodeTest {
 
+    private val EPSILON = 1e-5f
+
     private lateinit var context: Context
     private lateinit var viewRenderableLoader: ViewRenderableLoader
     private lateinit var node: UiNode
@@ -47,7 +51,7 @@ class UiNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        node = UiNodeBuilder(context, viewRenderableLoader).build()
+        node = UiNodeBuilder(context, true, viewRenderableLoader).build()
     }
 
     @Test
@@ -103,6 +107,90 @@ class UiNodeTest {
         node.update(UiNode.PROP_ENABLED, true)
 
         called shouldEqual true
+    }
+
+    @Test
+    fun `get bounding should return content bounding with position offset`() {
+        val node = UiNodeBuilder(context)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .withPosition(2.0, 5.0, 0.0)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(0f, 3f, 0f)
+        bounding.max shouldEqualInexact Vector3(4f, 7f, 0f)
+    }
+
+    @Test
+    fun `should return correct bounding when rotated 90 degrees around Z`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 1f)
+            .withAlignment("bottom-left")
+            .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(0f, 2f, 0f)
+    }
+
+    @Test
+    fun `should return zero-width bounding when rotated 90 degrees around Y`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 2f)
+            .withAlignment("center-center")
+            .withPosition(0.0, 0.0, 0.0)
+            .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(0f, -1f, -1f)
+        bounding.max shouldEqualInexact Vector3(0f, 1f, 1f)
+    }
+
+    @Test
+    fun `should return zero-height bounding when rotated 90 degrees around X`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 2f)
+            .withAlignment("center-center")
+            .withPosition(0.0, 0.0, 0.0)
+            .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, -1f)
+        bounding.max shouldEqualInexact Vector3(1f, 0f, 1f)
+    }
+
+    @Test
+    fun `should align content node when using content node alignment`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 10f)
+            .withAlignment("top-right")
+            .build()
+
+        assertEquals(-2.0F, node.contentNode.localPosition.x, EPSILON)
+        assertEquals(-5.0F, node.contentNode.localPosition.y, EPSILON)
+        assertEquals(Vector3.zero(), node.localPosition)
+    }
+
+    @Test
+    fun `should return proper content position`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 2f)
+            .withPosition(5.0, 3.0, 0.0)
+            .withAlignment("bottom-right")
+            .build()
+
+        val contentPosition = node.getContentPosition()
+
+        assertEquals(3f, contentPosition.x, EPSILON)
+        assertEquals(4f, contentPosition.y, EPSILON)
     }
 
 }

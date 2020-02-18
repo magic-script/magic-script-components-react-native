@@ -27,7 +27,6 @@ import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -117,10 +116,10 @@ class UiScrollViewNodeTest {
             min = Vector3(-0.4f, -0.2f, -0.1f),
             max = Vector3(0.4f, 0.2f, 0.1f)
         )
-        val contentBounds = AABB(min= Vector3(0f, -0.8f, 0f), max=Vector3(0.8f, 0f, 0f))
+
         val contentNode = spy(
-            NodeBuilder()
-                .withRelativeContentBounds(contentBounds)
+            UiNodeBuilder(context)
+                .withSize(0.8f, 0.8f)
                 .build()
         )
         tested.addContent(contentNode)

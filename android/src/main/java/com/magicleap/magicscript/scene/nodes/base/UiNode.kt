@@ -172,8 +172,17 @@ abstract class UiNode(
         val scaleX = contentNode.localScale.x
         val scaleY = contentNode.localScale.y
 
-        val offsetX = -horizontalAlignment.centerOffset * size.x
-        val offsetY = -verticalAlignment.centerOffset * size.y
+        val offsetX = if (useContentNodeAlignment) {
+            0f
+        } else {
+            -horizontalAlignment.centerOffset * size.x
+        }
+
+        val offsetY = if (useContentNodeAlignment) {
+            0f
+        } else {
+            -verticalAlignment.centerOffset * size.y
+        }
 
         val xMin = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
         val xMax = centerX * scaleX + (size.x * scaleX) / 2 + offsetX

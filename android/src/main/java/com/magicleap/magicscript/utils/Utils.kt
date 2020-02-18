@@ -231,22 +231,24 @@ class Utils {
                 return Box(Vector3.zero(), Vector3.zero())
             }
 
-            val contentBounds = node.getContentBounding()
+            val pivotOffsetX = if (node.useContentNodeAlignment) {
+                0f
+            } else {
+                -node.horizontalAlignment.centerOffset * node.size.x
+            }
 
-            val relativeOffsetX = 0f // node.contentNode.localPosition.x - contentBounds.center().x
-            val relativeOffsetY = 0f // node.contentNode.localPosition.y - contentBounds.center().y
-
-            val pivotCenterOffset = Vector2(
-                -node.horizontalAlignment.centerOffset * node.size.x - relativeOffsetX,
-                -node.verticalAlignment.centerOffset * node.size.y - relativeOffsetY
-            )
+            val pivotOffsetY = if (node.useContentNodeAlignment) {
+                0f
+            } else {
+                -node.verticalAlignment.centerOffset * node.size.y
+            }
 
             val nodeCollisionShape = Bounding(
                 -node.size.x / 2 * node.localScale.x,
                 -node.size.y / 2 * node.localScale.y,
                 node.size.x / 2 * node.localScale.x,
                 node.size.y / 2 * node.localScale.y
-            ).translated(pivotCenterOffset)
+            ).translated(Vector2(pivotOffsetX, pivotOffsetY))
 
             val clipCollisionShape = clipBounds
                 .translated(-node.getContentPosition())
@@ -260,8 +262,14 @@ class Utils {
             val sizeY = if (scale.y > 0) intersection.size().y / scale.y else 0F
             val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
 
-            val centerX = if (scale.x > 0) intersection.center().x / scale.x else 0F
-            val centerY = if (scale.y > 0) intersection.center().y / scale.y else 0F
+            var centerX = 0F
+            var centerY = 0F
+
+            if (!node.useContentNodeAlignment && scale.x > 0) {
+                centerX = intersection.center().x / scale.x
+                centerY = intersection.center().y / scale.y
+            }
+
             val collisionShapeCenter = Vector3(centerX, centerY, 0F)
 
             return Box(collisionShapeSize, collisionShapeCenter)

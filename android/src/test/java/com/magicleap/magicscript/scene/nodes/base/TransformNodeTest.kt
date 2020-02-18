@@ -37,9 +37,6 @@ import java.util.*
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {
 
-    // epsilon
-    private val eps = 1e-5f
-
     @Test
     fun `should be located at zero position by default`() {
         val node = NodeBuilder().build()
@@ -128,94 +125,6 @@ class TransformNodeTest {
 
         assertEquals(Alignment.VerticalAlignment.BOTTOM, node.verticalAlignment)
         assertEquals(Alignment.HorizontalAlignment.RIGHT, node.horizontalAlignment)
-    }
-
-    @Test
-    fun `get bounding should return content bounding with position offset`() {
-        val bounds = AABB(min = Vector3(-2f, -2f, 0f), max = Vector3(2f, 2f, 0f))
-        val node = NodeBuilder()
-            .withPosition(2.0, 5.0, 0.0)
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        val bounding = node.getBounding()
-
-        bounding.min shouldEqualInexact Vector3(0f, 3f, 0f)
-        bounding.max shouldEqualInexact Vector3(4f, 7f, 0f)
-    }
-
-    @Test
-    fun `should return correct bounding when rotated 90 degrees around Z`() {
-        val bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 1f, 0f))
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
-            .withAlignment("bottom-left")
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        val bounding = node.getBounding()
-
-        bounding.min shouldEqualInexact Vector3(-1f, 0f, 0f)
-        bounding.max shouldEqualInexact Vector3(0f, 2f, 0f)
-    }
-
-    @Test
-    fun `should return zero-width bounding when rotated 90 degrees around Y`() {
-        val bounds = AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 1f, 0f))
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        val bounding = node.getBounding()
-
-        bounding.min shouldEqualInexact Vector3(0f, -1f, -1f)
-        bounding.max shouldEqualInexact Vector3(0f, 1f, 1f)
-    }
-
-    @Test
-    fun `should return zero-height bounding when rotated 90 degrees around X`() {
-        val bounds = AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 1f, 0f))
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        val bounding = node.getBounding()
-
-        bounding.min shouldEqualInexact Vector3(-1f, 0f, -1f)
-        bounding.max shouldEqualInexact Vector3(1f, 0f, 1f)
-    }
-
-    @Test
-    fun `should align content node when using content node alignment`() {
-        val bounds = AABB(min = Vector3(-2f, -5f, 0f), max = Vector3(2f, 5f, 0f))
-        val node = NodeBuilder()
-            .withAlignment("top-right")
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        assertEquals(-2.0F, node.contentNode.localPosition.x, eps)
-        assertEquals(-5.0F, node.contentNode.localPosition.y, eps)
-        assertEquals(Vector3.zero(), node.localPosition)
-    }
-
-    @Test
-    fun `should return proper content position`() {
-        val bounds = AABB(min = Vector3(-2f, -1f, 0f), max = Vector3(2f, 1f, 0f))
-        val node = NodeBuilder()
-            .withPosition(5.0, 3.0, 0.0)
-            .withAlignment("bottom-right")
-            .withRelativeContentBounds(bounds)
-            .build()
-
-        val contentPosition = node.getContentPosition()
-
-        assertEquals(3f, contentPosition.x, eps)
-        assertEquals(4f, contentPosition.y, eps)
     }
 
     @Test

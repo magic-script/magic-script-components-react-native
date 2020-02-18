@@ -1,7 +1,8 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.NodeBuilder
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
@@ -36,12 +37,19 @@ class GridLayoutManagerTest {
     @Before
     fun setUp() {
         manager = GridLayoutManager()
+        val context: Context = ApplicationProvider.getApplicationContext()
 
-        val child1Bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(2f, 1f, 0f))
-        val child2Bounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 0f))
+        val child1 = UiNodeBuilder(context)
+            .withSize(2f, 1f)
+            .withAlignment("bottom-left")
+            .build()
 
-        val child1 = NodeBuilder().withRelativeContentBounds(child1Bounds).build()
-        val child2 = NodeBuilder().withRelativeContentBounds(child2Bounds).build()
+
+        val child2 = UiNodeBuilder(context)
+            .withSize(1f, 1f)
+            .withAlignment("bottom-left")
+            .build()
+
         childrenList = listOf(child1, child2)
     }
 

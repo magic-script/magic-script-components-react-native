@@ -16,8 +16,9 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.NodeBuilder
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.measureChildren
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
@@ -53,17 +54,15 @@ class LinearLayoutManagerTest {
         this.verticalManager = mock()
         this.horizontalManager = mock()
         this.linearManager = LinearLayoutManager(verticalManager, horizontalManager)
-
-        val child1Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
-        val child2Bounds = AABB(min = Vector3(-1f, -0.5f, 0f), max = Vector3(1f, 0.5f, 0f))
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         childrenList = listOf(
-            NodeBuilder()
-                .withRelativeContentBounds(child1Bounds)
+            UiNodeBuilder(context)
+                .withSize(2f, 1f)
                 .withAlignment("center-center")
                 .build(),
-            NodeBuilder()
-                .withRelativeContentBounds(child2Bounds)
+            UiNodeBuilder(context)
+                .withSize(2f, 1f)
                 .withAlignment("center-center")
                 .build()
         )

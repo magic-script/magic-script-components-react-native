@@ -42,7 +42,7 @@ import kotlin.properties.Delegates
 abstract class TransformNode(
     initProps: ReadableMap,
     val hasRenderable: Boolean,
-    protected val useContentNodeAlignment: Boolean
+    val useContentNodeAlignment: Boolean
 ) : TransformAwareNode() {
 
     companion object {

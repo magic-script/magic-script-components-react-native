@@ -31,7 +31,9 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.equalInexact
+import com.magicleap.magicscript.utils.isCloseTo
 import com.nhaarman.mockitokotlin2.mock
 import kotlin.test.assertTrue
 
@@ -39,7 +41,6 @@ private const val EPSILON = 1e-5f
 
 open class NodeBuilder {
     protected var props = JavaOnlyMap()
-    protected var contentBounding = AABB()
 
     fun withProps(initProps: JavaOnlyMap): NodeBuilder {
         props = initProps
@@ -64,14 +65,6 @@ open class NodeBuilder {
         return this
     }
 
-    /**
-     * Content bounds relative to content node position
-     */
-    fun withRelativeContentBounds(bounds: AABB): NodeBuilder {
-        contentBounding = bounds
-        return this
-    }
-
     fun withAlignment(alignment: String): NodeBuilder {
         props.putString(TransformNode.PROP_ALIGNMENT, alignment)
         return this
@@ -83,14 +76,7 @@ open class NodeBuilder {
     }
 
     open fun build(): TransformNode {
-        val node = object : TransformNode(props, false, true) {
-            override fun getContentBounding(): AABB {
-                val minEdge = contentBounding.min + contentNode.localPosition
-                val maxEdge = contentBounding.max + contentNode.localPosition
-
-                return AABB(minEdge, maxEdge)
-            }
-        }
+        val node = object : TransformNode(props, false, true) {}
         node.build()
         return node
     }
@@ -98,28 +84,32 @@ open class NodeBuilder {
 
 class UiNodeBuilder(
     private val context: Context,
+    private val useContentNodeAlignment: Boolean = true,
     private val viewRenderableLoader: ViewRenderableLoader? = null
 ) : NodeBuilder() {
+    private var width = UiNode.WRAP_CONTENT_DIMENSION
+    private var height = UiNode.WRAP_CONTENT_DIMENSION
+    // in unit tests we should always use content node alignment, because we don't load renderables
+
+    fun withSize(width: Float, height: Float): UiNodeBuilder {
+        this.width = width
+        this.height = height
+        return this
+    }
 
     override fun build(): UiNode {
-        val node = object : UiNode(props, context, viewRenderableLoader ?: mock()) {
+        val renderableLoader = viewRenderableLoader ?: mock()
+
+        val node = object :
+            UiNode(props, context, renderableLoader, useContentNodeAlignment) {
 
             override fun provideView(context: Context): View {
                 return View(context)
             }
 
             override fun provideDesiredSize(): Vector2 {
-                val size = contentBounding.max - contentBounding.min
-                return Vector2(size.x, size.y)
+                return Vector2(width, height)
             }
-
-            override fun getContentBounding(): AABB {
-                val minEdge = contentBounding.min + contentNode.localPosition
-                val maxEdge = contentBounding.max + contentNode.localPosition
-
-                return AABB(minEdge, maxEdge)
-            }
-
         }
         node.build()
         return node

@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -39,7 +40,6 @@ import com.magicleap.magicscript.ar.VideoRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.ViewRenderableLoader;
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.clip.Clipper;
-import com.magicleap.magicscript.ar.clip.ModelClipper;
 import com.magicleap.magicscript.ar.clip.TextureClipper;
 import com.magicleap.magicscript.ar.clip.UiNodeClipper;
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper;
@@ -106,7 +106,9 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -145,7 +147,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     private Clipper uiNodeClipper;
     private Clipper videoNodeClipper;
-    private Clipper modelClipper;
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
                               MediaPlayerPool mediaPlayerPool) {
@@ -171,7 +172,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
         this.uiNodeClipper = new UiNodeClipper(textureClipper, uiColliderClipper);
         this.videoNodeClipper = new TextureClipper();
-        this.modelClipper = new ModelClipper();
 
         context.addLifecycleEventListener(this);
         context.addActivityEventListener(this);
@@ -252,7 +252,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
         RenderableAnimator animator = new LoopedAnimator();
-        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, modelClipper, animator), nodeId));
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator), nodeId));
     }
 
     @ReactMethod

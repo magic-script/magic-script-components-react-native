@@ -24,7 +24,6 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Utils
@@ -36,7 +35,6 @@ class ModelNode(
     initProps: ReadableMap,
     private val context: Context,
     private val modelRenderableLoader: ModelRenderableLoader,
-    private val nodeClipper: Clipper,
     private val renderableAnimator: RenderableAnimator
 ) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
@@ -94,12 +92,10 @@ class ModelNode(
         super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
-            nodeClipper.applyClipBounds(this, clipBounds)
         } else {
             contentNode.renderable = null
         }
     }
-
 
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
@@ -137,7 +133,26 @@ class ModelNode(
     }
 
     private fun applyClipBounds() {
-        nodeClipper.applyClipBounds(this, clipBounds)
+        clipBounds?.let {
+            if (insideClipBounds(it)) {
+                show()
+            } else {
+                hide()
+            }
+        }
+    }
+
+    private fun insideClipBounds(clipBounds: AABB): Boolean {
+        val contentPosition = getContentPosition()
+        val bounds = getBounding()
+
+        val centerOffsetX = bounds.center().x - contentPosition.x
+        val centerOffsetY = bounds.center().y - contentPosition.y
+        val centerOffsetZ = bounds.center().z - contentPosition.z
+
+        return contentPosition.x + centerOffsetX in clipBounds.min.x..clipBounds.max.x
+                && contentPosition.y + centerOffsetY in clipBounds.min.y..clipBounds.max.y
+                && contentPosition.z + centerOffsetZ in clipBounds.min.z..clipBounds.max.z
     }
 
 }

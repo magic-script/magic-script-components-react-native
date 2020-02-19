@@ -22,15 +22,17 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
-import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.clip.ModelClipper
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import junit.framework.Assert.assertEquals
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -48,14 +50,12 @@ class ModelNodeTest {
     private lateinit var context: Context
     private lateinit var modelRenderableLoader: ModelRenderableLoader
     private lateinit var renderableAnimator: RenderableAnimator
-    private lateinit var nodeClipper: Clipper
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         modelRenderableLoader = mock()
         renderableAnimator = mock()
-        nodeClipper = spy(ModelClipper())
     }
 
     @Test
@@ -105,36 +105,12 @@ class ModelNodeTest {
     fun `should apply clip bounds when local position changed`() {
         val node = createNode(reactMapOf())
         node.clipBounds = AABB(min = Vector3(1f, 1f, 1f), max = Vector3(3f, 3f, 3f))
-        Mockito.reset(nodeClipper)
 
-        node.localPosition = Vector3(2f, 1f, 8f)
+        node.localPosition = Vector3(12f, 1f, 8f)
 
-        verify(nodeClipper).applyClipBounds(eq(node), any())
+        node.isVisible shouldBe false
     }
-
-    @Test
-    fun `should apply clip bounds when local scale changed`() {
-        val node = createNode(reactMapOf())
-        node.clipBounds = AABB(min = Vector3(1f, 1f, 1f), max = Vector3(3f, 3f, 3f))
-        Mockito.reset(nodeClipper)
-
-        node.localScale = Vector3(2f, 3f, 1f)
-
-        verify(nodeClipper).applyClipBounds(eq(node), any())
-    }
-
-    @Test
-    fun `should apply clip bounds when visibility changed to visible`() {
-        val node = createNode(reactMapOf())
-        node.clipBounds = AABB(min = Vector3(1f, 1f, 1f), max = Vector3(3f, 3f, 3f))
-        node.hide()
-        Mockito.reset(nodeClipper)
-
-        node.show()
-
-        verify(nodeClipper).applyClipBounds(eq(node), any())
-    }
-
+    
     @Test
     fun `should hide the node when its center is outside of clip bounds`() {
         val props = reactMapOf(
@@ -150,7 +126,7 @@ class ModelNodeTest {
     }
 
     private fun createNode(props: JavaOnlyMap): ModelNode {
-        return ModelNode(props, context, modelRenderableLoader, nodeClipper, renderableAnimator)
+        return ModelNode(props, context, modelRenderableLoader, renderableAnimator)
     }
 
 }

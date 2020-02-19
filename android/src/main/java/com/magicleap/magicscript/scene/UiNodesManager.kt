@@ -16,16 +16,14 @@
 
 package com.magicleap.magicscript.scene
 
-import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
-import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.utils.logMessage
 
 /**
@@ -33,44 +31,21 @@ import com.magicleap.magicscript.utils.logMessage
  */
 open class UiNodesManager : NodesManager, LifecycleEventListener {
 
-    var planeDetection = false
-        set(value) {
-            field = value
-            if (!value) {
-                prism.anchor = null
-            }
-        }
-
-    var showPrisms = false
-        set(value) {
-            field = value
-            prism.visible = value
-        }
-
-    // private val rootNode by lazy { AnchorNode() }
+    private val rootNode by lazy { AnchorNode() }
     private val nodesById = HashMap<String, TransformNode>()
     private var arReady = false
     private lateinit var scene: Scene
-    private val prism by lazy { Prism(JavaOnlyMap()) }
+    var planeDetection = false
 
     companion object {
         val INSTANCE = UiNodesManager()
     }
 
     @Synchronized
-    fun onArFragmentReady(fragment: CustomArFragment) {
+    fun onArFragmentReady() {
         arReady = true
-
-        val session = fragment.arSceneView.session
-        if (session != null) {
-            val cubeBuilder = CubeRenderableBuilderImpl(fragment.arSceneView.context)
-            prism.build(fragment.transformationSystem, session, cubeBuilder)
-            fragment.addCameraObserver(prism)
-        } else {
-            logMessage("Cannot build the prism - session not initialized", true)
-        }
-
-        scene.addChild(prism)
+        rootNode.localPosition = Vector3(0f, 0f, 0f)
+        scene.addChild(rootNode)
         nodesById.forEach { (_, node) ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
@@ -82,14 +57,15 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     override fun registerScene(scene: Scene) {
         this.scene = scene
         if (arReady) {
-            scene.addChild(prism)
+            scene.addChild(rootNode)
         }
     }
 
     @Synchronized
     override fun onTapArPlane(anchor: Anchor) {
         if (planeDetection) {
-            prism.anchor = anchor
+            planeDetection = false
+            rootNode.anchor = anchor
         }
     }
 
@@ -120,7 +96,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         if (tryAddNodeToAnchor(node)) {
             return
         }
-        prism.addContent(node)
+        rootNode.addChild(node)
     }
 
     @Synchronized

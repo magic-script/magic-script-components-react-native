@@ -76,12 +76,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     @ReactProp(name = "planeDetection")
     public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
-        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(planeDetection);
-    }
-
-    @ReactProp(name = "showPrisms")
-    public void setShowPrisms(View view, @Nullable Boolean showPrisms) {
-        UiNodesManager.Companion.getINSTANCE().setShowPrisms(showPrisms);
+        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
     }
 
     @ReactProp(name = "showLayoutBounds")

@@ -23,18 +23,11 @@ import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
-import com.magicleap.magicscript.scene.nodes.prism.CameraObserver
 
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
     private var lastTapAnchor: Anchor? = null
-    private var cameraObservers = mutableListOf<CameraObserver>()
-
-    fun addCameraObserver(observer: CameraObserver) {
-        cameraObservers.add(observer)
-    }
-
     private var lastTimestamp: Long = 0L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,13 +37,8 @@ class CustomArFragment : ArFragment() {
             arSceneView.arFrame?.camera?.let { camera ->
                 if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
                     // We can add AR objects after session is ready and camera is in tracking mode
-                    UiNodesManager.INSTANCE.onArFragmentReady(this)
+                    UiNodesManager.INSTANCE.onArFragmentReady()
                     onReadyCalled = true
-                }
-
-                val cameraPosition = arSceneView.scene.camera.localPosition
-                cameraObservers.forEach {
-                    it.onCameraUpdated(cameraPosition, camera.trackingState)
                 }
             }
             if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {

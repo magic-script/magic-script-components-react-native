@@ -218,61 +218,6 @@ class Utils {
             return materialClip
         }
 
-        fun createClippedCollider(node: TransformNode, clipBounds: AABB): Box {
-            val nodeBounds = node.getBounding()
-            if (nodeBounds.intersection(clipBounds).equalInexact(AABB())) {
-                // no intersection in 3d space, returning empty box
-                return Box(Vector3.zero(), Vector3.zero())
-            }
-
-            val size = nodeBounds.size()
-
-            val pivotOffsetX = if (node.useContentNodeAlignment) {
-                0f
-            } else {
-                -node.horizontalAlignment.centerOffset * size.x
-            }
-
-            val pivotOffsetY = if (node.useContentNodeAlignment) {
-                0f
-            } else {
-                -node.verticalAlignment.centerOffset * size.y
-            }
-
-            val scaleX = node.localScale.x * node.contentNode.localScale.x
-            val scaleY = node.localScale.y * node.contentNode.localScale.y
-
-            val nodeCollisionShape = Bounding(
-                -size.x / 2 * scaleX,
-                -size.y / 2 * scaleY,
-                size.x / 2 * scaleX,
-                size.y / 2 * scaleY
-            ).translated(Vector2(pivotOffsetX, pivotOffsetY))
-
-            val clipCollisionShape = clipBounds
-                .translated(-node.getContentPosition())
-                .toBounding2d()
-
-            val intersection = nodeCollisionShape.intersection(clipCollisionShape)
-
-            // collision shape is not aware of scale, we need to scale to original position
-            val sizeX = if (scaleX > 0) intersection.size().x / scaleX else 0F
-            val sizeY = if (scaleY > 0) intersection.size().y / scaleY else 0F
-            val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
-
-            var centerX = 0F
-            var centerY = 0F
-
-            if (!node.useContentNodeAlignment && scaleX > 0 && scaleY > 0) {
-                centerX = intersection.center().x / scaleX
-                centerY = intersection.center().y / scaleY
-            }
-
-            val collisionShapeCenter = Vector3(centerX, centerY, 0F)
-
-            return Box(collisionShapeSize, collisionShapeCenter)
-        }
-
         fun detectModelType(modelUri: Uri, context: Context): ModelType {
             if (modelUri.toString().contains("android.resource://")) { // release build
                 val resourceName = modelUri.lastPathSegment

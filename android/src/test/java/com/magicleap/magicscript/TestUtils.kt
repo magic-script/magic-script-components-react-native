@@ -26,7 +26,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.clip.NodeClipper
+import com.magicleap.magicscript.ar.clip.UiNodeClipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -103,7 +103,7 @@ class UiNodeBuilder(
 
     override fun build(): UiNode {
         val renderableLoader = viewRenderableLoader ?: mock()
-        val clipper = nodeClipper ?: NodeClipper(TextureClipper(), UiNodeColliderClipper())
+        val clipper = nodeClipper ?: UiNodeClipper(TextureClipper(), UiNodeColliderClipper())
         val node = object :
             UiNode(props, context, renderableLoader, clipper, useContentNodeAlignment) {
 

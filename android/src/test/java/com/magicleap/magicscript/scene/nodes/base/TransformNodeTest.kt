@@ -22,7 +22,6 @@ import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.shouldEqualInexact
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.*
 import org.junit.Test
@@ -146,4 +145,47 @@ class TransformNodeTest {
         node.attachRenderable()
         assertTrue(node.renderableRequested)
     }
+
+    @Test
+    fun `should apply clip bounds on the node and children nodes`() {
+        val node = NodeBuilder().build()
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
+        node.addContent(child1)
+        node.addContent(child2)
+        val clipBounds = AABB(min = Vector3.zero(), max = Vector3.one())
+
+        node.clipBounds = clipBounds
+
+        node.clipBounds shouldEqual clipBounds
+        child1.clipBounds shouldEqual clipBounds
+        child2.clipBounds shouldEqual clipBounds
+    }
+
+    @Test
+    fun `should apply clipping on newly added child when clip bounds are set`() {
+        val node = NodeBuilder().build()
+        val clipBounds = AABB(min = Vector3.zero(), max = Vector3.one())
+        node.clipBounds = clipBounds
+
+        val child = NodeBuilder().build()
+        node.addContent(child)
+
+        child.clipBounds shouldEqual clipBounds
+    }
+
+    @Test
+    fun `should apply shifted clipping on child when local position changed`() {
+        val node = NodeBuilder().build()
+        val clipBounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 1f))
+        val expectedChildBounds = AABB(min = Vector3(3f, 0f, 0f), max = Vector3(4f, 1f, 1f))
+        val child = NodeBuilder().build()
+        node.addContent(child)
+        node.clipBounds = clipBounds
+
+        node.localPosition = Vector3(-3f, 0f, 0f)
+
+        child.clipBounds shouldEqual expectedChildBounds
+    }
+
 }

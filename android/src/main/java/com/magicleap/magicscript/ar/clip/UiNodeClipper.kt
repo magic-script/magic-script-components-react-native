@@ -19,8 +19,15 @@ package com.magicleap.magicscript.ar.clip
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 
-class VideoColliderClipper : Clipper {
+class UiNodeClipper(
+    private val textureClipper: Clipper,
+    private val colliderClipper: Clipper
+) : Clipper {
+
     override fun applyClipBounds(node: TransformNode, clipBounds: AABB?) {
-        
+        textureClipper.applyClipBounds(node, clipBounds)
+        // clipping collision shape (related to click events)
+        colliderClipper.applyClipBounds(node, clipBounds)
     }
+
 }

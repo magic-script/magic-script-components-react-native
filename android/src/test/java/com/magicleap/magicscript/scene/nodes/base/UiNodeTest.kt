@@ -24,8 +24,8 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.clip.NodeClipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.clip.UiNodeClipper
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.shouldEqualInexact
@@ -59,7 +59,7 @@ class UiNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        nodeClipper = spy(NodeClipper(TextureClipper(), UiNodeColliderClipper()))
+        nodeClipper = spy(UiNodeClipper(TextureClipper(), UiNodeColliderClipper()))
         node = UiNodeBuilder(
             context = context,
             useContentNodeAlignment = true,
@@ -190,9 +190,28 @@ class UiNodeTest {
             .withAlignment("top-right")
             .build()
 
-        assertEquals(-2.0F, node.contentNode.localPosition.x, EPSILON)
-        assertEquals(-5.0F, node.contentNode.localPosition.y, EPSILON)
-        assertEquals(Vector3.zero(), node.localPosition)
+        node.contentNode.localPosition shouldEqualInexact Vector3(-2f, -5f, 0f)
+        node.localPosition shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should align content node when using content node alignment (case 2)`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 2f)
+            .withAlignment("bottom-center")
+            .build()
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(0f, 1f, 0f)
+    }
+
+    @Test
+    fun `should align content node when using content node alignment (case 3)`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(5f, 5f)
+            .withAlignment("top-left")
+            .build()
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(2.5f, -2.5f, 0f)
     }
 
     @Test
@@ -210,7 +229,7 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should clip material after setting clip bounds`() {
+    fun `should apply clip bounds when assigned`() {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         node.clipBounds = clipBounds
 
@@ -218,21 +237,37 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should set material clipping when local position changed`() {
+    fun `should apply clip bounds when local position changed`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
         Mockito.reset(nodeClipper)
 
         node.localPosition = Vector3(2f, 1f, 8f)
 
-        verify(nodeClipper).applyClipBounds(eq(node), anyOrNull())
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test
-    fun `should set material clipping when local scale changed`() {
+    fun `should apply clip bounds when local scale changed`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
         Mockito.reset(nodeClipper)
 
         node.localScale = Vector3(2f, 3f, 1f)
 
-        verify(nodeClipper).applyClipBounds(eq(node), anyOrNull())
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when visibility changed to visible`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
+        node.hide()
+        Mockito.reset(nodeClipper)
+
+        node.show()
+
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test

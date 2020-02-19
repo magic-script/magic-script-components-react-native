@@ -28,9 +28,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
@@ -85,7 +85,7 @@ abstract class UiNode(
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
-            nodeClipper.applyClipBounds(this, clipBounds)
+            applyClipBounds()
         }
 
     private lateinit var viewWrapper: ViewWrapper

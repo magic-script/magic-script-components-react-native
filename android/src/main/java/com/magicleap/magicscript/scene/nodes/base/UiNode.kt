@@ -28,7 +28,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -44,7 +44,7 @@ abstract class UiNode(
     initProps: ReadableMap,
     protected val context: Context,
     private val viewRenderableLoader: ViewRenderableLoader,
-    private val materialClipper: MaterialClipper,
+    private val nodeClipper: Clipper,
     useContentNodeAlignment: Boolean = false
 ) : TransformNode(initProps, true, useContentNodeAlignment) {
 
@@ -85,7 +85,7 @@ abstract class UiNode(
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
-            applyClipBounds()
+            nodeClipper.applyClipBounds(this, clipBounds)
         }
 
     private lateinit var viewWrapper: ViewWrapper
@@ -329,24 +329,7 @@ abstract class UiNode(
     }
 
     private fun applyClipBounds() {
-        applyMaterialClipping()
-        adjustCollisionShape()
-    }
-
-    // clipping a texture
-    private fun applyMaterialClipping() {
-        materialClipper.applyClipBounds(this, clipBounds)
-    }
-
-    // clipping collision shape (related to click events)
-    private fun adjustCollisionShape() {
-        if (!isVisible) {
-            return
-        }
-
-        clipBounds?.let { clipBounds ->
-            contentNode.collisionShape = Utils.createClippedCollider(this, clipBounds)
-        }
+        nodeClipper.applyClipBounds(this, clipBounds)
     }
 
     private fun setupViewListeners() {

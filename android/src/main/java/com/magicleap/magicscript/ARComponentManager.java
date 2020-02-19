@@ -32,15 +32,18 @@ import com.google.vr.sdk.audio.GvrAudioEngine;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.LoopedAnimator;
-import com.magicleap.magicscript.ar.MaterialClipper;
 import com.magicleap.magicscript.ar.ModelRenderableLoader;
 import com.magicleap.magicscript.ar.ModelRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.RenderableAnimator;
-import com.magicleap.magicscript.ar.SimpleMaterialClipper;
 import com.magicleap.magicscript.ar.VideoRenderableLoader;
 import com.magicleap.magicscript.ar.VideoRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.ViewRenderableLoader;
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.clip.Clipper;
+import com.magicleap.magicscript.ar.clip.NodeClipper;
+import com.magicleap.magicscript.ar.clip.TextureClipper;
+import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper;
+import com.magicleap.magicscript.ar.clip.VideoColliderClipper;
 import com.magicleap.magicscript.font.FontProvider;
 import com.magicleap.magicscript.font.providers.AndroidFontProvider;
 import com.magicleap.magicscript.font.providers.FontProviderImpl;
@@ -130,8 +133,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private NodesManager nodesManager;
     private EventsManager eventsManager;
 
-    private MaterialClipper materialClipper = new SimpleMaterialClipper();
-
     // Renderable loaders
     private ViewRenderableLoader viewRenderableLoader;
     private ModelRenderableLoader modelRenderableLoader;
@@ -144,6 +145,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private MediaPlayerPool mediaPlayerPool;
     private List<ActivityResultObserver> activityResultObservers = new ArrayList<>();
     private List<LifecycleEventListener> lifecycleEventListeners = new ArrayList<>();
+
+    private Clipper uiNodeClipper;
+    private Clipper videoNodeClipper;
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
                               MediaPlayerPool mediaPlayerPool) {
@@ -163,6 +167,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
         ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
         this.iconsRepo = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
+
+        Clipper textureClipper = new TextureClipper();
+        Clipper uiColliderClipper = new UiNodeColliderClipper();
+        Clipper videoColliderClipper = new VideoColliderClipper();
+
+        this.uiNodeClipper = new NodeClipper(textureClipper, uiColliderClipper);
+        this.videoNodeClipper = new NodeClipper(textureClipper, videoColliderClipper);
 
         context.addLifecycleEventListener(this);
         context.addActivityEventListener(this);
@@ -208,7 +219,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             UiButtonNode node = new UiButtonNode(props,
                                                  context,
                                                  viewRenderableLoader,
-                                                 materialClipper,
+                                                 uiNodeClipper,
                                                  fontProvider,
                                                  iconsRepo,
                                                  onClickAnimator);
@@ -219,7 +230,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createImageNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, materialClipper, iconsRepo);
+            UiImageNode node = new UiImageNode(props, context, viewRenderableLoader, uiNodeClipper, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -227,7 +238,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTextNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiTextNode node = new UiTextNode(props, context, viewRenderableLoader, materialClipper, fontProvider);
+            UiTextNode node = new UiTextNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider);
             addNode(node, nodeId);
         });
     }
@@ -235,7 +246,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTextEditNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiTextEditNode node = new UiTextEditNode(props, context, viewRenderableLoader, materialClipper, fontProvider);
+            UiTextEditNode node = new UiTextEditNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider);
             addNode(node, nodeId);
         });
     }
@@ -250,7 +261,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, materialClipper), nodeId);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper), nodeId);
         });
     }
 
@@ -261,29 +272,29 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScrollViewNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiScrollViewNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiScrollViewNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
     public void createSliderNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiSliderNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiSliderNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
     public void createSpinnerNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiSpinnerNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiSpinnerNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
     public void createCircleConfirmationNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiCircleConfirmationNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiCircleConfirmationNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
     public void createToggleNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             ToggleViewManager manager = new LinearToggleViewManager(fontProvider, new ToggleIconsProviderImpl());
-            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, materialClipper, manager);
+            UiToggleNode node = new UiToggleNode(props, context, viewRenderableLoader, uiNodeClipper, manager);
             addNode(node, nodeId);
         });
     }
@@ -295,7 +306,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createProgressBarNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiProgressBarNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiProgressBarNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
@@ -323,12 +334,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDropdownListNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDropdownListNode node = new UiDropdownListNode(props,
-                                                             context,
-                                                             viewRenderableLoader,
-                                                             materialClipper,
-                                                             fontProvider,
-                                                             iconsRepo);
+            UiDropdownListNode node = new UiDropdownListNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -348,7 +354,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             UiColorPickerNode node = new UiColorPickerNode(props,
                                                            context,
                                                            viewRenderableLoader,
-                                                           materialClipper,
+                                                           uiNodeClipper,
                                                            fontProvider,
                                                            iconsRepo,
                                                            onClickAnimator);
@@ -359,7 +365,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createWebViewNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UIWebViewNode node = new UIWebViewNode(props, context, viewRenderableLoader, materialClipper);
+            UIWebViewNode node = new UIWebViewNode(props, context, viewRenderableLoader, uiNodeClipper);
             addNode(node, nodeId);
         });
     }
@@ -374,12 +380,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createListViewItemNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiListViewItemNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
     public void createListViewNode(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new UiListViewNode(props, context, viewRenderableLoader, materialClipper), nodeId));
+        mainHandler.post(() -> addNode(new UiListViewNode(props, context, viewRenderableLoader, uiNodeClipper), nodeId));
     }
 
     @ReactMethod
@@ -388,7 +394,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             UiDatePickerNode datePickerNode = new UiDatePickerNode(props,
                                                                    context,
                                                                    viewRenderableLoader,
-                                                                   materialClipper,
+                                                                   uiNodeClipper,
                                                                    new DialogProviderImpl());
             addNode(datePickerNode, nodeId);
         });
@@ -400,7 +406,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             UiTimePickerNode datePickerNode = new UiTimePickerNode(props,
                                                                    context,
                                                                    viewRenderableLoader,
-                                                                   materialClipper,
+                                                                   uiNodeClipper,
                                                                    new DialogProviderImpl());
             addNode(datePickerNode, nodeId);
         });
@@ -418,7 +424,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             NodeAnimator onClickAnimator = new ZAxisAnimator();
-            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, materialClipper, fontProvider, iconsRepo, onClickAnimator);
+            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo, onClickAnimator);
             addNode(node, nodeId);
         });
     }
@@ -457,7 +463,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             NativeFilePickerNode filePicker = new NativeFilePickerNode(props,
                                                                        context,
                                                                        viewRenderableLoader,
-                                                                       materialClipper,
+                                                                       uiNodeClipper,
                                                                        fontProvider,
                                                                        iconsRepo,
                                                                        onClickAnimator);

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript.ar.clip
 
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 
-interface MaterialClipper {
-    fun applyClipBounds(node: TransformNode, clipBounds: AABB?)
+class VideoColliderClipper : Clipper {
+    override fun applyClipBounds(node: TransformNode, clipBounds: AABB?) {
+        
+    }
 }

@@ -26,7 +26,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ActivityResultObserver
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -39,7 +39,7 @@ class NativeFilePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
     clickAnimator: NodeAnimator
@@ -47,7 +47,7 @@ class NativeFilePickerNode(
     initProps,
     context,
     viewRenderableLoader,
-    materialClipper,
+    nodeClipper,
     fontProvider,
     iconsRepo,
     clickAnimator

@@ -21,7 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
@@ -35,8 +35,8 @@ open class UiListViewNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper
-) : UiScrollViewNode(initProps, context, viewRenderableLoader, materialClipper) {
+    nodeClipper: Clipper
+) : UiScrollViewNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     private val containerNode: UiLinearLayout
 

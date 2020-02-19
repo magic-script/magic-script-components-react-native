@@ -24,10 +24,8 @@ import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.collision.CollisionShape
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Material
 import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
@@ -51,11 +49,6 @@ class Utils {
         // One dp is a virtual pixel unit that's roughly equal to one pixel on a medium-density screen
         // 160dpi is the "baseline" density
         const val BASELINE_DENSITY = 160F
-
-        private const val CLIP_LEFT_PARAM = "left"
-        private const val CLIP_RIGHT_PARAM = "right"
-        private const val CLIP_TOP_PARAM = "top"
-        private const val CLIP_BOTTOM_PARAM = "bottom"
 
         /**
          *  Converts ARCore's meters to pixels
@@ -225,29 +218,35 @@ class Utils {
             return materialClip
         }
 
-        fun createClippedCollider(node: UiNode, clipBounds: AABB): Box {
-            // no intersection in 3d space, returning empty box
-            if (node.getBounding().intersection(clipBounds).equalInexact(AABB())) {
+        fun createClippedCollider(node: TransformNode, clipBounds: AABB): Box {
+            val nodeBounds = node.getBounding()
+            if (nodeBounds.intersection(clipBounds).equalInexact(AABB())) {
+                // no intersection in 3d space, returning empty box
                 return Box(Vector3.zero(), Vector3.zero())
             }
+
+            val size = nodeBounds.size()
 
             val pivotOffsetX = if (node.useContentNodeAlignment) {
                 0f
             } else {
-                -node.horizontalAlignment.centerOffset * node.size.x
+                -node.horizontalAlignment.centerOffset * size.x
             }
 
             val pivotOffsetY = if (node.useContentNodeAlignment) {
                 0f
             } else {
-                -node.verticalAlignment.centerOffset * node.size.y
+                -node.verticalAlignment.centerOffset * size.y
             }
 
+            val scaleX = node.localScale.x * node.contentNode.localScale.x
+            val scaleY = node.localScale.y * node.contentNode.localScale.y
+
             val nodeCollisionShape = Bounding(
-                -node.size.x / 2 * node.localScale.x,
-                -node.size.y / 2 * node.localScale.y,
-                node.size.x / 2 * node.localScale.x,
-                node.size.y / 2 * node.localScale.y
+                -size.x / 2 * scaleX,
+                -size.y / 2 * scaleY,
+                size.x / 2 * scaleX,
+                size.y / 2 * scaleY
             ).translated(Vector2(pivotOffsetX, pivotOffsetY))
 
             val clipCollisionShape = clipBounds
@@ -257,35 +256,21 @@ class Utils {
             val intersection = nodeCollisionShape.intersection(clipCollisionShape)
 
             // collision shape is not aware of scale, we need to scale to original position
-            val scale = node.localScale
-            val sizeX = if (scale.x > 0) intersection.size().x / scale.x else 0F
-            val sizeY = if (scale.y > 0) intersection.size().y / scale.y else 0F
+            val sizeX = if (scaleX > 0) intersection.size().x / scaleX else 0F
+            val sizeY = if (scaleY > 0) intersection.size().y / scaleY else 0F
             val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
 
             var centerX = 0F
             var centerY = 0F
 
-            if (!node.useContentNodeAlignment && scale.x > 0) {
-                centerX = intersection.center().x / scale.x
-                centerY = intersection.center().y / scale.y
+            if (!node.useContentNodeAlignment && scaleX > 0 && scaleY > 0) {
+                centerX = intersection.center().x / scaleX
+                centerY = intersection.center().y / scaleY
             }
 
             val collisionShapeCenter = Vector3(centerX, centerY, 0F)
 
             return Box(collisionShapeSize, collisionShapeCenter)
-        }
-
-        /**
-         * Clips the material with the [materialClip] bounds (relative to model size,
-         * with the origin at bottom-center)
-         */
-        fun applyMaterialClipping(material: Material, materialClip: Bounding) {
-            material.apply {
-                setFloat(CLIP_LEFT_PARAM, materialClip.left)
-                setFloat(CLIP_RIGHT_PARAM, materialClip.right)
-                setFloat(CLIP_TOP_PARAM, materialClip.top)
-                setFloat(CLIP_BOTTOM_PARAM, materialClip.bottom)
-            }
         }
 
         fun detectModelType(modelUri: Uri, context: Context): ModelType {

@@ -24,7 +24,7 @@ import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.Utils
@@ -37,9 +37,9 @@ open class UiDateTimePickerBaseNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     protected val dialogProvider: DialogProvider
-) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         const val PROP_LABEL = "label"

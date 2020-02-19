@@ -7,7 +7,7 @@ import android.widget.ListView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -20,8 +20,8 @@ class DropdownItemsListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper
-) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
+    nodeClipper: Clipper
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         const val DEFAULT_ITEMS_TEXT_SIZE = 0.025F

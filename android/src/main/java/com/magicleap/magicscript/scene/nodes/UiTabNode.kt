@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -32,7 +32,7 @@ class UiTabNode(
     props: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepository: IconsRepository,
     clickAnimator: NodeAnimator
@@ -40,7 +40,7 @@ class UiTabNode(
     props,
     context,
     viewRenderableLoader,
-    materialClipper,
+    nodeClipper,
     fontProvider,
     iconsRepository,
     clickAnimator

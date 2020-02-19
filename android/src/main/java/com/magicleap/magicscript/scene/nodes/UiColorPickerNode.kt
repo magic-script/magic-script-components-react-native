@@ -24,7 +24,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -41,7 +41,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
     clickAnimator: NodeAnimator,
@@ -50,7 +50,7 @@ open class UiColorPickerNode @JvmOverloads constructor(
     initProps,
     context,
     viewRenderableLoader,
-    materialClipper,
+    nodeClipper,
     fontProvider,
     iconsRepo,
     clickAnimator

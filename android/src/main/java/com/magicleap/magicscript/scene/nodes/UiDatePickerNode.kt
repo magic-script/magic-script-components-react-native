@@ -23,7 +23,7 @@ import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
@@ -39,13 +39,13 @@ open class UiDatePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     datePickerDialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(
     initProps,
     context,
     viewRenderableLoader,
-    materialClipper,
+    nodeClipper,
     datePickerDialogProvider
 ) {
 

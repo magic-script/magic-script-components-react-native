@@ -25,7 +25,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -38,9 +38,9 @@ open class UiImageNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     private val iconsRepo: IconsRepository
-) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties

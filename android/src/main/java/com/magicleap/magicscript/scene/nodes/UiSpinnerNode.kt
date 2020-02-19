@@ -22,7 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomSpinner
@@ -33,8 +33,8 @@ open class UiSpinnerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper
-) : UiNode(initProps, context, viewRenderableLoader, materialClipper) {
+    nodeClipper: Clipper
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties

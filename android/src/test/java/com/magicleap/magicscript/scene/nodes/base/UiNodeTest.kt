@@ -22,8 +22,11 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
-import com.magicleap.magicscript.ar.MaterialClipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.clip.NodeClipper
+import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.update
@@ -49,19 +52,19 @@ class UiNodeTest {
 
     private lateinit var context: Context
     private lateinit var viewRenderableLoader: ViewRenderableLoader
-    private lateinit var materialClipper: MaterialClipper
+    private lateinit var nodeClipper: Clipper
     private lateinit var node: UiNode
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        materialClipper = mock()
+        nodeClipper = spy(NodeClipper(TextureClipper(), UiNodeColliderClipper()))
         node = UiNodeBuilder(
             context = context,
             useContentNodeAlignment = true,
             viewRenderableLoader = viewRenderableLoader,
-            materialClipper = materialClipper
+            nodeClipper = nodeClipper
         )
             .withSize(1f, 1f)
             .build()
@@ -211,30 +214,30 @@ class UiNodeTest {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         node.clipBounds = clipBounds
 
-        verify(materialClipper).applyClipBounds(eq(node), eq(clipBounds))
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test
     fun `should set material clipping when local position changed`() {
-        Mockito.reset(materialClipper)
+        Mockito.reset(nodeClipper)
 
         node.localPosition = Vector3(2f, 1f, 8f)
 
-        verify(materialClipper).applyClipBounds(eq(node), anyOrNull())
+        verify(nodeClipper).applyClipBounds(eq(node), anyOrNull())
     }
 
     @Test
     fun `should set material clipping when local scale changed`() {
-        Mockito.reset(materialClipper)
+        Mockito.reset(nodeClipper)
 
         node.localScale = Vector3(2f, 3f, 1f)
 
-        verify(materialClipper).applyClipBounds(eq(node), anyOrNull())
+        verify(nodeClipper).applyClipBounds(eq(node), anyOrNull())
     }
 
     @Test
     fun `should clip collision shape after setting clip bounds`() {
-        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+        val node = UiNodeBuilder(context, nodeClipper = nodeClipper)
             .withSize(4f, 4f)
             .withAlignment("center-center")
             .build()
@@ -249,7 +252,7 @@ class UiNodeTest {
 
     @Test
     fun `should not set collision shape after setting clip bounds if node is hidden`() {
-        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+        val node = UiNodeBuilder(context, nodeClipper = nodeClipper)
             .withSize(4f, 4f)
             .withAlignment("center-center")
             .build()

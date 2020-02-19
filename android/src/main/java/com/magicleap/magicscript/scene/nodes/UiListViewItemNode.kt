@@ -6,7 +6,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
@@ -23,8 +23,8 @@ open class UiListViewItemNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper
-) : UiNode(initProps, context, viewRenderableLoader, materialClipper), Layoutable {
+    nodeClipper: Clipper
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper), Layoutable {
 
     companion object {
         const val PROP_BACKGROUND_COLOR = "backgroundColor"

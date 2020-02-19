@@ -22,7 +22,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -36,7 +36,7 @@ class VideoNode(
     private val context: Context,
     private val videoPlayer: VideoPlayer,
     private val videoRenderableLoader: VideoRenderableLoader,
-    private val materialClipper: MaterialClipper
+    private val nodeClipper: Clipper
 ) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
@@ -61,7 +61,7 @@ class VideoNode(
         get() = super.clipBounds
         set(value) {
             super.clipBounds = value
-            applyMaterialClipping()
+            applyClipBounds()
         }
 
     private var renderableCopy: Renderable? = null
@@ -102,7 +102,7 @@ class VideoNode(
         super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
-            applyMaterialClipping()
+            applyClipBounds()
         } else {
             contentNode.renderable = null
         }
@@ -110,7 +110,7 @@ class VideoNode(
 
     override fun onTransformedLocally() {
         super.onTransformedLocally()
-        applyMaterialClipping()
+        applyClipBounds()
     }
 
     override fun onPause() {
@@ -133,8 +133,8 @@ class VideoNode(
         videoPlayer.release()
     }
 
-    private fun applyMaterialClipping() {
-        materialClipper.applyClipBounds(this, clipBounds)
+    private fun applyClipBounds() {
+        nodeClipper.applyClipBounds(this, clipBounds)
     }
 
     private fun loadVideo() {
@@ -156,7 +156,7 @@ class VideoNode(
                         contentNode.renderable = result.renderable
                     }
                     renderableCopy = result.renderable
-                    applyMaterialClipping()
+                    applyClipBounds()
                 }
             }
         }
@@ -172,7 +172,7 @@ class VideoNode(
             val scaleX = widthMeters / initialWidth
             val scaleY = heightMeters / initialHeight
             contentNode.localScale = Vector3(scaleX, scaleY, 1F)
-            applyMaterialClipping()
+            applyClipBounds()
         }
     }
 

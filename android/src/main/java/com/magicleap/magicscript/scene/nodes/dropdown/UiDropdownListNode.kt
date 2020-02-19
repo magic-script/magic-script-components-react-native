@@ -21,7 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.MaterialClipper
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
@@ -38,14 +38,14 @@ open class UiDropdownListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    materialClipper: MaterialClipper,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository
 ) : UiButtonNode(
     initProps,
     context,
     viewRenderableLoader,
-    materialClipper,
+    nodeClipper,
     fontProvider,
     iconsRepo, null
 ), Layoutable {
@@ -84,7 +84,7 @@ open class UiDropdownListNode(
             listProps,
             context,
             ViewRenderableLoaderImpl(context),
-            materialClipper
+            nodeClipper
         )
         listNode.onListVisibilityChanged = onListVisibilityChangedListener
 

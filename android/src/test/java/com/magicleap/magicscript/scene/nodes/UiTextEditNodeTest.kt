@@ -28,8 +28,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -67,7 +68,7 @@ class UiTextEditNodeTest {
         this.textViewSpy = spy(TextView(context))
         this.providerTypeface = Typeface.DEFAULT_BOLD
         this.fontProvider = object : FontProvider {
-            override fun provideFont(fontParams: FontParams?): Typeface {
+            override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
                 return providerTypeface
             }
         }

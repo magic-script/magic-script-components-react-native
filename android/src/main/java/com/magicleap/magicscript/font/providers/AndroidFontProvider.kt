@@ -17,7 +17,6 @@
 package com.magicleap.magicscript.font.providers
 
 import android.graphics.Typeface
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
@@ -38,9 +37,9 @@ class AndroidFontProvider : FontProvider {
     /**
      * Returns a system typeface for a given [fontParams].
      */
-    override fun provideFont(fontParams: FontParams?): Typeface {
-        val weight = fontParams?.weight ?: FontWeight.DEFAULT
-        val style = fontParams?.style ?: FontStyle.DEFAULT
+    override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
+        val weight = fontWeight ?: FontWeight.DEFAULT
+        val style = fontStyle ?: FontStyle.DEFAULT
 
         val fontFamily = when (weight) {
             FontWeight.EXTRA_LIGHT -> FAMILY_EXTRA_LIGHT

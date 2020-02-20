@@ -18,8 +18,8 @@ package com.magicleap.magicscript.font
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.magicleap.magicscript.font.providers.FontProviderImpl
 import com.magicleap.magicscript.font.providers.AndroidFontProvider
+import com.magicleap.magicscript.font.providers.FontProviderImpl
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -41,10 +41,8 @@ class FontProviderImplTest {
 
     @Test
     fun `should return same typeface object for same font params`() {
-        val fontParams = FontParams(FontWeight.BOLD, FontStyle.ITALIC, false)
-
-        val font1 = fontProvider.provideFont(fontParams)
-        val font2 = fontProvider.provideFont(fontParams)
+        val font1 = fontProvider.provideFont(FontStyle.ITALIC, FontWeight.BOLD)
+        val font2 = fontProvider.provideFont(FontStyle.ITALIC, FontWeight.BOLD)
 
         assertTrue(font1 === font2) // comparing references
     }
@@ -52,11 +50,8 @@ class FontProviderImplTest {
 
     @Test
     fun `should return different typeface objects for different weights`() {
-        val fontParams1 = FontParams(FontWeight.LIGHT, FontStyle.NORMAL, false)
-        val fontParams2 = FontParams(FontWeight.MEDIUM, FontStyle.NORMAL, false)
-
-        val font1 = fontProvider.provideFont(fontParams1)
-        val font2 = fontProvider.provideFont(fontParams2)
+        val font1 = fontProvider.provideFont(FontStyle.NORMAL, FontWeight.LIGHT)
+        val font2 = fontProvider.provideFont(FontStyle.NORMAL, FontWeight.MEDIUM)
 
         assertTrue(font1 !== font2) // comparing references
     }

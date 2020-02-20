@@ -22,9 +22,6 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.font.FontParams
-import com.magicleap.magicscript.font.FontStyle
-import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -35,9 +32,6 @@ import com.magicleap.magicscript.scene.nodes.props.*
  */
 private const val PROP_SCROLL_BOUNDS_MIN = "min"
 private const val PROP_SCROLL_BOUNDS_MAX = "max"
-private const val PROP_WEIGHT = "weight"
-private const val PROP_STYLE = "style"
-private const val PROP_ALL_CAPS = "allCaps"
 private const val FILE_URI_PROPERTY = "uri"
 private const val PROP_INDEX = "index"
 private const val PROP_PADDING = "padding"
@@ -59,7 +53,6 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             Matrix::class -> readMatrix(this, key) as T?
             Padding::class -> readPadding(this, key) as T?
             Alignment::class -> readAlignment(this, key) as T?
-            FontParams::class -> readFontParams(this, key) as T?
             SpatialSoundPosition::class -> readSpatialSoundPosition(this, key) as T?
             SpatialSoundDistance::class -> readSpatialSoundDistance(this, key) as T?
             ItemListPaddingMap::class -> readItemListPaddingMap(this, key) as T?
@@ -147,18 +140,6 @@ fun readMatrix(props: Bundle, propertyName: String): Matrix? {
         return Matrix(matrixData)
     }
     return null
-}
-
-fun readFontParams(bundle: Bundle, paramName: String): FontParams? {
-    val paramsBundle = bundle.getBundle(paramName) ?: return null
-    val weightName = paramsBundle.getString(PROP_WEIGHT, "")
-    val styleName = paramsBundle.getString(PROP_STYLE, "")
-    val allCaps = paramsBundle.getBoolean(PROP_ALL_CAPS, false)
-
-    val weight = FontWeight.fromName(weightName) ?: FontWeight.DEFAULT
-    val style = FontStyle.fromName(styleName) ?: FontStyle.DEFAULT
-
-    return FontParams(weight, style, allCaps)
 }
 
 /**

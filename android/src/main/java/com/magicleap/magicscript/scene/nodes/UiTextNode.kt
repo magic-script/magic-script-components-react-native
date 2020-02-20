@@ -29,7 +29,10 @@ import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 
 open class UiTextNode(
     initProps: ReadableMap,
@@ -48,7 +51,6 @@ open class UiTextNode(
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_CHARACTERS_SPACING = "charSpacing"
         const val PROP_LINE_SPACING = "lineSpacing"
-        const val PROP_FONT_PARAMS = "fontParameters"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         const val DEFAULT_ALIGNMENT = "bottom-left" // view alignment (pivot)
@@ -75,8 +77,9 @@ open class UiTextNode(
             (view as TextView).setSingleLine(true)
         }
 
-        val fontParams = properties.read<FontParams>(PROP_FONT_PARAMS)
-        if (fontParams == null) {  // setting a default typeface
+        val fontParams = FontParams.fromBundle(properties)
+        if (fontParams.style == null && fontParams.weight == null) {
+            // setting a default typeface
             (view as TextView).typeface = fontProvider.provideFont()
         }
     }
@@ -129,12 +132,16 @@ open class UiTextNode(
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
-            (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
-            // rebuild only if size can be changed
-            if (canResizeOnContentChange()) {
-                setNeedsRebuild()
-            }
+            setTextSize(sizeMeters)
+        }
+    }
+
+    private fun setTextSize(sizeMeters: Float) {
+        val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
+        (view as TextView).setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+        // rebuild only if size can be changed
+        if (canResizeOnContentChange()) {
+            setNeedsRebuild()
         }
     }
 
@@ -162,11 +169,15 @@ open class UiTextNode(
     private fun setCharactersSpacing(props: Bundle) {
         if (props.containsKey(PROP_CHARACTERS_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
-            (view as TextView).letterSpacing = spacing.toFloat()
-            // rebuild only if size can be changed
-            if (canResizeOnContentChange()) {
-                setNeedsRebuild()
-            }
+            setCharactersSpacing(spacing)
+        }
+    }
+
+    private fun setCharactersSpacing(spacing: Double) {
+        (view as TextView).letterSpacing = spacing.toFloat()
+        // rebuild only if size can be changed
+        if (canResizeOnContentChange()) {
+            setNeedsRebuild()
         }
     }
 
@@ -189,10 +200,24 @@ open class UiTextNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = props.read<FontParams>(PROP_FONT_PARAMS) ?: return
-        val textView = (view as TextView)
-        textView.typeface = fontProvider.provideFont(fontParams)
-        textView.isAllCaps = fontParams.allCaps
+        val fontParams = FontParams.fromBundle(props)
+
+        if (fontParams.style != null || fontParams.weight != null) {
+            (view as TextView).typeface =
+                fontProvider.provideFont(fontParams.style, fontParams.weight)
+        }
+
+        fontParams.allCaps?.let {
+            (view as TextView).isAllCaps = it
+        }
+
+        fontParams.fontSize?.let {
+            setTextSize(it.toFloat())
+        }
+
+        fontParams.tracking?.let {
+            setCharactersSpacing(it)
+        }
     }
 
 }

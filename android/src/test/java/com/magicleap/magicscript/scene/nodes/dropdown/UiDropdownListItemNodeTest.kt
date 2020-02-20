@@ -20,8 +20,8 @@ import android.content.Context
 import android.graphics.Typeface
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.id
 import com.magicleap.magicscript.label
@@ -56,8 +56,8 @@ class UiDropdownListItemNodeTest {
         normalTypeface = mock()
         extraBoldTypeface = mock()
         fontProvider = spy(object : FontProvider {
-            override fun provideFont(fontParams: FontParams?): Typeface {
-                return if (fontParams?.weight == FontWeight.EXTRA_BOLD) {
+            override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
+                return if (fontWeight == FontWeight.EXTRA_BOLD) {
                     extraBoldTypeface
                 } else {
                     normalTypeface

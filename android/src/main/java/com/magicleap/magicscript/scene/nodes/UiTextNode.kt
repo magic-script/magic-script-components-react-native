@@ -47,6 +47,7 @@ open class UiTextNode(
         const val PROP_TEXT_ALIGNMENT = "textAlignment"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_CHARACTERS_SPACING = "charSpacing"
+        const val PROP_LINE_SPACING = "lineSpacing"
         const val PROP_FONT_PARAMS = "fontParameters"
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
@@ -92,6 +93,7 @@ open class UiTextNode(
         setTextAlignment(props)
         setTextColor(props)
         setCharactersSpacing(props)
+        setLineSpacing(props)
         setWrap(props)
         setFontParams(props)
     }
@@ -165,6 +167,13 @@ open class UiTextNode(
             if (canResizeOnContentChange()) {
                 setNeedsRebuild()
             }
+        }
+    }
+
+    private fun setLineSpacing(props: Bundle) {
+        if (props.containsKey(PROP_LINE_SPACING)) {
+            val spacingMultiplier = props.getDouble(PROP_LINE_SPACING).toFloat()
+            (view as TextView).setLineSpacing(0F, spacingMultiplier)
         }
     }
 

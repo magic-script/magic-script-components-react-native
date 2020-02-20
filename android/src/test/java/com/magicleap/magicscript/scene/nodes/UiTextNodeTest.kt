@@ -37,6 +37,7 @@ import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -188,6 +189,17 @@ class UiTextNodeTest {
         node.build()
 
         verify(viewSpy).letterSpacing = spacing.toFloat()
+    }
+
+    @Test
+    fun `should apply line spacing when lineSpacing property present`() {
+        val spacing = 2.0 // multiplier
+        val props = reactMapOf(UiTextNode.PROP_LINE_SPACING, spacing)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        viewSpy.lineSpacingMultiplier shouldEqual spacing.toFloat()
     }
 
     @Test

@@ -25,10 +25,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.nhaarman.mockitokotlin2.*
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -36,7 +34,9 @@ import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.Utils
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.android.synthetic.main.text_edit.view.*
+import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -76,7 +76,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldUseTypefaceFromProvider() {
+    fun `should use typeface from provider`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
 
         node.build()
@@ -85,7 +85,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultTextSize() {
+    fun `should have default text size`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
@@ -95,7 +95,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultAlignment() {
+    fun `should have default alignment`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
@@ -105,7 +105,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultTextPadding() {
+    fun `should have default text padding`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
@@ -115,7 +115,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldHaveDefaultCharactersSpacing() {
+    fun `should have default characters spacing`() {
         val node = createNodeWithViewSpy(JavaOnlyMap())
         node.build()
 
@@ -125,7 +125,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextWhenTextPropertyPresent() {
+    fun `should apply text when text property present`() {
         val text = "xyz"
         val props = reactMapOf(UiTextEditNode.PROP_TEXT, text)
         val node = createNodeWithViewSpy(props)
@@ -136,7 +136,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyHintWhenHintPropertyPresentAndTextIsEmpty() {
+    fun `should apply hint when hint property present and text is empty`() {
         val hint = "hint text"
         val props = reactMapOf(
             UiTextEditNode.PROP_HINT, hint,
@@ -153,7 +153,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextSizeWhenTextSizePropertyPresent() {
+    fun `should apply text size when text size property present`() {
         val textSize = 0.15
         val sizeInPixels = Utils.metersToFontPx(textSize.toFloat(), context).toFloat()
         val props = reactMapOf(UiTextEditNode.PROP_TEXT_SIZE, textSize)
@@ -165,7 +165,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextAlignmentWhenAlignmentPropertyPresent() {
+    fun `should apply text alignment when alignment property present`() {
         val textAlignment = "center"
         val props = reactMapOf(UiTextEditNode.PROP_TEXT_ALIGNMENT, textAlignment)
         val node = createNodeWithViewSpy(props)
@@ -177,7 +177,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextColorWhenColorPropertyPresentAndTextNotEmpty() {
+    fun `should apply text color when color property present and text not empty`() {
         val text = "some text"
         val textColor = reactArrayOf(0.5, 1.0, 1.0, 1.0)
         val props = reactMapOf(
@@ -192,7 +192,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyCharactersSpacingWhenSpacingPropertyPresent() {
+    fun `should apply characters spacing when spacing property present`() {
         val spacing = 0.3 // 'EM' units
         val props = reactMapOf(UiTextEditNode.PROP_CHARACTERS_SPACING, spacing)
         val node = createNodeWithViewSpy(props)
@@ -203,7 +203,18 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyMultilineWhenMultilinePropertyIsTrue() {
+    fun `should apply line spacing when lineSpacing property present`() {
+        val spacing = 0.9 // multiplier
+        val props = reactMapOf(UiTextEditNode.PROP_LINE_SPACING, spacing)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        textViewSpy.lineSpacingMultiplier shouldEqual spacing.toFloat()
+    }
+
+    @Test
+    fun `should apply multiline when multiline property is true`() {
         val props = reactMapOf(UiTextEditNode.PROP_MULTILINE, true)
         val node = createNodeWithViewSpy(props)
 
@@ -213,7 +224,7 @@ class UiTextEditNodeTest {
     }
 
     @Test
-    fun shouldApplyTextPaddingWhenPaddingPropertyPresent() {
+    fun `should apply text padding when padding property present`() {
         val padding = reactArrayOf(2.0, 3.0, 2.0, 3.0)
         val props = reactMapOf(UiTextEditNode.PROP_TEXT_PADDING, padding)
         val node = createNodeWithViewSpy(props)

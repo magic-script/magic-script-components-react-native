@@ -20,7 +20,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.*
@@ -126,6 +125,13 @@ class UiScrollViewNodeTest {
         val expectedClipBounds = Bounding(left = 0f, bottom = -0.6f, right = 0.8f, top = -0.2f)
 
         verify(contentNode).setClipBounds(matchesInexact(expectedClipBounds))
+    }
+
+    @Test
+    fun `should apply scroll bars visibility`() {
+        tested.update(UiScrollViewNode.PROP_SCROLLBAR_VISIBILITY, "off")
+
+        verify(viewSpy).scrollBarsVisibility = "off"
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {

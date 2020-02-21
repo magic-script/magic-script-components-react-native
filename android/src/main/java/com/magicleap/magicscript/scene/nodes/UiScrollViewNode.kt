@@ -33,9 +33,12 @@ import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
 import com.magicleap.magicscript.utils.Utils.Companion.pxToMeters
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 import kotlin.math.max
 import kotlin.math.min
 
@@ -43,13 +46,13 @@ open class UiScrollViewNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader
-) :
-    UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
+) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = false) {
 
     companion object {
         // properties
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
         const val PROP_SCROLL_DIRECTION = "scrollDirection"
+        const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
@@ -137,6 +140,7 @@ open class UiScrollViewNode(
         }
 
         setScrollDirection(props)
+        setScrollbarVisibility(props)
     }
 
     override fun addContent(child: TransformNode) {
@@ -307,6 +311,11 @@ open class UiScrollViewNode(
         if (value != null) {
             (view as CustomScrollView).scrollDirection = value
         }
+    }
+
+    private fun setScrollbarVisibility(props: Bundle) {
+        val visibility = props.read<String>(PROP_SCROLLBAR_VISIBILITY) ?: return
+        (view as CustomScrollView).scrollBarsVisibility = visibility
     }
 
 }

@@ -27,7 +27,9 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLay
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
+import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.read
 
 open class UiListViewNode(
     initProps: ReadableMap,
@@ -41,6 +43,7 @@ open class UiListViewNode(
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
         const val PROP_ORIENTATION = "orientation"
+        const val PROP_SCROLLING_ENABLED = "scrollingEnabled"
 
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
@@ -82,6 +85,8 @@ open class UiListViewNode(
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
+
+        setScrollingEnabled(props)
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -143,4 +148,10 @@ open class UiListViewNode(
                 item.minSize = minItemSize
             }
     }
+
+    private fun setScrollingEnabled(props: Bundle) {
+        val scrollingEnabled = props.read<Boolean>(PROP_SCROLLING_ENABLED) ?: return
+        (view as CustomScrollView).scrollingEnabled = scrollingEnabled
+    }
+
 }

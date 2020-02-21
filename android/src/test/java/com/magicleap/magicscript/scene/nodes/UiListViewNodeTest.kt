@@ -108,6 +108,15 @@ class UiListViewNodeTest {
         container.getProperty(UiLinearLayout.PROP_ORIENTATION) shouldEqual "horizontal"
     }
 
+    @Test
+    fun `should disable scrolling when scrollingEnabled property is false`() {
+        val props = reactMapOf(UiListViewNode.PROP_SCROLLING_ENABLED, false)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).scrollingEnabled = false
+    }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {
         return object : UiListViewNode(props, context, mock()) {

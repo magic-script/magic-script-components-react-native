@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBe
 import org.junit.Before
@@ -54,6 +55,11 @@ class CustomScrollViewTest {
 
         scrollView.addView(verticalBar)
         scrollView.addView(horizontalBar)
+    }
+
+    @Test
+    fun `scrolling should be enabled by default`() {
+        scrollView.scrollingEnabled shouldBe true
     }
 
     @Test

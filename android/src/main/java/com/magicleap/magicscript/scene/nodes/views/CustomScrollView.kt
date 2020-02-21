@@ -66,6 +66,8 @@ class CustomScrollView @JvmOverloads constructor(
 
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
+    var scrollingEnabled = true
+
     /**
      * Normalized scroll position. X and Y of a vector is always
      * in the range of [MIN_POSITION] to [MAX_POSITION]
@@ -141,6 +143,10 @@ class CustomScrollView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!scrollingEnabled) {
+            return false
+        }
+
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain()
         }

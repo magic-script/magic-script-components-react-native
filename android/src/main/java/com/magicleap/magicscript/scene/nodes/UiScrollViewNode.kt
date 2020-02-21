@@ -33,12 +33,9 @@ import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
+import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
 import com.magicleap.magicscript.utils.Utils.Companion.pxToMeters
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
 import kotlin.math.max
 import kotlin.math.min
 
@@ -54,6 +51,7 @@ open class UiScrollViewNode(
         const val PROP_SCROLL_DIRECTION = "scrollDirection"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
         const val PROP_SCROLL_VALUE = "scrollValue"
+        const val PROP_SCROLL_OFFSET = "scrollOffset"
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
@@ -83,6 +81,7 @@ open class UiScrollViewNode(
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
+    private var scrollOffset = Vector3.zero()
 
     init {
         properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
@@ -144,6 +143,7 @@ open class UiScrollViewNode(
         setScrollDirection(props)
         setScrollbarVisibility(props)
         setScrollValue(props)
+        setScrollOffset(props)
     }
 
     override fun addContent(child: TransformNode) {
@@ -290,7 +290,7 @@ open class UiScrollViewNode(
                 requestedContentPosition.x,
                 requestedContentPosition.y,
                 Z_ORDER_OFFSET
-            )
+            ) + scrollOffset
         }
     }
 
@@ -333,6 +333,11 @@ open class UiScrollViewNode(
                 (view as CustomScrollView).position = Vector2(clampedValue, 0f)
             }
         }
+    }
+
+    private fun setScrollOffset(props: Bundle) {
+        val scrollOffset = props.read<Vector3>(PROP_SCROLL_OFFSET) ?: return
+        this.scrollOffset = scrollOffset
     }
 
 }

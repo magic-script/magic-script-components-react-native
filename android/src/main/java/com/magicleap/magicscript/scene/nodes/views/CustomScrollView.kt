@@ -71,7 +71,7 @@ class CustomScrollView @JvmOverloads constructor(
      * in the range of [MIN_POSITION] to [MAX_POSITION]
      */
     var position = Vector2()
-        private set(value) {
+        set(value) {
             field = value
             hBar?.thumbPosition = value.x
             vBar?.thumbPosition = value.y

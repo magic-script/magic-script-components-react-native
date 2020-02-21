@@ -53,10 +53,12 @@ open class UiScrollViewNode(
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
         const val PROP_SCROLL_DIRECTION = "scrollDirection"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
+        const val PROP_SCROLL_VALUE = "scrollValue"
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
+        const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
 
         const val BAR_THICKNESS_RATIO = 0.03F // relative to min (width, height)
         const val BAR_MINIMUM_THICKNESS = 0.05F // in meters
@@ -141,6 +143,7 @@ open class UiScrollViewNode(
 
         setScrollDirection(props)
         setScrollbarVisibility(props)
+        setScrollValue(props)
     }
 
     override fun addContent(child: TransformNode) {
@@ -256,6 +259,7 @@ open class UiScrollViewNode(
             metersToPx(contentSize.x, context).toFloat(),
             metersToPx(contentSize.y, context).toFloat()
         )
+
         update(scrollView.position)
     }
 
@@ -287,7 +291,6 @@ open class UiScrollViewNode(
                 requestedContentPosition.y,
                 Z_ORDER_OFFSET
             )
-
         }
     }
 
@@ -316,6 +319,20 @@ open class UiScrollViewNode(
     private fun setScrollbarVisibility(props: Bundle) {
         val visibility = props.read<String>(PROP_SCROLLBAR_VISIBILITY) ?: return
         (view as CustomScrollView).scrollBarsVisibility = visibility
+    }
+
+    private fun setScrollValue(props: Bundle) {
+        val scrollValue = props.read<Double>(PROP_SCROLL_VALUE) ?: return
+        val clampedValue = scrollValue.coerceIn(0.0, 1.0).toFloat()
+
+        when (properties.read<String>(PROP_SCROLL_DIRECTION)) {
+            SCROLL_DIRECTION_VERTICAL -> {
+                (view as CustomScrollView).position = Vector2(0f, clampedValue)
+            }
+            SCROLL_DIRECTION_HORIZONTAL -> {
+                (view as CustomScrollView).position = Vector2(clampedValue, 0f)
+            }
+        }
     }
 
 }

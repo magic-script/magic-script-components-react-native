@@ -30,6 +30,7 @@ import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.sumByFloat
 
 open class UiListViewNode(
     initProps: ReadableMap,
@@ -44,6 +45,7 @@ open class UiListViewNode(
         const val PROP_HEIGHT = "height"
         const val PROP_ORIENTATION = "orientation"
         const val PROP_SCROLLING_ENABLED = "scrollingEnabled"
+        const val PROP_SCROLL_TO_ITEM = "scrollToItem"
 
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
@@ -51,6 +53,7 @@ open class UiListViewNode(
 
     private var contentAdded = false
     private var contentSize = Vector2()
+    private var requestedScrollIndex = 0
 
     init {
         val containerProps = JavaOnlyMap()
@@ -87,6 +90,7 @@ open class UiListViewNode(
         }
 
         setScrollingEnabled(props)
+        setScrollToItem(props)
     }
 
     override fun provideDesiredSize(): Vector2 {
@@ -120,7 +124,12 @@ open class UiListViewNode(
 
     override fun addContent(child: TransformNode) {
         when (child) {
-            is UiListViewItemNode -> containerNode.addContent(child)
+            is UiListViewItemNode -> {
+                containerNode.addContent(child)
+                if (getItems().size - 1 == requestedScrollIndex) {
+                    scrollToItem(requestedScrollIndex)
+                }
+            }
             is UiScrollBarNode -> {
                 super.addContent(child)
                 setNeedsRebuild(true) // we may need to update the size
@@ -142,16 +151,33 @@ open class UiListViewNode(
         } else {
             Vector2(0f, contentSize.y)
         }
-        containerNode.childrenList
-            .filterIsInstance<UiListViewItemNode>()
-            .forEach { item ->
-                item.minSize = minItemSize
-            }
+        getItems().forEach { item ->
+            item.minSize = minItemSize
+        }
     }
 
     private fun setScrollingEnabled(props: Bundle) {
         val scrollingEnabled = props.read<Boolean>(PROP_SCROLLING_ENABLED) ?: return
         (view as CustomScrollView).scrollingEnabled = scrollingEnabled
     }
+
+    private fun setScrollToItem(props: Bundle) {
+        val itemIndex = props.read<Int>(PROP_SCROLL_TO_ITEM) ?: return
+        scrollToItem(itemIndex)
+    }
+
+    private fun scrollToItem(itemIndex: Int) {
+        // TODO orientation
+        requestedScrollIndex = itemIndex
+        val items = getItems()
+        val sumHeightBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().y }
+
+        if (contentSize.y > 0) {
+            val positionY = sumHeightBeforeItem / contentSize.y
+            (view as CustomScrollView).position = Vector2(0f, positionY)
+        }
+    }
+
+    private fun getItems() = containerNode.childrenList.filterIsInstance<UiListViewItemNode>()
 
 }

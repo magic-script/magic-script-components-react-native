@@ -28,12 +28,14 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import org.amshove.kluent.shouldBeInstanceOf
+import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeLessThan
 import org.junit.Before
@@ -65,7 +67,7 @@ class UiListViewNodeTest {
         node.build()
 
         node.contentNode.children.size shouldNotBeLessThan 1
-        val containerNode = node.contentNode.children[0]
+        val containerNode = node.contentNode.children.firstOrNull()
         containerNode shouldBeInstanceOf UiLinearLayout::class
     }
 
@@ -116,6 +118,35 @@ class UiListViewNodeTest {
         node.build()
 
         verify(viewSpy).scrollingEnabled = false
+    }
+
+    @Test
+    fun `list item should be added to the linear layout container`() {
+        val node = createNodeWithViewSpy(reactMapOf())
+        node.build()
+        val listItem = UiListViewItemNode(reactMapOf(), context, mock())
+
+        node.addContent(listItem)
+
+        val containerNode = node.contentNode.children.firstOrNull()
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+        containerNode!!.children shouldContain listItem
+    }
+
+    @Test
+    fun `should apply default items padding on the container`() {
+        val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
+        val props = reactMapOf(UiListViewNode.PROP_DEFAULT_ITEM_PADDING, padding)
+        val node = createNodeWithViewSpy(props)
+        val listItem = UiListViewItemNode(reactMapOf(), context, mock())
+        node.addContent(listItem)
+
+        node.build()
+
+        val containerNode = node.contentNode.children.firstOrNull()
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+        val layoutParams = (containerNode as UiLinearLayout).getLayoutParams()
+        layoutParams.itemsPadding[0] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {

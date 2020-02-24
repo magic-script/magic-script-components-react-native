@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
@@ -44,6 +45,10 @@ open class UiListViewNode(
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
         const val PROP_ORIENTATION = "orientation"
+        const val PROP_DEFAULT_ITEM_PADDING = "defaultItemPadding"
+        const val PROP_DEFAULT_ITEM_ALIGNMENT = "defaultItemAlignment"
+        const val PROP_ITEM_PADDING = "itemPadding"
+        const val PROP_ITEM_ALIGNMENT = "itemAlignment"
         const val PROP_SCROLLING_ENABLED = "scrollingEnabled"
         const val PROP_SCROLL_TO_ITEM = "scrollToItem"
 
@@ -83,12 +88,15 @@ open class UiListViewNode(
             props.putString(PROP_SCROLL_DIRECTION, orientation)
             containerNode.update(JavaOnlyMap.of(UiLinearLayout.PROP_ORIENTATION, orientation))
         }
+
         super.applyProperties(props)
 
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
 
+        setItemsPadding(props)
+        setItemsAlignment(props)
         setScrollingEnabled(props)
         setScrollToItem(props)
     }
@@ -146,14 +154,56 @@ open class UiListViewNode(
 
     private fun forceSameItemsWidth() {
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        val items = getItems()
         val minItemSize = if (orientation == ORIENTATION_VERTICAL) {
-            Vector2(contentSize.x, 0f)
+            val maxItemWidth = findMaxItemWidth(items)
+            Vector2(maxItemWidth, 0f)
         } else {
-            Vector2(0f, contentSize.y)
+            val maxItemHeight = findMaxItemHeight(items)
+            Vector2(0f, maxItemHeight)
         }
-        getItems().forEach { item ->
+        items.forEach { item ->
             item.minSize = minItemSize
         }
+    }
+
+    private fun setItemsPadding(props: Bundle) {
+        val containerProps = Bundle()
+        if (props.containsKey(PROP_DEFAULT_ITEM_PADDING)) {
+            val defaultItemsPadding = props.getSerializable(PROP_DEFAULT_ITEM_PADDING)
+            containerProps.putSerializable(
+                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING,
+                defaultItemsPadding
+            )
+        }
+
+        if (props.containsKey(PROP_ITEM_PADDING)) {
+            val itemsPadding = props.getParcelableArrayList<Bundle>(PROP_ITEM_PADDING)
+            containerProps.putParcelableArrayList(UiLinearLayout.PROP_ITEM_PADDING, itemsPadding)
+        }
+
+        containerNode.update(Arguments.fromBundle(containerProps))
+    }
+
+    private fun setItemsAlignment(props: Bundle) {
+        val containerProps = Bundle()
+        if (props.containsKey(PROP_DEFAULT_ITEM_ALIGNMENT)) {
+            val defaultItemsAlignment = props.getString(PROP_DEFAULT_ITEM_ALIGNMENT)
+            containerProps.putString(
+                UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT,
+                defaultItemsAlignment
+            )
+        }
+
+        if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
+            val itemsAlignment = props.getParcelableArrayList<Bundle>(PROP_ITEM_ALIGNMENT)
+            containerProps.putParcelableArrayList(
+                UiLinearLayout.PROP_ITEM_ALIGNMENT,
+                itemsAlignment
+            )
+        }
+
+        containerNode.update(Arguments.fromBundle(containerProps))
     }
 
     private fun setScrollingEnabled(props: Bundle) {
@@ -167,17 +217,49 @@ open class UiListViewNode(
     }
 
     private fun scrollToItem(itemIndex: Int) {
-        // TODO orientation
-        requestedScrollIndex = itemIndex
         val items = getItems()
-        val sumHeightBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().y }
+        if (itemIndex > items.size - 1) {
+            requestedScrollIndex = itemIndex
+            return
+        }
 
-        if (contentSize.y > 0) {
-            val positionY = sumHeightBeforeItem / contentSize.y
-            (view as CustomScrollView).position = Vector2(0f, positionY)
+        val orientation = properties.read(PROP_ORIENTATION) ?: DEFAULT_ORIENTATION
+        val layoutParams = containerNode.getLayoutParams()
+
+        if (orientation == ORIENTATION_VERTICAL) {
+            // TODO items padding (getLayoutParams)
+            val sumHeightBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().y }
+            // val paddingSum = layoutParams.
+            val allItemsHeight = items.sumByFloat { it.getBounding().size().y }
+            val maxTravel = allItemsHeight - getBounding().size().y
+
+            if (maxTravel > 0) {
+                val positionY = sumHeightBeforeItem / maxTravel
+                (view as CustomScrollView).position = Vector2(0f, positionY)
+            }
+        } else {
+            // TODO items padding (getLayoutParams)
+            val sumWidthBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().x }
+            val allItemsWidth = items.sumByFloat { it.getBounding().size().x }
+            val maxTravel = allItemsWidth - getBounding().size().x
+
+            if (maxTravel > 0) {
+                val positionX = sumWidthBeforeItem / maxTravel
+                (view as CustomScrollView).position = Vector2(positionX, 0f)
+            }
         }
     }
 
     private fun getItems() = containerNode.childrenList.filterIsInstance<UiListViewItemNode>()
+
+    private fun findMaxItemWidth(items: List<UiListViewItemNode>): Float {
+        return items.maxBy { it.getBounding().size().x }?.getBounding()?.size()?.x ?: 0f
+    }
+
+    private fun findMaxItemHeight(items: List<UiListViewItemNode>): Float {
+        return items.maxBy { it.getBounding().size().y }?.getBounding()?.size()?.y ?: 0f
+    }
+
+    // private fun getVerticalItemsPaddingSum(index)
 
 }

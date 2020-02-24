@@ -56,6 +56,9 @@ class CustomScrollView @JvmOverloads constructor(
         private const val PIXELS_PER_SECOND_UNIT = 1000
     }
 
+    /**
+     * Content size in pixels
+     */
     var contentSize = Vector2()
         set(value) {
             field = value
@@ -74,7 +77,7 @@ class CustomScrollView @JvmOverloads constructor(
      */
     var position = Vector2()
         set(value) {
-            field = value
+            field = value.coerceIn(MIN_POSITION, MAX_POSITION)
             hBar?.thumbPosition = value.x
             vBar?.thumbPosition = value.y
             onScrollChangeListener?.invoke(value)
@@ -175,7 +178,7 @@ class CustomScrollView @JvmOverloads constructor(
                 SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            position = (position + lastMove).coerceIn(MIN_POSITION, MAX_POSITION)
+            position += lastMove
             previousTouch = touch
             return true
         }

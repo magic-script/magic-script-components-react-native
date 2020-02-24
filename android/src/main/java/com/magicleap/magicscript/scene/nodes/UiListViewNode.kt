@@ -31,7 +31,6 @@ import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
-import com.magicleap.magicscript.utils.sumByFloat
 
 open class UiListViewNode(
     initProps: ReadableMap,
@@ -224,13 +223,9 @@ open class UiListViewNode(
         }
 
         val orientation = properties.read(PROP_ORIENTATION) ?: DEFAULT_ORIENTATION
-        val layoutParams = containerNode.getLayoutParams()
-
         if (orientation == ORIENTATION_VERTICAL) {
-            // TODO items padding (getLayoutParams)
-            val sumHeightBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().y }
-            // val paddingSum = layoutParams.
-            val allItemsHeight = items.sumByFloat { it.getBounding().size().y }
+            val sumHeightBeforeItem = calculateContentHeight(items, itemIndex)
+            val allItemsHeight = calculateContentHeight(items, items.size)
             val maxTravel = allItemsHeight - getBounding().size().y
 
             if (maxTravel > 0) {
@@ -238,9 +233,8 @@ open class UiListViewNode(
                 (view as CustomScrollView).position = Vector2(0f, positionY)
             }
         } else {
-            // TODO items padding (getLayoutParams)
-            val sumWidthBeforeItem = items.take(itemIndex).sumByFloat { it.getBounding().size().x }
-            val allItemsWidth = items.sumByFloat { it.getBounding().size().x }
+            val sumWidthBeforeItem = calculateContentWidth(items, itemIndex)
+            val allItemsWidth = calculateContentWidth(items, items.size)
             val maxTravel = allItemsWidth - getBounding().size().x
 
             if (maxTravel > 0) {
@@ -260,6 +254,40 @@ open class UiListViewNode(
         return items.maxBy { it.getBounding().size().y }?.getBounding()?.size()?.y ?: 0f
     }
 
-    // private fun getVerticalItemsPaddingSum(index)
+    /**
+     * Calculating content height until [toIndex] item
+     *
+     * @param toIndex exclusive index of item
+     */
+    private fun calculateContentHeight(items: List<UiListViewItemNode>, toIndex: Int): Float {
+        val layoutParams = containerNode.getLayoutParams()
+        var sum = 0f
+        for (i in 0 until toIndex) {
+            val padding = layoutParams.itemsPadding[i]?.let { it.top + it.bottom } ?: 0f
+            sum += items[i].getBounding().size().y + padding
+        }
+        if (toIndex < items.size) {
+            sum += layoutParams.itemsPadding[toIndex]?.top ?: 0f
+        }
+        return sum
+    }
+
+    /**
+     * Calculating content width until [toIndex] item.
+     *
+     * @param toIndex exclusive index of item
+     */
+    private fun calculateContentWidth(items: List<UiListViewItemNode>, toIndex: Int): Float {
+        val layoutParams = containerNode.getLayoutParams()
+        var sum = 0f
+        for (i in 0 until toIndex) {
+            val padding = layoutParams.itemsPadding[i]?.let { it.left + it.right } ?: 0f
+            sum += items[i].getBounding().size().x + padding
+        }
+        if (toIndex < items.size) {
+            sum += layoutParams.itemsPadding[toIndex]?.left ?: 0f
+        }
+        return sum
+    }
 
 }

@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene.nodes.button
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
@@ -53,6 +54,8 @@ open class UiButtonNode(
 
         const val DEFAULT_ROUNDNESS = 1.0
         const val DEFAULT_TEXT_SIZE = 0.0167
+        val DEFAULT_COLOR = JavaOnlyArray.of(0.75, 0.75, 0.75, 1.00)
+        val DEFAULT_ICON_SIZE = JavaOnlyArray.of(0.04, 0.04)
 
         // text padding = factor * text height
         private const val PADDING_FACTOR_HORIZONTAL = 1.55F
@@ -65,10 +68,10 @@ open class UiButtonNode(
 
     init {
         // set default values of properties
-        properties.putDefault(
-            PROP_ROUNDNESS,
-            DEFAULT_ROUNDNESS
-        )
+        properties.putDefault(PROP_ROUNDNESS, DEFAULT_ROUNDNESS)
+        properties.putDefault(PROP_ICON_COLOR, DEFAULT_COLOR)
+        properties.putDefault(PROP_TEXT_COLOR, DEFAULT_COLOR)
+        properties.putDefault(PROP_ICON_SIZE, DEFAULT_ICON_SIZE)
 
         if (!properties.containsKey(PROP_TEXT_SIZE)) {
             // calculate text size based on button height

@@ -18,7 +18,6 @@ package com.magicleap.magicscript.font.providers
 
 import android.content.Context
 import android.graphics.Typeface
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
@@ -46,9 +45,9 @@ class FontProviderImpl(
      * If external font files are present in assets, this function returns
      * a proper typeface based on these files, else it returns a system typeface.
      */
-    override fun provideFont(fontParams: FontParams?): Typeface {
-        val weight = fontParams?.weight ?: FontWeight.DEFAULT
-        val style = fontParams?.style ?: FontStyle.DEFAULT
+    override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
+        val weight = fontWeight ?: FontWeight.DEFAULT
+        val style = fontStyle ?: FontStyle.DEFAULT
 
         val fontName = externalFont.getFileName(weight, style)
         val fontState = fontsCache[fontName]
@@ -57,13 +56,13 @@ class FontProviderImpl(
                 val fontsCatalogExists = context.assets.list("")?.contains(FONTS_DIR) ?: false
                 if (!fontsCatalogExists) {
                     fontsCache[fontName] = FontState(true, null)
-                    return androidFontProvider.provideFont(fontParams)
+                    return androidFontProvider.provideFont(fontStyle, fontWeight)
                 }
 
                 val fontExists = context.assets.list(FONTS_DIR)?.contains(fontName) ?: false
                 if (!fontExists) {
                     fontsCache[fontName] = FontState(true, null)
-                    return androidFontProvider.provideFont(fontParams)
+                    return androidFontProvider.provideFont(fontStyle, fontWeight)
                 }
 
                 val fontPath = "$FONTS_DIR/$fontName"
@@ -75,7 +74,7 @@ class FontProviderImpl(
             }
 
             fontState.loadError -> // already tried to load this font, but it's absent
-                return androidFontProvider.provideFont(fontParams)
+                return androidFontProvider.provideFont(fontStyle, fontWeight)
 
             else -> return fontState.typeface!!
         }

@@ -27,6 +27,7 @@ import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.Utils
@@ -38,8 +39,15 @@ open class UiToggleNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     private val toggleViewManager: ToggleViewManager
-) : UiNode(initProps, context, viewRenderableLoader, useContentNodeAlignment = true) {
+) : UiNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    useContentNodeAlignment = true
+) {
 
     companion object {
         // properties

@@ -99,7 +99,7 @@ class UiImageNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiImageNode {
-        return object : UiImageNode(props, context, mock(), mock()) {
+        return object : UiImageNode(props, context, mock(), mock(), mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

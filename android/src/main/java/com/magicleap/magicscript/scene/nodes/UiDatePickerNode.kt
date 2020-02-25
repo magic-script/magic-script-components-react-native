@@ -23,11 +23,14 @@ import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.updateDate
+import com.magicleap.magicscript.utils.updateMinMaxYear
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import java.util.*
 
@@ -36,8 +39,15 @@ open class UiDatePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     datePickerDialogProvider: DialogProvider
-) : UiDateTimePickerBaseNode(initProps, context, viewRenderableLoader, datePickerDialogProvider) {
+) : UiDateTimePickerBaseNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    datePickerDialogProvider
+) {
 
     companion object {
         const val PROP_DEFAULT_DATE = "defaultDate"

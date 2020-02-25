@@ -19,8 +19,8 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.sumByFloat
 
@@ -80,7 +80,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-    override fun getContentWidth(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float {
+    override fun getContentWidth(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
         val itemsPadding = layoutParams.itemsPadding
 
         val paddingHorizontal = getMaxHorizontalPadding(itemsPadding)
@@ -89,7 +89,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         return (widestChildSize?.x ?: 0f) + paddingHorizontal
     }
 
-    override fun getContentHeight(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float {
+    override fun getContentHeight(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
         val itemsPadding = layoutParams.itemsPadding
 
         val paddingVertical = getMaxVerticalPadding(itemsPadding)
@@ -100,7 +100,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
 
     override fun calculateMaxChildWidth(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: T
     ): Float {
         val parentWidth = layoutParams.size.x
@@ -118,7 +118,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
 
     override fun calculateMaxChildHeight(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: T
     ): Float {
         val parentHeight = layoutParams.size.y

@@ -21,8 +21,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.VideoRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer
 import com.nhaarman.mockitokotlin2.*
@@ -30,6 +32,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -43,16 +46,18 @@ class VideoNodeTest {
     private lateinit var context: Context
     private lateinit var videoPlayer: VideoPlayer
     private lateinit var videoReadableLoader: VideoRenderableLoader
+    private lateinit var clipper: Clipper
 
     @Before
     fun setUp() {
         this.context = ApplicationProvider.getApplicationContext()
         this.videoPlayer = mock()
         this.videoReadableLoader = mock()
+        this.clipper = mock()
 
         val videoUri = "http://video.com/sample.mp4"
         val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
-        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader)
+        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader, clipper)
         videoNode.build()
     }
 
@@ -151,6 +156,39 @@ class VideoNodeTest {
         videoNode.onDestroy()
 
         verify(videoPlayer).release()
+    }
+
+    @Test
+    fun `should apply clip bounds when assigned`() {
+        Mockito.reset(clipper)
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+
+        videoNode.clipBounds = clipBounds
+
+        verify(clipper).applyClipBounds(eq(videoNode), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when local position changed`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        videoNode.clipBounds = clipBounds
+        Mockito.reset(clipper)
+
+        videoNode.localPosition = Vector3(-3f, -1f, 2f)
+
+        verify(clipper).applyClipBounds(eq(videoNode), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when visibility changed to visible`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        videoNode.clipBounds = clipBounds
+        videoNode.hide()
+        Mockito.reset(clipper)
+
+        videoNode.show()
+
+        verify(clipper).applyClipBounds(eq(videoNode), eq(clipBounds))
     }
 
 }

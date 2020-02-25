@@ -31,6 +31,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -45,8 +46,9 @@ open class UiTextEditNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     private val fontProvider: FontProvider
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties
@@ -65,7 +67,6 @@ open class UiTextEditNode(
         const val PROP_MULTILINE = "multiline"
         const val PROP_TEXT_PADDING = "textPadding"
         const val PROP_SCROLLING = "scrolling"
-        const val PROP_FONT_PARAMS = "fontParameters"
         const val PROP_TEXT_ENTRY_MODE = "textEntry"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
 
@@ -124,8 +125,9 @@ open class UiTextEditNode(
     override fun setupView() {
         super.setupView()
 
-        val fontParams = properties.read<FontParams>(PROP_FONT_PARAMS)
-        if (fontParams == null) { // setting a default typeface
+        val fontParams = FontParams.fromBundle(properties)
+        if (fontParams.style == null && fontParams.weight == null) {
+            // setting a default typeface
             view.text_edit.typeface = fontProvider.provideFont()
         }
         view.text_edit.setSingleLine() // single line by default
@@ -178,9 +180,13 @@ open class UiTextEditNode(
     private fun setTextSize(props: Bundle) {
         if (props.containsKey(PROP_TEXT_SIZE)) {
             val sizeMeters = props.getDouble(PROP_TEXT_SIZE).toFloat()
-            val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
-            view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            setTextSize(sizeMeters)
         }
+    }
+
+    private fun setTextSize(sizeMeters: Float) {
+        val size = Utils.metersToFontPx(sizeMeters, view.context).toFloat()
+        view.text_edit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
     }
 
     private fun setTextAlignment(props: Bundle) {
@@ -215,8 +221,12 @@ open class UiTextEditNode(
     private fun setCharactersSpacing(props: Bundle) {
         if (props.containsKey(PROP_CHARACTERS_SPACING)) {
             val spacing = props.getDouble(PROP_CHARACTERS_SPACING)
-            view.text_edit.letterSpacing = spacing.toFloat()
+            setCharactersSpacing(spacing)
         }
+    }
+
+    private fun setCharactersSpacing(spacing: Double) {
+        view.text_edit.letterSpacing = spacing.toFloat()
     }
 
     private fun setLineSpacing(props: Bundle) {
@@ -248,9 +258,23 @@ open class UiTextEditNode(
     }
 
     private fun setFontParams(props: Bundle) {
-        val fontParams = props.read<FontParams>(PROP_FONT_PARAMS) ?: return
-        view.text_edit.typeface = fontProvider.provideFont(fontParams)
-        view.text_edit.isAllCaps = fontParams.allCaps
+        val fontParams = FontParams.fromBundle(props)
+
+        if (fontParams.style != null || fontParams.weight != null) {
+            view.text_edit.typeface = fontProvider.provideFont(fontParams.style, fontParams.weight)
+        }
+
+        fontParams.allCaps?.let {
+            view.text_edit.isAllCaps = it
+        }
+
+        fontParams.fontSize?.let {
+            setTextSize(it.toFloat())
+        }
+
+        fontParams.tracking?.let {
+            setCharactersSpacing(it)
+        }
     }
 
     private fun setScrollBarVisibility(props: Bundle) {

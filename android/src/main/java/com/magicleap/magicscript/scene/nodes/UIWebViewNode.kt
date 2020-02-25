@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.webkit.WebView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.Vector2
@@ -29,8 +30,9 @@ import com.magicleap.magicscript.utils.putDefault
 open class UIWebViewNode(
     initProps: ReadableMap,
     context: Context,
-    viewRenderableLoader: ViewRenderableLoader
-) : UiNode(initProps, context, viewRenderableLoader) {
+    viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties

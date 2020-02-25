@@ -26,24 +26,39 @@ import com.magicleap.magicscript.utils.logMessage
 
 class CubeRenderableBuilderImpl(private val context: Context) : CubeRenderableBuilder {
 
+    private val cancelledTasks = mutableListOf<Long>()
+    private var nextTaskId = 0L
+
     override fun buildRenderable(
         cubeSize: Vector3,
         cubeCenter: Vector3,
         color: Color,
         resultCallback: (result: RenderableResult<Renderable>) -> Unit
-    ) {
+    ): Long {
+        val taskId = nextTaskId
         MaterialFactory
-            .makeOpaqueWithColor(context, color)
+            .makeTransparentWithColor(context, color)
             .thenAccept { material ->
-                val renderable = ShapeFactory.makeCube(cubeSize, cubeCenter, material)
-                renderable.isShadowReceiver = false
-                renderable.isShadowCaster = false
-                resultCallback(RenderableResult.Success(renderable))
+                if (!cancelledTasks.contains(taskId)) {
+                    val renderable = ShapeFactory.makeCube(cubeSize, cubeCenter, material)
+                    renderable.isShadowReceiver = false
+                    renderable.isShadowCaster = false
+                    resultCallback(RenderableResult.Success(renderable))
+                }
             }
             .exceptionally { throwable ->
                 resultCallback(RenderableResult.Error(throwable))
                 logMessage("error building cube material: $throwable")
                 null
             }
+
+        nextTaskId++
+        return taskId
+    }
+
+    override fun cancel(taskId: Long) {
+        if (!cancelledTasks.contains(taskId)) {
+            cancelledTasks.add(taskId)
+        }
     }
 }

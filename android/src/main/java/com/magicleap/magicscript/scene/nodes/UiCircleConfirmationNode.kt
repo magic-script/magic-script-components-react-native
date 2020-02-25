@@ -22,6 +22,7 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
@@ -32,8 +33,9 @@ import kotlin.math.PI
 open class UiCircleConfirmationNode(
     initProps: ReadableMap,
     context: Context,
-    viewRenderableLoader: ViewRenderableLoader
-) : UiNode(initProps, context, viewRenderableLoader) {
+    viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     var onConfirmationCompletedListener: (() -> Unit)? = null
     var onConfirmationCanceledListener: (() -> Unit)? = null

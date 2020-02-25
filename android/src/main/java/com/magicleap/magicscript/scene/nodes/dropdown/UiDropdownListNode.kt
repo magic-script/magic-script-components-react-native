@@ -21,6 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.FontProvider
@@ -28,6 +29,7 @@ import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.read
@@ -36,10 +38,17 @@ open class UiDropdownListNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, null),
-    Layoutable {
+) : UiButtonNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    fontProvider,
+    iconsRepo, null
+), Layoutable {
 
     companion object {
         const val PROP_LIST_MAX_HEIGHT = "listMaxHeight"
@@ -62,6 +71,8 @@ open class UiDropdownListNode(
     private val listNode: DropdownItemsListNode
     private var listNodeAdded = false
 
+    private var lastContentBounds = AABB()
+
     private val onListVisibilityChangedListener: (visible: Boolean) -> Unit = { visible ->
         applyZTranslation(visible)
     }
@@ -69,7 +80,12 @@ open class UiDropdownListNode(
     init {
         val listProps = JavaOnlyMap()
         listProps.putString(PROP_ALIGNMENT, "top-left")
-        listNode = DropdownItemsListNode(listProps, context, ViewRenderableLoaderImpl(context))
+        listNode = DropdownItemsListNode(
+            listProps,
+            context,
+            ViewRenderableLoaderImpl(context),
+            nodeClipper
+        )
         listNode.onListVisibilityChanged = onListVisibilityChangedListener
 
         properties.putString(PROP_ICON, ICON_NAME)
@@ -145,11 +161,19 @@ open class UiDropdownListNode(
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
 
-        val bounding = getContentBounding()
-        val listX = bounding.left
-        val listY = bounding.bottom - (bounding.top - bounding.bottom) / 3
-        // Moving content forward, so it'll receive touch events first
-        listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
+        updateListPosition()
+    }
+
+    private fun updateListPosition() {
+        val contentBounds = getContentBounding()
+        if (!contentBounds.equalInexact(lastContentBounds)) {
+            val listX = contentBounds.min.x
+            val listY = contentBounds.min.y - (contentBounds.max.y - contentBounds.min.y) / 3
+            // Moving content forward, so it'll receive touch events first
+            listNode.localPosition = Vector3(listX, listY, Z_ORDER_OFFSET)
+        }
+
+        lastContentBounds = contentBounds
     }
 
     private fun configureListItems(items: List<UiDropdownListItemNode>, props: Bundle) {

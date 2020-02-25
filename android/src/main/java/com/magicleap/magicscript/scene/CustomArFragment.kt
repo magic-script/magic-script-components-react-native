@@ -17,8 +17,8 @@
 package com.magicleap.magicscript.scene
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import com.google.ar.core.Anchor
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
@@ -27,17 +27,21 @@ import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
+    private var lastTapAnchor: Anchor? = null
     private var lastTimestamp: Long = 0L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         arSceneView.scene.addOnUpdateListener {
-            if (!onReadyCalled && arSceneView.arFrame?.camera?.trackingState == TrackingState.TRACKING) {
-                // We can add AR objects after session is ready and camera is in tracking mode
-                UiNodesManager.INSTANCE.onArFragmentReady()
-                onReadyCalled = true
+            arSceneView.arFrame?.camera?.let { camera ->
+                if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
+                    // We can add AR objects after session is ready and camera is in tracking mode
+                    UiNodesManager.INSTANCE.onArFragmentReady()
+                    onReadyCalled = true
+                }
             }
-            if(onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
+            if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
                 val newFrame = arSceneView.session?.update()
                 if (newFrame != null && newFrame.timestamp != lastTimestamp) {
                     lastTimestamp = newFrame.timestamp
@@ -47,13 +51,18 @@ class CustomArFragment : ArFragment() {
         }
 
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            lastTapAnchor?.detach()
+
             ARPlaneDetectorBridge.INSTANCE.onPlaneTapped(plane, hitResult)
+
             val anchor = hitResult.createAnchor()
             UiNodesManager.INSTANCE.onTapArPlane(anchor)
+            lastTapAnchor = anchor
         }
 
         // Hide the instructions
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
     }
+
 }

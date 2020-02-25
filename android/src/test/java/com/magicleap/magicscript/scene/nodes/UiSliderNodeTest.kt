@@ -81,7 +81,7 @@ class UiSliderNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiSliderNode {
-        return object : UiSliderNode(props, context, mock()) {
+        return object : UiSliderNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

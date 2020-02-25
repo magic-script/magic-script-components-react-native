@@ -22,10 +22,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.*
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.containsAny
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.*
 
 class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayoutParams>) :
     UiBaseLayout<LinearLayoutParams>(props, layoutManager) {
@@ -71,14 +68,12 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         }
     }
 
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
-        return Bounding(
-            layoutBounds.left + contentNode.localPosition.x,
-            layoutBounds.bottom + contentNode.localPosition.y,
-            layoutBounds.right + contentNode.localPosition.x,
-            layoutBounds.top + contentNode.localPosition.y
-        )
+        val minEdge = layoutBounds.min + contentNode.localPosition
+        val maxEdge = layoutBounds.max + contentNode.localPosition
+
+        return AABB(minEdge, maxEdge)
     }
 
     override fun getLayoutParams(): LinearLayoutParams {

@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -186,11 +185,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @Override
     public Map<String, Object> getConstants() {
         return Collections.emptyMap();
-    }
-
-    @ReactMethod
-    public void createApp(final ReadableMap props) {
-        mainHandler.post(() -> Log.d("AR_LOG", "app props: " + props));
     }
 
     /**

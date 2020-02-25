@@ -22,6 +22,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -30,7 +31,6 @@ import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
@@ -213,11 +213,12 @@ class UiButtonNodeTest {
             UiButtonNode.PROP_WIDTH, 2.0, UiButtonNode.PROP_HEIGHT, 1.0
         )
         val node = createTestableNode(props)
-        val expectedBounds = Bounding(-2F, 0.5F, 0F, 1.5F)
-
         node.build()
 
-        node.getBounding() shouldEqualInexact expectedBounds
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-2f, 0.5f, 0f)
+        bounding.max shouldEqualInexact Vector3(0f, 1.5f, 0f)
     }
 
     @Test
@@ -228,11 +229,30 @@ class UiButtonNodeTest {
             TransformNode.PROP_LOCAL_SCALE, scale
         )
         val node = createTestableNode(props)
-        val expectedBounds = Bounding(-0.5F, -0.25F, 0.5F, 0.25F)
-
         node.build()
 
-        node.getBounding() shouldEqualInexact expectedBounds
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-0.5f, -0.25f, 0f)
+        bounding.max shouldEqualInexact Vector3(0.5f, 0.25f, 0f)
+    }
+
+    @Test
+    fun `should return correct bounding when rotated 90 degrees around Z`() {
+        val rotation = reactArrayOf(0.0, 0.0, 0.7071068, 0.7071068)
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_WIDTH, 2.0,
+                UiButtonNode.PROP_HEIGHT, 1.0,
+                TransformNode.PROP_LOCAL_ROTATION, rotation
+            )
+        )
+        node.build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-0.5f, -1f, 0f)
+        bounding.max shouldEqualInexact Vector3(0.5f, 1f, 0f)
     }
 
     @Test
@@ -246,7 +266,8 @@ class UiButtonNodeTest {
     }
 
     private fun createTestableNode(props: ReadableMap): UiButtonNode {
-        return object : UiButtonNode(props, context, mock(), fontProvider, iconsRepo, animator) {
+        return object :
+            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo, animator) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

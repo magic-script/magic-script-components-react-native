@@ -20,7 +20,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
@@ -35,7 +35,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     override fun layoutChildren(
         layoutParams: T,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>
+        childrenBounds: Map<Int, AABB>
     ) {
         this.childrenList = children
         onPreLayout(children, childrenBounds, layoutParams)
@@ -64,11 +64,11 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         for (i in children.indices) {
             val node = childrenList[i]
             val nodeBounds = childrenBounds.getValue(i)
-            val nodeWidth = nodeBounds.right - nodeBounds.left
-            val nodeHeight = nodeBounds.top - nodeBounds.bottom
-            val boundsCenterX = nodeBounds.left + nodeWidth / 2
+            val nodeWidth = nodeBounds.size().x
+            val nodeHeight = nodeBounds.size().y
+            val boundsCenterX = nodeBounds.min.x + nodeWidth / 2
             val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
-            val boundsCenterY = nodeBounds.top - nodeHeight / 2
+            val boundsCenterY = nodeBounds.max.y - nodeHeight / 2
             val pivotOffsetY = node.localPosition.y - boundsCenterY // aligning according to center
 
             val nodeInfo = NodeInfo(node, i, nodeWidth, nodeHeight, pivotOffsetX, pivotOffsetY)
@@ -89,12 +89,12 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
      */
     protected open fun onPreLayout(
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LayoutParams
     ) {
     }
 
-    override fun getLayoutBounds(layoutParams: T): Bounding {
+    override fun getLayoutBounds(layoutParams: T): AABB {
         val childrenBounds = Utils.calculateSumBounds(childrenList)
         val parentSize = layoutParams.size
         var sizeX = parentSize.x
@@ -122,25 +122,23 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
             paddingOffsetY = 0f
         }
 
-        return Bounding(
-            left = 0f,
-            bottom = -sizeY + paddingOffsetY,
-            right = sizeX + paddingOffsetX,
-            top = 0f
-        )
+        val minEdge = Vector3(0f, -sizeY + paddingOffsetY, childrenBounds.min.z)
+        val maxEdge = Vector3(sizeX + paddingOffsetX, 0f, childrenBounds.max.z)
+
+        return AABB(minEdge, maxEdge)
     }
 
     /**
      * Returns width of layout's content (including items padding) based on
      * provided [childrenBounds] and [layoutParams]
      */
-    abstract fun getContentWidth(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float
+    abstract fun getContentWidth(childrenBounds: Map<Int, AABB>, layoutParams: T): Float
 
     /**
      * Returns height of layout's content (including items padding) based on
      * provided [childrenBounds] and [layoutParams]
      */
-    abstract fun getContentHeight(childrenBounds: Map<Int, Bounding>, layoutParams: T): Float
+    abstract fun getContentHeight(childrenBounds: Map<Int, AABB>, layoutParams: T): Float
 
     /**
      * Returns max allowed child width in meters.
@@ -148,7 +146,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
      */
     abstract fun calculateMaxChildWidth(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: T
     ): Float
 
@@ -158,18 +156,18 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
      */
     abstract fun calculateMaxChildHeight(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: T
     ): Float
 
     private fun rescaleChildren(
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: T
     ) {
         for (i in children.indices) {
             val child = children[i]
-            val childSize = (childrenBounds[i] ?: Bounding()).size()
+            val childSize = (childrenBounds[i] ?: AABB()).size()
             if (child.localScale.x > 0 && child.localScale.y > 0) {
                 val childWidth = childSize.x / child.localScale.x
                 val childHeight = childSize.y / child.localScale.y

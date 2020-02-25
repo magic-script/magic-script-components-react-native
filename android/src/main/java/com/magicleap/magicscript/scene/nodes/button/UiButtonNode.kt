@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
@@ -32,10 +33,11 @@ open class UiButtonNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     private val fontProvider: FontProvider,
     private val iconsRepo: IconsRepository,
     private val clickAnimator: NodeAnimator?
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties
@@ -81,7 +83,6 @@ open class UiButtonNode(
                 )
             }
         }
-
     }
 
     override fun provideView(context: Context): View {

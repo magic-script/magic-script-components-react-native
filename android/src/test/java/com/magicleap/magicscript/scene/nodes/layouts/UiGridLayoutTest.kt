@@ -17,13 +17,14 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
@@ -44,7 +45,7 @@ class UiGridLayoutTest {
     private lateinit var layoutManager: LayoutManager<GridLayoutParams>
 
     // local bounds of children inside the layout
-    private val layoutBounds = Bounding(0f, -1f, 1f, 1f)
+    private val layoutBounds = AABB(min = Vector3(0f, -1f, 0f), max = Vector3(1f, 1f, 0f))
 
     @Before
     fun setUp() {
@@ -58,11 +59,11 @@ class UiGridLayoutTest {
             TransformNode.PROP_ALIGNMENT, "bottom-center"
         )
         val node = createNode(props)
-        val expectedBounds = Bounding(left = -0.5f, bottom = 0.0f, right = 0.5f, top = 2.0f)
 
-        val bounds = node.getBounding()
+        val bounding = node.getBounding()
 
-        bounds shouldEqualInexact expectedBounds
+        bounding.min shouldEqualInexact Vector3(-0.5f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(0.5f, 2f, 0f)
     }
 
     @Test

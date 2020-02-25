@@ -133,7 +133,7 @@ class UiProgressBarNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiProgressBarNode {
-        return object : UiProgressBarNode(props, context, mock()) {
+        return object : UiProgressBarNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

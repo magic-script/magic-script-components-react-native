@@ -26,8 +26,11 @@ import android.widget.EditText
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import java.io.Serializable
 import java.util.*
+import kotlin.math.abs
+
 
 /**
  * ==========Extension methods============
@@ -59,9 +62,17 @@ fun EditText.setTextAndMoveCursor(text: String) {
     this.append(text)
 }
 
+fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
+    return abs(this - other) <= epsilon
+}
+
 /**
  * com.google.ar.sceneform.math.Vector3
  */
+fun Vector3.equalInexact(other: Vector3, epsilon: Float): Boolean {
+    return x.isCloseTo(other.x, epsilon) && y.isCloseTo(other.y, epsilon) && z.isCloseTo(other.z, epsilon)
+}
+
 operator fun Vector3.plus(other: Vector3): Vector3 {
     return Vector3.add(this, other)
 }
@@ -70,12 +81,25 @@ operator fun Vector3.minus(other: Vector3): Vector3 {
     return Vector3.subtract(this, other)
 }
 
+operator fun Vector3.unaryMinus(): Vector3 {
+    return Vector3(-x, -y, -z)
+}
+
 operator fun Vector3.div(other: Float): Vector3 {
     return this.scaled(1F / other)
 }
 
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Utils.rotateVector(this, quaternion)
+}
+
+fun Bounding.scaled(horizontalScale: Float, verticalScale: Float): Bounding {
+    return Bounding(
+        left = left * horizontalScale,
+        bottom = bottom * verticalScale,
+        right = right * horizontalScale,
+        top = top * verticalScale
+    )
 }
 
 fun <T> Bundle.putDefault(key: String, value: T) {

@@ -25,16 +25,19 @@ import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import junit.framework.Assert.assertEquals
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -99,15 +102,25 @@ class ModelNodeTest {
     }
 
     @Test
+    fun `should apply clip bounds when local position changed`() {
+        val node = createNode(reactMapOf())
+        node.clipBounds = AABB(min = Vector3(1f, 1f, 1f), max = Vector3(3f, 3f, 3f))
+
+        node.localPosition = Vector3(12f, 1f, 8f)
+
+        node.isVisible shouldBe false
+    }
+    
+    @Test
     fun `should hide the node when its center is outside of clip bounds`() {
         val props = reactMapOf(
             TransformNode.PROP_LOCAL_POSITION, reactArrayOf(-4f, -4f, 0f)
         )
         val node = createNode(props)
         node.build()
-        val clipBounds = Bounding(left = 2f, bottom = -1f, right = 5f, top = 1f)
+        val clipBounds = AABB(min = Vector3(2f, -1f, -1f), max = Vector3(5f, 1f, 1f))
 
-        node.setClipBounds(clipBounds)
+        node.clipBounds = clipBounds
 
         node.isVisible shouldEqual false
     }

@@ -33,7 +33,7 @@ class ReactEventsManagerTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         eventsManager = ReactEventsManager(eventsEmitter, nodesManager)
-        uiNode = UiTextEditNode(JavaOnlyMap(), mock(), mock(), mock())
+        uiNode = UiTextEditNode(JavaOnlyMap(), mock(), mock(), mock(), mock())
         whenever(nodesManager.findNodeWithId(uiNodeId)).thenReturn(uiNode)
     }
 

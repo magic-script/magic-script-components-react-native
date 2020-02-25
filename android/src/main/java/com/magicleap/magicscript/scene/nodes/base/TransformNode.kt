@@ -24,8 +24,8 @@ import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.utils.*
 import kotlin.properties.Delegates
 
@@ -42,8 +42,8 @@ import kotlin.properties.Delegates
 abstract class TransformNode(
     initProps: ReadableMap,
     val hasRenderable: Boolean,
-    protected val useContentNodeAlignment: Boolean
-) : Node() {
+    val useContentNodeAlignment: Boolean
+) : TransformAwareNode() {
 
     companion object {
 
@@ -68,7 +68,7 @@ abstract class TransformNode(
      * Used as content node for alignment purpose.
      * Renderable and / or child nodes should be added to it.
      */
-    val contentNode = Node()
+    val contentNode = TransformAwareNode()
 
     var anchorUuid: String = ""
         private set
@@ -95,6 +95,15 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
+    /**
+     *  If set, the node should hide this part of itself that is outside [clipBounds]
+     */
+    open var clipBounds: AABB? = null
+        set(value) {
+            field = value
+            clipChildren()
+        }
+
     var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
         onVisibilityChanged(new)
     }
@@ -102,12 +111,17 @@ abstract class TransformNode(
     protected var updatingProperties = false
         private set
 
-    private var bounding = Bounding(0F, 0F, 0F, 0F) // default
+    private var bounding = AABB() // default
 
     private var timeSinceLastAlignment = 0F
 
     init {
         addChild(contentNode)
+        contentNode.addOnLocalTransformChangedListener(object : LocalTransformListener {
+            override fun onTransformed() {
+                onTransformedLocally()
+            }
+        })
         logMessage("initial properties = ${this.properties}")
     }
 
@@ -116,6 +130,9 @@ abstract class TransformNode(
      */
     open fun build() {
         applyProperties(properties)
+        if (useContentNodeAlignment) {
+            applyAlignment()
+        }
     }
 
     /**
@@ -149,14 +166,14 @@ abstract class TransformNode(
     /**
      * Adds [child] to [contentNode]
      *
-     * To manage alignment correctly, we should use this method instead of
-     * attaching a child directly.
+     * To manage alignment correctly, we should use this method instead of [Node.addChild]
      */
     open fun addContent(child: TransformNode) {
         if (!isVisible) {
             child.hide()
         }
         contentNode.addChild(child)
+        clipChildren()
     }
 
     open fun removeContent(child: TransformNode) {
@@ -164,38 +181,53 @@ abstract class TransformNode(
     }
 
     /**
+     * Called when local position, scale or rotation has been set
+     * for the node or for [contentNode]
+     */
+    open fun onTransformedLocally() {
+        clipChildren()
+    }
+
+    /**
      * Returns 2D bounding of the node (the minimum rectangle
      * that includes the node).
      */
-    fun getBounding(): Bounding {
+    fun getBounding(): AABB {
         val contentBounds = getContentBounding()
 
-        // bounding vertices
-        val p1 = Vector3(contentBounds.left, contentBounds.top, localPosition.z)
-            .rotatedBy(localRotation)
-        val p2 = Vector3(contentBounds.left, contentBounds.bottom, localPosition.z)
-            .rotatedBy(localRotation)
-        val p3 = Vector3(contentBounds.right, contentBounds.bottom, localPosition.z)
-            .rotatedBy(localRotation)
-        val p4 = Vector3(contentBounds.right, contentBounds.top, localPosition.z)
-            .rotatedBy(localRotation)
+        val minEdgeRotated = contentBounds.min.rotatedBy(localRotation)
+        val maxEdgeRotated = contentBounds.max.rotatedBy(localRotation)
 
-        val minimumBounds = Utils.findMinimumBounding(listOf(p1, p2, p3, p4))
+        val minimumBounds = Utils.findMinimumBounding(listOf(minEdgeRotated, maxEdgeRotated))
 
-        return Bounding(
-            left = minimumBounds.left * localScale.x + localPosition.x,
-            bottom = minimumBounds.bottom * localScale.y + localPosition.y,
-            right = minimumBounds.right * localScale.x + localPosition.x,
-            top = minimumBounds.top * localScale.y + localPosition.y
+        val minEdge = Vector3(
+            minimumBounds.min.x * localScale.x + localPosition.x,
+            minimumBounds.min.y * localScale.y + localPosition.y,
+            minimumBounds.min.z * localScale.z + localPosition.z
         )
+
+        val maxEdge = Vector3(
+            minimumBounds.max.x * localScale.x + localPosition.x,
+            minimumBounds.max.y * localScale.y + localPosition.y,
+            minimumBounds.max.z * localScale.z + localPosition.z
+        )
+
+        return AABB(minEdge, maxEdge)
     }
 
     /**
      * Should return 2D bounding of the [contentNode] (relative to
      * the parent node position).
      */
-    open fun getContentBounding(): Bounding {
+    open fun getContentBounding(): AABB {
         return Utils.calculateBoundsOfNode(contentNode, contentNode.collisionShape)
+    }
+
+    /**
+     * Should return position of the content (relative to this node's parent)
+     */
+    fun getContentPosition(): Vector3 {
+        return localPosition + contentNode.localPosition
     }
 
     /**
@@ -227,19 +259,6 @@ abstract class TransformNode(
     }
 
     /**
-     * Should return position of the content (relative to this node's parent)
-     */
-    open fun getContentPosition(): Vector2 {
-        val position = localPosition + contentNode.localPosition
-        return Vector2(position.x, position.y)
-    }
-
-    /**
-     * Should hide this part of node that is outside [clipBounds]
-     */
-    open fun setClipBounds(clipBounds: Bounding) {}
-
-    /**
      * Called on AR core's [Node.onUpdate] method invocation.
      * We use custom onUpdate function in order to make it testable.
      */
@@ -252,7 +271,7 @@ abstract class TransformNode(
         if (timeSinceLastAlignment >= ALIGNMENT_INTERVAL) {
             timeSinceLastAlignment = 0F
             val currentBounding = getBounding()
-            if (!Bounding.equalInexact(currentBounding, bounding)) {
+            if (!currentBounding.equalInexact(bounding)) {
                 // Refreshing alignment from a loop, because:
                 // - we don't know node size at beginning,
                 // - node size may have changed,
@@ -291,6 +310,11 @@ abstract class TransformNode(
         this.onUpdate(frameTime.deltaSeconds)
     }
 
+    final override fun onLocalTransformChanged() {
+        super.onLocalTransformChanged()
+        onTransformedLocally()
+    }
+
     /**
      * Applies the properties to the node
      * @param props properties to apply
@@ -320,46 +344,7 @@ abstract class TransformNode(
      * it only reloads the view with the new alignment setting.
      */
     protected open fun applyAlignment() {
-        val bounds = getBounding()
-
-        val nodeWidth = bounds.right - bounds.left
-        val nodeHeight = bounds.top - bounds.bottom
-        val boundsCenterX = bounds.left + nodeWidth / 2
-        val pivotOffsetX = localPosition.x - boundsCenterX // aligning according to center
-        val boundsCenterY = bounds.top - nodeHeight / 2
-        val pivotOffsetY = localPosition.y - boundsCenterY  // aligning according to center
-
-        // calculating x position for content
-        val x = when (horizontalAlignment) {
-            Alignment.HorizontalAlignment.LEFT -> {
-                contentNode.localPosition.x + nodeWidth / 2 + pivotOffsetX
-            }
-
-            Alignment.HorizontalAlignment.CENTER -> {
-                contentNode.localPosition.x + pivotOffsetX
-            }
-
-            Alignment.HorizontalAlignment.RIGHT -> {
-                contentNode.localPosition.x - nodeWidth / 2 + pivotOffsetX
-            }
-        }
-
-        // calculating y position for content
-        val y = when (verticalAlignment) {
-            Alignment.VerticalAlignment.TOP -> {
-                contentNode.localPosition.y - nodeHeight / 2 + pivotOffsetY
-            }
-
-            Alignment.VerticalAlignment.CENTER -> {
-                contentNode.localPosition.y + pivotOffsetY
-            }
-
-            Alignment.VerticalAlignment.BOTTOM -> {
-                contentNode.localPosition.y + nodeHeight / 2 + pivotOffsetY
-            }
-        }
-
-        contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
+        Utils.applyContentNodeAlignment(this)
     }
 
     private fun setAnchorUuid(props: Bundle) {
@@ -432,6 +417,10 @@ abstract class TransformNode(
                 applyAlignment()
             }
         }
+    }
+
+    protected open fun clipChildren() {
+        clipBounds?.let { Utils.clipChildren(this, it) }
     }
 
     class Test(val node: TransformNode) {

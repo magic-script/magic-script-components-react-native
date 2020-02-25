@@ -18,7 +18,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 
 class LinearLayoutManager(
@@ -36,7 +36,7 @@ class LinearLayoutManager(
     }
 
     override fun getContentWidth(
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LinearLayoutParams
     ): Float {
         val manager = getOrientationAwareManager(layoutParams)
@@ -44,7 +44,7 @@ class LinearLayoutManager(
     }
 
     override fun getContentHeight(
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LinearLayoutParams
     ): Float {
         val manager = getOrientationAwareManager(layoutParams)
@@ -53,7 +53,7 @@ class LinearLayoutManager(
 
     override fun calculateMaxChildWidth(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LinearLayoutParams
     ): Float {
         val manager = getOrientationAwareManager(layoutParams)
@@ -62,7 +62,7 @@ class LinearLayoutManager(
 
     override fun calculateMaxChildHeight(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LinearLayoutParams
     ): Float {
         val manager = getOrientationAwareManager(layoutParams)

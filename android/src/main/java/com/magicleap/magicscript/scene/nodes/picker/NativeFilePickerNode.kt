@@ -26,6 +26,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ActivityResultObserver
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -38,11 +39,19 @@ class NativeFilePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
     clickAnimator: NodeAnimator
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, clickAnimator),
-    ActivityResultObserver {
+) : UiButtonNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    fontProvider,
+    iconsRepo,
+    clickAnimator
+), ActivityResultObserver {
 
     companion object {
         const val PROP_FILE_TYPE = "fileType"

@@ -25,19 +25,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
 import com.magicleap.magicscript.utils.*
 import com.magicleap.magicscript.utils.Utils.Companion.metersToPx
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Base node that represents UI controls that contain a native Android view [ViewRenderable]
@@ -46,6 +44,7 @@ abstract class UiNode(
     initProps: ReadableMap,
     protected val context: Context,
     private val viewRenderableLoader: ViewRenderableLoader,
+    private val nodeClipper: Clipper,
     useContentNodeAlignment: Boolean = false
 ) : TransformNode(initProps, true, useContentNodeAlignment) {
 
@@ -82,6 +81,13 @@ abstract class UiNode(
      */
     protected lateinit var view: View
 
+    override var clipBounds: AABB?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            applyClipBounds()
+        }
+
     private lateinit var viewWrapper: ViewWrapper
     private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
@@ -97,12 +103,6 @@ abstract class UiNode(
      * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
      */
     private var desiredSize = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    /**
-     * Set default clipping (all renderable visible).
-     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
-     */
-    private var materialClipBounding = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
     init {
         // set default values of properties
@@ -135,6 +135,9 @@ abstract class UiNode(
     override fun build() {
         initView()
         setup()
+        if (useContentNodeAlignment) {
+            applyAlignment()
+        }
         if (!rebuildLoopStarted) {
             rebuildLoop()
             rebuildLoopStarted = true
@@ -157,83 +160,41 @@ abstract class UiNode(
      * so at the beginning it's equal to 1m x 1m, which is usually incorrect and cause
      * layouts artifacts
      */
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         val centerX = contentNode.localPosition.x
         val centerY = contentNode.localPosition.y
 
         val scaleX = contentNode.localScale.x
         val scaleY = contentNode.localScale.y
 
-        val offsetX = -horizontalAlignment.centerOffset * size.x
-        val offsetY = -verticalAlignment.centerOffset * size.y
-
-        val left = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
-        val right = centerX * scaleX + (size.x * scaleX) / 2 + offsetX
-        val top = centerY * scaleY + (size.y * scaleY) / 2 + offsetY
-        val bottom = centerY * scaleY - (size.y * scaleY) / 2 + offsetY
-        return Bounding(left, bottom, right, top)
-    }
-
-    /*
-     * Setting clip bounds at a shader level (shader is contained inside material
-     * from which android_view.sfb is built)
-     *
-     * https://google.github.io/filament/Materials.md.html
-     * By default getPosition() returns NDC - Normalized Device Coordinates;
-     * for "vertexDomain" : object it means that coordinates are normalized relative
-     * to a model size (0 - 1), origin (0, 0) is at bottom-center.
-     */
-    override fun setClipBounds(clipBounds: Bounding) {
-        // clipping a texture
-        materialClipBounding = Utils.calculateMaterialClipping(clipBounds, getBounding())
-        applyMaterialClipping()
-
-        // clipping collision shape (regarding click events)
-        val pivotCenterOffset = Vector2(
-            -horizontalAlignment.centerOffset * size.x,
-            -verticalAlignment.centerOffset * size.y
-        )
-
-        val nodeCollisionShape = Bounding(
-            -size.x / 2 * localScale.x,
-            -size.y / 2 * localScale.y,
-            size.x / 2 * localScale.x,
-            size.y / 2 * localScale.y
-        ).translate(pivotCenterOffset)
-
-        val clipCollisionShape = clipBounds.translate(-getContentPosition())
-
-        var intersection = Bounding(
-            max(nodeCollisionShape.left, clipCollisionShape.left),
-            max(nodeCollisionShape.bottom, clipCollisionShape.bottom),
-            min(nodeCollisionShape.right, clipCollisionShape.right),
-            min(nodeCollisionShape.top, clipCollisionShape.top)
-        )
-        if (intersection.left > intersection.right || intersection.bottom > intersection.top) {
-            intersection = Bounding()
+        val offsetX = if (useContentNodeAlignment) {
+            0f
+        } else {
+            -horizontalAlignment.centerOffset * size.x
         }
 
-        // collision shape is not aware of scale, we need to scale to original position
-        val sizeX = if (localScale.x > 0) intersection.size().x / localScale.x else 0F
-        val sizeY = if (localScale.y > 0) intersection.size().y / localScale.y else 0F
-        val collisionShapeSize = Vector3(sizeX, sizeY, 0F)
+        val offsetY = if (useContentNodeAlignment) {
+            0f
+        } else {
+            -verticalAlignment.centerOffset * size.y
+        }
 
-        val centerX = if (localScale.x > 0) intersection.center().x / localScale.x else 0F
-        val centerY = if (localScale.y > 0) intersection.center().y / localScale.y else 0F
-        val collisionShapeCenter = Vector3(centerX, centerY, 0F)
+        val xMin = centerX * scaleX - (size.x * scaleX) / 2 + offsetX
+        val xMax = centerX * scaleX + (size.x * scaleX) / 2 + offsetX
+        val yMin = centerY * scaleY - (size.y * scaleY) / 2 + offsetY
+        val yMax = centerY * scaleY + (size.y * scaleY) / 2 + offsetY
 
-        val collisionShape = Box(collisionShapeSize, collisionShapeCenter)
-
-        contentNode.collisionShape = collisionShape
+        return AABB(min = Vector3(xMin, yMin, 0f), max = Vector3(xMax, yMax, 0f))
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
         super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
-            applyMaterialClipping()
+            applyClipBounds()
         } else {
             contentNode.renderable = null
+            contentNode.collisionShape = null
         }
     }
 
@@ -290,15 +251,20 @@ abstract class UiNode(
             contentNode.renderable = viewRenderable
         }
         renderableCopy = viewRenderable
-        applyMaterialClipping()
+        applyClipBounds()
     }
 
     override fun applyAlignment() {
         if (useContentNodeAlignment) {
-            super.applyAlignment()
+            Utils.applyContentNodeAlignment(this)
         } else {
             setNeedsRebuild() // need to re-attach the renderable
         }
+    }
+
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
+        applyClipBounds()
     }
 
     // build calls applyProperties, so we need to initialize the view before
@@ -362,10 +328,8 @@ abstract class UiNode(
         handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
-    private fun applyMaterialClipping() {
-        contentNode.renderable?.material?.let { material ->
-            Utils.applyMaterialClipping(material, materialClipBounding)
-        }
+    private fun applyClipBounds() {
+        nodeClipper.applyClipBounds(this, clipBounds)
     }
 
     private fun setupViewListeners() {

@@ -20,8 +20,8 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.nodes.ContentNode
 import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 import org.amshove.kluent.shouldEqual
@@ -66,7 +66,7 @@ class PageViewManagerTest {
         val child2 = ContentNode(JavaOnlyMap())
         val childrenList = listOf(child1, child2)
         val boundsMap = mapOf(
-            0 to Bounding(), 1 to Bounding()
+            0 to AABB(), 1 to AABB()
         )
 
         pageViewManager.layoutChildren(layoutParams, childrenList, boundsMap)

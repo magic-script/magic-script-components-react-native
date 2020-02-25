@@ -17,12 +17,12 @@
 package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.assertEquals
@@ -58,15 +58,17 @@ class LineNodeTest {
     @Test
     fun `should return bounding based on provided points`() {
         val point1 = reactArrayOf(-2.0, -2.0, 0.0)
-        val point2 = reactArrayOf(2.0, 2.0, 0.0)
+        val point2 = reactArrayOf(2.0, 2.0, 1.0)
         val points = reactArrayOf(point1, point2)
         val props = reactMapOf(LineNode.PROP_POINTS, points)
         val node = createLineNode(props)
         node.build()
         node.attachRenderable()
-        val expectedBounds = Bounding(-2f, -2f, 2f, 2f)
 
-        node.getBounding() shouldEqualInexact expectedBounds
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-2f, -2f, 0f)
+        bounding.max shouldEqualInexact Vector3(2f, 2f, 1f)
     }
 
     @Test

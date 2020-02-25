@@ -23,7 +23,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ModelType
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.whenever
@@ -87,22 +89,22 @@ class UtilsTest {
         val center = Vector3.zero()
         val size = Vector3(2f, 4f, 0.2f)
         val collisionShape = Box(size, center)
-        val expectedBounding = Bounding(left = -2f, bottom = 0f, right = 0f, top = 4f)
 
         val bounding = Utils.calculateBoundsOfNode(node, collisionShape)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(-2f, 0f, 0.9f)
+        bounding.max shouldEqualInexact Vector3(0f, 4f, 1.1f)
     }
 
     @Test
     fun `should return bounding based on position only when there is no collision shape`() {
         val node = Node()
         node.localPosition = Vector3(1f, 1f, 1f)
-        val expectedBounding = Bounding(left = 1f, bottom = 1f, right = 1f, top = 1f)
 
         val bounding = Utils.calculateBoundsOfNode(node, null)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 1f, 1f)
+        bounding.max shouldEqualInexact Vector3(1f, 1f, 1f)
     }
 
     @Test
@@ -113,45 +115,44 @@ class UtilsTest {
         testNode1.localPosition = Vector3(1f, 2f, 3f)
         testNode2.localPosition = Vector3(10f, 20f, 30f)
         testNode3.localPosition = Vector3(100f, 200f, 300f)
-        val expectedBounding = Bounding(left = 1f, bottom = 2f, right = 100f, top = 200f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode1, testNode2, testNode3))
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 2f, 3f)
+        bounding.max shouldEqualInexact Vector3(100f, 200f, 300f)
     }
 
     @Test
     fun `should return empty bounding when list of nodes is empty`() {
         val bounding = Utils.calculateSumBounds(emptyList())
-        val expectedBounding = Bounding(0f, 0f, 0f, 0f)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding shouldEqualInexact AABB(Vector3.zero(), Vector3.zero())
     }
 
     @Test
     fun `should return first node bounding if list contains only one node`() {
         val testNode = Node()
         testNode.localPosition = Vector3(1f, 1f, 1f)
-        val expectedBounding = Bounding(1f, 1f, 1f, 1f)
 
         val bounding = Utils.calculateSumBounds(listOf(testNode))
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(1f, 1f, 1f)
+        bounding.max shouldEqualInexact Vector3(1f, 1f, 1f)
     }
 
     @Test
     fun `should return minimum bounding for list of points`() {
         val points = listOf(
-            Vector3(-1f, 2f, 0f),
+            Vector3(-1f, 2f, -4f),
             Vector3(-1f, -1f, 0f),
-            Vector3(4f, -1f, 0f),
+            Vector3(4f, -1f, 7f),
             Vector3(5f, 4f, 0f)
         )
-        val expectedBounding = Bounding(-1f, -1f, 5f, 4f)
 
         val bounding = Utils.findMinimumBounding(points)
 
-        bounding shouldEqualInexact expectedBounding
+        bounding.min shouldEqualInexact Vector3(-1f, -1f, -4f)
+        bounding.max shouldEqualInexact Vector3(5f, 4f, 7f)
     }
 
     @Test
@@ -170,6 +171,145 @@ class UtilsTest {
         val modelType = Utils.detectModelType(modelPath, appContext)
 
         modelType shouldEqual ModelType.GLB
+    }
+
+
+    /*
+             ^
+             |
+             |
+             |
+        +---------+
+        |    |    | Node bounds
+        |    |    |
+        |    |    |
+        |  +---+  |
+        |  | | |  |
+        |  | C |  |
+        |  | | |  |
+    ----+--+---+--+--------------->
+             |
+             |
+
+     */
+    @Test
+    fun `should return correct material clipping (case 1)`() {
+        val clipBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val nodeBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        // Fully visible node has material clipping equal to Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
+        // with origin at bottom-center, so clipping must be proportional to it.
+        val expectedClipping = Bounding(left = -0.25f, bottom = 0f, right = 0.25f, top = 0.5f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    /*
+             ^
+             |
+             |
+             |
+        +---------+
+        |    |    | Clip bounds
+        |    |    |
+        |    |    |
+        |  +---+  |
+        |  | | |  |
+        |  | N |  |
+        |  | | |  |
+    ----+--+---+--+--------------->
+             |
+             |
+
+     */
+    @Test
+    fun `should not clip material when node bounds inside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-2f, 0f, 0f), max = Vector3(2f, 6f, 0f))
+        val nodeBounds = AABB(min = Vector3(-1f, 0f, -1f), max = Vector3(1f, 3f, 1f))
+        val expectedClipping = Bounding(left = -0.5f, bottom = 0f, right = 0.5f, top = 1f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    /*
+         ^
+         |  Clip bounds
+         +-----------------+
+         |                 |
+         |                 |
+         |            +------+
+         |            |    | | Node
+     ------------------------------->
+         |            |      |
+         |            +------+
+         |
+     */
+    @Test
+    fun `should return correct material clipping (case 2)`() {
+        val clipBounds = AABB(min = Vector3(0f, 0f, -1f), max = Vector3(5f, 3f, 1f))
+        val nodeBounds = AABB(min = Vector3(3f, -1f, 0f), max = Vector3(6f, 1f, 0f))
+        val expectedClipping = Bounding(left = -0.5f, bottom = 0.5f, right = 1 / 6f, top = 1f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+
+    /*
+                                                  ^
+                                                  |
+                                              +-------+
+                                              |   |   | Clip bounds
+             Node                             |       |
+         +-----------+                        |   |   |
+         |           |                        |   |   |
+       --+-----------+----------------------------------------------->
+                                              |   |   |
+                                              |   |   |
+                                              |   |   |
+                                              +-------+
+                                                  |
+     */
+    @Test
+    fun `should return empty material clipping horizontally outside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-1f, -2f, -1f), max = Vector3(1f, 2f, 1f))
+        val nodeBounds = AABB(min = Vector3(-10f, 0f, 0f), max = Vector3(-8f, 1f, 0f))
+        // node should be completely invisible
+        val expectedClipping = Bounding(left = 0f, bottom = 0f, right = 0f, top = 0f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+
+    @Test
+    fun `should return empty material clipping when z position outside clip bounds`() {
+        val clipBounds = AABB(min = Vector3(-4f, -4f, -1f), max = Vector3(4f, 4f, 1f))
+        val nodeBounds = AABB(min = Vector3(-1f, -1f, -5f), max = Vector3(1f, 1f, -4f))
+        val expectedClipping = Bounding(left = 0f, bottom = 0f, right = 0f, top = 0f)
+
+        val clipping = Utils.calculateMaterialClipping(nodeBounds, clipBounds)
+
+        clipping shouldEqualInexact expectedClipping
+    }
+
+    @Test
+    fun `multiple calls of applyContentNodeAlignment should not break the alignment`() {
+        val node = UiNodeBuilder(appContext, useContentNodeAlignment = true)
+            .withSize(5f, 5f)
+            .withAlignment("top-center")
+            .build()
+
+        Utils.applyContentNodeAlignment(node)
+        Utils.applyContentNodeAlignment(node)
+        Utils.applyContentNodeAlignment(node)
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(0f, -2.5f, 0f)
     }
 
 }

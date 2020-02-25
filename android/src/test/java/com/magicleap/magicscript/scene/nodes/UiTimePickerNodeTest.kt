@@ -188,6 +188,7 @@ class UiTimePickerNodeTest {
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
         mock(),
+        mock(),
         datePickerDialogProvider
     ) {
 

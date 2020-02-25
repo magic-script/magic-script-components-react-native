@@ -20,9 +20,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.shouldEqualInexact
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.*
 import org.junit.Test
@@ -36,9 +35,6 @@ import java.util.*
  */
 @RunWith(RobolectricTestRunner::class)
 class TransformNodeTest {
-
-    // epsilon
-    private val eps = 1e-5f
 
     @Test
     fun `should be located at zero position by default`() {
@@ -131,94 +127,6 @@ class TransformNodeTest {
     }
 
     @Test
-    fun `get bounding should return content bounding with position offset`() {
-        val bounds = Bounding(-2F, -2F, 2F, 2F)
-        val node = NodeBuilder()
-            .withPosition(2.0, 5.0, 0.0)
-            .withContentBounds(bounds)
-            .build()
-        val expected = Bounding(0F, 3F, 4F, 7F)
-
-        val result = node.getBounding()
-
-        result shouldEqualInexact expected
-    }
-
-    @Test
-    fun `should return correct bounding when rotated 90 degrees around Z`() {
-        val bounds = Bounding(0F, 0F, 2F, 1F)
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
-            .withContentBounds(bounds)
-            .build()
-        val expected = Bounding(-1F, 0F, 0F, 2F)
-
-        val result = node.getBounding()
-
-        result shouldEqualInexact expected
-    }
-
-    @Test
-    fun `should return zero-width bounding when rotated 90 degrees around Y`() {
-        val bounds = Bounding(-1F, -1F, 1F, 1F)
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
-            .withContentBounds(bounds)
-            .build()
-        val expected = Bounding(0F, -1F, 0F, 1F)
-
-        val result = node.getBounding()
-
-        result shouldEqualInexact expected
-    }
-
-    @Test
-    fun `should return zero-height bounding when rotated 90 degrees around X`() {
-        val bounds = Bounding(-1F, -1F, 1F, 1F)
-        val node = NodeBuilder()
-            .withPosition(0.0, 0.0, 0.0)
-            .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
-            .withContentBounds(bounds)
-            .build()
-        val expected = Bounding(-1F, 0F, 1F, 0F)
-
-        val result = node.getBounding()
-
-        result shouldEqualInexact expected
-    }
-
-    @Test
-    fun `should align content node when using content node alignment`() {
-        val bounds = Bounding(-2F, -5F, 2F, 5F)
-
-        val node = NodeBuilder()
-            .withAlignment("top-right")
-            .withContentBounds(bounds)
-            .build()
-
-        assertEquals(-2.0F, node.contentNode.localPosition.x, eps)
-        assertEquals(-5.0F, node.contentNode.localPosition.y, eps)
-        assertEquals(Vector3.zero(), node.localPosition)
-    }
-
-    @Test
-    fun `should return proper content position`() {
-        val bounds = Bounding(-2F, -1F, 2F, 1F)
-        val node = NodeBuilder()
-            .withPosition(5.0, 3.0, 0.0)
-            .withAlignment("bottom-right")
-            .withContentBounds(bounds)
-            .build()
-
-        val contentPosition = node.getContentPosition()
-
-        assertEquals(3f, contentPosition.x, eps)
-        assertEquals(4f, contentPosition.y, eps)
-    }
-
-    @Test
     fun `children should be added to content node`() {
         val node = NodeBuilder().build()
         val child1 = NodeBuilder().build()
@@ -237,4 +145,47 @@ class TransformNodeTest {
         node.attachRenderable()
         assertTrue(node.renderableRequested)
     }
+
+    @Test
+    fun `should apply clip bounds on the node and children nodes`() {
+        val node = NodeBuilder().build()
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
+        node.addContent(child1)
+        node.addContent(child2)
+        val clipBounds = AABB(min = Vector3.zero(), max = Vector3.one())
+
+        node.clipBounds = clipBounds
+
+        node.clipBounds shouldEqual clipBounds
+        child1.clipBounds shouldEqual clipBounds
+        child2.clipBounds shouldEqual clipBounds
+    }
+
+    @Test
+    fun `should apply clipping on newly added child when clip bounds are set`() {
+        val node = NodeBuilder().build()
+        val clipBounds = AABB(min = Vector3.zero(), max = Vector3.one())
+        node.clipBounds = clipBounds
+
+        val child = NodeBuilder().build()
+        node.addContent(child)
+
+        child.clipBounds shouldEqual clipBounds
+    }
+
+    @Test
+    fun `should apply shifted clipping on child when local position changed`() {
+        val node = NodeBuilder().build()
+        val clipBounds = AABB(min = Vector3(0f, 0f, 0f), max = Vector3(1f, 1f, 1f))
+        val expectedChildBounds = AABB(min = Vector3(3f, 0f, 0f), max = Vector3(4f, 1f, 1f))
+        val child = NodeBuilder().build()
+        node.addContent(child)
+        node.clipBounds = clipBounds
+
+        node.localPosition = Vector3(-3f, 0f, 0f)
+
+        child.clipBounds shouldEqual expectedChildBounds
+    }
+
 }

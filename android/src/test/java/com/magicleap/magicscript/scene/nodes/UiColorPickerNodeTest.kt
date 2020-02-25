@@ -22,13 +22,13 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.reactMapOf
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_COLOR
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_HEIGHT
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_STARTING_COLOR
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.Before
@@ -79,7 +79,7 @@ class UiColorPickerNodeTest {
         props: ReadableMap = JavaOnlyMap()
     ): UiColorPickerNode {
         return object : UiColorPickerNode(
-            props, context, mock(), mock(), mock(), mock(), colorPickerDialog
+            props, context, mock(), mock(), mock(), mock(), mock(), colorPickerDialog
         ) {
             override fun provideView(context: Context): View {
                 return containerSpy

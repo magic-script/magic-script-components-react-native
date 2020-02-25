@@ -24,9 +24,9 @@ import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.collision.CollisionShape
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Material
 import com.magicleap.magicscript.ar.ModelType
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import kotlin.math.max
 import kotlin.math.min
@@ -49,11 +49,6 @@ class Utils {
         // One dp is a virtual pixel unit that's roughly equal to one pixel on a medium-density screen
         // 160dpi is the "baseline" density
         const val BASELINE_DENSITY = 160F
-
-        private const val CLIP_LEFT_PARAM = "left"
-        private const val CLIP_RIGHT_PARAM = "right"
-        private const val CLIP_TOP_PARAM = "top"
-        private const val CLIP_BOTTOM_PARAM = "bottom"
 
         /**
          *  Converts ARCore's meters to pixels
@@ -94,21 +89,30 @@ class Utils {
          * @param collShape collision shape of a node (or its renderable) or null if
          * node has no renderable
          */
-        fun calculateBoundsOfNode(node: Node, collShape: CollisionShape?): Bounding {
+        fun calculateBoundsOfNode(node: Node, collShape: CollisionShape?): AABB {
             // TODO (optionally) add Sphere collision shape support (currently never used)
             val offsetX = node.localPosition.x
             val offsetY = node.localPosition.y
+            val offsetZ = node.localPosition.z
+
             return if (collShape is Box) { // may be also null
                 val scaleX = node.localScale.x
                 val scaleY = node.localScale.y
-                val left = collShape.center.x * scaleX - (collShape.size.x * scaleX) / 2 + offsetX
-                val right = collShape.center.x * scaleX + (collShape.size.x * scaleX) / 2 + offsetX
-                val top = collShape.center.y * scaleY + (collShape.size.y * scaleY) / 2 + offsetY
-                val bottom = collShape.center.y * scaleY - (collShape.size.y * scaleY) / 2 + offsetY
-                Bounding(left, bottom, right, top)
+                val scaleZ = node.localScale.z
+                val xMin = collShape.center.x * scaleX - (collShape.size.x * scaleX) / 2 + offsetX
+                val xMax = collShape.center.x * scaleX + (collShape.size.x * scaleX) / 2 + offsetX
+                val yMin = collShape.center.y * scaleY - (collShape.size.y * scaleY) / 2 + offsetY
+                val yMax = collShape.center.y * scaleY + (collShape.size.y * scaleY) / 2 + offsetY
+                val zMin = collShape.center.z * scaleZ - (collShape.size.z * scaleZ) / 2 + offsetZ
+                val zMax = collShape.center.z * scaleZ + (collShape.size.z * scaleZ) / 2 + offsetZ
+
+                AABB(min = Vector3(xMin, yMin, zMin), max = Vector3(xMax, yMax, zMax))
             } else {
                 // default
-                Bounding(offsetX, offsetY, offsetX, offsetY)
+                AABB(
+                    min = Vector3(offsetX, offsetY, offsetZ),
+                    max = Vector3(offsetX, offsetY, offsetZ)
+                )
             }
         }
 
@@ -116,13 +120,13 @@ class Utils {
          * Calculates local bounds of group of nodes
          * (minimum possible frame that contains all [nodes])
          */
-        fun calculateSumBounds(nodes: List<Node>): Bounding {
+        fun calculateSumBounds(nodes: List<Node>): AABB {
             if (nodes.isEmpty()) {
-                return Bounding()
+                return AABB()
             }
 
-            val sumBounds =
-                Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+            val minEdge = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+            val maxEdge = Vector3(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
             for (node in nodes) {
                 val childBounds = if (node is TransformNode) {
@@ -131,30 +135,34 @@ class Utils {
                     calculateBoundsOfNode(node, node.collisionShape)
                 }
 
-                sumBounds.left = min(childBounds.left, sumBounds.left)
-                sumBounds.right = max(childBounds.right, sumBounds.right)
-                sumBounds.top = max(childBounds.top, sumBounds.top)
-                sumBounds.bottom = min(childBounds.bottom, sumBounds.bottom)
+                minEdge.x = min(childBounds.min.x, minEdge.x)
+                maxEdge.x = max(childBounds.max.x, maxEdge.x)
+                minEdge.y = min(childBounds.min.y, minEdge.y)
+                maxEdge.y = max(childBounds.max.y, maxEdge.y)
+                minEdge.z = min(childBounds.min.z, minEdge.z)
+                maxEdge.z = max(childBounds.max.z, maxEdge.z)
             }
 
-            return sumBounds
+            return AABB(minEdge, maxEdge)
         }
 
-        fun findMinimumBounding(points: List<Vector3>): Bounding {
+        fun findMinimumBounding(points: List<Vector3>): AABB {
             if (points.isEmpty()) {
-                return Bounding()
+                return AABB()
             }
 
-            val bounds =
-                Bounding(Float.MAX_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+            val minEdge = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+            val maxEdge = Vector3(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
 
             for (point in points) {
-                bounds.left = min(point.x, bounds.left)
-                bounds.right = max(point.x, bounds.right)
-                bounds.top = max(point.y, bounds.top)
-                bounds.bottom = min(point.y, bounds.bottom)
+                minEdge.x = min(point.x, minEdge.x)
+                maxEdge.x = max(point.x, maxEdge.x)
+                minEdge.y = min(point.y, minEdge.y)
+                maxEdge.y = max(point.y, maxEdge.y)
+                minEdge.z = min(point.z, minEdge.z)
+                maxEdge.z = max(point.z, maxEdge.z)
             }
-            return bounds
+            return AABB(minEdge, maxEdge)
         }
 
         /**
@@ -178,40 +186,36 @@ class Utils {
             return Vector3.add(sum1, p3)
         }
 
-        fun calculateMaterialClipping(clipBounds: Bounding, nodeBounds: Bounding): Bounding {
-            val materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
-            val sizeX = nodeBounds.size().x
-            val sizeY = nodeBounds.size().y
-
-            if (sizeX > 0) {
-                val offsetLeft = nodeBounds.left - clipBounds.left
-                materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
-
-                val offsetRight = nodeBounds.right - clipBounds.right
-                materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
+        fun calculateMaterialClipping(nodeBounds: AABB, clipBounds: AABB): Bounding {
+            val intersecting = !nodeBounds.intersection(clipBounds).equalInexact(AABB())
+            if (!intersecting) {
+                return Bounding()
             }
 
-            if (sizeY > 0) {
-                val offsetBottom = nodeBounds.bottom - clipBounds.bottom
-                materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
-
-                val offsetTop = nodeBounds.top - clipBounds.top
-                materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+            // calculate 2d clipping
+            val nodeBounds2d = nodeBounds.toBounding2d()
+            val clipBounds2d = clipBounds.toBounding2d()
+            val sizeX = nodeBounds2d.size().x
+            val sizeY = nodeBounds2d.size().y
+            if (sizeX <= 0f || sizeY <= 0f) {
+                return Bounding()
             }
+
+            val materialClip = Bounding()
+
+            val offsetLeft = nodeBounds2d.left - clipBounds2d.left
+            materialClip.left = max(-0.5f - offsetLeft / sizeX, -0.5f)
+
+            val offsetRight = nodeBounds2d.right - clipBounds2d.right
+            materialClip.right = min(0.5f - offsetRight / sizeX, 0.5f)
+
+            val offsetBottom = nodeBounds2d.bottom - clipBounds2d.bottom
+            materialClip.bottom = max(-offsetBottom / sizeY, 0.0f)
+
+            val offsetTop = nodeBounds2d.top - clipBounds2d.top
+            materialClip.top = min(1.0f - offsetTop / sizeY, 1.0f)
+
             return materialClip
-        }
-
-        /**
-         * Clips the material with the [materialClip] bounds (relative to model size,
-         * with the origin at bottom-center)
-         */
-        fun applyMaterialClipping(material: Material, materialClip: Bounding) {
-            material.apply {
-                setFloat(CLIP_LEFT_PARAM, materialClip.left)
-                setFloat(CLIP_RIGHT_PARAM, materialClip.right)
-                setFloat(CLIP_TOP_PARAM, materialClip.top)
-                setFloat(CLIP_BOTTOM_PARAM, materialClip.bottom)
-            }
         }
 
         fun detectModelType(modelUri: Uri, context: Context): ModelType {
@@ -243,6 +247,58 @@ class Utils {
                 return ModelType.UNKNOWN
             }
         }
+
+        /**
+         * Sets correct content node position based on [node] alignment
+         */
+        fun applyContentNodeAlignment(node: TransformNode) {
+            val bounds = node.getBounding().toBounding2d()
+
+            val rot = node.localRotation.inverted()
+            val p1 = Vector3(bounds.left, bounds.top, node.localPosition.z).rotatedBy(rot)
+            val p2 = Vector3(bounds.left, bounds.bottom, node.localPosition.z).rotatedBy(rot)
+            val p3 = Vector3(bounds.right, bounds.bottom, node.localPosition.z).rotatedBy(rot)
+            val p4 = Vector3(bounds.right, bounds.top, node.localPosition.z).rotatedBy(rot)
+            val boundsBeforeRotation = findMinimumBounding(listOf(p1, p2, p3, p4))
+
+            val contentNode = node.contentNode
+
+            val nodeWidth = boundsBeforeRotation.max.x - boundsBeforeRotation.min.x
+            val nodeHeight = boundsBeforeRotation.max.y - boundsBeforeRotation.min.y
+            val boundsCenterX = boundsBeforeRotation.min.x + nodeWidth / 2
+            val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
+            val boundsCenterY = boundsBeforeRotation.max.y - nodeHeight / 2
+            val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
+
+            // calculating x and y position for content
+            val x =
+                contentNode.localPosition.x - node.horizontalAlignment.centerOffset * nodeWidth + pivotOffsetX
+
+            val y =
+                contentNode.localPosition.y - node.verticalAlignment.centerOffset * nodeHeight + pivotOffsetY
+
+            contentNode.localPosition = Vector3(x, y, contentNode.localPosition.z)
+        }
+
+        fun clipChildren(parent: TransformNode, clipBounds: AABB) {
+            val scale = parent.localScale
+            if (scale.x <= 0 || scale.y <= 0 || scale.z <= 0) {
+                return
+            }
+
+            val scaleX = 1 / scale.x
+            val scaleY = 1 / scale.y
+            val scaleZ = 1 / scale.z
+
+            val localBounds = clipBounds
+                .translated(-parent.getContentPosition())
+                .scaled(scaleX, scaleY, scaleZ)
+
+            parent.contentNode.children
+                .filterIsInstance<TransformNode>()
+                .forEach { it.clipBounds = localBounds }
+        }
+
     }
 
 }

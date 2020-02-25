@@ -225,6 +225,7 @@ class UiDatePickerNodeTest {
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
         mock(),
+        mock(),
         datePickerDialogProvider
     ) {
         val titleText: TextView = mock()

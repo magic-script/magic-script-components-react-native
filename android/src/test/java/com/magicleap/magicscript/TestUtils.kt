@@ -16,24 +16,35 @@
 
 package com.magicleap.magicscript
 
+import android.content.Context
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.clip.UiNodeClipper
+import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.nhaarman.mockitokotlin2.argThat
-import org.mockito.ArgumentMatcher
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.equalInexact
+import com.magicleap.magicscript.utils.isCloseTo
+import com.nhaarman.mockitokotlin2.mock
 import kotlin.test.assertTrue
 
-class NodeBuilder {
-    private var props = JavaOnlyMap()
-    private var contentBounding = Bounding()
+private const val EPSILON = 1e-5f
+
+open class NodeBuilder(protected val useContentNodeAlignment: Boolean = true) {
+    protected var props = JavaOnlyMap()
 
     fun withProps(initProps: JavaOnlyMap): NodeBuilder {
         props = initProps
@@ -58,11 +69,6 @@ class NodeBuilder {
         return this
     }
 
-    fun withContentBounds(bounds: Bounding): NodeBuilder {
-        contentBounding = bounds
-        return this
-    }
-
     fun withAlignment(alignment: String): NodeBuilder {
         props.putString(TransformNode.PROP_ALIGNMENT, alignment)
         return this
@@ -73,10 +79,40 @@ class NodeBuilder {
         return this
     }
 
-    fun build(): TransformNode {
-        val node = object : TransformNode(props, false, true) {
-            override fun getContentBounding(): Bounding {
-                return contentBounding
+    open fun build(): TransformNode {
+        val node = object : TransformNode(props, false, useContentNodeAlignment) {}
+        node.build()
+        return node
+    }
+}
+
+class UiNodeBuilder(
+    private val context: Context,
+    useContentNodeAlignment: Boolean = false,
+    private val viewRenderableLoader: ViewRenderableLoader? = null,
+    private val nodeClipper: Clipper? = null
+) : NodeBuilder(useContentNodeAlignment) {
+    private var width = UiNode.WRAP_CONTENT_DIMENSION
+    private var height = UiNode.WRAP_CONTENT_DIMENSION
+
+    fun withSize(width: Float, height: Float): UiNodeBuilder {
+        this.width = width
+        this.height = height
+        return this
+    }
+
+    override fun build(): UiNode {
+        val renderableLoader = viewRenderableLoader ?: mock()
+        val clipper = nodeClipper ?: UiNodeClipper(TextureClipper(), UiNodeColliderClipper())
+        val node = object :
+            UiNode(props, context, renderableLoader, clipper, useContentNodeAlignment) {
+
+            override fun provideView(context: Context): View {
+                return View(context)
+            }
+
+            override fun provideDesiredSize(): Vector2 {
+                return Vector2(width, height)
             }
         }
         node.build()
@@ -106,14 +142,27 @@ fun <T : TransformNode> T.update(vararg keysAndValues: Any) {
 }
 
 // region Custom matchers
-infix fun Bounding.shouldEqualInexact(other: Bounding) =
-    assertTrue(Bounding.equalInexact(this, other), "expected: $other, but was: $this")
 
-fun matchesInexact(bounds: Bounding) = argThat(
-    ArgumentMatcher<Bounding> { argument ->
-        Bounding.equalInexact(argument, bounds)
-    }
-)
+infix fun Float.shouldEqualInexact(other: Float) {
+    val equal = isCloseTo(other, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Vector2.shouldEqualInexact(other: Vector2) {
+    val equal = x.isCloseTo(other.x, EPSILON) && y.isCloseTo(other.y, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Vector3.shouldEqualInexact(other: Vector3) {
+    val equal = equalInexact(other, EPSILON)
+    assertTrue(equal, "expected: $other, but was: $this")
+}
+
+infix fun Bounding.shouldEqualInexact(other: Bounding) =
+    assertTrue(equalInexact(other), "expected: $other, but was: $this")
+
+infix fun AABB.shouldEqualInexact(other: AABB) =
+    assertTrue(equalInexact(other), "expected: $other, but was: $this")
 
 fun TransformNode.forceUpdate(deltaSeconds: Float) {
     TransformNode.Test(this).forceUpdate(deltaSeconds)
@@ -140,7 +189,7 @@ fun UiNode.performClick() {
  */
 fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, Bounding>,
+    childrenBounds: MutableMap<Int, AABB>,
     layoutParams: T,
     maxIterations: Int
 ) {
@@ -164,15 +213,16 @@ fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
  */
 fun measureChildren(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, Bounding>
+    childrenBounds: MutableMap<Int, AABB>
 ): Boolean {
     var changed = false
     for (i in childrenList.indices) {
         val node = childrenList[i]
-        val oldBounds = childrenBounds[i] ?: Bounding()
-        childrenBounds[i] = node.getBounding()
+        val oldBounds = childrenBounds[i] ?: AABB()
+        val newBounds = node.getBounding()
+        childrenBounds[i] = newBounds
 
-        if (!Bounding.equalInexact(childrenBounds[i]!!, oldBounds)) {
+        if (!newBounds.equalInexact(oldBounds)) {
             changed = true
         }
     }

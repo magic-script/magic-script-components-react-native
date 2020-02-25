@@ -16,9 +16,9 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 
 /**
  * Layout manager is responsible for placing the children nodes in
@@ -32,12 +32,12 @@ interface LayoutManager<T : LayoutParams> {
     fun layoutChildren(
         layoutParams: T,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>
+        childrenBounds: Map<Int, AABB>
     )
 
     /**
      * Return the layout's local bounding (usually the sum of children bounds + padding)
      */
-    fun getLayoutBounds(layoutParams: T): Bounding
+    fun getLayoutBounds(layoutParams: T): AABB
 
 }

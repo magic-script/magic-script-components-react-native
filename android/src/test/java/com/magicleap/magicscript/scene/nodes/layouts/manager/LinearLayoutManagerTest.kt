@@ -16,7 +16,9 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.magicleap.magicscript.NodeBuilder
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.measureChildren
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
@@ -38,7 +40,7 @@ class LinearLayoutManagerTest {
 
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var orientation: String = ORIENTATION_VERTICAL
@@ -52,14 +54,15 @@ class LinearLayoutManagerTest {
         this.verticalManager = mock()
         this.horizontalManager = mock()
         this.linearManager = LinearLayoutManager(verticalManager, horizontalManager)
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         childrenList = listOf(
-            NodeBuilder()
-                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+            UiNodeBuilder(context)
+                .withSize(2f, 1f)
                 .withAlignment("center-center")
                 .build(),
-            NodeBuilder()
-                .withContentBounds(Bounding(-1f, -0.5F, 1F, 0.5F))
+            UiNodeBuilder(context)
+                .withSize(2f, 1f)
                 .withAlignment("center-center")
                 .build()
         )

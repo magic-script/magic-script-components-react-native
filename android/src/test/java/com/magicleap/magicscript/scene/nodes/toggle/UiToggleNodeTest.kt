@@ -18,16 +18,15 @@ package com.magicleap.magicscript.scene.nodes.toggle
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.update
+import com.magicleap.magicscript.utils.Utils
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.magicleap.magicscript.update
-import com.magicleap.magicscript.utils.Utils
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -103,7 +102,7 @@ class UiToggleNodeTest {
     }
 
     fun createNode(props: ReadableMap): UiToggleNode {
-        return UiToggleNode(props, context, mock(), toggleViewManager)
+        return UiToggleNode(props, context, mock(), mock(), toggleViewManager)
     }
 
 }

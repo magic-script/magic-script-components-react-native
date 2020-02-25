@@ -25,19 +25,19 @@ import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
 import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import org.junit.Assert
+import org.amshove.kluent.shouldBe
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -198,11 +198,12 @@ class UiTextNodeTest {
             TransformNode.PROP_ALIGNMENT, "top-left"
         )
         val node = createNodeWithViewSpy(props)
-        val expectedBounds = Bounding(0F, -0.4F, 0.8F, 0F)
-
         node.build()
 
-        node.getBounding() shouldEqualInexact expectedBounds
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(0f, -0.4f, 0f)
+        bounding.max shouldEqualInexact Vector3(0.8f, 0f, 0f)
     }
 
     @Test
@@ -214,11 +215,11 @@ class UiTextNodeTest {
         node.update(reactMapOf(UiTextNode.PROP_TEXT, "longer text"))
         node.build() // rebuild to update bounds
 
-        Assert.assertFalse(Bounding.equalInexact(initialBounds, node.getBounding()))
+        initialBounds.equalInexact(node.getBounding()) shouldBe false
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextNode {
-        return object : UiTextNode(props, context, mock(), fontProvider) {
+        return object : UiTextNode(props, context, mock(), mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

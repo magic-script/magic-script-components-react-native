@@ -24,6 +24,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -40,11 +41,20 @@ open class UiColorPickerNode @JvmOverloads constructor(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
     clickAnimator: NodeAnimator,
     private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
-) : UiButtonNode(initProps, context, viewRenderableLoader, fontProvider, iconsRepo, clickAnimator) {
+) : UiButtonNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    fontProvider,
+    iconsRepo,
+    clickAnimator
+) {
 
     companion object {
         const val PROP_COLOR = "color"

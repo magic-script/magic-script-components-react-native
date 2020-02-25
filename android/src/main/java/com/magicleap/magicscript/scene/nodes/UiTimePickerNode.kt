@@ -22,10 +22,11 @@ import android.os.BaseBundle
 import android.os.Bundle
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
+import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.utils.getHour
 import com.magicleap.magicscript.utils.getMinute
 import com.magicleap.magicscript.utils.putDefault
@@ -36,8 +37,15 @@ open class UiTimePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     dialogProvider: DialogProvider
-) : UiDateTimePickerBaseNode(initProps, context, viewRenderableLoader, dialogProvider) {
+) : UiDateTimePickerBaseNode(
+    initProps,
+    context,
+    viewRenderableLoader,
+    nodeClipper,
+    dialogProvider
+) {
 
     companion object {
         const val PROP_DEFAULT_TIME = "defaultTime"

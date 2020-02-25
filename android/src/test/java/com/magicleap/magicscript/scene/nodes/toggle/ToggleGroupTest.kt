@@ -98,7 +98,7 @@ class ToggleGroupTest {
     }
 
     private fun buildToggleNode(props: ReadableMap): UiToggleNode {
-        val toggle = UiToggleNode(props, context, mock(), mock())
+        val toggle = UiToggleNode(props, context, mock(), mock(), mock())
         toggle.build()
         return toggle
     }

@@ -22,12 +22,12 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
@@ -77,11 +77,11 @@ class UiListViewNodeTest {
         )
         val node = createNodeWithViewSpy(props)
         node.build()
-        val expectedBounds = Bounding(0.4f, 0.7f, 1.6f, 1.3f)
 
-        val bounds = node.getBounding()
+        val bounding = node.getBounding()
 
-        bounds shouldEqualInexact expectedBounds
+        bounding.min shouldEqualInexact Vector3(0.4f, 0.7f, 0f)
+        bounding.max shouldEqualInexact Vector3(1.6f, 1.3f, 0f)
     }
 
     @Test
@@ -110,7 +110,7 @@ class UiListViewNodeTest {
 
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {
-        return object : UiListViewNode(props, context, mock()) {
+        return object : UiListViewNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

@@ -25,6 +25,7 @@ import android.view.View
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
@@ -35,8 +36,9 @@ open class UiTextNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
+    nodeClipper: Clipper,
     private val fontProvider: FontProvider
-) : UiNode(initProps, context, viewRenderableLoader) {
+) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
         // properties

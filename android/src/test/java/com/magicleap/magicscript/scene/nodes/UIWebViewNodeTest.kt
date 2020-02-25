@@ -111,7 +111,7 @@ class UIWebViewNodeTest {
 
 
     fun createNodeWithViewSpy(props: ReadableMap = JavaOnlyMap()): UIWebViewNode {
-        return object : UIWebViewNode(props, context, mock()) {
+        return object : UIWebViewNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

@@ -101,8 +101,10 @@ open class UiListViewItemNode(
         if (content != null) {
             val contentBounds = content.getBounding()
             if (!Bounding.equalInexact(contentBounds, lastContentBounds)) {
-                val offsetX = content.localPosition.x - contentBounds.center().x
-                val offsetY = content.localPosition.y - contentBounds.center().y
+                val paddingXDiff = padding.left - padding.right
+                val paddingYDiff = padding.bottom - padding.top
+                val offsetX = content.localPosition.x - contentBounds.center().x + paddingXDiff / 2
+                val offsetY = content.localPosition.y - contentBounds.center().y + paddingYDiff / 2
                 content.localPosition = Vector3(offsetX, offsetY, CONTENT_Z_OFFSET)
                 lastContentBounds = contentBounds
                 setNeedsRebuild(true) // need to create a new background

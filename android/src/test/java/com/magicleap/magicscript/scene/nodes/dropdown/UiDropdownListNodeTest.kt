@@ -23,8 +23,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.*
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.nhaarman.mockitokotlin2.mock
@@ -64,7 +65,7 @@ class UiDropdownListNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext<Context>()
         fontProvider = object : FontProvider {
-            override fun provideFont(fontParams: FontParams?): Typeface {
+            override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
                 return Typeface.DEFAULT_BOLD
             }
         }

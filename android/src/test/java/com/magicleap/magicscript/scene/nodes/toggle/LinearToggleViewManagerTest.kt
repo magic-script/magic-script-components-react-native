@@ -24,8 +24,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -54,7 +55,7 @@ class LinearToggleViewManagerTest {
 
         providerTypeface = Typeface.DEFAULT_BOLD
         fontProvider = object : FontProvider {
-            override fun provideFont(fontParams: FontParams?): Typeface {
+            override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
                 return providerTypeface
             }
         }

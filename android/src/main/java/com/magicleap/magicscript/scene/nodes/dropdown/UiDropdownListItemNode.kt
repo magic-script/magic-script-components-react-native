@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes.dropdown
 import android.graphics.Typeface
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
@@ -60,8 +59,7 @@ open class UiDropdownListItemNode(
     private val typefaceNormal: Typeface by lazy { fontProvider.provideFont() }
 
     private val typefaceBold: Typeface by lazy {
-        val boldFontParams = FontParams(FontWeight.EXTRA_BOLD, FontStyle.NORMAL, false)
-        fontProvider.provideFont(boldFontParams)
+        fontProvider.provideFont(FontStyle.NORMAL, FontWeight.EXTRA_BOLD)
     }
 
     val typeface: Typeface

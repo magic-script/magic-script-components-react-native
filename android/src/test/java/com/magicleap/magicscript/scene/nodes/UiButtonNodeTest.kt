@@ -24,8 +24,9 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
-import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.font.FontStyle
+import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -63,7 +64,7 @@ class UiButtonNodeTest {
         this.viewSpy = spy(CustomButton(context))
         this.providerTypeface = Typeface.DEFAULT_BOLD
         this.fontProvider = object : FontProvider {
-            override fun provideFont(fontParams: FontParams?): Typeface {
+            override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
                 return providerTypeface
             }
         }

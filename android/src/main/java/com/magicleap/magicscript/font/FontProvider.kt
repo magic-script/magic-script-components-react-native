@@ -19,5 +19,5 @@ package com.magicleap.magicscript.font
 import android.graphics.Typeface
 
 interface FontProvider {
-    fun provideFont(fontParams: FontParams? = null): Typeface
+    fun provideFont(fontStyle: FontStyle? = null, fontWeight: FontWeight? = null): Typeface
 }

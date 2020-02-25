@@ -29,6 +29,14 @@ import kotlinx.android.synthetic.main.dialog.view.*
 
 class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) {
 
+
+    companion object {
+        const val BUTTON_TYPE_ICON = "icon"
+        const val BUTTON_TYPE_ICON_WITH_TEXT = "icon-with-label"
+        const val BUTTON_TYPE_TEXT = "text"
+        const val BUTTON_TYPE_TEXT_WITH_ICON = "text-with-icon"
+    }
+
     private var cancelIconView: ImageView?
     private var cancelTextView: TextView?
     private var cancelLayout: LinearLayout?
@@ -101,6 +109,65 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
         }
         return this
     }
+
+    fun setButtonType(buttonType: String) {
+        when (buttonType) {
+            BUTTON_TYPE_TEXT_WITH_ICON -> {
+                showIcon()
+                showText()
+                changeOrder()
+            }
+            BUTTON_TYPE_ICON -> {
+                showIcon()
+                hideText()
+            }
+
+            BUTTON_TYPE_ICON_WITH_TEXT -> {
+                showIcon()
+                showText()
+            }
+
+            BUTTON_TYPE_TEXT -> {
+                hideIcon()
+                showText()
+            }
+        }
+    }
+
+    private fun changeOrder() {
+        confirmLayout?.let {
+            val icon = it.getChildAt(0)
+            it.removeView(icon)
+            it.addView(icon, 1)
+        }
+
+        cancelLayout?.let {
+            val icon = it.getChildAt(0)
+            it.removeView(icon)
+            it.addView(icon, 1)
+        }
+    }
+
+    private fun showText() {
+        confirmTextView?.visibility = View.VISIBLE
+        cancelTextView?.visibility = View.VISIBLE
+    }
+
+    private fun showIcon() {
+        confirmIconView?.visibility = View.VISIBLE
+        cancelIconView?.visibility = View.VISIBLE
+    }
+
+    private fun hideText() {
+        confirmTextView?.visibility = View.GONE
+        cancelTextView?.visibility = View.GONE
+    }
+
+    private fun hideIcon() {
+        confirmIconView?.visibility = View.GONE
+        cancelIconView?.visibility = View.GONE
+    }
+
 
     fun setOnDialogConfirmClick(onDialogConfirmListener: (() -> Unit)? = null): AlertDialog.Builder {
         this.onDialogConfirmListener = onDialogConfirmListener

@@ -62,7 +62,7 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             FontParams::class -> readFontParams(this, key) as T?
             SpatialSoundPosition::class -> readSpatialSoundPosition(this, key) as T?
             SpatialSoundDistance::class -> readSpatialSoundDistance(this, key) as T?
-            ItemListPaddingMap::class -> readItemListPaddingMap(this, key) as T?
+            ItemPaddingMap::class -> readItemPaddingMap(this, key) as T?
             ItemAlignmentMap::class -> readItemAlignmentMap(this, key) as T?
             ItemGridPaddingMap::class -> readItemGridPaddingMap(this, key) as T?
             ItemGridAlignmentMap::class -> readItemGridAlignmentMap(this, key) as T?
@@ -231,7 +231,7 @@ fun readSpatialSoundDistance(props: Bundle, propertyName: String): SpatialSoundD
     return null
 }
 
-fun readItemListPaddingMap(props: Bundle, propertyName: String): ItemListPaddingMap {
+fun readItemPaddingMap(props: Bundle, propertyName: String): ItemPaddingMap {
     val paddings = mutableMapOf<Int, Padding>()
 
     props.getParcelableArrayList<Bundle>(propertyName)
@@ -243,7 +243,7 @@ fun readItemListPaddingMap(props: Bundle, propertyName: String): ItemListPadding
             )
         }
 
-    return ItemListPaddingMap(paddings)
+    return ItemPaddingMap(paddings)
 }
 
 fun readItemAlignmentMap(props: Bundle, propertyName: String): ItemAlignmentMap {

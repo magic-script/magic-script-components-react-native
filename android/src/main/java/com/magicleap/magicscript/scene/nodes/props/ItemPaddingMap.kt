@@ -16,6 +16,6 @@
 
 package com.magicleap.magicscript.scene.nodes.props
 
-data class ItemListPaddingMap(val paddings: Map<Int, Padding>?)
+data class ItemPaddingMap(val paddings: Map<Int, Padding>?)
 
 data class ItemGridPaddingMap(val paddings: Map<Pair<Int,Int>, Padding>?)

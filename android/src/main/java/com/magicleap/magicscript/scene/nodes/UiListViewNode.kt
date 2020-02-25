@@ -28,11 +28,11 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLay
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.ItemAlignmentMap
+import com.magicleap.magicscript.scene.nodes.props.ItemPaddingMap
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.*
 
 open class UiListViewNode(
     initProps: ReadableMap,
@@ -62,6 +62,8 @@ open class UiListViewNode(
     private var contentAdded = false
     private var contentSize = Vector2()
     private var requestedScrollIndex = 0
+    private var itemsPaddingMap: Map<Int, Padding>? = null
+    private var defaultItemsPadding = Padding()
 
     init {
         // setting default values of properties
@@ -95,8 +97,13 @@ open class UiListViewNode(
 
         super.applyProperties(props)
 
+
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
+        }
+
+        if (props.containsAny(PROP_ITEM_PADDING, PROP_DEFAULT_ITEM_PADDING)) {
+            refreshItemsPadding()
         }
 
         if (updatingProperties) {
@@ -140,8 +147,12 @@ open class UiListViewNode(
     override fun addContent(child: TransformNode) {
         when (child) {
             is UiListViewItemNode -> {
-                containerNode.addContent(child)
-                if (getItems().size - 1 == requestedScrollIndex) {
+                addItem(child)
+                val itemIndex = getItems().size - 1
+                child.padding = itemsPaddingMap?.get(itemIndex) ?: defaultItemsPadding
+                logMessage("child padding= ${child.padding}, index=$itemIndex")
+
+                if (itemIndex == requestedScrollIndex) {
                     scrollToItem(requestedScrollIndex)
                 }
             }
@@ -162,6 +173,7 @@ open class UiListViewNode(
     private fun forceSameItemsWidth() {
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
         val items = getItems()
+
         val minItemSize = if (orientation == ORIENTATION_VERTICAL) {
             val maxItemWidth = findMaxItemWidth(items)
             Vector2(maxItemWidth, 0f)
@@ -193,8 +205,8 @@ open class UiListViewNode(
 
         val orientation = properties.read(PROP_ORIENTATION) ?: DEFAULT_ORIENTATION
         if (orientation == ORIENTATION_VERTICAL) {
-            val sumHeightBeforeItem = calculateContentHeight(items, itemIndex)
-            val allItemsHeight = calculateContentHeight(items, items.size)
+            val sumHeightBeforeItem = calculateItemsHeight(items, itemIndex)
+            val allItemsHeight = calculateItemsHeight(items, items.size)
             val maxTravel = allItemsHeight - getBounding().size().y
 
             if (maxTravel > 0) {
@@ -202,8 +214,8 @@ open class UiListViewNode(
                 (view as CustomScrollView).position = Vector2(0f, positionY)
             }
         } else {
-            val sumWidthBeforeItem = calculateContentWidth(items, itemIndex)
-            val allItemsWidth = calculateContentWidth(items, items.size)
+            val sumWidthBeforeItem = calculateItemsWidth(items, itemIndex)
+            val allItemsWidth = calculateItemsWidth(items, items.size)
             val maxTravel = allItemsWidth - getBounding().size().x
 
             if (maxTravel > 0) {
@@ -211,6 +223,10 @@ open class UiListViewNode(
                 (view as CustomScrollView).position = Vector2(positionX, 0f)
             }
         }
+    }
+
+    private fun addItem(listItem: UiListViewItemNode) {
+        containerNode.addContent(listItem)
     }
 
     private fun getItems() = containerNode.childrenList.filterIsInstance<UiListViewItemNode>()
@@ -224,37 +240,27 @@ open class UiListViewNode(
     }
 
     /**
-     * Calculating content height until [toIndex] item
+     * Calculates summary height of items before item at [toIndex]
      *
      * @param toIndex exclusive index of item
      */
-    private fun calculateContentHeight(items: List<UiListViewItemNode>, toIndex: Int): Float {
-        val layoutParams = containerNode.getLayoutParams()
+    private fun calculateItemsHeight(items: List<UiListViewItemNode>, toIndex: Int): Float {
         var sum = 0f
         for (i in 0 until toIndex) {
-            val padding = layoutParams.itemsPadding[i]?.let { it.top + it.bottom } ?: 0f
-            sum += items[i].getBounding().size().y + padding
-        }
-        if (toIndex < items.size) {
-            sum += layoutParams.itemsPadding[toIndex]?.top ?: 0f
+            sum += items[i].getBounding().size().y
         }
         return sum
     }
 
     /**
-     * Calculating content width until [toIndex] item.
+     * Calculates summary width of items before item at [toIndex]
      *
      * @param toIndex exclusive index of item
      */
-    private fun calculateContentWidth(items: List<UiListViewItemNode>, toIndex: Int): Float {
-        val layoutParams = containerNode.getLayoutParams()
+    private fun calculateItemsWidth(items: List<UiListViewItemNode>, toIndex: Int): Float {
         var sum = 0f
         for (i in 0 until toIndex) {
-            val padding = layoutParams.itemsPadding[i]?.let { it.left + it.right } ?: 0f
-            sum += items[i].getBounding().size().x + padding
-        }
-        if (toIndex < items.size) {
-            sum += layoutParams.itemsPadding[toIndex]?.left ?: 0f
+            sum += items[i].getBounding().size().x
         }
         return sum
     }
@@ -280,6 +286,15 @@ open class UiListViewNode(
         }
 
         return containerProps
+    }
+
+    private fun refreshItemsPadding() {
+        this.itemsPaddingMap = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)?.paddings
+        this.defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+
+        getItems().forEachIndexed { index, item ->
+            item.padding = itemsPaddingMap?.get(index) ?: defaultItemsPadding
+        }
     }
 
 }

@@ -1,12 +1,14 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
-import com.magicleap.magicscript.NodeBuilder
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 import org.junit.Assert.assertEquals
@@ -22,7 +24,7 @@ class GridLayoutManagerTest {
     private lateinit var manager: GridLayoutManager
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, Bounding>()
+    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var columns = 0
@@ -35,11 +37,19 @@ class GridLayoutManagerTest {
     @Before
     fun setUp() {
         manager = GridLayoutManager()
+        val context: Context = ApplicationProvider.getApplicationContext()
 
-        val child1Bounds = Bounding(0f, 0f, 2f, 1f)
-        val child2Bounds = Bounding(0f, 0f, 1f, 1f)
-        val child1 = NodeBuilder().withContentBounds(child1Bounds).build()
-        val child2 = NodeBuilder().withContentBounds(child2Bounds).build()
+        val child1 = UiNodeBuilder(context)
+            .withSize(2f, 1f)
+            .withAlignment("bottom-left")
+            .build()
+
+
+        val child2 = UiNodeBuilder(context)
+            .withSize(1f, 1f)
+            .withAlignment("bottom-left")
+            .build()
+
         childrenList = listOf(child1, child2)
     }
 

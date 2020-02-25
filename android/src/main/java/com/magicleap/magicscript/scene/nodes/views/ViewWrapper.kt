@@ -137,7 +137,8 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         var p: Node? = parent
         while (p != null) {
             if (p is TransformNode) {
-                translation += p.getContentPosition()
+                val contentPos = p.getContentPosition()
+                translation += Vector2(contentPos.x, contentPos.y)
             }
             if (p is UiScrollViewNode) {
                 break

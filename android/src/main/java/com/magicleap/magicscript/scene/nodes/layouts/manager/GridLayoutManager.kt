@@ -22,6 +22,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CO
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
@@ -37,7 +38,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     override fun onPreLayout(
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: LayoutParams
     ) {
         super.onPreLayout(children, childrenBounds, layoutParams)
@@ -145,7 +146,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
     }
 
     override fun getContentWidth(
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: GridLayoutParams
     ): Float {
         val itemsPadding = layoutParams.itemsPadding
@@ -157,7 +158,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
     }
 
     override fun getContentHeight(
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: GridLayoutParams
     ): Float {
         val itemsPadding = layoutParams.itemsPadding
@@ -170,7 +171,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     override fun calculateMaxChildWidth(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: GridLayoutParams
     ): Float {
         return if (layoutParams.size.x == WRAP_CONTENT_DIMENSION) {
@@ -187,7 +188,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     override fun calculateMaxChildHeight(
         childIdx: Int,
-        childrenBounds: Map<Int, Bounding>,
+        childrenBounds: Map<Int, AABB>,
         layoutParams: GridLayoutParams
     ): Float {
         return if (layoutParams.size.y == WRAP_CONTENT_DIMENSION) {

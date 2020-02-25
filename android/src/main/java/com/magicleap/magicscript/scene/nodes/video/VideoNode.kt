@@ -22,11 +22,11 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.readFilePath
@@ -35,7 +35,8 @@ class VideoNode(
     initProps: ReadableMap,
     private val context: Context,
     private val videoPlayer: VideoPlayer,
-    private val videoRenderableLoader: VideoRenderableLoader
+    private val videoRenderableLoader: VideoRenderableLoader,
+    private val nodeClipper: Clipper
 ) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
 
     companion object {
@@ -55,6 +56,14 @@ class VideoNode(
     }
 
     var onVideoPreparedListener: (() -> Unit)? = null
+
+    override var clipBounds: AABB?
+        get() = super.clipBounds
+        set(value) {
+            super.clipBounds = value
+            applyClipBounds()
+        }
+
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
@@ -62,12 +71,6 @@ class VideoNode(
     private val initialHeight = 1F // meters
 
     private var lastUserAction: String = ""
-
-    /**
-     * Set default clipping (all renderable visible).
-     * Values are relative to model width and height. Origin (0, 0) is at bottom-center.
-     */
-    private var materialClip = Bounding(-0.5f, 0.0f, 0.5f, 1.0f)
 
     init {
         // set default values of properties
@@ -95,19 +98,19 @@ class VideoNode(
         loadVideo()
     }
 
-    override fun setClipBounds(clipBounds: Bounding) {
-        materialClip = Utils.calculateMaterialClipping(clipBounds, getBounding())
-        applyMaterialClipping()
-    }
-
     override fun onVisibilityChanged(visibility: Boolean) {
         super.onVisibilityChanged(visibility)
         if (visibility) {
             contentNode.renderable = renderableCopy
-            applyMaterialClipping()
+            applyClipBounds()
         } else {
             contentNode.renderable = null
         }
+    }
+
+    override fun onTransformedLocally() {
+        super.onTransformedLocally()
+        applyClipBounds()
     }
 
     override fun onPause() {
@@ -130,10 +133,8 @@ class VideoNode(
         videoPlayer.release()
     }
 
-    private fun applyMaterialClipping() {
-        contentNode.renderable?.material?.let { material ->
-            Utils.applyMaterialClipping(material, materialClip)
-        }
+    private fun applyClipBounds() {
+        nodeClipper.applyClipBounds(this, clipBounds)
     }
 
     private fun loadVideo() {
@@ -155,7 +156,7 @@ class VideoNode(
                         contentNode.renderable = result.renderable
                     }
                     renderableCopy = result.renderable
-                    applyMaterialClipping()
+                    applyClipBounds()
                 }
             }
         }
@@ -171,6 +172,7 @@ class VideoNode(
             val scaleX = widthMeters / initialWidth
             val scaleY = heightMeters / initialHeight
             contentNode.localScale = Vector3(scaleX, scaleY, 1F)
+            applyClipBounds()
         }
     }
 

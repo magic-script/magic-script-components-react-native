@@ -18,6 +18,8 @@ package com.magicleap.magicscript.scene.nodes.props
 
 import com.magicleap.magicscript.utils.Vector2
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Represents bounds of a node
@@ -29,20 +31,18 @@ data class Bounding(
     var top: Float = 0f
 ) {
     companion object {
+        private const val EPSILON = 1e-5f
+    }
 
-        private const val eps = 1e-5 // epsilon
-
-        /**
-         * Compares 2 bounds and returns true if they are the same
-         * with the accuracy of [eps]
-         */
-        fun equalInexact(a: Bounding, b: Bounding): Boolean {
-            return abs(a.left - b.left) < eps
-                    && abs(a.right - b.right) < eps
-                    && abs(a.bottom - b.bottom) < eps
-                    && abs(a.top - b.top) < eps
-
-        }
+    /**
+     * Compares the bounds with [other] and returns true if they are the same
+     * with the accuracy of [EPSILON]
+     */
+    fun equalInexact(other: Bounding): Boolean {
+        return abs(left - other.left) < EPSILON
+                && abs(right - other.right) < EPSILON
+                && abs(bottom - other.bottom) < EPSILON
+                && abs(top - other.top) < EPSILON
     }
 
     fun size(): Vector2 {
@@ -58,7 +58,7 @@ data class Bounding(
     }
 
     // Get new Bounding equal to this translated by 2D vector.
-    fun translate(translation: Vector2): Bounding {
+    fun translated(translation: Vector2): Bounding {
         return Bounding(
             left + translation.x,
             bottom + translation.y,
@@ -66,4 +66,18 @@ data class Bounding(
             top + translation.y
         )
     }
+
+    fun intersection(other: Bounding): Bounding {
+        val xMin = max(left, other.left)
+        val xMax = min(right, other.right)
+        val yMin = max(bottom, other.bottom)
+        val yMax = min(top, other.top)
+
+        if (xMin > xMax || yMin > yMax) {
+            return Bounding()
+        }
+
+        return Bounding(left = xMin, bottom = yMin, right = xMax, top = yMax)
+    }
+
 }

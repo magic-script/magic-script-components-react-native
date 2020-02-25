@@ -6,8 +6,8 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.*
 
@@ -42,14 +42,12 @@ class UiRectLayout(
         }
     }
 
-    override fun getContentBounding(): Bounding {
+    override fun getContentBounding(): AABB {
         val layoutBounds = layoutManager.getLayoutBounds(getLayoutParams())
-        return Bounding(
-            layoutBounds.left + contentNode.localPosition.x,
-            layoutBounds.bottom + contentNode.localPosition.y,
-            layoutBounds.right + contentNode.localPosition.x,
-            layoutBounds.top + contentNode.localPosition.y
-        )
+        val minEdge = layoutBounds.min + contentNode.localPosition
+        val maxEdge = layoutBounds.max + contentNode.localPosition
+
+        return AABB(minEdge, maxEdge)
     }
 
     override fun addContent(child: TransformNode) {

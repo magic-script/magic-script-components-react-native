@@ -22,11 +22,17 @@ import com.google.ar.sceneform.rendering.Renderable
 
 interface CubeRenderableBuilder {
 
+    /**
+     * Builds cube asynchronously
+     * @return task id that can be used to cancel the task
+     */
     fun buildRenderable(
         cubeSize: Vector3,
         cubeCenter: Vector3,
         color: Color,
         resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
-    )
+    ): Long
+
+    fun cancel(taskId: Long)
 
 }

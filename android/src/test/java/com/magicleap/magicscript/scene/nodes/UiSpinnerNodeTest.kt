@@ -111,7 +111,7 @@ class UiSpinnerNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiSpinnerNode {
-        return object : UiSpinnerNode(props, context, mock()) {
+        return object : UiSpinnerNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

@@ -17,20 +17,28 @@
 package com.magicleap.magicscript.scene.nodes.base
 
 import android.content.Context
-import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.clip.UiNodeClipper
+import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
+import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.update
-import com.magicleap.magicscript.utils.Vector2
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeInstanceOf
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -40,24 +48,26 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UiNodeTest {
 
+    private val EPSILON = 1e-5f
+
     private lateinit var context: Context
     private lateinit var viewRenderableLoader: ViewRenderableLoader
+    private lateinit var nodeClipper: Clipper
     private lateinit var node: UiNode
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
-        node = object : UiNode(JavaOnlyMap(), context, viewRenderableLoader) {
-            override fun provideView(context: Context): View {
-                return mock()
-            }
-
-            override fun provideDesiredSize(): Vector2 {
-                return Vector2(0F, 0F)
-            }
-        }
-        node.build()
+        nodeClipper = spy(UiNodeClipper(TextureClipper(), UiNodeColliderClipper()))
+        node = UiNodeBuilder(
+            context = context,
+            useContentNodeAlignment = true,
+            viewRenderableLoader = viewRenderableLoader,
+            nodeClipper = nodeClipper
+        )
+            .withSize(1f, 1f)
+            .build()
     }
 
     @Test
@@ -113,6 +123,179 @@ class UiNodeTest {
         node.update(UiNode.PROP_ENABLED, true)
 
         called shouldEqual true
+    }
+
+    @Test
+    fun `get bounding should return content bounding with position offset`() {
+        val node = UiNodeBuilder(context)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .withPosition(2.0, 5.0, 0.0)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(0f, 3f, 0f)
+        bounding.max shouldEqualInexact Vector3(4f, 7f, 0f)
+    }
+
+    @Test
+    fun `should return correct bounding when rotated 90 degrees around Z`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 1f)
+            .withAlignment("bottom-left")
+            .withRotation(0.0, 0.0, 0.7071068, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(0f, 2f, 0f)
+    }
+
+    @Test
+    fun `should return zero-width bounding when rotated 90 degrees around Y`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 2f)
+            .withAlignment("center-center")
+            .withPosition(0.0, 0.0, 0.0)
+            .withRotation(0.0, 0.7071068, 0.0, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(0f, -1f, -1f)
+        bounding.max shouldEqualInexact Vector3(0f, 1f, 1f)
+    }
+
+    @Test
+    fun `should return zero-height bounding when rotated 90 degrees around X`() {
+        val node = UiNodeBuilder(context)
+            .withSize(2f, 2f)
+            .withAlignment("center-center")
+            .withPosition(0.0, 0.0, 0.0)
+            .withRotation(0.7071068, 0.0, 0.0, 0.7071068)
+            .build()
+
+        val bounding = node.getBounding()
+
+        bounding.min shouldEqualInexact Vector3(-1f, 0f, -1f)
+        bounding.max shouldEqualInexact Vector3(1f, 0f, 1f)
+    }
+
+    @Test
+    fun `should align content node when using content node alignment`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 10f)
+            .withAlignment("top-right")
+            .build()
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(-2f, -5f, 0f)
+        node.localPosition shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should align content node when using content node alignment (case 2)`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 2f)
+            .withAlignment("bottom-center")
+            .build()
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(0f, 1f, 0f)
+    }
+
+    @Test
+    fun `should align content node when using content node alignment (case 3)`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(5f, 5f)
+            .withAlignment("top-left")
+            .build()
+
+        node.contentNode.localPosition shouldEqualInexact Vector3(2.5f, -2.5f, 0f)
+    }
+
+    @Test
+    fun `should return proper content position when using content node alignment`() {
+        val node = UiNodeBuilder(context, useContentNodeAlignment = true)
+            .withSize(4f, 2f)
+            .withPosition(5.0, 3.0, 0.0)
+            .withAlignment("bottom-right")
+            .build()
+
+        val contentPosition = node.getContentPosition()
+
+        assertEquals(3f, contentPosition.x, EPSILON)
+        assertEquals(4f, contentPosition.y, EPSILON)
+    }
+
+    @Test
+    fun `should apply clip bounds when assigned`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
+
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when local position changed`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
+        Mockito.reset(nodeClipper)
+
+        node.localPosition = Vector3(2f, 1f, 8f)
+
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when local scale changed`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
+        Mockito.reset(nodeClipper)
+
+        node.localScale = Vector3(2f, 3f, 1f)
+
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+    }
+
+    @Test
+    fun `should apply clip bounds when visibility changed to visible`() {
+        val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
+        node.clipBounds = clipBounds
+        node.hide()
+        Mockito.reset(nodeClipper)
+
+        node.show()
+
+        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+    }
+
+    @Test
+    fun `should clip collision shape after setting clip bounds`() {
+        val node = UiNodeBuilder(context, nodeClipper = nodeClipper)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .build()
+
+        node.clipBounds = AABB(min = Vector3(-1f, -1f, -1f), max = Vector3(1f, 1f, 1f))
+
+        val collisionShape = node.contentNode.collisionShape
+        collisionShape shouldBeInstanceOf Box::class
+        (collisionShape as Box).size shouldEqualInexact Vector3(2f, 2f, 0f)
+        collisionShape.center shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should not set collision shape after setting clip bounds if node is hidden`() {
+        val node = UiNodeBuilder(context, nodeClipper = nodeClipper)
+            .withSize(4f, 4f)
+            .withAlignment("center-center")
+            .build()
+        node.hide()
+
+        node.clipBounds = AABB(min = Vector3(-1f, -1f, -1f), max = Vector3(1f, 1f, 1f))
+
+        node.contentNode.collisionShape shouldBe null
     }
 
 }

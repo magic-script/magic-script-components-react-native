@@ -17,11 +17,12 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
 
@@ -29,7 +30,7 @@ class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>(
     override fun layoutChildren(
         layoutParams: PageViewLayoutParams,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, Bounding>
+        childrenBounds: Map<Int, AABB>
     ) {
         val visiblePage = layoutParams.visiblePage
         children.forEachIndexed { index, node ->
@@ -54,7 +55,7 @@ class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>(
         }
     }
 
-    override fun getLayoutBounds(layoutParams: PageViewLayoutParams): Bounding {
+    override fun getLayoutBounds(layoutParams: PageViewLayoutParams): AABB {
         val childrenBounds = Utils.calculateSumBounds(childrenList)
         val parentSize = layoutParams.size
         var sizeX = parentSize.x
@@ -76,11 +77,10 @@ class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>(
             topOffset = 0f
             bottomOffset = 0f
         }
-        return Bounding(
-            left = leftOffset,
-            bottom = -sizeY + bottomOffset,
-            right = sizeX + rightOffset,
-            top = topOffset
-        )
+
+        val minEdge = Vector3(leftOffset, -sizeY + bottomOffset, childrenBounds.min.z)
+        val maxEdge = Vector3(sizeX + rightOffset, topOffset, childrenBounds.max.z)
+
+        return AABB(minEdge, maxEdge)
     }
 }

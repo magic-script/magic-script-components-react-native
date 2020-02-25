@@ -47,6 +47,7 @@ class DialogNode(
         const val PROP_CANCEL_ICON = "cancelIcon"
         const val PROP_EXPIRATION_TIME = "expireTime"
         const val TIMER_HANDLER_EVENT = 1
+        const val PROP_BUTTON_TYPE = "buttonType"
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
@@ -114,6 +115,9 @@ class DialogNode(
             properties.read<String>(PROP_CANCEL_ICON)?.let { iconName ->
                 val icon = iconsRepository.getIcon(iconName, false)
                 setCancelIcon(icon)
+            }
+            properties.read<String>(PROP_BUTTON_TYPE)?.let { buttonType ->
+                setButtonType(buttonType)
             }
         }
         this.dialog = dialogBuilder.create()

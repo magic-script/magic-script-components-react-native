@@ -60,7 +60,7 @@ RCT_EXPORT_METHOD(createCircleConfirmationNode:(UiCircleConfirmationNode *)node 
     [self registerNode:node nodeId:nodeId];
 }
 
-RCT_EXPORT_METHOD(createContentNode:(UiColorPickerNode *)node nodeId:(NSString *)nodeId) {
+RCT_EXPORT_METHOD(createContentNode:(UiContentNode *)node nodeId:(NSString *)nodeId) {
     [self registerNode:node nodeId:nodeId];
 }
 

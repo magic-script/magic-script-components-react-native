@@ -236,7 +236,7 @@ class UiTextEditNodeTest {
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {
-        return object : UiTextEditNode(props, context, mock(), fontProvider) {
+        return object : UiTextEditNode(props, context, mock(), mock(), fontProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

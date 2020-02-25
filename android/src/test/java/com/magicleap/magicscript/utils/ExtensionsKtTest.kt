@@ -21,9 +21,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.DatePicker
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -127,7 +129,7 @@ class ExtensionsKtTest {
 
         val sum = numbers.sumByFloat { it }
 
-        sum shouldEqual 7f
+        sum shouldEqualInexact 7f
     }
 
     @Test
@@ -140,6 +142,51 @@ class ExtensionsKtTest {
     }
 
     @Test
+    fun `should consider floats as close`() {
+        val numA = 0.1f
+        val numB = 0.10003f
+        val tolerance = 1e-4f
+
+        numA.isCloseTo(numB, tolerance) shouldBe true
+    }
+
+    @Test
+    fun `should not consider floats as close`() {
+        val numA = -0.02f
+        val numB = -0.02003f
+        val tolerance = 1e-7f
+
+        numA.isCloseTo(numB, tolerance) shouldBe false
+    }
+
+    @Test
+    fun `should not consider floats as close for opposite numbers`() {
+        val numA = -10f
+        val numB = 10f
+        val tolerance = 0.1f
+
+        numA.isCloseTo(numB, tolerance) shouldBe false
+    }
+
+    @Test
+    fun `should consider vectors as equal`() {
+        val vector1 = Vector3(2f, 1f, 3f)
+        val vector2 = Vector3(2.0000009f, 1f, 3.0000004f)
+        val tolerance = 1e-5f
+
+        vector1.equalInexact(vector2, tolerance) shouldBe true
+    }
+
+    @Test
+    fun `should not consider vectors as equal`() {
+        val vector1 = Vector3(2f, 1f, 3f)
+        val vector2 = Vector3(2.003f, 1f, 3f)
+        val tolerance = 1e-5f
+
+        vector1.equalInexact(vector2, tolerance) shouldBe false
+    }
+
+    @Test
     fun `should add Vector3`() {
         val vector1 = Vector3(1f, 2f, 3f)
         val vector2 = Vector3(2f, 3f, 4f)
@@ -148,11 +195,19 @@ class ExtensionsKtTest {
     }
 
     @Test
-    fun `should substract Vector3`() {
+    fun `should subtract Vector3`() {
         val vector1 = Vector3(1f, 2f, 3f)
         val vector2 = Vector3(2f, 3f, 4f)
 
         vector1 - vector2 shouldEqual Vector3.subtract(vector1, vector2)
+    }
+
+    @Test
+    fun `should return opposite Vector3`() {
+        val vector = Vector3(1f, 2f, 3f)
+        val opposite = Vector3(-1f, -2f, -3f)
+
+        -vector shouldEqualInexact opposite
     }
 
     @Test

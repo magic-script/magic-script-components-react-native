@@ -1,7 +1,10 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.scaled
 
 object LayoutUtils {
 
@@ -57,11 +60,7 @@ object LayoutUtils {
             }
         }
 
-    fun getColumnIndex(
-        childIdx: Int,
-        columns: Int,
-        rows: Int
-    ): Int {
+    fun getColumnIndex(childIdx: Int, columns: Int, rows: Int): Int {
         return if (rows != 0) {
             childIdx / rows
         } else {
@@ -69,15 +68,12 @@ object LayoutUtils {
         }
     }
 
-    fun getRowIndex(
-        childIdx: Int,
-        columns: Int,
-        rows: Int
-    ): Int {
+    fun getRowIndex(childIdx: Int, columns: Int, rows: Int): Int {
         return if (rows != 0) {
             childIdx % rows
         } else {
             childIdx / columns
         }
     }
+
 }

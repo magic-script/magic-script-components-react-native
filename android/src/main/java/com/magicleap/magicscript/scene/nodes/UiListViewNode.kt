@@ -18,7 +18,7 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
-import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.ViewRenderableLoader
@@ -27,9 +27,11 @@ import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.props.ItemAlignmentMap
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 
 open class UiListViewNode(
@@ -53,6 +55,8 @@ open class UiListViewNode(
 
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
+        // default padding for each item [top, right, bottom, left]
+        val DEFAULT_ITEM_PADDING = arrayListOf(0.0, 0.0, 0.0, 0.0)
     }
 
     private var contentAdded = false
@@ -60,10 +64,12 @@ open class UiListViewNode(
     private var requestedScrollIndex = 0
 
     init {
-        val containerProps = JavaOnlyMap()
-        val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
-        containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
-        containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        // setting default values of properties
+        properties.putDefault(PROP_ORIENTATION, DEFAULT_ORIENTATION)
+        properties.putDefault(PROP_DEFAULT_ITEM_ALIGNMENT, DEFAULT_ITEM_ALIGNMENT)
+        properties.putDefault(PROP_DEFAULT_ITEM_PADDING, DEFAULT_ITEM_PADDING)
+
+        val containerProps = extractContainerProps(properties)
         val linearLayoutManager =
             LinearLayoutManager(VerticalLinearLayoutManager(), HorizontalLinearLayoutManager())
         containerNode = UiLinearLayout(containerProps, linearLayoutManager)
@@ -85,7 +91,6 @@ open class UiListViewNode(
             val orientation = props.getString(PROP_ORIENTATION)
             properties.putString(PROP_SCROLL_DIRECTION, orientation)
             props.putString(PROP_SCROLL_DIRECTION, orientation)
-            containerNode.update(JavaOnlyMap.of(UiLinearLayout.PROP_ORIENTATION, orientation))
         }
 
         super.applyProperties(props)
@@ -94,8 +99,11 @@ open class UiListViewNode(
             setNeedsRebuild()
         }
 
-        setItemsPadding(props)
-        setItemsAlignment(props)
+        if (updatingProperties) {
+            val containerProps = extractContainerProps(props)
+            containerNode.update(containerProps)
+        }
+
         setScrollingEnabled(props)
         setScrollToItem(props)
     }
@@ -164,45 +172,6 @@ open class UiListViewNode(
         items.forEach { item ->
             item.minSize = minItemSize
         }
-    }
-
-    private fun setItemsPadding(props: Bundle) {
-        val containerProps = Bundle()
-        if (props.containsKey(PROP_DEFAULT_ITEM_PADDING)) {
-            val defaultItemsPadding = props.getSerializable(PROP_DEFAULT_ITEM_PADDING)
-            containerProps.putSerializable(
-                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING,
-                defaultItemsPadding
-            )
-        }
-
-        if (props.containsKey(PROP_ITEM_PADDING)) {
-            val itemsPadding = props.getParcelableArrayList<Bundle>(PROP_ITEM_PADDING)
-            containerProps.putParcelableArrayList(UiLinearLayout.PROP_ITEM_PADDING, itemsPadding)
-        }
-
-        containerNode.update(Arguments.fromBundle(containerProps))
-    }
-
-    private fun setItemsAlignment(props: Bundle) {
-        val containerProps = Bundle()
-        if (props.containsKey(PROP_DEFAULT_ITEM_ALIGNMENT)) {
-            val defaultItemsAlignment = props.getString(PROP_DEFAULT_ITEM_ALIGNMENT)
-            containerProps.putString(
-                UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT,
-                defaultItemsAlignment
-            )
-        }
-
-        if (props.containsKey(PROP_ITEM_ALIGNMENT)) {
-            val itemsAlignment = props.getParcelableArrayList<Bundle>(PROP_ITEM_ALIGNMENT)
-            containerProps.putParcelableArrayList(
-                UiLinearLayout.PROP_ITEM_ALIGNMENT,
-                itemsAlignment
-            )
-        }
-
-        containerNode.update(Arguments.fromBundle(containerProps))
     }
 
     private fun setScrollingEnabled(props: Bundle) {
@@ -288,6 +257,29 @@ open class UiListViewNode(
             sum += layoutParams.itemsPadding[toIndex]?.left ?: 0f
         }
         return sum
+    }
+
+    private fun extractContainerProps(props: Bundle): JavaOnlyMap {
+        val containerProps = JavaOnlyMap()
+
+        props.read<String>(PROP_ORIENTATION)?.let { orientation ->
+            containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
+        }
+
+        props.read<String>(PROP_DEFAULT_ITEM_ALIGNMENT)?.let { alignment ->
+            containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, alignment)
+        }
+
+        props.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)?.let { map ->
+            val alignmentsArray = JavaOnlyArray()
+            map.alignments.forEach { (index, alignment) ->
+                val alignmentMap = JavaOnlyMap.of("index", index, "alignment", alignment)
+                alignmentsArray.pushMap(alignmentMap)
+            }
+            containerProps.putArray(UiLinearLayout.DEFAULT_ITEM_ALIGNMENT, alignmentsArray)
+        }
+
+        return containerProps
     }
 
 }

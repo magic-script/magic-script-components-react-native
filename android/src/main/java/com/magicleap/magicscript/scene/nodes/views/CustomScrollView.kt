@@ -22,13 +22,10 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.VelocityTracker
-import android.view.ViewConfiguration
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import com.magicleap.magicscript.R
+import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
 import com.magicleap.magicscript.utils.Vector2
 import kotlin.math.abs
 import kotlin.math.sign
@@ -59,6 +56,9 @@ class CustomScrollView @JvmOverloads constructor(
         private const val PIXELS_PER_SECOND_UNIT = 1000
     }
 
+    /**
+     * Content size in pixels
+     */
     var contentSize = Vector2()
         set(value) {
             field = value
@@ -69,13 +69,15 @@ class CustomScrollView @JvmOverloads constructor(
 
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
+    var scrollingEnabled = true
+
     /**
      * Normalized scroll position. X and Y of a vector is always
      * in the range of [MIN_POSITION] to [MAX_POSITION]
      */
     var position = Vector2()
-        private set(value) {
-            field = value
+        set(value) {
+            field = value.coerceIn(MIN_POSITION, MAX_POSITION)
             hBar?.thumbPosition = value.x
             vBar?.thumbPosition = value.y
             onScrollChangeListener?.invoke(value)
@@ -92,6 +94,21 @@ class CustomScrollView @JvmOverloads constructor(
         private set(value) {
             field = value
             updateScrollbars()
+        }
+
+    var scrollBarsVisibility: String = ScrollBarVisibility.AUTO
+        set(value) {
+            field = value
+            when (value) {
+                ScrollBarVisibility.AUTO, ScrollBarVisibility.ALWAYS -> {
+                    vBar?.visibility = View.VISIBLE
+                    hBar?.visibility = View.VISIBLE
+                }
+                ScrollBarVisibility.OFF -> {
+                    vBar?.visibility = View.INVISIBLE
+                    hBar?.visibility = View.INVISIBLE
+                }
+            }
         }
 
     private var isBeingDragged = false
@@ -112,10 +129,15 @@ class CustomScrollView @JvmOverloads constructor(
         isBeingDragged = false
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        this.vBar = findViewById(R.id.bar_vertical)
-        this.hBar = findViewById(R.id.bar_horizontal)
+    override fun onViewAdded(child: View?) {
+        super.onViewAdded(child)
+        if (child is CustomScrollBar) {
+            if (child.isVertical) {
+                this.vBar = child
+            } else {
+                this.hBar = child
+            }
+        }
     }
 
     override fun onGlobalLayout() {
@@ -124,6 +146,10 @@ class CustomScrollView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!scrollingEnabled) {
+            return false
+        }
+
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain()
         }
@@ -152,7 +178,7 @@ class CustomScrollView @JvmOverloads constructor(
                 SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            position = (position + lastMove).coerceIn(MIN_POSITION, MAX_POSITION)
+            position += lastMove
             previousTouch = touch
             return true
         }

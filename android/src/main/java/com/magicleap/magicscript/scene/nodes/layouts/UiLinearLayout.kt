@@ -80,8 +80,8 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
         val orientation = properties.getString(PROP_ORIENTATION, DEFAULT_ORIENTATION)
         val defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
         val defaultItemsAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
-        val itemsPadding = properties.read<ItemListPaddingMap>(PROP_ITEM_PADDING)
-        val itemsAlignment = properties.read<ItemListAlignmentMap>(PROP_ITEM_ALIGNMENT)
+        val itemsPadding = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)
+        val itemsAlignment = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)
 
         val childrenPadding =
             LayoutUtils.createChildrenPaddingMap(

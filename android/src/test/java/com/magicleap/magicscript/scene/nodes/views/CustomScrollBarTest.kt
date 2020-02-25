@@ -17,15 +17,19 @@
 package com.magicleap.magicscript.scene.nodes.views
 
 import android.content.Context
+import android.util.AttributeSet
 import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.createActionDownEvent
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -67,6 +71,28 @@ class CustomScrollBarTest {
         scrollBar.thumbSize = 99F
 
         verify(scrollBar).invalidate()
+    }
+
+    @Test
+    fun `should apply vertical orientation attribute`() {
+        val attrs = buildAttributes(orientation = "vertical")
+        val bar = CustomScrollBar(context, attrs)
+
+        bar.isVertical shouldBe true
+    }
+
+    @Test
+    fun `should apply horizontal orientation attribute`() {
+        val attrs = buildAttributes(orientation = "orientation")
+        val bar = CustomScrollBar(context, attrs)
+
+        bar.isVertical shouldBe false
+    }
+
+    private fun buildAttributes(orientation: String): AttributeSet {
+        val builder = Robolectric.buildAttributeSet()
+        builder.addAttribute(R.attr.orientation, orientation)
+        return builder.build()
     }
 
 }

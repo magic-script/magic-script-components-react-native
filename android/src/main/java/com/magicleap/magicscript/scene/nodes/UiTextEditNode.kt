@@ -37,6 +37,7 @@ import com.magicleap.magicscript.font.FontParams
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
 import com.magicleap.magicscript.scene.nodes.views.InputDialogBuilder
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
@@ -77,9 +78,6 @@ open class UiTextEditNode(
         const val DEFAULT_SCROLLING = false // scrolling disabled
         const val DEFAULT_CHARACTERS_SPACING = 0.00499
         const val DEFAULT_CHARACTERS_LIMIT = 0.0 // indefinite
-        const val SCROLLBAR_VISIBILITY_ALWAYS = "always"
-        const val SCROLLBAR_VISIBILITY_AUTO = "auto"
-        const val SCROLLBAR_VISIBILITY_OFF = "off"
         val DEFAULT_TEXT_PADDING = arrayListOf(0.003, 0.003, 0.003, 0.003)
 
         const val CURSOR_BLINK_INTERVAL = 400L // in ms
@@ -110,7 +108,7 @@ open class UiTextEditNode(
         properties.putDefault(PROP_TEXT_SIZE, DEFAULT_TEXT_SIZE)
         properties.putDefault(PROP_TEXT_PADDING, DEFAULT_TEXT_PADDING)
         properties.putDefault(PROP_ALIGNMENT, DEFAULT_ALIGNMENT)
-        properties.putDefault(PROP_SCROLLBAR_VISIBILITY, SCROLLBAR_VISIBILITY_AUTO)
+        properties.putDefault(PROP_SCROLLBAR_VISIBILITY, ScrollBarVisibility.AUTO)
         properties.putDefault(PROP_CHARACTERS_SPACING, DEFAULT_CHARACTERS_SPACING)
     }
 
@@ -282,15 +280,15 @@ open class UiTextEditNode(
     private fun setScrollBarVisibility(props: Bundle) {
         if (props.containsKey(PROP_SCROLLBAR_VISIBILITY)) {
             when (props.getString(PROP_SCROLLBAR_VISIBILITY)) {
-                SCROLLBAR_VISIBILITY_AUTO -> {
+                ScrollBarVisibility.AUTO -> {
                     view.sv_text_edit.isVerticalScrollBarEnabled = true
                     view.sv_text_edit.isScrollbarFadingEnabled = true
                 }
-                SCROLLBAR_VISIBILITY_ALWAYS -> {
+                ScrollBarVisibility.ALWAYS -> {
                     view.sv_text_edit.isVerticalScrollBarEnabled = true
                     view.sv_text_edit.isScrollbarFadingEnabled = false
                 }
-                SCROLLBAR_VISIBILITY_OFF -> {
+                ScrollBarVisibility.OFF -> {
                     view.sv_text_edit.isVerticalScrollBarEnabled = false
                 }
             }

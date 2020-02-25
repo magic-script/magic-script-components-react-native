@@ -128,6 +128,13 @@ class UiScrollViewNodeTest {
         contentNode.clipBounds!! shouldEqualInexact expectedClipBounds
     }
 
+    @Test
+    fun `should apply scroll bars visibility`() {
+        tested.update(UiScrollViewNode.PROP_SCROLLBAR_VISIBILITY, "off")
+
+        verify(viewSpy).scrollBarsVisibility = "off"
+    }
+
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {
         return object : UiScrollViewNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {

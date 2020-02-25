@@ -17,6 +17,6 @@
 package com.magicleap.magicscript.scene.nodes.props
 
 
-data class ItemListAlignmentMap(val alignments: Map<Int, Alignment>)
+data class ItemAlignmentMap(val alignments: Map<Int, Alignment>)
 
-data class ItemGridAlignmentMap(val alignments: Map<Pair<Int,Int>, Alignment>)
+data class ItemGridAlignmentMap(val alignments: Map<Pair<Int, Int>, Alignment>)

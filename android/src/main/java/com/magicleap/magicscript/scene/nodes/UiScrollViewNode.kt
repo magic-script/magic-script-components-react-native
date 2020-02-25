@@ -26,8 +26,8 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -56,12 +56,16 @@ open class UiScrollViewNode(
         // properties
         const val PROP_SCROLL_BOUNDS = "scrollBounds"
         const val PROP_SCROLL_DIRECTION = "scrollDirection"
+        const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
+        const val PROP_SCROLL_VALUE = "scrollValue"
+        const val PROP_SCROLL_OFFSET = "scrollOffset"
 
         const val DEFAULT_WIDTH = 1.0F
         const val DEFAULT_HEIGHT = 1.0F
         const val DEFAULT_THICKNESS = 1.0F
 
         const val SCROLL_DIRECTION_VERTICAL = "vertical"
+        const val SCROLL_DIRECTION_HORIZONTAL = "horizontal"
 
         const val BAR_THICKNESS_RATIO = 0.03F // relative to min (width, height)
         const val BAR_MINIMUM_THICKNESS = 0.05F // in meters
@@ -86,6 +90,7 @@ open class UiScrollViewNode(
 
     private var requestedContentPosition = Vector2()
     private var looperHandler = Handler(Looper.getMainLooper())
+    private var scrollOffset = Vector3.zero()
 
     init {
         properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
@@ -146,6 +151,9 @@ open class UiScrollViewNode(
         }
 
         setScrollDirection(props)
+        setScrollbarVisibility(props)
+        setScrollValue(props)
+        setScrollOffset(props)
     }
 
     override fun addContent(child: TransformNode) {
@@ -249,6 +257,7 @@ open class UiScrollViewNode(
             metersToPx(contentSize.x, context).toFloat(),
             metersToPx(contentSize.y, context).toFloat()
         )
+
         update(scrollView.position)
     }
 
@@ -272,7 +281,11 @@ open class UiScrollViewNode(
             requestedContentPosition = alignTopLeft + travel
 
             // Moving content up in z-plane, so it'll receive touch events first
-            val position = Vector3(requestedContentPosition.x, requestedContentPosition.y, Z_OFFSET)
+            val position = Vector3(
+                requestedContentPosition.x,
+                requestedContentPosition.y,
+                Z_OFFSET
+            ) + scrollOffset
 
             if (!position.equalInexact(content.localPosition, epsilon = 1e-5f)) {
                 content.localPosition = position
@@ -283,7 +296,6 @@ open class UiScrollViewNode(
 
     private fun applyContentClipping() {
         content?.let { content ->
-
             // When translating clip bounds to node's local coordinate
             // system we use localPositions. However due to ARCore nature
             // localPosition of ScrollViewNode direct descendant can change
@@ -349,6 +361,30 @@ open class UiScrollViewNode(
         if (value != null) {
             (view as CustomScrollView).scrollDirection = value
         }
+    }
+
+    private fun setScrollbarVisibility(props: Bundle) {
+        val visibility = props.read<String>(PROP_SCROLLBAR_VISIBILITY) ?: return
+        (view as CustomScrollView).scrollBarsVisibility = visibility
+    }
+
+    private fun setScrollValue(props: Bundle) {
+        val scrollValue = props.read<Double>(PROP_SCROLL_VALUE) ?: return
+        val clampedValue = scrollValue.coerceIn(0.0, 1.0).toFloat()
+
+        when (properties.read<String>(PROP_SCROLL_DIRECTION)) {
+            SCROLL_DIRECTION_VERTICAL -> {
+                (view as CustomScrollView).position = Vector2(0f, clampedValue)
+            }
+            SCROLL_DIRECTION_HORIZONTAL -> {
+                (view as CustomScrollView).position = Vector2(clampedValue, 0f)
+            }
+        }
+    }
+
+    private fun setScrollOffset(props: Bundle) {
+        val scrollOffset = props.read<Vector3>(PROP_SCROLL_OFFSET) ?: return
+        this.scrollOffset = scrollOffset
     }
 
 }

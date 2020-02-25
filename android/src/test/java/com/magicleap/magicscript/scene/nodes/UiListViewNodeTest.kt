@@ -28,12 +28,14 @@ import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import org.amshove.kluent.shouldBeInstanceOf
+import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeLessThan
 import org.junit.Before
@@ -65,7 +67,7 @@ class UiListViewNodeTest {
         node.build()
 
         node.contentNode.children.size shouldNotBeLessThan 1
-        val containerNode = node.contentNode.children[0]
+        val containerNode = node.contentNode.children.firstOrNull()
         containerNode shouldBeInstanceOf UiLinearLayout::class
     }
 
@@ -92,7 +94,7 @@ class UiListViewNodeTest {
         val container = node.contentNode.children.first() as UiLinearLayout
 
         verify(viewSpy).scrollDirection = "horizontal"
-        container.getProperty(UiLinearLayout.PROP_ORIENTATION) shouldEqual "horizontal"
+        container.getProperty("orientation") shouldEqual "horizontal"
     }
 
     @Test
@@ -108,6 +110,46 @@ class UiListViewNodeTest {
         container.getProperty(UiLinearLayout.PROP_ORIENTATION) shouldEqual "horizontal"
     }
 
+    @Test
+    fun `should disable scrolling when scrollingEnabled property is false`() {
+        val props = reactMapOf(UiListViewNode.PROP_SCROLLING_ENABLED, false)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        verify(viewSpy).scrollingEnabled = false
+    }
+
+    @Test
+    fun `list item should be added to the linear layout container`() {
+        val node = createNodeWithViewSpy(reactMapOf())
+        node.build()
+        val listItem = UiListViewItemNode(reactMapOf(), context, mock(), mock())
+        listItem.build()
+
+        node.addContent(listItem)
+
+        val containerNode = node.contentNode.children.firstOrNull()
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+        (containerNode as UiLinearLayout).childrenList shouldContain listItem
+    }
+
+    @Test
+    fun `should apply default items alignment on the container`() {
+        val alignment = "top-right"
+        val props = reactMapOf(UiListViewNode.PROP_DEFAULT_ITEM_ALIGNMENT, alignment)
+        val node = createNodeWithViewSpy(props)
+        val listItem = UiListViewItemNode(reactMapOf(), context, mock(), mock())
+
+        node.build()
+        node.addContent(listItem)
+
+        val containerNode = node.contentNode.children.firstOrNull()
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+        val layoutParams = (containerNode as UiLinearLayout).getLayoutParams()
+        layoutParams.itemsAlignment[0]?.vertical shouldEqual Alignment.VerticalAlignment.TOP
+        layoutParams.itemsAlignment[0]?.horizontal shouldEqual Alignment.HorizontalAlignment.RIGHT
+    }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {
         return object : UiListViewNode(props, context, mock(), mock()) {

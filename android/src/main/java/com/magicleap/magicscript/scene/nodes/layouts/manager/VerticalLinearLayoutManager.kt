@@ -32,9 +32,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
     ) {
         val index = nodeInfo.index
         val params = layoutInfo.params
-
         val itemPadding = params.itemsPadding[index] ?: Padding()
-
         val layoutSizeLimit = layoutInfo.sizeLimit
         val contentSize = layoutInfo.contentSize
 
@@ -57,10 +55,13 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         }
 
         // calculating y position for a child
-        val paddingSumY = itemPadding.top + index * (itemPadding.top + itemPadding.bottom)
-        val offsetY = -(layoutInfo.childrenBounds.values.take(index).sumByFloat {
-            it.size().y
-        } + paddingSumY)
+        val summaryItemsHeightAbove =
+            layoutInfo.childrenBounds.values.take(index).sumByFloat { it.size().y }
+
+        val paddingSumAbove =
+            getSummaryVerticalPaddingBeforeItem(params.itemsPadding, index) + itemPadding.top
+
+        val offsetY = -(summaryItemsHeightAbove + paddingSumAbove)
 
         val y = when (itemAlignment.vertical) {
             Alignment.VerticalAlignment.TOP -> {

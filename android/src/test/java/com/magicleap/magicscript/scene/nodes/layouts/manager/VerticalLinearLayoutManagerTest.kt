@@ -29,8 +29,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
-import org.amshove.kluent.shouldNotEqual
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +36,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class VerticalLinearLayoutManagerTest {
-    private val EPSILON = 1e-5f
     private lateinit var linearManager: VerticalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
@@ -46,7 +43,7 @@ class VerticalLinearLayoutManagerTest {
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = Padding(0f, 0f, 0f, 0f)
+    private var itemPadding = mapOf(0 to Padding(), 1 to Padding())
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
     private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
 
@@ -68,53 +65,72 @@ class VerticalLinearLayoutManagerTest {
     }
 
     @Test
-    fun `should change children position when top padding set`() {
+    fun `should correctly layout children when padding is the same`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        itemPadding = Padding(0.5f, 0f, 0f, 0f)
+        itemPadding = mapOf(
+            0 to Padding(0.5f, 0.5f, 0f, 0.2f),
+            1 to Padding(0.5f, 0.5f, 0f, 0.2f)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        childrenList[0].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
-        childrenList[1].localPosition shouldNotEqual Vector3(0F, 0F, 0F)
+        // items are positioned starting at top left
+        childrenList[0].localPosition shouldEqualInexact Vector3(1.2f, -1f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(1.2f, -2.5f, 0f)
     }
 
     @Test
-    fun `should return correct layout bounds`() {
+    fun `should correctly layout children when padding is different`() {
+        size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+        itemPadding = mapOf(
+            0 to Padding(0f, 0f, 1f, 0f),
+            1 to Padding(0.5f, 0f, 0f, 0f)
+        )
+
+        linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+
+        childrenList[0].localPosition shouldEqualInexact Vector3(1f, -0.5f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(1f, -3f, 0f)
+    }
+
+    @Test
+    fun `should return correct layout bounds when width is dynamic`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
-        itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
+        itemPadding = mapOf(
+            0 to Padding(0.2f, 0.1f, 0.1f, 0.1f),
+            1 to Padding(0.2f, 0.2f, 0.1f, 0.7f)
+        )
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         val bounding = linearManager.getLayoutBounds(getLayoutParams())
 
         bounding.min shouldEqualInexact Vector3(0f, -5f, 0f)
-        bounding.max shouldEqualInexact Vector3(2.3f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(2.9f, 0f, 0f)
     }
 
     @Test
     fun `should scale child nodes if layout size limited`() {
         size = Vector2(1f, 2f)
-        itemPadding = Padding(0.05F, 0.05F, 0.05F, 0.05F)
+        itemPadding = mapOf(
+            0 to Padding(0.05F, 0.05F, 0.05F, 0.05F),
+            1 to Padding(0.05F, 0.05F, 0.05F, 0.05F)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         // 0.45 = (layout width - horizontal padding) / children sum width
-        assertEquals(0.45f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(0.45f, childrenList[0].localScale.y, EPSILON)
-        assertEquals(0.45f, childrenList[1].localScale.x, EPSILON)
-        assertEquals(0.45f, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(0.45f, 0.45f, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(0.45f, 0.45f, 1f)
     }
 
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
             itemsAlignment = mapOf(
-                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
-                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
+                0 to Alignment(itemVerticalAlignment, itemHorizontalAlignment),
+                1 to Alignment(itemVerticalAlignment, itemHorizontalAlignment)
             ),
-            itemsPadding = mapOf(
-                Pair(0, itemPadding),
-                Pair(1, itemPadding)
-            )
+            itemsPadding = itemPadding
         )
 
 }

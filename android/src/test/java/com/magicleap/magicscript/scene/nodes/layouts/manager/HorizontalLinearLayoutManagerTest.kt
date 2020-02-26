@@ -29,7 +29,6 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +36,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class HorizontalLinearLayoutManagerTest {
-    private val EPSILON = 1e-5f
     private lateinit var linearManager: HorizontalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
@@ -45,7 +43,7 @@ class HorizontalLinearLayoutManagerTest {
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = Padding(0f, 0f, 0f, 0f)
+    private var itemPadding = mapOf(0 to Padding(), 1 to Padding())
     private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
     private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
 
@@ -67,28 +65,32 @@ class HorizontalLinearLayoutManagerTest {
     }
 
     @Test
-    fun `should return correct layout bounds`() {
-        itemPadding = Padding(0.2f, 0.2f, 0.1f, 0.1f)
+    fun `should return correct layout bounds after children layout`() {
+        itemPadding = mapOf(
+            0 to Padding(0.2f, 0.2f, 0.1f, 0.1f),
+            1 to Padding(0.2f, 0.2f, 0.1f, 0.1f)
+        )
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
+
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         val bounding = linearManager.getLayoutBounds(getLayoutParams())
-
         bounding.min shouldEqualInexact Vector3(0f, -5f, 0f)
         bounding.max shouldEqualInexact Vector3(4.6f, 0f, 0f)
     }
 
     @Test
-    fun `should position children correctly when layout size is dynamic`() {
+    fun `should layout children correctly when items padding is different`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        itemPadding = mapOf(
+            0 to Padding(0.5F, 0.2F, 0.5F, 0.4F),
+            1 to Padding(1F, 0.5F, 0.5F, 0.5F)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        assertEquals(1.5f, childrenList[0].localPosition.x, EPSILON)
-        assertEquals(4.5f, childrenList[1].localPosition.x, EPSILON)
-        assertEquals(-1f, childrenList[0].localPosition.y, EPSILON)
-        assertEquals(-1f, childrenList[1].localPosition.y, EPSILON)
+        childrenList[0].localPosition shouldEqualInexact Vector3(1.4f, -1f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(4.1f, -1.5f, 0f)
     }
 
     @Test
@@ -96,14 +98,15 @@ class HorizontalLinearLayoutManagerTest {
         size = Vector2(7f, 6f)
         itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
         itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-        itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        itemPadding = mapOf(
+            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        assertEquals(2f, childrenList[0].localPosition.x, EPSILON)
-        assertEquals(5f, childrenList[1].localPosition.x, EPSILON)
-        assertEquals(-3f, childrenList[0].localPosition.y, EPSILON)
-        assertEquals(-3f, childrenList[1].localPosition.y, EPSILON)
+        childrenList[0].localPosition shouldEqualInexact Vector3(2f, -3f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(5f, -3f, 0f)
     }
 
     @Test
@@ -111,15 +114,16 @@ class HorizontalLinearLayoutManagerTest {
         size = Vector2(4f, 6f)
         itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
         itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-        itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        itemPadding = mapOf(
+            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
         // scale = (layout width - horizontal sum padding) / children sum width
-        assertEquals(0.5f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(0.5f, childrenList[0].localScale.y, EPSILON)
-        assertEquals(0.5f, childrenList[1].localScale.x, EPSILON)
-        assertEquals(0.5f, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(0.5f, 0.5f, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(0.5f, 0.5f, 1f)
     }
 
     @Test
@@ -127,27 +131,25 @@ class HorizontalLinearLayoutManagerTest {
         size = Vector2(7f, 6f)
         itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
         itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
-        itemPadding = Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        itemPadding = mapOf(
+            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+        )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        assertEquals(2.5f, childrenList[0].localPosition.x, EPSILON)
-        assertEquals(5.5f, childrenList[1].localPosition.x, EPSILON)
-        assertEquals(-5f, childrenList[0].localPosition.y, EPSILON)
-        assertEquals(-5f, childrenList[1].localPosition.y, EPSILON)
+        childrenList[0].localPosition shouldEqualInexact Vector3(2.5f, -5f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(5.5f, -5f, 0f)
     }
 
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
             itemsAlignment = mapOf(
-                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
-                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
+                0 to Alignment(itemVerticalAlignment, itemHorizontalAlignment),
+                1 to Alignment(itemVerticalAlignment, itemHorizontalAlignment)
             ),
-            itemsPadding = mapOf(
-                Pair(0, itemPadding),
-                Pair(1, itemPadding)
-            )
+            itemsPadding = itemPadding
         )
 
 }

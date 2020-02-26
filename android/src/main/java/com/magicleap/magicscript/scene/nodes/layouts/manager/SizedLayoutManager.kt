@@ -208,4 +208,30 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
         itemsPadding: Map<Int, Padding>
     ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
 
+    protected fun getSummaryVerticalPaddingBeforeItem(
+        itemsPadding: Map<Int, Padding>,
+        itemIndex: Int
+    ): Float {
+        var sumPadding = 0f
+        for (i in 0 until itemIndex) {
+            val top = itemsPadding[i]?.top ?: 0f
+            val bottom = itemsPadding[i]?.bottom ?: 0f
+            sumPadding += top + bottom
+        }
+        return sumPadding
+    }
+
+    protected fun getSummaryHorizontalPaddingBeforeItem(
+        itemsPadding: Map<Int, Padding>,
+        itemIndex: Int
+    ): Float {
+        var sumPadding = 0f
+        for (i in 0 until itemIndex) {
+            val left = itemsPadding[i]?.left ?: 0f
+            val right = itemsPadding[i]?.right ?: 0f
+            sumPadding += left + right
+        }
+        return sumPadding
+    }
+
 }

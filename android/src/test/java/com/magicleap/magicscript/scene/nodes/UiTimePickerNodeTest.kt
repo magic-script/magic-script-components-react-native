@@ -61,7 +61,12 @@ class UiTimePickerNodeTest {
     @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.update(reactMapOf(UiDateTimePickerBaseNode.PROP_LABEL, label))
+        tested.update(reactMapOf(
+            UiDateTimePickerBaseNode.PROP_LABEL,
+            label,
+            UiTimePickerNode.PROP_TIME_FORMAT,
+            UiTimePickerNode.TIME_FORMAT_DEFAULT
+        ))
 
         verify(tested.titleText).text = label
     }
@@ -71,7 +76,9 @@ class UiTimePickerNodeTest {
         tested.update(
             reactMapOf(
                 UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                UiDateTimePickerBaseNode.LABEL_SIDE_TOP
+                UiDateTimePickerBaseNode.LABEL_SIDE_TOP,
+                UiTimePickerNode.PROP_TIME_FORMAT,
+                UiTimePickerNode.TIME_FORMAT_DEFAULT
             )
         )
 
@@ -83,7 +90,9 @@ class UiTimePickerNodeTest {
         tested.update(
             reactMapOf(
                 UiDateTimePickerBaseNode.PROP_LABEL_SIDE,
-                UiDateTimePickerBaseNode.LABEL_SIDE_LEFT
+                UiDateTimePickerBaseNode.LABEL_SIDE_LEFT,
+                UiTimePickerNode.PROP_TIME_FORMAT,
+                UiTimePickerNode.TIME_FORMAT_DEFAULT
             )
         )
 
@@ -93,7 +102,10 @@ class UiTimePickerNodeTest {
     @Test
     fun `time should update hint on date text`() {
         val timeFormat = "HH:MM"
-        tested.update(reactMapOf(UiTimePickerNode.PROP_TIME_FORMAT, timeFormat))
+        tested.update(reactMapOf(
+            UiTimePickerNode.PROP_TIME_FORMAT, timeFormat,
+            UiDateTimePickerBaseNode.PROP_SHOW_HINT, true
+        ))
 
         verify(tested.dateText).hint = timeFormat
     }

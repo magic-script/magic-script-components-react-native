@@ -36,6 +36,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Compa
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.LABEL_SIDE_TOP
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
+import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_SHOW_HINT
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.utils.updateDate
@@ -80,21 +81,27 @@ class UiDatePickerNodeTest {
     @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.update(reactMapOf(PROP_LABEL, label))
+        tested.update(reactMapOf(
+            PROP_LABEL, label,
+            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
 
         verify(tested.titleText).text = label
     }
 
     @Test
     fun `should set vertical orientation when label side is top`() {
-        tested.update(reactMapOf(PROP_LABEL_SIDE, LABEL_SIDE_TOP))
+        tested.update(reactMapOf(
+            PROP_LABEL_SIDE, LABEL_SIDE_TOP,
+            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
 
         verify(tested.mainView).orientation = LinearLayout.VERTICAL
     }
 
     @Test
     fun `should set horizontal orientation when label side is left`() {
-        tested.update(reactMapOf(PROP_LABEL_SIDE, LABEL_SIDE_LEFT))
+        tested.update(reactMapOf(
+            PROP_LABEL_SIDE, LABEL_SIDE_LEFT,
+            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
 
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL
     }
@@ -102,7 +109,9 @@ class UiDatePickerNodeTest {
     @Test
     fun `dateFormat should update hint on date text`() {
         val dateFormat = "DD/YYYY"
-        tested.update(reactMapOf(PROP_DATE_FORMAT, dateFormat))
+        tested.update(reactMapOf(
+            PROP_DATE_FORMAT, dateFormat,
+            PROP_SHOW_HINT, true))
 
         verify(tested.dateText).hint = dateFormat
     }

@@ -23,8 +23,8 @@ import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
@@ -96,6 +96,7 @@ open class UiDatePickerNode(
         applyDefaultDate(props)
         applyDate(props)
         applyMinMaxYear(props)
+        applyShowHint(props)
     }
 
     override fun onViewClick() {
@@ -128,7 +129,6 @@ open class UiDatePickerNode(
                         format,
                         Locale.getDefault()
                     )
-                view.value.hint = format
             }
         }
     }
@@ -148,5 +148,16 @@ open class UiDatePickerNode(
     private fun applyMinMaxYear(props: Bundle) {
         minYear = props.getDouble(PROP_YEAR_MIN).toInt()
         maxYear = props.getDouble(PROP_YEAM_MAX).toInt()
+    }
+
+    private fun applyShowHint(props: Bundle) {
+        if (props.getBoolean(PROP_SHOW_HINT)) {
+            view.value.hint = dateFormat.pattern
+        } else {
+            if(defaultDate == null) {
+                defaultDate = Date()
+            }
+            view.value.hint = dateFormat.format(defaultDate)
+        }
     }
 }

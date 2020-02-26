@@ -45,6 +45,7 @@ open class UiDateTimePickerBaseNode(
         const val PROP_LABEL = "label"
         const val PROP_LABEL_SIDE = "labelSide"
         const val PROP_COLOR = "color"
+        const val PROP_SHOW_HINT = "showHint"
 
         const val LABEL_SIDE_LEFT = "left"
         const val LABEL_SIDE_TOP = "top"
@@ -54,6 +55,7 @@ open class UiDateTimePickerBaseNode(
 
     init {
         properties.putDefault(PROP_LABEL_SIDE, LABEL_SIDE_TOP)
+        properties.putDefault(PROP_SHOW_HINT, true)
     }
 
     override fun applyProperties(props: Bundle) {

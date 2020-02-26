@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class VerySimpleDateFormat(
-    pattern: String?,
+    val pattern: String?,
     locale: Locale,
     val is24h: Boolean = is24hours(pattern)
 ) : SimpleDateFormat(pattern.simplify(), locale) {

@@ -17,35 +17,61 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.sumByFloat
 
 class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() {
 
-    override fun <T : LayoutParams> layoutNode(
+    override fun layoutChildren(
+        layoutParams: T,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, AABB>
+    ) {
+        super.layoutChildren(layoutParams, children, childrenBounds)
+
+        val contentSize = Vector2(
+            getContentWidth(childrenBounds, layoutParams),
+            getContentHeight(childrenBounds, layoutParams)
+        )
+
+        val layoutSizeLimit = LayoutUtils.calculateLayoutSizeLimit(contentSize, layoutParams.size)
+
+        for (i in children.indices) {
+            val node = childrenList[i]
+            val nodeBounds = childrenBounds.getValue(i)
+            val nodeInfo = LayoutUtils.createNodeInfo(i, node, nodeBounds)
+            layoutNode(nodeInfo, layoutParams, childrenBounds, layoutSizeLimit, contentSize)
+        }
+    }
+
+    private fun layoutNode(
         nodeInfo: NodeInfo,
-        layoutInfo: LayoutInfo<T>
+        layoutParams: LayoutParams,
+        childrenBounds: Map<Int, AABB>,
+        layoutSizeLimit: Vector2,
+        contentSize: Vector2
     ) {
         val index = nodeInfo.index
-        val params = layoutInfo.params
-        val itemPadding = params.itemsPadding[index] ?: Padding()
-        val layoutSizeLimit = layoutInfo.sizeLimit
-        val contentSize = layoutInfo.contentSize
+        val itemPadding = layoutParams.itemsPadding[index] ?: Padding()
 
         // calculating x position for a child
         val summaryItemsWidthOnTheLeft =
-            layoutInfo.childrenBounds.values.take(index).sumByFloat { it.size().x }
+            childrenBounds.values.take(index).sumByFloat { it.size().x }
 
         val paddingSumOnTheLeft =
-            getSummaryHorizontalPaddingBeforeItem(params.itemsPadding, index) + itemPadding.left
+            LayoutUtils.getSummaryHorizontalPaddingBeforeItem(layoutParams.itemsPadding, index) +
+                    itemPadding.left
 
         val offsetX = summaryItemsWidthOnTheLeft + paddingSumOnTheLeft
 
-        val itemAlignment = params.itemsAlignment[index] ?: Alignment()
+        val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
         val x = when (itemAlignment.horizontal) {
             Alignment.HorizontalAlignment.LEFT -> {
                 offsetX + nodeInfo.width / 2 + nodeInfo.pivotOffsetX
@@ -81,23 +107,33 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-    override fun getContentWidth(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
+    override fun getMaxChildSize(
+        childIdx: Int,
+        childrenBounds: Map<Int, AABB>,
+        layoutParams: T
+    ): Vector2 {
+        val width = calculateMaxChildWidth(childIdx, childrenBounds, layoutParams)
+        val height = calculateMaxChildHeight(childIdx, childrenBounds, layoutParams)
+        return Vector2(width, height)
+    }
+
+    private fun getContentWidth(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
         val itemsPadding = layoutParams.itemsPadding
 
-        val paddingHorizontal = getMaxHorizontalPadding(itemsPadding)
+        val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
         val paddingSum = childrenBounds.size * paddingHorizontal
         return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
     }
 
-    override fun getContentHeight(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
+    private fun getContentHeight(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
         val highestChildSize = childrenBounds.values.maxBy { it.size().y }?.size()
         val itemsPadding = layoutParams.itemsPadding
 
-        val paddingVertical = getMaxVerticalPadding(itemsPadding)
+        val paddingVertical = LayoutUtils.getMaxVerticalPadding(itemsPadding)
         return (highestChildSize?.y ?: 0f) + paddingVertical
     }
 
-    override fun calculateMaxChildWidth(
+    private fun calculateMaxChildWidth(
         childIdx: Int,
         childrenBounds: Map<Int, AABB>,
         layoutParams: T
@@ -110,14 +146,14 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         val contentWidthNoPadding = childrenBounds.values.sumByFloat { it.size().x }
         val itemsPadding = layoutParams.itemsPadding
 
-        val paddingHorizontal = getMaxHorizontalPadding(itemsPadding)
+        val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
         val paddingSum = childrenBounds.size * paddingHorizontal
         val scale = (parentWidth - paddingSum) / contentWidthNoPadding
 
         return childrenBounds[childIdx]!!.size().x * scale
     }
 
-    override fun calculateMaxChildHeight(
+    private fun calculateMaxChildHeight(
         childIdx: Int,
         childrenBounds: Map<Int, AABB>,
         layoutParams: T
@@ -128,8 +164,8 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         } else {
             val itemsPadding = layoutParams.itemsPadding
 
-            val maxTopPadding = getMaxTopPadding(itemsPadding)
-            val maxBottomPadding = getMaxBottomPadding(itemsPadding)
+            val maxTopPadding = LayoutUtils.getMaxTopPadding(itemsPadding)
+            val maxBottomPadding = LayoutUtils.getMaxBottomPadding(itemsPadding)
 
             parentHeight - maxTopPadding - maxBottomPadding
         }

@@ -27,6 +27,7 @@ import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Utils
 
 class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>() {
+
     override fun layoutChildren(
         layoutParams: PageViewLayoutParams,
         children: List<TransformNode>,

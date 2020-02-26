@@ -24,9 +24,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.sumByFloat
+import com.magicleap.magicscript.utils.Vector2
 
 class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
@@ -35,6 +34,22 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     // <row index, max child height in that row> pairs
     private val maxChildHeightInRowMap = mutableMapOf<Int, Float>()
+
+
+    override fun layoutChildren(
+        layoutParams: GridLayoutParams,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, AABB>
+    ) {
+        super.layoutChildren(layoutParams, children, childrenBounds)
+
+        for (i in children.indices) {
+            val node = childrenList[i]
+            val nodeBounds = childrenBounds.getValue(i)
+            val nodeInfo = LayoutUtils.createNodeInfo(i, node, nodeBounds)
+            layoutNode(nodeInfo, layoutParams)
+        }
+    }
 
     override fun onPreLayout(
         children: List<TransformNode>,
@@ -66,7 +81,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         val layoutSize = layoutParams.size
 
         if (layoutSize.x != WRAP_CONTENT_DIMENSION) {
-            val paddingHorizontal = getMaxHorizontalPadding(itemsPadding)
+            val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
             val columnsSumWidth =
                 maxChildWidthInColumnMap.values.sum() + maxChildWidthInColumnMap.size * paddingHorizontal
             val columnsScale = layoutSize.x / columnsSumWidth
@@ -76,7 +91,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
 
         if (layoutSize.y != WRAP_CONTENT_DIMENSION) {
-            val paddingVertical = getMaxVerticalPadding(itemsPadding)
+            val paddingVertical = LayoutUtils.getMaxVerticalPadding(itemsPadding)
             val rowsSumHeight =
                 maxChildHeightInRowMap.values.sum() + maxChildHeightInRowMap.size * paddingVertical
             val rowsScale = layoutSize.y / rowsSumHeight
@@ -86,18 +101,12 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
     }
 
-    override fun <T : LayoutParams> layoutNode(
-        nodeInfo: NodeInfo,
-        layoutInfo: LayoutInfo<T>
-    ) {
-        val params = layoutInfo.params as GridLayoutParams
-
+    private fun layoutNode(nodeInfo: NodeInfo, layoutParams: GridLayoutParams) {
         val index = nodeInfo.index
+        val itemPadding = layoutParams.itemsPadding[index] ?: Padding()
 
-        val itemPadding = params.itemsPadding[index] ?: Padding()
-
-        val col = LayoutUtils.getColumnIndex(index, params.columns, params.rows)
-        val row = LayoutUtils.getRowIndex(index, params.columns, params.rows)
+        val col = LayoutUtils.getColumnIndex(index, layoutParams.columns, layoutParams.rows)
+        val row = LayoutUtils.getRowIndex(index, layoutParams.columns, layoutParams.rows)
 
         val columnWidth =
             maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
@@ -106,7 +115,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         // calculating x position for a child
         val columnX = getColumnX(col, itemPadding)
-        val itemAlignment = params.itemsAlignment[index] ?: Alignment()
+        val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
 
         val x = when (itemAlignment.horizontal) {
             Alignment.HorizontalAlignment.LEFT -> {
@@ -145,35 +154,17 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-    override fun getContentWidth(
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: GridLayoutParams
-    ): Float {
-        val itemsPadding = layoutParams.itemsPadding
-
-        val paddingHorizontal = getMaxHorizontalPadding(itemsPadding)
-        val paddingSum = childrenBounds.size * paddingHorizontal
-
-        return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
-    }
-
-    override fun getContentHeight(
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: GridLayoutParams
-    ): Float {
-        val itemsPadding = layoutParams.itemsPadding
-
-        val paddingVertical = getMaxVerticalPadding(itemsPadding)
-        val paddingSum = childrenBounds.size * paddingVertical
-
-        return childrenBounds.values.sumByFloat { it.size().y } + paddingSum
-    }
-
-    override fun calculateMaxChildWidth(
+    override fun getMaxChildSize(
         childIdx: Int,
         childrenBounds: Map<Int, AABB>,
         layoutParams: GridLayoutParams
-    ): Float {
+    ): Vector2 {
+        val width = calculateMaxChildWidth(childIdx, layoutParams)
+        val height = calculateMaxChildHeight(childIdx, layoutParams)
+        return Vector2(width, height)
+    }
+
+    private fun calculateMaxChildWidth(childIdx: Int, layoutParams: GridLayoutParams): Float {
         return if (layoutParams.size.x == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
@@ -186,11 +177,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
     }
 
-    override fun calculateMaxChildHeight(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: GridLayoutParams
-    ): Float {
+    private fun calculateMaxChildHeight(childIdx: Int, layoutParams: GridLayoutParams): Float {
         return if (layoutParams.size.y == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
@@ -220,4 +207,9 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
         return y
     }
+
+    private data class GridLayoutInfo<T : LayoutParams>(
+        val childrenBounds: Map<Int, AABB>,
+        val params: T
+    )
 }

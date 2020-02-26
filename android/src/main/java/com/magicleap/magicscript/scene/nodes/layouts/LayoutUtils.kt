@@ -1,10 +1,12 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.NodeInfo
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.scaled
+import com.magicleap.magicscript.utils.Vector2
 
 object LayoutUtils {
 
@@ -74,6 +76,83 @@ object LayoutUtils {
         } else {
             childIdx / columns
         }
+    }
+
+    fun getMaxHorizontalPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxLeftPadding(itemsPadding) + getMaxRightPadding(itemsPadding)
+
+    fun getMaxVerticalPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = getMaxTopPadding(itemsPadding) + getMaxBottomPadding(itemsPadding)
+
+    fun getMaxTopPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.top }.max() ?: 0f
+
+    fun getMaxLeftPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.left }.max() ?: 0f
+
+    fun getMaxRightPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.right }.max() ?: 0f
+
+    fun getMaxBottomPadding(
+        itemsPadding: Map<Int, Padding>
+    ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
+
+    fun getSummaryVerticalPaddingBeforeItem(
+        itemsPadding: Map<Int, Padding>,
+        itemIndex: Int
+    ): Float {
+        var sumPadding = 0f
+        for (i in 0 until itemIndex) {
+            val top = itemsPadding[i]?.top ?: 0f
+            val bottom = itemsPadding[i]?.bottom ?: 0f
+            sumPadding += top + bottom
+        }
+        return sumPadding
+    }
+
+    fun getSummaryHorizontalPaddingBeforeItem(
+        itemsPadding: Map<Int, Padding>,
+        itemIndex: Int
+    ): Float {
+        var sumPadding = 0f
+        for (i in 0 until itemIndex) {
+            val left = itemsPadding[i]?.left ?: 0f
+            val right = itemsPadding[i]?.right ?: 0f
+            sumPadding += left + right
+        }
+        return sumPadding
+    }
+
+    fun createNodeInfo(index: Int, node: TransformNode, nodeBounds: AABB): NodeInfo {
+        val nodeWidth = nodeBounds.size().x
+        val nodeHeight = nodeBounds.size().y
+        val boundsCenterX = nodeBounds.min.x + nodeWidth / 2
+        val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
+        val boundsCenterY = nodeBounds.max.y - nodeHeight / 2
+        val pivotOffsetY = node.localPosition.y - boundsCenterY // aligning according to center
+
+        return NodeInfo(node, index, nodeWidth, nodeHeight, pivotOffsetX, pivotOffsetY)
+    }
+
+    fun calculateLayoutSizeLimit(contentSize: Vector2, layoutSize: Vector2): Vector2 {
+        val sizeLimitX = if (layoutSize.x == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
+            contentSize.x
+        } else {
+            layoutSize.x
+        }
+
+        val sizeLimitY = if (layoutSize.y == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
+            contentSize.y
+        } else {
+            layoutSize.y
+        }
+
+        return Vector2(sizeLimitX, sizeLimitY)
     }
 
 }

@@ -77,7 +77,7 @@ class LinearLayoutManagerTest {
 
         linearManager.layoutChildren(params, childrenList, childrenBounds)
 
-        verify(verticalManager, atLeastOnce()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
+        verify(verticalManager, atLeastOnce()).layoutChildren(any(), any(), any())
     }
 
     @Test
@@ -87,7 +87,7 @@ class LinearLayoutManagerTest {
 
         linearManager.layoutChildren(params, childrenList, childrenBounds)
 
-        verify(horizontalManager, atLeastOnce()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
+        verify(horizontalManager, atLeastOnce()).layoutChildren(any(), any(), any())
     }
 
     @Test
@@ -98,9 +98,7 @@ class LinearLayoutManagerTest {
         linearManager.layoutChildren(params, childrenList, childrenBounds)
         linearManager.getLayoutBounds(params)
 
-        verify(horizontalManager, never()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
-        verify(horizontalManager, never()).getContentWidth(any(), any())
-        verify(horizontalManager, never()).getContentHeight(any(), any())
+        verify(horizontalManager, never()).layoutChildren(any(), any(), any())
         verify(horizontalManager, never()).getLayoutBounds(any())
     }
 
@@ -112,9 +110,7 @@ class LinearLayoutManagerTest {
         linearManager.layoutChildren(params, childrenList, childrenBounds)
         linearManager.getLayoutBounds(params)
 
-        verify(verticalManager, never()).layoutNode(any(), any<LayoutInfo<LayoutParams>>())
-        verify(verticalManager, never()).getContentWidth(any(), any())
-        verify(verticalManager, never()).getContentHeight(any(), any())
+        verify(verticalManager, never()).layoutChildren(any(), any(), any())
         verify(verticalManager, never()).getLayoutBounds(any())
     }
 

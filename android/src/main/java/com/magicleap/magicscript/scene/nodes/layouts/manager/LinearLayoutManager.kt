@@ -16,6 +16,8 @@
 
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -24,49 +26,21 @@ import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 class LinearLayoutManager(
     private val verticalLinearLayoutManager: VerticalLinearLayoutManager<LayoutParams>,
     private val horizontalLinearLayoutManager: HorizontalLinearLayoutManager<LayoutParams>
-) : SizedLayoutManager<LinearLayoutParams>() {
+) : LayoutManager<LinearLayoutParams> {
 
-    override fun <T : LayoutParams> layoutNode(
-        nodeInfo: NodeInfo,
-        layoutInfo: LayoutInfo<T>
+    override fun layoutChildren(
+        layoutParams: LinearLayoutParams,
+        children: List<TransformNode>,
+        childrenBounds: Map<Int, AABB>
     ) {
-        val layoutParams = layoutInfo.params as LinearLayoutParams
+
         val manager = getOrientationAwareManager(layoutParams)
-        manager.layoutNode(nodeInfo, layoutInfo)
+        manager.layoutChildren(layoutParams, children, childrenBounds)
     }
 
-    override fun getContentWidth(
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: LinearLayoutParams
-    ): Float {
+    override fun getLayoutBounds(layoutParams: LinearLayoutParams): AABB {
         val manager = getOrientationAwareManager(layoutParams)
-        return manager.getContentWidth(childrenBounds, layoutParams)
-    }
-
-    override fun getContentHeight(
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: LinearLayoutParams
-    ): Float {
-        val manager = getOrientationAwareManager(layoutParams)
-        return manager.getContentHeight(childrenBounds, layoutParams)
-    }
-
-    override fun calculateMaxChildWidth(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: LinearLayoutParams
-    ): Float {
-        val manager = getOrientationAwareManager(layoutParams)
-        return manager.calculateMaxChildWidth(childIdx, childrenBounds, layoutParams)
-    }
-
-    override fun calculateMaxChildHeight(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: LinearLayoutParams
-    ): Float {
-        val manager = getOrientationAwareManager(layoutParams)
-        return manager.calculateMaxChildHeight(childIdx, childrenBounds, layoutParams)
+        return manager.getLayoutBounds(layoutParams)
     }
 
     private fun getOrientationAwareManager(layoutParams: LinearLayoutParams) =

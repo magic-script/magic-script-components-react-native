@@ -86,6 +86,7 @@ open class UiTimePickerNode(
         applyTimeFormat(props)
         applyDefaultTime(props)
         applyTime(props)
+        applyShowHint(props)
     }
 
     override fun onViewClick() {
@@ -114,7 +115,6 @@ open class UiTimePickerNode(
                         format,
                         Locale.getDefault()
                     )
-                view.value.hint = format
             }
         }
     }
@@ -132,6 +132,17 @@ open class UiTimePickerNode(
             props.getString(PROP_TIME)?.let {
                 time = timeFormat.parse(it)
             }
+        }
+    }
+
+    private fun applyShowHint(props: Bundle) {
+        if (props.getBoolean(PROP_SHOW_HINT)) {
+            view.value.hint = timeFormat.pattern
+        } else {
+            if(defaultTime == null) {
+                defaultTime = Date()
+            }
+            view.value.hint = timeFormat.format(defaultTime)
         }
     }
 }

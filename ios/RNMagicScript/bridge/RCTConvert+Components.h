@@ -16,6 +16,9 @@
 
 #import <React/RCTConvert.h>
 
+@class Scene;
+@class Prism;
+
 @class UiAudioNode;
 @class UiButtonNode;
 @class UiCircleConfirmationNode;
@@ -51,6 +54,9 @@
 @class UiWebViewNode;
 
 @interface RCTConvert (Components)
++ (Scene *)Scene:(id)json;
++ (Prism *)Prism:(id)json;
+
 + (UiAudioNode *)UiAudioNode:(id)json;
 + (UiButtonNode *)UiButtonNode:(id)json;
 + (UiCircleConfirmationNode *)UiCircleConfirmationNode:(id)json;

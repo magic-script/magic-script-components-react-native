@@ -48,6 +48,14 @@ void ARLog(NSString *format, ...) {
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(createScene:(Scene *)scene sceneId:(NSString *)sceneId) {
+    [self registerNode:scene nodeId:sceneId];
+}
+
+RCT_EXPORT_METHOD(createPrism:(Prism *)prism prismId:(NSString *)prismId) {
+    [self registerNode:prism nodeId:prismId];
+}
+
 RCT_EXPORT_METHOD(createAudioNode:(UiAudioNode *)node nodeId:(NSString *)nodeId) {
     [self registerNode:node nodeId:nodeId];
 }

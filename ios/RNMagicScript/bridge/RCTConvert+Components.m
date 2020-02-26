@@ -18,6 +18,13 @@
 #import "RCTConvert+Components.h"
 
 @implementation RCTConvert (AR)
++ (Scene *)Scene:(id)json {
+    return [[Scene alloc] initWithProps:json];
+}
+
++ (Prism *)Prism:(id)json {
+    return [[Prism alloc] initWithProps:json];
+}
 
 + (UiAudioNode *)UiAudioNode:(id)json {
     return [[UiAudioNode alloc] initWithProps:json];

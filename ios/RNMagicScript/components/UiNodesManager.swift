@@ -100,6 +100,14 @@ import ARKit
     @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
         return transformNodeByAnchorUuid[nodeId]
     }
+
+    @objc public func registerScene(_ scene: Scene, sceneId: String) {
+        print("BUKA")
+    }
+
+    @objc public func registerPrism(_ prism: Prism, prismId: String) {
+        print("BUKA")
+    }
     
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
@@ -245,7 +253,4 @@ extension UiNodesManager: RCTARViewObserving {
     }
 }
 
-
-extension UiNodesManager: NodesManaging {
-
-}
+extension UiNodesManager: NodesManaging { }

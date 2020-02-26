@@ -294,6 +294,10 @@
 		C400D4462387F57A002A38CB /* UiToggleGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */; };
 		C401821123EC11E400BE8D04 /* NodesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesManaging.swift */; };
 		C401821223EC11E400BE8D04 /* NodesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesManaging.swift */; };
+		C411CC2D240505E0004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
+		C411CC2F240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
+		C411CC30240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
+		C411CC31240505F6004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
 		C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */; };
@@ -789,6 +793,8 @@
 		C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNode.swift; sourceTree = "<group>"; };
 		C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C401821023EC11E400BE8D04 /* NodesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManaging.swift; sourceTree = "<group>"; };
+		C411CC2C240505E0004C7063 /* Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prism.swift; sourceTree = "<group>"; };
+		C411CC2E240505F0004C7063 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
 		C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfigurationSpec.swift; sourceTree = "<group>"; };
 		C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiCircleConfirmationNode.swift; sourceTree = "<group>"; };
@@ -1231,6 +1237,8 @@
 				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
+				C411CC2C240505E0004C7063 /* Prism.swift */,
+				C411CC2E240505F0004C7063 /* Scene.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -2197,6 +2205,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C411CC30240505F0004C7063 /* Scene.swift in Sources */,
 				C4EFE25F237ED71000C70001 /* DialogPresenter.swift in Sources */,
 				44AFAD19232BCAE3005AC8EF /* UiGroupNode.swift in Sources */,
 				44AFAD2E232BCAE3005AC8EF /* Bundle.swift in Sources */,
@@ -2248,6 +2257,7 @@
 				C4F8749623E15EF30044480F /* SIMD+Extension.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AB3974238BCD1F0002DF14 /* UiTabNode.swift in Sources */,
+				C411CC31240505F6004C7063 /* Prism.swift in Sources */,
 				44AFAD12232BCAE3005AC8EF /* FontStyle.swift in Sources */,
 				C4C1D4752383F9CD00437249 /* UIScreen+Extension.swift in Sources */,
 				C41CD53A23E054B800F1738E /* Surface.swift in Sources */,
@@ -2558,6 +2568,7 @@
 				44DF644423946568005E0518 /* SCNCircle.swift in Sources */,
 				44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */,
 				44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */,
+				C411CC2F240505F0004C7063 /* Scene.swift in Sources */,
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,
 				C435F90723829F050060F956 /* UIButton+Extension.swift in Sources */,
 				4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
@@ -2590,6 +2601,7 @@
 				C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */,
 				44AFAC39232B9BCF005AC8EF /* RenderNode.swift in Sources */,
 				C4C114D22347375D00E80044 /* SliderInputView.swift in Sources */,
+				C411CC2D240505E0004C7063 /* Prism.swift in Sources */,
 				44AFAC3B232B9BCF005AC8EF /* UiNode.swift in Sources */,
 				C428C0A8237D560500771FBC /* UiDialogNode.swift in Sources */,
 				44301CC223AC165C001A1766 /* GroupContainer.swift in Sources */,

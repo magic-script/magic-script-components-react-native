@@ -79,13 +79,12 @@ import SceneKit
         get { return _defaultDateString }
     }
     
-    @objc var _hint: String {
+    fileprivate var _hint: String {
         get {
-            if(showHint == true) {
-                return dateFormat.uppercased()
-            } else {
-                return Date.from(string: defaultDate, format: UiDatePickerNode.defaultInputDateFormat).toString(format: dateFormat)
-            }
+            return showHint ?
+                dateFormat.uppercased() :
+                Date.from(string: defaultDate, format: UiDatePickerNode.defaultInputDateFormat).toString(format: dateFormat)
+            
         }
     }
 

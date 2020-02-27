@@ -147,14 +147,16 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
             LayoutUtils.getSumVerticalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
         val scale = (parentHeight - paddingSum) / contentHeightNoPadding
 
-        return childrenBounds[childIdx]!!.size().y * scale
+        val childHeight = childrenBounds[childIdx]?.size()?.y ?: 0f
+        return childHeight * scale
     }
 
     private fun getContentWidth(layoutParams: LayoutParams): Float {
         var maxWidth = 0f
         for (i in childrenList.indices) {
             val padding = layoutParams.itemsPadding[i] ?: Padding()
-            val width = childrenBounds[i]!!.size().x + padding.left + padding.right
+            val childWidth = childrenBounds[i]?.size()?.x ?: 0f
+            val width = childWidth + padding.left + padding.right
             if (width > maxWidth) {
                 maxWidth = width
             }

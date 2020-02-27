@@ -78,30 +78,6 @@ object LayoutUtils {
         }
     }
 
-    fun getMaxHorizontalPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = getMaxLeftPadding(itemsPadding) + getMaxRightPadding(itemsPadding)
-
-    fun getMaxVerticalPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = getMaxTopPadding(itemsPadding) + getMaxBottomPadding(itemsPadding)
-
-    fun getMaxTopPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = itemsPadding.map { it.value.top }.max() ?: 0f
-
-    fun getMaxLeftPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = itemsPadding.map { it.value.left }.max() ?: 0f
-
-    fun getMaxRightPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = itemsPadding.map { it.value.right }.max() ?: 0f
-
-    fun getMaxBottomPadding(
-        itemsPadding: Map<Int, Padding>
-    ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
-
     fun getSumVerticalPaddingUntil(
         itemsPadding: Map<Int, Padding>,
         itemIndex: Int

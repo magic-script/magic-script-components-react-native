@@ -137,7 +137,8 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
             LayoutUtils.getSumHorizontalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
         val scale = (parentWidth - paddingSum) / contentWidthNoPadding
 
-        return childrenBounds[childIdx]!!.size().x * scale
+        val childWidth = childrenBounds[childIdx]?.size()?.x ?: 0f
+        return childWidth * scale
     }
 
     override fun getMaxChildHeight(childIdx: Int, layoutParams: T): Float {
@@ -161,7 +162,8 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         var maxHeight = 0f
         for (i in childrenList.indices) {
             val padding = layoutParams.itemsPadding[i] ?: Padding()
-            val height = childrenBounds[i]!!.size().y + padding.top + padding.bottom
+            val childHeight = childrenBounds[i]?.size()?.y ?: 0f
+            val height = childHeight + padding.top + padding.bottom
             if (height > maxHeight) {
                 maxHeight = height
             }

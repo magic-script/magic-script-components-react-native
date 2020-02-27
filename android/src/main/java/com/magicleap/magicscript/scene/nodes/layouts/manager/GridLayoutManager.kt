@@ -73,7 +73,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             layoutParams as GridLayoutParams
             val col = LayoutUtils.getColumnIndex(i, layoutParams.columns, layoutParams.rows)
             val row = LayoutUtils.getRowIndex(i, layoutParams.columns, layoutParams.rows)
-            val bounds = childrenBounds[i]!!
+            val bounds = childrenBounds[i] ?: AABB()
 
             val width = bounds.size().x
             if (width > maxChildWidthInColumnMap[col] ?: 0.0F) {
@@ -196,7 +196,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             Float.MAX_VALUE
         } else {
             val col = LayoutUtils.getColumnIndex(childIdx, layoutParams.columns, layoutParams.rows)
-            maxChildWidthInColumnMap[col]!!
+            maxChildWidthInColumnMap[col] ?: 0f
         }
     }
 
@@ -205,7 +205,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             Float.MAX_VALUE
         } else {
             val row = LayoutUtils.getRowIndex(childIdx, layoutParams.columns, layoutParams.rows)
-            maxChildHeightInRowMap[row]!!
+            maxChildHeightInRowMap[row] ?: 0f
         }
     }
 

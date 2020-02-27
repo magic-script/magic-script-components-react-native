@@ -136,7 +136,7 @@ class GridLayoutManagerTest {
             0 to Padding(0.5f, 0f, 0f, 0.5f),
             1 to Padding(0.5f, 0.2f, 0f, 1.5f),
             2 to Padding(0f, 0.4f, 0.4f, 0f),
-            3 to Padding(0f, 0.7f, 0f, 0f)
+            3 to Padding(0f, 3f, 0f, 0f)
         )
         itemsAlignment = mapOf(
             0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
@@ -149,6 +149,8 @@ class GridLayoutManagerTest {
         childrenList[1].localPosition shouldEqualInexact Vector3(4f, -0.5f, 0f)
         childrenList[2].localPosition shouldEqualInexact Vector3(0f, -1.5f, 0f)
         childrenList[3].localPosition shouldEqualInexact Vector3(2.5f, -1.5f, 0f)
+        val layoutBounds = manager.getLayoutBounds(getLayoutParams())
+        layoutBounds shouldEqualInexact AABB(Vector3(0f, -2.9f, 0f), Vector3(7.5f, 0f, 0f))
     }
 
     private fun getLayoutParams() =

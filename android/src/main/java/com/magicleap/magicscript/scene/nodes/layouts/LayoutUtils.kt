@@ -78,12 +78,9 @@ object LayoutUtils {
         }
     }
 
-    fun getSumVerticalPaddingUntil(
-        itemsPadding: Map<Int, Padding>,
-        itemIndex: Int
-    ): Float {
+    fun getVerticalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
         var sumPadding = 0f
-        for (i in 0 until itemIndex) {
+        for (i in 0 until end) {
             val top = itemsPadding[i]?.top ?: 0f
             val bottom = itemsPadding[i]?.bottom ?: 0f
             sumPadding += top + bottom
@@ -91,12 +88,9 @@ object LayoutUtils {
         return sumPadding
     }
 
-    fun getSumHorizontalPaddingUntil(
-        itemsPadding: Map<Int, Padding>,
-        itemIndex: Int
-    ): Float {
+    fun getHorizontalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
         var sumPadding = 0f
-        for (i in 0 until itemIndex) {
+        for (i in 0 until end) {
             val left = itemsPadding[i]?.left ?: 0f
             val right = itemsPadding[i]?.right ?: 0f
             sumPadding += left + right

@@ -43,9 +43,13 @@ class HorizontalLinearLayoutManagerTest {
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = mapOf(0 to Padding(), 1 to Padding())
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+
+    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
+
+    private var itemsAlignment = mapOf(
+        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+    )
 
     @Before
     fun setUp() {
@@ -66,7 +70,7 @@ class HorizontalLinearLayoutManagerTest {
 
     @Test
     fun `should return correct layout bounds after children layout`() {
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0.2f, 0.4f, 0.1f, 0.1f),
             1 to Padding(0.2f, 0.2f, 0.1f, 0.6f)
         )
@@ -82,7 +86,7 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should layout children correctly when items padding is different`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0.5F, 0.2F, 0.5F, 0.4F),
             1 to Padding(1F, 0.5F, 0.5F, 0.5F)
         )
@@ -96,9 +100,14 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should center children vertically and horizontally`() {
         size = Vector2(7f, 6f)
-        itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-        itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-        itemPadding = mapOf(
+        itemsAlignment = mapOf(
+            0 to Alignment(
+                Alignment.Vertical.CENTER,
+                Alignment.Horizontal.CENTER
+            ),
+            1 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
+        )
+        itemsPadding = mapOf(
             0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
             1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
@@ -112,9 +121,11 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should correctly scale down children when layout size limited`() {
         size = Vector2(4f, 6f)
-        itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-        itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
-        itemPadding = mapOf(
+        itemsAlignment = mapOf(
+          0 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER),
+          1 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
+        )
+        itemsPadding = mapOf(
             0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
             1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
@@ -129,9 +140,11 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should align children bottom-right`() {
         size = Vector2(7f, 6f)
-        itemVerticalAlignment = Alignment.VerticalAlignment.BOTTOM
-        itemHorizontalAlignment = Alignment.HorizontalAlignment.RIGHT
-        itemPadding = mapOf(
+        itemsAlignment = mapOf(
+            0 to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT),
+            1 to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT)
+        )
+        itemsPadding = mapOf(
             0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
             1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
@@ -145,11 +158,8 @@ class HorizontalLinearLayoutManagerTest {
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
-            itemsAlignment = mapOf(
-                0 to Alignment(itemVerticalAlignment, itemHorizontalAlignment),
-                1 to Alignment(itemVerticalAlignment, itemHorizontalAlignment)
-            ),
-            itemsPadding = itemPadding
+            itemsAlignment = itemsAlignment,
+            itemsPadding = itemsPadding
         )
 
 }

@@ -136,16 +136,16 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
 
         val x = when (itemAlignment.horizontal) {
-            Alignment.HorizontalAlignment.LEFT -> {
+            Alignment.Horizontal.LEFT -> {
                 columnX + nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
 
-            Alignment.HorizontalAlignment.CENTER -> {
+            Alignment.Horizontal.CENTER -> {
                 val paddingDiff = itemPadding.left - itemPadding.right
                 columnX + columnWidth / 2 + nodeInfo.pivotOffsetX + paddingDiff
             }
 
-            Alignment.HorizontalAlignment.RIGHT -> {
+            Alignment.Horizontal.RIGHT -> {
                 columnX + columnWidth - nodeInfo.width / 2 + nodeInfo.pivotOffsetX - itemPadding.right
             }
         }
@@ -154,16 +154,16 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         val rowY = getRowY(row)
 
         val y = when (itemAlignment.vertical) {
-            Alignment.VerticalAlignment.TOP -> {
+            Alignment.Vertical.TOP -> {
                 rowY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY - itemPadding.top
             }
 
-            Alignment.VerticalAlignment.CENTER -> {
+            Alignment.Vertical.CENTER -> {
                 val paddingDiff = itemPadding.top - itemPadding.bottom
                 rowY - rowHeight / 2 + nodeInfo.pivotOffsetY - paddingDiff
             }
 
-            Alignment.VerticalAlignment.BOTTOM -> {
+            Alignment.Vertical.BOTTOM -> {
                 rowY - rowHeight + nodeInfo.height / 2 + nodeInfo.pivotOffsetY + itemPadding.bottom
             }
         }

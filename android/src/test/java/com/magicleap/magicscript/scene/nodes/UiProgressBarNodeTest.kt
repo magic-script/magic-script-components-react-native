@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.reactArrayOf
@@ -128,8 +127,8 @@ class UiProgressBarNodeTest {
 
         node.build()
 
-        assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
-        assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
+        assertEquals(Alignment.Horizontal.CENTER, node.horizontalAlignment)
+        assertEquals(Alignment.Vertical.CENTER, node.verticalAlignment)
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiProgressBarNode {

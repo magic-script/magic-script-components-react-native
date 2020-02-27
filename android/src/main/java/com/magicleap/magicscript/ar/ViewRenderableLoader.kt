@@ -29,7 +29,7 @@ interface ViewRenderableLoader {
 
     data class Config(
         val view: View,
-        val horizontalAlignment: Alignment.HorizontalAlignment,
-        val verticalAlignment: Alignment.VerticalAlignment
+        val horizontalAlignment: Alignment.Horizontal,
+        val verticalAlignment: Alignment.Vertical
     )
 }

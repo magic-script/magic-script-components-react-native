@@ -112,8 +112,8 @@ class UiGridLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.RIGHT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.Horizontal.RIGHT
     }
 
     @Test

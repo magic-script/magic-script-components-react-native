@@ -167,9 +167,9 @@ fun readAlignment(props: Bundle, propertyName: String): Alignment? {
     if (alignmentArray.size != 2) {
         return null
     }
-    val verticalAlign = Alignment.VerticalAlignment.valueOf(alignmentArray[0].toUpperCase())
+    val verticalAlign = Alignment.Vertical.valueOf(alignmentArray[0].toUpperCase())
     val horizontalAlign =
-        Alignment.HorizontalAlignment.valueOf(alignmentArray[1].toUpperCase())
+        Alignment.Horizontal.valueOf(alignmentArray[1].toUpperCase())
     return Alignment(verticalAlign, horizontalAlign)
 }
 

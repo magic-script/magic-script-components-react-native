@@ -67,8 +67,8 @@ class PageViewNodeTest {
         val props = JavaOnlyMap()
         val node = createNode(props)
 
-        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
-        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
+        node.verticalAlignment shouldEqual Alignment.Vertical.TOP
+        node.horizontalAlignment shouldEqual Alignment.Horizontal.LEFT
     }
 
     @Test
@@ -78,8 +78,8 @@ class PageViewNodeTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.LEFT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.Horizontal.LEFT
     }
 
     @Test

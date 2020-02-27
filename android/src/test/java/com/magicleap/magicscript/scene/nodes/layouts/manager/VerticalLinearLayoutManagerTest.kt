@@ -43,9 +43,13 @@ class VerticalLinearLayoutManagerTest {
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = mapOf(0 to Padding(), 1 to Padding())
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+
+    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
+
+    private var itemsAlignment = mapOf(
+        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+    )
 
     @Before
     fun setUp() {
@@ -67,7 +71,7 @@ class VerticalLinearLayoutManagerTest {
     @Test
     fun `should correctly layout children when padding is the same`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0.5f, 0.5f, 0f, 0.2f),
             1 to Padding(0.5f, 0.5f, 0f, 0.2f)
         )
@@ -82,7 +86,7 @@ class VerticalLinearLayoutManagerTest {
     @Test
     fun `should correctly layout children when padding is different`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0f, 0f, 1f, 0f),
             1 to Padding(0.5f, 0f, 0f, 0f)
         )
@@ -96,7 +100,7 @@ class VerticalLinearLayoutManagerTest {
     @Test
     fun `should return correct layout bounds when width is dynamic`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0.2f, 0.1f, 0.1f, 0.1f),
             1 to Padding(0.2f, 0.2f, 0.1f, 0.7f)
         )
@@ -111,7 +115,7 @@ class VerticalLinearLayoutManagerTest {
     @Test
     fun `should scale child nodes if layout size limited`() {
         size = Vector2(1f, 2f)
-        itemPadding = mapOf(
+        itemsPadding = mapOf(
             0 to Padding(0.05F, 0.05F, 0.05F, 0.05F),
             1 to Padding(0.05F, 0.05F, 0.05F, 0.05F)
         )
@@ -126,11 +130,8 @@ class VerticalLinearLayoutManagerTest {
     private fun getLayoutParams() =
         LayoutParams(
             size = size,
-            itemsAlignment = mapOf(
-                0 to Alignment(itemVerticalAlignment, itemHorizontalAlignment),
-                1 to Alignment(itemVerticalAlignment, itemHorizontalAlignment)
-            ),
-            itemsPadding = itemPadding
+            itemsAlignment = itemsAlignment,
+            itemsPadding = itemsPadding
         )
 
 }

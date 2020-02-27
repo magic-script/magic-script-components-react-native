@@ -290,9 +290,9 @@ abstract class UiNode(
         viewWrapper.addView(view)
 
         val alignHorizontal =
-            if (useContentNodeAlignment) Alignment.HorizontalAlignment.CENTER else horizontalAlignment
+            if (useContentNodeAlignment) Alignment.Horizontal.CENTER else horizontalAlignment
         val alignVertical =
-            if (useContentNodeAlignment) Alignment.VerticalAlignment.CENTER else verticalAlignment
+            if (useContentNodeAlignment) Alignment.Vertical.CENTER else verticalAlignment
         val config = ViewRenderableLoader.Config(
             view = viewWrapper,
             horizontalAlignment = alignHorizontal,

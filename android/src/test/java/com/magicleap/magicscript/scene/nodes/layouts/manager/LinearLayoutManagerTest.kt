@@ -45,9 +45,13 @@ class LinearLayoutManagerTest {
     // Layout params
     private var orientation: String = ORIENTATION_VERTICAL
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = Padding(0f, 0f, 0f, 0f)
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.LEFT
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.TOP
+
+    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
+
+    private var itemsAlignment = mapOf(
+        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+    )
 
     @Before
     fun setUp() {
@@ -118,14 +122,8 @@ class LinearLayoutManagerTest {
         LinearLayoutParams(
             orientation = orientation,
             size = size,
-            itemsAlignment = mapOf(
-                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
-                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
-            ),
-            itemsPadding = mapOf(
-                Pair(0, itemPadding),
-                Pair(1, itemPadding)
-            )
+            itemsAlignment = itemsAlignment,
+            itemsPadding = itemsPadding
         )
 
 }

@@ -64,17 +64,17 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
         // calculating x position for a child
         val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
         val x = when (itemAlignment.horizontal) {
-            Alignment.HorizontalAlignment.LEFT -> {
+            Alignment.Horizontal.LEFT -> {
                 nodeInfo.width / 2 + nodeInfo.pivotOffsetX + itemPadding.left
             }
 
-            Alignment.HorizontalAlignment.CENTER -> {
+            Alignment.Horizontal.CENTER -> {
                 val inParentOffset = (layoutSizeLimit.x - contentSize.x) / 2
                 val paddingDiff = itemPadding.left - itemPadding.right
                 nodeInfo.pivotOffsetX + paddingDiff + inParentOffset + contentSize.x / 2
             }
 
-            Alignment.HorizontalAlignment.RIGHT -> {
+            Alignment.Horizontal.RIGHT -> {
                 layoutSizeLimit.x - nodeInfo.width / 2 + nodeInfo.pivotOffsetX - itemPadding.right
             }
         }
@@ -84,20 +84,20 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
             childrenBounds.values.take(index).sumByFloat { it.size().y }
 
         val paddingSumAbove =
-            LayoutUtils.getSumVerticalPaddingUntil(layoutParams.itemsPadding, index) +
+            LayoutUtils.getVerticalPaddingSumUntil(layoutParams.itemsPadding, index) +
                     itemPadding.top
 
         val offsetY = -(summaryItemsHeightAbove + paddingSumAbove)
 
         val y = when (itemAlignment.vertical) {
-            Alignment.VerticalAlignment.TOP -> {
+            Alignment.Vertical.TOP -> {
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY
             }
-            Alignment.VerticalAlignment.CENTER -> {
+            Alignment.Vertical.CENTER -> {
                 val inParentOffset = -(layoutSizeLimit.y - contentSize.y) / 2
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY + inParentOffset
             }
-            Alignment.VerticalAlignment.BOTTOM -> {
+            Alignment.Vertical.BOTTOM -> {
                 val inParentOffset = -(layoutSizeLimit.y - contentSize.y)
                 offsetY - nodeInfo.height / 2 + nodeInfo.pivotOffsetY + inParentOffset
             }
@@ -144,7 +144,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
 
         val contentHeightNoPadding = childrenBounds.values.sumByFloat { it.size().y }
         val paddingSum =
-            LayoutUtils.getSumVerticalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
+            LayoutUtils.getVerticalPaddingSumUntil(layoutParams.itemsPadding, childrenList.size)
         val scale = (parentHeight - paddingSum) / contentHeightNoPadding
 
         val childHeight = childrenBounds[childIdx]?.size()?.y ?: 0f
@@ -166,7 +166,7 @@ open class VerticalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>
 
     private fun getContentHeight(layoutParams: LayoutParams): Float {
         val paddingSum =
-            LayoutUtils.getSumVerticalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
+            LayoutUtils.getVerticalPaddingSumUntil(layoutParams.itemsPadding, childrenList.size)
         return childrenBounds.values.sumByFloat { it.size().y } + paddingSum
     }
 

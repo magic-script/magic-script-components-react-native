@@ -36,7 +36,7 @@ import SceneKit
     fileprivate var _time: String? = nil
     @objc var time: String {
         get {
-            guard let time = _time else { return timeFormat.uppercased() }
+            guard let time = _time else { return _hint }
             return Date.from(string: time, format: UiTimePickerNode.defaultInputTimeFormat).toTimeString(format: timeFormat)
         }
         set {
@@ -81,6 +81,22 @@ import SceneKit
                 _defaultTimeString = _defaultTime.toTimeString(format: timeFormat)
                 setNeedsLayout()
             }
+        }
+    }
+    
+    fileprivate var _hint: String {
+        get {
+            return showHint ?
+                timeFormat.uppercased() :
+                Date.from(string: defaultTime, format: UiTimePickerNode.defaultInputTimeFormat).toTimeString(format: timeFormat)
+            
+        }
+    }
+    
+    @objc var showHint: Bool = true {
+        didSet {
+            valueNode.text = time
+            setNeedsLayout()
         }
     }
 
@@ -157,6 +173,10 @@ import SceneKit
 
         if let defaultTime = Convert.toString(props["defaultTime"]) {
             self.defaultTime = defaultTime
+        }
+        
+        if let showHint = Convert.toBool(props["showHint"]) {
+            self.showHint = showHint
         }
     }
 

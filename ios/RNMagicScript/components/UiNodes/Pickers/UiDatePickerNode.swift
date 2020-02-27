@@ -36,7 +36,7 @@ import SceneKit
     fileprivate var _date: String? = nil
     @objc var date: String {
         get {
-            guard let date = _date else { return dateFormat.uppercased() }
+            guard let date = _date else { return _hint }
             return date
         }
         set {
@@ -78,10 +78,26 @@ import SceneKit
         }
         get { return _defaultDateString }
     }
+    
+    fileprivate var _hint: String {
+        get {
+            return showHint ?
+                dateFormat.uppercased() :
+                Date.from(string: defaultDate, format: UiDatePickerNode.defaultInputDateFormat).toString(format: dateFormat)
+            
+        }
+    }
 
     @objc var yearMin: Int = -1
 
     @objc var yearMax: Int = -1
+    
+    @objc var showHint: Bool = true {
+        didSet {
+            valueNode.text = date
+            setNeedsLayout()
+        }
+    }
 
     @objc public var onDateChanged: ((_ sender: UiDatePickerNode, _ selected: String) -> (Void))?
     @objc public var onDateConfirmed: ((_ sender: UiDatePickerNode, _ confirmed: String) -> (Void))?
@@ -165,6 +181,10 @@ import SceneKit
 
         if let yearMax = Convert.toInt(props["yearMax"]) {
             self.yearMax = yearMax
+        }
+        
+        if let showHint = Convert.toBool(props["showHint"]) {
+            self.showHint = showHint
         }
     }
 

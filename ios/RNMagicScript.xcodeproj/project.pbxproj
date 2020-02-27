@@ -312,6 +312,8 @@
 		C428C0AB237D562000771FBC /* UiDialogNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */; };
 		C428C0AE237D5FB100771FBC /* DialogDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */; };
 		C428C0AF237D5FB100771FBC /* DialogDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */; };
+		C42C1F822406ABE40012B40E /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42C1F812406ABE40012B40E /* BaseNode.swift */; };
+		C42C1F832406ABE40012B40E /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42C1F812406ABE40012B40E /* BaseNode.swift */; };
 		C435F90423829C000060F956 /* DialogFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90323829C000060F956 /* DialogFactory.swift */; };
 		C435F90523829C000060F956 /* DialogFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90323829C000060F956 /* DialogFactory.swift */; };
 		C435F90723829F050060F956 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90623829F050060F956 /* UIButton+Extension.swift */; };
@@ -803,6 +805,7 @@
 		C428C0A7237D560500771FBC /* UiDialogNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDialogNode.swift; sourceTree = "<group>"; };
 		C428C0AA237D562000771FBC /* UiDialogNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDialogNodeSpec.swift; sourceTree = "<group>"; };
 		C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogDataProviding.swift; sourceTree = "<group>"; };
+		C42C1F812406ABE40012B40E /* BaseNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNode.swift; sourceTree = "<group>"; };
 		C435F90323829C000060F956 /* DialogFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogFactory.swift; sourceTree = "<group>"; };
 		C435F90623829F050060F956 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		C435F90D2382FA630060F956 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
@@ -1239,6 +1242,7 @@
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
 				C411CC2C240505E0004C7063 /* Prism.swift */,
 				C411CC2E240505F0004C7063 /* Scene.swift */,
+				C42C1F812406ABE40012B40E /* BaseNode.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -2279,6 +2283,7 @@
 				44AFAD29232BCAE3005AC8EF /* URLSession+Extension.swift in Sources */,
 				C4F8749323E15E7C0044480F /* SCNVector4+Extension.swift in Sources */,
 				44AFAD0F232BCAE3005AC8EF /* TransformNode.swift in Sources */,
+				C42C1F832406ABE40012B40E /* BaseNode.swift in Sources */,
 				C4D5CB0B23A982790067209D /* PlaneDetector.swift in Sources */,
 				44AFAD13232BCAE3005AC8EF /* FontWeight.swift in Sources */,
 				44AFAD11232BCAE3005AC8EF /* Alignment.swift in Sources */,
@@ -2549,6 +2554,7 @@
 				4489DD5723C6F8000042C51B /* SCNNinePatch.swift in Sources */,
 				447755592374D37C00E98F03 /* AudioAction.swift in Sources */,
 				C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
+				C42C1F822406ABE40012B40E /* BaseNode.swift in Sources */,
 				449B5483238524F400D839CC /* UiPanelNode.swift in Sources */,
 				C4596A7E237420CA000E88C1 /* UiListViewItemNode.swift in Sources */,
 				4415DA3023A146F00096072B /* SCNNode+Enumerate.swift in Sources */,

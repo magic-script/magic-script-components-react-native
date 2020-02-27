@@ -18,6 +18,6 @@ import UIKit
 
 //sourcery: AutoMockable
 protocol NodesManaging {
-    func handleNodeTap(_ node: TransformNode?)
-    func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State)
+    func handleNodeTap(_ node: BaseNode?)
+    func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State)
 }

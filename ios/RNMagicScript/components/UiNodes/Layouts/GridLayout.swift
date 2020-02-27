@@ -85,7 +85,7 @@ import SceneKit
         return false
     }
 
-    @objc func hitTest(ray: Ray, node: UiNode) -> TransformNode? {
+    @objc func hitTest(ray: Ray, node: UiNode) -> BaseNode? {
         guard let gridDescriptor = gridDescriptor else { return nil }
         guard let hitPoint = node.getHitTestPoint(ray: ray) else { return nil }
         let gridBounds = node.getBounds()

@@ -57,7 +57,7 @@ import SceneKit
         pageLayout.rows = 1
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
+    @objc override func hitTest(ray: Ray) -> BaseNode? {
         return pageLayout.hitTest(ray: ray, node: self)
     }
 

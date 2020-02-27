@@ -42,7 +42,7 @@ import SceneKit
         setNeedsLayout()
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
+    @objc override func hitTest(ray: Ray) -> BaseNode? {
         // NOTE: Uncomment this line to limit the hitTest only to the area of the group.
         // If the hitTest is limited to the group's area then any compnent that
         // change its size in runtime may not work properly.

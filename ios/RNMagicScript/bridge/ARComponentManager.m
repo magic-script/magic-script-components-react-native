@@ -42,6 +42,14 @@ void ARLog(NSString *format, ...) {
     return dispatch_get_main_queue();
 }
 
+- (void)registerScene:(Scene *)scene sceneId:(NSString *)sceneId {
+    [UiNodesManager.instance registerScene:scene sceneId:sceneId];
+}
+
+- (void)registerPrism:(Prism *)prism prismId:(NSString *)prismId {
+    [UiNodesManager.instance registerPrism:prism prismId:prismId];
+}
+
 - (void)registerNode:(TransformNode *)node nodeId:(NSString *)nodeId {
     [UiNodesManager.instance registerNode:node nodeId:nodeId];
 }
@@ -49,11 +57,11 @@ void ARLog(NSString *format, ...) {
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(createScene:(Scene *)scene sceneId:(NSString *)sceneId) {
-    [self registerNode:scene nodeId:sceneId];
+    [self registerScene:scene sceneId:sceneId];
 }
 
 RCT_EXPORT_METHOD(createPrism:(Prism *)prism prismId:(NSString *)prismId) {
-    [self registerNode:prism nodeId:prismId];
+    [self registerPrism:prism prismId:prismId];
 }
 
 RCT_EXPORT_METHOD(createAudioNode:(UiAudioNode *)node nodeId:(NSString *)nodeId) {

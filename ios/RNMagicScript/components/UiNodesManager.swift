@@ -49,7 +49,7 @@ import ARKit
         nodeSelector = UiNodeSelector(rootNode)
     }
     
-    func handleNodeTap(_ node: TransformNode?) {
+    func handleNodeTap(_ node: BaseNode?) {
         let uiNode = node as? UiNode
         #if targetEnvironment(simulator)
         let nodeType: String = (uiNode != nil) ? "\(uiNode!.classForCoder)" : "nil"
@@ -74,7 +74,7 @@ import ARKit
         }
     }
     
-    func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
+    func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State) {
         switch state {
         case .began:
             longPressedNode = node as? UiNode
@@ -101,12 +101,16 @@ import ARKit
         return transformNodeByAnchorUuid[nodeId]
     }
 
+    @objc public private (set) var scene: Scene?
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
-        print("BUKA")
+        scene.name = sceneId
+        self.scene = scene
     }
 
+    fileprivate var prismsById: [String: Prism] = [:]
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
-        print("BUKA")
+        prism.name = prismId
+        prismsById[prismId] = prism
     }
     
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
@@ -135,11 +139,19 @@ import ARKit
             }
         }
     }
-    
+
+    func getNodeById(_ nodeId: String) -> BaseNode? {
+        var result: BaseNode?
+        result = nodesById[nodeId]
+        if result == nil { result = prismsById[nodeId] }
+        if result == nil { result = self.scene?.name == nodeId ? self.scene : nil }
+        return result
+    }
+
     @objc public func addNode(_ nodeId: String, toParent parentId: String) {
-        if let node = nodesById[nodeId] {
-            if let parentNode = nodesById[parentId] {
-                if parentNode.addChild(node) {
+        if let node = getNodeById(nodeId) {
+            if let parentNode = getNodeById(parentId) {
+                if parentNode.addNode(node) {
                     if let dialog = node as? DialogDataProviding {
                         dialogPresenter?.present(dialog)
                     }
@@ -149,29 +161,38 @@ import ARKit
 
             // Remove node which does not have a parent or
             // the parent does not want to add the node to its hierarchy.
-            removeNodeWithDescendants(node)
+//            removeNodeWithDescendants(node)
         }
+
     }
     
     @objc public func addNodeToRoot(_ nodeId: String) {
-        if let node = nodesById[nodeId] {
-            rootNode.addChildNode(node)
+        if let scene = self.scene, scene.name == nodeId {
+            rootNode.addChildNode(scene)
         }
     }
     
     @objc public func removeNode(_ nodeId: String, fromParent parentId: String) {
-        if let node = nodesById[nodeId],
-            let parentNode = nodesById[parentId] {
-            parentNode.removeChild(node)
-            removeNodeWithDescendants(node)
+        if let node = getNodeById(nodeId),
+            let parentNode = getNodeById(parentId) {
+            parentNode.removeNode(node)
+//            removeNodeWithDescendants(node)
         }
     }
     
     @objc public func removeNodeFromRoot(_ nodeId: String) {
-        if let node = nodesById[nodeId],
-            rootNode == node.parent {
-            node.removeFromParentNode()
-            removeNodeWithDescendants(node)
+        if let scene = self.scene,
+            rootNode == scene.parent {
+            scene.removeFromParentNode()
+            removeSceneWithDescendants(scene)
+        }
+    }
+
+    @objc fileprivate func removeSceneWithDescendants(_ scene: Scene) {
+        scene.enumerateTransformNodes { (item) in
+            if let id = item.name {
+                unregisterNode(id)
+            }
         }
     }
     
@@ -191,7 +212,7 @@ import ARKit
     }
     
     @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
-        guard let node = nodesById[nodeId] else { return false }
+        guard let node = getNodeById(nodeId) else { return false }
         node.update(properties)
         if let uiNode = node as? UiNode {
             uiNode.onUpdate?(uiNode)

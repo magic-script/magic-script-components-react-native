@@ -50,7 +50,7 @@ import SceneKit
         contentNode.addChildNode(gridLayout.container)
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
+    @objc override func hitTest(ray: Ray) -> BaseNode? {
         return gridLayout.hitTest(ray: ray, node: self)
     }
 

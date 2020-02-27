@@ -18,21 +18,18 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.LayoutUtils
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.getUserSpecifiedScale
 import kotlin.math.min
 
-abstract class SizedLayoutManager<T : LayoutParams> :
-    LayoutManager<T> {
+abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
 
     protected var childrenList = listOf<TransformNode>()
+        private set
+
+    protected var childrenBounds = mapOf<Int, AABB>()
         private set
 
     override fun layoutChildren(
@@ -41,18 +38,10 @@ abstract class SizedLayoutManager<T : LayoutParams> :
         childrenBounds: Map<Int, AABB>
     ) {
         this.childrenList = children
+        this.childrenBounds = childrenBounds
         onPreLayout(children, childrenBounds, layoutParams)
-        rescaleChildren(children, childrenBounds, layoutParams)
+        rescaleChildren(children, layoutParams)
     }
-
-    /**
-     * Should return max allowed size of child with [childIdx]
-     */
-    abstract fun getMaxChildSize(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: T
-    ): Vector2
 
     open fun onPreLayout(
         children: List<TransformNode>,
@@ -61,46 +50,23 @@ abstract class SizedLayoutManager<T : LayoutParams> :
     ) {
     }
 
-    override fun getLayoutBounds(layoutParams: T): AABB {
-        // TODO not max padding including item position
-        val childrenBounds = Utils.calculateSumBounds(childrenList)
-        val parentSize = layoutParams.size
-        var sizeX = parentSize.x
-        var sizeY = parentSize.y
-
-        val maxPadding = Padding(
-            LayoutUtils.getMaxTopPadding(layoutParams.itemsPadding),
-            LayoutUtils.getMaxRightPadding(layoutParams.itemsPadding),
-            LayoutUtils.getMaxBottomPadding(layoutParams.itemsPadding),
-            LayoutUtils.getMaxLeftPadding(layoutParams.itemsPadding)
-        )
-
-        var paddingOffsetX = maxPadding.left + maxPadding.right
-        var paddingOffsetY = -maxPadding.top - maxPadding.bottom
-
-        if (parentSize.x == WRAP_CONTENT_DIMENSION) {
-            sizeX = childrenBounds.size().x
-        } else {
-            paddingOffsetX = 0f
-        }
-
-        if (parentSize.y == WRAP_CONTENT_DIMENSION) {
-            sizeY = childrenBounds.size().y
-        } else {
-            paddingOffsetY = 0f
-        }
-
-        val minEdge = Vector3(0f, -sizeY + paddingOffsetY, childrenBounds.min.z)
-        val maxEdge = Vector3(sizeX + paddingOffsetX, 0f, childrenBounds.max.z)
-
-        return AABB(minEdge, maxEdge)
-    }
-
-    private fun rescaleChildren(
-        children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>,
+    /**
+     * Should return max allowed width of child with [childIdx]
+     */
+    abstract fun getMaxChildWidth(
+        childIdx: Int,
         layoutParams: T
-    ) {
+    ): Float
+
+    /**
+     * Should return max allowed height of child with [childIdx]
+     */
+    abstract fun getMaxChildHeight(
+        childIdx: Int,
+        layoutParams: T
+    ): Float
+
+    private fun rescaleChildren(children: List<TransformNode>, layoutParams: T) {
         for (i in children.indices) {
             val child = children[i]
             val childSize = (childrenBounds[i] ?: AABB()).size()
@@ -108,10 +74,11 @@ abstract class SizedLayoutManager<T : LayoutParams> :
                 val childWidth = childSize.x / child.localScale.x
                 val childHeight = childSize.y / child.localScale.y
                 if (childWidth > 0 && childHeight > 0) {
-                    val maxChildSize = getMaxChildSize(i, childrenBounds, layoutParams)
+                    val maxChildWidth = getMaxChildWidth(i, layoutParams)
+                    val maxChildHeight = getMaxChildHeight(i, layoutParams)
                     val userSpecifiedScale = child.getUserSpecifiedScale() ?: Vector3.one()
-                    val scaleX = min(maxChildSize.x / childWidth, userSpecifiedScale.x)
-                    val scaleY = min(maxChildSize.y / childHeight, userSpecifiedScale.y)
+                    val scaleX = min(maxChildWidth / childWidth, userSpecifiedScale.x)
+                    val scaleY = min(maxChildHeight / childHeight, userSpecifiedScale.y)
                     val scaleXY = min(scaleX, scaleY) // scale saving width / height ratio
                     child.localScale = Vector3(scaleXY, scaleXY, child.localScale.z)
                 }

@@ -67,8 +67,8 @@ class HorizontalLinearLayoutManagerTest {
     @Test
     fun `should return correct layout bounds after children layout`() {
         itemPadding = mapOf(
-            0 to Padding(0.2f, 0.2f, 0.1f, 0.1f),
-            1 to Padding(0.2f, 0.2f, 0.1f, 0.1f)
+            0 to Padding(0.2f, 0.4f, 0.1f, 0.1f),
+            1 to Padding(0.2f, 0.2f, 0.1f, 0.6f)
         )
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
 
@@ -76,7 +76,7 @@ class HorizontalLinearLayoutManagerTest {
 
         val bounding = linearManager.getLayoutBounds(getLayoutParams())
         bounding.min shouldEqualInexact Vector3(0f, -5f, 0f)
-        bounding.max shouldEqualInexact Vector3(4.6f, 0f, 0f)
+        bounding.max shouldEqualInexact Vector3(5.3f, 0f, 0f)
     }
 
     @Test

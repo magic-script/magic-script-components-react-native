@@ -102,7 +102,7 @@ object LayoutUtils {
         itemsPadding: Map<Int, Padding>
     ) = itemsPadding.map { it.value.bottom }.max() ?: 0f
 
-    fun getSummaryVerticalPaddingBeforeItem(
+    fun getSumVerticalPaddingUntil(
         itemsPadding: Map<Int, Padding>,
         itemIndex: Int
     ): Float {
@@ -115,7 +115,7 @@ object LayoutUtils {
         return sumPadding
     }
 
-    fun getSummaryHorizontalPaddingBeforeItem(
+    fun getSumHorizontalPaddingUntil(
         itemsPadding: Map<Int, Padding>,
         itemIndex: Int
     ): Float {

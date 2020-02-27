@@ -37,8 +37,8 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         super.layoutChildren(layoutParams, children, childrenBounds)
 
         val contentSize = Vector2(
-            getContentWidth(childrenBounds, layoutParams),
-            getContentHeight(childrenBounds, layoutParams)
+            getContentWidth(layoutParams),
+            getContentHeight(layoutParams)
         )
 
         val layoutSizeLimit = LayoutUtils.calculateLayoutSizeLimit(contentSize, layoutParams.size)
@@ -66,7 +66,7 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
             childrenBounds.values.take(index).sumByFloat { it.size().x }
 
         val paddingSumOnTheLeft =
-            LayoutUtils.getSummaryHorizontalPaddingBeforeItem(layoutParams.itemsPadding, index) +
+            LayoutUtils.getSumHorizontalPaddingUntil(layoutParams.itemsPadding, index) +
                     itemPadding.left
 
         val offsetX = summaryItemsWidthOnTheLeft + paddingSumOnTheLeft
@@ -107,68 +107,66 @@ class HorizontalLinearLayoutManager<T : LayoutParams> : SizedLayoutManager<T>() 
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-    override fun getMaxChildSize(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: T
-    ): Vector2 {
-        val width = calculateMaxChildWidth(childIdx, childrenBounds, layoutParams)
-        val height = calculateMaxChildHeight(childIdx, childrenBounds, layoutParams)
-        return Vector2(width, height)
+    override fun getLayoutBounds(layoutParams: T): AABB {
+        val width = if (layoutParams.size.x == UiBaseLayout.WRAP_CONTENT_DIMENSION)
+            getContentWidth(layoutParams)
+        else {
+            layoutParams.size.x
+        }
+
+        val height = if (layoutParams.size.y == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
+            getContentHeight(layoutParams)
+        } else {
+            layoutParams.size.y
+        }
+
+        val minZ = childrenBounds.values.minBy { it.min.z }?.min?.z ?: 0f
+        val maxZ = childrenBounds.values.maxBy { it.max.z }?.max?.z ?: 0f
+
+        return AABB(min = Vector3(0f, -height, minZ), max = Vector3(width, 0f, maxZ))
     }
 
-    private fun getContentWidth(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
-        val itemsPadding = layoutParams.itemsPadding
-
-        val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
-        val paddingSum = childrenBounds.size * paddingHorizontal
-        return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
-    }
-
-    private fun getContentHeight(childrenBounds: Map<Int, AABB>, layoutParams: T): Float {
-        val highestChildSize = childrenBounds.values.maxBy { it.size().y }?.size()
-        val itemsPadding = layoutParams.itemsPadding
-
-        val paddingVertical = LayoutUtils.getMaxVerticalPadding(itemsPadding)
-        return (highestChildSize?.y ?: 0f) + paddingVertical
-    }
-
-    private fun calculateMaxChildWidth(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: T
-    ): Float {
+    override fun getMaxChildWidth(childIdx: Int, layoutParams: T): Float {
         val parentWidth = layoutParams.size.x
         if (parentWidth == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
             return Float.MAX_VALUE
         }
 
         val contentWidthNoPadding = childrenBounds.values.sumByFloat { it.size().x }
-        val itemsPadding = layoutParams.itemsPadding
-
-        val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
-        val paddingSum = childrenBounds.size * paddingHorizontal
+        val paddingSum =
+            LayoutUtils.getSumHorizontalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
         val scale = (parentWidth - paddingSum) / contentWidthNoPadding
 
         return childrenBounds[childIdx]!!.size().x * scale
     }
 
-    private fun calculateMaxChildHeight(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: T
-    ): Float {
+    override fun getMaxChildHeight(childIdx: Int, layoutParams: T): Float {
         val parentHeight = layoutParams.size.y
         return if (parentHeight == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
             return Float.MAX_VALUE
         } else {
-            val itemsPadding = layoutParams.itemsPadding
-
-            val maxTopPadding = LayoutUtils.getMaxTopPadding(itemsPadding)
-            val maxBottomPadding = LayoutUtils.getMaxBottomPadding(itemsPadding)
-
-            parentHeight - maxTopPadding - maxBottomPadding
+            val padding = layoutParams.itemsPadding[childIdx] ?: Padding()
+            parentHeight - padding.top - padding.bottom
         }
+    }
+
+    private fun getContentWidth(layoutParams: T): Float {
+        val paddingSum =
+            LayoutUtils.getSumHorizontalPaddingUntil(layoutParams.itemsPadding, childrenList.size)
+
+        return childrenBounds.values.sumByFloat { it.size().x } + paddingSum
+    }
+
+    private fun getContentHeight(layoutParams: T): Float {
+        var maxHeight = 0f
+        for (i in childrenList.indices) {
+            val padding = layoutParams.itemsPadding[i] ?: Padding()
+            val height = childrenBounds[i]!!.size().y + padding.top + padding.bottom
+            if (height > maxHeight) {
+                maxHeight = height
+            }
+        }
+        return maxHeight
     }
 
 }

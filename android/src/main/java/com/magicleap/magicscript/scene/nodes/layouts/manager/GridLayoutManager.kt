@@ -25,7 +25,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.sumByFloat
+import kotlin.math.max
 
 class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
@@ -35,6 +36,11 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
     // <row index, max child height in that row> pairs
     private val maxChildHeightInRowMap = mutableMapOf<Int, Float>()
 
+    // column index, column width
+    private val columnsWidthMap = mutableMapOf<Int, Float>()
+
+    // row index, row height
+    private val rowsHeightMap = mutableMapOf<Int, Float>()
 
     override fun layoutChildren(
         layoutParams: GridLayoutParams,
@@ -60,6 +66,9 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         maxChildWidthInColumnMap.clear()
         maxChildHeightInRowMap.clear()
+        columnsWidthMap.clear()
+        rowsHeightMap.clear()
+
         for (i in children.indices) {
             layoutParams as GridLayoutParams
             val col = LayoutUtils.getColumnIndex(i, layoutParams.columns, layoutParams.rows)
@@ -71,32 +80,43 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
                 maxChildWidthInColumnMap[col] = width
             }
 
+            val padding = layoutParams.itemsPadding[i] ?: Padding()
+
+            val childWidthWithPadding = width + padding.left + padding.right
+            columnsWidthMap[col] = max(columnsWidthMap[col] ?: 0f, childWidthWithPadding)
+
             val height = bounds.size().y
             if (height > maxChildHeightInRowMap[row] ?: 0.0F) {
                 maxChildHeightInRowMap[row] = height
             }
+
+            val childHeightWithPadding = height + padding.top + padding.bottom
+            rowsHeightMap[row] = max(rowsHeightMap[row] ?: 0f, childHeightWithPadding)
         }
 
-        val itemsPadding = layoutParams.itemsPadding
         val layoutSize = layoutParams.size
 
         if (layoutSize.x != WRAP_CONTENT_DIMENSION) {
-            val paddingHorizontal = LayoutUtils.getMaxHorizontalPadding(itemsPadding)
-            val columnsSumWidth =
-                maxChildWidthInColumnMap.values.sum() + maxChildWidthInColumnMap.size * paddingHorizontal
+            val columnsSumWidth = columnsWidthMap.values.sumByFloat { it }
             val columnsScale = layoutSize.x / columnsSumWidth
             maxChildWidthInColumnMap.forEach {
                 maxChildWidthInColumnMap[it.key] = columnsScale * it.value
             }
+
+            columnsWidthMap.forEach {
+                columnsWidthMap[it.key] = columnsScale * it.value
+            }
         }
 
         if (layoutSize.y != WRAP_CONTENT_DIMENSION) {
-            val paddingVertical = LayoutUtils.getMaxVerticalPadding(itemsPadding)
-            val rowsSumHeight =
-                maxChildHeightInRowMap.values.sum() + maxChildHeightInRowMap.size * paddingVertical
+            val rowsSumHeight = rowsHeightMap.values.sumByFloat { it }
             val rowsScale = layoutSize.y / rowsSumHeight
             maxChildHeightInRowMap.forEach {
                 maxChildHeightInRowMap[it.key] = rowsScale * it.value
+            }
+
+            rowsHeightMap.forEach {
+                rowsHeightMap[it.key] = rowsScale * it.value
             }
         }
     }
@@ -108,13 +128,11 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         val col = LayoutUtils.getColumnIndex(index, layoutParams.columns, layoutParams.rows)
         val row = LayoutUtils.getRowIndex(index, layoutParams.columns, layoutParams.rows)
 
-        val columnWidth =
-            maxChildWidthInColumnMap[col] ?: 0.0F + itemPadding.left + itemPadding.right
-
-        val rowHeight = maxChildHeightInRowMap[row] ?: 0.0F + itemPadding.bottom + itemPadding.top
+        val columnWidth = columnsWidthMap[col] ?: 0f
+        val rowHeight = rowsHeightMap[row] ?: 0f
 
         // calculating x position for a child
-        val columnX = getColumnX(col, itemPadding)
+        val columnX = getColumnX(col)
         val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
 
         val x = when (itemAlignment.horizontal) {
@@ -133,7 +151,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         }
 
         // calculating y position for a child
-        val rowY = getRowY(row, itemPadding)
+        val rowY = getRowY(row)
 
         val y = when (itemAlignment.vertical) {
             Alignment.VerticalAlignment.TOP -> {
@@ -154,62 +172,59 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
         node.localPosition = Vector3(x, y, node.localPosition.z)
     }
 
-    override fun getMaxChildSize(
-        childIdx: Int,
-        childrenBounds: Map<Int, AABB>,
-        layoutParams: GridLayoutParams
-    ): Vector2 {
-        val width = calculateMaxChildWidth(childIdx, layoutParams)
-        val height = calculateMaxChildHeight(childIdx, layoutParams)
-        return Vector2(width, height)
+    override fun getLayoutBounds(layoutParams: GridLayoutParams): AABB {
+        val width = if (layoutParams.size.x == WRAP_CONTENT_DIMENSION)
+            columnsWidthMap.values.sumByFloat { it }
+        else {
+            layoutParams.size.x
+        }
+
+        val height = if (layoutParams.size.y == WRAP_CONTENT_DIMENSION) {
+            rowsHeightMap.values.sumByFloat { it }
+        } else {
+            layoutParams.size.y
+        }
+
+        val minZ = childrenBounds.values.minBy { it.min.z }?.min?.z ?: 0f
+        val maxZ = childrenBounds.values.maxBy { it.max.z }?.max?.z ?: 0f
+
+        return AABB(min = Vector3(0f, -height, minZ), max = Vector3(width, 0f, maxZ))
     }
 
-    private fun calculateMaxChildWidth(childIdx: Int, layoutParams: GridLayoutParams): Float {
+    override fun getMaxChildWidth(childIdx: Int, layoutParams: GridLayoutParams): Float {
         return if (layoutParams.size.x == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
-            maxChildWidthInColumnMap[
-                    LayoutUtils.getColumnIndex(
-                        childIdx,
-                        layoutParams.columns,
-                        layoutParams.rows
-                    )]!!
+            val col = LayoutUtils.getColumnIndex(childIdx, layoutParams.columns, layoutParams.rows)
+            maxChildWidthInColumnMap[col]!!
         }
     }
 
-    private fun calculateMaxChildHeight(childIdx: Int, layoutParams: GridLayoutParams): Float {
+    override fun getMaxChildHeight(childIdx: Int, layoutParams: GridLayoutParams): Float {
         return if (layoutParams.size.y == WRAP_CONTENT_DIMENSION) {
             Float.MAX_VALUE
         } else {
-            maxChildHeightInRowMap[
-                    LayoutUtils.getRowIndex(
-                        childIdx,
-                        layoutParams.columns,
-                        layoutParams.rows
-                    )]!!
+            val row = LayoutUtils.getRowIndex(childIdx, layoutParams.columns, layoutParams.rows)
+            maxChildHeightInRowMap[row]!!
         }
     }
 
     // returns the position (x) of a column at the given index (includes padding)
-    private fun getColumnX(columnIdx: Int, itemPadding: Padding): Float {
+    private fun getColumnX(columnIdx: Int): Float {
         var x = 0.0F // start
         for (i in 0 until columnIdx) {
-            x += (maxChildWidthInColumnMap[i] ?: 0.0F) + itemPadding.left + itemPadding.right
+            x += columnsWidthMap[i] ?: 0.0F
         }
         return x
     }
 
     // returns the position (y) of a row at the given index (includes padding)
-    private fun getRowY(rowIdx: Int, itemPadding: Padding): Float {
+    private fun getRowY(rowIdx: Int): Float {
         var y = 0.0F // start
         for (i in 0 until rowIdx) {
-            y -= (maxChildHeightInRowMap[i] ?: 0.0F) + itemPadding.top + itemPadding.bottom
+            y -= rowsHeightMap[i] ?: 0.0F
         }
         return y
     }
 
-    private data class GridLayoutInfo<T : LayoutParams>(
-        val childrenBounds: Map<Int, AABB>,
-        val params: T
-    )
 }

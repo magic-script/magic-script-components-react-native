@@ -72,6 +72,7 @@ import SceneKit
     @objc override func addNode(_ node: SCNNode) -> Bool {
         if let transformNodeChild = node as? TransformNode {
             contentNode.addChildNode(transformNodeChild)
+            return true
         }
         return false
     }

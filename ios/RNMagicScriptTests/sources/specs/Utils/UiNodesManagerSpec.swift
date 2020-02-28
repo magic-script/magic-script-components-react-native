@@ -22,16 +22,18 @@ import SceneKit
 class UiNodesManagerSpec: QuickSpec {
     override func spec() {
         describe("UiNodesManager") {
-            var nodesManager: UiNodesManager!
+            var nodesManager: NodesManager!
+            let referenceSceneNode = Scene()
+            let referenceSceneNodeId = "referenceSceneNodeId"
             let referenceNode = TransformNode()
             let referenceNodeId = "referenceNodeId"
             let referenceAnchorUUID = "referenceAnchorUUID"
             
             context("always") {
                 it("should register AR view when requested") {
-                    let nodesManagerRootNode = UiNodesManager.instance.rootNode
+                    let nodesManagerRootNode = NodesManager.instance.rootNode
                     let arView = RCTARView()
-                    let sceneRootNodes: [TransformNode] = arView.scene.rootNode.childNodes.compactMap { $0 as? TransformNode }
+                    let sceneRootNodes: [SCNNode] = arView.scene.rootNode.childNodes.compactMap { $0 as? BaseNode }
                     expect(sceneRootNodes.count).to(equal(1))
                     expect(sceneRootNodes[0]).to(beIdenticalTo(nodesManagerRootNode))
                 }
@@ -42,7 +44,7 @@ class UiNodesManagerSpec: QuickSpec {
                     
                     let localReferenceNode = UiButtonNode()
                     let localReferenceNodeId = "referenceNodeId"
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [localReferenceNodeId: localReferenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: focusedNode)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [localReferenceNodeId: localReferenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: focusedNode)
                     nodesManager.onInputUnfocused = {
                         
                     }
@@ -54,14 +56,14 @@ class UiNodesManagerSpec: QuickSpec {
             
             context("when asked for node by ID") {
                 it("should return node when exists") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                     
                     let result = nodesManager.findNodeWithId(referenceNodeId)
                     expect(result).to(beIdenticalTo(referenceNode))
                 }
                 
                 it("should return nil when node doesnt exist") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                     
                     let result = nodesManager.findNodeWithId(referenceNodeId)
                     expect(result).to(beNil())
@@ -70,14 +72,14 @@ class UiNodesManagerSpec: QuickSpec {
             
             context("when asked for node by Anchor UUID") {
                 it("should return node when exists") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [referenceNodeId: referenceNode], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [referenceNodeId: referenceNode], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                     
                     let result = nodesManager.findNodeWithAnchorUuid(referenceNodeId)
                     expect(result).to(beIdenticalTo(referenceNode))
                 }
                 
                 it("should return nil when node doesnt exist") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                     
                     let result = nodesManager.findNodeWithAnchorUuid(referenceNodeId)
                     expect(result).to(beNil())
@@ -86,7 +88,7 @@ class UiNodesManagerSpec: QuickSpec {
             
             context("when registering node") {
                 it("node should be stored (by ID)") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                     
                     nodesManager.registerNode(referenceNode, nodeId: referenceNodeId)
                     
@@ -98,7 +100,7 @@ class UiNodesManagerSpec: QuickSpec {
                 context("when anchor UUID set (different than rootUuid)") {
                     it("node should be stored (by UUID)") {
                         referenceNode.anchorUuid = referenceAnchorUUID
-                        nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                         
                         nodesManager.registerNode(referenceNode, nodeId: referenceNodeId)
                         
@@ -111,7 +113,7 @@ class UiNodesManagerSpec: QuickSpec {
             context("when asked to unregister node") {
                 context("when node exists in store (by ID)") {
                     it("should be removed from storage") {
-                        nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                         nodesManager.unregisterNode(referenceNodeId)
                         
                         let result = nodesManager.findNodeWithId(referenceNodeId)
@@ -119,7 +121,7 @@ class UiNodesManagerSpec: QuickSpec {
                     }
                     
                     it("should be removed from parent") {
-                        nodesManager = UiNodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
                         let parentNode = SCNNode(geometry: SCNGeometry(sources: [], elements: nil))
                         parentNode.addChildNode(referenceNode)
                         
@@ -137,7 +139,7 @@ class UiNodesManagerSpec: QuickSpec {
                     let parentReferenceNode = TransformNode()
                     let parentRreferenceNodeId = "parentRreferenceNodeId"
                     
-                    nodesManager = UiNodesManager(rootNode: TransformNode(),
+                    nodesManager = NodesManager(rootNode: TransformNode(),
                                                   nodesById: [referenceNodeId: referenceNode, parentRreferenceNodeId: parentReferenceNode],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],
@@ -151,7 +153,7 @@ class UiNodesManagerSpec: QuickSpec {
                     let parentRreferenceNodeId = "parentRreferenceNodeId"
                     parentReferenceNode.contentNode.addChildNode(referenceNode)
                     
-                    nodesManager = UiNodesManager(rootNode: TransformNode(),
+                    nodesManager = NodesManager(rootNode: TransformNode(),
                                                   nodesById: [referenceNodeId: referenceNode, parentRreferenceNodeId: parentReferenceNode],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],
@@ -163,25 +165,28 @@ class UiNodesManagerSpec: QuickSpec {
             
             context("when child node exists in storage (by ID)") {
                 it("should add node to root node (when requested)") {
-                    let rootRefereneceNode = TransformNode()
-                    nodesManager = UiNodesManager(rootNode: rootRefereneceNode,
-                                                  nodesById: [referenceNodeId: referenceNode],
+                    let rootRefereneceNode = BaseNode()
+                    nodesManager = NodesManager(rootNode: rootRefereneceNode,
+                                                  nodesById: [:],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],
                                                   focusedNode: nil)
-                    
-                    nodesManager.addNodeToRoot(referenceNodeId)
-                    expect(rootRefereneceNode.childNodes).to(contain(referenceNode))
+
+                    nodesManager.registerScene(referenceSceneNode, sceneId: referenceSceneNodeId)
+                    nodesManager.addNodeToRoot(referenceSceneNodeId)
+                    expect(rootRefereneceNode.childNodes).to(contain(referenceSceneNode))
                 }
                 
                 it("should remove node from root node (when requested)") {
-                    let rootRefereneceNode = TransformNode()
-                    rootRefereneceNode.addChildNode(referenceNode)
-                    nodesManager = UiNodesManager(rootNode: rootRefereneceNode,
-                                                  nodesById: [referenceNodeId: referenceNode],
+                    let rootRefereneceNode = BaseNode()
+                    nodesManager = NodesManager(rootNode: rootRefereneceNode,
+                                                  nodesById: [:],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],
                                                   focusedNode: nil)
+
+                    nodesManager.registerScene(referenceSceneNode, sceneId: referenceSceneNodeId)
+                    nodesManager.addNodeToRoot(referenceSceneNodeId)
                     
                     nodesManager.removeNodeFromRoot(referenceNodeId)
                     expect(rootRefereneceNode.childNodes).toNot(contain(referenceNode))
@@ -192,7 +197,7 @@ class UiNodesManagerSpec: QuickSpec {
                 it("should remove all nodes from parents and storage") {
                     let rootRefereneceNode = TransformNode()
                     rootRefereneceNode.addChildNode(referenceNode)
-                    nodesManager = UiNodesManager(rootNode: rootRefereneceNode,
+                    nodesManager = NodesManager(rootNode: rootRefereneceNode,
                                                   nodesById: [referenceNodeId: referenceNode],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],
@@ -211,7 +216,7 @@ class UiNodesManagerSpec: QuickSpec {
                 }
                 
                 it("whould do nothing when node doesn't exist in storage") {
-                    nodesManager = UiNodesManager(rootNode: TransformNode(),
+                    nodesManager = NodesManager(rootNode: TransformNode(),
                                                   nodesById: [referenceNodeId: referenceNode],
                                                   transformNodeByAnchorUuid: [:],
                                                   anchorNodeByAnchorUuid: [:],

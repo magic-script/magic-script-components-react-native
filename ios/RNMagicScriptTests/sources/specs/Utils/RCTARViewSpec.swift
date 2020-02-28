@@ -30,7 +30,7 @@ class RCTARViewSpec: QuickSpec {
                 context("RCTARViewObservable") {
                     context("when registering observers") {
                         it("should store NodesManager as observer") {
-                            let nodesManager = UiNodesManager.instance
+                            let nodesManager = NodesManager.instance
                             arView = RCTARView()
                             expect(arView.observers.count).to(equal(2))
                             let observer = arView.observers[0].value

@@ -2740,12 +2740,12 @@ open class LongPressGestureRecognizingMock: NSObject, LongPressGestureRecognizin
         if scopes.contains(.perform) { methodPerformValues = [] }
     }
 
-    public var longPressedNode: TransformNode? {
+    public var longPressedNode: BaseNode? {
 		get {	invocations.append(.p_longPressedNode_get); return __p_longPressedNode ?? optionalGivenGetterValue(.p_longPressedNode_get, "LongPressGestureRecognizingMock - stub value for longPressedNode was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_longPressedNode = newValue }
 	}
-	private var __p_longPressedNode: (TransformNode)?
+	private var __p_longPressedNode: (BaseNode)?
 
     public var state: UIGestureRecognizer.State {
 		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "LongPressGestureRecognizingMock - stub value for state was not defined") }
@@ -2787,7 +2787,7 @@ open class LongPressGestureRecognizingMock: NSObject, LongPressGestureRecognizin
             super.init(products)
         }
 
-        public static func longPressedNode(getter defaultValue: TransformNode?...) -> PropertyStub {
+        public static func longPressedNode(getter defaultValue: BaseNode?...) -> PropertyStub {
             return Given(method: .p_longPressedNode_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
         }
         public static func state(getter defaultValue: UIGestureRecognizer.State...) -> PropertyStub {
@@ -3070,11 +3070,11 @@ open class NodeSelectingMock: NodeSelecting, Mock {
 
 
 
-    open func hitTest(ray: Ray) -> TransformNode? {
+    open func hitTest(ray: Ray) -> BaseNode? {
         addInvocation(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`)))
 		let perform = methodPerformValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
 		perform?(`ray`)
-		var __value: TransformNode? = nil
+		var __value: BaseNode? = nil
 		do {
 		    __value = try methodReturnValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
 		} catch {
@@ -3130,16 +3130,16 @@ open class NodeSelectingMock: NodeSelecting, Mock {
         }
 
 
-        public static func hitTest(ray: Parameter<Ray>, willReturn: TransformNode?...) -> MethodStub {
+        public static func hitTest(ray: Parameter<Ray>, willReturn: BaseNode?...) -> MethodStub {
             return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
         }
         public static func draggingHitTest(ray: Parameter<Ray>, willReturn: Dragging?...) -> MethodStub {
             return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
         }
-        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<TransformNode?>) -> Void) -> MethodStub {
-            let willReturn: [TransformNode?] = []
+        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<BaseNode?>) -> Void) -> MethodStub {
+            let willReturn: [BaseNode?] = []
 			let given: Given = { return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
-			let stubber = given.stub(for: (TransformNode?).self)
+			let stubber = given.stub(for: (BaseNode?).self)
 			willProduce(stubber)
 			return given
         }
@@ -3268,22 +3268,22 @@ open class NodesManagingMock: NodesManaging, Mock {
 
 
 
-    open func handleNodeTap(_ node: TransformNode?) {
-        addInvocation(.m_handleNodeTap__node(Parameter<TransformNode?>.value(`node`)))
-		let perform = methodPerformValue(.m_handleNodeTap__node(Parameter<TransformNode?>.value(`node`))) as? (TransformNode?) -> Void
+    open func handleNodeTap(_ node: BaseNode?) {
+        addInvocation(.m_handleNodeTap__node(Parameter<BaseNode?>.value(`node`)))
+		let perform = methodPerformValue(.m_handleNodeTap__node(Parameter<BaseNode?>.value(`node`))) as? (BaseNode?) -> Void
 		perform?(`node`)
     }
 
-    open func handleNodeLongPress(_ node: TransformNode?, _ state: UIGestureRecognizer.State) {
-        addInvocation(.m_handleNodeLongPress__node_state(Parameter<TransformNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`)))
-		let perform = methodPerformValue(.m_handleNodeLongPress__node_state(Parameter<TransformNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`))) as? (TransformNode?, UIGestureRecognizer.State) -> Void
+    open func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State) {
+        addInvocation(.m_handleNodeLongPress__node_state(Parameter<BaseNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`)))
+		let perform = methodPerformValue(.m_handleNodeLongPress__node_state(Parameter<BaseNode?>.value(`node`), Parameter<UIGestureRecognizer.State>.value(`state`))) as? (BaseNode?, UIGestureRecognizer.State) -> Void
 		perform?(`node`, `state`)
     }
 
 
     fileprivate enum MethodType {
-        case m_handleNodeTap__node(Parameter<TransformNode?>)
-        case m_handleNodeLongPress__node_state(Parameter<TransformNode?>, Parameter<UIGestureRecognizer.State>)
+        case m_handleNodeTap__node(Parameter<BaseNode?>)
+        case m_handleNodeLongPress__node_state(Parameter<BaseNode?>, Parameter<UIGestureRecognizer.State>)
 
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
@@ -3320,18 +3320,18 @@ open class NodesManagingMock: NodesManaging, Mock {
     public struct Verify {
         fileprivate var method: MethodType
 
-        public static func handleNodeTap(_ node: Parameter<TransformNode?>) -> Verify { return Verify(method: .m_handleNodeTap__node(`node`))}
-        public static func handleNodeLongPress(_ node: Parameter<TransformNode?>, _ state: Parameter<UIGestureRecognizer.State>) -> Verify { return Verify(method: .m_handleNodeLongPress__node_state(`node`, `state`))}
+        public static func handleNodeTap(_ node: Parameter<BaseNode?>) -> Verify { return Verify(method: .m_handleNodeTap__node(`node`))}
+        public static func handleNodeLongPress(_ node: Parameter<BaseNode?>, _ state: Parameter<UIGestureRecognizer.State>) -> Verify { return Verify(method: .m_handleNodeLongPress__node_state(`node`, `state`))}
     }
 
     public struct Perform {
         fileprivate var method: MethodType
         var performs: Any
 
-        public static func handleNodeTap(_ node: Parameter<TransformNode?>, perform: @escaping (TransformNode?) -> Void) -> Perform {
+        public static func handleNodeTap(_ node: Parameter<BaseNode?>, perform: @escaping (BaseNode?) -> Void) -> Perform {
             return Perform(method: .m_handleNodeTap__node(`node`), performs: perform)
         }
-        public static func handleNodeLongPress(_ node: Parameter<TransformNode?>, _ state: Parameter<UIGestureRecognizer.State>, perform: @escaping (TransformNode?, UIGestureRecognizer.State) -> Void) -> Perform {
+        public static func handleNodeLongPress(_ node: Parameter<BaseNode?>, _ state: Parameter<UIGestureRecognizer.State>, perform: @escaping (BaseNode?, UIGestureRecognizer.State) -> Void) -> Perform {
             return Perform(method: .m_handleNodeLongPress__node_state(`node`, `state`), performs: perform)
         }
     }
@@ -4142,12 +4142,12 @@ open class TapGestureRecognizingMock: NSObject, TapGestureRecognizing, Mock {
         if scopes.contains(.perform) { methodPerformValues = [] }
     }
 
-    public var tappedNode: TransformNode? {
+    public var tappedNode: BaseNode? {
 		get {	invocations.append(.p_tappedNode_get); return __p_tappedNode ?? optionalGivenGetterValue(.p_tappedNode_get, "TapGestureRecognizingMock - stub value for tappedNode was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_tappedNode = newValue }
 	}
-	private var __p_tappedNode: (TransformNode)?
+	private var __p_tappedNode: (BaseNode)?
 
     public var state: UIGestureRecognizer.State {
 		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "TapGestureRecognizingMock - stub value for state was not defined") }
@@ -4189,7 +4189,7 @@ open class TapGestureRecognizingMock: NSObject, TapGestureRecognizing, Mock {
             super.init(products)
         }
 
-        public static func tappedNode(getter defaultValue: TransformNode?...) -> PropertyStub {
+        public static func tappedNode(getter defaultValue: BaseNode?...) -> PropertyStub {
             return Given(method: .p_tappedNode_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
         }
         public static func state(getter defaultValue: UIGestureRecognizer.State...) -> PropertyStub {

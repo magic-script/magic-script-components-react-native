@@ -48,7 +48,7 @@ import SceneKit
         if let prismChild = node as? Prism {
             contentNode.addChildNode(prismChild)
             prisms.append(prismChild)
-
+            return true
         }
         return false
     }
@@ -61,8 +61,6 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> BaseNode? {
-//        guard let _ = selfHitTest(ray: ray) else { return nil }
-
         for prism in prisms {
             if let hitNode = prism.hitTest(ray: ray) {
                 return hitNode
@@ -85,7 +83,6 @@ import SceneKit
     }
 
     @objc override func selfHitTest(ray: Ray) -> BaseNode? {
-//        guard !skipRaycast && visible else { return nil }
         guard let _ = getHitTestPoint(ray: ray) else { return nil }
         return self
     }

@@ -177,7 +177,7 @@
 		44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */; };
 		44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC25232B9BCF005AC8EF /* Bundle.swift */; };
 		44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
-		44AFAC5B232B9BCF005AC8EF /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */; };
+		44AFAC5B232B9BCF005AC8EF /* NodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* NodesManager.swift */; };
 		44AFAC5C232B9BCF005AC8EF /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC29232B9BCF005AC8EF /* Convert.swift */; };
 		44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC2A232B9BCF005AC8EF /* Measures.swift */; };
 		44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC2F232B9BCF005AC8EF /* AREventsManager.m */; };
@@ -223,7 +223,7 @@
 		44AFAD30232BCAE3005AC8EF /* FileDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */; };
 		44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
 		44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */; };
-		44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */; };
+		44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* NodesManager.swift */; };
 		44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71A235F3FE100AC0B6C /* RaySpec.swift */; };
 		44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */; };
 		44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D7272360993600AC0B6C /* UiNodeSelector.swift */; };
@@ -357,6 +357,8 @@
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4914ABF23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */; };
+		C4A07EF62409049700BDA262 /* NodesManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */; };
+		C4A07EF72409049700BDA262 /* NodesManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */; };
 		C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
 		C4A12B0D2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
 		C4A12B0F2361AD38009B7083 /* UiDatePickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */; };
@@ -715,7 +717,7 @@
 		44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Lomino.swift"; sourceTree = "<group>"; };
 		44AFAC25232B9BCF005AC8EF /* Bundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesFactory.swift; sourceTree = "<group>"; };
-		44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiNodesManager.swift; sourceTree = "<group>"; };
+		44AFAC27232B9BCF005AC8EF /* NodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesManager.swift; sourceTree = "<group>"; };
 		44AFAC29232B9BCF005AC8EF /* Convert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		44AFAC2A232B9BCF005AC8EF /* Measures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measures.swift; sourceTree = "<group>"; };
 		44AFAC2C232B9BCF005AC8EF /* AREventsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AREventsManager.h; sourceTree = "<group>"; };
@@ -839,6 +841,7 @@
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
 		C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizerSpec.swift; sourceTree = "<group>"; };
+		C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NodesManager+Extension.swift"; sourceTree = "<group>"; };
 		C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNode.swift; sourceTree = "<group>"; };
 		C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNode.swift; sourceTree = "<group>"; };
 		C4A12B112361AD46009B7083 /* UiTimePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTimePickerNode.swift; sourceTree = "<group>"; };
@@ -1210,6 +1213,7 @@
 		44AFABFE232B9BCE005AC8EF /* components */ = {
 			isa = PBXGroup;
 			children = (
+				C4A07EF42409045100BDA262 /* NodesManager */,
 				C46014B123C735A4002A63D4 /* Gestures */,
 				44AFABFF232B9BCE005AC8EF /* BaseNodes */,
 				44AFAC12232B9BCF005AC8EF /* Enums */,
@@ -1218,8 +1222,6 @@
 				44AFAC28232B9BCF005AC8EF /* UiHelpers */,
 				44AFAC04232B9BCE005AC8EF /* UiNodes */,
 				44AFAC17232B9BCF005AC8EF /* Utils */,
-				C401821023EC11E400BE8D04 /* NodesManaging.swift */,
-				44AFAC27232B9BCF005AC8EF /* UiNodesManager.swift */,
 				44C5D7272360993600AC0B6C /* UiNodeSelector.swift */,
 				44DF644823951405005E0518 /* UiNodeAnimator.swift */,
 			);
@@ -1712,6 +1714,16 @@
 				C445A23223EC55DE00168596 /* SurfaceSpec.swift */,
 			);
 			path = PlaneDetector;
+			sourceTree = "<group>";
+		};
+		C4A07EF42409045100BDA262 /* NodesManager */ = {
+			isa = PBXGroup;
+			children = (
+				C401821023EC11E400BE8D04 /* NodesManaging.swift */,
+				44AFAC27232B9BCF005AC8EF /* NodesManager.swift */,
+				C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */,
+			);
+			path = NodesManager;
 			sourceTree = "<group>";
 		};
 		C4A12B142361B69B009B7083 /* Pickers */ = {
@@ -2216,7 +2228,7 @@
 				4425EE02236605790064A2EA /* UiRectLayoutNode.swift in Sources */,
 				44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
-				44AFAD33232BCAE3005AC8EF /* UiNodesManager.swift in Sources */,
+				44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
 				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
@@ -2294,6 +2306,7 @@
 				448586FF235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
 				44DF644A23951405005E0518 /* UiNodeAnimator.swift in Sources */,
 				4489DD5823C6F8000042C51B /* SCNNinePatch.swift in Sources */,
+				C4A07EF72409049700BDA262 /* NodesManager+Extension.swift in Sources */,
 				44AFAD0E232BCAE3005AC8EF /* RenderNode.swift in Sources */,
 				4425EDFF2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
@@ -2595,6 +2608,7 @@
 				C4B91AC32386B8A6002A24D6 /* ToggleType.swift in Sources */,
 				441FC16C2362E9590004DBF1 /* CGPoint+Extension.swift in Sources */,
 				44AB3976238BCD290002DF14 /* UiPageViewNode.swift in Sources */,
+				C4A07EF62409049700BDA262 /* NodesManager+Extension.swift in Sources */,
 				44D8FE6B2336B2C8007FD766 /* ScrollBarVisibility.swift in Sources */,
 				44F596422355C5B500C60F4C /* Orientation.swift in Sources */,
 				449B54962387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
@@ -2603,7 +2617,7 @@
 				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				C4A12B372361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
 				44AFAC44232B9BCF005AC8EF /* UiVideoNode.swift in Sources */,
-				44AFAC5B232B9BCF005AC8EF /* UiNodesManager.swift in Sources */,
+				44AFAC5B232B9BCF005AC8EF /* NodesManager.swift in Sources */,
 				C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */,
 				44AFAC39232B9BCF005AC8EF /* RenderNode.swift in Sources */,
 				C4C114D22347375D00E80044 /* SliderInputView.swift in Sources */,

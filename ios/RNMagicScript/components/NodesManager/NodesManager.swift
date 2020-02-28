@@ -18,23 +18,25 @@ import Foundation
 import SceneKit
 import ARKit
 
-@objc open class UiNodesManager: NSObject {
-    @objc public static let instance = UiNodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
-    @objc public private (set) var rootNode: TransformNode
-    
+@objc open class NodesManager: NSObject, NodesManaging {
+    @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+    @objc public private (set) var rootNode: BaseNode
+
     var onInputFocused: ((_ input: DataProviding) -> (Void))?
     var onInputUnfocused: (() -> (Void))?
-    
-    fileprivate var nodesById: [String: TransformNode]
+
+    fileprivate var nodesById: [String: BaseNode]
     fileprivate var transformNodeByAnchorUuid: [String: TransformNode]
     fileprivate var anchorNodeByAnchorUuid: [String: SCNNode]
-    fileprivate var focusedNode: UiNode?
-    fileprivate var longPressedNode: UiNode?
+
+    var focusedNode: UiNode?
+    var longPressedNode: UiNode?
+
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
 
-    init(rootNode: TransformNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode], focusedNode: UiNode?) {
+    init(rootNode: BaseNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode], focusedNode: UiNode?) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.transformNodeByAnchorUuid = transformNodeByAnchorUuid
@@ -48,7 +50,7 @@ import ARKit
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
     }
-    
+
     func handleNodeTap(_ node: BaseNode?) {
         let uiNode = node as? UiNode
         #if targetEnvironment(simulator)
@@ -73,7 +75,7 @@ import ARKit
             onInputFocused?(input)
         }
     }
-    
+
     func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State) {
         switch state {
         case .began:
@@ -88,15 +90,16 @@ import ARKit
             print("LongPressGesture unsupported state.")
         }
     }
-    
-    @objc public func findNodeWithId(_ nodeId: String) -> TransformNode? {
+
+
+    @objc public func findNodeWithId(_ nodeId: String) -> BaseNode? {
         return nodesById[nodeId]
     }
-    
+
     @objc public func findUiNodeWithId(_ nodeId: String) -> UiNode? {
         return nodesById[nodeId] as? UiNode
     }
-    
+
     @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
         return transformNodeByAnchorUuid[nodeId]
     }
@@ -111,25 +114,26 @@ import ARKit
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
+        nodesById[prismId] = prism
     }
-    
+
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
         if !node.anchorUuid.isEmpty {
             transformNodeByAnchorUuid[node.anchorUuid] = node;
             if let anchorNode = anchorNodeByAnchorUuid[node.anchorUuid] {
-                applyTransform(from: anchorNode, to: node)
+                node.applyTransform(from: anchorNode)
             }
         }
     }
-    
+
     @objc public func unregisterNode(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
-            if !node.anchorUuid.isEmpty {
-                transformNodeByAnchorUuid.removeValue(forKey: node.anchorUuid)
+            if let transformNode = node as? TransformNode, !transformNode.anchorUuid.isEmpty {
+                transformNodeByAnchorUuid.removeValue(forKey: transformNode.anchorUuid)
             }
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)
@@ -161,25 +165,25 @@ import ARKit
 
             // Remove node which does not have a parent or
             // the parent does not want to add the node to its hierarchy.
-//            removeNodeWithDescendants(node)
+            removeNodeWithDescendants(node)
         }
 
     }
-    
+
     @objc public func addNodeToRoot(_ nodeId: String) {
         if let scene = self.scene, scene.name == nodeId {
             rootNode.addChildNode(scene)
         }
     }
-    
+
     @objc public func removeNode(_ nodeId: String, fromParent parentId: String) {
         if let node = getNodeById(nodeId),
             let parentNode = getNodeById(parentId) {
             parentNode.removeNode(node)
-//            removeNodeWithDescendants(node)
+            removeNodeWithDescendants(node)
         }
     }
-    
+
     @objc public func removeNodeFromRoot(_ nodeId: String) {
         if let scene = self.scene,
             rootNode == scene.parent {
@@ -189,28 +193,28 @@ import ARKit
     }
 
     @objc fileprivate func removeSceneWithDescendants(_ scene: Scene) {
-        scene.enumerateTransformNodes { (item) in
+        scene.enumerateBaseNodes { (item) in
             if let id = item.name {
                 unregisterNode(id)
             }
         }
     }
-    
-    @objc fileprivate func removeNodeWithDescendants(_ node: TransformNode) {
-        node.enumerateTransformNodes { (item) in
+
+    @objc fileprivate func removeNodeWithDescendants(_ node: BaseNode) {
+        node.enumerateBaseNodes { (item) in
             if let id = item.name {
                 unregisterNode(id)
             }
         }
     }
-    
+
     @objc public func clear() {
         nodesById.forEach { (key: String, value: SCNNode) in
             value.removeFromParentNode()
         }
         nodesById.removeAll()
     }
-    
+
     @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
         guard let node = getNodeById(nodeId) else { return false }
         node.update(properties)
@@ -219,7 +223,7 @@ import ARKit
         }
         return true
     }
-    
+
     @objc public func updateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         rootNode.enumerateTransformNodes { node in
@@ -234,44 +238,23 @@ import ARKit
             node.postUpdate()
         }
     }
-    
+
     @objc func textFieldShouldReturn() {
         focusedNode?.leaveFocus()
         onInputUnfocused?()
     }
-    
+
     @objc func textFieldDidChange(text: String?) {
         if let textEdit = focusedNode as? UiTextEditNode {
             textEdit.text = text
         }
     }
 
-    fileprivate func applyTransform(from anchorNode: SCNNode, to transformNode: TransformNode) {
-        transformNode.transform = anchorNode.convertTransform(anchorNode.transform, to: transformNode)
+    func registerAnchorNode(_ node: SCNNode, anchorId: String) {
+        anchorNodeByAnchorUuid[anchorId] = node
+    }
+
+    func unregisterAnchorNode(anchorId: String) {
+        anchorNodeByAnchorUuid.removeValue(forKey: anchorId)
     }
 }
-
-extension UiNodesManager: RCTARViewObserving {
-    @objc internal func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        if let name = anchor.name {
-            anchorNodeByAnchorUuid[name] = node
-        }
-        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            applyTransform(from: node, to: transformNode)
-        }
-    }
-
-    @objc internal func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            applyTransform(from: node, to: transformNode)
-        }
-    }
-
-    @objc internal func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-        if let name = anchor.name {
-            anchorNodeByAnchorUuid.removeValue(forKey: name)
-        }
-    }
-}
-
-extension UiNodesManager: NodesManaging { }

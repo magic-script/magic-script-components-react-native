@@ -103,10 +103,11 @@ import SceneKit
     }
 
     public init() {
-        self.gestureHandler = GestureHandler(nodesManager: NodesManager.instance)
+        self.gestureHandler = GestureHandler(nodesGestureHandler: NodesGestureHandler.instance)
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         setupNodesManager(self.arView)
+        setupNodesGestureHandler()
         setupGestureRecognizers(self.arView)
         PlaneDetector.instance.register(arView: self)
         RCTARView.instance = self
@@ -155,15 +156,19 @@ import SceneKit
     fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
         NodesManager.instance.registerARView(self)
-        NodesManager.instance.onInputFocused = { [weak self] input in
-            self?.presentInput(input)
-        }
-        NodesManager.instance.onInputUnfocused = { [weak self] in
-            self?.dismissInput()
-        }
 
         if let rootView = UIApplication.shared.keyWindow?.rootViewController?.view {
             NodesManager.instance.dialogPresenter = DialogPresenter(parentView: rootView)
+        }
+    }
+
+    private func setupNodesGestureHandler() {
+        NodesGestureHandler.instance.onInputFocused = { [weak self] input in
+            self?.presentInput(input)
+        }
+
+        NodesGestureHandler.instance.onInputUnfocused = { [weak self] in
+            self?.dismissInput()
         }
     }
 
@@ -203,11 +208,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            NodesManager.instance.handleNodeTap(nil)
+            NodesGestureHandler.instance.handleNodeTap(nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            NodesManager.instance.handleNodeTap(nil)
+            NodesGestureHandler.instance.handleNodeTap(nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView

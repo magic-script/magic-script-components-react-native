@@ -292,8 +292,8 @@
 		C400D4422387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */; };
 		C400D4432387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */; };
 		C400D4462387F57A002A38CB /* UiToggleGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */; };
-		C401821123EC11E400BE8D04 /* NodesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesManaging.swift */; };
-		C401821223EC11E400BE8D04 /* NodesManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesManaging.swift */; };
+		C401821123EC11E400BE8D04 /* NodesGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */; };
+		C401821223EC11E400BE8D04 /* NodesGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */; };
 		C411CC2D240505E0004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
 		C411CC2F240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC30240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
@@ -796,7 +796,7 @@
 		8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.release.xcconfig"; sourceTree = "<group>"; };
 		C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNode.swift; sourceTree = "<group>"; };
 		C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNodeSpec.swift; sourceTree = "<group>"; };
-		C401821023EC11E400BE8D04 /* NodesManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManaging.swift; sourceTree = "<group>"; };
+		C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesGestureHandler.swift; sourceTree = "<group>"; };
 		C411CC2C240505E0004C7063 /* Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prism.swift; sourceTree = "<group>"; };
 		C411CC2E240505F0004C7063 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
@@ -1683,6 +1683,7 @@
 				C46014B523C73621002A63D4 /* Recognizers */,
 				44444718236AFD5A00665D31 /* Dragging.swift */,
 				C46014B223C73618002A63D4 /* GestureHandler.swift */,
+				C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */,
 			);
 			path = Gestures;
 			sourceTree = "<group>";
@@ -1719,7 +1720,6 @@
 		C4A07EF42409045100BDA262 /* NodesManager */ = {
 			isa = PBXGroup;
 			children = (
-				C401821023EC11E400BE8D04 /* NodesManaging.swift */,
 				44AFAC27232B9BCF005AC8EF /* NodesManager.swift */,
 				C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */,
 			);
@@ -2316,7 +2316,7 @@
 				44AFAD26232BCAE3005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				C4FEFF8F2398EFB600EA1663 /* RCTARView+Extension.swift in Sources */,
 				44AFAD1F232BCAE3005AC8EF /* UiSpinnerNode.swift in Sources */,
-				C401821223EC11E400BE8D04 /* NodesManaging.swift in Sources */,
+				C401821223EC11E400BE8D04 /* NodesGestureHandler.swift in Sources */,
 				44AFAD27232BCAE3005AC8EF /* Maths+Extension.swift in Sources */,
 				44AFAD1C232BCAE3005AC8EF /* UiModelNode.swift in Sources */,
 				44AFAD15232BCAE3005AC8EF /* Convert.swift in Sources */,
@@ -2482,7 +2482,7 @@
 				44AFAC45232B9BCF005AC8EF /* UiTextEditNode.swift in Sources */,
 				C46014AF23C71F6E002A63D4 /* ARPlaneDetector.m in Sources */,
 				C4C3D7492355D3E500ECEEDA /* TapSimulating.swift in Sources */,
-				C401821123EC11E400BE8D04 /* NodesManaging.swift in Sources */,
+				C401821123EC11E400BE8D04 /* NodesGestureHandler.swift in Sources */,
 				44AFAC47232B9BCF005AC8EF /* UiSpinnerNode.swift in Sources */,
 				44AFAC5C232B9BCF005AC8EF /* Convert.swift in Sources */,
 				C435F90E2382FA630060F956 /* DialogView.swift in Sources */,

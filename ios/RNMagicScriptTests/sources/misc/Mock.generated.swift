@@ -3227,8 +3227,8 @@ open class NodeSelectingMock: NodeSelecting, Mock {
     }
 }
 
-// MARK: - NodesManaging
-open class NodesManagingMock: NodesManaging, Mock {
+// MARK: - NodesGestureHandling
+open class NodesGestureHandlingMock: NodesGestureHandling, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy
@@ -3264,6 +3264,18 @@ open class NodesManagingMock: NodesManaging, Mock {
         if scopes.contains(.perform) { methodPerformValues = [] }
     }
 
+    public var onInputFocused: ((_ input: DataProviding) -> (Void))? {
+		get {	invocations.append(.p_onInputFocused_get); return __p_onInputFocused ?? optionalGivenGetterValue(.p_onInputFocused_get, "NodesGestureHandlingMock - stub value for onInputFocused was not defined") }
+		set {	invocations.append(.p_onInputFocused_set(.value(newValue))); __p_onInputFocused = newValue }
+	}
+	private var __p_onInputFocused: ((_ input: DataProviding) -> (Void))?
+
+    public var onInputUnfocused: (() -> (Void))? {
+		get {	invocations.append(.p_onInputUnfocused_get); return __p_onInputUnfocused ?? optionalGivenGetterValue(.p_onInputUnfocused_get, "NodesGestureHandlingMock - stub value for onInputUnfocused was not defined") }
+		set {	invocations.append(.p_onInputUnfocused_set(.value(newValue))); __p_onInputUnfocused = newValue }
+	}
+	private var __p_onInputUnfocused: (() -> (Void))?
+
 
 
 
@@ -3284,6 +3296,10 @@ open class NodesManagingMock: NodesManaging, Mock {
     fileprivate enum MethodType {
         case m_handleNodeTap__node(Parameter<BaseNode?>)
         case m_handleNodeLongPress__node_state(Parameter<BaseNode?>, Parameter<UIGestureRecognizer.State>)
+        case p_onInputFocused_get
+		case p_onInputFocused_set(Parameter<((_ input: DataProviding) -> (Void))?>)
+        case p_onInputUnfocused_get
+		case p_onInputUnfocused_set(Parameter<(() -> (Void))?>)
 
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
@@ -3294,6 +3310,10 @@ open class NodesManagingMock: NodesManaging, Mock {
                 guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
                 guard Parameter.compare(lhs: lhsState, rhs: rhsState, with: matcher) else { return false } 
                 return true 
+            case (.p_onInputFocused_get,.p_onInputFocused_get): return true
+			case (.p_onInputFocused_set(let left),.p_onInputFocused_set(let right)): return Parameter<((_ input: DataProviding) -> (Void))?>.compare(lhs: left, rhs: right, with: matcher)
+            case (.p_onInputUnfocused_get,.p_onInputUnfocused_get): return true
+			case (.p_onInputUnfocused_set(let left),.p_onInputUnfocused_set(let right)): return Parameter<(() -> (Void))?>.compare(lhs: left, rhs: right, with: matcher)
             default: return false
             }
         }
@@ -3302,6 +3322,10 @@ open class NodesManagingMock: NodesManaging, Mock {
             switch self {
             case let .m_handleNodeTap__node(p0): return p0.intValue
             case let .m_handleNodeLongPress__node_state(p0, p1): return p0.intValue + p1.intValue
+            case .p_onInputFocused_get: return 0
+			case .p_onInputFocused_set(let newValue): return newValue.intValue
+            case .p_onInputUnfocused_get: return 0
+			case .p_onInputUnfocused_set(let newValue): return newValue.intValue
             }
         }
     }
@@ -3314,6 +3338,12 @@ open class NodesManagingMock: NodesManaging, Mock {
             super.init(products)
         }
 
+        public static func onInputFocused(getter defaultValue: ((_ input: DataProviding) -> (Void))?...) -> PropertyStub {
+            return Given(method: .p_onInputFocused_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func onInputUnfocused(getter defaultValue: (() -> (Void))?...) -> PropertyStub {
+            return Given(method: .p_onInputUnfocused_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
 
     }
 
@@ -3322,6 +3352,10 @@ open class NodesManagingMock: NodesManaging, Mock {
 
         public static func handleNodeTap(_ node: Parameter<BaseNode?>) -> Verify { return Verify(method: .m_handleNodeTap__node(`node`))}
         public static func handleNodeLongPress(_ node: Parameter<BaseNode?>, _ state: Parameter<UIGestureRecognizer.State>) -> Verify { return Verify(method: .m_handleNodeLongPress__node_state(`node`, `state`))}
+        public static var onInputFocused: Verify { return Verify(method: .p_onInputFocused_get) }
+		public static func onInputFocused(set newValue: Parameter<((_ input: DataProviding) -> (Void))?>) -> Verify { return Verify(method: .p_onInputFocused_set(newValue)) }
+        public static var onInputUnfocused: Verify { return Verify(method: .p_onInputUnfocused_get) }
+		public static func onInputUnfocused(set newValue: Parameter<(() -> (Void))?>) -> Verify { return Verify(method: .p_onInputUnfocused_set(newValue)) }
     }
 
     public struct Perform {

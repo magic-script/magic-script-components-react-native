@@ -25,15 +25,15 @@ import UIKit
 }
 
 class GestureHandler: GestureHandling {
-    fileprivate(set) var nodesManager: NodesManaging
+    fileprivate(set) var nodesGestureHandler: NodesGestureHandling
 
-    init(nodesManager: NodesManaging) {
-        self.nodesManager = nodesManager
+    init(nodesGestureHandler: NodesGestureHandling) {
+        self.nodesGestureHandler = nodesGestureHandler
     }
 
     @objc func handleTapGesture(_ sender: TapGestureRecognizing) {
         if sender.state == .ended {
-            nodesManager.handleNodeTap(sender.tappedNode)
+            nodesGestureHandler.handleNodeTap(sender.tappedNode)
         }
     }
 
@@ -44,6 +44,6 @@ class GestureHandler: GestureHandling {
     }
 
     @objc func handleLongPressGesture(_ sender: LongPressGestureRecognizing) {
-        nodesManager.handleNodeLongPress(sender.longPressedNode, sender.state)
+        nodesGestureHandler.handleNodeLongPress(sender.longPressedNode, sender.state)
     }
 }

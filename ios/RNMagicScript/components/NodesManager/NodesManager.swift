@@ -18,30 +18,23 @@ import Foundation
 import SceneKit
 import ARKit
 
-@objc open class NodesManager: NSObject, NodesManaging {
-    @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:], focusedNode: nil)
+@objc open class NodesManager: NSObject {
+    @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
     @objc public private (set) var rootNode: BaseNode
-
-    var onInputFocused: ((_ input: DataProviding) -> (Void))?
-    var onInputUnfocused: (() -> (Void))?
 
     fileprivate var nodesById: [String: BaseNode]
     fileprivate var transformNodeByAnchorUuid: [String: TransformNode]
     fileprivate var anchorNodeByAnchorUuid: [String: SCNNode]
 
-    var focusedNode: UiNode?
-    var longPressedNode: UiNode?
-
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
 
-    init(rootNode: BaseNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode], focusedNode: UiNode?) {
+    init(rootNode: BaseNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode]) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.transformNodeByAnchorUuid = transformNodeByAnchorUuid
         self.anchorNodeByAnchorUuid = anchorNodeByAnchorUuid
-        self.focusedNode = focusedNode
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
@@ -50,47 +43,6 @@ import ARKit
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
     }
-
-    func handleNodeTap(_ node: BaseNode?) {
-        let uiNode = node as? UiNode
-        #if targetEnvironment(simulator)
-        let nodeType: String = (uiNode != nil) ? "\(uiNode!.classForCoder)" : "nil"
-        print("handleNodeTap: \(nodeType)")
-        #endif
-
-        if focusedNode?.leaveFocus(onBehalfOf: uiNode) ?? true {
-            if focusedNode != nil {
-                onInputUnfocused?()
-            }
-
-            focusedNode = uiNode
-        }
-
-        if uiNode?.enabled ?? false {
-            uiNode?.activate()
-            uiNode?.enterFocus()
-        }
-
-        if let input = node as? DataProviding {
-            onInputFocused?(input)
-        }
-    }
-
-    func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State) {
-        switch state {
-        case .began:
-            longPressedNode = node as? UiNode
-            longPressedNode?.longPressStarted()
-        case .changed:
-            break
-        case .ended, .cancelled:
-            longPressedNode?.longPressEnded()
-            longPressedNode = nil
-        default:
-            print("LongPressGesture unsupported state.")
-        }
-    }
-
 
     @objc public func findNodeWithId(_ nodeId: String) -> BaseNode? {
         return nodesById[nodeId]
@@ -236,17 +188,6 @@ import ARKit
 
         rootNode.enumerateTransformNodes { node in
             node.postUpdate()
-        }
-    }
-
-    @objc func textFieldShouldReturn() {
-        focusedNode?.leaveFocus()
-        onInputUnfocused?()
-    }
-
-    @objc func textFieldDidChange(text: String?) {
-        if let textEdit = focusedNode as? UiTextEditNode {
-            textEdit.text = text
         }
     }
 

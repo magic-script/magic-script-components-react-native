@@ -28,7 +28,6 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import junit.framework.Assert.assertEquals
@@ -37,7 +36,6 @@ import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -97,8 +95,8 @@ class ModelNodeTest {
 
         node.build()
 
-        assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
-        assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
+        assertEquals(Alignment.Horizontal.CENTER, node.horizontalAlignment)
+        assertEquals(Alignment.Vertical.CENTER, node.verticalAlignment)
     }
 
     @Test

@@ -1,10 +1,12 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.NodeInfo
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.magicleap.magicscript.scene.nodes.props.Bounding
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.scaled
+import com.magicleap.magicscript.utils.Vector2
 
 object LayoutUtils {
 
@@ -74,6 +76,53 @@ object LayoutUtils {
         } else {
             childIdx / columns
         }
+    }
+
+    fun getVerticalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
+        var sumPadding = 0f
+        for (i in 0 until end) {
+            val top = itemsPadding[i]?.top ?: 0f
+            val bottom = itemsPadding[i]?.bottom ?: 0f
+            sumPadding += top + bottom
+        }
+        return sumPadding
+    }
+
+    fun getHorizontalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
+        var sumPadding = 0f
+        for (i in 0 until end) {
+            val left = itemsPadding[i]?.left ?: 0f
+            val right = itemsPadding[i]?.right ?: 0f
+            sumPadding += left + right
+        }
+        return sumPadding
+    }
+
+    fun createNodeInfo(index: Int, node: TransformNode, nodeBounds: AABB): NodeInfo {
+        val nodeWidth = nodeBounds.size().x
+        val nodeHeight = nodeBounds.size().y
+        val boundsCenterX = nodeBounds.min.x + nodeWidth / 2
+        val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
+        val boundsCenterY = nodeBounds.max.y - nodeHeight / 2
+        val pivotOffsetY = node.localPosition.y - boundsCenterY // aligning according to center
+
+        return NodeInfo(node, index, nodeWidth, nodeHeight, pivotOffsetX, pivotOffsetY)
+    }
+
+    fun calculateLayoutSizeLimit(contentSize: Vector2, layoutSize: Vector2): Vector2 {
+        val sizeLimitX = if (layoutSize.x == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
+            contentSize.x
+        } else {
+            layoutSize.x
+        }
+
+        val sizeLimitY = if (layoutSize.y == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
+            contentSize.y
+        } else {
+            layoutSize.y
+        }
+
+        return Vector2(sizeLimitX, sizeLimitY)
     }
 
 }

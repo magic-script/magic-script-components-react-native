@@ -2,6 +2,7 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldHaveSize
 import org.junit.Test
@@ -58,11 +59,11 @@ class LayoutUtilsTest {
     fun `should add default value only if child do not have custom alignment`() {
         val childCount = 5
         val defaultAlignment =
-            Alignment(Alignment.VerticalAlignment.TOP, Alignment.HorizontalAlignment.LEFT)
+            Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
         val customAlignment2 =
-            Alignment(Alignment.VerticalAlignment.CENTER, Alignment.HorizontalAlignment.CENTER)
+            Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
         val customAlignment4 =
-            Alignment(Alignment.VerticalAlignment.BOTTOM, Alignment.HorizontalAlignment.RIGHT)
+            Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT)
         val childCustomAlignments = mapOf(
             2 to customAlignment2,
             4 to customAlignment4
@@ -157,11 +158,11 @@ class LayoutUtilsTest {
         val rows = UiGridLayout.DYNAMIC_VALUE
 
         val defaultAlignment =
-            Alignment(Alignment.VerticalAlignment.TOP, Alignment.HorizontalAlignment.LEFT)
+            Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
         val customAlignment1_1 =
-            Alignment(Alignment.VerticalAlignment.CENTER, Alignment.HorizontalAlignment.CENTER)
+            Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
         val customAlignment1_2 =
-            Alignment(Alignment.VerticalAlignment.BOTTOM, Alignment.HorizontalAlignment.RIGHT)
+            Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT)
         val childCustomAlignments = mapOf(
             Pair(1, 1) to customAlignment1_1,
             Pair(1, 2) to customAlignment1_2
@@ -220,4 +221,31 @@ class LayoutUtilsTest {
         LayoutUtils.getRowIndex(4, columns, rows) shouldEqual 2
         LayoutUtils.getRowIndex(5, columns, rows) shouldEqual 2
     }
+
+
+    @Test
+    fun `should return sum of all vertical paddings from the map`() {
+        val paddingMap = mapOf(
+            0 to Padding(1f, 0.5f, 0.4f, 2f),
+            1 to Padding(4f, 0.5f, 0.6f, 2f)
+        )
+
+        val paddingSum = LayoutUtils.getVerticalPaddingSumUntil(paddingMap, end = 2)
+
+        paddingSum shouldEqualInexact 6f
+    }
+
+    @Test
+    fun `should return sum of first 2 horizontal paddings from the map`() {
+        val paddingMap = mapOf(
+            0 to Padding(1f, 2f, 0.4f, 1f),
+            1 to Padding(4f, 1f, 0.6f, 4f),
+            2 to Padding(0f, 5f, 0.6f, 5f)
+        )
+
+        val paddingSum = LayoutUtils.getHorizontalPaddingSumUntil(paddingMap, end = 2)
+
+        paddingSum shouldEqualInexact 8f
+    }
+
 }

@@ -147,8 +147,8 @@ class UiListViewNodeTest {
         val containerNode = node.contentNode.children.firstOrNull()
         containerNode shouldBeInstanceOf UiLinearLayout::class
         val layoutParams = (containerNode as UiLinearLayout).getLayoutParams()
-        layoutParams.itemsAlignment[0]?.vertical shouldEqual Alignment.VerticalAlignment.TOP
-        layoutParams.itemsAlignment[0]?.horizontal shouldEqual Alignment.HorizontalAlignment.RIGHT
+        layoutParams.itemsAlignment[0]?.vertical shouldEqual Alignment.Vertical.TOP
+        layoutParams.itemsAlignment[0]?.horizontal shouldEqual Alignment.Horizontal.RIGHT
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {

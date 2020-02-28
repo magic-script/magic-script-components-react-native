@@ -122,8 +122,8 @@ class TransformNodeTest {
 
         node.update(propsToUpdate)
 
-        assertEquals(Alignment.VerticalAlignment.BOTTOM, node.verticalAlignment)
-        assertEquals(Alignment.HorizontalAlignment.RIGHT, node.horizontalAlignment)
+        assertEquals(Alignment.Vertical.BOTTOM, node.verticalAlignment)
+        assertEquals(Alignment.Horizontal.RIGHT, node.horizontalAlignment)
     }
 
     @Test

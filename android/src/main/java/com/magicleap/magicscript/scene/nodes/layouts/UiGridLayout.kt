@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes.layouts
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.*

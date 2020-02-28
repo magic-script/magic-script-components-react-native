@@ -84,8 +84,8 @@ class UiScrollViewNodeTest {
     fun `should not change the hardcoded center-center alignment`() {
         tested.update(TransformNode.PROP_ALIGNMENT, "bottom-left")
 
-        tested.verticalAlignment shouldEqual Alignment.VerticalAlignment.CENTER
-        tested.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.CENTER
+        tested.verticalAlignment shouldEqual Alignment.Vertical.CENTER
+        tested.horizontalAlignment shouldEqual Alignment.Horizontal.CENTER
     }
 
     @Test

@@ -76,10 +76,10 @@ abstract class TransformNode(
     /**
      * Alignment used to position a Renderable or [contentNode]
      */
-    var horizontalAlignment: Alignment.HorizontalAlignment = Alignment.HorizontalAlignment.CENTER
+    var horizontalAlignment: Alignment.Horizontal = Alignment.Horizontal.CENTER
         private set
 
-    var verticalAlignment: Alignment.VerticalAlignment = Alignment.VerticalAlignment.CENTER
+    var verticalAlignment: Alignment.Vertical = Alignment.Vertical.CENTER
         private set
 
     /**

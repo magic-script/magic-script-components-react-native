@@ -5,7 +5,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -51,8 +50,8 @@ class UIRectLayoutTest {
         val props = JavaOnlyMap()
         val node = createNode(props)
 
-        node.verticalAlignment shouldEqual Alignment.VerticalAlignment.TOP
-        node.horizontalAlignment shouldEqual Alignment.HorizontalAlignment.LEFT
+        node.verticalAlignment shouldEqual Alignment.Vertical.TOP
+        node.horizontalAlignment shouldEqual Alignment.Horizontal.LEFT
     }
 
     @Test
@@ -62,8 +61,8 @@ class UIRectLayoutTest {
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.VerticalAlignment.BOTTOM
-        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.HorizontalAlignment.LEFT
+        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
+        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.Horizontal.LEFT
     }
 
 

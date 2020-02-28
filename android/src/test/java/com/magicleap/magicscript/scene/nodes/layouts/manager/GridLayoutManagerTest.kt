@@ -2,6 +2,7 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -10,8 +11,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.GridLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Vector2
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,48 +21,48 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class GridLayoutManagerTest {
 
-    private val EPSILON = 1e-5f
     private lateinit var manager: GridLayoutManager
     private lateinit var childrenList: List<TransformNode>
     // <child index, bounding>
     private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
-    private var columns = 0
+    private var columns = 0 // dynamic
     private var rows = 1
     private var size = Vector2(1f, WRAP_CONTENT_DIMENSION)
-    private var itemPadding = Padding(0f, 0f, 0f, 0f)
-    private var itemHorizontalAlignment = Alignment.HorizontalAlignment.CENTER
-    private var itemVerticalAlignment = Alignment.VerticalAlignment.CENTER
+
+    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
+
+    private var itemsAlignment = mapOf(
+        0 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER),
+        1 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
+    )
+
+    private lateinit var context: Context
 
     @Before
     fun setUp() {
         manager = GridLayoutManager()
-        val context: Context = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
 
-        val child1 = UiNodeBuilder(context)
-            .withSize(2f, 1f)
-            .withAlignment("bottom-left")
-            .build()
-
-
-        val child2 = UiNodeBuilder(context)
-            .withSize(1f, 1f)
-            .withAlignment("bottom-left")
-            .build()
-
-        childrenList = listOf(child1, child2)
+        childrenList = listOf(
+            buildChild(width = 2f, height = 1f, alignment = "bottom-left"),
+            buildChild(width = 1f, height = 1f, alignment = "bottom-left")
+        )
     }
 
     @Test
     fun `should return correct layout bounds size when parent bigger than children bounds`() {
         size = Vector2(5f, 6f)
-        itemPadding = Padding(0.1f, 0.1f, 0.1f, 0.1f)
+        itemsPadding = mapOf(
+            0 to Padding(0.1f, 0.1f, 0.1f, 0.1f),
+            1 to Padding(0.1f, 0.1f, 0.1f, 0.1f)
+        )
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
         val boundsSize = manager.getLayoutBounds(getLayoutParams()).size()
-        assertEquals(5f, boundsSize.x, EPSILON)
-        assertEquals(6f, boundsSize.y, EPSILON)
+
+        boundsSize shouldEqualInexact Vector3(5f, 6f, 0f)
     }
 
     @Test
@@ -70,25 +71,24 @@ class GridLayoutManagerTest {
 
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
-        assertEquals(1 / 3f, childrenList[0].localScale.y, EPSILON)
-        assertEquals(1 / 3f, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(1 / 3f, 1 / 3f, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(1 / 3f, 1 / 3f, 1f)
     }
 
     @Test
     fun `should correctly scale children when padding set`() {
         size = Vector2(2.5f, WRAP_CONTENT_DIMENSION)
-        itemPadding = Padding(0f, 0.04f, 0f, 0.06f)
+        itemsPadding = mapOf(
+            0 to Padding(0f, 0.04f, 0f, 0.06f),
+            1 to Padding(0f, 0.04f, 0f, 0.06f)
+        )
+        // scale = (layout width - horizontal sum padding) / children sum width
+        val expectedXYScale = 0.76666f
 
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
-        // scale = (layout width - horizontal sum padding) / children sum width
-        val expectedScale = 0.76666f
-        assertEquals(expectedScale, childrenList[0].localScale.x, EPSILON)
-        assertEquals(expectedScale, childrenList[1].localScale.x, EPSILON)
-        assertEquals(expectedScale, childrenList[0].localScale.y, EPSILON)
-        assertEquals(expectedScale, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(expectedXYScale, expectedXYScale, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(expectedXYScale, expectedXYScale, 1f)
     }
 
     @Test
@@ -99,25 +99,58 @@ class GridLayoutManagerTest {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        assertEquals(1f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(1f, childrenList[1].localScale.x, EPSILON)
-        assertEquals(1f, childrenList[0].localScale.y, EPSILON)
-        assertEquals(1f, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(1f, 1f, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(1f, 1f, 1f)
     }
 
     @Test
     fun `should apply previous scale when padding set back to 0`() {
         size = Vector2(1f, WRAP_CONTENT_DIMENSION)
-        itemPadding = Padding(0.2f, 0.14f, 0.2f, 0.16f)
+        itemsPadding = mapOf(
+            0 to Padding(0.2f, 0.14f, 0.2f, 0.16f),
+            1 to Padding(0.2f, 0.14f, 0.2f, 0.16f)
+        )
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
-        itemPadding = Padding(0f, 0f, 0f, 0f)
+        itemsPadding = mapOf(0 to Padding(), 1 to Padding())
         manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
 
-        assertEquals(1 / 3f, childrenList[0].localScale.x, EPSILON)
-        assertEquals(1 / 3f, childrenList[1].localScale.x, EPSILON)
-        assertEquals(1 / 3f, childrenList[0].localScale.y, EPSILON)
-        assertEquals(1 / 3f, childrenList[1].localScale.y, EPSILON)
+        childrenList[0].localScale shouldEqualInexact Vector3(1 / 3f, 1 / 3f, 1f)
+        childrenList[1].localScale shouldEqualInexact Vector3(1 / 3f, 1 / 3f, 1f)
+    }
+
+    // positioning starts at top-left origin (0, 0) towards bottom-right
+    @Test
+    fun `should correctly position children with different padding`() {
+        size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
+        columns = 2
+        rows = 0 // dynamic
+
+        childrenList = listOf(
+            buildChild(width = 2f, height = 1f, alignment = "top-left"),
+            buildChild(width = 2f, height = 1f, alignment = "top-left"),
+            buildChild(width = 2f, height = 1f, alignment = "top-left"),
+            buildChild(width = 2f, height = 1f, alignment = "top-left")
+        )
+        itemsPadding = mapOf(
+            0 to Padding(0.5f, 0f, 0f, 0.5f),
+            1 to Padding(0.5f, 0.2f, 0f, 1.5f),
+            2 to Padding(0f, 0.4f, 0.4f, 0f),
+            3 to Padding(0f, 3f, 0f, 0f)
+        )
+        itemsAlignment = mapOf(
+            0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+            1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+        )
+
+        manager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
+
+        childrenList[0].localPosition shouldEqualInexact Vector3(0.5f, -0.5f, 0f)
+        childrenList[1].localPosition shouldEqualInexact Vector3(4f, -0.5f, 0f)
+        childrenList[2].localPosition shouldEqualInexact Vector3(0f, -1.5f, 0f)
+        childrenList[3].localPosition shouldEqualInexact Vector3(2.5f, -1.5f, 0f)
+        val layoutBounds = manager.getLayoutBounds(getLayoutParams())
+        layoutBounds shouldEqualInexact AABB(Vector3(0f, -2.9f, 0f), Vector3(7.5f, 0f, 0f))
     }
 
     private fun getLayoutParams() =
@@ -125,14 +158,15 @@ class GridLayoutManagerTest {
             columns = columns,
             rows = rows,
             size = size,
-            itemsAlignment = mapOf(
-                Pair(0, Alignment(itemVerticalAlignment, itemHorizontalAlignment)),
-                Pair(1, Alignment(itemVerticalAlignment, itemHorizontalAlignment))
-            ),
-            itemsPadding = mapOf(
-                Pair(0, itemPadding),
-                Pair(1, itemPadding)
-            )
+            itemsAlignment = itemsAlignment,
+            itemsPadding = itemsPadding
         )
+
+    private fun buildChild(width: Float, height: Float, alignment: String): TransformNode {
+        return UiNodeBuilder(context)
+            .withSize(width, height)
+            .withAlignment(alignment)
+            .build()
+    }
 
 }

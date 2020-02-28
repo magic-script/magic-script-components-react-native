@@ -203,8 +203,8 @@ class UiButtonNodeTest {
 
         node.build()
 
-        assertEquals(Alignment.HorizontalAlignment.CENTER, node.horizontalAlignment)
-        assertEquals(Alignment.VerticalAlignment.CENTER, node.verticalAlignment)
+        assertEquals(Alignment.Horizontal.CENTER, node.horizontalAlignment)
+        assertEquals(Alignment.Vertical.CENTER, node.verticalAlignment)
     }
 
     @Test

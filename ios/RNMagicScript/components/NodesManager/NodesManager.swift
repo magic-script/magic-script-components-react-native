@@ -18,6 +18,15 @@ import Foundation
 import SceneKit
 import ARKit
 
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol NodesManaging: NSObjectProtocol {
+    @objc func registerScene(_ scene: Scene, sceneId: String)
+    @objc func registerPrism(_ prism: Prism, prismId: String)
+    @objc func registerNode(_ node: TransformNode, nodeId: String)
+    @objc func unregisterNode(_ nodeId: String)
+}
+
 @objc open class NodesManager: NSObject {
     @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
     @objc public private (set) var rootNode: BaseNode
@@ -96,7 +105,7 @@ import ARKit
         }
     }
 
-    func getNodeById(_ nodeId: String) -> BaseNode? {
+    private func getNodeById(_ nodeId: String) -> BaseNode? {
         var result: BaseNode?
         result = nodesById[nodeId]
         if result == nil { result = prismsById[nodeId] }

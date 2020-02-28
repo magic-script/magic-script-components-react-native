@@ -1683,7 +1683,6 @@
 				C46014B523C73621002A63D4 /* Recognizers */,
 				44444718236AFD5A00665D31 /* Dragging.swift */,
 				C46014B223C73618002A63D4 /* GestureHandler.swift */,
-				C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */,
 			);
 			path = Gestures;
 			sourceTree = "<group>";
@@ -1720,6 +1719,7 @@
 		C4A07EF42409045100BDA262 /* NodesManager */ = {
 			isa = PBXGroup;
 			children = (
+				C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */,
 				44AFAC27232B9BCF005AC8EF /* NodesManager.swift */,
 				C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */,
 			);

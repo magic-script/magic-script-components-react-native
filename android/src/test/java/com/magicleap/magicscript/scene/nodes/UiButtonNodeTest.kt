@@ -158,7 +158,7 @@ class UiButtonNodeTest {
 
     @Test
     fun `should set icon when icon property present`() {
-        val props = reactMapOf(UiButtonNode.PROP_ICON, "magic-icon")
+        val props = reactMapOf(UiButtonNode.PROP_ICON_TYPE, "magic-icon")
         val node = createTestableNode(props)
 
         node.build()
@@ -170,7 +170,7 @@ class UiButtonNodeTest {
     fun `should set icon color when icon color property present`() {
         val color = reactArrayOf(0.1, 0.2, 0.3, 0.4)
         val props = reactMapOf(
-            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_TYPE, "magic-icon",
             UiButtonNode.PROP_ICON_COLOR, color
         )
         val node = createTestableNode(props)
@@ -185,7 +185,7 @@ class UiButtonNodeTest {
         val sizeInMeters = 0.1
         val iconSize = reactArrayOf(sizeInMeters, sizeInMeters)
         val props = reactMapOf(
-            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_TYPE, "magic-icon",
             UiButtonNode.PROP_ICON_SIZE, iconSize
         )
         val node = createTestableNode(props)

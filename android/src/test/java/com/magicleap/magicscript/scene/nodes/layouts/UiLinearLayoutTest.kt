@@ -78,16 +78,17 @@ class UiLinearLayoutTest {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
         val node = createNode(props)
+        val child = NodeBuilder().build()
+        node.addContent(child)
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsPadding[0] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+        layoutParams.itemsPadding[child] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
             build()
-            addContent(NodeBuilder().build())
         }
     }
 

@@ -18,7 +18,9 @@
 package com.magicleap.magicscript.scene.nodes.layouts.manager
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.magicleap.magicscript.layoutUntilStableBounds
 import com.magicleap.magicscript.scene.nodes.ContentNode
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -35,34 +37,46 @@ class PageViewManagerTest {
 
     private lateinit var pageViewManager: PageViewLayoutManager
 
-    private val layoutParams =
-        PageViewLayoutParams(
-            visiblePage = 0,
-            size = Vector2(1f, 1f),
-            itemsAlignment = mapOf(
-                0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
-                1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
-            ),
-            itemsPadding = mapOf(0 to Padding(), 1 to Padding())
-        )
+    private lateinit var childrenList: List<ContentNode>
+    private val childrenBounds = mutableMapOf<TransformNode, AABB>()
+    private lateinit var itemsPadding: Map<TransformNode, Padding>
+    private lateinit var itemsAlignment: Map<TransformNode, Alignment>
+    private var visiblePage = 0
 
     @Before
     fun setUp() {
-        this.pageViewManager = PageViewLayoutManager()
+        pageViewManager = PageViewLayoutManager()
+        childrenList = listOf(
+            ContentNode(JavaOnlyMap()),
+            ContentNode(JavaOnlyMap())
+        )
+
+        itemsPadding = mapOf(
+            childrenList[0] to Padding(),
+            childrenList[1] to Padding()
+        )
+
+        itemsAlignment = mapOf(
+            childrenList[0] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+            childrenList[1] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+        )
     }
 
     @Test
-    fun `should hide all children but the first`() {
-        val child1 = ContentNode(JavaOnlyMap())
-        val child2 = ContentNode(JavaOnlyMap())
-        val childrenList = listOf(child1, child2)
-        val boundsMap = mapOf(
-            0 to AABB(), 1 to AABB()
-        )
+    fun `should hide all children but the first when visible page is 0`() {
+        visiblePage = 0
 
-        pageViewManager.layoutChildren(layoutParams, childrenList, boundsMap)
+        pageViewManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
-        child1.isVisible shouldEqual true
-        child2.isVisible shouldEqual false
+        childrenList[0].isVisible shouldEqual true
+        childrenList[1].isVisible shouldEqual false
     }
+
+    private fun getLayoutParams() =
+        PageViewLayoutParams(
+            visiblePage = 0,
+            size = Vector2(1f, 1f),
+            itemsAlignment = itemsAlignment,
+            itemsPadding = itemsPadding
+        )
 }

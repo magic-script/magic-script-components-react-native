@@ -22,6 +22,7 @@ import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.*
 import org.junit.Test
@@ -186,6 +187,26 @@ class TransformNodeTest {
         node.localPosition = Vector3(-3f, 0f, 0f)
 
         child.clipBounds shouldEqual expectedChildBounds
+    }
+
+    @Test
+    fun `should hide the node when visible property is false`() {
+        val node = NodeBuilder()
+            .withProps(reactMapOf(TransformNode.PROP_VISIBLE, false))
+            .build()
+
+        node.isVisible shouldBe false
+    }
+
+    @Test
+    fun `should show the node when visible property updated to true`() {
+        val node = NodeBuilder()
+            .withProps(reactMapOf(TransformNode.PROP_VISIBLE, false))
+            .build()
+
+        node.update(reactMapOf(TransformNode.PROP_VISIBLE, true))
+
+        node.isVisible shouldBe true
     }
 
 }

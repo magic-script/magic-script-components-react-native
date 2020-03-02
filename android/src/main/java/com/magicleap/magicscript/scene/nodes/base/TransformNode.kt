@@ -52,6 +52,7 @@ abstract class TransformNode(
         const val PROP_LOCAL_ROTATION = "localRotation"
         const val PROP_LOCAL_TRANSFORM = "localTransform"
         const val PROP_ALIGNMENT = "alignment"
+        const val PROP_VISIBLE = "visible"
         const val PROP_ANCHOR_UUID = "anchorUuid"
 
         /**
@@ -287,11 +288,11 @@ abstract class TransformNode(
         }
     }
 
-    open fun hide() {
+    fun hide() {
         isVisible = false
     }
 
-    open fun show() {
+    fun show() {
         isVisible = true
     }
 
@@ -332,6 +333,7 @@ abstract class TransformNode(
         setLocalRotation(props)
         setLocalTransform(props)
         setAlignment(props)
+        setVisibility(props)
         setAnchorUuid(props)
     }
 
@@ -424,6 +426,11 @@ abstract class TransformNode(
                 applyAlignment()
             }
         }
+    }
+
+    private fun setVisibility(props: Bundle) {
+        val visible = props.read<Boolean>(PROP_VISIBLE) ?: return
+        this.isVisible = visible
     }
 
     protected open fun clipChildren() {

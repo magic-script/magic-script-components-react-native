@@ -40,10 +40,11 @@ class BaseNodeSpec: QuickSpec {
             }
 
             context("when asked to remove child node") {
-                it("should return false") {
+                it("should do nothing") {
                     let childNode = SCNNode()
-                    let result = node.addNode(childNode)
-                    expect(result).to(beFalse())
+                    expect(node.childNodes.count).to(equal(0))
+                    node.removeNode(childNode)
+                    expect(node.childNodes.count).to(equal(0))
                 }
             }
 

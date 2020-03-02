@@ -18,6 +18,8 @@ import Quick
 import Nimble
 @testable import RNMagicScriptHostApplication
 
+import SceneKit
+
 class SceneSpec: QuickSpec {
     override func spec() {
         describe("Scene") {
@@ -28,6 +30,14 @@ class SceneSpec: QuickSpec {
             }
 
             context("when initialized") {
+                context("when called with params") {
+                    it("should initialize object according to params") {
+                        scene = Scene(props: [:])
+                        expect(scene.prisms).toNot(beNil())
+                        expect(scene.prisms.count).to(equal(0))
+                    }
+                }
+
                 it("prisms container should be empty") {
                     expect(scene.prisms).toNot(beNil())
                     expect(scene.prisms.count).to(equal(0))
@@ -38,15 +48,69 @@ class SceneSpec: QuickSpec {
                     expect(scene.childNodes.count).to(equal(1))
                     expect(scene.childNodes.first).to(equal(scene.contentNode))
                 }
+
             }
 
             context("when asked to add child node") {
+                context("when child node is Prism") {
+                    it("should add it to content") {
+                        let prismNode = Prism()
+                        let result = scene.addNode(prismNode)
+                        expect(result).to(beTrue())
+                        expect(scene.prisms.count).to(equal(1))
+                        expect(scene.childNodes.count).to(equal(1))
+                        let contentNode = scene.childNodes.first
+                        expect(contentNode!.childNodes.count).to(equal(1))
+                        expect(contentNode!.childNodes.first).to(equal(prismNode))
+                        expect(scene.prisms.first).to(equal(prismNode))
+                        expect(prismNode.parent).to(equal(scene.contentNode))
+                    }
+                }
+
+                context("when child node is NOT Prism") {
+                    it("should do nothing") {
+                        let genericSCNNode = SCNNode()
+                        let result = scene.addNode(genericSCNNode)
+                        expect(result).to(beFalse())
+                        expect(scene.prisms.count).to(equal(0))
+                        expect(scene.childNodes.count).to(equal(1))
+                        let contentNode = scene.childNodes.first
+                        expect(contentNode!.childNodes.count).to(equal(0))
+                    }
+                }
 
             }
 
             context("when asked to remove child node") {
-                context("") {
+                context("when child node is Prism") {
+                    it("should add it to content") {
+                        let prismNode = Prism()
 
+                        // prepare
+                        let result = scene.addNode(prismNode)
+                        expect(result).to(beTrue())
+                        expect(scene.prisms.count).to(equal(1))
+                        expect(scene.childNodes.count).to(equal(1))
+                        let contentNode = scene.childNodes.first
+                        expect(contentNode!.childNodes.count).to(equal(1))
+                        expect(contentNode!.childNodes.first).to(equal(prismNode))
+
+                        // remove
+                        scene.removeNode(prismNode)
+                        expect(scene.prisms.count).to(equal(0))
+                        expect(prismNode.parent).to(beNil())
+                    }
+                }
+
+                context("when child node is NOT Prism/NOT added to Scene") {
+                    it("should do nothing") {
+                        let genericSCNNode = SCNNode()
+                        scene.removeNode(genericSCNNode)
+                        expect(scene.prisms.count).to(equal(0))
+                        expect(scene.childNodes.count).to(equal(1))
+                        let contentNode = scene.childNodes.first
+                        expect(contentNode!.childNodes.count).to(equal(0))
+                    }
                 }
             }
         }

@@ -146,7 +146,7 @@ class LayoutUtilsTest {
     }
 
     @Test
-    fun `should create alignment map with default values for grid layout`() {
+    fun `should create grid alignment map with default values if child alignments not specified`() {
         val children = createNodesList(3)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
@@ -167,7 +167,7 @@ class LayoutUtilsTest {
     }
 
     @Test
-    fun `should use default value only if child do not have custom alignment for grid child`() {
+    fun `should use default value only if grid child does not have custom alignment`() {
         val children = createNodesList(6)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
@@ -251,6 +251,36 @@ class LayoutUtilsTest {
     }
 
     @Test
+    fun `should return sum of last 2 vertical paddings from the map`() {
+        val childrenList = createNodesList(3)
+        val paddingMap = mapOf(
+            childrenList[0] to Padding(1f, 2f, 0.4f, 1f),
+            childrenList[1] to Padding(1f, 1f, 1f, 4f),
+            childrenList[2] to Padding(0.2f, 5f, 0.2f, 5f)
+        )
+
+        val paddingSum = LayoutUtils.getVerticalPaddingSumOf(
+            childrenList.subList(1, 3),
+            paddingMap
+        )
+
+        paddingSum shouldEqualInexact 2.4f
+    }
+
+    @Test
+    fun `should return sum of all horizontal paddings from the map`() {
+        val childrenList = createNodesList(2)
+        val paddingMap = mapOf(
+            childrenList[0] to Padding(1f, 2f, 0.4f, 3f),
+            childrenList[1] to Padding(4f, 0.5f, 0.6f, 2f)
+        )
+
+        val paddingSum = LayoutUtils.getHorizontalPaddingSumOf(childrenList, paddingMap)
+
+        paddingSum shouldEqualInexact 7.5f
+    }
+
+    @Test
     fun `should return sum of first 2 horizontal paddings from the map`() {
         val childrenList = createNodesList(3)
         val paddingMap = mapOf(
@@ -268,20 +298,50 @@ class LayoutUtilsTest {
     }
 
     @Test
-    fun `should return sum of all horizontal bounds size from the map`() {
+    fun `should return sum of all horizontal bounds sizes from the map`() {
         val childrenList = createNodesList(2)
         val boundsMap = mapOf(
             childrenList[0] to AABB(min = Vector3(-1.5f, -0.5f, 0f), max = Vector3(1f, 1f, 0f)),
             childrenList[1] to AABB(min = Vector3(0.1f, -0.5f, 0f), max = Vector3(0.5f, 1f, 0f))
         )
 
-        val paddingSum = LayoutUtils.getHorizontalBoundsSumOf(childrenList, boundsMap)
+        val sum = LayoutUtils.getHorizontalBoundsSumOf(childrenList, boundsMap)
 
-        paddingSum shouldEqualInexact 2.9f
+        sum shouldEqualInexact 2.9f
     }
 
     @Test
-    fun `should return sum of last 2 vertical bounds size from the map`() {
+    fun `should return sum of all vertical bounds sizes from the map`() {
+        val childrenList = createNodesList(2)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(-1.5f, -2f, 0f), max = Vector3(1f, 1f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, -0.5f, 0f), max = Vector3(0.5f, 0f, 0f))
+        )
+
+        val sum = LayoutUtils.getVerticalBoundsSumOf(childrenList, boundsMap)
+
+        sum shouldEqualInexact 3.5f
+    }
+
+    @Test
+    fun `should return sum of first and last horizontal bounds sizes from the map`() {
+        val childrenList = createNodesList(3)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(0f, -0.5f, 0f), max = Vector3(3f, 2f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, 0f, 0f), max = Vector3(0.5f, 1f, 0f)),
+            childrenList[2] to AABB(min = Vector3(-0.3f, -1f, 0f), max = Vector3(0.4f, 0f, 0f))
+        )
+
+        val sum = LayoutUtils.getHorizontalBoundsSumOf(
+            children = listOf(childrenList.first(), childrenList.last()),
+            bounds = boundsMap
+        )
+
+        sum shouldEqualInexact 3.7f
+    }
+
+    @Test
+    fun `should return sum of last 2 vertical bounds sizes from the map`() {
         val childrenList = createNodesList(3)
         val boundsMap = mapOf(
             childrenList[0] to AABB(min = Vector3(-1.5f, -0.5f, 0f), max = Vector3(1f, 2f, 0f)),
@@ -289,12 +349,12 @@ class LayoutUtilsTest {
             childrenList[2] to AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 0f, 0f))
         )
 
-        val paddingSum = LayoutUtils.getVerticalBoundsSumOf(
+        val sum = LayoutUtils.getVerticalBoundsSumOf(
             children = childrenList.subList(1, 3),
             bounds = boundsMap
         )
 
-        paddingSum shouldEqualInexact 2f
+        sum shouldEqualInexact 2f
     }
 
     private fun createNodesList(count: Int): List<TransformNode> {

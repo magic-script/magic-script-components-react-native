@@ -79,7 +79,7 @@ class UiColorPickerNodeTest {
         props: ReadableMap = JavaOnlyMap()
     ): UiColorPickerNode {
         return object : UiColorPickerNode(
-            props, context, mock(), mock(), mock(), mock(), mock(), colorPickerDialog
+            props, context, mock(), mock(), mock(), mock(), colorPickerDialog
         ) {
             override fun provideView(context: Context): View {
                 return containerSpy

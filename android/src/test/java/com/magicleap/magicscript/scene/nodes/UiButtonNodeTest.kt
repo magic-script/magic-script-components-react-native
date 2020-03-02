@@ -23,16 +23,18 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.*
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.*
@@ -56,7 +58,6 @@ class UiButtonNodeTest {
     private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
-    private lateinit var animator: NodeAnimator
 
     @Before
     fun setUp() {
@@ -71,7 +72,6 @@ class UiButtonNodeTest {
         this.iconsRepo = mock()
         val sampleIcon = context.getDrawable(R.drawable.add)
         whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
-        animator = mock()
     }
 
     @Test
@@ -256,19 +256,9 @@ class UiButtonNodeTest {
         bounding.max shouldEqualInexact Vector3(0.5f, 1f, 0f)
     }
 
-    @Test
-    fun `should animate content node on click`() {
-        val node = createTestableNode(JavaOnlyMap())
-        node.build()
-
-        node.performClick()
-
-        verify(animator).play(eq(node.contentNode), any())
-    }
-
     private fun createTestableNode(props: ReadableMap): UiButtonNode {
         return object :
-            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo, animator) {
+            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

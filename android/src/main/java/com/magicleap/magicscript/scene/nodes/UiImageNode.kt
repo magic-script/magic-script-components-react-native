@@ -53,10 +53,6 @@ open class UiImageNode(
         const val PROP_USE_DEFAULT_ICON = "useDefaultIcon"
     }
 
-    init {
-        isVisible = false
-    }
-
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.image, null)
     }

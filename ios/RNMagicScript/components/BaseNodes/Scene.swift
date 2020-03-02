@@ -17,9 +17,11 @@
 import SceneKit
 
 @objc open class Scene: BaseNode {
-    @objc fileprivate(set) var contentNode: SCNNode!
+    static let centerPointPosition = CGPoint(x: -500.0, y: -500.0)
+    static let boxSize: CGFloat = 1000.0
 
-    @objc var prisms: [Prism] = []
+    @objc fileprivate(set) var contentNode: SCNNode!
+    @objc fileprivate(set) var prisms: [Prism] = []
 
     @objc override init() {
         super.init()
@@ -70,11 +72,11 @@ import SceneKit
         return self
     }
 
-    override func getHitTestPoint(ray: Ray) -> SCNVector3? {
+    func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()
         guard let point = localPlane.intersectRay(localRay) else { return nil }
-        let bounds = CGRect(x: -500.0, y: -500.0, width: 1000.0, height: 1000.0)
+        let bounds = CGRect(x: Scene.centerPointPosition.x, y: Scene.centerPointPosition.y, width: Scene.boxSize, height: Scene.boxSize)
         if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
             return point
         }
@@ -82,7 +84,7 @@ import SceneKit
         return nil
     }
 
-    @objc override func selfHitTest(ray: Ray) -> BaseNode? {
+    override func selfHitTest(ray: Ray) -> BaseNode? {
         guard let _ = getHitTestPoint(ray: ray) else { return nil }
         return self
     }

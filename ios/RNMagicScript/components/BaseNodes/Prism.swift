@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+//  Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     @objc fileprivate(set) var contentNode: SCNNode!
+
+    @objc var debug: Bool = false {
+        didSet { setDebugMode(debug) }
+    }
     @objc fileprivate(set) var debugNode: SCNNode!
 
     @objc public var size: SCNVector3 = SCNVector3(0.0, 0.0, 0.0) {
@@ -49,13 +53,11 @@ import SceneKit
         contentNode = SCNNode()
         addChildNode(contentNode)
 
-        //
         let box = SCNBox(width: CGFloat(size.x), height: CGFloat(size.y), length: CGFloat(size.z), chamferRadius: 0)
         box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
         box.firstMaterial?.isDoubleSided = true
 
         debugNode = SCNNode(geometry: box)
-        contentNode.addChildNode(debugNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -66,6 +68,18 @@ import SceneKit
 
         if let position = Convert.toVector3(props["position"]) {
             self.contentNode.position = position
+        }
+
+        if let rotation = Convert.toQuaternion(props["rotation"]) {
+            self.rotation = rotation
+        }
+
+        if let scale = Convert.toVector3(props["scale"]) {
+            self.scale = scale
+        }
+
+        if let debug = Convert.toBool(props["debug"]) {
+            self.debug = debug
         }
     }
 
@@ -84,14 +98,14 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> BaseNode? {
-//        guard let _ = selfHitTest(ray: ray) else { return nil }
+        // UPDATE THIS
         if contentNode.childNodes.count == 2, let prismRoot = contentNode.childNodes[1] as? TransformNode {
             return prismRoot.hitTest(ray: ray)
         }
         return self
     }
 
-    override func getHitTestPoint(ray: Ray) -> SCNVector3? {
+    func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()
         guard let point = localPlane.intersectRay(localRay) else { return nil }
@@ -104,8 +118,17 @@ import SceneKit
     }
 
     @objc override func selfHitTest(ray: Ray) -> BaseNode? {
-        //        guard !skipRaycast && visible else { return nil }
         guard let _ = getHitTestPoint(ray: ray) else { return nil }
         return self
+    }
+
+    @objc func setDebugMode(_ debug: Bool) {
+        if debug {
+            if !contentNode.childNodes.contains(debugNode) {
+                contentNode.addChildNode(debugNode)
+            }
+        } else {
+            debugNode.removeFromParentNode()
+        }
     }
 }

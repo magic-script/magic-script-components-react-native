@@ -21,10 +21,15 @@ import ARKit
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
 @objc protocol NodesManaging: NSObjectProtocol {
+    @objc var scene: Scene? { get }
+    @objc var prismsById: [String: Prism] { get }
+
     @objc func registerScene(_ scene: Scene, sceneId: String)
     @objc func registerPrism(_ prism: Prism, prismId: String)
     @objc func registerNode(_ node: TransformNode, nodeId: String)
     @objc func unregisterNode(_ nodeId: String)
+
+    @objc func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool
 }
 
 @objc open class NodesManager: NSObject {
@@ -65,17 +70,18 @@ import ARKit
         return transformNodeByAnchorUuid[nodeId]
     }
 
-    @objc public private (set) var scene: Scene?
+    @objc public private(set) var scene: Scene?
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
+//        nodesById[sceneId] = scene
     }
 
-    fileprivate var prismsById: [String: Prism] = [:]
+    @objc public private(set) var prismsById: [String: Prism] = [:]
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
-        nodesById[prismId] = prism
+//        nodesById[prismId] = prism
     }
 
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
@@ -103,14 +109,6 @@ import ARKit
                 uiNode.onDelete?(uiNode)
             }
         }
-    }
-
-    private func getNodeById(_ nodeId: String) -> BaseNode? {
-        var result: BaseNode?
-        result = nodesById[nodeId]
-        if result == nil { result = prismsById[nodeId] }
-        if result == nil { result = self.scene?.name == nodeId ? self.scene : nil }
-        return result
     }
 
     @objc public func addNode(_ nodeId: String, toParent parentId: String) {
@@ -147,6 +145,7 @@ import ARKit
 
     @objc public func removeNodeFromRoot(_ nodeId: String) {
         if let scene = self.scene,
+            scene.name == nodeId,
             rootNode == scene.parent {
             scene.removeFromParentNode()
             removeSceneWithDescendants(scene)
@@ -174,6 +173,14 @@ import ARKit
             value.removeFromParentNode()
         }
         nodesById.removeAll()
+    }
+
+    private func getNodeById(_ nodeId: String) -> BaseNode? {
+        var result: BaseNode?
+        result = nodesById[nodeId]
+        if result == nil { result = prismsById[nodeId] }
+        if result == nil { result = self.scene?.name == nodeId ? self.scene : nil }
+        return result
     }
 
     @objc public func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {

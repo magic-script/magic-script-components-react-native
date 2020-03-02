@@ -19,9 +19,9 @@ import Nimble
 import SceneKit
 @testable import RNMagicScriptHostApplication
 
-class UiNodesManagerSpec: QuickSpec {
+class NodesManagerSpec: QuickSpec {
     override func spec() {
-        describe("UiNodesManager") {
+        describe("NodesManager") {
             var nodesManager: NodesManager!
             let referenceSceneNode = Scene()
             let referenceSceneNodeId = "referenceSceneNodeId"

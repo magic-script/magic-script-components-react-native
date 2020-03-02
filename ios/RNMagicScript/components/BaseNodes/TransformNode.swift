@@ -196,7 +196,7 @@ import SceneKit
     @objc func postUpdate() {
     }
 
-    override func getHitTestPoint(ray: Ray) -> SCNVector3? {
+    func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()
         guard let point = localPlane.intersectRay(localRay) else { return nil }

@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+//  Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -33,21 +33,18 @@ import SceneKit
         return selfHitTest(ray: ray)
     }
 
-    func getHitTestPoint(ray: Ray) -> SCNVector3? {
+    func selfHitTest(ray: Ray) -> BaseNode? {
         return nil
     }
 
-    @objc func selfHitTest(ray: Ray) -> BaseNode? {
-        return nil
-    }
-
-    @objc func convertRayToLocal(ray: Ray) -> Ray {
+    // LOOKS LIKE IT SHOULD BE Ray IMPLEMENTATION
+    func convertRayToLocal(ray: Ray) -> Ray {
        let localRayBegin = convertPosition(ray.begin, from: nil)
        let localRayDirection = convertVector(ray.direction, from: nil)
        return Ray(begin: localRayBegin, direction: localRayDirection, length: ray.length)
     }
 
-    @objc func getPlane() -> Plane {
+    func getPlane() -> Plane {
         return Plane(center: position, normal: transform.forward)
     }
 }

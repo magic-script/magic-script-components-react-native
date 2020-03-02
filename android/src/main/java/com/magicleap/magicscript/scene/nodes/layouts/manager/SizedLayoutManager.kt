@@ -29,13 +29,13 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     protected var childrenList = listOf<TransformNode>()
         private set
 
-    protected var childrenBounds = mapOf<Int, AABB>()
+    protected var childrenBounds = mapOf<TransformNode, AABB>()
         private set
 
     override fun layoutChildren(
         layoutParams: T,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>
+        childrenBounds: Map<TransformNode, AABB>
     ) {
         this.childrenList = children
         this.childrenBounds = childrenBounds
@@ -45,7 +45,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
 
     open fun onPreLayout(
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>,
+        childrenBounds: Map<TransformNode, AABB>,
         layoutParams: LayoutParams
     ) {
     }
@@ -53,10 +53,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     /**
      * Should return max allowed width of child with [childIdx]
      */
-    abstract fun getMaxChildWidth(
-        childIdx: Int,
-        layoutParams: T
-    ): Float
+    abstract fun getMaxChildWidth(childIdx: Int, layoutParams: T): Float
 
     /**
      * Should return max allowed height of child with [childIdx]
@@ -69,7 +66,7 @@ abstract class SizedLayoutManager<T : LayoutParams> : LayoutManager<T> {
     private fun rescaleChildren(children: List<TransformNode>, layoutParams: T) {
         for (i in children.indices) {
             val child = children[i]
-            val childSize = (childrenBounds[i] ?: AABB()).size()
+            val childSize = (childrenBounds[child] ?: AABB()).size()
             if (child.localScale.x > 0 && child.localScale.y > 0) {
                 val childWidth = childSize.x / child.localScale.x
                 val childHeight = childSize.y / child.localScale.y

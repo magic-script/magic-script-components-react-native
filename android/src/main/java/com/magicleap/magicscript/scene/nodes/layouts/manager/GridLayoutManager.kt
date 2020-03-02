@@ -45,13 +45,13 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
     override fun layoutChildren(
         layoutParams: GridLayoutParams,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>
+        childrenBounds: Map<TransformNode, AABB>
     ) {
         super.layoutChildren(layoutParams, children, childrenBounds)
 
         for (i in children.indices) {
             val node = childrenList[i]
-            val nodeBounds = childrenBounds.getValue(i)
+            val nodeBounds = childrenBounds.getValue(node)
             val nodeInfo = LayoutUtils.createNodeInfo(i, node, nodeBounds)
             layoutNode(nodeInfo, layoutParams)
         }
@@ -59,7 +59,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     override fun onPreLayout(
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>,
+        childrenBounds: Map<TransformNode, AABB>,
         layoutParams: LayoutParams
     ) {
         super.onPreLayout(children, childrenBounds, layoutParams)
@@ -73,14 +73,15 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             layoutParams as GridLayoutParams
             val col = LayoutUtils.getColumnIndex(i, layoutParams.columns, layoutParams.rows)
             val row = LayoutUtils.getRowIndex(i, layoutParams.columns, layoutParams.rows)
-            val bounds = childrenBounds[i] ?: AABB()
+            val node = children[i]
+            val bounds = childrenBounds[node] ?: AABB()
 
             val width = bounds.size().x
             if (width > maxChildWidthInColumnMap[col] ?: 0.0F) {
                 maxChildWidthInColumnMap[col] = width
             }
 
-            val padding = layoutParams.itemsPadding[i] ?: Padding()
+            val padding = layoutParams.itemsPadding[node] ?: Padding()
 
             val childWidthWithPadding = width + padding.left + padding.right
             columnsWidthMap[col] = max(columnsWidthMap[col] ?: 0f, childWidthWithPadding)
@@ -123,7 +124,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
     private fun layoutNode(nodeInfo: NodeInfo, layoutParams: GridLayoutParams) {
         val index = nodeInfo.index
-        val itemPadding = layoutParams.itemsPadding[index] ?: Padding()
+        val itemPadding = layoutParams.itemsPadding[nodeInfo.node] ?: Padding()
 
         val col = LayoutUtils.getColumnIndex(index, layoutParams.columns, layoutParams.rows)
         val row = LayoutUtils.getRowIndex(index, layoutParams.columns, layoutParams.rows)
@@ -133,7 +134,7 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
 
         // calculating x position for a child
         val columnX = getColumnX(col)
-        val itemAlignment = layoutParams.itemsAlignment[index] ?: Alignment()
+        val itemAlignment = layoutParams.itemsAlignment[nodeInfo.node] ?: Alignment()
 
         val x = when (itemAlignment.horizontal) {
             Alignment.Horizontal.LEFT -> {
@@ -185,8 +186,8 @@ class GridLayoutManager : SizedLayoutManager<GridLayoutParams>() {
             layoutParams.size.y
         }
 
-        val minZ = childrenBounds.values.minBy { it.min.z }?.min?.z ?: 0f
-        val maxZ = childrenBounds.values.maxBy { it.max.z }?.max?.z ?: 0f
+        val minZ = LayoutUtils.getMinZ(childrenList, childrenBounds)
+        val maxZ = LayoutUtils.getMaxZ(childrenList, childrenBounds)
 
         return AABB(min = Vector3(0f, -height, minZ), max = Vector3(width, 0f, maxZ))
     }

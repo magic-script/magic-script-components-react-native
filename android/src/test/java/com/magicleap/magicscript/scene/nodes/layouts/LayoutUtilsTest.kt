@@ -230,7 +230,7 @@ class LayoutUtilsTest {
             1 to Padding(4f, 0.5f, 0.6f, 2f)
         )
 
-        val paddingSum = LayoutUtils.getVerticalPaddingSumUntil(paddingMap, end = 2)
+        val paddingSum = LayoutUtils.getVerticalPaddingSumOf(paddingMap, end = 2)
 
         paddingSum shouldEqualInexact 6f
     }
@@ -243,7 +243,7 @@ class LayoutUtilsTest {
             2 to Padding(0f, 5f, 0.6f, 5f)
         )
 
-        val paddingSum = LayoutUtils.getHorizontalPaddingSumUntil(paddingMap, end = 2)
+        val paddingSum = LayoutUtils.getHorizontalPaddingSumOf(paddingMap, end = 2)
 
         paddingSum shouldEqualInexact 8f
     }

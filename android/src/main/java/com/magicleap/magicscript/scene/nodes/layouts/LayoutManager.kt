@@ -32,7 +32,7 @@ interface LayoutManager<T : LayoutParams> {
     fun layoutChildren(
         layoutParams: T,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>
+        childrenBounds: Map<TransformNode, AABB>
     )
 
     /**

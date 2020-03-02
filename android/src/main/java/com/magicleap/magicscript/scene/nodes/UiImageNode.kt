@@ -25,8 +25,8 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.Vector2
@@ -51,6 +51,10 @@ open class UiImageNode(
         const val PROP_COLOR = "color"
         const val PROP_FRAME = "useFrame"
         const val PROP_USE_DEFAULT_ICON = "useDefaultIcon"
+    }
+
+    init {
+        isVisible = false
     }
 
     override fun provideView(context: Context): View {

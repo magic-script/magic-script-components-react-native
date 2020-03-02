@@ -11,54 +11,54 @@ import com.magicleap.magicscript.utils.Vector2
 object LayoutUtils {
 
     fun createChildrenPaddingMap(
-        childCount: Int,
+        children: List<TransformNode>,
         defaultPadding: Padding,
         childPaddings: Map<Int, Padding>? = null
-    ) = mutableMapOf<Int, Padding>()
+    ) = mutableMapOf<TransformNode, Padding>()
         .apply {
-            for (i in 0 until childCount) {
-                this[i] = childPaddings?.get(i) ?: defaultPadding
+            for (i in children.indices) {
+                this[children[i]] = childPaddings?.get(i) ?: defaultPadding
             }
         }
 
     fun createChildrenAlignmentMap(
-        childCount: Int,
+        children: List<TransformNode>,
         defaultAlignment: Alignment,
         childAlignments: Map<Int, Alignment>? = null
-    ) = mutableMapOf<Int, Alignment>()
+    ) = mutableMapOf<TransformNode, Alignment>()
         .apply {
-            for (i in 0 until childCount) {
-                this[i] = childAlignments?.get(i) ?: defaultAlignment
+            for (i in children.indices) {
+                this[children[i]] = childAlignments?.get(i) ?: defaultAlignment
             }
         }
 
     fun createChildrenPaddingMap(
         columns: Int,
         rows: Int,
-        childCount: Int,
+        children: List<TransformNode>,
         defaultPadding: Padding,
         childPaddings: Map<Pair<Int, Int>, Padding>? = null
-    ) = mutableMapOf<Int, Padding>()
+    ) = mutableMapOf<TransformNode, Padding>()
         .apply {
-            for (i in 0 until childCount) {
+            for (i in children.indices) {
                 val column = getColumnIndex(i, columns, rows)
                 val row = getRowIndex(i, columns, rows)
-                this[i] = childPaddings?.get(Pair(column, row)) ?: defaultPadding
+                this[children[i]] = childPaddings?.get(Pair(column, row)) ?: defaultPadding
             }
         }
 
     fun createChildrenAlignmentMap(
         columns: Int,
         rows: Int,
-        childCount: Int,
+        children: List<TransformNode>,
         defaultAlignment: Alignment,
         childAlignments: Map<Pair<Int, Int>, Alignment>? = null
-    ) = mutableMapOf<Int, Alignment>()
+    ) = mutableMapOf<TransformNode, Alignment>()
         .apply {
-            for (i in 0 until childCount) {
+            for (i in children.indices) {
                 val column = getColumnIndex(i, columns, rows)
                 val row = getRowIndex(i, columns, rows)
-                this[i] = childAlignments?.get(Pair(column, row)) ?: defaultAlignment
+                this[children[i]] = childAlignments?.get(Pair(column, row)) ?: defaultAlignment
             }
         }
 
@@ -78,24 +78,66 @@ object LayoutUtils {
         }
     }
 
-    fun getVerticalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
+    fun getVerticalPaddingSumOf(
+        children: List<TransformNode>,
+        paddingMap: Map<TransformNode, Padding>
+    ): Float {
         var sumPadding = 0f
-        for (i in 0 until end) {
-            val top = itemsPadding[i]?.top ?: 0f
-            val bottom = itemsPadding[i]?.bottom ?: 0f
+        for (child in children) {
+            val top = paddingMap[child]?.top ?: 0f
+            val bottom = paddingMap[child]?.bottom ?: 0f
             sumPadding += top + bottom
         }
         return sumPadding
     }
 
-    fun getHorizontalPaddingSumUntil(itemsPadding: Map<Int, Padding>, end: Int): Float {
+    fun getHorizontalPaddingSumOf(
+        children: List<TransformNode>,
+        paddingMap: Map<TransformNode, Padding>
+    ): Float {
         var sumPadding = 0f
-        for (i in 0 until end) {
-            val left = itemsPadding[i]?.left ?: 0f
-            val right = itemsPadding[i]?.right ?: 0f
+        for (child in children) {
+            val left = paddingMap[child]?.left ?: 0f
+            val right = paddingMap[child]?.right ?: 0f
             sumPadding += left + right
         }
         return sumPadding
+    }
+
+    fun getVerticalBoundsSumOf(children: List<TransformNode>, bounds: Map<TransformNode, AABB>):
+            Float {
+        var sumBounds = 0f
+        for (child in children) {
+            sumBounds += bounds[child]?.size()?.y ?: 0f
+        }
+        return sumBounds
+    }
+
+    fun getHorizontalBoundsSumOf(
+        children: List<TransformNode>,
+        bounds: Map<TransformNode, AABB>
+    ): Float {
+        var sumBounds = 0f
+        for (child in children) {
+            sumBounds += bounds[child]?.size()?.x ?: 0f
+        }
+        return sumBounds
+    }
+
+    fun getMinZ(
+        childrenList: List<TransformNode>,
+        childrenBounds: Map<TransformNode, AABB>
+    ): Float {
+        val filteredBounds = childrenBounds.filter { it.key in childrenList }
+        return filteredBounds.values.minBy { it.min.z }?.min?.z ?: 0f
+    }
+
+    fun getMaxZ(
+        childrenList: List<TransformNode>,
+        childrenBounds: Map<TransformNode, AABB>
+    ): Float {
+        val filteredBounds = childrenBounds.filter { it.key in childrenList }
+        return filteredBounds.values.maxBy { it.max.z }?.max?.z ?: 0f
     }
 
     fun createNodeInfo(index: Int, node: TransformNode, nodeBounds: AABB): NodeInfo {

@@ -60,7 +60,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
     // we should re-draw the grid after adding / removing a child
     private var redrawRequested = false
 
-    // <child index, bounding>
     private val childrenBounds = mutableMapOf<TransformNode, AABB>()
 
     private var handler = Handler(Looper.getMainLooper())
@@ -105,6 +104,13 @@ abstract class UiBaseLayout<T : LayoutParams>(
         if (!isVisible) {
             child.hide()
         }
+        child.addVisibilityListener(object : VisibilityChangedListener {
+            override fun invoke(visible: Boolean) {
+                if (skipInvisibleItems) {
+                    requestLayout()
+                }
+            }
+        })
         mChildrenList.add(child)
         onAddedToLayoutListener?.invoke(child)
         redrawRequested = true
@@ -116,7 +122,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
             contentNode.removeChild(child)
             onRemovedFromLayoutListener?.invoke(child)
         }
-        childrenBounds.clear() // indexes changed
+        childrenBounds.remove(child)
         redrawRequested = true
     }
 
@@ -139,21 +145,25 @@ abstract class UiBaseLayout<T : LayoutParams>(
     private fun layoutLoop() {
         measureChildren()
         if (redrawRequested) {
-            layoutManager.layoutChildren(getLayoutParams(), getChildrenToLayout(), childrenBounds)
-            redrawRequested = false
-
-            // Attach the child after position is calculated
-            mChildrenList
-                .filter { it !in contentNode.children }
-                .forEach { contentNode.addChild(it) }
-
-            // need to clip materials, because content position has changed
-            clipChildren()
+            layout()
         }
 
         handler.postDelayed({
             layoutLoop()
         }, MEASURE_INTERVAL)
+    }
+
+    private fun layout() {
+        layoutManager.layoutChildren(getLayoutParams(), getChildrenToLayout(), childrenBounds)
+        redrawRequested = false
+
+        // Attach the child after position is calculated
+        mChildrenList
+            .filter { it !in contentNode.children }
+            .forEach { contentNode.addChild(it) }
+
+        // need to clip materials, because content position has changed
+        clipChildren()
     }
 
     /**
@@ -186,6 +196,12 @@ abstract class UiBaseLayout<T : LayoutParams>(
         val skip = props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS) ?: return
         this.skipInvisibleItems = skip
         requestLayout()
+    }
+
+    class Test<T : LayoutParams>(val layoutNode: UiBaseLayout<T>) {
+        fun forceLayout() {
+            layoutNode.layout()
+        }
     }
 
 }

@@ -25,7 +25,7 @@ class GridLayoutManagerTest {
     private lateinit var childrenList: List<TransformNode>
     private lateinit var itemsPadding: Map<TransformNode, Padding>
     private lateinit var itemsAlignment: Map<TransformNode, Alignment>
-    // <child index, bounding>
+
     private val childrenBounds = mutableMapOf<TransformNode, AABB>()
 
     // Layout params

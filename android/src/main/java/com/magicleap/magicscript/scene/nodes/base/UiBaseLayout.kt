@@ -193,9 +193,10 @@ abstract class UiBaseLayout<T : LayoutParams>(
     }
 
     private fun setSkipInvisibleItems(props: Bundle) {
-        val skip = props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS) ?: return
-        this.skipInvisibleItems = skip
-        requestLayout()
+        props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS)?.let { skip ->
+            this.skipInvisibleItems = skip
+            requestLayout()
+        }
     }
 
     class Test<T : LayoutParams>(val layoutNode: UiBaseLayout<T>) {

@@ -21,11 +21,11 @@ import android.os.Bundle
 import android.view.View
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.utils.*
@@ -36,8 +36,7 @@ open class UiButtonNode(
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
     private val fontProvider: FontProvider,
-    private val iconsRepo: IconsRepository,
-    private val clickAnimator: NodeAnimator?
+    private val iconsRepo: IconsRepository
 ) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     companion object {
@@ -48,9 +47,11 @@ open class UiButtonNode(
         const val PROP_TEXT_SIZE = "textSize"
         const val PROP_TEXT_COLOR = "textColor"
         const val PROP_ROUNDNESS = "roundness"
-        const val PROP_ICON = "icon"
+        const val PROP_ICON_TYPE = "iconType"
         const val PROP_ICON_COLOR = "iconColor"
         const val PROP_ICON_SIZE = "iconSize"
+        const val PROP_TYPE = "type"
+        const val PROP_LABEL_SIDE = "labelSide"
 
         const val DEFAULT_ROUNDNESS = 1.0
         const val DEFAULT_TEXT_SIZE = 0.0167
@@ -60,11 +61,23 @@ open class UiButtonNode(
         // text padding = factor * text height
         private const val PADDING_FACTOR_HORIZONTAL = 1.55F
         const val PADDING_FACTOR_VERTICAL = 1.15F
+        private const val ANIMATED_Z = -0.05f
+
+        const val BUTTON_TYPE_ICON = "icon"
+        const val BUTTON_TYPE_ICON_WITH_LABEL = "icon-with-label"
+        const val BUTTON_TYPE_TEXT = "text"
+        const val BUTTON_TYPE_TEXT_WITH_ICON = "text-with-icon"
+
+        const val LABEL_SIDE_TOP = "top"
+        const val LABEL_SIDE_LEFT = "left"
+        const val LABEL_SIDE_BOTTOM = "bottom"
+        const val LABEL_SIDE_RIGHT = "right"
     }
 
     protected open val charactersSpacing = 0.1F
 
     private var playingAnim = false
+    private lateinit var initialLocalPosition: Vector3
 
     init {
         // set default values of properties
@@ -100,6 +113,7 @@ open class UiButtonNode(
 
     override fun setupView() {
         super.setupView()
+        initialLocalPosition = localPosition
 
         (view as CustomButton).apply {
             val font = fontProvider.provideFont()
@@ -116,23 +130,25 @@ open class UiButtonNode(
             setTextPadding(textPaddingHorizontal, textPaddingVertical)
 
             setCharactersSpacing(charactersSpacing)
+            onPressedChangeListener = { pressed ->
+                val z =
+                    if (pressed) {
+                        initialLocalPosition.z + ANIMATED_Z
+                    } else {
+                        initialLocalPosition.z
+                    }
+                localPosition = Vector3(localPosition.x, localPosition.y, z)
+            }
         }
-    }
-
-    override fun onViewClick() {
-        super.onViewClick()
-        animate()
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
-        if (props.containsKey(PROP_WIDTH) || props.containsKey(
-                PROP_HEIGHT
-            )
-        ) {
+        if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             setNeedsRebuild()
         }
+
         setText(props)
         setTextSize(props)
         setTextColor(props)
@@ -140,20 +156,12 @@ open class UiButtonNode(
         setIcon(props)
         setIconColor(props)
         setIconSize(props)
+        setType(props)
+        setLabelSide(props)
     }
 
     override fun setAlignment(props: Bundle) {
         // according to Lumin we cannot change alignment for button
-    }
-
-    private fun animate() {
-        if (clickAnimator == null || playingAnim) {
-            return
-        }
-        playingAnim = true
-        clickAnimator.play(contentNode, onCompletedListener = {
-            playingAnim = false
-        })
     }
 
     private fun canResizeOnContentChange(): Boolean {
@@ -201,7 +209,7 @@ open class UiButtonNode(
     }
 
     private fun setIcon(props: Bundle) {
-        val iconName = props.getString(PROP_ICON)
+        val iconName = props.getString(PROP_ICON_TYPE)
         if (iconName != null) {
             val icon = iconsRepo.getIcon(iconName, false)
             if (icon != null) {
@@ -226,5 +234,91 @@ open class UiButtonNode(
         }
     }
 
+    private fun setType(props: Bundle) {
+        props.getString(PROP_TYPE)?.let { buttonType ->
+            when (buttonType) {
+                BUTTON_TYPE_TEXT_WITH_ICON -> {
+                    showIcon()
+                    showText()
+                    showBorder()
+                    hideLabel()
+                }
+                BUTTON_TYPE_ICON -> {
+                    showIcon()
+                    hideText()
+                    hideBorder()
+                    hideLabel()
+                }
+
+                BUTTON_TYPE_ICON_WITH_LABEL -> {
+                    showIcon()
+                    hideText()
+                    hideBorder()
+                    showLabel()
+                }
+
+                BUTTON_TYPE_TEXT -> {
+                    hideIcon()
+                    showText()
+                    showBorder()
+                    hideLabel()
+                }
+            }
+        }
+    }
+
+    private fun showText() {
+        (view as CustomButton).textVisible = true
+    }
+
+    private fun showIcon() {
+        (view as CustomButton).iconVisible = true
+    }
+
+    private fun hideText() {
+        (view as CustomButton).textVisible = false
+    }
+
+    private fun hideIcon() {
+        (view as CustomButton).iconVisible = false
+    }
+
+    private fun showLabel() {
+        (view as CustomButton).labelVisible = true
+    }
+
+    private fun hideLabel() {
+        (view as CustomButton).labelVisible = false
+    }
+
+    private fun showBorder() {
+        (view as CustomButton).borderEnabled = true
+    }
+
+    private fun hideBorder() {
+        (view as CustomButton).borderEnabled = false
+    }
+
+    private fun setLabelSide(props: Bundle) {
+        props.getString(PROP_LABEL_SIDE)?.let { side ->
+            when (side) {
+                LABEL_SIDE_TOP -> {
+                    (view as CustomButton).labelPosition = CustomButton.LabelPosition.TOP
+                }
+
+                LABEL_SIDE_LEFT -> {
+                    (view as CustomButton).labelPosition = CustomButton.LabelPosition.LEFT
+                }
+
+                LABEL_SIDE_BOTTOM -> {
+                    (view as CustomButton).labelPosition = CustomButton.LabelPosition.BOTTOM
+                }
+
+                LABEL_SIDE_RIGHT -> {
+                    (view as CustomButton).labelPosition = CustomButton.LabelPosition.RIGHT
+                }
+            }
+        }
+    }
 
 }

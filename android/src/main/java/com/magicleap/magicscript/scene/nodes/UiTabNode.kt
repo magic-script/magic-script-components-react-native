@@ -19,11 +19,10 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
 
@@ -34,16 +33,14 @@ class UiTabNode(
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
     fontProvider: FontProvider,
-    iconsRepository: IconsRepository,
-    clickAnimator: NodeAnimator
+    iconsRepository: IconsRepository
 ) : UiButtonNode(
     props,
     context,
     viewRenderableLoader,
     nodeClipper,
     fontProvider,
-    iconsRepository,
-    clickAnimator
+    iconsRepository
 ) {
 
     override fun setupView() {

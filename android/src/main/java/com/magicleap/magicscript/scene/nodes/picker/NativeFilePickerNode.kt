@@ -26,11 +26,10 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ActivityResultObserver
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.utils.read
 import java.util.*
@@ -41,16 +40,14 @@ class NativeFilePickerNode(
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
     fontProvider: FontProvider,
-    iconsRepo: IconsRepository,
-    clickAnimator: NodeAnimator
+    iconsRepo: IconsRepository
 ) : UiButtonNode(
     initProps,
     context,
     viewRenderableLoader,
     nodeClipper,
     fontProvider,
-    iconsRepo,
-    clickAnimator
+    iconsRepo
 ), ActivityResultObserver {
 
     companion object {

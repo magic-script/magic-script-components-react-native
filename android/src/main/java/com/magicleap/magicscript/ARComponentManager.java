@@ -79,10 +79,8 @@ import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
-import com.magicleap.magicscript.scene.nodes.button.ZAxisAnimator;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
@@ -207,14 +205,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            NodeAnimator onClickAnimator = new ZAxisAnimator();
             UiButtonNode node = new UiButtonNode(props,
                                                  context,
                                                  viewRenderableLoader,
                                                  uiNodeClipper,
-                                                 fontProvider,
-                                                 iconsRepo,
-                                                 onClickAnimator);
+                                                 fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -342,14 +337,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            NodeAnimator onClickAnimator = new ZAxisAnimator();
             UiColorPickerNode node = new UiColorPickerNode(props,
                                                            context,
                                                            viewRenderableLoader,
                                                            uiNodeClipper,
-                                                           fontProvider,
-                                                           iconsRepo,
-                                                           onClickAnimator);
+                                                           fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -415,8 +407,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTabNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            NodeAnimator onClickAnimator = new ZAxisAnimator();
-            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo, onClickAnimator);
+            UiTabNode node = new UiTabNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -451,14 +442,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createFilePickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            NodeAnimator onClickAnimator = new ZAxisAnimator();
             NativeFilePickerNode filePicker = new NativeFilePickerNode(props,
                                                                        context,
                                                                        viewRenderableLoader,
                                                                        uiNodeClipper,
-                                                                       fontProvider,
-                                                                       iconsRepo,
-                                                                       onClickAnimator);
+                                                                       fontProvider, iconsRepo);
             activityResultObservers.add(filePicker);
             addNode(filePicker, nodeId);
         });

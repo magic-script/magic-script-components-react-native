@@ -39,6 +39,10 @@ class CustomButton @JvmOverloads constructor(
         LEFT, RIGHT
     }
 
+    enum class LabelPosition {
+        LEFT, RIGHT, TOP, BOTTOM
+    }
+
     var text = ""
         set(value) {
             field = value
@@ -73,6 +77,14 @@ class CustomButton @JvmOverloads constructor(
             }
         }
 
+    var labelPosition = LabelPosition.TOP
+        set(value) {
+            field = value
+            if (iconBitmap != null) {
+                invalidate()
+            }
+        }
+
     var borderEnabled = true
         set(value) {
             field = value
@@ -87,6 +99,29 @@ class CustomButton @JvmOverloads constructor(
             invalidate()
             requestLayout()
         }
+
+    var textVisible = true
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
+    var iconVisible = true
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
+    var labelVisible = false
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
+    var onPressedChangeListener: ((Boolean) -> Unit)? = null
 
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
@@ -110,11 +145,21 @@ class CustomButton @JvmOverloads constructor(
     private val textBounds = Rect()
     private val iconBounds = RectF()
 
-    private var textPaddingHorizontal = 0
-    private var textPaddingVertical = 0
+    private var paddingHorizontal = 0
+    private var paddingVertical = 0
     private var iconBitmap: Bitmap? = null
     private var iconPadding = 0F
     private var usingDefaultIconSize = true
+
+    private val textWidth
+        get() = textPaint.getTextBounds(text, 0, text.length, textBounds).run {
+            textBounds.width().toFloat()
+        }
+
+    private val textHeight
+        get() = textPaint.getTextBounds(text, 0, text.length, textBounds).run {
+            textBounds.height().toFloat()
+        }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
@@ -123,15 +168,11 @@ class CustomButton @JvmOverloads constructor(
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
         // read text area size (caution: textBounds is non zero for empty text)
-        textPaint.getTextBounds(text, 0, text.length, textBounds)
+        var textWidth = this.textWidth
+        var textHeight = this.textHeight
 
-        var textWidth = textBounds.width().toFloat()
-        var textHeight = textBounds.height().toFloat()
-
-        if (borderEnabled) {
-            textWidth += 2F * textPaddingHorizontal
-            textHeight += 2F * textPaddingVertical
-        }
+        textWidth += 2F * paddingHorizontal
+        textHeight += 2F * paddingVertical
 
         // set default icon size
         iconBitmap?.let { icon ->
@@ -139,7 +180,7 @@ class CustomButton @JvmOverloads constructor(
                 val referenceHeight = if (heightMode == MeasureSpec.EXACTLY) {
                     heightSize.toFloat()
                 } else {
-                    textHeight + 2F * textPaddingVertical
+                    textHeight + 2F * paddingVertical
                 }
                 val iconHeight = defaultIconHeightFactor * referenceHeight
                 val iconWidth = icon.width / icon.height * iconHeight
@@ -148,31 +189,49 @@ class CustomButton @JvmOverloads constructor(
             iconPadding = iconSpacingFactor * iconSize.x
         }
 
-        val defaultWidth = if (text.isNotEmpty()) {
-            max(textWidth + iconSize.x + iconPadding, textWidth)
-        } else {
-            iconSize.x + iconPadding
-        }
-
-        val defaultHeight = if (text.isNotEmpty()) {
-            max(iconSize.y + iconPadding, textHeight)
-        } else {
-            iconSize.y + iconPadding
-        }
+        val defaultWidth = calculateDefaultWidth(textWidth)
+        val defaultHeight = calculateDefaultHeight(textHeight)
 
         // button width and height
         val width: Int = if (widthMode == MeasureSpec.EXACTLY) { // exact size provided
-            widthSize
+            max(widthSize, defaultWidth.toInt())
         } else { // WRAP_CONTENT
             defaultWidth.toInt()
         }
 
         val height: Int = if (heightMode == MeasureSpec.EXACTLY) { // exact size provided
-            heightSize
+            max(heightSize, defaultHeight.toInt())
         } else { // WRAP_CONTENT
             defaultHeight.toInt()
         }
         setMeasuredDimension(width, height)
+    }
+
+    private fun calculateDefaultHeight(textHeight: Float): Float =
+        if (labelVisible && (labelPosition == LabelPosition.TOP || labelPosition == LabelPosition.BOTTOM)) {
+            textHeight + iconSize.y + iconPadding
+        } else {
+            if (text.isNotEmpty()) {
+                max(iconSize.y + iconPadding, textHeight)
+            } else {
+                iconSize.y + iconPadding
+            }
+        }
+
+    private fun calculateDefaultWidth(textWidth: Float): Float =
+        if (labelVisible && (labelPosition == LabelPosition.TOP || labelPosition == LabelPosition.BOTTOM)) {
+            max(textWidth, iconSize.x + iconPadding)
+        } else {
+            if (text.isNotEmpty()) {
+                max(textWidth + iconSize.x + iconPadding, textWidth)
+            } else {
+                iconSize.x + iconPadding
+            }
+        }
+
+    override fun dispatchSetPressed(pressed: Boolean) {
+        invalidate()
+        onPressedChangeListener?.invoke(pressed)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -182,18 +241,44 @@ class CustomButton @JvmOverloads constructor(
             drawBorder(canvas)
         }
 
-        // draw icon if provided
-        iconBitmap?.let {
-            drawIcon(canvas, it)
+        if (iconVisible) {
+            // draw icon if provided
+            iconBitmap?.let {
+                drawIcon(canvas, it)
+            }
         }
 
-        // draw text
-        val textOffsetX = when {
-            iconBitmap == null -> 0F
-            iconPosition == IconPosition.LEFT -> iconSize.x / 2F
-            else -> -iconSize.x / 2F
+        if (textVisible) {
+            // draw text
+            val textOffsetX = when {
+                iconBitmap == null -> 0F
+                iconPosition == IconPosition.LEFT -> iconSize.x + iconPadding
+                else -> 0f
+            }
+            val textOffsetCenterVertical = height / 2f - textBounds.exactCenterY() - paddingVertical
+            drawText(canvas, textOffsetX, textOffsetCenterVertical)
         }
-        drawText(canvas, textOffsetX)
+
+        if (labelVisible && isPressed) {
+            // draw label
+            val textOffsetX = when {
+                iconBitmap == null -> 0F
+                labelPosition == LabelPosition.RIGHT -> iconSize.x + iconPadding
+                else -> 0f
+            }
+
+            val labelOffsetCenterVertical =
+                height / 2f - textBounds.exactCenterY() - paddingVertical
+
+            val textOffsetY = when {
+                iconBitmap == null -> 0F
+                labelPosition == LabelPosition.BOTTOM -> iconSize.y + iconPadding * 2f
+                labelPosition == LabelPosition.LEFT -> labelOffsetCenterVertical
+                labelPosition == LabelPosition.RIGHT -> labelOffsetCenterVertical
+                else -> 0f
+            }
+            drawText(canvas, textOffsetX, textOffsetY)
+        }
     }
 
     fun setTextSize(textSizePx: Float) {
@@ -214,8 +299,8 @@ class CustomButton @JvmOverloads constructor(
     }
 
     fun setTextPadding(paddingHorizontalPx: Int, paddingVerticalPx: Int) {
-        textPaddingHorizontal = paddingHorizontalPx
-        textPaddingVertical = paddingVerticalPx
+        paddingHorizontal = paddingHorizontalPx
+        paddingVertical = paddingVerticalPx
         invalidate()
         requestLayout() // need to measure the view
     }
@@ -264,6 +349,50 @@ class CustomButton @JvmOverloads constructor(
     }
 
     private fun drawIcon(canvas: Canvas, icon: Bitmap) {
+        if (labelVisible) {
+            calculateIconBoundsForLabelWithIcon()
+        } else {
+            calculateIconBoundsForTextWithIcon()
+        }
+
+        canvas.drawBitmap(icon, null, iconBounds, iconPaint)
+    }
+
+    private fun calculateIconBoundsForLabelWithIcon() {
+        val centerX = width / 2f
+        val centerY = height / 2f
+
+
+        when (labelPosition) {
+            LabelPosition.LEFT -> {
+                iconBounds.right = width - paddingHorizontal.toFloat()
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = (this.height - iconSize.y) / 2F
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.RIGHT -> {
+                iconBounds.left = paddingHorizontal.toFloat()
+                iconBounds.right = iconBounds.left + iconSize.x
+                iconBounds.top = (this.height - iconSize.y) / 2F
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.TOP -> {
+                iconBounds.right =
+                    centerX + (max(textWidth / 2, iconSize.x / 2))
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = centerY - iconSize.y / 2 + iconPadding
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.BOTTOM -> {
+                iconBounds.right = centerX + iconSize.x / 2
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = iconPadding
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+        }
+    }
+
+    private fun calculateIconBoundsForTextWithIcon() {
         val iconOffset = if (text.isNotEmpty()) {
             textBounds.width() / 2F + iconPadding
         } else 0F
@@ -277,14 +406,11 @@ class CustomButton @JvmOverloads constructor(
         }
         iconBounds.top = (this.height - iconSize.y) / 2F
         iconBounds.bottom = iconBounds.top + iconSize.y
-        canvas.drawBitmap(icon, null, iconBounds, iconPaint)
     }
 
-    private fun drawText(canvas: Canvas, offsetFromCenterX: Float) {
-        val centerX = width / 2
-        val centerY = height / 2
-        val textX = centerX - textBounds.exactCenterX() + offsetFromCenterX
-        val textY = centerY - textBounds.exactCenterY()
+    private fun drawText(canvas: Canvas, offsetFromX: Float, offsetY: Float) {
+        val textX = paddingHorizontal + offsetFromX
+        val textY = paddingVertical + offsetY
         canvas.drawText(text, textX, textY, textPaint)
     }
 

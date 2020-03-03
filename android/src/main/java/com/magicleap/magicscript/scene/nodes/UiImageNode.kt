@@ -141,9 +141,10 @@ open class UiImageNode(
     }
 
     private fun setIsOpaque(props: Bundle) {
-        val isOpaque = props.read<Boolean>(PROP_OPAQUE) ?: return
-        if (isOpaque) {
-            view.image_view.setBackgroundColor(Color.WHITE)
+        props.read<Boolean>(PROP_OPAQUE)?.let { isOpaque ->
+            if (isOpaque) {
+                view.image_view.setBackgroundColor(Color.WHITE)
+            }
         }
     }
 

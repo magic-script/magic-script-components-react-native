@@ -17,10 +17,7 @@
 import SceneKit
 
 @objc open class Scene: BaseNode {
-    static let centerPointPosition = CGPoint(x: -500.0, y: -500.0)
-    static let boxSize: CGFloat = 1000.0
-
-    @objc fileprivate(set) var contentNode: SCNNode!
+    @objc fileprivate(set) var rootNode: SCNNode = SCNNode()
     @objc fileprivate(set) var prisms: [Prism] = []
 
     @objc override init() {
@@ -39,16 +36,14 @@ import SceneKit
     }
 
     @objc func setupScene() {
-        contentNode = SCNNode()
-        addChildNode(contentNode)
+        addChildNode(rootNode)
     }
 
-    @objc override func update(_ props: [String: Any]) {
-    }
+    @objc override func update(_ props: [String: Any]) { }
 
     @objc override func addNode(_ node: SCNNode) -> Bool {
         if let prismChild = node as? Prism {
-            contentNode.addChildNode(prismChild)
+            rootNode.addChildNode(prismChild)
             prisms.append(prismChild)
             return true
         }
@@ -56,7 +51,7 @@ import SceneKit
     }
 
     @objc override func removeNode(_ node: SCNNode) {
-        if let parent = node.parent, parent == contentNode {
+        if let parent = node.parent, parent == rootNode {
             node.removeFromParentNode()
             prisms.removeAll { $0 == node }
         }
@@ -69,23 +64,6 @@ import SceneKit
             }
         }
 
-        return self
-    }
-
-    func getHitTestPoint(ray: Ray) -> SCNVector3? {
-        let localRay = convertRayToLocal(ray: ray)
-        let localPlane = getPlane()
-        guard let point = localPlane.intersectRay(localRay) else { return nil }
-        let bounds = CGRect(x: Scene.centerPointPosition.x, y: Scene.centerPointPosition.y, width: Scene.boxSize, height: Scene.boxSize)
-        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
-            return point
-        }
-
-        return nil
-    }
-
-    override func selfHitTest(ray: Ray) -> BaseNode? {
-        guard let _ = getHitTestPoint(ray: ray) else { return nil }
         return self
     }
 }

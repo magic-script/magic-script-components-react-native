@@ -17,7 +17,7 @@
 import SceneKit
 
 @objc open class Prism: BaseNode {
-    @objc fileprivate(set) var contentNode: SCNNode!
+    @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
 
     @objc var debug: Bool = false {
         didSet { setDebugMode(debug) }
@@ -26,11 +26,7 @@ import SceneKit
 
     @objc public var size: SCNVector3 = SCNVector3(0.0, 0.0, 0.0) {
         didSet {
-            if let debugNodeGeometry = debugNode.geometry as? SCNBox {
-                debugNodeGeometry.width = CGFloat(size.x)
-                debugNodeGeometry.height = CGFloat(size.y)
-                debugNodeGeometry.length = CGFloat(size.z)
-            }
+            debugNode.scale = size
         }
     }
 
@@ -50,14 +46,14 @@ import SceneKit
     }
 
     @objc func setupPrism() {
-        contentNode = SCNNode()
-        addChildNode(contentNode)
+        addChildNode(rootNode)
 
-        let box = SCNBox(width: CGFloat(size.x), height: CGFloat(size.y), length: CGFloat(size.z), chamferRadius: 0)
+        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
         box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
         box.firstMaterial?.isDoubleSided = true
-
         debugNode = SCNNode(geometry: box)
+        debugNode.scale = SCNVector3.zero
+        debugNode.renderingOrder = 1000
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -67,7 +63,7 @@ import SceneKit
         }
 
         if let position = Convert.toVector3(props["position"]) {
-            self.contentNode.position = position
+            self.position = position
         }
 
         if let rotation = Convert.toQuaternion(props["rotation"]) {
@@ -85,50 +81,38 @@ import SceneKit
 
     @objc override func addNode(_ node: SCNNode) -> Bool {
         if let transformNodeChild = node as? TransformNode {
-            contentNode.addChildNode(transformNodeChild)
+            rootNode.addChildNode(transformNodeChild)
             return true
         }
         return false
     }
 
     @objc override func removeNode(_ node: SCNNode) {
-        if let parent = node.parent, parent == contentNode {
+        if let parent = node.parent, parent == rootNode {
             node.removeFromParentNode()
         }
     }
 
+    // TODO: check if Ray intersect Prism box
     @objc override func hitTest(ray: Ray) -> BaseNode? {
-        // UPDATE THIS
-        if contentNode.childNodes.count == 2, let prismRoot = contentNode.childNodes[1] as? TransformNode {
-            return prismRoot.hitTest(ray: ray)
-        }
-        return self
-    }
-
-    func getHitTestPoint(ray: Ray) -> SCNVector3? {
-        let localRay = convertRayToLocal(ray: ray)
-        let localPlane = getPlane()
-        guard let point = localPlane.intersectRay(localRay) else { return nil }
-        let bounds = CGRect(x: CGFloat(position.x), y: CGFloat(position.y), width: CGFloat(size.x), height: CGFloat(size.z))
-        if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
-            return point
+        for child in rootNode.childNodes {
+            if let transformNode = child as? TransformNode {
+                return transformNode.hitTest(ray: ray)
+            }
         }
 
-        return nil
-    }
-
-    @objc override func selfHitTest(ray: Ray) -> BaseNode? {
-        guard let _ = getHitTestPoint(ray: ray) else { return nil }
         return self
     }
 
     @objc func setDebugMode(_ debug: Bool) {
         if debug {
-            if !contentNode.childNodes.contains(debugNode) {
-                contentNode.addChildNode(debugNode)
+            if !rootNode.childNodes.contains(debugNode) {
+                rootNode.addChildNode(debugNode)
             }
         } else {
-            debugNode.removeFromParentNode()
+            if debugNode.parent == rootNode {
+                debugNode.removeFromParentNode()
+            }
         }
     }
 }

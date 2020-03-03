@@ -18,10 +18,72 @@ import Quick
 import Nimble
 @testable import RNMagicScriptHostApplication
 
+import SceneKit
+
 class PrismSpec: QuickSpec {
     override func spec() {
         describe("Prism") {
-            var node: Prism!
+            var prism: Prism!
+
+            beforeEach {
+                prism = Prism(props: [:])
+            }
+
+            context("when initialized") {
+                it("should have set default values") {
+                    expect(prism.debug).to(beFalse())
+                    expect(prism.size).to(beCloseTo(SCNVector3.zero))
+
+                }
+
+                it("content node should be initialized") {
+                    expect(prism.contentNode).toNot(beNil())
+                    expect(prism.childNodes.count).to(equal(1))
+                    expect(prism.childNodes.first).to(equal(prism.contentNode))
+                }
+            }
+
+            context("update properties") {
+                it("should update 'size' prop") {
+                    let referenceSize = SCNVector3(0.5, 0.75, 1.25)
+                    prism.update(["size": referenceSize.toArrayOfFloat])
+                    expect(prism.size).to(beCloseTo(referenceSize))
+                }
+
+                it("should update 'position' prop") {
+                    let v1 = SCNVector3(0.4, -0.5, 0.6)
+                    let v2 = SCNVector3(0.333, 0.98, 1.43)
+                    prism = Prism(props: ["position": v1.toArrayOfFloat])
+                    expect(prism.contentNode.position).to(beCloseTo(v1))
+                    prism.update(["position": v2.toArrayOfFloat])
+                    expect(prism.contentNode.position).to(beCloseTo(v2))
+                }
+
+                it("should update 'rotation' prop") {
+                    let q1 = SCNQuaternion(0.8, 1.7, 0, 1)
+                    let q2 = SCNQuaternion(-0.6, 1, 1.333, 1)
+                    prism = Prism(props: ["rotation": q1.toArrayOfDouble])
+                    expect(prism.rotation).to(beCloseTo(q1))
+                    prism.update(["rotation": q2.toArrayOfDouble])
+                    expect(prism.rotation).to(beCloseTo(q2))
+                }
+
+                it("should update 'scale' prop") {
+                    let v1 = SCNVector3(-0.4, -0.5, -0.6)
+                    let v2 = SCNVector3(1.2, 1.2, 1.2)
+                    prism = Prism(props: ["scale": v1.toArrayOfFloat])
+                    expect(prism.scale).to(beCloseTo(v1))
+                    prism.update(["scale": v2.toArrayOfCGFloat])
+                    expect(prism.scale).to(beCloseTo(v2))
+                }
+
+                it("should update 'debug' prop") {
+                    prism = Prism(props: ["debug": true])
+                    expect(prism.debug).to(beTrue())
+                    prism.update(["debug": false])
+                    expect(prism.debug).to(beFalse())
+                }
+            }
         }
     }
 }

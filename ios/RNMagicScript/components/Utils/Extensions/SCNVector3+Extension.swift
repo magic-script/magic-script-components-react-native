@@ -221,3 +221,9 @@ extension SCNVector3 {
         return [CGFloat(x), CGFloat(y), CGFloat(z)]
     }
 }
+
+extension SCNVector3 {
+    static var zero: SCNVector3 {
+        return SCNVector3Zero
+    }
+}

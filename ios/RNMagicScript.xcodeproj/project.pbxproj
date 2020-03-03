@@ -420,7 +420,7 @@
 		C4D5CB0B23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */; };
 		C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */; };
-		C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */; };
+		C4ECC032232F77E10091FD21 /* NodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */; };
 		C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFE25D237ED71000C70001 /* DialogPresenter.swift */; };
 		C4EFE25F237ED71000C70001 /* DialogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFE25D237ED71000C70001 /* DialogPresenter.swift */; };
 		C4EFE262237ED74100C70001 /* DialogPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFE261237ED74100C70001 /* DialogPresenting.swift */; };
@@ -884,7 +884,7 @@
 		C4D5CB0923A982790067209D /* PlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneDetector.swift; sourceTree = "<group>"; };
 		C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactorySpec.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
-		C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodesManagerSpec.swift; sourceTree = "<group>"; };
+		C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManagerSpec.swift; sourceTree = "<group>"; };
 		C4EFE25D237ED71000C70001 /* DialogPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenter.swift; sourceTree = "<group>"; };
 		C4EFE261237ED74100C70001 /* DialogPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenting.swift; sourceTree = "<group>"; };
 		C4F8748E23E157780044480F /* SurfaceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceNode.swift; sourceTree = "<group>"; };
@@ -1531,7 +1531,7 @@
 				4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */,
 				44F0933F232DA5530081FF14 /* SCNRectangleSpec.swift */,
 				44226139233415F5006E2FBA /* SCNSpinnerCircleSpec.swift */,
-				C4ECC031232F77E10091FD21 /* UiNodesManagerSpec.swift */,
+				C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */,
 				C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */,
 				C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */,
 			);
@@ -2412,7 +2412,7 @@
 				44931E01237D855900E11972 /* SoundNodeSpec.swift in Sources */,
 				44931E03237D898C00E11972 /* UiButtonNodeSpec.swift in Sources */,
 				C400D4462387F57A002A38CB /* UiToggleGroupNodeSpec.swift in Sources */,
-				C4ECC032232F77E10091FD21 /* UiNodesManagerSpec.swift in Sources */,
+				C4ECC032232F77E10091FD21 /* NodesManagerSpec.swift in Sources */,
 				44DF644F23952AC7005E0518 /* StringRandomSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
 				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,

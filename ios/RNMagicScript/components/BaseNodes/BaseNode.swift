@@ -37,7 +37,6 @@ import SceneKit
         return nil
     }
 
-    // LOOKS LIKE IT SHOULD BE Ray IMPLEMENTATION
     func convertRayToLocal(ray: Ray) -> Ray {
        let localRayBegin = convertPosition(ray.begin, from: nil)
        let localRayDirection = convertVector(ray.direction, from: nil)

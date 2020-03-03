@@ -100,6 +100,27 @@ class CustomButton @JvmOverloads constructor(
             requestLayout()
         }
 
+    var textVisible = true
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
+    var iconVisible = true
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
+    var labelVisible = false
+        set(value) {
+            field = value
+            invalidate()
+            requestLayout()
+        }
+
     var onPressedChangeListener: ((Boolean) -> Unit)? = null
 
     // border width = shorter button dimension * borderWidthFactor
@@ -129,10 +150,6 @@ class CustomButton @JvmOverloads constructor(
     private var iconBitmap: Bitmap? = null
     private var iconPadding = 0F
     private var usingDefaultIconSize = true
-
-    private var textVisible = true
-    private var iconVisible = true
-    private var labelVisible = false
 
     private val textWidth
         get() = textPaint.getTextBounds(text, 0, text.length, textBounds).run {
@@ -292,30 +309,6 @@ class CustomButton @JvmOverloads constructor(
         textPaint.typeface = typeface
     }
 
-    fun showText() {
-        textVisible = true
-    }
-
-    fun showLabel() {
-        labelVisible = true
-    }
-
-    fun showIcon() {
-        iconVisible = true
-    }
-
-    fun hideText() {
-        textVisible = false
-    }
-
-    fun hideIcon() {
-        iconVisible = false
-    }
-
-    fun hideLabel() {
-        labelVisible = false
-    }
-
     /**
      * Sets characters spacing in 'EM' units
      */
@@ -370,27 +363,32 @@ class CustomButton @JvmOverloads constructor(
         val centerY = height / 2f
 
 
-        if (labelPosition == LabelPosition.LEFT) {
-            iconBounds.right = width - paddingHorizontal.toFloat()
-            iconBounds.left = iconBounds.right - iconSize.x
-            iconBounds.top = (this.height - iconSize.y) / 2F
-            iconBounds.bottom = iconBounds.top + iconSize.y
-        } else if (labelPosition == LabelPosition.RIGHT) {
-            iconBounds.left = paddingHorizontal.toFloat()
-            iconBounds.right = iconBounds.left + iconSize.x
-            iconBounds.top = (this.height - iconSize.y) / 2F
-            iconBounds.bottom = iconBounds.top + iconSize.y
-        } else if (labelPosition == LabelPosition.TOP) {
-            iconBounds.right =
-                centerX + (max(textWidth / 2, iconSize.x / 2))
-            iconBounds.left = iconBounds.right - iconSize.x
-            iconBounds.top = centerY - iconSize.y / 2 + iconPadding
-            iconBounds.bottom = iconBounds.top + iconSize.y
-        } else if (labelPosition == LabelPosition.BOTTOM) {
-            iconBounds.right = centerX + iconSize.x / 2
-            iconBounds.left = iconBounds.right - iconSize.x
-            iconBounds.top = iconPadding
-            iconBounds.bottom = iconBounds.top + iconSize.y
+        when (labelPosition) {
+            LabelPosition.LEFT -> {
+                iconBounds.right = width - paddingHorizontal.toFloat()
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = (this.height - iconSize.y) / 2F
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.RIGHT -> {
+                iconBounds.left = paddingHorizontal.toFloat()
+                iconBounds.right = iconBounds.left + iconSize.x
+                iconBounds.top = (this.height - iconSize.y) / 2F
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.TOP -> {
+                iconBounds.right =
+                    centerX + (max(textWidth / 2, iconSize.x / 2))
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = centerY - iconSize.y / 2 + iconPadding
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
+            LabelPosition.BOTTOM -> {
+                iconBounds.right = centerX + iconSize.x / 2
+                iconBounds.left = iconBounds.right - iconSize.x
+                iconBounds.top = iconPadding
+                iconBounds.bottom = iconBounds.top + iconSize.y
+            }
         }
     }
 

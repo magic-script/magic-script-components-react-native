@@ -77,6 +77,7 @@ open class UiButtonNode(
     protected open val charactersSpacing = 0.1F
 
     private var playingAnim = false
+    private lateinit var initialLocalPosition: Vector3
 
     init {
         // set default values of properties
@@ -112,6 +113,7 @@ open class UiButtonNode(
 
     override fun setupView() {
         super.setupView()
+        initialLocalPosition = localPosition
 
         (view as CustomButton).apply {
             val font = fontProvider.provideFont()
@@ -131,9 +133,9 @@ open class UiButtonNode(
             onPressedChangeListener = { pressed ->
                 val z =
                     if (pressed) {
-                        ANIMATED_Z
+                        initialLocalPosition.z + ANIMATED_Z
                     } else {
-                        0f
+                        initialLocalPosition.z
                     }
                 localPosition = Vector3(localPosition.x, localPosition.y, z)
             }
@@ -266,27 +268,27 @@ open class UiButtonNode(
     }
 
     private fun showText() {
-        (view as CustomButton).showText()
+        (view as CustomButton).textVisible = true
     }
 
     private fun showIcon() {
-        (view as CustomButton).showIcon()
+        (view as CustomButton).iconVisible = true
     }
 
     private fun hideText() {
-        (view as CustomButton).hideText()
+        (view as CustomButton).textVisible = false
     }
 
     private fun hideIcon() {
-        (view as CustomButton).hideIcon()
+        (view as CustomButton).iconVisible = false
     }
 
     private fun showLabel() {
-        (view as CustomButton).showLabel()
+        (view as CustomButton).labelVisible = true
     }
 
     private fun hideLabel() {
-        (view as CustomButton).hideLabel()
+        (view as CustomButton).labelVisible = false
     }
 
     private fun showBorder() {

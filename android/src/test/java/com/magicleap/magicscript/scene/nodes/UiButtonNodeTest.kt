@@ -256,6 +256,122 @@ class UiButtonNodeTest {
         bounding.max shouldEqualInexact Vector3(0.5f, 1f, 0f)
     }
 
+    @Test
+    fun `should show icon text border and hide label when type is text-with-icon`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "text-with-icon"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = true
+        verify(viewSpy).borderEnabled = true
+        verify(viewSpy).labelVisible = false
+    }
+
+    @Test
+    fun `should show icon and hide text border label when type is icon`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "icon"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = false
+        verify(viewSpy).borderEnabled = false
+        verify(viewSpy).labelVisible = false
+    }
+
+    @Test
+    fun `should show icon label and hide text border when type is icon-with-label`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "icon-with-label"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = false
+        verify(viewSpy).borderEnabled = false
+        verify(viewSpy).labelVisible = true
+    }
+
+    @Test
+    fun `should show text border and hide label icon when type is text`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "text"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = false
+        verify(viewSpy).textVisible = true
+        verify(viewSpy).borderEnabled = true
+        verify(viewSpy).labelVisible = false
+    }
+
+    @Test
+    fun `should set top labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_TOP
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.TOP
+    }
+
+    @Test
+    fun `should set right labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_RIGHT
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.RIGHT
+    }
+
+    @Test
+    fun `should set bottom labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_BOTTOM
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.BOTTOM
+    }
+
+    @Test
+    fun `should set left labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_LEFT
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.LEFT
+    }
+
     private fun createTestableNode(props: ReadableMap): UiButtonNode {
         return object :
             UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo) {

@@ -29,6 +29,11 @@ class CustomArFragment : ArFragment() {
     private var onReadyCalled = false
     private var lastTapAnchor: Anchor? = null
     private var lastTimestamp: Long = 0L
+    private var cameraObservers = mutableListOf<CameraObserver>()
+
+    fun addCameraObserver(observer: CameraObserver) {
+        cameraObservers.add(observer)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,8 +42,13 @@ class CustomArFragment : ArFragment() {
             arSceneView.arFrame?.camera?.let { camera ->
                 if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
                     // We can add AR objects after session is ready and camera is in tracking mode
-                    UiNodesManager.INSTANCE.onArFragmentReady()
+                    UiNodesManager.INSTANCE.onArFragmentReady(this)
                     onReadyCalled = true
+                }
+
+                val cameraPosition = arSceneView.scene.camera.localPosition
+                cameraObservers.forEach {
+                    it.onCameraUpdated(cameraPosition, camera.trackingState)
                 }
             }
             if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {

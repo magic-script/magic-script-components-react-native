@@ -95,7 +95,11 @@ abstract class UiBaseLayout<T : LayoutParams>(
      * For layouts child is actually added with delay,
      * after position for it is calculated.
      */
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
+        if (child !is TransformNode) {
+            return
+        }
+
         if (!isVisible) {
             child.hide()
         }
@@ -104,7 +108,11 @@ abstract class UiBaseLayout<T : LayoutParams>(
         redrawRequested = true
     }
 
-    override fun removeContent(child: TransformNode) {
+    override fun removeContent(child: ReactNode) {
+        if (child !is TransformNode) {
+            return
+        }
+
         mChildrenList.remove(child)
         if (contentNode.children.contains(child)) {
             contentNode.removeChild(child)

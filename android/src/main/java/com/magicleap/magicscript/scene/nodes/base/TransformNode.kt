@@ -43,7 +43,7 @@ abstract class TransformNode(
     initProps: ReadableMap,
     val hasRenderable: Boolean,
     val useContentNodeAlignment: Boolean
-) : TransformAwareNode() {
+) : TransformAwareNode(), ReactNode {
 
     companion object {
 
@@ -95,6 +95,15 @@ abstract class TransformNode(
      * exceptions when reading from [ReadableMap])
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
+
+    override val parentNode: ReactNode?
+        get() {
+            val grandparent = parent?.parent // first parent is content node
+            return grandparent as? ReactNode
+        }
+
+    override val childrenNodes: List<ReactNode>
+        get() = contentNode.children.filterIsInstance<ReactNode>()
 
     /**
      *  If set, the node should hide this part of itself that is outside [clipBounds]
@@ -152,7 +161,7 @@ abstract class TransformNode(
      *
      * @param props properties to change or new properties to apply
      */
-    fun update(props: ReadableMap) {
+    override fun update(props: ReadableMap) {
         updatingProperties = true
         val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
         this.properties.putAll(propsToUpdate) // save new props
@@ -169,7 +178,11 @@ abstract class TransformNode(
      *
      * To manage alignment correctly, we should use this method instead of [Node.addChild]
      */
-    open fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
+        if (child !is TransformNode) {
+            return
+        }
+
         if (!isVisible) {
             child.hide()
         }
@@ -177,7 +190,10 @@ abstract class TransformNode(
         clipChildren()
     }
 
-    open fun removeContent(child: TransformNode) {
+    override fun removeContent(child: ReactNode) {
+        if (child !is TransformNode) {
+            return
+        }
         contentNode.removeChild(child)
     }
 
@@ -241,21 +257,21 @@ abstract class TransformNode(
     /**
      * Should clear all node's resources (if any)
      */
-    open fun onDestroy() {
+    override fun onDestroy() {
         onDeletedListener?.invoke()
     }
 
     /**
      * Should pause any media related to the node
      */
-    open fun onPause() {
+    override fun onPause() {
 
     }
 
     /**
      * Should resume any media related to the node
      */
-    open fun onResume() {
+    override fun onResume() {
 
     }
 
@@ -357,7 +373,7 @@ abstract class TransformNode(
     }
 
     private fun setLocalPosition(props: Bundle) {
-        val registeredParent = parent?.parent // first parent is a content node
+        val registeredParent = parentNode// first parent is a content node
         if (registeredParent is Layoutable) {
             // position is managed by a parent, so we should not change it
             return

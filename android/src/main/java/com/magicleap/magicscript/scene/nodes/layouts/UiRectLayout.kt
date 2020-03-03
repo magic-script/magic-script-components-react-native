@@ -2,7 +2,7 @@ package com.magicleap.magicscript.scene.nodes.layouts
 
 import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -49,7 +49,7 @@ class UiRectLayout(
         return AABB(minEdge, maxEdge)
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         super.addContent(child)
 
         if (childrenList.size > 1) {

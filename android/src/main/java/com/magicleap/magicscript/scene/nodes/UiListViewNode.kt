@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
@@ -151,7 +152,7 @@ open class UiListViewNode(
         }
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         when (child) {
             is UiListViewItemNode -> {
                 addItem(child)

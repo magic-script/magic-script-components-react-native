@@ -17,9 +17,9 @@
 package com.magicleap.magicscript
 
 import android.os.Bundle
-import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.*
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
@@ -449,7 +449,7 @@ class ReactEventsManager(
         eventsEmitter.sendEvent(eventName, params)
     }
 
-    private fun findNodeWithId(id: String): Node? {
+    private fun findNodeWithId(id: String): ReactNode? {
         return nodesManager.findNodeWithId(id)
     }
 }

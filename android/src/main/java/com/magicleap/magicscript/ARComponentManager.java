@@ -57,6 +57,8 @@ import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
+import com.magicleap.magicscript.scene.nodes.Prism;
+import com.magicleap.magicscript.scene.nodes.ReactScene;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
@@ -80,6 +82,7 @@ import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.NodeAnimator;
+import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
 import com.magicleap.magicscript.scene.nodes.button.ZAxisAnimator;
@@ -185,6 +188,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @Override
     public Map<String, Object> getConstants() {
         return Collections.emptyMap();
+    }
+
+    @ReactMethod
+    public void createScene(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new ReactScene(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createPrism(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new Prism(props), nodeId));
     }
 
     /**
@@ -656,8 +669,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         // unused on Android
     }
 
-    private void addNode(TransformNode node, String nodeId) {
-        node.build();
+    private void addNode(ReactNode node, String nodeId) {
+        if (node instanceof TransformNode) {
+            ((TransformNode) node).build();
+        }
         nodesManager.registerNode(node, nodeId);
     }
 

@@ -37,9 +37,9 @@ class PrismSpec: QuickSpec {
                 }
 
                 it("content node should be initialized") {
-                    expect(prism.contentNode).toNot(beNil())
+                    expect(prism.rootNode).toNot(beNil())
                     expect(prism.childNodes.count).to(equal(1))
-                    expect(prism.childNodes.first).to(equal(prism.contentNode))
+                    expect(prism.childNodes.first).to(equal(prism.rootNode))
                 }
             }
 
@@ -54,9 +54,9 @@ class PrismSpec: QuickSpec {
                     let v1 = SCNVector3(0.4, -0.5, 0.6)
                     let v2 = SCNVector3(0.333, 0.98, 1.43)
                     prism = Prism(props: ["position": v1.toArrayOfFloat])
-                    expect(prism.contentNode.position).to(beCloseTo(v1))
+                    expect(prism.position).to(beCloseTo(v1))
                     prism.update(["position": v2.toArrayOfFloat])
-                    expect(prism.contentNode.position).to(beCloseTo(v2))
+                    expect(prism.position).to(beCloseTo(v2))
                 }
 
                 it("should update 'rotation' prop") {

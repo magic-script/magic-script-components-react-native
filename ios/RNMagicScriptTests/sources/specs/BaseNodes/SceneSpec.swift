@@ -44,9 +44,9 @@ class SceneSpec: QuickSpec {
                 }
 
                 it("content node should be initialized") {
-                    expect(scene.contentNode).toNot(beNil())
+                    expect(scene.rootNode).toNot(beNil())
                     expect(scene.childNodes.count).to(equal(1))
-                    expect(scene.childNodes.first).to(equal(scene.contentNode))
+                    expect(scene.childNodes.first).to(equal(scene.rootNode))
                 }
 
             }
@@ -59,11 +59,11 @@ class SceneSpec: QuickSpec {
                         expect(result).to(beTrue())
                         expect(scene.prisms.count).to(equal(1))
                         expect(scene.childNodes.count).to(equal(1))
-                        let contentNode = scene.childNodes.first
-                        expect(contentNode!.childNodes.count).to(equal(1))
-                        expect(contentNode!.childNodes.first).to(equal(prismNode))
+                        let rootNode = scene.childNodes.first
+                        expect(rootNode!.childNodes.count).to(equal(1))
+                        expect(rootNode!.childNodes.first).to(equal(prismNode))
                         expect(scene.prisms.first).to(equal(prismNode))
-                        expect(prismNode.parent).to(equal(scene.contentNode))
+                        expect(prismNode.parent).to(equal(scene.rootNode))
                     }
                 }
 
@@ -74,8 +74,8 @@ class SceneSpec: QuickSpec {
                         expect(result).to(beFalse())
                         expect(scene.prisms.count).to(equal(0))
                         expect(scene.childNodes.count).to(equal(1))
-                        let contentNode = scene.childNodes.first
-                        expect(contentNode!.childNodes.count).to(equal(0))
+                        let rootNode = scene.childNodes.first
+                        expect(rootNode!.childNodes.count).to(equal(0))
                     }
                 }
 
@@ -91,9 +91,9 @@ class SceneSpec: QuickSpec {
                         expect(result).to(beTrue())
                         expect(scene.prisms.count).to(equal(1))
                         expect(scene.childNodes.count).to(equal(1))
-                        let contentNode = scene.childNodes.first
-                        expect(contentNode!.childNodes.count).to(equal(1))
-                        expect(contentNode!.childNodes.first).to(equal(prismNode))
+                        let rootNode = scene.childNodes.first
+                        expect(rootNode!.childNodes.count).to(equal(1))
+                        expect(rootNode!.childNodes.first).to(equal(prismNode))
 
                         // remove
                         scene.removeNode(prismNode)
@@ -108,8 +108,8 @@ class SceneSpec: QuickSpec {
                         scene.removeNode(genericSCNNode)
                         expect(scene.prisms.count).to(equal(0))
                         expect(scene.childNodes.count).to(equal(1))
-                        let contentNode = scene.childNodes.first
-                        expect(contentNode!.childNodes.count).to(equal(0))
+                        let rootNode = scene.childNodes.first
+                        expect(rootNode!.childNodes.count).to(equal(0))
                     }
                 }
             }

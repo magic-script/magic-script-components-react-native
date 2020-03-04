@@ -33,7 +33,6 @@ class PrismSpec: QuickSpec {
                 it("should have set default values") {
                     expect(prism.debug).to(beFalse())
                     expect(prism.size).to(beCloseTo(SCNVector3.zero))
-
                 }
 
                 it("content node should be initialized") {
@@ -84,6 +83,102 @@ class PrismSpec: QuickSpec {
                     expect(prism.debug).to(beFalse())
                 }
             }
+
+
+            context("when asked to add child node") {
+                context("when child node is TransformNode") {
+                    it("should add it to content") {
+                        expect(prism.rootNode.childNodes.count).to(equal(1))
+
+                        let childNode = TransformNode()
+                        let result = prism.addNode(childNode)
+
+                        expect(result).to(beTrue())
+                        expect(prism.rootNode.childNodes.count).to(equal(2))
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))
+                    }
+                }
+
+                context("when child node is NOT TransformNode") {
+                    it("should do nothing") {
+                        expect(prism.rootNode.childNodes.count).to(equal(1))
+
+                        let childNode = BaseNode()
+                        let result = prism.addNode(childNode)
+
+                        expect(result).to(beFalse())
+                        expect(prism.rootNode.childNodes.count).to(equal(1))
+                    }
+                }
+
+            }
+
+            context("when asked to remove child node") {
+                context("when child node is Prism") {
+                    it("should remove it from content") {
+                        let childNode = TransformNode()
+                        let _ = prism.addNode(childNode)
+                        expect(prism.rootNode.childNodes.count).to(equal(2))
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))
+
+                        prism.removeNode(childNode)
+                        expect(prism.rootNode.childNodes.count).to(equal(1))
+                    }
+                }
+
+                context("when child node is NOT Prism/NOT added to Scene") {
+                    it("should do nothing") {
+                        let childNode = TransformNode()
+                        let _ = prism.addNode(childNode)
+                        expect(prism.rootNode.childNodes.count).to(equal(2))
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))
+
+                        let baseNode = BaseNode()
+                        prism.removeNode(baseNode)
+                        expect(prism.rootNode.childNodes.count).to(equal(2))
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))                    }
+                }
+            }
+
+            context("when asked for hitTest") {
+                context("when contains TransformNode") {
+                    it("should iterate through them") {
+                        let childNode1 = StubbedTransformNode()
+                        let childNode2 = StubbedTransformNode()
+                        let childNode3 = StubbedTransformNode()
+                        let hitNode = TransformNode()
+                        childNode3.hitNode = hitNode
+
+                        _ = prism.addNode(childNode1)
+                        _ = prism.addNode(childNode2)
+                        _ = prism.addNode(childNode3)
+
+                        let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
+                        expect(hitResult).to(equal(hitNode))
+                        expect(childNode1.wasIteratedByHitTest).to(beTrue())
+                        expect(childNode2.wasIteratedByHitTest).to(beTrue())
+                        expect(childNode3.wasIteratedByHitTest).to(beTrue())
+                    }
+                }
+
+                context("when doesn't contain TransformNode") {
+                    it("should return itself") {
+                        let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
+                        expect(hitResult).to(equal(prism))
+                    }
+                }
+            }
         }
+    }
+}
+
+
+private class StubbedTransformNode: TransformNode {
+    var wasIteratedByHitTest = false
+    var hitNode: TransformNode?
+
+    @objc override func hitTest(ray: Ray) -> BaseNode? {
+        wasIteratedByHitTest = true
+        return hitNode
     }
 }

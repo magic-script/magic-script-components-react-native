@@ -97,7 +97,9 @@ import SceneKit
     @objc override func hitTest(ray: Ray) -> BaseNode? {
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
-                return transformNode.hitTest(ray: ray)
+                if let hitNode = transformNode.hitTest(ray: ray) {
+                    return hitNode
+                }
             }
         }
 

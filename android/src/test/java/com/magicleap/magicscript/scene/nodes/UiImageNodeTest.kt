@@ -108,6 +108,17 @@ class UiImageNodeTest {
         verify(imageViewSpy).setBackgroundColor(Color.WHITE)
     }
 
+    @Test
+    fun `should set transparent background when opaque set back to false and no color specified`() {
+        val props = reactMapOf(UiImageNode.PROP_OPAQUE, true)
+        val node = createNodeWithViewSpy(props)
+        node.build()
+
+        node.update(reactMapOf(UiImageNode.PROP_OPAQUE, false))
+
+        verify(imageViewSpy).setBackgroundColor(Color.TRANSPARENT)
+    }
+
     private fun createNodeWithViewSpy(props: ReadableMap): UiImageNode {
         return object : UiImageNode(props, context, mock(), mock(), mock()) {
             override fun provideView(context: Context): View {

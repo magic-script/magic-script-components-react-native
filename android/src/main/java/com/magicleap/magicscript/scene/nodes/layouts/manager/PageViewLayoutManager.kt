@@ -22,16 +22,14 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.params.PageViewLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Utils
 
 class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>() {
 
     override fun layoutChildren(
         layoutParams: PageViewLayoutParams,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>
+        childrenBounds: Map<TransformNode, AABB>
     ) {
         val visiblePage = layoutParams.visiblePage
         children.forEachIndexed { index, node ->
@@ -41,46 +39,39 @@ class PageViewLayoutManager : VerticalLinearLayoutManager<PageViewLayoutParams>(
                 node.hide()
             }
         }
-        val itemPadding = layoutParams.itemsPadding[visiblePage] ?: Padding()
-        val itemAlignment = layoutParams.itemsAlignment[visiblePage] ?: Alignment()
-        val singleItemParams = PageViewLayoutParams(
-            visiblePage = visiblePage,
-            size = layoutParams.size,
-            itemsPadding = mapOf(0 to itemPadding),
-            itemsAlignment = mapOf(0 to itemAlignment)
-        )
+
         if (children.size > visiblePage) {
             val activeChild = children[visiblePage]
-            val bounds = mapOf(0 to childrenBounds[visiblePage]!!)
-            super.layoutChildren(singleItemParams, listOf(activeChild), bounds)
+            super.layoutChildren(layoutParams, listOf(activeChild), childrenBounds)
         }
     }
 
     override fun getLayoutBounds(layoutParams: PageViewLayoutParams): AABB {
-        val childrenBounds = Utils.calculateSumBounds(childrenList)
+        val child = childrenList.firstOrNull()
+        val childBounds = childrenBounds[child] ?: AABB()
         val parentSize = layoutParams.size
         var sizeX = parentSize.x
         var sizeY = parentSize.y
-        val padding = layoutParams.itemsPadding[layoutParams.visiblePage] ?: Padding()
+        val padding = layoutParams.itemsPadding[child] ?: Padding()
         var leftOffset = -padding.left
         var bottomOffset = -padding.bottom
         var rightOffset = padding.right
         var topOffset = padding.top
         if (parentSize.x == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
-            sizeX = childrenBounds.size().x
+            sizeX = childBounds.size().x
         } else {
             leftOffset = 0f
             rightOffset = 0f
         }
         if (parentSize.y == UiBaseLayout.WRAP_CONTENT_DIMENSION) {
-            sizeY = childrenBounds.size().y
+            sizeY = childBounds.size().y
         } else {
             topOffset = 0f
             bottomOffset = 0f
         }
 
-        val minEdge = Vector3(leftOffset, -sizeY + bottomOffset, childrenBounds.min.z)
-        val maxEdge = Vector3(sizeX + rightOffset, topOffset, childrenBounds.max.z)
+        val minEdge = Vector3(leftOffset, -sizeY + bottomOffset, childBounds.min.z)
+        val maxEdge = Vector3(sizeX + rightOffset, topOffset, childBounds.max.z)
 
         return AABB(minEdge, maxEdge)
     }

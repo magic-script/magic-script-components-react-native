@@ -108,19 +108,19 @@ class UiGridLayout(initProps: ReadableMap, layoutManager: LayoutManager<GridLayo
             LayoutUtils.createChildrenPaddingMap(
                 columns = columns,
                 rows = rows,
-                childCount = childrenList.size,
+                children = childrenList,
                 defaultPadding = defaultItemsPadding,
                 childPaddings = itemsPadding?.paddings
             )
+
         val childrenAlignment =
             LayoutUtils.createChildrenAlignmentMap(
                 columns = columns,
                 rows = rows,
-                childCount = childrenList.size,
+                children = childrenList,
                 defaultAlignment = defaultItemsAlignment,
                 childAlignments = itemsAlignment?.alignments
             )
-
 
         return GridLayoutParams(
             columns = columns,

@@ -29,6 +29,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -109,11 +110,14 @@ class UiGridLayoutTest {
     fun `should apply item alignment when passed`() {
         val props = reactMapOf(UiGridLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "bottom-right")
         val node = createNode(props)
+        val child = NodeBuilder().build()
+        node.addContent(child)
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
-        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.Horizontal.RIGHT
+        layoutParams.itemsAlignment[child] shouldNotBe null
+        layoutParams.itemsAlignment[child]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
+        layoutParams.itemsAlignment[child]!!.horizontal shouldEqual Alignment.Horizontal.RIGHT
     }
 
     @Test
@@ -127,11 +131,9 @@ class UiGridLayoutTest {
         layoutParams.columns shouldEqual 3
     }
 
-
     private fun createNode(props: JavaOnlyMap): UiGridLayout {
         return UiGridLayout(props, layoutManager).apply {
             build()
-            addContent(NodeBuilder().build())
         }
     }
 

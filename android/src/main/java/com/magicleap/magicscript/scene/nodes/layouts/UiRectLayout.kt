@@ -63,12 +63,12 @@ class UiRectLayout(
 
         val childrenPadding =
             LayoutUtils.createChildrenPaddingMap(
-                childrenList.size,
+                childrenList,
                 padding
             )
         val childrenAlignment =
             LayoutUtils.createChildrenAlignmentMap(
-                childrenList.size,
+                childrenList,
                 contentAlignment
             )
 

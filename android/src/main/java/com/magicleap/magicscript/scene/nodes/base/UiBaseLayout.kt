@@ -24,6 +24,7 @@ import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.utils.read
 
 // Base class for layouts (grid, linear, rect)
 abstract class UiBaseLayout<T : LayoutParams>(
@@ -37,6 +38,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
         private const val MEASURE_INTERVAL = 50L // in milliseconds
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
+        const val PROP_SKIP_INVISIBLE_ITEMS = "skipInvisibleItems"
     }
 
     // "backed" children list, it may differ from [contentNode.children] because we
@@ -53,11 +55,12 @@ abstract class UiBaseLayout<T : LayoutParams>(
     val height: Float
         get() = properties.getDouble(PROP_HEIGHT, 0.0).toFloat()
 
+    private var skipInvisibleItems = false
+
     // we should re-draw the grid after adding / removing a child
     private var redrawRequested = false
 
-    // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, AABB>()
+    private val childrenBounds = mutableMapOf<TransformNode, AABB>()
 
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
@@ -76,6 +79,8 @@ abstract class UiBaseLayout<T : LayoutParams>(
         if (props.containsKey(PROP_WIDTH) || props.containsKey(PROP_HEIGHT)) {
             redrawRequested = true
         }
+
+        setSkipInvisibleItems(props)
     }
 
     // We should access children via [childrenList], because they may not have
@@ -99,6 +104,13 @@ abstract class UiBaseLayout<T : LayoutParams>(
         if (!isVisible) {
             child.hide()
         }
+        child.addVisibilityListener(object : VisibilityChangedListener {
+            override fun invoke(visible: Boolean) {
+                if (skipInvisibleItems) {
+                    requestLayout()
+                }
+            }
+        })
         mChildrenList.add(child)
         onAddedToLayoutListener?.invoke(child)
         redrawRequested = true
@@ -110,7 +122,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
             contentNode.removeChild(child)
             onRemovedFromLayoutListener?.invoke(child)
         }
-        childrenBounds.clear() // indexes changed
+        childrenBounds.remove(child)
         redrawRequested = true
     }
 
@@ -133,16 +145,7 @@ abstract class UiBaseLayout<T : LayoutParams>(
     private fun layoutLoop() {
         measureChildren()
         if (redrawRequested) {
-            layoutManager.layoutChildren(getLayoutParams(), mChildrenList, childrenBounds)
-            redrawRequested = false
-
-            // Attach the child after position is calculated
-            mChildrenList
-                .filter { it !in contentNode.children }
-                .forEach { contentNode.addChild(it) }
-
-            // need to clip materials, because content position has changed
-            clipChildren()
+            layout()
         }
 
         handler.postDelayed({
@@ -150,20 +153,56 @@ abstract class UiBaseLayout<T : LayoutParams>(
         }, MEASURE_INTERVAL)
     }
 
+    private fun layout() {
+        layoutManager.layoutChildren(getLayoutParams(), getChildrenToLayout(), childrenBounds)
+        redrawRequested = false
+
+        // Attach the child after position is calculated
+        mChildrenList
+            .filter { it !in contentNode.children }
+            .forEach { contentNode.addChild(it) }
+
+        // need to clip materials, because content position has changed
+        clipChildren()
+    }
+
     /**
      * Measures the bounds of children nodes; if any bound has changed
      * it sets the [redrawRequested] flag to true.
      */
     private fun measureChildren() {
-        for (i in 0 until mChildrenList.size) {
-            val node = mChildrenList[i]
-            val oldBounds = childrenBounds[i] ?: AABB()
+        val childrenToLayout = getChildrenToLayout()
+
+        for (node in childrenToLayout) {
+            val oldBounds = childrenBounds[node] ?: AABB()
             val newBounds = node.getBounding()
-            childrenBounds[i] = newBounds
+            childrenBounds[node] = newBounds
 
             if (!newBounds.equalInexact(oldBounds)) {
                 redrawRequested = true
             }
         }
     }
+
+    private fun getChildrenToLayout(): List<TransformNode> {
+        return if (skipInvisibleItems) {
+            childrenList.filter { it.isVisible }
+        } else {
+            childrenList
+        }
+    }
+
+    private fun setSkipInvisibleItems(props: Bundle) {
+        props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS)?.let { skip ->
+            this.skipInvisibleItems = skip
+            requestLayout()
+        }
+    }
+
+    class Test<T : LayoutParams>(val layoutNode: UiBaseLayout<T>) {
+        fun forceLayout() {
+            layoutNode.layout()
+        }
+    }
+
 }

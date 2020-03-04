@@ -25,6 +25,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
@@ -34,7 +35,10 @@ import com.magicleap.magicscript.scene.nodes.props.ItemPaddingMap
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.containsAny
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.read
 
 open class UiListViewNode(
     initProps: ReadableMap,
@@ -55,6 +59,7 @@ open class UiListViewNode(
         const val PROP_ITEM_ALIGNMENT = "itemAlignment"
         const val PROP_SCROLLING_ENABLED = "scrollingEnabled"
         const val PROP_SCROLL_TO_ITEM = "scrollToItem"
+        const val PROP_SKIP_INVISIBLE_ITEMS = "skipInvisibleItems"
 
         const val DEFAULT_ORIENTATION = ORIENTATION_VERTICAL
         const val DEFAULT_ITEM_ALIGNMENT = "top-left"
@@ -157,7 +162,6 @@ open class UiListViewNode(
                 addItem(child)
                 val itemIndex = getItems().size - 1
                 child.padding = itemsPaddingMap?.get(itemIndex) ?: defaultItemsPadding
-                logMessage("child padding= ${child.padding}, index=$itemIndex")
 
                 if (itemIndex == requestedScrollIndex) {
                     scrollToItem(requestedScrollIndex)
@@ -281,6 +285,10 @@ open class UiListViewNode(
 
         props.read<String>(PROP_DEFAULT_ITEM_ALIGNMENT)?.let { alignment ->
             containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, alignment)
+        }
+
+        props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS)?.let { skip ->
+            containerProps.putBoolean(UiBaseLayout.PROP_SKIP_INVISIBLE_ITEMS, skip)
         }
 
         props.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)?.let { map ->

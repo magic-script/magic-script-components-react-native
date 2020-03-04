@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,18 +59,19 @@ class UIRectLayoutTest {
     fun `should set passed content alignment`() {
         val props = reactMapOf(UiRectLayout.PROP_CONTENT_ALIGNMENT, "bottom-left")
         val node = createNode(props)
+        val child = NodeBuilder().build()
+        node.addContent(child)
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsAlignment[0]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
-        layoutParams.itemsAlignment[0]!!.horizontal shouldEqual Alignment.Horizontal.LEFT
+        layoutParams.itemsAlignment[child] shouldNotBe null
+        layoutParams.itemsAlignment[child]!!.vertical shouldEqual Alignment.Vertical.BOTTOM
+        layoutParams.itemsAlignment[child]!!.horizontal shouldEqual Alignment.Horizontal.LEFT
     }
-
 
     private fun createNode(props: JavaOnlyMap): UiRectLayout {
         return UiRectLayout(props, layoutManager).apply {
             build()
-            addContent(NodeBuilder().build())
         }
     }
 

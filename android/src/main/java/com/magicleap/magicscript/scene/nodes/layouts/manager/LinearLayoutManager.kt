@@ -31,7 +31,7 @@ class LinearLayoutManager(
     override fun layoutChildren(
         layoutParams: LinearLayoutParams,
         children: List<TransformNode>,
-        childrenBounds: Map<Int, AABB>
+        childrenBounds: Map<TransformNode, AABB>
     ) {
 
         val manager = getOrientationAwareManager(layoutParams)

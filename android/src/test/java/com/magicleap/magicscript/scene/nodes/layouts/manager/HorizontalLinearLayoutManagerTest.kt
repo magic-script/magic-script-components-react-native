@@ -38,18 +38,13 @@ import org.robolectric.RobolectricTestRunner
 class HorizontalLinearLayoutManagerTest {
     private lateinit var linearManager: HorizontalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
-    // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, AABB>()
+    private lateinit var itemsPadding: Map<TransformNode, Padding>
+    private lateinit var itemsAlignment: Map<TransformNode, Alignment>
+
+    private val childrenBounds = mutableMapOf<TransformNode, AABB>()
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
-
-    private var itemsAlignment = mapOf(
-        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
-        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
-    )
 
     @Before
     fun setUp() {
@@ -66,13 +61,23 @@ class HorizontalLinearLayoutManagerTest {
                 .withAlignment("center-center")
                 .build()
         )
+
+        itemsPadding = mapOf(
+            childrenList[0] to Padding(),
+            childrenList[1] to Padding()
+        )
+
+        itemsAlignment = mapOf(
+            childrenList[0] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+            childrenList[1] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+        )
     }
 
     @Test
     fun `should return correct layout bounds after children layout`() {
         itemsPadding = mapOf(
-            0 to Padding(0.2f, 0.4f, 0.1f, 0.1f),
-            1 to Padding(0.2f, 0.2f, 0.1f, 0.6f)
+            childrenList[0] to Padding(0.2f, 0.4f, 0.1f, 0.1f),
+            childrenList[1] to Padding(0.2f, 0.2f, 0.1f, 0.6f)
         )
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
 
@@ -87,8 +92,8 @@ class HorizontalLinearLayoutManagerTest {
     fun `should layout children correctly when items padding is different`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         itemsPadding = mapOf(
-            0 to Padding(0.5F, 0.2F, 0.5F, 0.4F),
-            1 to Padding(1F, 0.5F, 0.5F, 0.5F)
+            childrenList[0] to Padding(0.5F, 0.2F, 0.5F, 0.4F),
+            childrenList[1] to Padding(1F, 0.5F, 0.5F, 0.5F)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -101,15 +106,12 @@ class HorizontalLinearLayoutManagerTest {
     fun `should center children vertically and horizontally`() {
         size = Vector2(7f, 6f)
         itemsAlignment = mapOf(
-            0 to Alignment(
-                Alignment.Vertical.CENTER,
-                Alignment.Horizontal.CENTER
-            ),
-            1 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
+            childrenList[0] to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER),
+            childrenList[1] to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
         )
         itemsPadding = mapOf(
-            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
-            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+            childrenList[0] to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            childrenList[1] to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -122,12 +124,12 @@ class HorizontalLinearLayoutManagerTest {
     fun `should correctly scale down children when layout size limited`() {
         size = Vector2(4f, 6f)
         itemsAlignment = mapOf(
-          0 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER),
-          1 to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
+            childrenList[0] to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER),
+            childrenList[1] to Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.CENTER)
         )
         itemsPadding = mapOf(
-            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
-            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+            childrenList[0] to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            childrenList[1] to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 50)
@@ -141,12 +143,12 @@ class HorizontalLinearLayoutManagerTest {
     fun `should align children bottom-right`() {
         size = Vector2(7f, 6f)
         itemsAlignment = mapOf(
-            0 to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT),
-            1 to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT)
+            childrenList[0] to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT),
+            childrenList[1] to Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.RIGHT)
         )
         itemsPadding = mapOf(
-            0 to Padding(0.5F, 0.5F, 0.5F, 0.5F),
-            1 to Padding(0.5F, 0.5F, 0.5F, 0.5F)
+            childrenList[0] to Padding(0.5F, 0.5F, 0.5F, 0.5F),
+            childrenList[1] to Padding(0.5F, 0.5F, 0.5F, 0.5F)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)

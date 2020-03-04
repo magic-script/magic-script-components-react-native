@@ -22,17 +22,17 @@ import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -78,16 +78,52 @@ class UiLinearLayoutTest {
         val padding = reactArrayOf(1.5, 2.0, 1.5, 0.0)
         val props = reactMapOf(UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, padding)
         val node = createNode(props)
+        val child = NodeBuilder().build()
+        node.addContent(child)
 
         val layoutParams = node.getLayoutParams()
 
-        layoutParams.itemsPadding[0] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+        layoutParams.itemsPadding[child] shouldEqual Padding(1.5f, 2.0f, 1.5f, 0.0f)
+    }
+
+    @Test
+    fun `should lay out only visible children when skipInvisibleItems property is true`() {
+        val props = reactMapOf(UiBaseLayout.PROP_SKIP_INVISIBLE_ITEMS, true)
+        val node = createNode(props)
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
+        child2.hide()
+        node.addContent(child1)
+        node.addContent(child2)
+        val visibleChildrenList = listOf(child1)
+        Mockito.reset(layoutManager)
+
+        UiBaseLayout.Test(node).forceLayout()
+
+        verify(layoutManager).layoutChildren(any(), eq(visibleChildrenList), any())
+    }
+
+    @Test
+    fun `should lay out all children when skipInvisibleItems property is false`() {
+        val props = reactMapOf(UiBaseLayout.PROP_SKIP_INVISIBLE_ITEMS, false)
+        val node = createNode(props)
+        val childrenList = listOf(
+            NodeBuilder().build(),
+            NodeBuilder().build()
+        )
+        node.addContent(childrenList[0])
+        node.addContent(childrenList[1])
+        childrenList[0].hide()
+        Mockito.reset(layoutManager)
+
+        UiBaseLayout.Test(node).forceLayout()
+
+        verify(layoutManager).layoutChildren(any(), eq(childrenList), any())
     }
 
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
             build()
-            addContent(NodeBuilder().build())
         }
     }
 

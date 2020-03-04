@@ -1,29 +1,40 @@
 package com.magicleap.magicscript.scene.nodes.layouts
 
+import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.shouldEqualInexact
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldHaveSize
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class LayoutUtilsTest {
 
     @Test
-    fun `should return padding map with size and indices of children count`() {
-        val childCount = 10
+    fun `should create padding map with default values if padding per item not specified`() {
+        val children = createNodesList(3)
 
-        val childrenPaddingMap = LayoutUtils.createChildrenPaddingMap(childCount, Padding(), null)
+        val paddingMap = LayoutUtils.createChildrenPaddingMap(
+            children = children,
+            defaultPadding = Padding(),
+            childPaddings = null
+        )
 
-        childrenPaddingMap.shouldHaveSize(childCount)
-        for (i in 0 until childCount) {
-            childrenPaddingMap[i] shouldEqual Padding()
+        paddingMap.shouldHaveSize(children.size)
+        for (element in children) {
+            paddingMap[element] shouldEqual Padding()
         }
     }
 
     @Test
-    fun `should add default value only if child do not have custom padding`() {
-        val childCount = 5
+    fun `should use default padding only if child does not have custom padding`() {
+        val children = createNodesList(5)
         val defaultPadding = Padding(1f, 1f, 1f, 1f)
         val customPadding2 = Padding(2f, 2f, 2f, 2f)
         val customPadding4 = Padding(4f, 4f, 4f, 4f)
@@ -33,31 +44,35 @@ class LayoutUtilsTest {
         )
 
         val childrenPaddingMap =
-            LayoutUtils.createChildrenPaddingMap(childCount, defaultPadding, childCustomPaddings)
+            LayoutUtils.createChildrenPaddingMap(children, defaultPadding, childCustomPaddings)
 
-        childrenPaddingMap[0] shouldEqual defaultPadding
-        childrenPaddingMap[1] shouldEqual defaultPadding
-        childrenPaddingMap[2] shouldEqual customPadding2
-        childrenPaddingMap[3] shouldEqual defaultPadding
-        childrenPaddingMap[4] shouldEqual customPadding4
+        childrenPaddingMap[children[0]] shouldEqual defaultPadding
+        childrenPaddingMap[children[1]] shouldEqual defaultPadding
+        childrenPaddingMap[children[2]] shouldEqual customPadding2
+        childrenPaddingMap[children[3]] shouldEqual defaultPadding
+        childrenPaddingMap[children[4]] shouldEqual customPadding4
     }
 
     @Test
-    fun `should return alignment map with size and indices of children count`() {
-        val childCount = 10
+    fun `should create alignment map with default values if alignment per item not specified`() {
+        val children = createNodesList(3)
 
         val childrenAlignmentMap =
-            LayoutUtils.createChildrenAlignmentMap(childCount, Alignment(), null)
+            LayoutUtils.createChildrenAlignmentMap(
+                children = children,
+                defaultAlignment = Alignment(),
+                childAlignments = null
+            )
 
-        childrenAlignmentMap.shouldHaveSize(childCount)
-        for (i in 0 until childCount) {
-            childrenAlignmentMap[i] shouldEqual Alignment()
+        childrenAlignmentMap.shouldHaveSize(children.size)
+        for (child in children) {
+            childrenAlignmentMap[child] shouldEqual Alignment()
         }
     }
 
     @Test
-    fun `should add default value only if child do not have custom alignment`() {
-        val childCount = 5
+    fun `should use default alignment only if alignment per item not specified`() {
+        val children = createNodesList(5)
         val defaultAlignment =
             Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
         val customAlignment2 =
@@ -70,41 +85,41 @@ class LayoutUtilsTest {
         )
 
         val childrenAlignmentMap = LayoutUtils.createChildrenAlignmentMap(
-            childCount,
-            defaultAlignment,
-            childCustomAlignments
+            children = children,
+            defaultAlignment = defaultAlignment,
+            childAlignments = childCustomAlignments
         )
 
-        childrenAlignmentMap[0] shouldEqual defaultAlignment
-        childrenAlignmentMap[1] shouldEqual defaultAlignment
-        childrenAlignmentMap[2] shouldEqual customAlignment2
-        childrenAlignmentMap[3] shouldEqual defaultAlignment
-        childrenAlignmentMap[4] shouldEqual customAlignment4
+        childrenAlignmentMap[children[0]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[1]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[2]] shouldEqual customAlignment2
+        childrenAlignmentMap[children[3]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[4]] shouldEqual customAlignment4
     }
 
     @Test
-    fun `should return padding map with size and indices of children count for grid child`() {
-        val childCount = 10
+    fun `should use default padding values for grid items when padding per item not specified`() {
+        val children = createNodesList(10)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
 
         val childrenPaddingMap = LayoutUtils.createChildrenPaddingMap(
             columns = columns,
             rows = rows,
-            childCount = childCount,
+            children = children,
             defaultPadding = Padding(),
             childPaddings = null
         )
 
-        childrenPaddingMap.shouldHaveSize(childCount)
-        for (i in 0 until childCount) {
-            childrenPaddingMap[i] shouldEqual Padding()
+        childrenPaddingMap.shouldHaveSize(children.size)
+        for (child in children) {
+            childrenPaddingMap[child] shouldEqual Padding()
         }
     }
 
     @Test
-    fun `should add default value only if child do not have custom padding for grid child`() {
-        val childCount = 5
+    fun `should use default value only if custom padding not specified for grid child`() {
+        val children = createNodesList(5)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
         val defaultPadding = Padding(1f, 1f, 1f, 1f)
@@ -118,21 +133,21 @@ class LayoutUtilsTest {
         val childrenPaddingMap = LayoutUtils.createChildrenPaddingMap(
             columns = columns,
             rows = rows,
-            childCount = childCount,
+            children = children,
             defaultPadding = defaultPadding,
             childPaddings = childCustomPaddings
         )
 
-        childrenPaddingMap[0] shouldEqual defaultPadding
-        childrenPaddingMap[1] shouldEqual defaultPadding
-        childrenPaddingMap[2] shouldEqual customPadding0_1
-        childrenPaddingMap[3] shouldEqual customPadding1_1
-        childrenPaddingMap[4] shouldEqual defaultPadding
+        childrenPaddingMap[children[0]] shouldEqual defaultPadding
+        childrenPaddingMap[children[1]] shouldEqual defaultPadding
+        childrenPaddingMap[children[2]] shouldEqual customPadding0_1
+        childrenPaddingMap[children[3]] shouldEqual customPadding1_1
+        childrenPaddingMap[children[4]] shouldEqual defaultPadding
     }
 
     @Test
-    fun `should return alignment map with size and indices of children count for grid child`() {
-        val childCount = 10
+    fun `should create grid alignment map with default values if child alignments not specified`() {
+        val children = createNodesList(3)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
 
@@ -140,23 +155,22 @@ class LayoutUtilsTest {
             LayoutUtils.createChildrenAlignmentMap(
                 columns = columns,
                 rows = rows,
-                childCount = childCount,
+                children = children,
                 defaultAlignment = Alignment(),
                 childAlignments = null
             )
 
-        childrenAlignmentMap.shouldHaveSize(childCount)
-        for (i in 0 until childCount) {
-            childrenAlignmentMap[i] shouldEqual Alignment()
+        childrenAlignmentMap.shouldHaveSize(children.size)
+        for (child in children) {
+            childrenAlignmentMap[child] shouldEqual Alignment()
         }
     }
 
     @Test
-    fun `should add default value only if child do not have custom alignment for grid child`() {
-        val childCount = 6
+    fun `should use default value only if grid child does not have custom alignment`() {
+        val children = createNodesList(6)
         val columns = 2
         val rows = UiGridLayout.DYNAMIC_VALUE
-
         val defaultAlignment =
             Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
         val customAlignment1_1 =
@@ -171,17 +185,17 @@ class LayoutUtilsTest {
         val childrenAlignmentMap = LayoutUtils.createChildrenAlignmentMap(
             columns = columns,
             rows = rows,
-            childCount = childCount,
+            children = children,
             defaultAlignment = defaultAlignment,
             childAlignments = childCustomAlignments
         )
 
-        childrenAlignmentMap[0] shouldEqual defaultAlignment
-        childrenAlignmentMap[1] shouldEqual defaultAlignment
-        childrenAlignmentMap[2] shouldEqual defaultAlignment
-        childrenAlignmentMap[3] shouldEqual customAlignment1_1
-        childrenAlignmentMap[4] shouldEqual defaultAlignment
-        childrenAlignmentMap[5] shouldEqual customAlignment1_2
+        childrenAlignmentMap[children[0]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[1]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[2]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[3]] shouldEqual customAlignment1_1
+        childrenAlignmentMap[children[4]] shouldEqual defaultAlignment
+        childrenAlignmentMap[children[5]] shouldEqual customAlignment1_2
     }
 
     @Test
@@ -225,27 +239,130 @@ class LayoutUtilsTest {
 
     @Test
     fun `should return sum of all vertical paddings from the map`() {
+        val childrenList = createNodesList(2)
         val paddingMap = mapOf(
-            0 to Padding(1f, 0.5f, 0.4f, 2f),
-            1 to Padding(4f, 0.5f, 0.6f, 2f)
+            childrenList[0] to Padding(1f, 0.5f, 0.4f, 2f),
+            childrenList[1] to Padding(4f, 0.5f, 0.6f, 2f)
         )
 
-        val paddingSum = LayoutUtils.getVerticalPaddingSumUntil(paddingMap, end = 2)
+        val paddingSum = LayoutUtils.getVerticalPaddingSumOf(childrenList, paddingMap)
 
         paddingSum shouldEqualInexact 6f
     }
 
     @Test
-    fun `should return sum of first 2 horizontal paddings from the map`() {
+    fun `should return sum of last 2 vertical paddings from the map`() {
+        val childrenList = createNodesList(3)
         val paddingMap = mapOf(
-            0 to Padding(1f, 2f, 0.4f, 1f),
-            1 to Padding(4f, 1f, 0.6f, 4f),
-            2 to Padding(0f, 5f, 0.6f, 5f)
+            childrenList[0] to Padding(1f, 2f, 0.4f, 1f),
+            childrenList[1] to Padding(1f, 1f, 1f, 4f),
+            childrenList[2] to Padding(0.2f, 5f, 0.2f, 5f)
         )
 
-        val paddingSum = LayoutUtils.getHorizontalPaddingSumUntil(paddingMap, end = 2)
+        val paddingSum = LayoutUtils.getVerticalPaddingSumOf(
+            childrenList.subList(1, 3),
+            paddingMap
+        )
+
+        paddingSum shouldEqualInexact 2.4f
+    }
+
+    @Test
+    fun `should return sum of all horizontal paddings from the map`() {
+        val childrenList = createNodesList(2)
+        val paddingMap = mapOf(
+            childrenList[0] to Padding(1f, 2f, 0.4f, 3f),
+            childrenList[1] to Padding(4f, 0.5f, 0.6f, 2f)
+        )
+
+        val paddingSum = LayoutUtils.getHorizontalPaddingSumOf(childrenList, paddingMap)
+
+        paddingSum shouldEqualInexact 7.5f
+    }
+
+    @Test
+    fun `should return sum of first 2 horizontal paddings from the map`() {
+        val childrenList = createNodesList(3)
+        val paddingMap = mapOf(
+            childrenList[0] to Padding(1f, 2f, 0.4f, 1f),
+            childrenList[1] to Padding(4f, 1f, 0.6f, 4f),
+            childrenList[2] to Padding(0f, 5f, 0.6f, 5f)
+        )
+
+        val paddingSum = LayoutUtils.getHorizontalPaddingSumOf(
+            childrenList.take(2),
+            paddingMap
+        )
 
         paddingSum shouldEqualInexact 8f
+    }
+
+    @Test
+    fun `should return sum of all horizontal bounds sizes from the map`() {
+        val childrenList = createNodesList(2)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(-1.5f, -0.5f, 0f), max = Vector3(1f, 1f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, -0.5f, 0f), max = Vector3(0.5f, 1f, 0f))
+        )
+
+        val sum = LayoutUtils.getHorizontalBoundsSumOf(childrenList, boundsMap)
+
+        sum shouldEqualInexact 2.9f
+    }
+
+    @Test
+    fun `should return sum of all vertical bounds sizes from the map`() {
+        val childrenList = createNodesList(2)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(-1.5f, -2f, 0f), max = Vector3(1f, 1f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, -0.5f, 0f), max = Vector3(0.5f, 0f, 0f))
+        )
+
+        val sum = LayoutUtils.getVerticalBoundsSumOf(childrenList, boundsMap)
+
+        sum shouldEqualInexact 3.5f
+    }
+
+    @Test
+    fun `should return sum of first and last horizontal bounds sizes from the map`() {
+        val childrenList = createNodesList(3)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(0f, -0.5f, 0f), max = Vector3(3f, 2f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, 0f, 0f), max = Vector3(0.5f, 1f, 0f)),
+            childrenList[2] to AABB(min = Vector3(-0.3f, -1f, 0f), max = Vector3(0.4f, 0f, 0f))
+        )
+
+        val sum = LayoutUtils.getHorizontalBoundsSumOf(
+            children = listOf(childrenList.first(), childrenList.last()),
+            bounds = boundsMap
+        )
+
+        sum shouldEqualInexact 3.7f
+    }
+
+    @Test
+    fun `should return sum of last 2 vertical bounds sizes from the map`() {
+        val childrenList = createNodesList(3)
+        val boundsMap = mapOf(
+            childrenList[0] to AABB(min = Vector3(-1.5f, -0.5f, 0f), max = Vector3(1f, 2f, 0f)),
+            childrenList[1] to AABB(min = Vector3(0.1f, 0f, 0f), max = Vector3(0.5f, 1f, 0f)),
+            childrenList[2] to AABB(min = Vector3(-1f, -1f, 0f), max = Vector3(1f, 0f, 0f))
+        )
+
+        val sum = LayoutUtils.getVerticalBoundsSumOf(
+            children = childrenList.subList(1, 3),
+            bounds = boundsMap
+        )
+
+        sum shouldEqualInexact 2f
+    }
+
+    private fun createNodesList(count: Int): List<TransformNode> {
+        val nodes = mutableListOf<TransformNode>()
+        for (i in 0 until count) {
+            nodes.add(NodeBuilder().build())
+        }
+        return nodes
     }
 
 }

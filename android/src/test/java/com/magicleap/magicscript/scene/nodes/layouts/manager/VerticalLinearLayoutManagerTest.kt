@@ -38,18 +38,13 @@ import org.robolectric.RobolectricTestRunner
 class VerticalLinearLayoutManagerTest {
     private lateinit var linearManager: VerticalLinearLayoutManager<LayoutParams>
     private lateinit var childrenList: List<TransformNode>
-    // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, AABB>()
+    private lateinit var itemsPadding: Map<TransformNode, Padding>
+    private lateinit var itemsAlignment: Map<TransformNode, Alignment>
+
+    private val childrenBounds = mutableMapOf<TransformNode, AABB>()
 
     // Layout params
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
-
-    private var itemsAlignment = mapOf(
-        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
-        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
-    )
 
     @Before
     fun setUp() {
@@ -66,14 +61,24 @@ class VerticalLinearLayoutManagerTest {
                 .withAlignment("center-center")
                 .build()
         )
+
+        itemsPadding = mapOf(
+            childrenList[0] to Padding(),
+            childrenList[1] to Padding()
+        )
+
+        itemsAlignment = mapOf(
+            childrenList[0] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+            childrenList[1] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+        )
     }
 
     @Test
     fun `should correctly layout children when padding is the same`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         itemsPadding = mapOf(
-            0 to Padding(0.5f, 0.5f, 0f, 0.2f),
-            1 to Padding(0.5f, 0.5f, 0f, 0.2f)
+            childrenList[0] to Padding(0.5f, 0.5f, 0f, 0.2f),
+            childrenList[1] to Padding(0.5f, 0.5f, 0f, 0.2f)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -87,8 +92,8 @@ class VerticalLinearLayoutManagerTest {
     fun `should correctly layout children when padding is different`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         itemsPadding = mapOf(
-            0 to Padding(0f, 0f, 1f, 0f),
-            1 to Padding(0.5f, 0f, 0f, 0f)
+            childrenList[0] to Padding(0f, 0f, 1f, 0f),
+            childrenList[1] to Padding(0.5f, 0f, 0f, 0f)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
@@ -101,8 +106,8 @@ class VerticalLinearLayoutManagerTest {
     fun `should return correct layout bounds when width is dynamic`() {
         size = Vector2(WRAP_CONTENT_DIMENSION, 5f)
         itemsPadding = mapOf(
-            0 to Padding(0.2f, 0.1f, 0.1f, 0.1f),
-            1 to Padding(0.2f, 0.2f, 0.1f, 0.7f)
+            childrenList[0] to Padding(0.2f, 0.1f, 0.1f, 0.1f),
+            childrenList[1] to Padding(0.2f, 0.2f, 0.1f, 0.7f)
         )
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)
 
@@ -116,8 +121,8 @@ class VerticalLinearLayoutManagerTest {
     fun `should scale child nodes if layout size limited`() {
         size = Vector2(1f, 2f)
         itemsPadding = mapOf(
-            0 to Padding(0.05F, 0.05F, 0.05F, 0.05F),
-            1 to Padding(0.05F, 0.05F, 0.05F, 0.05F)
+            childrenList[0] to Padding(0.05F, 0.05F, 0.05F, 0.05F),
+            childrenList[1] to Padding(0.05F, 0.05F, 0.05F, 0.05F)
         )
 
         linearManager.layoutUntilStableBounds(childrenList, childrenBounds, getLayoutParams(), 10)

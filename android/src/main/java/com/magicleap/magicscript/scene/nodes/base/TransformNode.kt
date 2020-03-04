@@ -116,6 +116,7 @@ abstract class TransformNode(
 
     var isVisible: Boolean by Delegates.observable(true) { prop, old, new ->
         onVisibilityChanged(new)
+        visibilityListeners.forEach { it.invoke(new) }
     }
 
     protected var updatingProperties = false
@@ -124,6 +125,8 @@ abstract class TransformNode(
     private var bounding = AABB() // default
 
     private var timeSinceLastAlignment = 0F
+
+    private var visibilityListeners = mutableListOf<VisibilityChangedListener>()
 
     init {
         addChild(contentNode)
@@ -309,6 +312,10 @@ abstract class TransformNode(
         isVisible = true
     }
 
+    fun addVisibilityListener(listener: VisibilityChangedListener) {
+        visibilityListeners.add(listener)
+    }
+
     open fun onVisibilityChanged(visibility: Boolean) {
         contentNode.children
             .filterIsInstance<TransformNode>()
@@ -444,6 +451,10 @@ abstract class TransformNode(
 
     protected open fun clipChildren() {
         clipBounds?.let { Utils.clipChildren(this, it) }
+    }
+
+    interface VisibilityChangedListener {
+        fun invoke(visible: Boolean)
     }
 
     class Test(val node: TransformNode) {

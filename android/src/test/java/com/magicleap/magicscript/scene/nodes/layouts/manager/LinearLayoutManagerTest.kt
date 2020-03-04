@@ -19,12 +19,14 @@ package com.magicleap.magicscript.scene.nodes.layouts.manager
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.magicleap.magicscript.UiNodeBuilder
-import com.magicleap.magicscript.measureChildren
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout.Companion.WRAP_CONTENT_DIMENSION
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
-import com.magicleap.magicscript.scene.nodes.props.*
+import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_HORIZONTAL
+import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
+import com.magicleap.magicscript.scene.nodes.props.Padding
 import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
@@ -37,21 +39,14 @@ class LinearLayoutManagerTest {
     private lateinit var linearManager: LinearLayoutManager
     private lateinit var verticalManager: VerticalLinearLayoutManager<LayoutParams>
     private lateinit var horizontalManager: HorizontalLinearLayoutManager<LayoutParams>
+    private lateinit var itemsPadding: Map<TransformNode, Padding>
+    private lateinit var itemsAlignment: Map<TransformNode, Alignment>
 
     private lateinit var childrenList: List<TransformNode>
-    // <child index, bounding>
-    private val childrenBounds = mutableMapOf<Int, AABB>()
 
     // Layout params
     private var orientation: String = ORIENTATION_VERTICAL
     private var size = Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    private var itemsPadding = mapOf(0 to Padding(), 1 to Padding())
-
-    private var itemsAlignment = mapOf(
-        0 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
-        1 to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
-    )
 
     @Before
     fun setUp() {
@@ -71,7 +66,16 @@ class LinearLayoutManagerTest {
                 .build()
         )
 
-        measureChildren(childrenList, childrenBounds)
+        itemsPadding = mapOf(
+            childrenList[0] to Padding(),
+            childrenList[1] to Padding()
+        )
+
+        itemsAlignment = mapOf(
+            childrenList[0] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT),
+            childrenList[1] to Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
+        )
+
     }
 
     @Test
@@ -79,7 +83,7 @@ class LinearLayoutManagerTest {
         orientation = ORIENTATION_VERTICAL
         val params = getLayoutParams()
 
-        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.layoutChildren(params, childrenList, mock())
 
         verify(verticalManager, atLeastOnce()).layoutChildren(any(), any(), any())
     }
@@ -89,7 +93,7 @@ class LinearLayoutManagerTest {
         orientation = ORIENTATION_HORIZONTAL
         val params = getLayoutParams()
 
-        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.layoutChildren(params, childrenList, mock())
 
         verify(horizontalManager, atLeastOnce()).layoutChildren(any(), any(), any())
     }
@@ -99,7 +103,7 @@ class LinearLayoutManagerTest {
         orientation = ORIENTATION_VERTICAL
         val params = getLayoutParams()
 
-        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.layoutChildren(params, childrenList, mock())
         linearManager.getLayoutBounds(params)
 
         verify(horizontalManager, never()).layoutChildren(any(), any(), any())
@@ -111,7 +115,7 @@ class LinearLayoutManagerTest {
         orientation = ORIENTATION_HORIZONTAL
         val params = getLayoutParams()
 
-        linearManager.layoutChildren(params, childrenList, childrenBounds)
+        linearManager.layoutChildren(params, childrenList, mock())
         linearManager.getLayoutBounds(params)
 
         verify(verticalManager, never()).layoutChildren(any(), any(), any())

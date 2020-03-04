@@ -47,7 +47,7 @@ open class UiDropdownListNode(
     viewRenderableLoader,
     nodeClipper,
     fontProvider,
-    iconsRepo, null
+    iconsRepo
 ), Layoutable {
 
     companion object {
@@ -88,7 +88,7 @@ open class UiDropdownListNode(
         )
         listNode.onListVisibilityChanged = onListVisibilityChangedListener
 
-        properties.putString(PROP_ICON, ICON_NAME)
+        properties.putString(PROP_ICON_TYPE, ICON_NAME)
     }
 
     override fun build() {

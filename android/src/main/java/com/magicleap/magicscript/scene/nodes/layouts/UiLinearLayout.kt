@@ -84,13 +84,13 @@ class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayo
 
         val childrenPadding =
             LayoutUtils.createChildrenPaddingMap(
-                childrenList.size,
+                childrenList,
                 defaultItemsPadding,
                 itemsPadding?.paddings
             )
         val childrenAlignment =
             LayoutUtils.createChildrenAlignmentMap(
-                childrenList.size,
+                childrenList,
                 defaultItemsAlignment,
                 itemsAlignment?.alignments
             )

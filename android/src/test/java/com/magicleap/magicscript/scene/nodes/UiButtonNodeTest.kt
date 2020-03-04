@@ -23,16 +23,18 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.*
+import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.scene.nodes.base.NodeAnimator
+import com.magicleap.magicscript.reactArrayOf
+import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.*
@@ -56,7 +58,6 @@ class UiButtonNodeTest {
     private lateinit var providerTypeface: Typeface
     private lateinit var fontProvider: FontProvider
     private lateinit var iconsRepo: IconsRepository
-    private lateinit var animator: NodeAnimator
 
     @Before
     fun setUp() {
@@ -71,7 +72,6 @@ class UiButtonNodeTest {
         this.iconsRepo = mock()
         val sampleIcon = context.getDrawable(R.drawable.add)
         whenever(iconsRepo.getIcon(anyString(), anyBoolean())).thenReturn(sampleIcon)
-        animator = mock()
     }
 
     @Test
@@ -158,7 +158,7 @@ class UiButtonNodeTest {
 
     @Test
     fun `should set icon when icon property present`() {
-        val props = reactMapOf(UiButtonNode.PROP_ICON, "magic-icon")
+        val props = reactMapOf(UiButtonNode.PROP_ICON_TYPE, "magic-icon")
         val node = createTestableNode(props)
 
         node.build()
@@ -170,7 +170,7 @@ class UiButtonNodeTest {
     fun `should set icon color when icon color property present`() {
         val color = reactArrayOf(0.1, 0.2, 0.3, 0.4)
         val props = reactMapOf(
-            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_TYPE, "magic-icon",
             UiButtonNode.PROP_ICON_COLOR, color
         )
         val node = createTestableNode(props)
@@ -185,7 +185,7 @@ class UiButtonNodeTest {
         val sizeInMeters = 0.1
         val iconSize = reactArrayOf(sizeInMeters, sizeInMeters)
         val props = reactMapOf(
-            UiButtonNode.PROP_ICON, "magic-icon",
+            UiButtonNode.PROP_ICON_TYPE, "magic-icon",
             UiButtonNode.PROP_ICON_SIZE, iconSize
         )
         val node = createTestableNode(props)
@@ -257,18 +257,124 @@ class UiButtonNodeTest {
     }
 
     @Test
-    fun `should animate content node on click`() {
-        val node = createTestableNode(JavaOnlyMap())
+    fun `should show icon text border and hide label when type is text-with-icon`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "text-with-icon"
+            )
+        )
+
         node.build()
 
-        node.performClick()
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = true
+        verify(viewSpy).borderEnabled = true
+        verify(viewSpy).labelVisible = false
+    }
 
-        verify(animator).play(eq(node.contentNode), any())
+    @Test
+    fun `should show icon and hide text border label when type is icon`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "icon"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = false
+        verify(viewSpy).borderEnabled = false
+        verify(viewSpy).labelVisible = false
+    }
+
+    @Test
+    fun `should show icon label and hide text border when type is icon-with-label`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "icon-with-label"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = true
+        verify(viewSpy).textVisible = false
+        verify(viewSpy).borderEnabled = false
+        verify(viewSpy).labelVisible = true
+    }
+
+    @Test
+    fun `should show text border and hide label icon when type is text`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_TYPE, "text"
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).iconVisible = false
+        verify(viewSpy).textVisible = true
+        verify(viewSpy).borderEnabled = true
+        verify(viewSpy).labelVisible = false
+    }
+
+    @Test
+    fun `should set top labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_TOP
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.TOP
+    }
+
+    @Test
+    fun `should set right labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_RIGHT
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.RIGHT
+    }
+
+    @Test
+    fun `should set bottom labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_BOTTOM
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.BOTTOM
+    }
+
+    @Test
+    fun `should set left labelSite`() {
+        val node = createTestableNode(
+            reactMapOf(
+                UiButtonNode.PROP_LABEL_SIDE, UiButtonNode.LABEL_SIDE_LEFT
+            )
+        )
+
+        node.build()
+
+        verify(viewSpy).labelPosition = CustomButton.LabelPosition.LEFT
     }
 
     private fun createTestableNode(props: ReadableMap): UiButtonNode {
         return object :
-            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo, animator) {
+            UiButtonNode(props, context, mock(), mock(), fontProvider, iconsRepo) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

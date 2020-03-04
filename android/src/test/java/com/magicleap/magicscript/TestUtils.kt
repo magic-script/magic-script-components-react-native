@@ -26,8 +26,8 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.clip.UiNodeClipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.clip.UiNodeClipper
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -189,7 +189,7 @@ fun UiNode.performClick() {
  */
 fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, AABB>,
+    childrenBounds: MutableMap<TransformNode, AABB>,
     layoutParams: T,
     maxIterations: Int
 ) {
@@ -213,14 +213,13 @@ fun <T : LayoutParams> LayoutManager<T>.layoutUntilStableBounds(
  */
 fun measureChildren(
     childrenList: List<TransformNode>,
-    childrenBounds: MutableMap<Int, AABB>
+    childrenBounds: MutableMap<TransformNode, AABB>
 ): Boolean {
     var changed = false
-    for (i in childrenList.indices) {
-        val node = childrenList[i]
-        val oldBounds = childrenBounds[i] ?: AABB()
+    for (node in childrenList) {
+        val oldBounds = childrenBounds[node] ?: AABB()
         val newBounds = node.getBounding()
-        childrenBounds[i] = newBounds
+        childrenBounds[node] = newBounds
 
         if (!newBounds.equalInexact(oldBounds)) {
             changed = true

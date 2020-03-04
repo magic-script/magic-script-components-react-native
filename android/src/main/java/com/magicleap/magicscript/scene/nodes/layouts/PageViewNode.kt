@@ -72,13 +72,13 @@ class PageViewNode(props: ReadableMap, layoutManager: LayoutManager<PageViewLayo
 
         val childrenPadding =
             LayoutUtils.createChildrenPaddingMap(
-                childrenList.size,
+                childrenList,
                 defaultItemsPadding,
                 itemsPadding?.paddings
             )
         val childrenAlignment =
             LayoutUtils.createChildrenAlignmentMap(
-                childrenList.size,
+                childrenList,
                 defaultItemsAlignment,
                 itemsAlignment?.alignments
             )

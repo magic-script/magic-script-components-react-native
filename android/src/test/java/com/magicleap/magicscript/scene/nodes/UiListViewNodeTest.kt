@@ -27,6 +27,7 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
@@ -147,8 +148,21 @@ class UiListViewNodeTest {
         val containerNode = node.contentNode.children.firstOrNull()
         containerNode shouldBeInstanceOf UiLinearLayout::class
         val layoutParams = (containerNode as UiLinearLayout).getLayoutParams()
-        layoutParams.itemsAlignment[0]?.vertical shouldEqual Alignment.Vertical.TOP
-        layoutParams.itemsAlignment[0]?.horizontal shouldEqual Alignment.Horizontal.RIGHT
+        layoutParams.itemsAlignment[listItem]?.vertical shouldEqual Alignment.Vertical.TOP
+        layoutParams.itemsAlignment[listItem]?.horizontal shouldEqual Alignment.Horizontal.RIGHT
+    }
+
+    @Test
+    fun `should apply skipInvisibleItems property on the container`() {
+        val props = reactMapOf(UiListViewNode.PROP_SKIP_INVISIBLE_ITEMS, true)
+        val node = createNodeWithViewSpy(props)
+
+        node.build()
+
+        val containerNode = node.contentNode.children.firstOrNull()
+        containerNode shouldBeInstanceOf UiLinearLayout::class
+        (containerNode as UiLinearLayout)
+        containerNode.getProperty(UiBaseLayout.PROP_SKIP_INVISIBLE_ITEMS) shouldEqual true
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiListViewNode {

@@ -96,13 +96,13 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
-    override val parentNode: ReactNode?
+    override val reactParent: ReactNode?
         get() {
             val grandparent = parent?.parent // first parent is content node
             return grandparent as? ReactNode
         }
 
-    override val childrenNodes: List<ReactNode>
+    override val reactChildren: List<ReactNode>
         get() = contentNode.children.filterIsInstance<ReactNode>()
 
     /**
@@ -380,7 +380,7 @@ abstract class TransformNode(
     }
 
     private fun setLocalPosition(props: Bundle) {
-        val registeredParent = parentNode// first parent is a content node
+        val registeredParent = reactParent// first parent is a content node
         if (registeredParent is Layoutable) {
             // position is managed by a parent, so we should not change it
             return

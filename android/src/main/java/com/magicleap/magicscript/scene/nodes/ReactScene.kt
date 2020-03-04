@@ -16,23 +16,37 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+import android.os.Bundle
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
 import com.magicleap.magicscript.scene.CustomArFragment
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
-class ReactScene(initialProps: ReadableMap) : ReactNode {
-
+class ReactScene(initProps: ReadableMap) : ReactNode {
+    private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
     private var arFragment: CustomArFragment? = null
     private val prisms = mutableListOf<Prism>()
 
-    override val parentNode: ReactNode?
+    override val reactParent: ReactNode?
         get() = null
 
-    override val childrenNodes: List<ReactNode>
+    override val reactChildren: List<ReactNode>
         get() = prisms
+
+    fun build(scene: Scene) {
+        this.arScene = scene
+
+        applyProperties(properties)
+
+        for (prism in prisms) {
+            if (!scene.children.contains(prism)) {
+                scene.addChild(prism)
+            }
+        }
+    }
 
     fun onArFragmentReady(fragment: CustomArFragment) {
         this.arFragment = fragment
@@ -44,17 +58,10 @@ class ReactScene(initialProps: ReadableMap) : ReactNode {
         }
     }
 
-    fun setArScene(scene: Scene) {
-        this.arScene = scene
-        for (prism in prisms) {
-            if (!scene.children.contains(prism)) {
-                scene.addChild(prism)
-            }
-        }
-    }
-
     override fun update(props: ReadableMap) {
-
+        val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
+        this.properties.putAll(propsToUpdate) // save new props
+        applyProperties(propsToUpdate)
     }
 
     override fun addContent(child: ReactNode) {
@@ -78,15 +85,19 @@ class ReactScene(initialProps: ReadableMap) : ReactNode {
     }
 
     override fun onPause() {
-
+        // no-op
     }
 
     override fun onResume() {
-
+        // no-op
     }
 
     override fun onDestroy() {
+        // no-op
+    }
 
+    private fun applyProperties(props: Bundle) {
+        // TODO
     }
 
     private fun buildPrism(prism: Prism, arFragment: CustomArFragment) {

@@ -44,7 +44,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
 
-        reactScene?.setArScene(arScene)
+        reactScene?.build(arScene)
         reactScene?.onArFragmentReady(fragment)
 
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
@@ -189,7 +189,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     // removes node with descendants from the nodes map
     private fun removeFromMap(node: ReactNode) {
-        node.childrenNodes.forEach { child ->
+        node.reactChildren.forEach { child ->
             removeFromMap(child)
         }
 
@@ -202,7 +202,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     private fun detachNode(node: ReactNode) {
-        val parent = node.parentNode // content node
+        val parent = node.reactParent // content node
         parent?.removeContent(node)
         logMessage("detaching: $node from parent: $parent")
     }

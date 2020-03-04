@@ -50,15 +50,6 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         const val PROP_VISIBLE = "visible"
     }
 
-    private var container: RotatableNode? = null
-    private var session: Session? = null
-    private var content: TransformNode? = null
-    private var lastCameraPosition: Vector3? = null
-    private var lastCameraState: TrackingState? = null
-
-    private var requestedAnchorPosition: Vector3? = null
-    private var lastCreatedAnchor: Anchor? = null
-
     var built = false
         private set
 
@@ -84,36 +75,31 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
             container?.rotationController?.isEnabled = value
         }
 
-    /**
-     * All node's properties (packed to Bundle to avoid "already consumed"
-     * exceptions when reading from [ReadableMap])
-     */
-    private val properties = Arguments.toBundle(initProps) ?: Bundle()
-
-    private var volume: Vector3 = Vector3(2f, 2f, 0.3f)
-
+    private var properties = Arguments.toBundle(initProps) ?: Bundle()
+    private var container: RotatableNode? = null
+    private var session: Session? = null
+    private var content: TransformNode? = null
+    private var lastCameraPosition: Vector3? = null
+    private var lastCameraState: TrackingState? = null
+    private var requestedAnchorPosition: Vector3? = null
+    private var lastCreatedAnchor: Anchor? = null
+    private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var renderableCopy: Renderable? = null
-
     private var reactScene: ReactScene? = null
 
-    init {
-        setSize(properties)
-        setPosition(properties)
-        setVisible(properties)
-    }
+    override val reactParent: ReactNode? = reactScene
+
+    override val reactChildren: List<ReactNode>
+        get() = container?.children?.filterIsInstance<TransformNode>() ?: listOf()
 
     fun setScene(scene: ReactScene) {
         this.reactScene = scene
     }
 
-    override val parentNode: ReactNode? = reactScene
-
-    override val childrenNodes: List<ReactNode>
-        get() = container?.children?.filterIsInstance<TransformNode>() ?: listOf()
-
-
     override fun update(props: ReadableMap) {
-
+        val propsToUpdate = Arguments.toBundle(props) ?: Bundle()
+        this.properties.putAll(propsToUpdate) // save new props
+        applyProperties(propsToUpdate)
     }
 
     override fun addContent(child: ReactNode) {
@@ -138,18 +124,6 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         }
     }
 
-    override fun onPause() {
-
-    }
-
-    override fun onResume() {
-
-    }
-
-    override fun onDestroy() {
-
-    }
-
     fun build(
         transformationSystem: TransformationSystem,
         session: Session,
@@ -167,8 +141,8 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
                 it.addChild(content)
             }
         }
+        applyProperties(properties)
         attachRenderable(cubeBuilder)
-        applyClipBounds()
 
         built = true
     }
@@ -204,6 +178,18 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         lastCameraPosition = cameraPosition
     }
 
+    override fun onPause() {
+        // no-op
+    }
+
+    override fun onResume() {
+        // no-op
+    }
+
+    override fun onDestroy() {
+        // no-op
+    }
+
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
         requestedAnchorPosition = null
@@ -211,7 +197,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
 
     private fun attachRenderable(cubeBuilder: CubeRenderableBuilder) {
         val color = Color(1f, 0f, 0f, 0.5f)
-        cubeBuilder.buildRenderable(volume, Vector3.zero(), color, resultCallback = {
+        cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
                 renderableCopy = it.renderable
                 if (visible) {
@@ -221,9 +207,15 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         })
     }
 
+    private fun applyProperties(props: Bundle) {
+        setSize(props)
+        setPosition(props)
+        setVisible(props)
+    }
+
     private fun setSize(props: Bundle) {
         props.read<Vector3>(PROP_SIZE)?.let { size ->
-            this.volume = size
+            this.size = size
             applyClipBounds()
         }
     }
@@ -262,8 +254,8 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
     }
 
     private fun applyClipBounds() {
-        val min = Vector3(-volume.x / 2, -volume.y / 2, -volume.z / 2)
-        val max = Vector3(volume.x / 2, volume.y / 2, volume.z / 2)
+        val min = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
+        val max = Vector3(size.x / 2, size.y / 2, size.z / 2)
 
         content?.clipBounds = AABB(min, max)
     }

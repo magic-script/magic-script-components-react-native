@@ -20,9 +20,15 @@ import com.facebook.react.bridge.ReadableMap
 
 interface ReactNode {
 
-    val parentNode: ReactNode?
+    /**
+     * Parent defined in React code
+     */
+    val reactParent: ReactNode?
 
-    val childrenNodes: List<ReactNode>
+    /**
+     * Direct children nodes defined in React code
+     */
+    val reactChildren: List<ReactNode>
 
     fun update(props: ReadableMap)
 

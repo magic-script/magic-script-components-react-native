@@ -194,7 +194,7 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
     }
 
     override fun onDestroy() {
-        // no-op
+        session = null
     }
 
     override fun setAnchor(anchor: Anchor?) {

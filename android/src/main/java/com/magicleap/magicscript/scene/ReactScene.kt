@@ -90,7 +90,8 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     }
 
     override fun onDestroy() {
-        // no-op
+        arFragment = null
+        arScene = null
     }
 
     private fun applyProperties(props: Bundle) {

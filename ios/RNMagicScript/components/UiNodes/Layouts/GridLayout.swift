@@ -145,12 +145,12 @@ import SceneKit
 
 // MARK: - Helpers
 extension GridLayout {
-    fileprivate enum FlowDirection {
+    enum FlowDirection {
         case horizontal
         case vertical
     }
 
-    fileprivate func getFlowDirection() -> FlowDirection {
+    func getFlowDirection() -> FlowDirection {
         return (columns > 0) ? .vertical : .horizontal
     }
 

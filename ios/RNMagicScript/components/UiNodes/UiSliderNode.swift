@@ -141,24 +141,24 @@ import SceneKit
             self.height = height
         }
 
+        if let max = Convert.toCGFloat(props["max"]) {
+            self.max = max
+        }
+
         if let min = Convert.toCGFloat(props["min"]) {
             self.min = min
+        }
+
+        if let value = Convert.toCGFloat(props["value"]) {
+            self.value = value
         }
 
         if let minLabel = Convert.toString(props["minLabel"]) {
             self.minLabel = minLabel
         }
 
-        if let max = Convert.toCGFloat(props["max"]) {
-            self.max = max
-        }
-
         if let maxLabel = Convert.toString(props["maxLabel"]) {
             self.maxLabel = maxLabel
-        }
-
-        if let value = Convert.toCGFloat(props["value"]) {
-            self.value = value
         }
 
         if let foregroundColor = Convert.toColor(props["foregroundColor"]) {

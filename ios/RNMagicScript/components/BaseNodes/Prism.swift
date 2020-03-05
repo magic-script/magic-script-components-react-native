@@ -50,7 +50,6 @@ import SceneKit
 
         let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
         box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
-        box.firstMaterial?.isDoubleSided = true
         debugNode = SCNNode(geometry: box)
         debugNode.scale = SCNVector3.zero
         debugNode.renderingOrder = 1000

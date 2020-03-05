@@ -33,7 +33,9 @@ import SceneKit
     }
     @objc var min: CGFloat {
         get { return _min }
-        set { if (newValue != _min && newValue < _max) { _min = newValue; setNeedsLayout(); } }
+        set {
+            updateMinMax(min: newValue, max: _max)
+        }
     }
     @objc var minLabel: String? {
         didSet {
@@ -43,7 +45,9 @@ import SceneKit
     }
     @objc var max: CGFloat {
         get { return _max }
-        set { if (newValue != _max && _min < newValue) { _max = newValue; setNeedsLayout(); } }
+        set {
+            updateMinMax(min: _min, max: newValue)
+        }
     }
     @objc var maxLabel: String? {
         didSet {
@@ -127,7 +131,6 @@ import SceneKit
         contentNode.addChildNode(bgNode)
         contentNode.addChildNode(progressNode)
         contentNode.addChildNode(maxLabelNode)
-
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -141,11 +144,12 @@ import SceneKit
             self.height = height
         }
 
-        if let max = Convert.toCGFloat(props["max"]) {
+        if let max = Convert.toCGFloat(props["max"]),
+            let min = Convert.toCGFloat(props["min"]) {
+            updateMinMax(min: min, max: max)
+        } else if let max = Convert.toCGFloat(props["max"]) {
             self.max = max
-        }
-
-        if let min = Convert.toCGFloat(props["min"]) {
+        } else if let min = Convert.toCGFloat(props["min"]) {
             self.min = min
         }
 
@@ -163,6 +167,14 @@ import SceneKit
 
         if let foregroundColor = Convert.toColor(props["foregroundColor"]) {
             self.foregroundColor = foregroundColor
+        }
+    }
+
+    private func updateMinMax(min: CGFloat, max: CGFloat) {
+        if (min < max) && (_min != min || _max != max) {
+            _min = min
+            _max = max
+            setNeedsLayout()
         }
     }
 

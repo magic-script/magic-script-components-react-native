@@ -22,7 +22,6 @@ import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.Prism
-import com.magicleap.magicscript.scene.nodes.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.itReturns
@@ -168,8 +167,8 @@ class UiNodesManagerTest {
         val arScene = spy<Scene>()
         nodesManager.registerScene(arScene)
         val reactScene = ReactScene(reactMapOf())
-        val prism1 = Prism(reactMapOf())
-        val prism2 = Prism(reactMapOf())
+        val prism1 = createPrism(reactMapOf())
+        val prism2 = createPrism(reactMapOf())
         nodesManager.registerNode(reactScene, nodeId = "0")
         nodesManager.registerNode(prism1, nodeId = "1")
         nodesManager.registerNode(prism2, nodeId = "2")
@@ -258,6 +257,10 @@ class UiNodesManagerTest {
         verify(node1).onPause()
         verify(node2).onPause()
         verify(node3).onPause()
+    }
+
+    private fun createPrism(props: JavaOnlyMap): Prism {
+        return Prism(props, mock())
     }
 
 }

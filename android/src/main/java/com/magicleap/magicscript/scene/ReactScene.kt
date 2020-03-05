@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene
 
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Scene
-import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl
-import com.magicleap.magicscript.scene.CustomArFragment
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
 class ReactScene(initProps: ReadableMap) : ReactNode {
@@ -36,7 +35,12 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     override val reactChildren: List<ReactNode>
         get() = prisms
 
-    fun build(scene: Scene) {
+    override fun build() {
+        applyProperties(properties)
+    }
+
+    fun onArReady(fragment: CustomArFragment, scene: Scene) {
+        this.arFragment = fragment
         this.arScene = scene
 
         applyProperties(properties)
@@ -45,15 +49,8 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
             if (!scene.children.contains(prism)) {
                 scene.addChild(prism)
             }
-        }
-    }
-
-    fun onArFragmentReady(fragment: CustomArFragment) {
-        this.arFragment = fragment
-
-        for (prism in prisms) {
-            if (!prism.built) {
-                buildPrism(prism, fragment)
+            if (!prism.initialized) {
+                setupPrism(prism, fragment)
             }
         }
     }
@@ -70,8 +67,8 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
             arScene?.addChild(child)
 
             arFragment?.let { fragment ->
-                if (!child.built) {
-                    buildPrism(child, fragment)
+                if (!child.initialized) {
+                    setupPrism(child, fragment)
                 }
             }
         }
@@ -100,12 +97,11 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         // TODO
     }
 
-    private fun buildPrism(prism: Prism, arFragment: CustomArFragment) {
+    private fun setupPrism(prism: Prism, arFragment: CustomArFragment) {
         val transformationSystem = arFragment.transformationSystem ?: return
         val session = arFragment.arSceneView?.session ?: return
-        val context = arFragment.context ?: return
 
-        prism.build(transformationSystem, session, CubeRenderableBuilderImpl(context))
+        prism.setArDependencies(transformationSystem, session)
         prism.setScene(this)
         arFragment.addCameraObserver(prism)
     }

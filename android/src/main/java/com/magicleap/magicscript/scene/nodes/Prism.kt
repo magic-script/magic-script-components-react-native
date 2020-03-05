@@ -34,6 +34,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.CameraObserver
+import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -42,7 +43,10 @@ import com.magicleap.magicscript.utils.read
 import kotlin.math.min
 import kotlin.math.pow
 
-class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
+class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuilder) :
+    AnchorNode(),
+    ReactNode,
+    CameraObserver {
 
     companion object {
         const val PROP_SIZE = "size"
@@ -50,7 +54,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         const val PROP_VISIBLE = "visible"
     }
 
-    var built = false
+    var initialized = false
         private set
 
     var beingTouched: Boolean = false
@@ -115,7 +119,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
             it.setParent(this)
             it.addChild(child)
         }
-        applyClipBounds()
+        clipContent()
     }
 
     override fun removeContent(child: ReactNode) {
@@ -124,12 +128,15 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         }
     }
 
-    fun build(
+    override fun build() {
+        applyProperties(properties)
+    }
+
+    fun setArDependencies(
         transformationSystem: TransformationSystem,
-        session: Session,
-        cubeBuilder: CubeRenderableBuilder
+        session: Session
     ) {
-        if (built) {
+        if (initialized) {
             return
         }
 
@@ -142,9 +149,9 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
             }
         }
         applyProperties(properties)
-        attachRenderable(cubeBuilder)
+        buildCube(size)
 
-        built = true
+        initialized = true
     }
 
     override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
@@ -195,9 +202,9 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         requestedAnchorPosition = null
     }
 
-    private fun attachRenderable(cubeBuilder: CubeRenderableBuilder) {
+    private fun buildCube(cubeSize: Vector3) {
         val color = Color(1f, 0f, 0f, 0.5f)
-        cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
+        cubeBuilder.buildRenderable(cubeSize, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
                 renderableCopy = it.renderable
                 if (visible) {
@@ -215,8 +222,11 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
 
     private fun setSize(props: Bundle) {
         props.read<Vector3>(PROP_SIZE)?.let { size ->
-            this.size = size
-            applyClipBounds()
+            if (size != this.size) {
+                this.size = size
+                buildCube(size)
+                clipContent()
+            }
         }
     }
 
@@ -253,7 +263,7 @@ class Prism(initProps: ReadableMap) : AnchorNode(), ReactNode, CameraObserver {
         }
     }
 
-    private fun applyClipBounds() {
+    private fun clipContent() {
         val min = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
         val max = Vector3(size.x / 2, size.y / 2, size.z / 2)
 

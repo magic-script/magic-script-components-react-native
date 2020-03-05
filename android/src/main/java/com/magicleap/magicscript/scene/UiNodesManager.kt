@@ -21,7 +21,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
-import com.magicleap.magicscript.scene.nodes.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
@@ -43,9 +42,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     @Synchronized
     fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
-
-        reactScene?.build(arScene)
-        reactScene?.onArFragmentReady(fragment)
+        reactScene?.onArReady(fragment, arScene)
 
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {

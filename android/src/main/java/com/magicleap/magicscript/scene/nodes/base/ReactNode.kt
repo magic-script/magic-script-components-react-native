@@ -30,6 +30,11 @@ interface ReactNode {
      */
     val reactChildren: List<ReactNode>
 
+    /**
+     * Should build the node by applying the initial and default properties
+     */
+    fun build()
+
     fun update(props: ReadableMap)
 
     fun addContent(child: ReactNode)

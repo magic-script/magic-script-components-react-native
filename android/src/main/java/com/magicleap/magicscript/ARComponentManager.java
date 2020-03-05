@@ -51,6 +51,7 @@ import com.magicleap.magicscript.icons.IconsRepository;
 import com.magicleap.magicscript.icons.IconsRepositoryImpl;
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
 import com.magicleap.magicscript.scene.NodesManager;
+import com.magicleap.magicscript.scene.ReactScene;
 import com.magicleap.magicscript.scene.nodes.ContentNode;
 import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
@@ -58,7 +59,6 @@ import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
 import com.magicleap.magicscript.scene.nodes.Prism;
-import com.magicleap.magicscript.scene.nodes.ReactScene;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
@@ -82,7 +82,6 @@ import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.ReactNode;
-import com.magicleap.magicscript.scene.nodes.base.TransformNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode;
@@ -195,7 +194,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new Prism(props), nodeId));
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder), nodeId));
     }
 
     /**
@@ -651,9 +651,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     private void addNode(ReactNode node, String nodeId) {
-        if (node instanceof TransformNode) {
-            ((TransformNode) node).build();
-        }
+        node.build();
         nodesManager.registerNode(node, nodeId);
     }
 

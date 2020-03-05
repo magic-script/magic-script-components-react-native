@@ -146,7 +146,7 @@ abstract class TransformNode(
     /**
      * Builds the node by calling [applyProperties] with all initial properties
      */
-    open fun build() {
+    override fun build() {
         applyProperties(properties)
         if (useContentNodeAlignment) {
             applyAlignment()

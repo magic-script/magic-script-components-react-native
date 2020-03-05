@@ -96,7 +96,6 @@ class UiLinearLayoutTest {
         node.addContent(child1)
         node.addContent(child2)
         val visibleChildrenList = listOf(child1)
-        Mockito.reset(layoutManager)
 
         UiBaseLayout.Test(node).forceLayout()
 
@@ -120,7 +119,7 @@ class UiLinearLayoutTest {
 
         verify(layoutManager).layoutChildren(any(), eq(childrenList), any())
     }
-    
+
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
             build()

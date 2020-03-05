@@ -42,7 +42,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     @Synchronized
     fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
-        reactScene?.onArReady(fragment, arScene)
+        reactScene?.setArDependencies(fragment, arScene)
 
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {

@@ -39,7 +39,7 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         applyProperties(properties)
     }
 
-    fun onArReady(fragment: CustomArFragment, scene: Scene) {
+    fun setArDependencies(fragment: CustomArFragment, scene: Scene) {
         this.arFragment = fragment
         this.arScene = scene
 

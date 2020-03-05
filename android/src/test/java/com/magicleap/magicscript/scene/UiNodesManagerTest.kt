@@ -17,18 +17,16 @@
 package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.JavaOnlyMap
-import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import org.amshove.kluent.*
+import com.nhaarman.mockitokotlin2.*
+import org.amshove.kluent.itReturns
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,6 +46,7 @@ class UiNodesManagerTest {
     @Test
     fun `should register node`() {
         val node = NodeBuilder().build()
+
         nodesManager.registerNode(node, "1")
 
         nodesManager.findNodeWithId("1") shouldEqual node
@@ -65,7 +64,7 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `child should be attached to content node of parent`() {
+    fun `child should be attached to content node is parent is a TransformNode`() {
         val parent = NodeBuilder().build()
         val parentId = "some parent id"
         nodesManager.registerNode(parent, parentId)
@@ -105,7 +104,7 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should clear all nodes`() {
+    fun `should remove all nodes on clear`() {
         nodesManager.registerNode(NodeBuilder().build(), "1")
         nodesManager.registerNode(NodeBuilder().build(), "2")
         nodesManager.registerNode(NodeBuilder().build(), "3")
@@ -119,55 +118,7 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `if ArFragment is not ready should not add root to scene`() {
-        val scene = spy<Scene>()
-
-        nodesManager.registerScene(scene)
-
-        scene.children.shouldBeEmpty()
-    }
-
-    @Test
-    fun `if ArFragment is ready should add root to scene`() {
-        val scene = spy<Scene>()
-
-        nodesManager.registerScene(scene)
-
-        nodesManager.onArFragmentReady()
-
-        scene.children.isNotEmpty()
-    }
-
-    @Test
-    fun `should update anchor onTapArPlane when planeDetection is true`() {
-        val anchor = mock<Anchor>()
-        val scene = spy<Scene>()
-
-        nodesManager.planeDetection = true
-        nodesManager.registerScene(scene)
-        nodesManager.onArFragmentReady()
-
-        nodesManager.onTapArPlane(anchor)
-
-        (scene.children[0] as AnchorNode).anchor shouldBe anchor
-    }
-
-    @Test
-    fun `should not update anchor onTapArPlane when planeDetection is false`() {
-        val anchor = mock<Anchor>()
-        val scene = spy<Scene>()
-
-        nodesManager.planeDetection = false
-        nodesManager.registerScene(scene)
-        nodesManager.onArFragmentReady()
-
-        nodesManager.onTapArPlane(anchor)
-
-        (scene.children[0] as AnchorNode).anchor shouldNotBe anchor
-    }
-
-    @Test
-    fun `should not attachRenderable if ArFragment is not ready`() {
+    fun `should not attach renderable if ArFragment is not ready`() {
         val node1 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
         }
@@ -178,7 +129,7 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should attachRenderable for all nodes with renderable when ArFragmentReady`() {
+    fun `should attach renderable for all nodes with renderable when ArFragment ready`() {
         val node1 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
             nodesManager.registerNode(this.mock, "1")
@@ -192,10 +143,9 @@ class UiNodesManagerTest {
             nodesManager.registerNode(this.mock, "3")
         }
         val scene = mock<Scene>()
-
         nodesManager.registerScene(scene)
 
-        nodesManager.onArFragmentReady()
+        nodesManager.onArFragmentReady(mock())
 
         verify(node1).attachRenderable()
         verify(node2).attachRenderable()
@@ -203,39 +153,58 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `rootNode shouldn't have register nodes at the beginning`() {
-        val scene = spy<Scene>()
+    fun `AR scene should not have any children at the beginning`() {
+        val arScene = spy<Scene>()
 
-        nodesManager.registerScene(scene)
-        nodesManager.onArFragmentReady()
+        nodesManager.registerScene(arScene)
+        nodesManager.onArFragmentReady(mock())
 
-        val root = scene.children[0]
-        root.children.shouldBeEmpty()
+        arScene.children.size shouldEqual 0
     }
 
     @Test
-    fun `should add node to scene root when anchor UUID absent`() {
-        val scene = spy<Scene>()
-        nodesManager.registerScene(scene)
-        nodesManager.onArFragmentReady()
+    fun `should attach Prisms to AR scene when ReactScene registered`() {
+        val arScene = spy<Scene>()
+        nodesManager.registerScene(arScene)
+        val reactScene = ReactScene(reactMapOf())
+        val prism1 = createPrism(reactMapOf())
+        val prism2 = createPrism(reactMapOf())
+        nodesManager.registerNode(reactScene, nodeId = "0")
+        nodesManager.registerNode(prism1, nodeId = "1")
+        nodesManager.registerNode(prism2, nodeId = "2")
+        nodesManager.addNodeToParent(nodeId = "1", parentId = "0")
+        nodesManager.addNodeToParent(nodeId = "2", parentId = "0")
+        nodesManager.addNodeToRoot(nodeId = "0")
+
+        nodesManager.onArFragmentReady(mock())
+
+        arScene.children.size shouldEqual 2
+        arScene.children[0] shouldEqual prism1
+        arScene.children[1] shouldEqual prism2
+    }
+
+    @Test
+    fun `should not add node to AR scene without Scene and Prism object and anchor UUID absent `() {
+        val arScene = spy<Scene>()
+        nodesManager.registerScene(arScene)
+        nodesManager.onArFragmentReady(mock())
         val node = NodeBuilder().build()
 
         nodesManager.registerNode(node, "1")
         nodesManager.addNodeToRoot("1")
 
-        val root = scene.children[0]
-        root.children.size shouldEqual 1
+        arScene.children.size shouldEqual 0
     }
 
     @Test
     fun `should add node to specified anchor when anchor UUID present and anchor node exists`() {
-        val scene = spy<Scene>()
-        nodesManager.registerScene(scene)
-        nodesManager.onArFragmentReady()
+        val arScene = spy<Scene>()
+        nodesManager.registerScene(arScene)
+        nodesManager.onArFragmentReady(mock())
         val uuid = UUID.randomUUID().toString()
         val anchorNode = AnchorNode()
         anchorNode.name = uuid
-        scene.addChild(anchorNode)
+        arScene.addChild(anchorNode)
         val childNode = NodeBuilder()
             .withProps(reactMapOf(TransformNode.PROP_ANCHOR_UUID, uuid))
             .build()
@@ -248,10 +217,9 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should updateNode properties`() {
+    fun `should update node properties`() {
         val node = mock<TransformNode>()
         val props = JavaOnlyMap.of()
-
         nodesManager.registerNode(node, "1")
 
         nodesManager.updateNode("1", props)
@@ -260,11 +228,10 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should notify all nodes when onHostResume`() {
+    fun `should resume all nodes when host resumed`() {
         val node1 = mock<TransformNode>()
         val node2 = mock<TransformNode>()
         val node3 = mock<TransformNode>()
-
         nodesManager.registerNode(node1, "1")
         nodesManager.registerNode(node2, "2")
         nodesManager.registerNode(node3, "3")
@@ -277,11 +244,10 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should notify all nodes when onHostPause`() {
+    fun `should pause all nodes when host paused`() {
         val node1 = mock<TransformNode>()
         val node2 = mock<TransformNode>()
         val node3 = mock<TransformNode>()
-
         nodesManager.registerNode(node1, "1")
         nodesManager.registerNode(node2, "2")
         nodesManager.registerNode(node3, "3")
@@ -292,4 +258,9 @@ class UiNodesManagerTest {
         verify(node2).onPause()
         verify(node3).onPause()
     }
+
+    private fun createPrism(props: JavaOnlyMap): Prism {
+        return Prism(props, mock())
+    }
+
 }

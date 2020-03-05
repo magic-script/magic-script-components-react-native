@@ -96,7 +96,6 @@ class UiLinearLayoutTest {
         node.addContent(child1)
         node.addContent(child2)
         val visibleChildrenList = listOf(child1)
-        Mockito.reset(layoutManager)
 
         UiBaseLayout.Test(node).forceLayout()
 

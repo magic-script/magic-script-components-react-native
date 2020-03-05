@@ -32,7 +32,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -160,7 +159,6 @@ class VideoNodeTest {
 
     @Test
     fun `should apply clip bounds when assigned`() {
-        Mockito.reset(clipper)
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
 
         videoNode.clipBounds = clipBounds
@@ -172,11 +170,10 @@ class VideoNodeTest {
     fun `should apply clip bounds when local position changed`() {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         videoNode.clipBounds = clipBounds
-        Mockito.reset(clipper)
 
         videoNode.localPosition = Vector3(-3f, -1f, 2f)
 
-        verify(clipper).applyClipBounds(eq(videoNode), eq(clipBounds))
+        verify(clipper, times(2)).applyClipBounds(eq(videoNode), eq(clipBounds))
     }
 
     @Test
@@ -184,11 +181,10 @@ class VideoNodeTest {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         videoNode.clipBounds = clipBounds
         videoNode.hide()
-        Mockito.reset(clipper)
 
         videoNode.show()
 
-        verify(clipper).applyClipBounds(eq(videoNode), eq(clipBounds))
+        verify(clipper, times(2)).applyClipBounds(eq(videoNode), eq(clipBounds))
     }
 
 }

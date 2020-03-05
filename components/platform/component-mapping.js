@@ -1,4 +1,6 @@
 // Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+import SceneBuilder from "./elements/builders/scene-builder.js";
+import PrismBuilder from "./elements/builders/prism-builder.js";
 
 import AudioBuilder from "./elements/builders/audio-builder.js";
 import ButtonBuilder from "./elements/builders/button-builder.js";
@@ -42,6 +44,9 @@ export default {
     // 'scene': () => new ControllerBuilder(),
   },
   elements: {
+    scene: componentManager => new SceneBuilder(componentManager),
+    prism: componentManager => new PrismBuilder(componentManager),
+
     // ui nodes
     button: componentManager => new ButtonBuilder(componentManager),
     content: componentManager => new ContentBuilder(componentManager),

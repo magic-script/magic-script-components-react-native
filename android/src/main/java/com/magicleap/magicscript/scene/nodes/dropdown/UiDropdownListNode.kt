@@ -27,7 +27,7 @@ import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
@@ -132,7 +132,7 @@ open class UiDropdownListNode(
         setMaxListHeight(props)
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         if (child is UiDropdownListItemNode) {
             configureListItems(listOf(child), properties)
             listNode.addContent(child)
@@ -141,7 +141,7 @@ open class UiDropdownListNode(
         }
     }
 
-    override fun removeContent(child: TransformNode) {
+    override fun removeContent(child: ReactNode) {
         if (child is UiDropdownListItemNode) {
             listNode.removeContent(child)
         } else {

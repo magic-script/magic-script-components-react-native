@@ -20,15 +20,15 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
 interface NodesManager {
 
     fun registerScene(scene: Scene)
 
-    fun findNodeWithId(nodeId: String): Node?
+    fun findNodeWithId(nodeId: String): ReactNode?
 
-    fun registerNode(node: TransformNode, nodeId: String)
+    fun registerNode(node: ReactNode, nodeId: String)
 
     fun addNodeToRoot(nodeId: String)
 

@@ -10,6 +10,7 @@ import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -79,7 +80,7 @@ open class UiListViewItemNode(
         setBackgroundColor(props)
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         super.addContent(child)
         if (contentNode.children.size > 1) {
             logMessage("Only one node can be added as list item child", true)

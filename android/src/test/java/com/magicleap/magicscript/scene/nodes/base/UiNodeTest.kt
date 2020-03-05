@@ -38,7 +38,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -237,37 +236,34 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should apply clip bounds when local position changed`() {
+    fun `should apply clip bounds again when local position changed`() {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         node.clipBounds = clipBounds
-        Mockito.reset(nodeClipper)
 
         node.localPosition = Vector3(2f, 1f, 8f)
 
-        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+        verify(nodeClipper, times(2)).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test
-    fun `should apply clip bounds when local scale changed`() {
+    fun `should apply clip bounds again when local scale changed`() {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         node.clipBounds = clipBounds
-        Mockito.reset(nodeClipper)
 
         node.localScale = Vector3(2f, 3f, 1f)
 
-        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+        verify(nodeClipper, times(2)).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test
-    fun `should apply clip bounds when visibility changed to visible`() {
+    fun `should apply clip bounds again when visibility changed to visible`() {
         val clipBounds = AABB(min = Vector3(0.5f, 0.5f, -1f), max = Vector3(1f, 1f, 1f))
         node.clipBounds = clipBounds
         node.hide()
-        Mockito.reset(nodeClipper)
 
         node.show()
 
-        verify(nodeClipper).applyClipBounds(eq(node), eq(clipBounds))
+        verify(nodeClipper, times(2)).applyClipBounds(eq(node), eq(clipBounds))
     }
 
     @Test

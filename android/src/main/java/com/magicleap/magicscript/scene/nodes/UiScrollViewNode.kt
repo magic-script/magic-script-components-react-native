@@ -28,6 +28,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -156,8 +157,12 @@ open class UiScrollViewNode(
         setScrollOffset(props)
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         super.addContent(child)
+
+        if (child !is TransformNode) {
+            return
+        }
 
         if (child is UiScrollBarNode) {
             if (child.orientation == UiScrollBarNode.ORIENTATION_VERTICAL) {
@@ -183,7 +188,7 @@ open class UiScrollViewNode(
         }
     }
 
-    override fun removeContent(child: TransformNode) {
+    override fun removeContent(child: ReactNode) {
         super.removeContent(child)
         when (child) {
             content -> content = null

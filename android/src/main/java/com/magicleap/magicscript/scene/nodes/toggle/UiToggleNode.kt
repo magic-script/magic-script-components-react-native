@@ -165,12 +165,12 @@ open class UiToggleNode(
     }
 
     private fun findToggleGroupParent(): ToggleGroupNode? {
-        var parentNode = parent
+        var parentNode = reactParent
         while (parentNode != null) {
             if (parentNode is ToggleGroupNode) {
                 return parentNode
             }
-            parentNode = parentNode.parent
+            parentNode = parentNode.reactParent
         }
         return null
     }

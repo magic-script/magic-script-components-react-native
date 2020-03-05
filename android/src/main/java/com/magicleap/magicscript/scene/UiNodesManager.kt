@@ -20,9 +20,8 @@ import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
 
@@ -30,11 +29,10 @@ import com.magicleap.magicscript.utils.logMessage
  * It manages nodes registration and attaching them to scene
  */
 open class UiNodesManager : NodesManager, LifecycleEventListener {
-
-    private val rootNode by lazy { AnchorNode() }
-    private val nodesById = HashMap<String, TransformNode>()
+    private var reactScene: ReactScene? = null
+    private val nodesById = HashMap<String, ReactNode>()
     private var arReady = false
-    private lateinit var scene: Scene
+    private lateinit var arScene: Scene
     var planeDetection = false
 
     companion object {
@@ -42,11 +40,11 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     @Synchronized
-    fun onArFragmentReady() {
+    fun onArFragmentReady(fragment: CustomArFragment) {
         arReady = true
-        rootNode.localPosition = Vector3(0f, 0f, 0f)
-        scene.addChild(rootNode)
-        nodesById.forEach { (_, node) ->
+        reactScene?.setArDependencies(fragment, arScene)
+
+        nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
             }
@@ -55,48 +53,53 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     @Synchronized
     override fun registerScene(scene: Scene) {
-        this.scene = scene
-        if (arReady) {
-            scene.addChild(rootNode)
-        }
+        this.arScene = scene
     }
 
     @Synchronized
     override fun onTapArPlane(anchor: Anchor) {
         if (planeDetection) {
             planeDetection = false
-            rootNode.anchor = anchor
+            // rootNode.anchor = anchor
+            // TODO
         }
     }
 
     @Synchronized
-    override fun findNodeWithId(nodeId: String): Node? {
+    override fun findNodeWithId(nodeId: String): ReactNode? {
         return nodesById[nodeId]
     }
 
     @Synchronized
-    override fun registerNode(node: TransformNode, nodeId: String) {
-        node.name = nodeId
+    override fun registerNode(node: ReactNode, nodeId: String) {
+        // node.name = nodeId
         nodesById[nodeId] = node
         logMessage("register node id= $nodeId, type=${node.javaClass.simpleName}")
 
-        if (arReady && node.hasRenderable && !node.renderableRequested) {
+        if (node is ReactScene) {
+            this.reactScene = node
+        }
+
+        if (arReady && node is TransformNode && node.hasRenderable && !node.renderableRequested) {
             node.attachRenderable()
         }
     }
 
+    /**
+     * This function should receive a nodeId of Scene object but
+     * for compatibility with XR client we temporarily allow adding nodes
+     * to Anchor Nodes.
+     */
     @Synchronized
     override fun addNodeToRoot(nodeId: String) {
         val node = nodesById[nodeId]
 
         if (node == null) {
-            logMessage("cannot add node: not found")
+            logMessage("cannot add node with id = $nodeId to root: not found")
             return
         }
-        if (tryAddNodeToAnchor(node)) {
-            return
-        }
-        rootNode.addChild(node)
+
+        tryAddNodeToAnchor(node)
     }
 
     @Synchronized
@@ -118,11 +121,15 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         parentNode.addContent(node)
     }
 
-    private fun tryAddNodeToAnchor(node: TransformNode): Boolean {
+    private fun tryAddNodeToAnchor(node: ReactNode): Boolean {
+        if (node !is TransformNode) {
+            return false
+        }
+
         if (node.anchorUuid.isEmpty()) {
             return false
         }
-        val anchorNode = scene.findByName(node.anchorUuid)
+        val anchorNode = arScene.findByName(node.anchorUuid)
         return if (anchorNode is AnchorNode) {
             anchorNode.addChild(node)
             true
@@ -178,8 +185,8 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     // removes node with descendants from the nodes map
-    private fun removeFromMap(node: Node) {
-        node.children.forEach { child ->
+    private fun removeFromMap(node: ReactNode) {
+        node.reactChildren.forEach { child ->
             removeFromMap(child)
         }
 
@@ -188,19 +195,12 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             nodesById.remove(key)
         }
 
-        if (node is TransformNode) {
-            node.onDestroy()
-        }
+        node.onDestroy()
     }
 
-    private fun detachNode(node: TransformNode) {
-        val parent = node.parent // content node
-        val grandparent = parent?.parent
-        if (grandparent is TransformNode) {
-            grandparent.removeContent(node)
-        } else {
-            parent?.removeChild(node)
-        }
+    private fun detachNode(node: ReactNode) {
+        val parent = node.reactParent
+        parent?.removeContent(node)
     }
 
 }

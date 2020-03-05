@@ -51,12 +51,14 @@ import com.magicleap.magicscript.icons.IconsRepository;
 import com.magicleap.magicscript.icons.IconsRepositoryImpl;
 import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
 import com.magicleap.magicscript.scene.NodesManager;
+import com.magicleap.magicscript.scene.ReactScene;
 import com.magicleap.magicscript.scene.nodes.ContentNode;
 import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
+import com.magicleap.magicscript.scene.nodes.Prism;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
@@ -79,7 +81,7 @@ import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
-import com.magicleap.magicscript.scene.nodes.base.TransformNode;
+import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode;
@@ -185,6 +187,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         return Collections.emptyMap();
     }
 
+    @ReactMethod
+    public void createScene(final ReadableMap props, final String nodeId) {
+        mainHandler.post(() -> addNode(new ReactScene(props), nodeId));
+    }
+
+    @ReactMethod
+    public void createPrism(final ReadableMap props, final String nodeId) {
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder), nodeId));
+    }
+
     /**
      * Creates node that is a parent for other nodes (<view>)
      *
@@ -205,11 +218,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createButtonNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiButtonNode node = new UiButtonNode(props,
-                                                 context,
-                                                 viewRenderableLoader,
-                                                 uiNodeClipper,
-                                                 fontProvider, iconsRepo);
+            UiButtonNode node = new UiButtonNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -337,11 +346,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiColorPickerNode node = new UiColorPickerNode(props,
-                                                           context,
-                                                           viewRenderableLoader,
-                                                           uiNodeClipper,
-                                                           fontProvider, iconsRepo);
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -446,7 +451,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
                                                                        context,
                                                                        viewRenderableLoader,
                                                                        uiNodeClipper,
-                                                                       fontProvider, iconsRepo);
+                                                                       fontProvider,
+                                                                       iconsRepo);
             activityResultObservers.add(filePicker);
             addNode(filePicker, nodeId);
         });
@@ -644,7 +650,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         // unused on Android
     }
 
-    private void addNode(TransformNode node, String nodeId) {
+    private void addNode(ReactNode node, String nodeId) {
         node.build();
         nodesManager.registerNode(node, nodeId);
     }

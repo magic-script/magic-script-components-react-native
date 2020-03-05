@@ -7,10 +7,10 @@ import android.widget.ListView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
@@ -80,7 +80,7 @@ class DropdownItemsListNode(
         viewRenderable.renderPriority = RenderPriority.ABOVE_DEFAULT
     }
 
-    override fun addContent(child: TransformNode) {
+    override fun addContent(child: ReactNode) {
         super.addContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)
@@ -94,7 +94,7 @@ class DropdownItemsListNode(
         }
     }
 
-    override fun removeContent(child: TransformNode) {
+    override fun removeContent(child: ReactNode) {
         super.removeContent(child)
         if (child is UiDropdownListItemNode) {
             items.add(child)

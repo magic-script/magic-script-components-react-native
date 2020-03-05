@@ -141,6 +141,16 @@ class TransformNodeTest {
     }
 
     @Test
+    fun `should return proper React parent when child added to content node`() {
+        val parent = NodeBuilder().build()
+        val child = NodeBuilder().build()
+
+        parent.addContent(child)
+
+        child.reactParent shouldEqual parent
+    }
+    
+    @Test
     fun `renderableRequested should be true after attaching renderable`() {
         val node = NodeBuilder().build()
         node.attachRenderable()

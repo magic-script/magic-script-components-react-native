@@ -202,9 +202,8 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     private fun detachNode(node: ReactNode) {
-        val parent = node.reactParent // content node
+        val parent = node.reactParent
         parent?.removeContent(node)
-        logMessage("detaching: $node from parent: $parent")
     }
 
 }

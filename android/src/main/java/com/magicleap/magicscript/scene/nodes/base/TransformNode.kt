@@ -69,7 +69,7 @@ abstract class TransformNode(
      * Used as content node for alignment purpose.
      * Renderable and / or child nodes should be added to it.
      */
-    val contentNode = TransformAwareNode()
+    val contentNode = TransformContentNode()
 
     var anchorUuid: String = ""
         private set
@@ -96,10 +96,15 @@ abstract class TransformNode(
      */
     protected val properties = Arguments.toBundle(initProps) ?: Bundle()
 
+    // parent registered in React code
     override val reactParent: ReactNode?
         get() {
-            val grandparent = parent?.parent // first parent is content node
-            return grandparent as? ReactNode
+            val arParent = parent
+            if (arParent is TransformContentNode) {
+                // first parent is a content node in case of Transform nodes
+                return arParent.parent as? ReactNode
+            }
+            return parent as? ReactNode
         }
 
     override val reactChildren: List<ReactNode>
@@ -380,7 +385,7 @@ abstract class TransformNode(
     }
 
     private fun setLocalPosition(props: Bundle) {
-        val registeredParent = reactParent// first parent is a content node
+        val registeredParent = reactParent
         if (registeredParent is Layoutable) {
             // position is managed by a parent, so we should not change it
             return

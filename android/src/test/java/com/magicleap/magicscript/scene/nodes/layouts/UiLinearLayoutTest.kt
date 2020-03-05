@@ -120,7 +120,7 @@ class UiLinearLayoutTest {
 
         verify(layoutManager).layoutChildren(any(), eq(childrenList), any())
     }
-
+    
     private fun createNode(props: JavaOnlyMap): UiLinearLayout {
         return UiLinearLayout(props, layoutManager).apply {
             build()

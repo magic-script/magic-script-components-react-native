@@ -40,4 +40,26 @@ extension SCNNode {
             node = node.parent
         }
     }
+
+    @objc func enumerateBaseNodes(_ block: (BaseNode) -> Void) {
+        childNodes.forEach { child in
+            child.enumerateBaseNodes(block)
+        }
+
+        if let baseNode = self as? BaseNode {
+            block(baseNode)
+        }
+    }
+
+    /// Enumerates SCNNode hierarchy from given node (self) to the root.
+    /// Invokes the block closure for each BaseNode.
+    @objc func enumerateBaseNodesParents(_ block: (BaseNode) -> Void) {
+        var node: SCNNode! = self
+        while node != nil {
+            if let baseNode = node as? BaseNode {
+                block(baseNode)
+            }
+            node = node.parent
+        }
+    }
 }

@@ -19,7 +19,7 @@ import SceneKit
 
 //sourcery: AutoMockable
 protocol NodeSelecting {
-    func hitTest(ray: Ray) -> TransformNode?
+    func hitTest(ray: Ray) -> BaseNode?
     func draggingHitTest(ray: Ray) -> Dragging?
 }
 
@@ -30,9 +30,9 @@ class UiNodeSelector: NodeSelecting  {
         self.rootNode = rootNode
     }
 
-    func hitTest(ray: Ray) -> TransformNode? {
-        let topNodes: [TransformNode] = rootNode.childNodes.filter { $0 is TransformNode }.map { $0 as! TransformNode }
-        var hitNodes: [TransformNode] = []
+    func hitTest(ray: Ray) -> BaseNode? {
+        let topNodes: [BaseNode] = rootNode.childNodes.filter { $0 is BaseNode }.map { $0 as! BaseNode }
+        var hitNodes: [BaseNode] = []
 
         for node in topNodes {
             if let hitNode = node.hitTest(ray: ray) {

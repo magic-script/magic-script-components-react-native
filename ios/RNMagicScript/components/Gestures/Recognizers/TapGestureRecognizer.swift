@@ -21,13 +21,13 @@ import SceneKit
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
 @objc protocol TapGestureRecognizing {
-    var tappedNode: TransformNode? { get }
+    var tappedNode: BaseNode? { get }
     var state: UIGestureRecognizer.State { get }
 }
 
 @objc class TapGestureRecognizer: UIGestureRecognizer {
     fileprivate let nodeSelector: NodeSelecting
-    fileprivate(set) var tappedNode: TransformNode?
+    fileprivate(set) var tappedNode: BaseNode?
     fileprivate(set) var initialTouchLocation: CGPoint?
     fileprivate var rayBuilder: RayBuilding
     var getCameraNode: (() -> SCNNode?)?

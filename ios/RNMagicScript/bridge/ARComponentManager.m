@@ -42,11 +42,27 @@ void ARLog(NSString *format, ...) {
     return dispatch_get_main_queue();
 }
 
+- (void)registerScene:(Scene *)scene sceneId:(NSString *)sceneId {
+    [NodesManager.instance registerScene:scene sceneId:sceneId];
+}
+
+- (void)registerPrism:(Prism *)prism prismId:(NSString *)prismId {
+    [NodesManager.instance registerPrism:prism prismId:prismId];
+}
+
 - (void)registerNode:(TransformNode *)node nodeId:(NSString *)nodeId {
-    [UiNodesManager.instance registerNode:node nodeId:nodeId];
+    [NodesManager.instance registerNode:node nodeId:nodeId];
 }
 
 RCT_EXPORT_MODULE()
+
+RCT_EXPORT_METHOD(createScene:(Scene *)scene sceneId:(NSString *)sceneId) {
+    [self registerScene:scene sceneId:sceneId];
+}
+
+RCT_EXPORT_METHOD(createPrism:(Prism *)prism prismId:(NSString *)prismId) {
+    [self registerPrism:prism prismId:prismId];
+}
 
 RCT_EXPORT_METHOD(createAudioNode:(UiAudioNode *)node nodeId:(NSString *)nodeId) {
     [self registerNode:node nodeId:nodeId];
@@ -182,32 +198,32 @@ RCT_EXPORT_METHOD(createWebViewNode:(UiWebViewNode *)node nodeId:(NSString *)nod
 
 RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)parentId) {
     ARLog(@"addChildNode: %@ toParentNode: %@", nodeId, parentId);
-    [UiNodesManager.instance addNode:nodeId toParent:parentId];
+    [NodesManager.instance addNode:nodeId toParent:parentId];
 }
 
 RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId) {
     ARLog(@"addChildNodeToContainer: %@", nodeId);
-    [UiNodesManager.instance addNodeToRoot:nodeId];
+    [NodesManager.instance addNodeToRoot:nodeId];
 }
 
 RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId) {
     ARLog(@"removeChildNode: %@ fromParentNode: %@", nodeId, parentId);
-    [UiNodesManager.instance removeNode:nodeId fromParent:parentId];
+    [NodesManager.instance removeNode:nodeId fromParent:parentId];
 }
 
 RCT_EXPORT_METHOD(removeChildNodeFromRoot:(NSString *)nodeId) {
     ARLog(@"removeNodeFromRoot: %@", nodeId);
-    [UiNodesManager.instance removeNodeFromRoot:nodeId];
+    [NodesManager.instance removeNodeFromRoot:nodeId];
 }
 
 RCT_EXPORT_METHOD(clearScene:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"clearScene");
-    [UiNodesManager.instance clear];
+    [NodesManager.instance clear];
 }
 
 RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)properties resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     ARLog(@"updateNode: %@", nodeId);
-    if ([UiNodesManager.instance updateNode:nodeId properties:properties]) {
+    if ([NodesManager.instance updateNode:nodeId properties:properties]) {
         resolve(nil);
     } else {
         NSString *message = [NSString stringWithFormat:@"Could not update node \"%@\"", nodeId];
@@ -217,12 +233,12 @@ RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)prope
 
 RCT_EXPORT_METHOD(updateLayout) {
     ARLog(@"updateLayout");
-    [UiNodesManager.instance updateLayout];
+    [NodesManager.instance updateLayout];
 }
 
 // MARK: - UiNode event handlers
 RCT_EXPORT_METHOD(addOnActivateEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onActivate = ^(UiNode *sender) {
         [[AREventsManager instance] onActivateEventReceived:sender];
         [[AREventsManager instance] onClickEventReceived:sender];
@@ -230,85 +246,85 @@ RCT_EXPORT_METHOD(addOnActivateEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(removeOnActivateEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onActivate = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnEnabledEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onEnabled = ^(UiNode *sender) {
         [[AREventsManager instance] onEnabledEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnEnabledEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onEnabled = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnDisabledEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onDisabled = ^(UiNode *sender) {
         [[AREventsManager instance] onDisabledEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnDisabledEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onDisabled = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnFocusGainedEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onFocusGained = ^(UiNode *sender) {
         [[AREventsManager instance] onFocusGainedEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnFocusGainedEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onFocusGained = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnFocusLostEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onFocusLost = ^(UiNode *sender) {
         [[AREventsManager instance] onFocusLostEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnFocusLostEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onFocusLost = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnUpdateEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onUpdate = ^(UiNode *sender) {
         [[AREventsManager instance] onUpdateEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnUpdateEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onUpdate = NULL;
 }
 
 RCT_EXPORT_METHOD(addOnDeleteEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onDelete = ^(UiNode *sender) {
         [[AREventsManager instance] onDeleteEventReceived:sender];
     };
 }
 
 RCT_EXPORT_METHOD(removeOnDeleteEventHandler:(NSString *)nodeId) {
-    UiNode *node = [UiNodesManager.instance findUiNodeWithId:nodeId];
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onDelete = NULL;
 }
 
 // MARK: - UiScrollViewNode event handlers
 RCT_EXPORT_METHOD(addOnScrollChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiScrollViewNode class]]) {
         ((UiScrollViewNode *)node).onScrollChanged = ^(UiNode *sender, CGFloat value) {
             ARLog(@"scrollView changed: %@", @(value));
@@ -319,7 +335,7 @@ RCT_EXPORT_METHOD(addOnScrollChangedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiTextEditNode event handlers
 RCT_EXPORT_METHOD(addOnTextChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiTextEditNode class]]) {
         ((UiTextEditNode *)node).onTextChanged = ^(UiNode *sender, NSString *text) {
             ARLog(@"textEdit changed: %@", text);
@@ -330,7 +346,7 @@ RCT_EXPORT_METHOD(addOnTextChangedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiToggleNode event handlers
 RCT_EXPORT_METHOD(addOnToggleChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiToggleNode class]]) {
         ((UiToggleNode *)node).onChanged = ^(UiNode *sender, BOOL on) {
             ARLog(@"toggle onChanged: %@", on ? @"on" : @"off");
@@ -341,7 +357,7 @@ RCT_EXPORT_METHOD(addOnToggleChangedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiVideoNode event handlers
 RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiVideoNode class]]) {
         ((UiVideoNode *)node).onVideoPrepared = ^(UiVideoNode *sender, NSString *videoURL) {
             ARLog(@"video onPrepared");
@@ -352,7 +368,7 @@ RCT_EXPORT_METHOD(addOnVideoPreparedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiDropdownListNode event handlers
 RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDropdownListNode class]]) {
         ((UiDropdownListNode *)node).onSelectionChanged = ^(UiDropdownListNode *sender, NSArray<UiDropdownListItemNode *> *selectedItems) {
             ARLog(@"DropdownList item selected");
@@ -363,7 +379,7 @@ RCT_EXPORT_METHOD(addOnSelectionChangedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiSliderNode event handlers
 RCT_EXPORT_METHOD(addOnSliderChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiSliderNode class]]) {
         ((UiSliderNode *)node).onSliderChanged = ^(UiSliderNode *sender, CGFloat value) {
             ARLog(@"slider changed: %@", @(value));
@@ -374,7 +390,7 @@ RCT_EXPORT_METHOD(addOnSliderChangedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiDatePickerNode event handlers
 RCT_EXPORT_METHOD(addOnDateChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
         ((UiDatePickerNode *)node).onDateChanged = ^(UiDatePickerNode *sender, NSString *value) {
             ARLog(@"datePicker changed: %@", value);
@@ -384,7 +400,7 @@ RCT_EXPORT_METHOD(addOnDateChangedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDatePickerNode class]]) {
         ((UiDatePickerNode *)node).onDateConfirmed = ^(UiDatePickerNode *sender, NSString *value) {
             ARLog(@"datePicker confirmed: %@", value);
@@ -395,7 +411,7 @@ RCT_EXPORT_METHOD(addOnDateConfirmedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiTimePickerNode event handlers
 RCT_EXPORT_METHOD(addOnTimeChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
         ((UiTimePickerNode *)node).onTimeChanged = ^(UiTimePickerNode *sender, NSString *value) {
             ARLog(@"timePicker changed: %@", value);
@@ -405,7 +421,7 @@ RCT_EXPORT_METHOD(addOnTimeChangedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnTimeConfirmedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiTimePickerNode class]]) {
         ((UiTimePickerNode *)node).onTimeConfirmed = ^(UiTimePickerNode *sender, NSString *value) {
             ARLog(@"timePicker confirmed: %@", value);
@@ -416,7 +432,7 @@ RCT_EXPORT_METHOD(addOnTimeConfirmedEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiColorPickerNode event handlers
 RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         ((UiColorPickerNode *)node).onColorChanged = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker changed: %@", value);
@@ -426,7 +442,7 @@ RCT_EXPORT_METHOD(addOnColorChangedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnColorConfirmedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         ((UiColorPickerNode *)node).onColorConfirmed = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker confirmed: %@", value);
@@ -436,7 +452,7 @@ RCT_EXPORT_METHOD(addOnColorConfirmedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnColorCanceledEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiColorPickerNode class]]) {
         ((UiColorPickerNode *)node).onColorCanceled = ^(UiColorPickerNode *sender, NSArray<NSNumber *> *value) {
             ARLog(@"colorPicker canceled: %@");
@@ -447,7 +463,7 @@ RCT_EXPORT_METHOD(addOnColorCanceledEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiDialogNode event handlers
 RCT_EXPORT_METHOD(addOnDialogConfirmedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDialogNode class]]) {
         ((UiDialogNode *)node).onDialogConfirmed = ^(UiDialogNode *sender) {
             ARLog(@"dialogNode confirmed: %@");
@@ -457,7 +473,7 @@ RCT_EXPORT_METHOD(addOnDialogConfirmedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDialogNode class]]) {
         ((UiDialogNode *)node).onDialogCanceled = ^(UiDialogNode *sender) {
             ARLog(@"dialogNode canceled: %@");
@@ -467,7 +483,7 @@ RCT_EXPORT_METHOD(addOnDialogCanceledEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiDialogNode class]]) {
         ((UiDialogNode *)node).onDialogTimeExpired = ^(UiDialogNode *sender) {
             ARLog(@"dialogNode timeExpired: %@");
@@ -478,7 +494,7 @@ RCT_EXPORT_METHOD(addOnDialogTimeExpiredEventHandler:(NSString *)nodeId) {
 
 // MARK: - UiCircleConfirmationNode event handlers
 RCT_EXPORT_METHOD(addOnConfirmationCompletedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
         ((UiCircleConfirmationNode *)node).onConfirmationCompleted = ^(UiCircleConfirmationNode *sender) {
             ARLog(@"circleConfirmationNode completed: %@");
@@ -488,7 +504,7 @@ RCT_EXPORT_METHOD(addOnConfirmationCompletedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnConfirmationUpdatedEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
         ((UiCircleConfirmationNode *)node).onConfirmationUpdated = ^(UiCircleConfirmationNode *sender, CGFloat value) {
             ARLog(@"circleConfirmationNode completed: %@");
@@ -498,7 +514,7 @@ RCT_EXPORT_METHOD(addOnConfirmationUpdatedEventHandler:(NSString *)nodeId) {
 }
 
 RCT_EXPORT_METHOD(addOnConfirmationCanceledEventHandler:(NSString *)nodeId) {
-    TransformNode *node = [UiNodesManager.instance findNodeWithId:nodeId];
+    TransformNode *node = [NodesManager.instance findNodeWithId:nodeId];
     if (node && [node isKindOfClass:[UiCircleConfirmationNode class]]) {
         ((UiCircleConfirmationNode *)node).onConfirmationCanceled = ^(UiCircleConfirmationNode *sender) {
             ARLog(@"circleConfirmationNode canceled: %@");

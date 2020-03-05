@@ -38,7 +38,7 @@ import SceneKit
         }
     }
 
-    @objc func hitTest(ray: Ray) -> TransformNode? {
+    @objc func hitTest(ray: Ray) -> BaseNode? {
         guard let _ = bounds else { return nil }
         let nodes: [TransformNode] = container.childNodes.compactMap { $0 as? TransformNode }
         for node in nodes {

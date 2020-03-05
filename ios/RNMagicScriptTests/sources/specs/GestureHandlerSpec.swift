@@ -23,11 +23,11 @@ class GestureHandlerSpec: QuickSpec {
     override func spec() {
         describe("GestureHandler") {
             var sut: GestureHandler!
-            var nodesManagerMock: NodesManagingMock!
+            var nodesGestureHandlerMock: NodesGestureHandlingMock!
 
             beforeEach {
-                nodesManagerMock = NodesManagingMock()
-                sut = GestureHandler(nodesManager: nodesManagerMock)
+                nodesGestureHandlerMock = NodesGestureHandlingMock()
+                sut = GestureHandler(nodesGestureHandler: nodesGestureHandlerMock)
             }
 
             context("when tap gesture received") {
@@ -40,7 +40,7 @@ class GestureHandlerSpec: QuickSpec {
 
                         sut.handleTapGesture(tapGestureRecognizerMock)
 
-                        nodesManagerMock.verify(.handleNodeTap(.value(tappedNode)))
+                        nodesGestureHandlerMock.verify(.handleNodeTap(.value(tappedNode)))
                     }
                 }
 
@@ -53,8 +53,8 @@ class GestureHandlerSpec: QuickSpec {
 
                         sut.handleTapGesture(tapGestureRecognizerMock)
 
-                        nodesManagerMock.verify(.handleNodeTap(.any), count: 0)
-                        nodesManagerMock.verify(.handleNodeLongPress(.any, .any), count: 0)
+                        nodesGestureHandlerMock.verify(.handleNodeTap(.any), count: 0)
+                        nodesGestureHandlerMock.verify(.handleNodeLongPress(.any, .any), count: 0)
 
                     }
                 }
@@ -96,7 +96,7 @@ class GestureHandlerSpec: QuickSpec {
                     longPressGestureRecognizerMock.given(.state(getter: UIGestureRecognizer.State.recognized))
 
                     sut.handleLongPressGesture(longPressGestureRecognizerMock)
-                    nodesManagerMock.verify(.handleNodeLongPress(.value(longPressedNode), .value(UIGestureRecognizer.State.recognized)))
+                    nodesGestureHandlerMock.verify(.handleNodeLongPress(.value(longPressedNode), .value(UIGestureRecognizer.State.recognized)))
                 }
             }
         }

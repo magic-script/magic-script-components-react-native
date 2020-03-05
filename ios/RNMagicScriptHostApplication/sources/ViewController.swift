@@ -62,7 +62,7 @@ class ViewController: UIViewController {
             }
         }
 
-        UiNodesManager.instance.updateLayout()
+        NodesManager.instance.updateLayout()
     }
 
     fileprivate func loadModel(_ filePath: String, index: Int) {
@@ -140,11 +140,11 @@ class ViewController: UIViewController {
     @discardableResult
     fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
-        UiNodesManager.instance.registerNode(node, nodeId: nodeId)
+        NodesManager.instance.registerNode(node, nodeId: nodeId)
         if let parentId = parentId {
-            UiNodesManager.instance.addNode(nodeId, toParent: parentId)
+            NodesManager.instance.addNode(nodeId, toParent: parentId)
         } else {
-            UiNodesManager.instance.addNodeToRoot(nodeId)
+            NodesManager.instance.addNodeToRoot(nodeId)
         }
         return node
     }

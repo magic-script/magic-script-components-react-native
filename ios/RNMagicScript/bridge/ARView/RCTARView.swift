@@ -103,10 +103,11 @@ import SceneKit
     }
 
     public init() {
-        self.gestureHandler = GestureHandler(nodesManager: UiNodesManager.instance)
+        self.gestureHandler = GestureHandler(nodesGestureHandler: NodesGestureHandler.instance)
         super.init(frame: CGRect.zero)
         self.arView = createARView()
         setupNodesManager(self.arView)
+        setupNodesGestureHandler()
         setupGestureRecognizers(self.arView)
         PlaneDetector.instance.register(arView: self)
         RCTARView.instance = self
@@ -154,16 +155,20 @@ import SceneKit
 
     fileprivate func setupNodesManager(_ view: ARSCNView) {
         // Resgister scene in nodes manager
-        UiNodesManager.instance.registerARView(self)
-        UiNodesManager.instance.onInputFocused = { [weak self] input in
-            self?.presentInput(input)
-        }
-        UiNodesManager.instance.onInputUnfocused = { [weak self] in
-            self?.dismissInput()
-        }
+        NodesManager.instance.registerARView(self)
 
         if let rootView = UIApplication.shared.keyWindow?.rootViewController?.view {
-            UiNodesManager.instance.dialogPresenter = DialogPresenter(parentView: rootView)
+            NodesManager.instance.dialogPresenter = DialogPresenter(parentView: rootView)
+        }
+    }
+
+    private func setupNodesGestureHandler() {
+        NodesGestureHandler.instance.onInputFocused = { [weak self] input in
+            self?.presentInput(input)
+        }
+
+        NodesGestureHandler.instance.onInputUnfocused = { [weak self] in
+            self?.dismissInput()
         }
     }
 
@@ -171,7 +176,7 @@ import SceneKit
         let rayBuilder = RayBuilder()
 
         // Add tap gesture
-        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+        let tapGestureRecognizer = TapGestureRecognizer(nodeSelector: NodesManager.instance.nodeSelector,
                                                         rayBuilder: rayBuilder,
                                                         target: gestureHandler,
                                                         action: #selector(GestureHandling.handleTapGesture(_:)))
@@ -179,7 +184,7 @@ import SceneKit
         addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
-        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+        let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: NodesManager.instance.nodeSelector,
                                                           rayBuilder: rayBuilder,
                                                           target: gestureHandler,
                                                           action: #selector(GestureHandling.handleDragGesture(_:)))
@@ -187,7 +192,7 @@ import SceneKit
         addGestureRecognizer(dragGestureRecognizer)
 
         // Add long press gesture
-        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: UiNodesManager.instance.nodeSelector,
+        let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: NodesManager.instance.nodeSelector,
                                                                      rayBuilder: rayBuilder,
                                                                      target: gestureHandler,
                                                                      action: #selector(GestureHandling.handleLongPressGesture(_:)))
@@ -203,11 +208,11 @@ import SceneKit
         }
 
         let inputAccessoryView = InputAccessoryViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            NodesGestureHandler.instance.handleNodeTap(nil)
         })
 
         let inputView = InputViewFactory.createView(for: input, onFinishEditing: {
-            UiNodesManager.instance.handleNodeTap(nil)
+            NodesGestureHandler.instance.handleNodeTap(nil)
         })
 
         inputResponder!.inputAccessoryView = inputAccessoryView

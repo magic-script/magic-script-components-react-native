@@ -154,7 +154,7 @@ import SceneKit
         setNeedsLayout()
     }
 
-    @objc override func hitTest(ray: Ray) -> TransformNode? {
+    @objc override func hitTest(ray: Ray) -> BaseNode? {
         if isListExpanded {
             return listGridLayoutNode.hitTest(ray: ray) ?? selfHitTest(ray: ray)
         }

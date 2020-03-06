@@ -135,7 +135,8 @@ open class UiButtonNode(
                     } else {
                         0f
                     }
-                contentNode.localPosition = Vector3(localPosition.x, localPosition.y, z)
+                contentNode.localPosition =
+                    Vector3(contentNode.localPosition.x, contentNode.localPosition.y, z)
             }
         }
     }

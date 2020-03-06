@@ -172,6 +172,7 @@ import SceneKit
         if (min < max) && (_min != min || _max != max) {
             _min = min
             _max = max
+            if value > max || value < min { value = min }
             setNeedsLayout()
         }
     }

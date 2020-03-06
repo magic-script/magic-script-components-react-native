@@ -121,6 +121,18 @@ class UiSliderNodeSpec: QuickSpec {
                         expect(node.min).to(beCloseTo(0.0))
                         expect(node.max).to(beCloseTo(2.0))
                         expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["min": 0.0, "max" : 10.0, "value": 1.0])
+                        expect(node.min).to(beCloseTo(0.0))
+                        expect(node.max).to(beCloseTo(10.0))
+                        expect(node.value).to(beCloseTo(1.0))
+                        node.update(["min": 2.0])
+                        expect(node.value).to(beCloseTo(2.0))
+                        node.update(["value": 8.0])
+                        node.update(["max": 6.0])
+                        expect(node.value).to(beCloseTo(2.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
                     }
                 }
 

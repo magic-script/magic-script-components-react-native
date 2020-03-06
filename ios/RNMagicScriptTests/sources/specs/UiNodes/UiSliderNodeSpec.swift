@@ -86,17 +86,65 @@ class UiSliderNodeSpec: QuickSpec {
                         expect(node.max).to(beCloseTo(0.75))
                         expect(node.isLayoutNeeded).to(beTrue())
                     }
+
+                    it("should update 'min'&'max' prop correctly") {
+                        var node = UiSliderNode(props: ["min" : 4.0, "max": 12.0])
+                        expect(node.min).to(beCloseTo(4.0))
+                        expect(node.max).to(beCloseTo(12.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["max": 8.0, "min" : 2.0])
+                        expect(node.min).to(beCloseTo(2.0))
+                        expect(node.max).to(beCloseTo(8.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["max" : -2.0, "min": -4.0])
+                        expect(node.min).to(beCloseTo(-4.0))
+                        expect(node.max).to(beCloseTo(-2.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["max" : -5.0, "min": -10.0])
+                        expect(node.min).to(beCloseTo(-10.0))
+                        expect(node.max).to(beCloseTo(-5.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["max" : 2.0, "min": 2.0])
+                        expect(node.min).to(beCloseTo(0.0))
+                        expect(node.max).to(beCloseTo(1.0))
+                        expect(node.isLayoutNeeded).to(beFalse())
+
+
+                        node = UiSliderNode(props: ["max" : 2.0])
+                        expect(node.min).to(beCloseTo(0.0))
+                        expect(node.max).to(beCloseTo(2.0))
+                        node.update(["min": 2.0])
+                        expect(node.min).to(beCloseTo(0.0))
+                        expect(node.max).to(beCloseTo(2.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                        node = UiSliderNode(props: ["min": 0.0, "max" : 10.0, "value": 1.0])
+                        expect(node.min).to(beCloseTo(0.0))
+                        expect(node.max).to(beCloseTo(10.0))
+                        expect(node.value).to(beCloseTo(1.0))
+                        node.update(["min": 2.0])
+                        expect(node.value).to(beCloseTo(2.0))
+                        node.update(["value": 8.0])
+                        node.update(["max": 6.0])
+                        expect(node.value).to(beCloseTo(2.0))
+                        expect(node.isLayoutNeeded).to(beTrue())
+
+                    }
                 }
 
                 context("when complementary values aren't correct (min > max or min == max)") {
-                    it("should update 'min' prop") {
+                    it("should NOT update 'min' prop") {
                         node.update(["max" : 0.5])
                         node.update(["min" : 0.75])
                         expect(node.min).to(beCloseTo(0.0))
                         expect(node.isLayoutNeeded).to(beTrue())
                     }
 
-                    it("should update 'max' prop") {
+                    it("should NOT update 'max' prop") {
                         node.update(["max" : 2.0])
                         node.update(["min" : 0.75])
 

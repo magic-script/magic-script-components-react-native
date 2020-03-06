@@ -36,13 +36,38 @@ class CustomSlider @JvmOverloads constructor(
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
     var min = 0F
+        set(value) {
+            if(value < max){
+                field = value
+                invalidate()
+                validateValue()
+            }
+        }
+
     var max = 1F
+        set(value) {
+            if(value > min) {
+                field = value
+                invalidate()
+                validateValue()
+            }
+        }
 
     var value = 0F
         set(value) {
-            field = value
+            field = if (value in min..max) {
+                value
+            } else {
+                min
+            }
             invalidate()
         }
+
+    private fun validateValue() {
+        if(value !in min..max) {
+            value = min
+        }
+    }
 
     private val backgroundHeightRatio = 0.5F // relative to thumb (view) height
 

@@ -33,9 +33,7 @@ import SceneKit
     }
     @objc var min: CGFloat {
         get { return _min }
-        set {
-            updateMinMax(min: newValue, max: _max)
-        }
+        set { updateMinMax(min: newValue, max: _max) }
     }
     @objc var minLabel: String? {
         didSet {
@@ -45,9 +43,7 @@ import SceneKit
     }
     @objc var max: CGFloat {
         get { return _max }
-        set {
-            updateMinMax(min: _min, max: newValue)
-        }
+        set { updateMinMax(min: _min, max: newValue) }
     }
     @objc var maxLabel: String? {
         didSet {
@@ -144,12 +140,14 @@ import SceneKit
             self.height = height
         }
 
-        if let max = Convert.toCGFloat(props["max"]),
-            let min = Convert.toCGFloat(props["min"]) {
+        let convertedMax = Convert.toCGFloat(props["max"])
+        let convertedMin = Convert.toCGFloat(props["min"])
+
+        if let max = convertedMax, let min = convertedMin {
             updateMinMax(min: min, max: max)
-        } else if let max = Convert.toCGFloat(props["max"]) {
+        } else if let max = convertedMax {
             self.max = max
-        } else if let min = Convert.toCGFloat(props["min"]) {
+        } else if let min = convertedMin {
             self.min = min
         }
 

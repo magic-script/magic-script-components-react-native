@@ -298,7 +298,7 @@ class GridLayoutSpec: QuickSpec {
             }
 
             context("flow direction") {
-                it("should have vertical flow direction") {
+                it("should have vertical flow direction if number of columns > 0") {
                     layout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.02, bottom: 0.02, right: 0.02)
                     layout.columns = 3
                     layout.rows = 0
@@ -325,7 +325,7 @@ class GridLayoutSpec: QuickSpec {
                     expect(bottomLeftNodePosition.y).to(beLessThan(topRightNodePosition.y))
                 }
 
-                it("should have horizontal flow direction") {
+                it("should have horizontal flow direction if number of columns == 0") {
                     layout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.02, bottom: 0.02, right: 0.02)
                     layout.columns = 0
                     layout.rows = 3

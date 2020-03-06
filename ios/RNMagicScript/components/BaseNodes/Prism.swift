@@ -22,12 +22,11 @@ import SceneKit
     @objc var debug: Bool = false {
         didSet { setDebugMode(debug) }
     }
+
     @objc fileprivate(set) var debugNode: SCNNode!
 
-    @objc public var size: SCNVector3 = SCNVector3(0.0, 0.0, 0.0) {
-        didSet {
-            debugNode.scale = size
-        }
+    @objc public var size: SCNVector3 = SCNVector3.zero {
+        didSet { debugNode.scale = size }
     }
 
     @objc override init() {
@@ -50,7 +49,6 @@ import SceneKit
 
         let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
         box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
-        box.firstMaterial?.isDoubleSided = true
         debugNode = SCNNode(geometry: box)
         debugNode.scale = SCNVector3.zero
         debugNode.renderingOrder = 1000

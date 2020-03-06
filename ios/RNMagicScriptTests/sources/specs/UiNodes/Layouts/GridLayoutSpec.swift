@@ -296,6 +296,62 @@ class GridLayoutSpec: QuickSpec {
                     expect(layout.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: referenceHeight)))
                 }
             }
+
+            context("flow direction") {
+                it("should have vertical flow direction if number of columns > 0") {
+                    layout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.02, bottom: 0.02, right: 0.02)
+                    layout.columns = 3
+                    layout.rows = 0
+
+                    var referenceNodes: [UiImageNode] = []
+                    for index in 1...9 {
+                        let referenceNode = UiImageNode()
+                        referenceNode.name = "image_\(index)"
+                        referenceNode.color = (index % 2 == 0) ? UIColor.darkGray : UIColor.lightGray
+                        referenceNode.height = 0.3
+                        referenceNode.width = 0.3
+                        layout.addItem(referenceNode)
+                        referenceNodes.append(referenceNode)
+                    }
+
+                    layout.recalculateIfNeeded()
+                    layout.updateLayout()
+
+                    expect(layout.getFlowDirection()).to(equal(GridLayout.FlowDirection.vertical))
+
+                    let bottomLeftNodePosition = referenceNodes[6].convertPosition(SCNVector3Zero, to: layout.container)
+                    let topRightNodePosition = referenceNodes[2].convertPosition(SCNVector3Zero, to: layout.container)
+                    expect(bottomLeftNodePosition.x).to(beLessThan(topRightNodePosition.x))
+                    expect(bottomLeftNodePosition.y).to(beLessThan(topRightNodePosition.y))
+                }
+
+                it("should have horizontal flow direction if number of columns == 0") {
+                    layout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.02, bottom: 0.02, right: 0.02)
+                    layout.columns = 0
+                    layout.rows = 3
+
+                    var referenceNodes: [UiImageNode] = []
+                    for index in 1...9 {
+                        let referenceNode = UiImageNode()
+                        referenceNode.name = "image_\(index)"
+                        referenceNode.color = (index % 2 == 0) ? UIColor.darkGray : UIColor.lightGray
+                        referenceNode.height = 0.3
+                        referenceNode.width = 0.3
+                        layout.addItem(referenceNode)
+                        referenceNodes.append(referenceNode)
+                    }
+
+                    layout.recalculateIfNeeded()
+                    layout.updateLayout()
+
+                    expect(layout.getFlowDirection()).to(equal(GridLayout.FlowDirection.horizontal))
+
+                    let bottomLeftNodePosition = referenceNodes[2].convertPosition(SCNVector3Zero, to: layout.container)
+                    let topRightNodePosition = referenceNodes[6].convertPosition(SCNVector3Zero, to: layout.container)
+                    expect(bottomLeftNodePosition.x).to(beLessThan(topRightNodePosition.x))
+                    expect(bottomLeftNodePosition.y).to(beLessThan(topRightNodePosition.y))
+                }
+            }
         }
     }
 

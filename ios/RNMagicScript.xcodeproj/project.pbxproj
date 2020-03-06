@@ -298,6 +298,8 @@
 		C411CC2F240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC30240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC31240505F6004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
+		C418822024126DC000EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
+		C41882212412703F00EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
 		C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
 		C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */; };
@@ -802,6 +804,7 @@
 		C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesGestureHandler.swift; sourceTree = "<group>"; };
 		C411CC2C240505E0004C7063 /* Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prism.swift; sourceTree = "<group>"; };
 		C411CC2E240505F0004C7063 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		C418821F24126DC000EB84EE /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
 		C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfigurationSpec.swift; sourceTree = "<group>"; };
 		C41BF27423853FE300FEC9BD /* UiCircleConfirmationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiCircleConfirmationNode.swift; sourceTree = "<group>"; };
@@ -1305,6 +1308,7 @@
 				449B54922387FA3A00D839CC /* WebViewAction.swift */,
 				C4A12B2F2361C85C009B7083 /* Side.swift */,
 				C4B91AC22386B8A6002A24D6 /* ToggleType.swift */,
+				C418821F24126DC000EB84EE /* ButtonType.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -2289,6 +2293,7 @@
 				44556552234C997300301AB3 /* UiScrollViewNode.swift in Sources */,
 				C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */,
 				C4C3D74A2355D3E500ECEEDA /* TapSimulating.swift in Sources */,
+				C41882212412703F00EB84EE /* ButtonType.swift in Sources */,
 				449B54942387FA3A00D839CC /* WebViewAction.swift in Sources */,
 				C4B91AC42386B8A6002A24D6 /* ToggleType.swift in Sources */,
 				44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */,
@@ -2508,6 +2513,7 @@
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
 				C4F8749523E15EF30044480F /* SIMD+Extension.swift in Sources */,
 				44DF644C23951823005E0518 /* String+Random.swift in Sources */,
+				C418822024126DC000EB84EE /* ButtonType.swift in Sources */,
 				44AB3970238BCD130002DF14 /* UiContentNode.swift in Sources */,
 				C4F8749223E15E7C0044480F /* SCNVector4+Extension.swift in Sources */,
 				44739B8A239695ED00EC31A0 /* Numeric+Extension.swift in Sources */,

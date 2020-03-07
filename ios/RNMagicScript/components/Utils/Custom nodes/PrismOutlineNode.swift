@@ -115,5 +115,4 @@ class PrismOutlineNode : SCNNode {
 
         return node
     }
-
 }

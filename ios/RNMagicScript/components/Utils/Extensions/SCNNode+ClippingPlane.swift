@@ -35,23 +35,23 @@ extension SCNNode {
                 SCNShaderModifierEntryPoint.fragment: fragmentModifier
             ]
 
-            applyShanderModifiers(modifiers, planes: planes)
+            applyShaderModifiers(modifiers, planes: planes)
         }
     }
 
     func resetClippingPlanes() {
-        applyShanderModifiers(nil, planes: [])
+        applyShaderModifiers(nil, planes: [])
     }
 
-    fileprivate func applyShanderModifiers(_ modifiers: [SCNShaderModifierEntryPoint: String]?, planes: [SCNVector4]) {
+    fileprivate func applyShaderModifiers(_ modifiers: [SCNShaderModifierEntryPoint: String]?, planes: [SCNVector4]) {
         enumerateHierarchy { (node, result) in
-            node.geometry?.shaderModifiers = modifiers
+            guard let nodeGeometry = node.geometry else { return }
+            nodeGeometry.shaderModifiers = modifiers
             for (index, plane) in planes.enumerated() {
                 guard index < 6 else { break }
                 let value = NSValue(scnVector4: plane)
-                node.geometry?.setValue(value, forKey: "clippingPlane\(index + 1)")
+                nodeGeometry.setValue(value, forKey: "clippingPlane\(index + 1)")
             }
-
         }
     }
 }

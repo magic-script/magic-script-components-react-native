@@ -27,11 +27,12 @@ import SceneKit
         didSet { setDebugMode(debug) }
     }
 
+    @objc fileprivate(set) var debugNode: SCNNode?
+
     @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet { invalidateClippingPlanes(); debugNode.scale = size }
+        didSet { updateSize() }
     }
     
-    @objc fileprivate(set) var debugNode: SCNNode!
     @objc fileprivate var clippingPlanes: [Plane]?
 
     @objc override init() {
@@ -51,12 +52,6 @@ import SceneKit
 
     @objc func setupPrism() {
         addChildNode(rootNode)
-
-        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
-        box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
-        debugNode = SCNNode(geometry: box)
-        debugNode.scale = SCNVector3.zero
-        debugNode.renderingOrder = 1000
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -116,14 +111,41 @@ import SceneKit
 
     @objc func setDebugMode(_ debug: Bool) {
         if debug {
-            if !rootNode.childNodes.contains(debugNode) {
-                rootNode.addChildNode(debugNode)
+            if debugNode == nil {
+                let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
+                box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
+                debugNode = SCNNode(geometry: box)
+                debugNode!.scale = size
+                debugNode!.renderingOrder = 1000
+            }
+
+            if debugNode!.parent == nil {
+                addChildNode(debugNode!)
             }
         } else {
-            if debugNode.parent == rootNode {
-                debugNode.removeFromParentNode()
-            }
+            debugNode?.removeFromParentNode()
         }
+    }
+
+    @objc func updateClippingPlanes() {
+        let min = -0.5 * size
+        let max = 0.5 * size
+        let planes: [SCNVector4] = [
+            SCNVector4( 1, 0, 0,-min.x),
+            SCNVector4(-1, 0, 0, max.x),
+            SCNVector4(0, 1, 0,-min.y),
+            SCNVector4(0,-1, 0, max.y),
+            SCNVector4(0, 0, 1,-min.z),
+            SCNVector4(0, 0,-1, max.z),
+        ]
+
+        let worldSpacePlanes: [SCNVector4] = planes.map { rootNode.convertPlane(Plane(vector: $0), to: nil).toVector4() }
+        rootNode.setClippingPlanes(worldSpacePlanes)
+    }
+
+    fileprivate func updateSize() {
+        debugNode?.scale = size
+        updateClippingPlanes()
     }
 }
 

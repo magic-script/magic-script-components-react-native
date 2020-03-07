@@ -17,22 +17,22 @@
 import SceneKit
 
 @objc open class Prism: BaseNode {
-    @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
-
+    @objc public var size: SCNVector3 = SCNVector3.zero {
+        didSet { updateSize() }
+    }
+    @objc var debug: Bool = false {
+        didSet { updateDebugMode() }
+    }
+    @objc public var editMode: Bool = false {
+        didSet { updateEditMode() }
+    }
     @objc var anchorUuid: String = "" {
         didSet { NodesManager.instance.updatePrismAnchorUuid(self, oldAnchorUuid: oldValue) }
     }
 
-    @objc var debug: Bool = false {
-        didSet { setDebugMode(debug) }
-    }
-
+    @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
     @objc fileprivate(set) var debugNode: SCNNode?
-
-    @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet { updateSize() }
-    }
-    
+    @objc fileprivate(set) var editNode: PrismOutlineNode?
     @objc fileprivate var clippingPlanes: [Plane]?
 
     @objc override init() {
@@ -109,14 +109,12 @@ import SceneKit
         return self
     }
 
-    @objc func setDebugMode(_ debug: Bool) {
+    @objc func updateDebugMode() {
         if debug {
             if debugNode == nil {
-                let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
-                box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
-                debugNode = SCNNode(geometry: box)
+                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
                 debugNode!.scale = size
-                debugNode!.renderingOrder = 1000
+                debugNode!.renderingOrder = 990
             }
 
             if debugNode!.parent == nil {
@@ -128,24 +126,30 @@ import SceneKit
     }
 
     @objc func updateClippingPlanes() {
-        let min = -0.5 * size
-        let max = 0.5 * size
-        let planes: [SCNVector4] = [
-            SCNVector4( 1, 0, 0,-min.x),
-            SCNVector4(-1, 0, 0, max.x),
-            SCNVector4(0, 1, 0,-min.y),
-            SCNVector4(0,-1, 0, max.y),
-            SCNVector4(0, 0, 1,-min.z),
-            SCNVector4(0, 0,-1, max.z),
-        ]
-
-        let worldSpacePlanes: [SCNVector4] = planes.map { rootNode.convertPlane(Plane(vector: $0), to: nil).toVector4() }
-        rootNode.setClippingPlanes(worldSpacePlanes)
+        let worldSpacePlanes = getClippingPlanes()
+//        rootNode.setClippingPlanes(worldSpacePlanes)
     }
 
     fileprivate func updateSize() {
         debugNode?.scale = size
+        editNode?.size = size
         updateClippingPlanes()
+    }
+
+    @objc func updateEditMode() {
+        if editMode {
+            if editNode == nil {
+                editNode = PrismOutlineNode()
+                editNode!.size = size
+                editNode!.renderingOrder = 1000
+            }
+
+            if editNode!.parent == nil {
+                addChildNode(editNode!)
+            }
+        } else {
+            editNode?.removeFromParentNode()
+        }
     }
 }
 

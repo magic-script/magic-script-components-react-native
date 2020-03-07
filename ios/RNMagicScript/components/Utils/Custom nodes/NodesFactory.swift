@@ -67,7 +67,37 @@ import SceneKit
         let geometry = SCNGeometry(sources: [source], elements: [element])
         geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.diffuse.contents = color
-        geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        return SCNNode(geometry: geometry)
+    }
+
+    @objc static func createWireBoxNode(size: SCNVector3, color: UIColor = UIColor.white) -> SCNNode {
+        return NodesFactory.createWireBoxNode(width: CGFloat(size.x), height: CGFloat(size.y), depth: CGFloat(size.z))
+    }
+
+    @objc static func createWireBoxNode(width: CGFloat, height: CGFloat, depth: CGFloat, color: UIColor = UIColor.white) -> SCNNode {
+        let max = SCNVector3(0.5 * width, 0.5 * height, 0.5 * depth)
+        let min = max.negated()
+        let vertices = [
+            SCNVector3(min.x, min.y, min.z), // 0
+            SCNVector3(max.x, min.y, min.z), // 1
+            SCNVector3(max.x, min.y, max.z), // 2
+            SCNVector3(min.x, min.y, max.z), // 3
+
+            SCNVector3(min.x, max.y, min.z), // 4
+            SCNVector3(max.x, max.y, min.z), // 5
+            SCNVector3(max.x, max.y, max.z), // 6
+            SCNVector3(min.x, max.y, max.z), // 7
+        ]
+        let indices: [Int16] = [
+            0,1, 1,2, 2,3, 3,0,
+            4,5, 5,6, 6,7, 7,4,
+            0,4, 1,5, 2,6, 3,7
+        ]
+        let source = SCNGeometrySource(vertices: vertices)
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        let geometry = SCNGeometry(sources: [source], elements: [element])
+        geometry.firstMaterial?.lightingModel = .constant
+        geometry.firstMaterial?.diffuse.contents = color
         return SCNNode(geometry: geometry)
     }
 }

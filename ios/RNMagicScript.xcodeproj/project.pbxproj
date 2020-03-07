@@ -69,6 +69,10 @@
 		448586FC235DC1FD00D372CB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FA235DC1FD00D372CB /* Ray.swift */; };
 		448586FE235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */; };
 		448586FF235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */; };
+		44890E162413EF7500903629 /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E152413EF7500903629 /* NodesFactory.swift */; };
+		44890E172413EF7500903629 /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E152413EF7500903629 /* NodesFactory.swift */; };
+		44890E192413EFB500903629 /* PrismOutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E182413EFB500903629 /* PrismOutlineNode.swift */; };
+		44890E1A2413EFB500903629 /* PrismOutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E182413EFB500903629 /* PrismOutlineNode.swift */; };
 		4489DD5723C6F8000042C51B /* SCNNinePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4489DD5623C6F8000042C51B /* SCNNinePatch.swift */; };
 		4489DD5823C6F8000042C51B /* SCNNinePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4489DD5623C6F8000042C51B /* SCNNinePatch.swift */; };
 		448F413623A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448F413523A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift */; };
@@ -176,7 +180,6 @@
 		44AFAC57232B9BCF005AC8EF /* SCNQuaternion+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */; };
 		44AFAC58232B9BCF005AC8EF /* UIFont+Lomino.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */; };
 		44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC25232B9BCF005AC8EF /* Bundle.swift */; };
-		44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
 		44AFAC5B232B9BCF005AC8EF /* NodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* NodesManager.swift */; };
 		44AFAC5C232B9BCF005AC8EF /* Convert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC29232B9BCF005AC8EF /* Convert.swift */; };
 		44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC2A232B9BCF005AC8EF /* Measures.swift */; };
@@ -221,7 +224,6 @@
 		44AFAD2E232BCAE3005AC8EF /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC25232B9BCF005AC8EF /* Bundle.swift */; };
 		44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */; };
 		44AFAD30232BCAE3005AC8EF /* FileDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */; };
-		44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */; };
 		44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */; };
 		44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* NodesManager.swift */; };
 		44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71A235F3FE100AC0B6C /* RaySpec.swift */; };
@@ -636,6 +638,8 @@
 		447B01BD234F4FF300C2F8D7 /* UiScrollBarNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiScrollBarNodeSpec.swift; sourceTree = "<group>"; };
 		448586FA235DC1FD00D372CB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
+		44890E152413EF7500903629 /* NodesFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesFactory.swift; sourceTree = "<group>"; };
+		44890E182413EFB500903629 /* PrismOutlineNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismOutlineNode.swift; sourceTree = "<group>"; };
 		4489DD5623C6F8000042C51B /* SCNNinePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNinePatch.swift; sourceTree = "<group>"; };
 		448F413523A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNodeEnumerateSpec.swift; sourceTree = "<group>"; };
 		449B5482238524F400D839CC /* UiPanelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiPanelNode.swift; sourceTree = "<group>"; };
@@ -723,7 +727,6 @@
 		44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNQuaternion+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Lomino.swift"; sourceTree = "<group>"; };
 		44AFAC25232B9BCF005AC8EF /* Bundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
-		44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesFactory.swift; sourceTree = "<group>"; };
 		44AFAC27232B9BCF005AC8EF /* NodesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesManager.swift; sourceTree = "<group>"; };
 		44AFAC29232B9BCF005AC8EF /* Convert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Convert.swift; sourceTree = "<group>"; };
 		44AFAC2A232B9BCF005AC8EF /* Measures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measures.swift; sourceTree = "<group>"; };
@@ -1020,6 +1023,19 @@
 				44775587237ADD6100E98F03 /* bg_stereo.mp3 */,
 			);
 			path = sounds;
+			sourceTree = "<group>";
+		};
+		44890E142413EF7500903629 /* Custom nodes */ = {
+			isa = PBXGroup;
+			children = (
+				44DF644323946568005E0518 /* SCNCircle.swift */,
+				4489DD5623C6F8000042C51B /* SCNNinePatch.swift */,
+				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
+				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
+				44890E152413EF7500903629 /* NodesFactory.swift */,
+				44890E182413EFB500903629 /* PrismOutlineNode.swift */,
+			);
+			path = "Custom nodes";
 			sourceTree = "<group>";
 		};
 		44A3FCFF2366254600402912 /* Layouts */ = {
@@ -1320,18 +1336,14 @@
 		44AFAC17232B9BCF005AC8EF /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				C46014B023C7356F002A63D4 /* PlaneDection */,
+				44890E142413EF7500903629 /* Custom nodes */,
 				C4EFE260237ED72400C70001 /* Dialog */,
 				44AFAC1B232B9BCF005AC8EF /* Extensions */,
 				44DA5F57235EF5A50058212C /* Math */,
+				C46014B023C7356F002A63D4 /* PlaneDection */,
 				44AFAC25232B9BCF005AC8EF /* Bundle.swift */,
 				44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */,
 				44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */,
-				44AFAC26232B9BCF005AC8EF /* NodesFactory.swift */,
-				44DF644323946568005E0518 /* SCNCircle.swift */,
-				4489DD5623C6F8000042C51B /* SCNNinePatch.swift */,
-				44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */,
-				442261352334059A006E2FBA /* SCNSpinnerCircle.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
 				C419CF922359A7B2000094C3 /* NodeConfiguration.swift */,
 				C47B32C8239A829A005B59BE /* WeakReference.swift */,
@@ -2248,6 +2260,7 @@
 				44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
 				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
+				44890E1A2413EFB500903629 /* PrismOutlineNode.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
@@ -2269,6 +2282,7 @@
 				44AFAD1E232BCAE3005AC8EF /* UiSliderNode.swift in Sources */,
 				44AFAD1A232BCAE3005AC8EF /* UiImageNode.swift in Sources */,
 				C4FB475B234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
+				44890E172413EF7500903629 /* NodesFactory.swift in Sources */,
 				44AFAD20232BCAE3005AC8EF /* UiTextNode.swift in Sources */,
 				C4596A7F237420CA000E88C1 /* UiListViewItemNode.swift in Sources */,
 				C400D4432387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */,
@@ -2350,7 +2364,6 @@
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
 				449B54972387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
-				44AFAD31232BCAE3005AC8EF /* NodesFactory.swift in Sources */,
 				C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */,
 				441EA5A32347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
@@ -2547,6 +2560,7 @@
 				44AFAC46232B9BCF005AC8EF /* UiLineNode.swift in Sources */,
 				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
+				44890E162413EF7500903629 /* NodesFactory.swift in Sources */,
 				44444719236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				4425EDFE2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
@@ -2638,7 +2652,6 @@
 				449B54962387FF5300D839CC /* UIView+Screenshot.swift in Sources */,
 				C4C1D4742383F9CD00437249 /* UIScreen+Extension.swift in Sources */,
 				44556554234C9FF800301AB3 /* ScrollDirection.swift in Sources */,
-				44AFAC5A232B9BCF005AC8EF /* NodesFactory.swift in Sources */,
 				C4A12B372361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
 				44AFAC44232B9BCF005AC8EF /* UiVideoNode.swift in Sources */,
 				44AFAC5B232B9BCF005AC8EF /* NodesManager.swift in Sources */,
@@ -2649,6 +2662,7 @@
 				44AFAC3B232B9BCF005AC8EF /* UiNode.swift in Sources */,
 				C428C0A8237D560500771FBC /* UiDialogNode.swift in Sources */,
 				44301CC223AC165C001A1766 /* GroupContainer.swift in Sources */,
+				44890E192413EFB500903629 /* PrismOutlineNode.swift in Sources */,
 				44739B992398034300EC31A0 /* NumberFormatter+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

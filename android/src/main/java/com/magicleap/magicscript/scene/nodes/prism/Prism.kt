@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.prism
 
 import android.os.Bundle
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
-import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
@@ -31,9 +29,9 @@ import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.CameraObserver
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.scene.CameraObserver
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -43,10 +41,11 @@ import com.magicleap.magicscript.utils.read
 import kotlin.math.min
 import kotlin.math.pow
 
-class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuilder) :
-    AnchorNode(),
-    ReactNode,
-    CameraObserver {
+class Prism(
+    initProps: ReadableMap,
+    private val cubeBuilder: CubeRenderableBuilder,
+    private val anchorCreator: AnchorCreator
+) : AnchorNode(), ReactNode, CameraObserver {
 
     companion object {
         const val PROP_SIZE = "size"
@@ -81,7 +80,6 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var container: RotatableNode? = null
-    private var session: Session? = null
     private var content: TransformNode? = null
     private var lastCameraPosition: Vector3? = null
     private var lastCameraState: TrackingState? = null
@@ -132,15 +130,10 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
         applyProperties(properties)
     }
 
-    fun setArDependencies(
-        transformationSystem: TransformationSystem,
-        session: Session
-    ) {
+    fun buildContent(transformationSystem: TransformationSystem) {
         if (initialized) {
             return
         }
-
-        this.session = session
 
         container = RotatableNode(transformationSystem).also {
             it.setParent(this)
@@ -194,7 +187,7 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
     }
 
     override fun onDestroy() {
-        session = null
+        // no-op
     }
 
     override fun setAnchor(anchor: Anchor?) {
@@ -249,18 +242,12 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
             return
         }
 
-        session?.let {
+        anchorCreator.createAnchor(position, localRotation, result = {
             lastCreatedAnchor?.detach()
-
-            val positionArray = floatArrayOf(position.x, position.y, position.z)
-            val rotationArray =
-                floatArrayOf(localRotation.x, localRotation.y, localRotation.z, localRotation.w)
-
-            val pose = Pose(positionArray, rotationArray)
-            anchor = it.createAnchor(pose)
-            lastCreatedAnchor = anchor
+            anchor = it
+            lastCreatedAnchor = it
             requestedAnchorPosition = null
-        }
+        })
     }
 
     private fun clipContent() {

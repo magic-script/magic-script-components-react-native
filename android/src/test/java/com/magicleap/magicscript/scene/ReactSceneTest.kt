@@ -16,10 +16,14 @@
 
 package com.magicleap.magicscript.scene
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
+import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldEqual
@@ -34,14 +38,16 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ReactSceneTest {
 
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+
     @Test
-    fun `should attach prism to AR scene when notified that AR is ready`() {
+    fun `should attach prism to AR scene when AR dependencies set`() {
         val reactScene = buildScene(reactMapOf())
         val arScene = spy<Scene>()
         val prism = buildPrism(reactMapOf())
         reactScene.addContent(prism)
 
-        reactScene.setArDependencies(mock(), arScene)
+        reactScene.setArDependencies(arScene, getTransformationSystem(), mock())
 
         arScene.children.size shouldEqual 1
         arScene.children.first() shouldEqual prism
@@ -53,7 +59,7 @@ class ReactSceneTest {
         val arScene = spy<Scene>()
         val prism = buildPrism(reactMapOf())
         reactScene.addContent(prism)
-        reactScene.setArDependencies(mock(), arScene)
+        reactScene.setArDependencies(arScene, getTransformationSystem(), mock())
 
         reactScene.removeContent(prism)
 
@@ -67,9 +73,14 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock()).apply {
+        return Prism(props, mock(), mock()).apply {
             build()
         }
+    }
+
+    private fun getTransformationSystem(): TransformationSystem {
+        val displayMetrics = context.resources.displayMetrics
+        return TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
     }
 
 }

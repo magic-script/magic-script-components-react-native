@@ -16,14 +16,22 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
+import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.nhaarman.mockitokotlin2.*
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeEmpty
+import org.amshove.kluent.shouldEqual
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -36,6 +44,30 @@ import org.robolectric.RobolectricTestRunner
 class PrismTest {
 
     private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+
+    @Test
+    fun `should be possible to put Transform node inside prism`() {
+        val prism = buildPrism(reactMapOf())
+        prism.buildContent(getTransformationSystem())
+        val child = NodeBuilder().build()
+
+        prism.addContent(child)
+
+        prism.reactChildren.size shouldEqual 1
+        prism.reactChildren.first() shouldBe child
+    }
+
+    @Test
+    fun `should not be possible to put prism inside another prism`() {
+        val prism = buildPrism(reactMapOf())
+        prism.buildContent(getTransformationSystem())
+        val child = buildPrism(reactMapOf())
+
+        prism.addContent(child)
+
+        prism.reactChildren.shouldBeEmpty()
+    }
 
     @Test
     fun `should clip child according to prism size when new child added`() {
@@ -61,9 +93,14 @@ class PrismTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder).apply {
+        return Prism(props, cubeBuilder, mock()).apply {
             build()
         }
+    }
+
+    private fun getTransformationSystem(): TransformationSystem {
+        val displayMetrics = context.resources.displayMetrics
+        return TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
     }
 
 }

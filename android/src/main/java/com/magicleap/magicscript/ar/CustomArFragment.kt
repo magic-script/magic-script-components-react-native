@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene
+package com.magicleap.magicscript.ar
 
 import android.os.Bundle
 import android.view.View
@@ -23,16 +23,17 @@ import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
+import com.magicleap.magicscript.scene.UiNodesManager
 
-class CustomArFragment : ArFragment() {
+class CustomArFragment : ArFragment(), CameraObservable {
 
     private var onReadyCalled = false
     private var lastTapAnchor: Anchor? = null
     private var lastTimestamp: Long = 0L
     private var cameraObservers = mutableListOf<CameraObserver>()
 
-    fun addCameraObserver(observer: CameraObserver) {
-        cameraObservers.add(observer)
+    override fun addCameraObserver(cameraObserver: CameraObserver) {
+        cameraObservers.add(cameraObserver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,7 +43,10 @@ class CustomArFragment : ArFragment() {
             arSceneView.arFrame?.camera?.let { camera ->
                 if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
                     // We can add AR objects after session is ready and camera is in tracking mode
-                    UiNodesManager.INSTANCE.onArFragmentReady(this)
+                    UiNodesManager.INSTANCE.onArFragmentReady(this, transformationSystem)
+                    arSceneView.session?.let {
+                        ArResourcesManager.onSessionReady(it)
+                    }
                     onReadyCalled = true
                 }
 

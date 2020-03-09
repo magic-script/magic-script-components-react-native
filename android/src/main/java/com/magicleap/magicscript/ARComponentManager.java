@@ -28,6 +28,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.google.vr.sdk.audio.GvrAudioEngine;
+import com.magicleap.magicscript.ar.ArResourcesManager;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.LoopedAnimator;
@@ -58,7 +59,6 @@ import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
-import com.magicleap.magicscript.scene.nodes.Prism;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
@@ -96,6 +96,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManag
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
+import com.magicleap.magicscript.scene.nodes.prism.Prism;
+import com.magicleap.magicscript.scene.nodes.prism.SimpleAnchorCreator;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
@@ -195,7 +197,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
         CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
-        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder), nodeId));
+        SimpleAnchorCreator anchorCreator = new SimpleAnchorCreator();
+        ArResourcesManager.INSTANCE.addSessionLoadedListener(anchorCreator);
+        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator), nodeId));
     }
 
     /**

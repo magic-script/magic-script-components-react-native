@@ -24,7 +24,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.google.ar.sceneform.Scene;
-import com.magicleap.magicscript.scene.CustomArFragment;
+import com.magicleap.magicscript.ar.CustomArFragment;
 import com.magicleap.magicscript.scene.UiNodesManager;
 
 import org.jetbrains.annotations.NotNull;

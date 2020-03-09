@@ -20,14 +20,17 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Scene
-import com.magicleap.magicscript.scene.nodes.Prism
+import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.CameraObservable
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 
 class ReactScene(initProps: ReadableMap) : ReactNode {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
-    private var arFragment: CustomArFragment? = null
     private val prisms = mutableListOf<Prism>()
+    private var transformationSystem: TransformationSystem? = null
+    private var cameraObservable: CameraObservable? = null
 
     override val reactParent: ReactNode?
         get() = null
@@ -39,9 +42,13 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         applyProperties(properties)
     }
 
-    fun setArDependencies(fragment: CustomArFragment, scene: Scene) {
-        this.arFragment = fragment
+    fun setArDependencies(
+        scene: Scene,
+        transformationSystem: TransformationSystem,
+        cameraObservable: CameraObservable
+    ) {
         this.arScene = scene
+        this.cameraObservable = cameraObservable
 
         applyProperties(properties)
 
@@ -50,7 +57,7 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
                 scene.addChild(prism)
             }
             if (!prism.initialized) {
-                setupPrism(prism, fragment)
+                setupPrism(prism, transformationSystem)
             }
         }
     }
@@ -66,9 +73,9 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
             prisms.add(child)
             arScene?.addChild(child)
 
-            arFragment?.let { fragment ->
+            transformationSystem?.let { it ->
                 if (!child.initialized) {
-                    setupPrism(child, fragment)
+                    setupPrism(child, it)
                 }
             }
         }
@@ -90,7 +97,6 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     }
 
     override fun onDestroy() {
-        arFragment = null
         arScene = null
     }
 
@@ -98,13 +104,10 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         // TODO
     }
 
-    private fun setupPrism(prism: Prism, arFragment: CustomArFragment) {
-        val transformationSystem = arFragment.transformationSystem ?: return
-        val session = arFragment.arSceneView?.session ?: return
-
-        prism.setArDependencies(transformationSystem, session)
+    private fun setupPrism(prism: Prism, transformationSystem: TransformationSystem) {
+        prism.buildContent(transformationSystem)
         prism.setScene(this)
-        arFragment.addCameraObserver(prism)
+        cameraObservable?.addCameraObserver(prism)
     }
 
 }

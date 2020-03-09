@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes.prism
+package com.magicleap.magicscript.ar
 
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
-import com.google.ar.core.Session
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.SessionReadyListener
 import com.magicleap.magicscript.utils.logMessage
 
-class SimpleAnchorCreator() : AnchorCreator, SessionReadyListener {
-
-    private var session: Session? = null
-
-    override fun onSessionLoaded(session: Session) {
-        this.session = session
-    }
+class SimpleAnchorCreator() : AnchorCreator {
 
     override fun createAnchor(
         position: Vector3,
@@ -41,7 +34,12 @@ class SimpleAnchorCreator() : AnchorCreator, SessionReadyListener {
         val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
         val pose = Pose(positionArray, rotationArray)
 
-        val session = this.session
+        if (ArResourcesManager.cameraState != TrackingState.TRACKING) {
+            logMessage("Cannot create anchor, camera is not tracking", warn = true)
+            return
+        }
+
+        val session = ArResourcesManager.session
         if (session == null) {
             logMessage("Cannot create anchor, session is not set up", warn = true)
         } else {

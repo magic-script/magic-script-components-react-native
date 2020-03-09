@@ -22,7 +22,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.ar.CameraObservable
+import com.magicleap.magicscript.ar.CameraPositionSource
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
@@ -43,11 +43,11 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     @Synchronized
     fun onArFragmentReady(
-        cameraObservable: CameraObservable,
+        cameraPositionSource: CameraPositionSource,
         transformationSystem: TransformationSystem
     ) {
         arReady = true
-        reactScene?.setArDependencies(arScene, transformationSystem, cameraObservable)
+        reactScene?.setArDependencies(arScene, transformationSystem, cameraPositionSource)
 
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {

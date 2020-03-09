@@ -16,6 +16,10 @@
 
 package com.magicleap.magicscript.ar
 
-interface CameraObservable {
-    fun addCameraObserver(cameraObserver: CameraObserver)
+import com.google.ar.core.Anchor
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
+
+interface AnchorCreator {
+    fun createAnchor(position: Vector3, rotation: Quaternion, result: (anchor: Anchor) -> Unit)
 }

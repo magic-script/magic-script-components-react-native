@@ -21,16 +21,16 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.ar.CameraObservable
+import com.magicleap.magicscript.ar.CameraPositionSource
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
-import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.magicleap.magicscript.scene.nodes.Prism
 
 class ReactScene(initProps: ReadableMap) : ReactNode {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
     private val prisms = mutableListOf<Prism>()
     private var transformationSystem: TransformationSystem? = null
-    private var cameraObservable: CameraObservable? = null
+    private var cameraPositionSource: CameraPositionSource? = null
 
     override val reactParent: ReactNode?
         get() = null
@@ -45,10 +45,10 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     fun setArDependencies(
         scene: Scene,
         transformationSystem: TransformationSystem,
-        cameraObservable: CameraObservable
+        cameraPositionSource: CameraPositionSource
     ) {
         this.arScene = scene
-        this.cameraObservable = cameraObservable
+        this.cameraPositionSource = cameraPositionSource
 
         applyProperties(properties)
 
@@ -107,7 +107,7 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     private fun setupPrism(prism: Prism, transformationSystem: TransformationSystem) {
         prism.buildContent(transformationSystem)
         prism.setScene(this)
-        cameraObservable?.addCameraObserver(prism)
+        cameraPositionSource?.addObserver(prism)
     }
 
 }

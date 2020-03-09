@@ -16,8 +16,6 @@
 
 package com.magicleap.magicscript.ar
 
-import com.google.ar.core.Session
-
-interface SessionReadyListener {
-    fun onSessionLoaded(session: Session)
+interface CameraPositionSource {
+    fun addObserver(cameraObserver: CameraObserver)
 }

@@ -23,7 +23,7 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldEqual
@@ -73,7 +73,8 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock()).apply {
+        return Prism(props, mock(), mock())
+            .apply {
             build()
         }
     }

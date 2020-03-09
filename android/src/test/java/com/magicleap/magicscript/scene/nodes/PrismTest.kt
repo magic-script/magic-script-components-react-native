@@ -24,9 +24,9 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
@@ -43,8 +43,9 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class PrismTest {
 
-    private val cubeBuilder: CubeRenderableBuilder = mock()
     private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val anchorCreator: AnchorCreator = mock()
 
     @Test
     fun `should be possible to put Transform node inside prism`() {
@@ -92,8 +93,19 @@ class PrismTest {
         verify(cubeBuilder).buildRenderable(eq(Vector3(2f, 2f, 2f)), any(), any(), any())
     }
 
+
+    @Test
+    fun `should create anchor when position changed`() {
+        val prism = buildPrism(reactMapOf())
+        prism.buildContent(getTransformationSystem())
+
+        prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
+
+        verify(anchorCreator).createAnchor(eq(Vector3(2f, 1f, 0f)), eq(prism.localRotation), any())
+    }
+
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder, mock()).apply {
+        return Prism(props, cubeBuilder, anchorCreator).apply {
             build()
         }
     }
@@ -102,5 +114,6 @@ class PrismTest {
         val displayMetrics = context.resources.displayMetrics
         return TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
     }
+
 
 }

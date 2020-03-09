@@ -26,7 +26,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.itReturns
 import org.amshove.kluent.shouldBe

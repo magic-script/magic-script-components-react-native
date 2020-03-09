@@ -17,21 +17,22 @@
 package com.magicleap.magicscript.ar
 
 import com.google.ar.core.Session
+import com.google.ar.core.TrackingState
 
 object ArResourcesManager {
 
-    private var session: Session? = null
-    private var sessionListeners = mutableListOf<SessionReadyListener>()
+    var session: Session? = null
+        private set
 
-    fun onSessionReady(session: Session) {
+    var cameraState: TrackingState? = null
+        private set
+
+    fun setupSession(session: Session) {
         this.session = session
     }
 
-    fun addSessionLoadedListener(sessionReadyListener: SessionReadyListener) {
-        sessionListeners.add(sessionReadyListener)
-        session?.let {
-            sessionReadyListener.onSessionLoaded(it)
-        }
+    fun updateCameraState(trackingState: TrackingState) {
+        this.cameraState = trackingState
     }
-    
+
 }

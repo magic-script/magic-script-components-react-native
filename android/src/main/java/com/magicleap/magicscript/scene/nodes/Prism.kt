@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes.prism
+package com.magicleap.magicscript.scene.nodes
 
 import android.os.Bundle
 import android.view.MotionEvent
@@ -29,6 +29,7 @@ import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.CameraObserver
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
@@ -82,7 +83,6 @@ class Prism(
     private var container: RotatableNode? = null
     private var content: TransformNode? = null
     private var lastCameraPosition: Vector3? = null
-    private var lastCameraState: TrackingState? = null
     private var requestedAnchorPosition: Vector3? = null
     private var lastCreatedAnchor: Anchor? = null
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
@@ -148,8 +148,6 @@ class Prism(
     }
 
     override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
-        lastCameraState = state
-
         if (state != TrackingState.TRACKING) {
             return
         }
@@ -237,10 +235,6 @@ class Prism(
 
     private fun tryToAnchorAtPosition(position: Vector3) {
         requestedAnchorPosition = position
-
-        if (lastCameraState != TrackingState.TRACKING) {
-            return
-        }
 
         anchorCreator.createAnchor(position, localRotation, result = {
             lastCreatedAnchor?.detach()

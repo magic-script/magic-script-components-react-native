@@ -59,10 +59,10 @@ import SceneKit
     fileprivate var borderNode: SCNNode?
 #endif
     @objc fileprivate(set) var contentNode: SCNNode!
-
     fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
     fileprivate var containerLayoutNeeded: Bool = false
+    fileprivate var clipNeeded: Bool = false
 
     @objc override init() {
         super.init()
@@ -102,6 +102,7 @@ import SceneKit
     @objc func addChild(_ child: TransformNode) -> Bool {
         contentNode.addChildNode(child)
         setNeedsLayout()
+        setNeedsClip()
         return true
     }
 
@@ -109,6 +110,7 @@ import SceneKit
         if let parent = child.parent, parent == contentNode {
             child.removeFromParentNode()
             setNeedsLayout()
+            setNeedsClip()
         }
     }
 
@@ -183,6 +185,7 @@ import SceneKit
         enumerateTransformNodesParents { node in
             if node is TransformNodeContainer {
                 node.setNeedsContainerLayout()
+                node.setNeedsClip()
             }
         }
     }
@@ -215,6 +218,41 @@ import SceneKit
     }
 }
 
+// MARK: - Clipping
+extension TransformNode {
+    @objc func setNeedsClip() {
+        guard !clipNeeded else { return }
+        clipNeeded = true
+
+        var node: SCNNode? = parent
+        while (node != nil) {
+            if let clippingNode = node as? Clipping {
+                clippingNode.invalidateClipping()
+                break
+            }
+
+            if let transformNode = node as? TransformNode {
+                transformNode.setNeedsClip()
+                break
+            }
+
+            node = node?.parent
+        }
+    }
+    @objc var isClipCeeded: Bool { return clipNeeded }
+    @objc func clipIfNeeded(planes: [SCNVector4]) {
+        if clipNeeded {
+            clipNeeded = false
+
+            contentNode.setClippingPlanes(planes)
+#if targetEnvironment(simulator)
+            originNode?.setClippingPlanes(planes)
+            borderNode?.setClippingPlanes(planes)
+#endif
+        }
+    }
+}
+
 // MARK: - Layout
 extension TransformNode {
     @objc func setNeedsLayout() { layoutNeeded = true; currentSize = nil }
@@ -228,6 +266,7 @@ extension TransformNode {
             updateDebugLayout()
 #endif
             invalidateParentContainers()
+            setNeedsClip()
         }
     }
 
@@ -277,6 +316,7 @@ extension TransformNode {
         borderNode = NodesFactory.createOutlineNode(size: bounds.size, cornerRadius: 0, thickness: 0, color: UIColor.yellow)
         borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
         addChildNode(borderNode!)
+        setNeedsClip()
     }
 #endif
 }

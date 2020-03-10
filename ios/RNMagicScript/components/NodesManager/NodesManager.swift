@@ -48,6 +48,27 @@ import ARKit
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.prismsByAnchorUuid = prismsByAnchorUuid
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(onResourceDidLoad(_:)), name: .didLoadResource, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onLayoutDidChangeIndependently(_:)), name: .didChangeLayoutIndependently, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc fileprivate func onResourceDidLoad(_ notification: Notification) {
+        print("onResourceDidLoad: \(notification)")
+        if (notification.object is UiModelNode) {
+            // We need to update tree hierarchy only for model nodes.
+            // Audio, image? and video resources have predefined size.
+            updateLayout()
+        }
+    }
+
+    @objc fileprivate func onLayoutDidChangeIndependently(_ notification: Notification) {
+        print("onLayoutDidChangeIndependently: \(notification)")
+        updateLayout()
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
@@ -210,6 +231,14 @@ import ARKit
 
         rootNode.enumerateTransformNodes { node in
             node.postUpdate()
+        }
+
+        let invalidatedPrisms: [Prism] = prismsById.filter { $0.value.isClipUpdateNeeded }.map { $0.value }
+        invalidatedPrisms.forEach { $0.updateClipping() }
+
+        // ASSERT - remove me
+        prismsById.forEach { (key: String, value: Prism) in
+            assert(!value.isClipUpdateNeeded, "Prism.isClipUpdateNeeded must be set to false!")
         }
     }
 

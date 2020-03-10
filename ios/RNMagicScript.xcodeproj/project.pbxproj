@@ -73,6 +73,10 @@
 		44890E172413EF7500903629 /* NodesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E152413EF7500903629 /* NodesFactory.swift */; };
 		44890E192413EFB500903629 /* PrismOutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E182413EFB500903629 /* PrismOutlineNode.swift */; };
 		44890E1A2413EFB500903629 /* PrismOutlineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E182413EFB500903629 /* PrismOutlineNode.swift */; };
+		44890E1D2414F83000903629 /* Notification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E1C2414F83000903629 /* Notification+Extension.swift */; };
+		44890E1E2414F83000903629 /* Notification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E1C2414F83000903629 /* Notification+Extension.swift */; };
+		44890E202417AD9700903629 /* Clipping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E1F2417AD9700903629 /* Clipping.swift */; };
+		44890E212417AD9700903629 /* Clipping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44890E1F2417AD9700903629 /* Clipping.swift */; };
 		4489DD5723C6F8000042C51B /* SCNNinePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4489DD5623C6F8000042C51B /* SCNNinePatch.swift */; };
 		4489DD5823C6F8000042C51B /* SCNNinePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4489DD5623C6F8000042C51B /* SCNNinePatch.swift */; };
 		448F413623A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448F413523A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift */; };
@@ -640,6 +644,8 @@
 		448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Orientation.swift"; sourceTree = "<group>"; };
 		44890E152413EF7500903629 /* NodesFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodesFactory.swift; sourceTree = "<group>"; };
 		44890E182413EFB500903629 /* PrismOutlineNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismOutlineNode.swift; sourceTree = "<group>"; };
+		44890E1C2414F83000903629 /* Notification+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Extension.swift"; sourceTree = "<group>"; };
+		44890E1F2417AD9700903629 /* Clipping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clipping.swift; sourceTree = "<group>"; };
 		4489DD5623C6F8000042C51B /* SCNNinePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNinePatch.swift; sourceTree = "<group>"; };
 		448F413523A1FD7E00F414AB /* SCNNodeEnumerateSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNodeEnumerateSpec.swift; sourceTree = "<group>"; };
 		449B5482238524F400D839CC /* UiPanelNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiPanelNode.swift; sourceTree = "<group>"; };
@@ -1038,6 +1044,14 @@
 			path = "Custom nodes";
 			sourceTree = "<group>";
 		};
+		44890E1B2414F81B00903629 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				44890E1C2414F83000903629 /* Notification+Extension.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		44A3FCFF2366254600402912 /* Layouts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1259,6 +1273,7 @@
 		44AFABFF232B9BCE005AC8EF /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
+				44890E1F2417AD9700903629 /* Clipping.swift */,
 				44AFAC00232B9BCE005AC8EF /* LabelNode.swift */,
 				44AFAC01232B9BCE005AC8EF /* RenderNode.swift */,
 				44489F09237BF2E70046F16B /* SoundNode.swift */,
@@ -1340,6 +1355,7 @@
 				C4EFE260237ED72400C70001 /* Dialog */,
 				44AFAC1B232B9BCF005AC8EF /* Extensions */,
 				44DA5F57235EF5A50058212C /* Math */,
+				44890E1B2414F81B00903629 /* Notifications */,
 				C46014B023C7356F002A63D4 /* PlaneDection */,
 				44AFAC25232B9BCF005AC8EF /* Bundle.swift */,
 				44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */,
@@ -2368,8 +2384,10 @@
 				44AFAB27232B968C005AC8EF /* ViewController.swift in Sources */,
 				441EA5A32347797A00EDD033 /* SystemIcon+Names.swift in Sources */,
 				44A59E86233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
+				44890E1E2414F83000903629 /* Notification+Extension.swift in Sources */,
 				4425EE08236605A60064A2EA /* GridLayout.swift in Sources */,
 				C450CD5F23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
+				44890E212417AD9700903629 /* Clipping.swift in Sources */,
 				C450CD5C23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
 				44DF5A6123BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,
 				C47E419723C46E4D00AB81C9 /* RayBuilder.swift in Sources */,
@@ -2523,6 +2541,7 @@
 				C435F90E2382FA630060F956 /* DialogView.swift in Sources */,
 				44AFAC4F232B9BCF005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */,
+				44890E1D2414F83000903629 /* Notification+Extension.swift in Sources */,
 				44AFAC49232B9BCF005AC8EF /* FontStyle.swift in Sources */,
 				C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */,
 				C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */,
@@ -2615,6 +2634,7 @@
 				44AFAC3A232B9BCF005AC8EF /* TransformNode.swift in Sources */,
 				4425EE01236605790064A2EA /* UiRectLayoutNode.swift in Sources */,
 				C4A12B302361C85C009B7083 /* Side.swift in Sources */,
+				44890E202417AD9700903629 /* Clipping.swift in Sources */,
 				C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */,
 				44A59E85233DF870006A15D0 /* SingleLineTextAccessoryView.swift in Sources */,
 				44AFAC4C232B9BCF005AC8EF /* HorizontalTextAlignment.swift in Sources */,

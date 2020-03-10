@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import SceneKit
 
 protocol TransformNodeContainer {
     var itemsCount: Int { get }

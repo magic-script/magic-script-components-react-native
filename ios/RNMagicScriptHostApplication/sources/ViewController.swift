@@ -204,7 +204,7 @@ extension ViewController: RCTARViewObserving {
         guard deltaTime < 0.5 else { return }
 
 //        DispatchQueue.main.async() { [weak self] in
-//            UiNodesManager.instance.updateLayout()
+//            NodesManager.instance.updateLayout()
 //        }
     }
 }

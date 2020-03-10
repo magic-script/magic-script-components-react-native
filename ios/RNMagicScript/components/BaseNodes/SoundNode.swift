@@ -25,6 +25,7 @@ import SceneKit
             guard let inputURL = url else { unloadAudio(); return }
             downloader.download(remoteURL: inputURL) { [weak self] (localURL) -> (Void) in
                 self?.loadAudio(localURL: localURL)
+                NotificationCenter.default.post(name: .didLoadResource, object: self)
             }
         }
     }

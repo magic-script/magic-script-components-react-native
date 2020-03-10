@@ -28,6 +28,7 @@ import GLTFSceneKit
             downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
                 self?.setNeedsLayout()
+                NotificationCenter.default.post(name: .didLoadResource, object: self)
             }
         }
     }

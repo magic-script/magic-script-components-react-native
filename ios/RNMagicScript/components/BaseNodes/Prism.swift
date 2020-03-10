@@ -34,6 +34,7 @@ import SceneKit
     @objc fileprivate(set) var debugNode: SCNNode?
     @objc fileprivate(set) var editNode: PrismOutlineNode?
     @objc fileprivate var clippingPlanes: [Plane]?
+    @objc fileprivate var clipNeeded: Bool = true
 
     @objc override init() {
         super.init()
@@ -125,15 +126,15 @@ import SceneKit
         }
     }
 
-    @objc func updateClippingPlanes() {
-        let worldSpacePlanes = getClippingPlanes()
-//        rootNode.setClippingPlanes(worldSpacePlanes)
-    }
-
     fileprivate func updateSize() {
         debugNode?.scale = size
         editNode?.size = size
-        updateClippingPlanes()
+
+        // Request clip for all nodes
+        rootNode.enumerateTransformNodes { $0.setNeedsClip() }
+        invalidateClipping()
+
+        updateClipping()
     }
 
     @objc func updateEditMode() {
@@ -176,5 +177,24 @@ extension Prism {
         }
 
         return clippingPlanes!
+    }
+}
+
+extension Prism: Clipping {
+    var isClipUpdateNeeded: Bool { return clipNeeded }
+
+    func invalidateClipping() {
+        clipNeeded = true
+    }
+
+    func updateClipping() {
+        guard clipNeeded else { return }
+
+        let worldSpacePlanes = getClippingPlanes()
+        rootNode.enumerateTransformNodes { transformNode in
+            transformNode.clipIfNeeded(planes: worldSpacePlanes)
+        }
+
+        clipNeeded = false
     }
 }

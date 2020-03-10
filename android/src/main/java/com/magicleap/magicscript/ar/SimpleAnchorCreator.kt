@@ -23,7 +23,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.utils.logMessage
 
-class SimpleAnchorCreator() : AnchorCreator {
+class SimpleAnchorCreator(private val arResourcesProvider: ArResourcesProvider) : AnchorCreator {
 
     override fun createAnchor(
         position: Vector3,
@@ -34,14 +34,14 @@ class SimpleAnchorCreator() : AnchorCreator {
         val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
         val pose = Pose(positionArray, rotationArray)
 
-        if (ArResourcesManager.cameraState != TrackingState.TRACKING) {
+        if (arResourcesProvider.getCameraState() != TrackingState.TRACKING) {
             logMessage("Cannot create anchor, camera is not tracking", warn = true)
             return
         }
 
-        val session = ArResourcesManager.session
+        val session = arResourcesProvider.getSession()
         if (session == null) {
-            logMessage("Cannot create anchor, session is not set up", warn = true)
+            logMessage("Cannot create anchor, session not ready yet", warn = true)
         } else {
             val anchor = session.createAnchor(pose)
             result(anchor)

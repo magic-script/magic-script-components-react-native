@@ -20,17 +20,23 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.ar.CameraPositionSource
-import com.magicleap.magicscript.scene.nodes.base.ReactNode
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.base.ReactNode
+import com.magicleap.magicscript.utils.logMessage
 
-class ReactScene(initProps: ReadableMap) : ReactNode {
+class ReactScene(
+    initProps: ReadableMap,
+    private val arResourcesProvider: ArResourcesProvider
+) : ReactNode, ArResourcesProvider.ArSceneChangedListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
     private val prisms = mutableListOf<Prism>()
-    private var transformationSystem: TransformationSystem? = null
-    private var cameraPositionSource: CameraPositionSource? = null
+
+    init {
+        this.arScene = arResourcesProvider.getArScene()
+        arResourcesProvider.addArSceneChangedListener(this)
+    }
 
     override val reactParent: ReactNode?
         get() = null
@@ -42,23 +48,26 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         applyProperties(properties)
     }
 
-    fun setArDependencies(
-        scene: Scene,
-        transformationSystem: TransformationSystem,
-        cameraPositionSource: CameraPositionSource
-    ) {
-        this.arScene = scene
-        this.cameraPositionSource = cameraPositionSource
+    override fun onSceneChanged(arScene: Scene) {
+        logMessage("on scene provided: $arScene")
+        attachPrismsToArScene(arScene)
+    }
 
+    private fun attachPrismsToArScene(arScene: Scene) {
+        prisms.forEach {
+            it.anchor = null
+            it.setParent(null)
+        }
+        this.arScene = arScene
         applyProperties(properties)
 
         for (prism in prisms) {
-            if (!scene.children.contains(prism)) {
-                scene.addChild(prism)
+            if (!arScene.children.contains(prism)) {
+                val containerChildren = prism.children.firstOrNull()?.children
+                logMessage("adding prism witch children: ${prism.children}, container children=${containerChildren}")
+                arScene.addChild(prism)
             }
-            if (!prism.initialized) {
-                setupPrism(prism, transformationSystem)
-            }
+            setupPrism(prism)
         }
     }
 
@@ -71,13 +80,10 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     override fun addContent(child: ReactNode) {
         if (child is Prism) {
             prisms.add(child)
+            logMessage("add prism, arScene is $arScene")
             arScene?.addChild(child)
 
-            transformationSystem?.let { it ->
-                if (!child.initialized) {
-                    setupPrism(child, it)
-                }
-            }
+            setupPrism(child)
         }
     }
 
@@ -98,16 +104,15 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
 
     override fun onDestroy() {
         arScene = null
+        arResourcesProvider.removeArSceneListener(this)
     }
 
     private fun applyProperties(props: Bundle) {
         // TODO
     }
 
-    private fun setupPrism(prism: Prism, transformationSystem: TransformationSystem) {
-        prism.buildContent(transformationSystem)
+    private fun setupPrism(prism: Prism) {
         prism.setScene(this)
-        cameraPositionSource?.addObserver(prism)
     }
 
 }

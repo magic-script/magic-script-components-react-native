@@ -31,7 +31,6 @@ import java.io.Serializable
 import java.util.*
 import kotlin.math.abs
 
-
 /**
  * ==========Extension methods============
  */
@@ -70,7 +69,10 @@ fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
  * com.google.ar.sceneform.math.Vector3
  */
 fun Vector3.equalInexact(other: Vector3, epsilon: Float): Boolean {
-    return x.isCloseTo(other.x, epsilon) && y.isCloseTo(other.y, epsilon) && z.isCloseTo(other.z, epsilon)
+    return x.isCloseTo(other.x, epsilon) && y.isCloseTo(other.y, epsilon) && z.isCloseTo(
+        other.z,
+        epsilon
+    )
 }
 
 operator fun Vector3.plus(other: Vector3): Vector3 {

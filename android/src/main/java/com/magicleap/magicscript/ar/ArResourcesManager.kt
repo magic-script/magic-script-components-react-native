@@ -18,21 +18,62 @@ package com.magicleap.magicscript.ar
 
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.ux.TransformationSystem
 
-object ArResourcesManager {
+object ArResourcesManager : ArResourcesProvider() {
 
-    var session: Session? = null
-        private set
+    private var scene: Scene? = null
+    private var session: Session? = null
+    private var transformationSystem: TransformationSystem? = null
+    private var cameraState: TrackingState? = null
+    private var arLoaded = false
 
-    var cameraState: TrackingState? = null
-        private set
+    /**
+     * Scene is changed when fragment is recreated
+     */
+    fun setupScene(scene: Scene) {
+        this.scene = scene
+        notifySceneChanged(scene)
+    }
 
     fun setupSession(session: Session) {
         this.session = session
     }
 
-    fun updateCameraState(trackingState: TrackingState) {
+    fun setupTransformationSystem(transformationSystem: TransformationSystem) {
+        this.transformationSystem = transformationSystem
+    }
+
+    fun onArCoreLoaded() {
+        arLoaded = true
+        notifyArLoaded()
+    }
+
+    fun updateCameraPosition(position: Vector3, trackingState: TrackingState) {
         this.cameraState = trackingState
+        notifyCameraUpdated(position, trackingState)
+    }
+
+    override fun getSession(): Session? {
+        return session
+    }
+
+    override fun getArScene(): Scene? {
+        return scene
+    }
+
+    override fun isArLoaded(): Boolean {
+        return arLoaded
+    }
+
+    override fun getTransformationSystem(): TransformationSystem? {
+        return transformationSystem
+    }
+
+    override fun getCameraState(): TrackingState? {
+        return cameraState
     }
 
 }

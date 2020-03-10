@@ -23,9 +23,7 @@ import android.widget.FrameLayout;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.google.ar.sceneform.Scene;
 import com.magicleap.magicscript.ar.CustomArFragment;
-import com.magicleap.magicscript.scene.UiNodesManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,8 +64,6 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
         if (currentActivity != null) {
             currentActivity.getSupportFragmentManager().beginTransaction().add(fragment, "arFragment").commitNow();
             addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
-            Scene scene = fragment.getArSceneView().getScene();
-            UiNodesManager.Companion.getINSTANCE().registerScene(scene);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
@@ -76,7 +72,7 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     @ReactProp(name = "planeDetection")
     public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
-        UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
+        // UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
     }
 
     @ReactProp(name = "showLayoutBounds")

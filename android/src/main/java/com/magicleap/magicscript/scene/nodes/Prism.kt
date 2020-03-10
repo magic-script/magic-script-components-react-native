@@ -30,7 +30,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
-import com.magicleap.magicscript.ar.CameraObserver
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
@@ -45,17 +45,16 @@ import kotlin.math.pow
 class Prism(
     initProps: ReadableMap,
     private val cubeBuilder: CubeRenderableBuilder,
-    private val anchorCreator: AnchorCreator
-) : AnchorNode(), ReactNode, CameraObserver {
+    private val anchorCreator: AnchorCreator,
+    private val arResourcesProvider: ArResourcesProvider
+) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
+    ArResourcesProvider.ArLoadedListener {
 
     companion object {
         const val PROP_SIZE = "size"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
     }
-
-    var initialized = false
-        private set
 
     var beingTouched: Boolean = false
         private set(value) {
@@ -88,6 +87,13 @@ class Prism(
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var renderableCopy: Renderable? = null
     private var reactScene: ReactScene? = null
+
+    private var containerBuilt = false
+
+    init {
+        arResourcesProvider.addCameraUpdatedListener(this)
+        arResourcesProvider.addArLoadedListener(this)
+    }
 
     override val reactParent: ReactNode? = reactScene
 
@@ -130,8 +136,8 @@ class Prism(
         applyProperties(properties)
     }
 
-    fun buildContent(transformationSystem: TransformationSystem) {
-        if (initialized) {
+    private fun buildContentNode(transformationSystem: TransformationSystem) {
+        if (containerBuilt) {
             return
         }
 
@@ -141,13 +147,17 @@ class Prism(
                 it.addChild(content)
             }
         }
-        applyProperties(properties)
-        buildCube(size)
-
-        initialized = true
+        containerBuilt = true
     }
 
-    override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
+    override fun onArLoaded() {
+        arResourcesProvider.getTransformationSystem()?.let {
+            buildContentNode(it)
+        }
+        buildCube()
+    }
+
+    override fun onCameraUpdated(position: Vector3, state: TrackingState) {
         if (state != TrackingState.TRACKING) {
             return
         }
@@ -157,12 +167,12 @@ class Prism(
         }
 
         if (lastCameraPosition == null) {
-            lastCameraPosition = cameraPosition
+            lastCameraPosition = position
             return
         }
 
         if (beingTouched) {
-            val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+            val camToPrismDiff = Vector3.subtract(localPosition, position)
             val camToPrismDistance =
                 camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
 
@@ -170,10 +180,10 @@ class Prism(
             // to infinity when moving device (ar core bug?)
             val speed = min(1 + camToPrismDistance, 2f).pow(2)
 
-            val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
+            val diff = Vector3.subtract(position, lastCameraPosition).scaled(speed)
             localPosition = Vector3.add(localPosition, diff)
         }
-        lastCameraPosition = cameraPosition
+        lastCameraPosition = position
     }
 
     override fun onPause() {
@@ -185,7 +195,8 @@ class Prism(
     }
 
     override fun onDestroy() {
-        // no-op
+        arResourcesProvider.removeCameraUpdatedListener(this)
+        arResourcesProvider.removeArLoadedListener(this)
     }
 
     override fun setAnchor(anchor: Anchor?) {
@@ -193,9 +204,9 @@ class Prism(
         requestedAnchorPosition = null
     }
 
-    private fun buildCube(cubeSize: Vector3) {
+    private fun buildCube() {
         val color = Color(1f, 0f, 0f, 0.5f)
-        cubeBuilder.buildRenderable(cubeSize, Vector3.zero(), color, resultCallback = {
+        cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
                 renderableCopy = it.renderable
                 if (visible) {
@@ -215,7 +226,7 @@ class Prism(
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             if (size != this.size) {
                 this.size = size
-                buildCube(size)
+                buildCube()
                 clipContent()
             }
         }

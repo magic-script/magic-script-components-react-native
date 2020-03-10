@@ -263,7 +263,7 @@ open class UiScrollViewNode(
             metersToPx(contentSize.y, context).toFloat()
         )
 
-        update(scrollView.position)
+        update(scrollView.scrollValue)
     }
 
     private fun update(viewPosition: Vector2) {
@@ -376,13 +376,14 @@ open class UiScrollViewNode(
     private fun setScrollValue(props: Bundle) {
         val scrollValue = props.read<Double>(PROP_SCROLL_VALUE) ?: return
         val clampedValue = scrollValue.coerceIn(0.0, 1.0).toFloat()
+        val scrollView = view as CustomScrollView
 
         when (properties.read<String>(PROP_SCROLL_DIRECTION)) {
             SCROLL_DIRECTION_VERTICAL -> {
-                (view as CustomScrollView).position = Vector2(0f, clampedValue)
+                scrollView.scrollValue = Vector2(0f, clampedValue)
             }
             SCROLL_DIRECTION_HORIZONTAL -> {
-                (view as CustomScrollView).position = Vector2(clampedValue, 0f)
+                scrollView.scrollValue = Vector2(clampedValue, 0f)
             }
         }
     }

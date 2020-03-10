@@ -71,19 +71,6 @@ class CustomScrollView @JvmOverloads constructor(
 
     var scrollingEnabled = true
 
-    /**
-     * Normalized scroll position. X and Y of a vector is always
-     * in the range of [MIN_POSITION] to [MAX_POSITION]
-     */
-    var position = Vector2()
-        set(value) {
-            field = value.coerceIn(MIN_POSITION, MAX_POSITION)
-            hBar?.thumbPosition = value.x
-            vBar?.thumbPosition = value.y
-            onScrollChangeListener?.invoke(value)
-            invalidate()
-        }
-
     var hBar: CustomScrollBar? = null
         private set(value) {
             field = value
@@ -109,6 +96,20 @@ class CustomScrollView @JvmOverloads constructor(
                     hBar?.visibility = View.INVISIBLE
                 }
             }
+        }
+
+    /**
+     * Normalized scroll position. X and Y of a vector is always
+     * in the range of [MIN_POSITION] to [MAX_POSITION]
+     */
+    var scrollValue = Vector2()
+        set(value) {
+            val normalizedPos = value.coerceIn(MIN_POSITION, MAX_POSITION)
+            field = normalizedPos
+            hBar?.thumbPosition = normalizedPos.x
+            vBar?.thumbPosition = normalizedPos.y
+            onScrollChangeListener?.invoke(normalizedPos)
+            invalidate()
         }
 
     private var isBeingDragged = false
@@ -171,14 +172,18 @@ class CustomScrollView @JvmOverloads constructor(
             val movePx = previousTouch - touch
             val viewSize = Vector2(width.toFloat(), height.toFloat())
             val maxTravel = contentSize - viewSize
-            lastMove = movePx / maxTravel
+
+            val moveX = if (maxTravel.x != 0f) movePx.x / maxTravel.x else 0f
+            val moveY = if (maxTravel.y != 0f) movePx.y / maxTravel.y else 0f
+
+            lastMove = Vector2(moveX, moveY)
 
             when (scrollDirection) {
                 SCROLL_DIRECTION_VERTICAL -> lastMove.x = 0F
                 SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            position += lastMove
+            scrollValue += lastMove
             previousTouch = touch
             return true
         }
@@ -205,7 +210,7 @@ class CustomScrollView @JvmOverloads constructor(
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
         val newPos = animation.animatedValue as PointF
-        position = Vector2(newPos.x, newPos.y)
+        scrollValue = Vector2(newPos.x, newPos.y)
     }
 
     override fun onAttachedToWindow() {
@@ -253,12 +258,12 @@ class CustomScrollView @JvmOverloads constructor(
         val scrollDeltaX = sign(direction.x) * speedX / maximumScrollVelocity
         val scrollDeltaY = sign(direction.y) * speedY / maximumScrollVelocity
 
-        val destX = (position.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
-        val destY = (position.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)
+        val destX = (scrollValue.x + scrollDeltaX).coerceIn(MIN_POSITION, MAX_POSITION)
+        val destY = (scrollValue.y + scrollDeltaY).coerceIn(MIN_POSITION, MAX_POSITION)
 
         scrollAnimator = ObjectAnimator.ofObject(
             PointFEvaluator(),
-            PointF(position.x, position.y),
+            PointF(scrollValue.x, scrollValue.y),
             PointF(destX, destY)
         ).also {
             it.duration = SCROLL_ANIM_DURATION

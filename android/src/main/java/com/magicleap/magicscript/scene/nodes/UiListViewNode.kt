@@ -223,7 +223,7 @@ open class UiListViewNode(
 
             if (maxTravel > 0) {
                 val positionY = sumHeightBeforeItem / maxTravel
-                (view as CustomScrollView).position = Vector2(0f, positionY)
+                (view as CustomScrollView).scrollValue = Vector2(0f, positionY)
             }
         } else {
             val sumWidthBeforeItem = calculateItemsWidth(items, itemIndex)
@@ -232,7 +232,7 @@ open class UiListViewNode(
 
             if (maxTravel > 0) {
                 val positionX = sumWidthBeforeItem / maxTravel
-                (view as CustomScrollView).position = Vector2(positionX, 0f)
+                (view as CustomScrollView).scrollValue = Vector2(positionX, 0f)
             }
         }
     }

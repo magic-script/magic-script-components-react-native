@@ -78,7 +78,7 @@ class UiNodeColliderClipper : Clipper {
         var centerX = 0F
         var centerY = 0F
 
-        if (!node.useContentNodeAlignment && scaleX > 0 && scaleY > 0) {
+        if (scaleX > 0 && scaleY > 0) {
             centerX = intersection.center().x / scaleX
             centerY = intersection.center().y / scaleY
         }

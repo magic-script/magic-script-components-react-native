@@ -33,7 +33,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
 
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
-    private var arReady = false
     var planeDetection = false
 
     init {
@@ -41,7 +40,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
     }
 
     override fun onArLoaded() {
-        arReady = true
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
@@ -73,6 +71,7 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
             this.reactScene = node
         }
 
+        val arReady = arResourcesProvider.isArLoaded()
         if (arReady && node is TransformNode && node.hasRenderable && !node.renderableRequested) {
             node.attachRenderable()
         }

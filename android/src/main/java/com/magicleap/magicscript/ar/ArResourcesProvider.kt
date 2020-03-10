@@ -26,6 +26,7 @@ abstract class ArResourcesProvider {
     private val arSceneListeners = mutableListOf<ArSceneChangedListener>()
     private val arLoadedListeners = mutableListOf<ArLoadedListener>()
     private val cameraUpdatedListeners = mutableListOf<CameraUpdatedListener>()
+    private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
 
     fun addArSceneChangedListener(listener: ArSceneChangedListener) {
         arSceneListeners.add(listener)
@@ -51,6 +52,14 @@ abstract class ArResourcesProvider {
         cameraUpdatedListeners.remove(listener)
     }
 
+    fun addTransformationSystemListener(listener: TransformationSystemListener) {
+        transformationSystemListeners.add(listener)
+    }
+
+    fun removeTransformationSystemListener(listener: TransformationSystemListener) {
+        transformationSystemListeners.remove(listener)
+    }
+
     abstract fun getArScene(): Scene?
 
     abstract fun isArLoaded(): Boolean
@@ -69,6 +78,10 @@ abstract class ArResourcesProvider {
         cameraUpdatedListeners.forEach { it.onCameraUpdated(position, state) }
     }
 
+    protected fun notifyTransformationSystemChanged(system: TransformationSystem) {
+        transformationSystemListeners.forEach { it.onTransformationSystemChanged(system) }
+    }
+
     protected fun notifyArLoaded() {
         arLoadedListeners.forEach { it.onArLoaded() }
     }
@@ -79,6 +92,10 @@ abstract class ArResourcesProvider {
 
     interface ArSceneChangedListener {
         fun onSceneChanged(arScene: Scene)
+    }
+
+    interface TransformationSystemListener {
+        fun onTransformationSystemChanged(transformationSystem: TransformationSystem)
     }
 
     interface ArLoadedListener {

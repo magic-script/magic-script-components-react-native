@@ -44,6 +44,7 @@ object ArResourcesManager : ArResourcesProvider() {
 
     fun setupTransformationSystem(transformationSystem: TransformationSystem) {
         this.transformationSystem = transformationSystem
+        notifyTransformationSystemChanged(transformationSystem)
     }
 
     fun onArCoreLoaded() {

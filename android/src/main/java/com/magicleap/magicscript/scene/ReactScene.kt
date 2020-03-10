@@ -23,7 +23,6 @@ import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
-import com.magicleap.magicscript.utils.logMessage
 
 class ReactScene(
     initProps: ReadableMap,
@@ -49,7 +48,6 @@ class ReactScene(
     }
 
     override fun onSceneChanged(arScene: Scene) {
-        logMessage("on scene provided: $arScene")
         attachPrismsToArScene(arScene)
     }
 
@@ -63,8 +61,6 @@ class ReactScene(
 
         for (prism in prisms) {
             if (!arScene.children.contains(prism)) {
-                val containerChildren = prism.children.firstOrNull()?.children
-                logMessage("adding prism witch children: ${prism.children}, container children=${containerChildren}")
                 arScene.addChild(prism)
             }
             setupPrism(prism)
@@ -80,7 +76,6 @@ class ReactScene(
     override fun addContent(child: ReactNode) {
         if (child is Prism) {
             prisms.add(child)
-            logMessage("add prism, arScene is $arScene")
             arScene?.addChild(child)
 
             setupPrism(child)

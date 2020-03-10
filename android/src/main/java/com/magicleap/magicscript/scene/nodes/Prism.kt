@@ -48,7 +48,7 @@ class Prism(
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
-    ArResourcesProvider.ArLoadedListener {
+    ArResourcesProvider.ArLoadedListener, ArResourcesProvider.TransformationSystemListener {
 
     companion object {
         const val PROP_SIZE = "size"
@@ -93,6 +93,7 @@ class Prism(
     init {
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addArLoadedListener(this)
+        arResourcesProvider.addTransformationSystemListener(this)
     }
 
     override val reactParent: ReactNode? = reactScene
@@ -133,12 +134,18 @@ class Prism(
     }
 
     override fun build() {
+        arResourcesProvider.getTransformationSystem()?.let {
+            buildContentNode(it)
+        }
         applyProperties(properties)
     }
 
     private fun buildContentNode(transformationSystem: TransformationSystem) {
-        if (containerBuilt) {
-            return
+        // detach old container if exists
+        container?.let {
+            if (children.contains(it)) {
+                removeChild(it)
+            }
         }
 
         container = RotatableNode(transformationSystem).also {
@@ -147,13 +154,13 @@ class Prism(
                 it.addChild(content)
             }
         }
-        containerBuilt = true
+    }
+
+    override fun onTransformationSystemChanged(transformationSystem: TransformationSystem) {
+        buildContentNode(transformationSystem)
     }
 
     override fun onArLoaded() {
-        arResourcesProvider.getTransformationSystem()?.let {
-            buildContentNode(it)
-        }
         buildCube()
     }
 
@@ -197,6 +204,7 @@ class Prism(
     override fun onDestroy() {
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeArLoadedListener(this)
+        arResourcesProvider.removeTransformationSystemListener(this)
     }
 
     override fun setAnchor(anchor: Anchor?) {

@@ -99,7 +99,7 @@ class UiButtonNodeTest {
 
         node.build()
 
-        verify(viewSpy).setCharactersSpacing(0.1F)
+        verify(viewSpy).setCharactersSpacing(0.03F)
     }
 
     @Test

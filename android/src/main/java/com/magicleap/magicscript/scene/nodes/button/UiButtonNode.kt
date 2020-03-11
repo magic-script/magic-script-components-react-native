@@ -74,7 +74,7 @@ open class UiButtonNode(
         const val LABEL_SIDE_RIGHT = "right"
     }
 
-    protected open val charactersSpacing = 0.1F
+    protected open val charactersSpacing = 0.03F
 
     private var playingAnim = false
 

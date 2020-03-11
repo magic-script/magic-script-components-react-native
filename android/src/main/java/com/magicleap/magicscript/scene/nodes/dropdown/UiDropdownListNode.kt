@@ -60,7 +60,6 @@ open class UiDropdownListNode(
         const val Z_ORDER_OFFSET = 2e-5F
         const val ICON_NAME = "dropdown"
         const val Z_OFFSET_WHEN_EXPANDED = 0.05F
-        const val ICON_HEIGHT_FACTOR_DEFAULT = 0.3F
     }
 
     override val charactersSpacing = 0F
@@ -110,7 +109,6 @@ open class UiDropdownListNode(
         (view as CustomButton).apply {
             iconPosition = CustomButton.IconPosition.RIGHT
             borderEnabled = false
-            defaultIconHeightFactor = ICON_HEIGHT_FACTOR_DEFAULT
         }
     }
 

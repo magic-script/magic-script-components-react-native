@@ -33,7 +33,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
 
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
-    var planeDetection = false
 
     init {
         arResourcesProvider.addArLoadedListener(this)
@@ -44,15 +43,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
             }
-        }
-    }
-
-    @Synchronized
-    override fun onTapArPlane(anchor: Anchor) {
-        if (planeDetection) {
-            planeDetection = false
-            // rootNode.anchor = anchor
-            // TODO
         }
     }
 

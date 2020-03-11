@@ -23,13 +23,12 @@ import android.widget.FrameLayout;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.magicleap.magicscript.ar.ArResourcesManager;
 import com.magicleap.magicscript.ar.CustomArFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
-
-import javax.annotation.Nullable;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -71,12 +70,12 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
     }
 
     @ReactProp(name = "planeDetection")
-    public void setPlaneDetection(View view, @Nullable Boolean planeDetection) {
-        // UiNodesManager.Companion.getINSTANCE().setPlaneDetection(true);
+    public void setPlaneDetection(View view, boolean planeDetection) {
+        ArResourcesManager.INSTANCE.setPlaneDetection(planeDetection);
     }
 
     @ReactProp(name = "showLayoutBounds")
-    public void setShowLayoutBounds(View view, @Nullable Boolean showLayoutBounds) {
+    public void setShowLayoutBounds(View view, boolean showLayoutBounds) {
         ArViewManager.showLayoutBounds = showLayoutBounds;
     }
 

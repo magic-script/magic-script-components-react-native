@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.core.Anchor
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.Prism
@@ -27,7 +28,7 @@ import com.magicleap.magicscript.scene.nodes.base.ReactNode
 class ReactScene(
     initProps: ReadableMap,
     private val arResourcesProvider: ArResourcesProvider
-) : ReactNode, ArResourcesProvider.ArSceneChangedListener {
+) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
     private val prisms = mutableListOf<Prism>()
@@ -35,6 +36,7 @@ class ReactScene(
     init {
         this.arScene = arResourcesProvider.getArScene()
         arResourcesProvider.addArSceneChangedListener(this)
+        arResourcesProvider.addPlaneTapListener(this)
     }
 
     override val reactParent: ReactNode?
@@ -89,6 +91,12 @@ class ReactScene(
         }
     }
 
+    override fun onPlaneTap(anchor: Anchor) {
+        if (arResourcesProvider.isPlaneDetectionEnabled()) {
+            prisms.firstOrNull()?.anchor = anchor
+        }
+    }
+
     override fun onPause() {
         // no-op
     }
@@ -100,6 +108,7 @@ class ReactScene(
     override fun onDestroy() {
         arScene = null
         arResourcesProvider.removeArSceneListener(this)
+        arResourcesProvider.removePlaneTapListener(this)
     }
 
     private fun applyProperties(props: Bundle) {

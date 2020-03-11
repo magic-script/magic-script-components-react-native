@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript.ar
 
+import com.google.ar.core.Anchor
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
@@ -27,6 +28,7 @@ abstract class ArResourcesProvider {
     private val arLoadedListeners = mutableListOf<ArLoadedListener>()
     private val cameraUpdatedListeners = mutableListOf<CameraUpdatedListener>()
     private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
+    private val planeTapListeners = mutableListOf<PlaneTapListener>()
 
     fun addArSceneChangedListener(listener: ArSceneChangedListener) {
         arSceneListeners.add(listener)
@@ -60,6 +62,14 @@ abstract class ArResourcesProvider {
         transformationSystemListeners.remove(listener)
     }
 
+    fun addPlaneTapListener(listener: PlaneTapListener) {
+        planeTapListeners.add(listener)
+    }
+
+    fun removePlaneTapListener(listener: PlaneTapListener) {
+        planeTapListeners.remove(listener)
+    }
+
     abstract fun getArScene(): Scene?
 
     abstract fun isArLoaded(): Boolean
@@ -69,6 +79,8 @@ abstract class ArResourcesProvider {
     abstract fun getTransformationSystem(): TransformationSystem?
 
     abstract fun getCameraState(): TrackingState?
+
+    abstract fun isPlaneDetectionEnabled(): Boolean
 
     protected fun notifySceneChanged(arScene: Scene) {
         arSceneListeners.forEach { it.onSceneChanged(arScene) }
@@ -80,6 +92,10 @@ abstract class ArResourcesProvider {
 
     protected fun notifyTransformationSystemChanged(system: TransformationSystem) {
         transformationSystemListeners.forEach { it.onTransformationSystemChanged(system) }
+    }
+
+    protected fun notifyPlaneTapped(anchor: Anchor) {
+        planeTapListeners.forEach { it.onPlaneTap(anchor) }
     }
 
     protected fun notifyArLoaded() {
@@ -96,6 +112,10 @@ abstract class ArResourcesProvider {
 
     interface TransformationSystemListener {
         fun onTransformationSystemChanged(transformationSystem: TransformationSystem)
+    }
+
+    interface PlaneTapListener {
+        fun onPlaneTap(anchor: Anchor)
     }
 
     interface ArLoadedListener {

@@ -65,7 +65,7 @@ class CustomArFragment : ArFragment() {
             ARPlaneDetectorBridge.INSTANCE.onPlaneTapped(plane, hitResult)
 
             val anchor = hitResult.createAnchor()
-            // TODO UiNodesManager.INSTANCE.onTapArPlane(anchor)
+            ArResourcesManager.onPlaneTapped(anchor)
             lastTapAnchor = anchor
         }
 

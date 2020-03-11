@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript.ar
 
+import com.google.ar.core.Anchor
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
@@ -23,6 +24,8 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
 
 object ArResourcesManager : ArResourcesProvider() {
+
+    var planeDetection = false
 
     private var scene: Scene? = null
     private var session: Session? = null
@@ -57,6 +60,10 @@ object ArResourcesManager : ArResourcesProvider() {
         notifyCameraUpdated(position, trackingState)
     }
 
+    fun onPlaneTapped(anchor: Anchor) {
+        notifyPlaneTapped(anchor)
+    }
+
     override fun getSession(): Session? {
         return session
     }
@@ -77,4 +84,7 @@ object ArResourcesManager : ArResourcesProvider() {
         return cameraState
     }
 
+    override fun isPlaneDetectionEnabled(): Boolean {
+        return planeDetection
+    }
 }

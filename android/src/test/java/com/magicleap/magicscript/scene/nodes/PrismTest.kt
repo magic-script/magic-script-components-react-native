@@ -25,6 +25,7 @@ import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -32,6 +33,7 @@ import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
 import org.amshove.kluent.shouldEqual
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -46,11 +48,18 @@ class PrismTest {
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cubeBuilder: CubeRenderableBuilder = mock()
     private val anchorCreator: AnchorCreator = mock()
+    private val arResourcesProvider: ArResourcesProvider = mock()
+
+    @Before
+    fun setUp() {
+        whenever(arResourcesProvider.getArScene()).thenReturn(mock())
+        whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+    }
 
     @Test
     fun `should be possible to put Transform node inside prism`() {
         val prism = buildPrism(reactMapOf())
-        prism.buildContent(getTransformationSystem())
         val child = NodeBuilder().build()
 
         prism.addContent(child)
@@ -62,7 +71,6 @@ class PrismTest {
     @Test
     fun `should not be possible to put prism inside another prism`() {
         val prism = buildPrism(reactMapOf())
-        prism.buildContent(getTransformationSystem())
         val child = buildPrism(reactMapOf())
 
         prism.addContent(child)
@@ -97,7 +105,6 @@ class PrismTest {
     @Test
     fun `should create anchor when position changed`() {
         val prism = buildPrism(reactMapOf())
-        prism.buildContent(getTransformationSystem())
 
         prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
 
@@ -105,7 +112,7 @@ class PrismTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder, anchorCreator).apply {
+        return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider).apply {
             build()
         }
     }

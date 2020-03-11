@@ -88,7 +88,7 @@ class Prism(
     private var renderableCopy: Renderable? = null
     private var reactScene: ReactScene? = null
 
-    private var containerBuilt = false
+    private var cubeLoadRequested = false
 
     init {
         arResourcesProvider.addCameraUpdatedListener(this)
@@ -154,6 +154,8 @@ class Prism(
                 it.addChild(content)
             }
         }
+
+        buildCube()
     }
 
     override fun onTransformationSystemChanged(transformationSystem: TransformationSystem) {
@@ -161,7 +163,10 @@ class Prism(
     }
 
     override fun onArLoaded() {
-        buildCube()
+        if (cubeLoadRequested) {
+            buildCube()
+            cubeLoadRequested = false
+        }
     }
 
     override fun onCameraUpdated(position: Vector3, state: TrackingState) {
@@ -213,6 +218,11 @@ class Prism(
     }
 
     private fun buildCube() {
+        if (!arResourcesProvider.isArLoaded()) {
+            cubeLoadRequested = true
+            return
+        }
+
         val color = Color(1f, 0f, 0f, 0.5f)
         cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {

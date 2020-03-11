@@ -54,12 +54,12 @@ class ReactScene(
     }
 
     private fun attachPrismsToArScene(arScene: Scene) {
+        this.arScene = arScene
+
         prisms.forEach {
             it.anchor = null
             it.setParent(null)
         }
-        this.arScene = arScene
-        applyProperties(properties)
 
         for (prism in prisms) {
             if (!arScene.children.contains(prism)) {
@@ -107,7 +107,7 @@ class ReactScene(
 
     override fun onDestroy() {
         arScene = null
-        arResourcesProvider.removeArSceneListener(this)
+        arResourcesProvider.removeArSceneChangedListener(this)
         arResourcesProvider.removePlaneTapListener(this)
     }
 

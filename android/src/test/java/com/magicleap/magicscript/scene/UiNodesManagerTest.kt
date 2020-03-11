@@ -24,13 +24,15 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.itReturns
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -40,7 +42,18 @@ import java.util.*
 class UiNodesManagerTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val nodesManager = UiNodesManager()
+    private val arResourcesProvider: ArResourcesProvider = mock()
+    private lateinit var nodesManager: UiNodesManager
+    private var arScene = spy<Scene>()
+
+    @Before
+    fun setUp() {
+        whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
+        whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+
+        nodesManager = UiNodesManager(arResourcesProvider)
+    }
 
     @Test
     fun `should register node`() {
@@ -117,7 +130,8 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should not attach renderable if ArFragment is not ready`() {
+    fun `should not attach renderable if ARCore library is not loaded`() {
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
         val node1 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
         }
@@ -128,7 +142,8 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should attach renderable for all nodes with renderable when ArFragment ready`() {
+    fun `should attach renderable for all nodes with renderable when ARCore is loaded`() {
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
         val node1 = mock<TransformNode> {
             on { hasRenderable }.doReturn(true)
             nodesManager.registerNode(this.mock, "1")
@@ -141,10 +156,6 @@ class UiNodesManagerTest {
             on { hasRenderable } itReturns false
             nodesManager.registerNode(this.mock, "3")
         }
-        val scene = mock<Scene>()
-        nodesManager.registerScene(scene)
-
-        nodesManager.onArFragmentReady(mock(), getTransformationSystem())
 
         verify(node1).attachRenderable()
         verify(node2).attachRenderable()
@@ -153,19 +164,12 @@ class UiNodesManagerTest {
 
     @Test
     fun `AR scene should not have any children at the beginning`() {
-        val arScene = spy<Scene>()
-
-        nodesManager.registerScene(arScene)
-        nodesManager.onArFragmentReady(mock(), getTransformationSystem())
-
         arScene.children.size shouldEqual 0
     }
 
     @Test
     fun `should attach Prisms to AR scene when ReactScene registered`() {
-        val arScene = spy<Scene>()
-        nodesManager.registerScene(arScene)
-        val reactScene = ReactScene(reactMapOf())
+        val reactScene = ReactScene(reactMapOf(), arResourcesProvider)
         val prism1 = createPrism(reactMapOf())
         val prism2 = createPrism(reactMapOf())
         nodesManager.registerNode(reactScene, nodeId = "0")
@@ -175,18 +179,13 @@ class UiNodesManagerTest {
         nodesManager.addNodeToParent(nodeId = "2", parentId = "0")
         nodesManager.addNodeToRoot(nodeId = "0")
 
-        nodesManager.onArFragmentReady(mock(), getTransformationSystem())
-
         arScene.children.size shouldEqual 2
         arScene.children[0] shouldEqual prism1
         arScene.children[1] shouldEqual prism2
     }
 
     @Test
-    fun `should not add node to AR scene without Scene and Prism object and anchor UUID absent `() {
-        val arScene = spy<Scene>()
-        nodesManager.registerScene(arScene)
-        nodesManager.onArFragmentReady(mock(), getTransformationSystem())
+    fun `should not add node to AR scene without Scene and Prism object and anchor UUID absent`() {
         val node = NodeBuilder().build()
 
         nodesManager.registerNode(node, "1")
@@ -197,9 +196,6 @@ class UiNodesManagerTest {
 
     @Test
     fun `should add node to specified anchor when anchor UUID present and anchor node exists`() {
-        val arScene = spy<Scene>()
-        nodesManager.registerScene(arScene)
-        nodesManager.onArFragmentReady(mock(), getTransformationSystem())
         val uuid = UUID.randomUUID().toString()
         val anchorNode = AnchorNode()
         anchorNode.name = uuid
@@ -259,7 +255,7 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock())
+        return Prism(props, mock(), mock(), arResourcesProvider)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

@@ -22,11 +22,14 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.Prism
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -39,15 +42,20 @@ import org.robolectric.RobolectricTestRunner
 class ReactSceneTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val arResourcesProvider: ArResourcesProvider = mock()
+    private val arScene = spy<Scene>()
+
+    @Before
+    fun setUp() {
+        whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
+        whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+    }
 
     @Test
-    fun `should attach prism to AR scene when AR dependencies set`() {
+    fun `should attach prism to AR scene when AR scene loaded`() {
         val reactScene = buildScene(reactMapOf())
-        val arScene = spy<Scene>()
         val prism = buildPrism(reactMapOf())
         reactScene.addContent(prism)
-
-        reactScene.setArDependencies(arScene, getTransformationSystem(), mock())
 
         arScene.children.size shouldEqual 1
         arScene.children.first() shouldEqual prism
@@ -56,10 +64,8 @@ class ReactSceneTest {
     @Test
     fun `should detach prism from AR scene when removed with removedContent method`() {
         val reactScene = buildScene(reactMapOf())
-        val arScene = spy<Scene>()
         val prism = buildPrism(reactMapOf())
         reactScene.addContent(prism)
-        reactScene.setArDependencies(arScene, getTransformationSystem(), mock())
 
         reactScene.removeContent(prism)
 
@@ -67,16 +73,16 @@ class ReactSceneTest {
     }
 
     private fun buildScene(props: JavaOnlyMap): ReactScene {
-        return ReactScene(props).apply {
+        return ReactScene(props, arResourcesProvider).apply {
             build()
         }
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock())
+        return Prism(props, mock(), mock(), arResourcesProvider)
             .apply {
-            build()
-        }
+                build()
+            }
     }
 
     private fun getTransformationSystem(): TransformationSystem {

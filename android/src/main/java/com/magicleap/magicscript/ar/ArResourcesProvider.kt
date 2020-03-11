@@ -30,14 +30,23 @@ abstract class ArResourcesProvider {
     private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
     private val planeTapListeners = mutableListOf<PlaneTapListener>()
 
+    /**
+     * Registers a listener that will be called when ARCore's scene is loaded first time or changed.
+     * (Scene is changed e.g. when user exits the app with back button and opens it again)
+     */
     fun addArSceneChangedListener(listener: ArSceneChangedListener) {
         arSceneListeners.add(listener)
     }
 
-    fun removeArSceneListener(listener: ArSceneChangedListener) {
+    fun removeArSceneChangedListener(listener: ArSceneChangedListener) {
         arSceneListeners.remove(listener)
     }
 
+    /**
+     * Registers a listener that will be called when ARCore's native library has been loaded.
+     * (This is called each time the AR Fragment is recreated)
+     * @see isArLoaded
+     */
     fun addArLoadedListener(listener: ArLoadedListener) {
         arLoadedListeners.add(listener)
     }
@@ -46,6 +55,9 @@ abstract class ArResourcesProvider {
         arLoadedListeners.remove(listener)
     }
 
+    /**
+     * Registers a listener that will be called when camera position or state has changed.
+     */
     fun addCameraUpdatedListener(listener: CameraUpdatedListener) {
         cameraUpdatedListeners.add(listener)
     }
@@ -54,6 +66,10 @@ abstract class ArResourcesProvider {
         cameraUpdatedListeners.remove(listener)
     }
 
+    /**
+     * Registers a listener that will be called each time the new TransformationSystem is created.
+     * (this happens when AR Fragment is recreated)
+     */
     fun addTransformationSystemListener(listener: TransformationSystemListener) {
         transformationSystemListeners.add(listener)
     }
@@ -62,6 +78,9 @@ abstract class ArResourcesProvider {
         transformationSystemListeners.remove(listener)
     }
 
+    /**
+     * Registers a plane tap event listener which is called after user taps a detected plane
+     */
     fun addPlaneTapListener(listener: PlaneTapListener) {
         planeTapListeners.add(listener)
     }
@@ -70,16 +89,35 @@ abstract class ArResourcesProvider {
         planeTapListeners.remove(listener)
     }
 
+    /**
+     * Returns current ARCore's scene if already loaded or null otherwise
+     */
     abstract fun getArScene(): Scene?
 
+    /**
+     * Returns true if ARCore native libraries are loaded (this is true after AR fragment
+     * is created). Before ARCore is not loaded we cannot load a Renderable.
+     */
     abstract fun isArLoaded(): Boolean
 
+    /**
+     * Return current ARCore session or null if not initialized yet
+     */
     abstract fun getSession(): Session?
 
+    /**
+     * Returns current TransformationSystem
+     */
     abstract fun getTransformationSystem(): TransformationSystem?
 
+    /**
+     * Returns current camera state or null if state has not been updated yet
+     */
     abstract fun getCameraState(): TrackingState?
 
+    /**
+     * Returns true if plane detection mode is active.
+     */
     abstract fun isPlaneDetectionEnabled(): Boolean
 
     protected fun notifySceneChanged(arScene: Scene) {

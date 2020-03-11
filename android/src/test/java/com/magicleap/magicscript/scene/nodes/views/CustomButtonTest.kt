@@ -101,4 +101,30 @@ class CustomButtonTest {
         verify(button).invalidate()
     }
 
+    @Test
+    fun `should measure and redraw after setting iconVisible`() {
+        button.iconVisible = true
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+    @Test
+    fun `should measure and redraw after setting labelVisible`() {
+        button.labelVisible = true
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+    @Test
+    fun `should measure and redraw after setting textVisible`() {
+        button.textVisible = true
+
+        verify(button).invalidate()
+        verify(button).requestLayout()
+    }
+
+
+
 }

@@ -428,7 +428,8 @@ class CustomButton @JvmOverloads constructor(
     }
 
     private fun drawText(canvas: Canvas, offsetFromX: Float, offsetY: Float) {
-        val textX = width / 2 - (textWidth + iconBounds.width() + iconPadding) / 2 + offsetFromX
+        val textX =
+            width / 2 - textBounds.exactCenterX() - (iconBounds.width() + iconPadding) / 2 + offsetFromX
         val textY = paddingVertical + offsetY
         canvas.drawText(text, textX, textY, textPaint)
     }

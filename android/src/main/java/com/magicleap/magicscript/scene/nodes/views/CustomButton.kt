@@ -176,21 +176,6 @@ class CustomButton @JvmOverloads constructor(
             textHeight += 2F * paddingVertical
         }
 
-        // set default icon size
-        iconBitmap?.let { icon ->
-            if (usingDefaultIconSize) {
-                val referenceHeight = if (heightMode == MeasureSpec.EXACTLY) {
-                    heightSize.toFloat()
-                } else {
-                    textHeight + 2F * paddingVertical
-                }
-                val iconHeight = defaultIconHeightFactor * referenceHeight
-                val iconWidth = icon.width / icon.height * iconHeight
-                iconSize = Vector2(iconWidth, iconHeight)
-            }
-            iconPadding = iconSpacingFactor * iconSize.x
-        }
-
         val defaultWidth = calculateDefaultWidth(textWidth)
         val defaultHeight = calculateDefaultHeight(textHeight)
 
@@ -212,6 +197,17 @@ class CustomButton @JvmOverloads constructor(
         } else { // WRAP_CONTENT
             defaultHeight.toInt()
         }
+
+        // set default icon size
+        iconBitmap?.let { icon ->
+            if (usingDefaultIconSize) {
+                val iconHeight = defaultIconHeightFactor * height
+                val iconWidth = icon.width / icon.height * iconHeight
+                iconSize = Vector2(iconWidth, iconHeight)
+            }
+            iconPadding = iconSpacingFactor * iconSize.x
+        }
+
         setMeasuredDimension(width, height)
     }
 

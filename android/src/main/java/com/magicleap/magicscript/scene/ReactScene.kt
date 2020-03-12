@@ -19,15 +19,25 @@ package com.magicleap.magicscript.scene
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
+import com.google.ar.core.Anchor
 import com.google.ar.sceneform.Scene
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
-class ReactScene(initProps: ReadableMap) : ReactNode {
+class ReactScene(
+    initProps: ReadableMap,
+    private val arResourcesProvider: ArResourcesProvider
+) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
-    private var arFragment: CustomArFragment? = null
     private val prisms = mutableListOf<Prism>()
+
+    init {
+        this.arScene = arResourcesProvider.getArScene()
+        arResourcesProvider.addArSceneChangedListener(this)
+        arResourcesProvider.addPlaneTapListener(this)
+    }
 
     override val reactParent: ReactNode?
         get() = null
@@ -39,19 +49,23 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         applyProperties(properties)
     }
 
-    fun setArDependencies(fragment: CustomArFragment, scene: Scene) {
-        this.arFragment = fragment
-        this.arScene = scene
+    override fun onSceneChanged(arScene: Scene) {
+        attachPrismsToArScene(arScene)
+    }
 
-        applyProperties(properties)
+    private fun attachPrismsToArScene(arScene: Scene) {
+        this.arScene = arScene
+
+        prisms.forEach {
+            it.anchor = null
+            it.setParent(null)
+        }
 
         for (prism in prisms) {
-            if (!scene.children.contains(prism)) {
-                scene.addChild(prism)
+            if (!arScene.children.contains(prism)) {
+                arScene.addChild(prism)
             }
-            if (!prism.initialized) {
-                setupPrism(prism, fragment)
-            }
+            setupPrism(prism)
         }
     }
 
@@ -66,11 +80,7 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
             prisms.add(child)
             arScene?.addChild(child)
 
-            arFragment?.let { fragment ->
-                if (!child.initialized) {
-                    setupPrism(child, fragment)
-                }
-            }
+            setupPrism(child)
         }
     }
 
@@ -78,6 +88,12 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
         if (child is Prism) {
             prisms.remove(child)
             arScene?.removeChild(child)
+        }
+    }
+
+    override fun onPlaneTap(anchor: Anchor) {
+        if (arResourcesProvider.isPlaneDetectionEnabled()) {
+            prisms.firstOrNull()?.anchor = anchor
         }
     }
 
@@ -90,21 +106,17 @@ class ReactScene(initProps: ReadableMap) : ReactNode {
     }
 
     override fun onDestroy() {
-        arFragment = null
         arScene = null
+        arResourcesProvider.removeArSceneChangedListener(this)
+        arResourcesProvider.removePlaneTapListener(this)
     }
 
     private fun applyProperties(props: Bundle) {
         // TODO
     }
 
-    private fun setupPrism(prism: Prism, arFragment: CustomArFragment) {
-        val transformationSystem = arFragment.transformationSystem ?: return
-        val session = arFragment.arSceneView?.session ?: return
-
-        prism.setArDependencies(transformationSystem, session)
+    private fun setupPrism(prism: Prism) {
         prism.setScene(this)
-        arFragment.addCameraObserver(prism)
     }
 
 }

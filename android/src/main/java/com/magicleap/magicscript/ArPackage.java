@@ -21,15 +21,15 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.magicleap.magicscript.scene.NodesManager;
-import com.magicleap.magicscript.scene.UiNodesManager;
-import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
-import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
-
+import com.magicleap.magicscript.ar.ArResourcesManager;
 import com.magicleap.magicscript.plane.ARPlaneDetector;
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge;
 import com.magicleap.magicscript.plane.ARPlaneDetectorEvents;
 import com.magicleap.magicscript.plane.ARPlaneDetectorEventsManager;
+import com.magicleap.magicscript.scene.NodesManager;
+import com.magicleap.magicscript.scene.UiNodesManager;
+import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
+import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +43,7 @@ public class ArPackage implements ReactPackage {
     @NotNull
     @Override
     public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
-        NodesManager nodesManager = UiNodesManager.Companion.getINSTANCE();
+        NodesManager nodesManager = new UiNodesManager(ArResourcesManager.INSTANCE);
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
         ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool);

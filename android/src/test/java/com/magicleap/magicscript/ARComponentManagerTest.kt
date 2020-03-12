@@ -19,6 +19,7 @@ package com.magicleap.magicscript
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactApplicationContext
+import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.UiNodesManager
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
@@ -28,6 +29,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout
+import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool
@@ -90,6 +92,20 @@ class ARComponentManagerTest {
     }
 
     // region Nodes
+
+    @Test
+    fun `should register scene node`() {
+        manager.createScene(JavaOnlyMap(), "123")
+
+        verify(nodesManager).registerNode(isA<ReactScene>(), eq("123"))
+    }
+
+    @Test
+    fun `should register prism node`() {
+        manager.createPrism(JavaOnlyMap(), "123")
+
+        verify(nodesManager).registerNode(isA<Prism>(), eq("123"))
+    }
 
     @Test
     fun `should register group node`() {

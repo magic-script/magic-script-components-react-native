@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene
+package com.magicleap.magicscript.ar
 
-import com.google.ar.core.TrackingState
+import com.google.ar.core.Anchor
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 
-interface CameraObserver {
-    fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState)
+interface AnchorCreator {
+    fun createAnchor(position: Vector3, rotation: Quaternion, result: (anchor: Anchor) -> Unit)
 }

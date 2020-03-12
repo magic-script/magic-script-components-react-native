@@ -17,14 +17,9 @@
 package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.core.Anchor
-import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
 interface NodesManager {
-
-    fun registerScene(scene: Scene)
 
     fun findNodeWithId(nodeId: String): ReactNode?
 
@@ -39,7 +34,5 @@ interface NodesManager {
     fun removeNode(nodeId: String)
 
     fun clear()
-
-    fun onTapArPlane(anchor: Anchor)
 
 }

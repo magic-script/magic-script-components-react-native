@@ -20,7 +20,7 @@ import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.Scene
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
@@ -28,40 +28,21 @@ import com.magicleap.magicscript.utils.logMessage
 /**
  * It manages nodes registration and attaching them to scene
  */
-open class UiNodesManager : NodesManager, LifecycleEventListener {
+class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : NodesManager,
+    LifecycleEventListener, ArResourcesProvider.ArLoadedListener {
+
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
-    private var arReady = false
-    private lateinit var arScene: Scene
-    var planeDetection = false
 
-    companion object {
-        val INSTANCE = UiNodesManager()
+    init {
+        arResourcesProvider.addArLoadedListener(this)
     }
 
-    @Synchronized
-    fun onArFragmentReady(fragment: CustomArFragment) {
-        arReady = true
-        reactScene?.setArDependencies(fragment, arScene)
-
+    override fun onArLoaded() {
         nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
             if (node.hasRenderable && !node.renderableRequested) {
                 node.attachRenderable()
             }
-        }
-    }
-
-    @Synchronized
-    override fun registerScene(scene: Scene) {
-        this.arScene = scene
-    }
-
-    @Synchronized
-    override fun onTapArPlane(anchor: Anchor) {
-        if (planeDetection) {
-            planeDetection = false
-            // rootNode.anchor = anchor
-            // TODO
         }
     }
 
@@ -80,6 +61,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
             this.reactScene = node
         }
 
+        val arReady = arResourcesProvider.isArLoaded()
         if (arReady && node is TransformNode && node.hasRenderable && !node.renderableRequested) {
             node.attachRenderable()
         }
@@ -95,7 +77,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         val node = nodesById[nodeId]
 
         if (node == null) {
-            logMessage("cannot add node with id = $nodeId to root: not found")
+            logMessage("cannot add node with id = $nodeId to root: not found", warn = true)
             return
         }
 
@@ -108,14 +90,14 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         val parentNode = nodesById[parentId]
 
         if (node == null) {
-            logMessage("cannot add node: not found")
+            logMessage("cannot add node: not found", warn = true)
             return
         }
         if (tryAddNodeToAnchor(node)) {
             return
         }
         if (parentNode == null) {
-            logMessage("cannot add node: parent not found")
+            logMessage("cannot add node: parent not found", warn = true)
             return
         }
         parentNode.addContent(node)
@@ -129,12 +111,19 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         if (node.anchorUuid.isEmpty()) {
             return false
         }
-        val anchorNode = arScene.findByName(node.anchorUuid)
+
+        val scene = arResourcesProvider.getArScene()
+        if (scene == null) {
+            logMessage("tryAddNodeToAnchor ar scene not initialized", warn = true)
+            return false
+        }
+
+        val anchorNode = scene.findByName(node.anchorUuid)
         return if (anchorNode is AnchorNode) {
             anchorNode.addChild(node)
             true
         } else {
-            logMessage("tryAddNodeToAnchor anchorUuid not found: ${node.anchorUuid}")
+            logMessage("tryAddNodeToAnchor anchorUuid not found: ${node.anchorUuid}", warn = true)
             false
         }
     }
@@ -143,7 +132,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
     override fun updateNode(nodeId: String, properties: ReadableMap): Boolean {
         val node = nodesById[nodeId]
         if (node == null) {
-            logMessage("cannot update node: not found")
+            logMessage("cannot update node: not found", warn = true)
             return false
         }
         node.update(properties)
@@ -155,7 +144,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
         val node = nodesById[nodeId]
 
         if (node == null) {
-            logMessage("cannot remove node: not found")
+            logMessage("cannot remove node: not found", warn = true)
             return
         }
         removeFromMap(node)
@@ -165,6 +154,7 @@ open class UiNodesManager : NodesManager, LifecycleEventListener {
 
     @Synchronized
     override fun clear() {
+        logMessage("clear")
         nodesById.forEach { (_, node) ->
             detachNode(node)
             node.onDestroy()

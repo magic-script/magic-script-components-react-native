@@ -28,12 +28,15 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.google.vr.sdk.audio.GvrAudioEngine;
+import com.magicleap.magicscript.ar.AnchorCreator;
+import com.magicleap.magicscript.ar.ArResourcesManager;
 import com.magicleap.magicscript.ar.CubeRenderableBuilder;
 import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.LoopedAnimator;
 import com.magicleap.magicscript.ar.ModelRenderableLoader;
 import com.magicleap.magicscript.ar.ModelRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.RenderableAnimator;
+import com.magicleap.magicscript.ar.SimpleAnchorCreator;
 import com.magicleap.magicscript.ar.VideoRenderableLoader;
 import com.magicleap.magicscript.ar.VideoRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.ViewRenderableLoader;
@@ -190,13 +193,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScene(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ReactScene(props), nodeId));
+        mainHandler.post(() -> addNode(new ReactScene(props, ArResourcesManager.INSTANCE), nodeId));
     }
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
         CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
-        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder), nodeId));
+        AnchorCreator anchorCreator = new SimpleAnchorCreator(ArResourcesManager.INSTANCE);
+        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, ArResourcesManager.INSTANCE), nodeId));
     }
 
     /**

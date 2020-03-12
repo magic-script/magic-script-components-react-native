@@ -16,14 +16,24 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
+import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.nhaarman.mockitokotlin2.*
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeEmpty
+import org.amshove.kluent.shouldEqual
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -35,7 +45,38 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class PrismTest {
 
+    private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val anchorCreator: AnchorCreator = mock()
+    private val arResourcesProvider: ArResourcesProvider = mock()
+
+    @Before
+    fun setUp() {
+        whenever(arResourcesProvider.getArScene()).thenReturn(mock())
+        whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+    }
+
+    @Test
+    fun `should be possible to put Transform node inside prism`() {
+        val prism = buildPrism(reactMapOf())
+        val child = NodeBuilder().build()
+
+        prism.addContent(child)
+
+        prism.reactChildren.size shouldEqual 1
+        prism.reactChildren.first() shouldBe child
+    }
+
+    @Test
+    fun `should not be possible to put prism inside another prism`() {
+        val prism = buildPrism(reactMapOf())
+        val child = buildPrism(reactMapOf())
+
+        prism.addContent(child)
+
+        prism.reactChildren.shouldBeEmpty()
+    }
 
     @Test
     fun `should clip child according to prism size when new child added`() {
@@ -60,10 +101,26 @@ class PrismTest {
         verify(cubeBuilder).buildRenderable(eq(Vector3(2f, 2f, 2f)), any(), any(), any())
     }
 
+
+    @Test
+    fun `should create anchor when position changed`() {
+        val prism = buildPrism(reactMapOf())
+
+        prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
+
+        verify(anchorCreator).createAnchor(eq(Vector3(2f, 1f, 0f)), eq(prism.localRotation), any())
+    }
+
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder).apply {
+        return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider).apply {
             build()
         }
     }
+
+    private fun getTransformationSystem(): TransformationSystem {
+        val displayMetrics = context.resources.displayMetrics
+        return TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
+    }
+
 
 }

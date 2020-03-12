@@ -21,8 +21,6 @@ import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
-import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
@@ -31,9 +29,10 @@ import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.scene.CameraObserver
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -43,19 +42,19 @@ import com.magicleap.magicscript.utils.read
 import kotlin.math.min
 import kotlin.math.pow
 
-class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuilder) :
-    AnchorNode(),
-    ReactNode,
-    CameraObserver {
+class Prism(
+    initProps: ReadableMap,
+    private val cubeBuilder: CubeRenderableBuilder,
+    private val anchorCreator: AnchorCreator,
+    private val arResourcesProvider: ArResourcesProvider
+) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
+    ArResourcesProvider.ArLoadedListener, ArResourcesProvider.TransformationSystemListener {
 
     companion object {
         const val PROP_SIZE = "size"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
     }
-
-    var initialized = false
-        private set
 
     var beingTouched: Boolean = false
         private set(value) {
@@ -81,15 +80,21 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var container: RotatableNode? = null
-    private var session: Session? = null
     private var content: TransformNode? = null
     private var lastCameraPosition: Vector3? = null
-    private var lastCameraState: TrackingState? = null
     private var requestedAnchorPosition: Vector3? = null
     private var lastCreatedAnchor: Anchor? = null
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var renderableCopy: Renderable? = null
     private var reactScene: ReactScene? = null
+
+    private var cubeLoadRequested = false
+
+    init {
+        arResourcesProvider.addCameraUpdatedListener(this)
+        arResourcesProvider.addArLoadedListener(this)
+        arResourcesProvider.addTransformationSystemListener(this)
+    }
 
     override val reactParent: ReactNode? = reactScene
 
@@ -129,18 +134,19 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
     }
 
     override fun build() {
+        arResourcesProvider.getTransformationSystem()?.let {
+            buildContentNode(it)
+        }
         applyProperties(properties)
     }
 
-    fun setArDependencies(
-        transformationSystem: TransformationSystem,
-        session: Session
-    ) {
-        if (initialized) {
-            return
+    private fun buildContentNode(transformationSystem: TransformationSystem) {
+        // detach old container if exists
+        container?.let {
+            if (children.contains(it)) {
+                removeChild(it)
+            }
         }
-
-        this.session = session
 
         container = RotatableNode(transformationSystem).also {
             it.setParent(this)
@@ -148,15 +154,22 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
                 it.addChild(content)
             }
         }
-        applyProperties(properties)
-        buildCube(size)
 
-        initialized = true
+        buildCube()
     }
 
-    override fun onCameraUpdated(cameraPosition: Vector3, state: TrackingState) {
-        lastCameraState = state
+    override fun onTransformationSystemChanged(transformationSystem: TransformationSystem) {
+        buildContentNode(transformationSystem)
+    }
 
+    override fun onArLoaded() {
+        if (cubeLoadRequested) {
+            buildCube()
+            cubeLoadRequested = false
+        }
+    }
+
+    override fun onCameraUpdated(position: Vector3, state: TrackingState) {
         if (state != TrackingState.TRACKING) {
             return
         }
@@ -166,12 +179,12 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
         }
 
         if (lastCameraPosition == null) {
-            lastCameraPosition = cameraPosition
+            lastCameraPosition = position
             return
         }
 
         if (beingTouched) {
-            val camToPrismDiff = Vector3.subtract(localPosition, cameraPosition)
+            val camToPrismDiff = Vector3.subtract(localPosition, position)
             val camToPrismDistance =
                 camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
 
@@ -179,10 +192,10 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
             // to infinity when moving device (ar core bug?)
             val speed = min(1 + camToPrismDistance, 2f).pow(2)
 
-            val diff = Vector3.subtract(cameraPosition, lastCameraPosition).scaled(speed)
+            val diff = Vector3.subtract(position, lastCameraPosition).scaled(speed)
             localPosition = Vector3.add(localPosition, diff)
         }
-        lastCameraPosition = cameraPosition
+        lastCameraPosition = position
     }
 
     override fun onPause() {
@@ -194,7 +207,9 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
     }
 
     override fun onDestroy() {
-        session = null
+        arResourcesProvider.removeCameraUpdatedListener(this)
+        arResourcesProvider.removeArLoadedListener(this)
+        arResourcesProvider.removeTransformationSystemListener(this)
     }
 
     override fun setAnchor(anchor: Anchor?) {
@@ -202,9 +217,14 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
         requestedAnchorPosition = null
     }
 
-    private fun buildCube(cubeSize: Vector3) {
+    private fun buildCube() {
+        if (!arResourcesProvider.isArLoaded()) {
+            cubeLoadRequested = true
+            return
+        }
+
         val color = Color(1f, 0f, 0f, 0.5f)
-        cubeBuilder.buildRenderable(cubeSize, Vector3.zero(), color, resultCallback = {
+        cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
             if (it is RenderableResult.Success) {
                 renderableCopy = it.renderable
                 if (visible) {
@@ -224,7 +244,7 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             if (size != this.size) {
                 this.size = size
-                buildCube(size)
+                buildCube()
                 clipContent()
             }
         }
@@ -245,22 +265,12 @@ class Prism(initProps: ReadableMap, private val cubeBuilder: CubeRenderableBuild
     private fun tryToAnchorAtPosition(position: Vector3) {
         requestedAnchorPosition = position
 
-        if (lastCameraState != TrackingState.TRACKING) {
-            return
-        }
-
-        session?.let {
+        anchorCreator.createAnchor(position, localRotation, result = {
             lastCreatedAnchor?.detach()
-
-            val positionArray = floatArrayOf(position.x, position.y, position.z)
-            val rotationArray =
-                floatArrayOf(localRotation.x, localRotation.y, localRotation.z, localRotation.w)
-
-            val pose = Pose(positionArray, rotationArray)
-            anchor = it.createAnchor(pose)
-            lastCreatedAnchor = anchor
+            anchor = it
+            lastCreatedAnchor = it
             requestedAnchorPosition = null
-        }
+        })
     }
 
     private fun clipContent() {

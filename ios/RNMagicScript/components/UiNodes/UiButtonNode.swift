@@ -216,7 +216,7 @@ import SceneKit
             reloadOutlineNode()
         }
 
-        outlineNode.position = getOutlinePosition()
+        outlineNode?.position = getOutlinePosition()
     }
 
     fileprivate func getButtonSize(includeOutline: Bool = true) -> CGSize {

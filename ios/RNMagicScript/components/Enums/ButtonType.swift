@@ -17,12 +17,14 @@
 import Foundation
 
 @objc public enum ButtonType: Int {
-    case icon, iconWithLabel, text, textWithIcon
+    case simple, icon, iconWithLabel, text, textWithIcon
 
     public typealias RawValue = String
 
     public var rawValue: RawValue {
         switch self {
+        case .simple:
+            return "simple"
         case .icon:
             return "icon"
         case .iconWithLabel:
@@ -36,6 +38,8 @@ import Foundation
 
     public init?(rawValue: RawValue) {
         switch rawValue {
+        case "simple":
+            self = .simple
         case "icon":
             self = .icon
         case "icon-with-label":

@@ -33,23 +33,28 @@ import SceneKit
         get { return .centerCenter }
         set { }
     }
+    private var _text: String? = nil
+    private func convertTextForButtonType(text: String?) -> String? {
+        return self.buttonType == .text || buttonType == .textWithIcon ? text?.uppercased() : text
+    }
     @objc var text: String? {
         get { return labelNode.text }
-        set { labelNode.text = newValue; reloadOutline = true; setNeedsLayout() }
+        set { _text = newValue; labelNode.text = convertTextForButtonType(text: newValue); reloadOutline = true; setNeedsLayout() }
     }
+
     @objc var textColor: UIColor = UIColor(white: 0.75, alpha: 1.0) {
         didSet { labelNode.textColor = textColor; reloadOutline = true; setNeedsLayout() }
     }
-    @objc var iconColor: UIColor = UIColor.white
+    @objc var iconColor: UIColor = UIColor.white {
+         didSet { iconNode.geometry?.firstMaterial?.multiply.contents = iconColor }
+    }
     @objc var textSize: CGFloat = 0 {
         didSet { reloadOutline = true; updateLabelTextSizeBasedOnHeight(); setNeedsLayout() }
     }
     @objc var iconSize: CGFloat = 0.1
     @objc var iconType: String = "" {
         didSet {
-            iconNode.removeFromParentNode()
-            iconNode = NodesFactory.createPlaneNode(width: 1, height: 1, image: SystemIcon(iconType).getImage())
-            if buttonType == .iconWithLabel || buttonType == .textWithIcon { contentNode.addChildNode(iconNode) }
+            iconNode.geometry?.firstMaterial?.diffuse.contents = SystemIcon(iconType).getImage()
             setNeedsLayout()
         }
     }
@@ -60,11 +65,26 @@ import SceneKit
         }
     }
 
-    @objc var buttonType: ButtonType = .text {
+    @objc var buttonType: ButtonType = .simple {
         didSet {
-            labelNode.isHidden = buttonType == .iconWithLabel ? true : false
-            if buttonType == .iconWithLabel || buttonType == .textWithIcon { contentNode.addChildNode(labelNode); contentNode.addChildNode(iconNode) }
-            if buttonType == .icon { contentNode.addChildNode(iconNode); labelNode.removeFromParentNode() }
+            switch buttonType {
+            case .simple:
+                labelNode.isHidden = false
+                iconNode.isHidden = true
+            case .iconWithLabel:
+                labelNode.isHidden = true
+                iconNode.isHidden = false
+            case .textWithIcon:
+                labelNode.isHidden = false
+                iconNode.isHidden = false
+            case .icon:
+                labelNode.isHidden = true
+                iconNode.isHidden = false
+            case .text:
+                labelNode.isHidden = false
+                iconNode.isHidden = true
+            }
+            text = convertTextForButtonType(text: _text)
             setNeedsLayout()
         }
     }
@@ -105,10 +125,11 @@ import SceneKit
         labelNode = LabelNode()
         labelNode.textAlignment = .center
         labelNode.defaultTextSize = UiButtonNode.defaultTextSize
-        labelNode.isHidden = buttonType == .iconWithLabel ? true : false
-        contentNode.addChildNode(labelNode)
 
         iconNode = NodesFactory.createPlaneNode(width: 1, height: 1)
+
+        contentNode.addChildNode(labelNode)
+        contentNode.addChildNode(iconNode)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -283,7 +304,7 @@ import SceneKit
         let thickness: CGFloat = 0.05 * min(size.width, size.height)
         guard size.width > 0 && size.height > 0 && thickness > 0 else { return }
         outlineNode = NodesFactory.createOutlineNode(width: size.width, height: size.height, cornerRadius: radius, thickness: thickness)
-        if (buttonType == .iconWithLabel) {
+        if (buttonType == .iconWithLabel || buttonType == .textWithIcon || buttonType == .text) {
             outlineNode.isHidden = true
         }
         contentNode.addChildNode(outlineNode)
@@ -369,16 +390,26 @@ extension UiButtonNode: TapSimulating, CAAnimationDelegate {
     }
 
     public func animationDidStart(_ anim: CAAnimation) {
-        if (buttonType == .iconWithLabel) {
+        switch buttonType {
+        case .iconWithLabel:
             labelNode.isHidden = false
             outlineNode.isHidden = false
+        case .textWithIcon, .text:
+            outlineNode.isHidden = false
+        default:
+            print("")
         }
     }
 
     public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if (buttonType == .iconWithLabel) {
+        switch buttonType {
+        case .iconWithLabel:
             labelNode.isHidden = true
             outlineNode.isHidden = true
+        case .textWithIcon, .text:
+            outlineNode.isHidden = true
+        default:
+            print("")
         }
     }
 }

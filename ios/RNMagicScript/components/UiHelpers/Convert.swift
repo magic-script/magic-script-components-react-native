@@ -228,4 +228,8 @@ class Convert {
         return result
     }
 
+    static func toButtonType(_ value: Any?) -> ButtonType? {
+        guard let type = value as? String else { return nil }
+        return ButtonType(rawValue: type)
+    }
 }

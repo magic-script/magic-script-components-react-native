@@ -22,8 +22,8 @@ import android.os.BaseBundle
 import android.os.Bundle
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
@@ -69,6 +69,7 @@ open class UiTimePickerNode(
                 timeFormat.format(hourOfDay, minute),
                 TextView.BufferType.EDITABLE
             )
+            showing = false
         }
 
     protected val onTimeChangeListener: (Int, Int) -> Unit = { hourOfDay: Int, minute: Int ->
@@ -90,21 +91,25 @@ open class UiTimePickerNode(
     }
 
     override fun onViewClick() {
-        val initTime = when {
-            time != null -> time!!
-            defaultTime != null -> defaultTime!!
-            else -> Date()
-        }
+        if (!showing) {
+            showing = true
+            val initTime = when {
+                time != null -> time!!
+                defaultTime != null -> defaultTime!!
+                else -> Date()
+            }
 
-        dialogProvider.provideTimePickerDialog(
-            provideActivityContext(),
-            onTimeSetListener,
-            timeFormat.is24h
-        ).apply {
-            time = initTime
-            onTimeChange = onTimeChangeListener
-            updateTime(initTime.getHour(), initTime.getMinute())
-        }.show()
+            dialogProvider.provideTimePickerDialog(
+                provideActivityContext(),
+                onTimeSetListener,
+                timeFormat.is24h
+            ).apply {
+                time = initTime
+                onTimeChange = onTimeChangeListener
+                updateTime(initTime.getHour(), initTime.getMinute())
+                setOnDismissListener { showing = false }
+            }.show()
+        }
     }
 
     private fun applyTimeFormat(props: Bundle) {

@@ -351,7 +351,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            ColorPickerDialog dialog = new ColorPickerDialog(context);
+            ColorPickerDialog dialog = new ColorPickerDialog(context.getCurrentActivity());
             UiColorPickerNode node = new UiColorPickerNode(props,
                                                            context,
                                                            viewRenderableLoader,

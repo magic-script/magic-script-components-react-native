@@ -207,9 +207,9 @@ import SceneKit
             case .top:
                 return CGPoint(x: -size.width + 0.5 * buttonSize.width, y: -labelSize.height)
             case .left:
-                return CGPoint(x: -labelSize.width - 0.5 * getOutlineNodeSize().width, y: -labelSize.height)
+                return CGPoint(x: -size.width + 0.5 * getOutlineNodeSize().width, y: -0.5 * buttonSize.height)
             case .right:
-                return CGPoint(x: -0.5 * getOutlineNodeSize().width, y: -labelSize.height)
+                return CGPoint(x: -0.5 * getOutlineNodeSize().width, y: -0.5 * buttonSize.height)
             }
         default:
             return CGPoint(x: -0.5 * buttonSize.width, y: -0.5 * size.height)
@@ -220,8 +220,7 @@ import SceneKit
     @objc override func updateLayout() {
         labelNode.reload()
         _ = getSize()
-        let labelSize = labelNode.getSize()
-        let iconSize = getIconSize(height: height > 0 ? height : labelSize.height * 2.1)
+        let iconSize = getIconSize()
         labelNode.position = getLabelPosition()
 
         if let iconPlane = iconNode.geometry as? SCNPlane {
@@ -241,7 +240,7 @@ import SceneKit
 
     fileprivate func getButtonSize(includeOutline: Bool = true) -> CGSize {
         let labelSize = labelNode.getSize()
-        let iconSize = getIconSize(height: height > 0 ? height : labelSize.height * 2.1)
+        let iconSize = getIconSize()
 
         let contentHeight = height > 0 ? height : max(labelSize.height, iconSize.height)
         let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * contentHeight : 0
@@ -262,25 +261,24 @@ import SceneKit
                 return CGSize(width: contentWidth, height: contentHeight)
             }
         case .icon:
-            if includeOutline {
-                let buttonToTextHeightMultiplier: CGFloat = 1.6
-                return CGSize(width: iconSize.width + buttonToTextHeightMultiplier * iconSize.width, height: buttonToTextHeightMultiplier * getOutlineNodeSize().height)
-            }
-            return CGSize(width: iconSize.width, height: iconSize.height)
+                return CGSize(width: getOutlineNodeSize().width, height: getOutlineNodeSize().height)
         default:
             if includeOutline {
                 let buttonToTextHeightMultiplier: CGFloat = 1.6
                 return CGSize(width: contentWidth + buttonToTextHeightMultiplier * contentHeight, height: buttonToTextHeightMultiplier * contentHeight)
             }
-
             return CGSize(width: contentWidth, height: contentHeight)
         }
+    }
+
+    func getIconSize() -> CGSize {
+        getIconSize(height: height > 0 ? height : labelNode.getSize().height * 2.1)
     }
 
     fileprivate func getIconSize(height: CGFloat) -> CGSize {
         switch buttonType {
         case .iconWithLabel, .textWithIcon, .icon:
-            return 0.55 * CGSize(width: height, height: height)
+            return 0.65 * CGSize(width: height, height: height)
         default:
             return CGSize.zero
         }
@@ -325,7 +323,7 @@ import SceneKit
             } else if labelSize.height > 0 {
                 outlineSize = getIconSize(height: labelSize.height * 2.1) * 1.6
             } else {
-                outlineSize = CGSize(width: 0.25, height: 0.25)
+                outlineSize = CGSize(width: 0.15, height: 0.15)
             }
         default:
             outlineSize = getSize()
@@ -336,7 +334,7 @@ import SceneKit
     private func getLabelPosition() -> SCNVector3 {
         let buttonSize = getButtonSize(includeOutline: false)
         let labelSize = labelNode.getSize()
-        let iconSize = getIconSize(height: height > 0 ? height : labelSize.height * 2.1)
+        let iconSize = getIconSize()
         let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * buttonSize.height : 0
 
         switch buttonType {
@@ -344,9 +342,9 @@ import SceneKit
             let outlineSize = getOutlineNodeSize()
             switch labelSide {
             case .right:
-                return SCNVector3(0.5 * outlineSize.width + 0.5 * labelSize.width + gap, 0, 0)
+                return SCNVector3(0.5 * (outlineSize.width + labelSize.width) + gap, 0, 0)
             case .left:
-                return SCNVector3(-0.5 * outlineSize.width - 0.5 * labelSize.width - gap, 0, 0)
+                return SCNVector3(-0.5 * (outlineSize.width + labelSize.width) - gap, 0, 0)
             case .top:
                 return SCNVector3(0, 0.5 * (outlineSize.height + labelSize.height) + gap, 0)
             case .bottom:
@@ -361,8 +359,7 @@ import SceneKit
 
     private func getIconPosition() -> SCNVector3 {
         let buttonSize = getButtonSize(includeOutline: false)
-        let labelSize = labelNode.getSize()
-        let iconSize = getIconSize(height: height > 0 ? height : labelSize.height * 2.1)
+        let iconSize = getIconSize()
 
         switch buttonType {
         case .iconWithLabel, .icon:

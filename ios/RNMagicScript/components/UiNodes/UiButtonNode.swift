@@ -205,14 +205,14 @@ import SceneKit
             case .bottom:
                 return CGPoint(x: -size.width + 0.5 * buttonSize.width, y: 0.5 * getOutlineNodeSize().height - buttonSize.height)
             case .top:
-                return CGPoint(x: -size.width + 0.5 * buttonSize.width, y: -labelSize.height)
+                return CGPoint(x: -size.width + 0.5 * buttonSize.width, y: -0.5 * getOutlineNodeSize().height)
             case .left:
                 return CGPoint(x: -size.width + 0.5 * getOutlineNodeSize().width, y: -0.5 * buttonSize.height)
             case .right:
                 return CGPoint(x: -0.5 * getOutlineNodeSize().width, y: -0.5 * buttonSize.height)
             }
         default:
-            return CGPoint(x: -0.5 * buttonSize.width, y: -0.5 * size.height)
+            return CGPoint(x: -0.5 * size.width, y: -0.5 * size.height)
         }
 
     }
@@ -250,8 +250,8 @@ import SceneKit
         case .iconWithLabel:
             switch labelSide {
             case .top, .bottom:
-                let gap: CGFloat = (labelSize.width > 0 && iconSize.width > 0) ? 0.15 * height > 0 ? height : max(labelSize.height, iconSize.height) : 0
-                let contentHeight = height > 0 ? height : getOutlineNodeSize().height + labelSize.height + gap
+                let gap: CGFloat = (labelSize.height > 0 && iconSize.height > 0) ? 0.15 * height > 0 ? height : max(labelSize.height, iconSize.height) : 0
+                let contentHeight = height > 0 ? height : getOutlineNodeSize().height + labelSize.height + 0.5 * gap
                 let contentWidth = width > 0 ? width : max(labelSize.width, getOutlineNodeSize().width)
                 return CGSize(width: contentWidth, height: contentHeight)
             default:

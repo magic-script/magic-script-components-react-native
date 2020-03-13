@@ -22,9 +22,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
-import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
+import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.logMessage
@@ -116,14 +116,22 @@ class VideoNode(
     override fun onPause() {
         super.onPause()
         if (videoPlayer.isPlaying) {
-            videoPlayer.pause()
+            try {
+                videoPlayer.pause()
+            } catch (exception: IllegalStateException) {
+                logMessage("onPause cannot pause video: $exception", warn = true)
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         if (lastUserAction == ACTION_START) {
-            videoPlayer.start()
+            try {
+                videoPlayer.start()
+            } catch (exception: IllegalStateException) {
+                logMessage("onResume cannot resume video: $exception", warn = true)
+            }
         }
     }
 

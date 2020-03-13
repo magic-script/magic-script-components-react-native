@@ -18,7 +18,6 @@ package com.magicleap.magicscript.ar
 
 import android.os.Bundle
 import android.view.View
-import com.google.ar.core.Anchor
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
@@ -27,7 +26,6 @@ import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
-    private var lastTapAnchor: Anchor? = null
     private var lastTimestamp: Long = 0L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,13 +58,8 @@ class CustomArFragment : ArFragment() {
         }
 
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-            lastTapAnchor?.detach()
-
             ARPlaneDetectorBridge.INSTANCE.onPlaneTapped(plane, hitResult)
-
-            val anchor = hitResult.createAnchor()
-            ArResourcesManager.onPlaneTapped(anchor)
-            lastTapAnchor = anchor
+            ArResourcesManager.onPlaneTapped(hitResult)
         }
 
         // Hide the instructions

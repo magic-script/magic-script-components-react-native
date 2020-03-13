@@ -20,6 +20,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
+import com.google.ar.core.HitResult
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.Prism
@@ -32,6 +33,7 @@ class ReactScene(
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var arScene: Scene? = null
     private val prisms = mutableListOf<Prism>()
+    private var lastTapAnchor: Anchor? = null
 
     init {
         this.arScene = arResourcesProvider.getArScene()
@@ -57,7 +59,7 @@ class ReactScene(
         this.arScene = arScene
 
         prisms.forEach {
-            it.anchor = null
+            // detach from old scene
             it.setParent(null)
         }
 
@@ -91,9 +93,13 @@ class ReactScene(
         }
     }
 
-    override fun onPlaneTap(anchor: Anchor) {
-        if (arResourcesProvider.isPlaneDetectionEnabled()) {
+    override fun onPlaneTap(hitResult: HitResult) {
+        if (arResourcesProvider.isPlaneDetectionEnabled() && prisms.isNotEmpty()) {
+            // it's important to release unused anchors
+            lastTapAnchor?.detach()
+            val anchor = hitResult.createAnchor()
             prisms.firstOrNull()?.anchor = anchor
+            lastTapAnchor = anchor
         }
     }
 

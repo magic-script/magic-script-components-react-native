@@ -266,6 +266,7 @@ class Prism(
         requestedAnchorPosition = position
 
         anchorCreator.createAnchor(position, localRotation, result = {
+            // it's important to release unused anchors
             lastCreatedAnchor?.detach()
             anchor = it
             lastCreatedAnchor = it

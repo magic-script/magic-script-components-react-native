@@ -16,7 +16,7 @@
 
 package com.magicleap.magicscript.ar
 
-import com.google.ar.core.Anchor
+import com.google.ar.core.HitResult
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
@@ -60,8 +60,8 @@ object ArResourcesManager : ArResourcesProvider() {
         notifyCameraUpdated(position, trackingState)
     }
 
-    fun onPlaneTapped(anchor: Anchor) {
-        notifyPlaneTapped(anchor)
+    fun onPlaneTapped(hitResult: HitResult) {
+        notifyPlaneTapped(hitResult)
     }
 
     override fun getSession(): Session? {

@@ -16,7 +16,7 @@
 
 package com.magicleap.magicscript.ar
 
-import com.google.ar.core.Anchor
+import com.google.ar.core.HitResult
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
@@ -132,8 +132,8 @@ abstract class ArResourcesProvider {
         transformationSystemListeners.forEach { it.onTransformationSystemChanged(system) }
     }
 
-    protected fun notifyPlaneTapped(anchor: Anchor) {
-        planeTapListeners.forEach { it.onPlaneTap(anchor) }
+    protected fun notifyPlaneTapped(hitResult: HitResult) {
+        planeTapListeners.forEach { it.onPlaneTap(hitResult) }
     }
 
     protected fun notifyArLoaded() {
@@ -153,7 +153,7 @@ abstract class ArResourcesProvider {
     }
 
     interface PlaneTapListener {
-        fun onPlaneTap(anchor: Anchor)
+        fun onPlaneTap(hitResult: HitResult)
     }
 
     interface ArLoadedListener {

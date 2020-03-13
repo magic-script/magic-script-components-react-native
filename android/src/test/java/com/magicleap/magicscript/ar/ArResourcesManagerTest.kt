@@ -18,7 +18,7 @@ package com.magicleap.magicscript.ar
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.google.ar.core.Anchor
+import com.google.ar.core.HitResult
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
@@ -175,32 +175,32 @@ class ArResourcesManagerTest {
 
     @Test
     fun `should notify listener when plane is tapped`() {
-        var listenerAnchor: Anchor? = null
+        var listenerHitResult: HitResult? = null
         manager.addPlaneTapListener(object : ArResourcesProvider.PlaneTapListener {
-            override fun onPlaneTap(anchor: Anchor) {
-                listenerAnchor = anchor
+            override fun onPlaneTap(hitResult: HitResult) {
+                listenerHitResult = hitResult
             }
         })
-        val tapAnchor = spy<Anchor>()
+        val tapResult = spy<HitResult>()
 
-        ArResourcesManager.onPlaneTapped(tapAnchor)
+        ArResourcesManager.onPlaneTapped(tapResult)
 
-        listenerAnchor shouldEqual tapAnchor
+        listenerHitResult shouldEqual tapResult
     }
 
     @Test
     fun `should not notify removed listener when plane is tapped`() {
         var notified = false
         val listener = object : ArResourcesProvider.PlaneTapListener {
-            override fun onPlaneTap(anchor: Anchor) {
+            override fun onPlaneTap(hitResult: HitResult) {
                 notified = true
             }
         }
         manager.addPlaneTapListener(listener)
         manager.removePlaneTapListener(listener)
-        val tapAnchor = spy<Anchor>()
+        val hitResult = spy<HitResult>()
 
-        ArResourcesManager.onPlaneTapped(tapAnchor)
+        ArResourcesManager.onPlaneTapped(hitResult)
 
         notified shouldBe false
     }

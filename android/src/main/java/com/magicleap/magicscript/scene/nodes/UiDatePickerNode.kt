@@ -76,6 +76,7 @@ open class UiDatePickerNode(
                 dateFormat.format(year, monthOfYear, dayOfMonth),
                 TextView.BufferType.EDITABLE
             )
+            showing = false
         }
 
     private val onDateChangedListener: (DatePicker, Int, Int, Int) -> Unit =
@@ -100,16 +101,19 @@ open class UiDatePickerNode(
     }
 
     override fun onViewClick() {
-        val initDate = when {
-            date != null -> date!!
-            defaultDate != null -> defaultDate!!
-            else -> Date()
-        }
+        if (!showing) {
+            showing = true
+            val initDate = when {
+                date != null -> date!!
+                defaultDate != null -> defaultDate!!
+                else -> Date()
+            }
 
-        createDatePickerDialog().apply {
-            updateMinMaxYear(minYear, maxYear)
-            updateDate(initDate)
-        }.show()
+            createDatePickerDialog().apply {
+                updateMinMaxYear(minYear, maxYear)
+                updateDate(initDate)
+            }.show()
+        }
     }
 
     private fun createDatePickerDialog(): DatePickerDialog =
@@ -119,6 +123,7 @@ open class UiDatePickerNode(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     datePicker.setOnDateChangedListener(onDateChangedListener)
                 }
+                setOnDismissListener { showing = false }
             }
 
     private fun applyDateFormat(props: Bundle) {

@@ -196,7 +196,6 @@ import SceneKit
 
     fileprivate func getOffset() -> CGPoint {
         let size = getSize()
-        let labelSize = labelNode.getSize()
         let buttonSize = getButtonSize()
 
         switch buttonType {

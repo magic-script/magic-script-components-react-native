@@ -28,12 +28,16 @@ interface VideoPlayer {
 
     val isReady: Boolean
 
+    @Throws(Exception::class)
     fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit)
 
+    @Throws(IllegalStateException::class)
     fun start()
 
+    @Throws(IllegalStateException::class)
     fun pause()
 
+    @Throws(IllegalStateException::class)
     fun stop()
 
     fun release()

@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,10 +39,88 @@ class CustomSliderTest {
     }
 
     @Test
-    fun shouldRedrawAfterSettingValue() {
+    fun `should redraw after setting value`() {
         slider.value = 0.2F
 
         verify(slider).invalidate()
+    }
+
+    @Test
+    fun `should redraw after setting min`() {
+        slider.min = 2F
+
+        verify(slider).invalidate()
+    }
+
+    @Test
+    fun `should redraw after setting max`() {
+        slider.max = 4F
+
+        verify(slider).invalidate()
+    }
+
+
+    @Test
+    fun `value should be coerced to min if lower than min`() {
+        slider.min = 5F
+        slider.max = 10F
+
+        slider.value = 1f
+
+        slider.value shouldEqual 5f
+    }
+
+    @Test
+    fun `value should be coerced to max if bigger than max`() {
+        slider.min = 5F
+        slider.max = 10F
+
+        slider.value = 12f
+
+        slider.value shouldEqual 10f
+    }
+
+    @Test
+    fun `should be possible to assign value before min and max`() {
+        slider.value = 7f
+        slider.min = 5F
+        slider.max = 10F
+
+        slider.value shouldEqual 7f
+    }
+
+    @Test
+    fun `should be possible to assign min before max`() {
+        slider.min = 5F
+        slider.max = 10F
+
+        slider.min shouldEqual 5f
+        slider.max shouldEqual 10f
+    }
+
+    @Test
+    fun `should be possible to assign max before min`() {
+        slider.max = 10F
+        slider.min = 5F
+
+        slider.min shouldEqual 5f
+        slider.max shouldEqual 10f
+    }
+
+    @Test
+    fun `min should be coerced to max value if bigger than max`() {
+        slider.max = 10F
+        slider.min = 50F
+
+        slider.min shouldEqual 10f
+    }
+
+    @Test
+    fun `max should be coerced to min value if lower than min`() {
+        slider.min = 50F
+        slider.max = 10F
+
+        slider.max shouldEqual 50f
     }
 
 }

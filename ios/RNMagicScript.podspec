@@ -5,8 +5,7 @@ Pod::Spec.new do |s|
   s.summary      = "RNMagicScript"
   s.description  = "Magic script components for React Native."
   s.homepage     = "https://www.magicscript.org/"
-  s.license      = "MIT"
-  # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
+  s.license    = { :type => "Apache License, Version 2.0", :file => "../LICENSE" }
   s.author       = { "author" => "author@domain.cn" }
   s.platform     = :ios, "12.0"
   s.source       = { :git => "git@github.com:magic-script/magic-script-components-ios.git", :tag => "master" }
@@ -16,11 +15,9 @@ Pod::Spec.new do |s|
   }
   s.requires_arc = true
 
-  s.dependency "React"
-  s.dependency "GLTFSceneKit"
-  s.dependency "GrowingTextView"
-  s.dependency "ChromaColorPicker"
+  s.dependency 'React', '0.60.5'
+  s.dependency 'GLTFSceneKit', '0.1.3'
+  s.dependency 'GrowingTextView', '0.7.2'
+  s.dependency 'ChromaColorPicker', '1.8.0'
 
 end
-
-  

@@ -4,7 +4,7 @@ target 'RNMagicScriptHostApplication' do
   use_frameworks!
 
   pod 'GLTFSceneKit', '0.1.3'
-  pod 'GrowingTextView', '0.7.1'
+  pod 'GrowingTextView', '0.7.2'
   pod 'ChromaColorPicker', '1.8.0'
 
   target 'RNMagicScriptTests' do

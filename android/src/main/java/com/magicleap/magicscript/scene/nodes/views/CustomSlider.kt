@@ -35,15 +35,20 @@ class CustomSlider @JvmOverloads constructor(
 
     var onScrollChangeListener: ((on: Float) -> Unit)? = null
 
+    private var maxSpecified = false
+    private var minSpecified = false
+
     var min = 0F
         set(value) {
-            field = value
+            field = if (maxSpecified && value > max) max else value
+            minSpecified = true
             invalidate()
         }
 
     var max = 1F
         set(value) {
-            field = value
+            field = if (minSpecified && value < min) min else value
+            maxSpecified = true
             invalidate()
         }
 

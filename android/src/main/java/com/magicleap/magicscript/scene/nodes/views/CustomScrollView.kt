@@ -65,7 +65,7 @@ class CustomScrollView @JvmOverloads constructor(
             updateScrollbars()
         }
 
-    var onScrollChangeListener: ((position: Vector2) -> Unit)? = null
+    var onUserScrollListener: ((position: Vector2) -> Unit)? = null
 
     var scrollDirection = SCROLL_DIRECTION_UNSPECIFIED
 
@@ -103,14 +103,11 @@ class CustomScrollView @JvmOverloads constructor(
      * in the range of [MIN_POSITION] to [MAX_POSITION]
      */
     var scrollValue = Vector2()
-        set(value) {
-            val normalizedPos = value.coerceIn(MIN_POSITION, MAX_POSITION)
-            field = normalizedPos
-            hBar?.thumbPosition = normalizedPos.x
-            vBar?.thumbPosition = normalizedPos.y
-            onScrollChangeListener?.invoke(normalizedPos)
-            invalidate()
-        }
+        private set
+
+    fun updateScrollValue(value: Vector2) {
+        updateScrollValue(value, notifyListener = false)
+    }
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()
@@ -183,7 +180,7 @@ class CustomScrollView @JvmOverloads constructor(
                 SCROLL_DIRECTION_HORIZONTAL -> lastMove.y = 0F
             }
 
-            scrollValue += lastMove
+            updateScrollValue(scrollValue + lastMove, notifyListener = true)
             previousTouch = touch
             return true
         }
@@ -210,7 +207,7 @@ class CustomScrollView @JvmOverloads constructor(
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
         val newPos = animation.animatedValue as PointF
-        scrollValue = Vector2(newPos.x, newPos.y)
+        updateScrollValue(Vector2(newPos.x, newPos.y), notifyListener = true)
     }
 
     override fun onAttachedToWindow() {
@@ -234,6 +231,18 @@ class CustomScrollView @JvmOverloads constructor(
         // This should come after stopping animation, otherwise an invalidate message remains in the
         // queue, which can prevent the entire view hierarchy from being GC'ed during a rotation
         super.onDetachedFromWindow()
+    }
+
+    private fun updateScrollValue(value: Vector2, notifyListener: Boolean) {
+        val normalizedPos = value.coerceIn(MIN_POSITION, MAX_POSITION)
+        scrollValue = normalizedPos
+        hBar?.thumbPosition = normalizedPos.x
+        vBar?.thumbPosition = normalizedPos.y
+        invalidate()
+
+        if (notifyListener) {
+            onUserScrollListener?.invoke(scrollValue)
+        }
     }
 
     private fun updateScrollbars() {

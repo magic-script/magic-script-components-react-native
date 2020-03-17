@@ -70,7 +70,7 @@ class DropdownItemsListNode(
         listView.adapter = itemsAdapter
         listView.setOnItemClickListener { _, _, position, _ ->
             val item = items[position]
-            handleSelectionChangeRequest(item, !item.selected)
+            handleSelectionChangeRequest(item, !item.selected, notifyListener = true)
         }
     }
 
@@ -130,7 +130,11 @@ class DropdownItemsListNode(
         return adapter
     }
 
-    private fun handleSelectionChangeRequest(item: UiDropdownListItemNode, select: Boolean) {
+    private fun handleSelectionChangeRequest(
+        item: UiDropdownListItemNode,
+        select: Boolean,
+        notifyListener: Boolean = false
+    ) {
         var selectionChanged = false
         if (multiSelect) {
             selectionChanged = tryMultiSelectChange(item, select)
@@ -143,10 +147,12 @@ class DropdownItemsListNode(
         if (selectionChanged) {
             itemsAdapter.notifyDataSetChanged()
             (view as ListView).invalidateViews()
-            val selectedItems = items.filter { it.selected }
-            onSelectionChangedListener?.invoke(selectedItems)
-        }
 
+            if (notifyListener) {
+                val selectedItems = items.filter { it.selected }
+                onSelectionChangedListener?.invoke(selectedItems)
+            }
+        }
     }
 
     private fun trySingleSelectChange(item: UiDropdownListItemNode, select: Boolean): Boolean {

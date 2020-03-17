@@ -25,7 +25,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
@@ -223,7 +222,7 @@ open class UiListViewNode(
 
             if (maxTravel > 0) {
                 val positionY = sumHeightBeforeItem / maxTravel
-                (view as CustomScrollView).scrollValue = Vector2(0f, positionY)
+                (view as CustomScrollView).updateScrollValue(Vector2(0f, positionY))
             }
         } else {
             val sumWidthBeforeItem = calculateItemsWidth(items, itemIndex)
@@ -232,7 +231,7 @@ open class UiListViewNode(
 
             if (maxTravel > 0) {
                 val positionX = sumWidthBeforeItem / maxTravel
-                (view as CustomScrollView).scrollValue = Vector2(positionX, 0f)
+                (view as CustomScrollView).updateScrollValue(Vector2(positionX, 0f))
             }
         }
     }

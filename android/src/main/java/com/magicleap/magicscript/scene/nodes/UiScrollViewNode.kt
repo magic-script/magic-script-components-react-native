@@ -133,7 +133,7 @@ open class UiScrollViewNode(
         hBarNode?.apply { setupScrollBar(this) }
 
         val scrollView = view as CustomScrollView
-        scrollView.onScrollChangeListener = { position: Vector2 ->
+        scrollView.onUserScrollListener = { position: Vector2 ->
             update(position)
             val scrollDirection = properties.read<String>(PROP_SCROLL_DIRECTION)
             if (scrollDirection == SCROLL_DIRECTION_VERTICAL) {
@@ -237,6 +237,10 @@ open class UiScrollViewNode(
             useAutoThumbSize = scrollBarNode.thumbSize == UiScrollBarNode.THUMB_SIZE_AUTO.toFloat()
             thumbSize = scrollBarNode.thumbSize
             setThickness(thicknessPx)
+            post {
+                // at this moment width and height is known, so we can adjust the content clipping
+                applyContentClipping()
+            }
         }
     }
 
@@ -296,6 +300,7 @@ open class UiScrollViewNode(
                 content.localPosition = position
                 applyContentClipping()
             }
+
         }
     }
 
@@ -378,14 +383,14 @@ open class UiScrollViewNode(
         val clampedValue = scrollValue.coerceIn(0.0, 1.0).toFloat()
         val scrollView = view as CustomScrollView
 
-        when (properties.read<String>(PROP_SCROLL_DIRECTION)) {
-            SCROLL_DIRECTION_VERTICAL -> {
-                scrollView.scrollValue = Vector2(0f, clampedValue)
-            }
-            SCROLL_DIRECTION_HORIZONTAL -> {
-                scrollView.scrollValue = Vector2(clampedValue, 0f)
-            }
+        val scrollVector = when (properties.read<String>(PROP_SCROLL_DIRECTION)) {
+            SCROLL_DIRECTION_VERTICAL -> Vector2(0f, clampedValue)
+            SCROLL_DIRECTION_HORIZONTAL -> Vector2(clampedValue, 0f)
+            else -> Vector2()
         }
+
+        scrollView.updateScrollValue(scrollVector)
+        update(scrollVector)
     }
 
     private fun setScrollOffset(props: Bundle) {

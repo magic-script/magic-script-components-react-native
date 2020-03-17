@@ -28,6 +28,7 @@ import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
@@ -109,6 +110,17 @@ class PrismTest {
         prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
 
         verify(anchorCreator).createAnchor(eq(Vector3(2f, 1f, 0f)), eq(prism.localRotation), any())
+    }
+
+    @Test
+    fun `should return scene as react parent when added to scene`() {
+        val scene = ReactScene(reactMapOf(), arResourcesProvider)
+        scene.build()
+        val prism = buildPrism(reactMapOf())
+
+        scene.addContent(prism)
+
+        prism.reactParent shouldBe scene
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {

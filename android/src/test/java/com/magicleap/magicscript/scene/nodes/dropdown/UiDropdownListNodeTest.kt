@@ -31,7 +31,10 @@ import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import org.amshove.kluent.*
+import org.amshove.kluent.itReturns
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -106,20 +109,15 @@ class UiDropdownListNodeTest {
     }
 
     @Test
-    fun `should notify listener about all selected items when multi select active`() {
-        tested.update(reactMapOf(UiDropdownListNode.PROP_MULTI_SELECT, true))
-        val item3 = buildDropdownItem("312", selected = true)
-        tested.addContent(item3)
-        var selectedItemsList = listOf<UiDropdownListItemNode>()
+    fun `should not notify listener when selection changed by updating property`() {
+        var notified = false
         tested.onSelectionChangedListener = { selectedItems ->
-            selectedItemsList = selectedItems
+            notified = true
         }
 
-        item2.update(reactMapOf().selected(true))
+        item1.update(reactMapOf().selected(true))
 
-        selectedItemsList.size shouldEqual 2
-        selectedItemsList shouldContain item2
-        selectedItemsList shouldContain item3
+        notified shouldBe false
     }
 
     @Test

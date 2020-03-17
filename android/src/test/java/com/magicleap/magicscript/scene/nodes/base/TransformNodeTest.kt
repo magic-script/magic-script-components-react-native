@@ -18,8 +18,7 @@ package com.magicleap.magicscript.scene.nodes.base
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.NodeBuilder
-import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import org.amshove.kluent.shouldBe
@@ -149,7 +148,7 @@ class TransformNodeTest {
 
         child.reactParent shouldEqual parent
     }
-    
+
     @Test
     fun `renderableRequested should be true after attaching renderable`() {
         val node = NodeBuilder().build()
@@ -218,5 +217,109 @@ class TransformNodeTest {
 
         node.isVisible shouldBe true
     }
+
+    @Test
+    fun `should call the transform changed listener when assigned new position`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withPosition(2.0, 1.5, -1.0)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localPosition(Vector3(3f, 4f, 5f)))
+
+        listenerCalled shouldBe true
+    }
+
+
+    @Test
+    fun `should not call the transform changed listener when assigned same position`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withPosition(2.0, 1.5, -1.0)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localPosition(Vector3(2f, 1.5f, -1f)))
+
+        listenerCalled shouldBe false
+    }
+
+    @Test
+    fun `should call the transform changed listener when assigned new scale`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withScale(2.05, 1.33, 1.0)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localScale(3.0, 3.0, 1.0))
+
+        listenerCalled shouldBe true
+    }
+
+    @Test
+    fun `should not call the transform changed listener when assigned same scale`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withScale(2.05, 1.33, 1.0)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localScale(2.05, 1.33, 1.0))
+
+        listenerCalled shouldBe false
+    }
+
+    @Test
+    fun `should call the transform changed listener when assigned new rotation`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withRotation(0.0, 0.9999383, 0.0, 0.0111104)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localRotation(0.04, 0.0, 0.0, 0.9))
+
+        listenerCalled shouldBe true
+    }
+
+    @Test
+    fun `should not call the transform changed listener when assigned same rotation`() {
+        var listenerCalled = false
+        val node = NodeBuilder()
+            .withRotation(0.0, 0.9999383, 0.0, 0.0111104)
+            .build()
+        node.addOnLocalTransformChangedListener(object : TransformAwareNode.LocalTransformListener {
+            override fun onTransformed() {
+                listenerCalled = true
+            }
+        })
+
+        node.update(reactMapOf().localRotation(0.0, 0.9999383, 0.0, 0.0111104))
+
+        listenerCalled shouldBe false
+    }
+
 
 }

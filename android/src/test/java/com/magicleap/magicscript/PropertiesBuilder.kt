@@ -49,6 +49,11 @@ fun JavaOnlyMap.localScale(x: Double, y: Double, z: Double): JavaOnlyMap {
     return this
 }
 
+fun JavaOnlyMap.localRotation(x: Double, y: Double, z: Double, w: Double): JavaOnlyMap {
+    putArray("localRotation", JavaOnlyArray.of(x, y, z, w))
+    return this
+}
+
 fun JavaOnlyMap.width(width: Double): JavaOnlyMap {
     putDouble("width", width)
     return this

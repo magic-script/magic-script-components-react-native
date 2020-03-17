@@ -29,16 +29,25 @@ open class TransformAwareNode : Node() {
     }
 
     override fun setLocalPosition(position: Vector3) {
+        if (position == localPosition) {
+            return
+        }
         super.setLocalPosition(position)
         onLocalTransformChanged()
     }
 
     override fun setLocalScale(scale: Vector3) {
+        if (scale == localScale) {
+            return
+        }
         super.setLocalScale(scale)
         onLocalTransformChanged()
     }
 
     override fun setLocalRotation(rotation: Quaternion) {
+        if (rotation == localRotation) {
+            return
+        }
         super.setLocalRotation(rotation)
         onLocalTransformChanged()
     }

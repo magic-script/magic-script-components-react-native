@@ -96,7 +96,7 @@ class Prism(
         arResourcesProvider.addTransformationSystemListener(this)
     }
 
-    override val reactParent: ReactNode? = reactScene
+    override val reactParent: ReactNode? get() = reactScene
 
     override val reactChildren: List<ReactNode>
         get() = container?.children?.filterIsInstance<TransformNode>() ?: listOf()

@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.core.Anchor
 import com.google.ar.sceneform.AnchorNode
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.base.ReactNode

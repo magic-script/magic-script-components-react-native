@@ -26,10 +26,8 @@ import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.id
 import com.magicleap.magicscript.label
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.selected
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
-import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -109,18 +107,6 @@ class UiDropdownListItemNodeTest {
         tested.selected = false
 
         tested.typeface shouldEqual normalTypeface
-    }
-
-    @Test
-    fun `should notify listener when updated the selected property`() {
-        var selectRequested = false
-        tested.onSelectionChangeRequest = { select ->
-            selectRequested = select
-        }
-
-        tested.update(reactMapOf().selected(true))
-
-        selectRequested shouldBe true
     }
 
 }

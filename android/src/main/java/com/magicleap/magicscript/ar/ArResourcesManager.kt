@@ -22,14 +22,15 @@ import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
+import java.lang.ref.WeakReference
 
 object ArResourcesManager : ArResourcesProvider() {
 
     var planeDetection = false
 
-    private var scene: Scene? = null
-    private var session: Session? = null
-    private var transformationSystem: TransformationSystem? = null
+    private var sceneRef = WeakReference<Scene>(null)
+    private var sessionRef = WeakReference<Session>(null)
+    private var transformationSystemRef = WeakReference<TransformationSystem>(null)
     private var cameraState: TrackingState? = null
     private var arLoaded = false
 
@@ -37,16 +38,16 @@ object ArResourcesManager : ArResourcesProvider() {
      * Scene is changed when fragment is recreated
      */
     fun setupScene(scene: Scene) {
-        this.scene = scene
+        this.sceneRef = WeakReference(scene)
         notifySceneChanged(scene)
     }
 
     fun setupSession(session: Session) {
-        this.session = session
+        this.sessionRef = WeakReference(session)
     }
 
     fun setupTransformationSystem(transformationSystem: TransformationSystem) {
-        this.transformationSystem = transformationSystem
+        this.transformationSystemRef = WeakReference(transformationSystem)
         notifyTransformationSystemChanged(transformationSystem)
     }
 
@@ -65,11 +66,11 @@ object ArResourcesManager : ArResourcesProvider() {
     }
 
     override fun getSession(): Session? {
-        return session
+        return sessionRef.get()
     }
 
     override fun getArScene(): Scene? {
-        return scene
+        return sceneRef.get()
     }
 
     override fun isArLoaded(): Boolean {
@@ -77,7 +78,7 @@ object ArResourcesManager : ArResourcesProvider() {
     }
 
     override fun getTransformationSystem(): TransformationSystem? {
-        return transformationSystem
+        return transformationSystemRef.get()
     }
 
     override fun getCameraState(): TrackingState? {

@@ -237,6 +237,10 @@ open class UiScrollViewNode(
             useAutoThumbSize = scrollBarNode.thumbSize == UiScrollBarNode.THUMB_SIZE_AUTO.toFloat()
             thumbSize = scrollBarNode.thumbSize
             setThickness(thicknessPx)
+            post {
+                // at this moment width and height is known, so we can adjust the content clipping
+                applyContentClipping()
+            }
         }
     }
 
@@ -296,6 +300,7 @@ open class UiScrollViewNode(
                 content.localPosition = position
                 applyContentClipping()
             }
+
         }
     }
 

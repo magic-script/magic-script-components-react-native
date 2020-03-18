@@ -74,14 +74,12 @@ import ARKit
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
-//        nodesById[sceneId] = scene
     }
 
     @objc public private(set) var prismsById: [String: Prism] = [:]
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
-//        nodesById[prismId] = prism
     }
 
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
@@ -169,10 +167,14 @@ import ARKit
     }
 
     @objc public func clear() {
-        nodesById.forEach { (key: String, value: SCNNode) in
-            value.removeFromParentNode()
-        }
+        nodesById.forEach { $0.value.removeFromParentNode() }
         nodesById.removeAll()
+        
+        prismsById.forEach { $0.value.removeFromParentNode() }
+        prismsById.removeAll()
+        
+        scene?.removeFromParentNode()
+        scene = nil
     }
 
     private func getNodeById(_ nodeId: String) -> BaseNode? {

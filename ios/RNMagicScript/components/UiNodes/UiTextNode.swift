@@ -117,6 +117,14 @@ import SceneKit
                 self.wrap = wrap
             }
         }
+        
+        if let style = Convert.toFontStyle(props["style"]) {
+            self.style = style
+        }
+
+        if let weight = Convert.toFontWeight(props["weight"]) {
+            self.weight = weight
+        }
 
         if let fontParams = props["fontParameters"] as? [String: Any] {
             if let style = Convert.toFontStyle(fontParams["style"]) {

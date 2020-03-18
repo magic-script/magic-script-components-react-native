@@ -123,6 +123,28 @@ class PrismTest {
         prism.reactParent shouldBe scene
     }
 
+    // Because Prism's container is a TransformableNode, we have detach it explicitly.
+    // See https://github.com/magic-script/magic-script-components-react-native/issues/494
+    @Test
+    fun `should detach container node on destroy`() {
+        val prism = buildPrism(reactMapOf())
+
+        prism.onDestroy()
+
+        prism.children.shouldBeEmpty()
+    }
+
+    @Test
+    fun `should unregister AR resources listeners on destroy`() {
+        val prism = buildPrism(reactMapOf())
+
+        prism.onDestroy()
+
+        verify(arResourcesProvider).removeCameraUpdatedListener(eq(prism))
+        verify(arResourcesProvider).removeArLoadedListener(eq(prism))
+        verify(arResourcesProvider).removeTransformationSystemListener(eq(prism))
+    }
+
     private fun buildPrism(props: JavaOnlyMap): Prism {
         return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider).apply {
             build()

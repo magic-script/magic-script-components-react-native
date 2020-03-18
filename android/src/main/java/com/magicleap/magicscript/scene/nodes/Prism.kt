@@ -142,12 +142,7 @@ class Prism(
 
     private fun buildContentNode(transformationSystem: TransformationSystem) {
         // detach old container if exists
-        container?.let {
-            if (children.contains(it)) {
-                removeChild(it)
-            }
-        }
-
+        detachContainer()
         container = RotatableNode(transformationSystem).also {
             it.setParent(this)
             if (content != null) {
@@ -207,6 +202,9 @@ class Prism(
     }
 
     override fun onDestroy() {
+        // Because Prism's container is a Transformable node, we should detach it explicitly.
+        // See https://github.com/magic-script/magic-script-components-react-native/issues/494
+        detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeArLoadedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
@@ -279,6 +277,14 @@ class Prism(
         val max = Vector3(size.x / 2, size.y / 2, size.z / 2)
 
         content?.clipBounds = AABB(min, max)
+    }
+
+    private fun detachContainer() {
+        container?.let {
+            if (children.contains(it)) {
+                removeChild(it)
+            }
+        }
     }
 
     inner class RotatableNode(transformationSystem: TransformationSystem) :

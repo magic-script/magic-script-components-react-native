@@ -25,9 +25,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.Prism
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
@@ -70,6 +68,16 @@ class ReactSceneTest {
         reactScene.removeContent(prism)
 
         arScene.children.size shouldEqual 0
+    }
+
+    @Test
+    fun `should unregister AR resources listeners on destroy`() {
+        val reactScene = buildScene(reactMapOf())
+
+        reactScene.onDestroy()
+
+        verify(arResourcesProvider).removeArSceneChangedListener(eq(reactScene))
+        verify(arResourcesProvider).removePlaneTapListener(eq(reactScene))
     }
 
     private fun buildScene(props: JavaOnlyMap): ReactScene {

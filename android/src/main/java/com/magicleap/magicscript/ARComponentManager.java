@@ -264,7 +264,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper, arResourcesProvider), nodeId);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, viewRenderableLoader, videoNodeClipper, fontProvider, arResourcesProvider), nodeId);
         });
     }
 

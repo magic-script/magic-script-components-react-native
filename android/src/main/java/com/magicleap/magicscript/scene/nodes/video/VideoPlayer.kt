@@ -41,4 +41,10 @@ interface VideoPlayer {
     fun stop()
 
     fun release()
+
+    fun addTimedTextPath(path: String, onTextChangedListener: (String) -> Unit)
+
+    fun seekTo(millis: Int)
+
+    fun clearTimedTextListener()
 }

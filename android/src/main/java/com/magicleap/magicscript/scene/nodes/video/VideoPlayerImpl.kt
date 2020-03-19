@@ -17,6 +17,8 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
+import android.media.MediaFormat
+import android.media.MediaFormat.MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.Surface
@@ -90,4 +92,19 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         mediaPlayer.release()
     }
 
+    override fun addTimedTextPath(path: String, onTextChangedListener: (String) -> Unit) {
+        mediaPlayer.setOnTimedTextListener(null)
+        mediaPlayer.addTimedTextSource(path, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP)
+        mediaPlayer.setOnTimedTextListener { _, text ->
+            onTextChangedListener(text.text)
+        }
+    }
+
+    override fun seekTo(millis: Int) {
+        mediaPlayer.seekTo(millis)
+    }
+
+    override fun clearTimedTextListener() {
+        mediaPlayer.setOnTimedTextListener(null)
+    }
 }

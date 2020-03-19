@@ -18,7 +18,9 @@ package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
 import android.os.Bundle
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableNativeMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
@@ -27,6 +29,9 @@ import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.renderable.RenderableLoadRequest
 import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.logMessage
@@ -34,13 +39,15 @@ import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.readFilePath
 
 class VideoNode(
-    initProps: ReadableMap,
-    private val context: Context,
-    private val videoPlayer: VideoPlayer,
-    private val videoRenderableLoader: VideoRenderableLoader,
-    private val nodeClipper: Clipper,
-    private val arResourcesProvider: ArResourcesProvider
-) : TransformNode(initProps, useContentNodeAlignment = true) {
+        initProps: ReadableMap,
+        private val context: Context,
+        private val videoPlayer: VideoPlayer,
+        private val videoRenderableLoader: VideoRenderableLoader,
+        private val viewRenderableLoader: ViewRenderableLoader,
+        private val nodeClipper: Clipper,
+        private val fontProvider: FontProvider,
+        private val arResourcesProvider: ArResourcesProvider
+    ) : TransformNode(initProps, useContentNodeAlignment = true) {
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
@@ -50,6 +57,8 @@ class VideoNode(
         const val PROP_LOOPING = "looping"
         const val PROP_ACTION = "action"
         const val PROP_VOLUME = "volume"
+        const val PROP_TIMED_TEXT_PATH = "timedTextPath"
+        const val PROP_SEEK_TO = "seekTo"
 
         const val ACTION_START = "start"
         const val ACTION_STOP = "stop"
@@ -58,6 +67,7 @@ class VideoNode(
         const val DEFAULT_VOLUME = 1.0
     }
 
+    private var subtitles: UiTextNode? = null
     var onVideoPreparedListener: (() -> Unit)? = null
 
     override var clipBounds: AABB?
@@ -91,6 +101,35 @@ class VideoNode(
         setAction(props)
         setLooping(props)
         setVolume(props)
+        setSeekTo(props)
+        setTimedTextPath(props)
+    }
+
+    private fun setTimedTextPath(props: Bundle) {
+        if(props.containsKey(PROP_TIMED_TEXT_PATH)) {
+            val path = props.getString(PROP_TIMED_TEXT_PATH)
+            if(path.isNullOrEmpty()) {
+                videoPlayer.clearTimedTextListener()
+                contentNode.removeChild(subtitles)
+                subtitles = null
+            } else {
+                if(subtitles == null) {
+                    subtitles = UiTextNode(WritableNativeMap(), context, viewRenderableLoader, nodeClipper, fontProvider)
+                    val bundle = Bundle()
+                    bundle.putSerializable(UiTextNode.PROP_BOUNDS_SIZE, arrayListOf(getBounding().size().x.toDouble(), getBounding().size().y / 3.0))
+                    subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_BOUNDS_SIZE, bundle, PROP_ALIGNMENT, "bottom-center"))
+                }
+                videoPlayer.addTimedTextPath(path) {
+                    subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, it))
+                }
+            }
+        }
+    }
+
+    private fun setSeekTo(props: Bundle) {
+        if(props.containsKey(PROP_SEEK_TO)) {
+            videoPlayer.seekTo(props.getDouble(PROP_SEEK_TO).toInt())
+        }
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
@@ -132,6 +171,8 @@ class VideoNode(
 
     // destroying media player when node is detached (e.g. on scene change)
     override fun onDestroy() {
+        contentNode.removeChild(subtitles)
+        subtitles = null
         super.onDestroy()
         videoPlayer.release()
         renderableLoadRequest?.let {

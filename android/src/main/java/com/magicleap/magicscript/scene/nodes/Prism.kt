@@ -24,6 +24,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
@@ -37,16 +38,17 @@ import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
-import kotlin.math.min
-import kotlin.math.pow
+import kotlin.math.*
 
 class Prism(
     initProps: ReadableMap,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
-    private val arResourcesProvider: ArResourcesProvider
+    private val arResourcesProvider: ArResourcesProvider,
+    private val screenSizePx: Vector2
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.ArLoadedListener, ArResourcesProvider.TransformationSystemListener {
 
@@ -190,9 +192,16 @@ class Prism(
             val diff = Vector3.subtract(position, lastCameraPosition).scaled(speed)
             localPosition = Vector3.add(localPosition, diff)
         }
+
+
+        arResourcesProvider.getCamera()?.let { camera ->
+            val viewPos = camera.worldToScreenPoint(worldPosition)
+            visible = (viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y)
+        }
+
         lastCameraPosition = position
     }
-
+    
     override fun onPause() {
         // no-op
     }

@@ -109,6 +109,7 @@ import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+import com.magicleap.magicscript.utils.Vector2;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -198,9 +199,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+        CubeRenderableBuilder cubBuilder = new CubeRenderableBuilderImpl(context);
         AnchorCreator anchorCreator = new SimpleAnchorCreator(ArResourcesManager.INSTANCE);
-        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, ArResourcesManager.INSTANCE), nodeId));
+
+        int screenWidthPx = context.getResources().getDisplayMetrics().widthPixels;
+        int screenHeightPx = context.getResources().getDisplayMetrics().heightPixels;
+        Vector2 screenSize = new Vector2(screenWidthPx, screenHeightPx);
+
+        mainHandler.post(() -> addNode(new Prism(props, cubBuilder, anchorCreator, ArResourcesManager.INSTANCE, screenSize), nodeId));
     }
 
     /**

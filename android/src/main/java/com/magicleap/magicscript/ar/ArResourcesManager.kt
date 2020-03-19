@@ -19,9 +19,11 @@ package com.magicleap.magicscript.ar
 import com.google.ar.core.HitResult
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.Camera
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.utils.Vector2
 import java.lang.ref.WeakReference
 
 object ArResourcesManager : ArResourcesProvider() {
@@ -31,6 +33,7 @@ object ArResourcesManager : ArResourcesProvider() {
     private var sceneRef = WeakReference<Scene>(null)
     private var sessionRef = WeakReference<Session>(null)
     private var transformationSystemRef = WeakReference<TransformationSystem>(null)
+    private var cameraRef = WeakReference<Camera>(null)
     private var cameraState: TrackingState? = null
     private var arLoaded = false
 
@@ -40,6 +43,10 @@ object ArResourcesManager : ArResourcesProvider() {
     fun setupScene(scene: Scene) {
         this.sceneRef = WeakReference(scene)
         notifySceneChanged(scene)
+    }
+
+    fun setupCamera(camera: Camera) {
+        this.cameraRef = WeakReference(camera)
     }
 
     fun setupSession(session: Session) {
@@ -71,6 +78,10 @@ object ArResourcesManager : ArResourcesProvider() {
 
     override fun getArScene(): Scene? {
         return sceneRef.get()
+    }
+
+    override fun getCamera(): Camera? {
+        return cameraRef.get()
     }
 
     override fun isArLoaded(): Boolean {

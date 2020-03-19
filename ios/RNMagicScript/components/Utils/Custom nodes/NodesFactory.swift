@@ -100,4 +100,13 @@ import SceneKit
         geometry.firstMaterial?.diffuse.contents = color
         return SCNNode(geometry: geometry)
     }
+    
+    @objc static func createSphereNode(radius: CGFloat, segmentCount: Int = 4, color: UIColor = UIColor.yellow) -> SCNNode {
+        let sphere = SCNSphere(radius: radius)
+        sphere.segmentCount = segmentCount
+        sphere.firstMaterial?.lightingModel = .constant
+        sphere.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        sphere.firstMaterial?.diffuse.contents = color
+        return SCNNode(geometry: sphere)
+    }
 }

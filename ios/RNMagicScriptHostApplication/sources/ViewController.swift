@@ -150,7 +150,6 @@ class ViewController: UIViewController {
             arView.rightAnchor.constraint(equalTo: view.rightAnchor),
             arView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-
     }
 
     fileprivate func setupDropdownListTest() {

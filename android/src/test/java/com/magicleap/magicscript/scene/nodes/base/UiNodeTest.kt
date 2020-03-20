@@ -22,7 +22,6 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
@@ -53,7 +52,6 @@ class UiNodeTest {
     private lateinit var context: Context
     private lateinit var viewRenderableLoader: ViewRenderableLoader
     private lateinit var nodeClipper: Clipper
-    private lateinit var arResourcesProvider: ArResourcesProvider
     private lateinit var node: UiNode
 
 
@@ -62,14 +60,11 @@ class UiNodeTest {
         context = ApplicationProvider.getApplicationContext()
         viewRenderableLoader = mock()
         nodeClipper = spy(UiNodeClipper(TextureClipper(), UiNodeColliderClipper()))
-        arResourcesProvider = mock()
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
         node = UiNodeBuilder(
             context = context,
             useContentNodeAlignment = true,
             viewRenderableLoader = viewRenderableLoader,
-            nodeClipper = nodeClipper,
-            arResourcesProvider = arResourcesProvider
+            nodeClipper = nodeClipper
         )
             .withSize(1f, 1f)
             .build()
@@ -294,38 +289,16 @@ class UiNodeTest {
     }
 
     @Test
-    fun `should load view on build when ARCore is loaded`() {
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+    fun `should load a view renderable on build`() {
+        val viewRenderableLoader: ViewRenderableLoader = mock()
         val nodeBuilder = UiNodeBuilder(
             context = context,
-            arResourcesProvider = arResourcesProvider
+            viewRenderableLoader = viewRenderableLoader
         )
 
         nodeBuilder.build()
 
-        verify(viewRenderableLoader).loadRenderable(any(), any())
-    }
-
-    @Test
-    fun `should load view after ARCore is loaded if on build AR is not ready`() {
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
-        val nodeBuilder = UiNodeBuilder(
-            context = context,
-            arResourcesProvider = arResourcesProvider
-        )
-        val node = nodeBuilder.build()
-
-        node.onArLoaded()
-
-        verify(viewRenderableLoader).loadRenderable(any(), any())
-    }
-
-
-    @Test
-    fun `should unregister AR loaded listener on destroy`() {
-        node.onDestroy()
-
-        verify(arResourcesProvider).removeArLoadedListener(eq(node))
+        verify(viewRenderableLoader).loadRenderable(any())
     }
 
 }

@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
@@ -36,7 +37,8 @@ class VideoNode(
     private val context: Context,
     private val videoPlayer: VideoPlayer,
     private val videoRenderableLoader: VideoRenderableLoader,
-    private val nodeClipper: Clipper
+    private val nodeClipper: Clipper,
+    private val arResourcesProvider: ArResourcesProvider
 ) : TransformNode(initProps, useContentNodeAlignment = true) {
 
     companion object {
@@ -76,11 +78,6 @@ class VideoNode(
     init {
         // set default values of properties
         properties.putDefault(PROP_VOLUME, DEFAULT_VOLUME)
-    }
-
-    override fun build() {
-        super.build()
-        loadVideo()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -143,6 +140,11 @@ class VideoNode(
     }
 
     private fun loadVideo() {
+        if (!arResourcesProvider.isArLoaded()) {
+            // ar must be load to create ExternalTexture object
+            return
+        }
+
         val videoUri = properties.readFilePath(PROP_VIDEO_PATH, context)
         if (videoUri != null) {
             val texture = ExternalTexture()
@@ -158,7 +160,7 @@ class VideoNode(
             renderableLoadRequest?.let {
                 videoRenderableLoader.cancel(it)
             }
-            
+
             renderableLoadRequest = VideoRenderableLoader.LoadRequest() { result ->
                 if (result is RenderableResult.Success<Renderable>) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)

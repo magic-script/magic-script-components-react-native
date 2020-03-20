@@ -63,11 +63,6 @@ class LineNode(
     private val pointsList = mutableListOf<Vector3>()
     private val cubeLoadRequests = mutableListOf<CubeRenderableBuilder.LoadRequest>()
 
-    override fun build() {
-        super.build()
-        drawLines(clipBox)
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 

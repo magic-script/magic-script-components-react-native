@@ -57,6 +57,10 @@ class VideoNodeTest {
         this.clipper = mock()
         this.arResourcesProvider = mock()
 
+        // we have to return false, since creating textures inside VideoNode requires ar is loaded,
+        // else exception will be thrown
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+
         val videoUri = "http://video.com/sample.mp4"
         val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
         videoNode = VideoNode(
@@ -67,6 +71,7 @@ class VideoNodeTest {
             nodeClipper = clipper,
             arResourcesProvider = arResourcesProvider
         )
+
         videoNode.build()
     }
 
@@ -195,13 +200,6 @@ class VideoNodeTest {
         videoNode.show()
 
         verify(clipper, times(2)).applyClipBounds(eq(videoNode), eq(clipBounds))
-    }
-
-    @Test
-    fun `should unregister AR loaded listener on destroy`() {
-        videoNode.onDestroy()
-
-        verify(arResourcesProvider).removeArLoadedListener(eq(videoNode))
     }
 
 }

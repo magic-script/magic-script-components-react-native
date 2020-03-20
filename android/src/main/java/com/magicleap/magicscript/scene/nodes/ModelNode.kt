@@ -61,11 +61,6 @@ class ModelNode(
         properties.putDefault(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE)
     }
 
-    override fun build() {
-        super.build()
-        loadModel()
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 

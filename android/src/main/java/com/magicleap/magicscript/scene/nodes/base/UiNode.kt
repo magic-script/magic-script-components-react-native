@@ -291,6 +291,10 @@ abstract class UiNode(
     private fun attachView() {
         loadingView = true
 
+        val viewParent = view.parent
+        if (viewParent is ViewGroup) {
+            viewParent.removeView(view)
+        }
         viewWrapper.addView(view)
 
         val alignHorizontal =

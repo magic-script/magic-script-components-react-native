@@ -40,6 +40,12 @@ class ArResourcesManagerTest {
     private val transformationSystem = getTransformationSystem()
 
     @Test
+    fun srtUp() {
+        // since it's a singleton, we have to clear it
+        manager.clearListeners()
+    }
+
+    @Test
     fun `should notify listener every time scene is setup`() {
         var counter = 0
         manager.addArSceneChangedListener(object : ArResourcesProvider.ArSceneChangedListener {

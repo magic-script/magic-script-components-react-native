@@ -192,7 +192,7 @@ class UiDropdownListNodeTest {
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiDropdownListNode {
         return object :
-            UiDropdownListNode(props, context, mock(), mock(), fontProvider, iconsRepo) {
+            UiDropdownListNode(props, context, mock(), mock(), fontProvider, iconsRepo, mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }

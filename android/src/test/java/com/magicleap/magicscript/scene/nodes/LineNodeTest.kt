@@ -86,7 +86,7 @@ class LineNodeTest {
 
         node.build()
 
-        verify(cubeBuilder, times(2)).buildRenderable(any(), any(), any(), any())
+        verify(cubeBuilder, times(2)).buildRenderable(any())
     }
 
     @Test
@@ -98,11 +98,11 @@ class LineNodeTest {
 
         node.build()
 
-        verify(cubeBuilder, never()).buildRenderable(any(), any(), any(), any())
+        verify(cubeBuilder, never()).buildRenderable(any())
     }
 
     private fun createLineNode(props: JavaOnlyMap): LineNode {
-        return LineNode(props, cubeBuilder, arResourcesProvider)
+        return LineNode(props, cubeBuilder)
     }
 
 }

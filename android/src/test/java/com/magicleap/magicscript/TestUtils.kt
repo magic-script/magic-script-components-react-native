@@ -24,7 +24,6 @@ import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
@@ -91,8 +90,7 @@ class UiNodeBuilder(
     private val context: Context,
     useContentNodeAlignment: Boolean = false,
     private val viewRenderableLoader: ViewRenderableLoader? = null,
-    private val nodeClipper: Clipper? = null,
-    private val arResourcesProvider: ArResourcesProvider = mock()
+    private val nodeClipper: Clipper? = null
 ) : NodeBuilder(useContentNodeAlignment) {
     private var width = UiNode.WRAP_CONTENT_DIMENSION
     private var height = UiNode.WRAP_CONTENT_DIMENSION
@@ -107,7 +105,7 @@ class UiNodeBuilder(
         val renderableLoader = viewRenderableLoader ?: mock()
         val clipper = nodeClipper ?: UiNodeClipper(TextureClipper(), UiNodeColliderClipper())
         val node = object :
-            UiNode(props, context, renderableLoader, clipper, useContentNodeAlignment, arResourcesProvider) {
+            UiNode(props, context, renderableLoader, clipper, useContentNodeAlignment) {
 
             override fun provideView(context: Context): View {
                 return View(context)

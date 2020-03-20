@@ -16,24 +16,25 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
-import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.ar.AnchorCreator
-import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.RenderableResult
+import com.magicleap.magicscript.ar.*
+import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.font.providers.AndroidFontProvider
+import com.magicleap.magicscript.font.providers.FontProviderImpl
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -41,14 +42,15 @@ import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
-import kotlin.math.*
+import kotlin.math.min
+import kotlin.math.pow
 
 class Prism(
     initProps: ReadableMap,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
-    private val screenSizePx: Vector2
+    private val context: Context
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.ArLoadedListener, ArResourcesProvider.TransformationSystemListener {
 
@@ -56,6 +58,8 @@ class Prism(
         const val PROP_SIZE = "size"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
+
+        private const val MENU_MARGIN_BOTTOM = 0.1f // in meters
     }
 
     var beingTouched: Boolean = false
@@ -83,6 +87,7 @@ class Prism(
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var container: RotatableNode? = null
     private var content: TransformNode? = null
+    private var menuNode = GroupNode(JavaOnlyMap())
     private var lastCameraPosition: Vector3? = null
     private var requestedAnchorPosition: Vector3? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -92,7 +97,13 @@ class Prism(
 
     private var cubeLoadRequested = false
 
+    private var screenSizePx: Vector2
+
     init {
+        val screenWidthPx = context.resources.displayMetrics.widthPixels
+        val screenHeightPx = context.resources.displayMetrics.heightPixels
+        screenSizePx = Vector2(screenWidthPx.toFloat(), screenHeightPx.toFloat())
+
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addArLoadedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
@@ -139,6 +150,7 @@ class Prism(
         arResourcesProvider.getTransformationSystem()?.let {
             buildContentNode(it)
         }
+        buildMenu()
         applyProperties(properties)
     }
 
@@ -162,6 +174,9 @@ class Prism(
     override fun onArLoaded() {
         if (cubeLoadRequested) {
             buildCube()
+            menuNode.contentNode.children.filterIsInstance<TransformNode>().forEach {
+                it.attachRenderable()
+            }
             cubeLoadRequested = false
         }
     }
@@ -197,11 +212,12 @@ class Prism(
         arResourcesProvider.getCamera()?.let { camera ->
             val viewPos = camera.worldToScreenPoint(worldPosition)
             visible = (viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y)
+            //menuNode.isVisible = visible
         }
 
         lastCameraPosition = position
     }
-    
+
     override fun onPause() {
         // no-op
     }
@@ -241,6 +257,33 @@ class Prism(
         })
     }
 
+    private fun buildMenu() {
+        val labelProps = JavaOnlyMap.of(
+            UiTextNode.PROP_TEXT, "Catalog app",
+            UiTextNode.PROP_TEXT_SIZE, 0.15,
+            TransformNode.PROP_ALIGNMENT, "bottom-center"
+        )
+
+        val menuLabel = UiTextNode(
+            initProps = labelProps,
+            context = context,
+            viewRenderableLoader = ViewRenderableLoaderImpl(context),
+            nodeClipper = TextureClipper(),
+            fontProvider = FontProviderImpl(context, AndroidFontProvider())
+        ).apply {
+            build()
+        }
+
+        menuNode.build()
+        menuNode.addContent(menuLabel)
+        addChild(menuNode)
+        adjustMenuPosition()
+    }
+
+    private fun adjustMenuPosition() {
+        menuNode.localPosition = Vector3(0f, size.y / 2 + MENU_MARGIN_BOTTOM, 0f)
+    }
+
     private fun applyProperties(props: Bundle) {
         setSize(props)
         setPosition(props)
@@ -252,6 +295,7 @@ class Prism(
             if (size != this.size) {
                 this.size = size
                 buildCube()
+                adjustMenuPosition()
                 clipContent()
             }
         }

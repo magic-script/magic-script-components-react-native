@@ -108,6 +108,7 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         Log.d("VideoNode", "mediaPlayer track info: ${mediaPlayer.trackInfo}")
         val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
         if(textTrackIndex >= 0) {
+            Log.d("VideoNode", "mediaPlayer selected track index: $textTrackIndex")
             mediaPlayer.selectTrack(textTrackIndex)
         }
         mediaPlayer.setOnTimedTextListener { _, text ->

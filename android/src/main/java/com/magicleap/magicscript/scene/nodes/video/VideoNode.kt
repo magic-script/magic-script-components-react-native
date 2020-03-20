@@ -23,9 +23,10 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.RenderableLoadRequest
+import com.magicleap.magicscript.ar.renderable.RenderableResult
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.logMessage
@@ -66,7 +67,7 @@ class VideoNode(
             applyClipBounds()
         }
 
-    private var renderableLoadRequest: VideoRenderableLoader.LoadRequest? = null
+    private var renderableLoadRequest: RenderableLoadRequest? = null
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
@@ -164,7 +165,7 @@ class VideoNode(
                 videoRenderableLoader.cancel(it)
             }
 
-            renderableLoadRequest = VideoRenderableLoader.LoadRequest() { result ->
+            renderableLoadRequest = RenderableLoadRequest { result ->
                 if (result is RenderableResult.Success<Renderable>) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
                     if (isVisible) {

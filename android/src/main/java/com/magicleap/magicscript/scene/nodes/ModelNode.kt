@@ -21,9 +21,9 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
-import com.magicleap.magicscript.ar.RenderableResult
+import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Utils
@@ -126,6 +126,7 @@ class ModelNode(
 
             renderableLoadRequest = ModelRenderableLoader.LoadRequest(modelUri) { result ->
                 if (result is RenderableResult.Success) {
+                    result.renderable as ModelRenderable
                     this.renderableCopy = result.renderable
                     renderableAnimator.play(result.renderable)
                     if (isVisible) {

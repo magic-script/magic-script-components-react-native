@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode

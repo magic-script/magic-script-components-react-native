@@ -28,9 +28,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.RenderableResult
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
@@ -297,22 +297,21 @@ abstract class UiNode(
         }
         viewWrapper.addView(view)
 
-        val alignHorizontal =
-            if (useContentNodeAlignment) Alignment.Horizontal.CENTER else horizontalAlignment
-        val alignVertical =
-            if (useContentNodeAlignment) Alignment.Vertical.CENTER else verticalAlignment
-        val config = ViewRenderableLoader.Config(
-            view = viewWrapper,
-            horizontalAlignment = alignHorizontal,
-            verticalAlignment = alignVertical
-        )
-
         // cancel previous load request if exists
         this.renderableLoadRequest?.let {
             viewRenderableLoader.cancel(it)
         }
 
-        this.renderableLoadRequest = ViewRenderableLoader.LoadRequest(config) { result ->
+        val alignHorizontal =
+            if (useContentNodeAlignment) Alignment.Horizontal.CENTER else horizontalAlignment
+        val alignVertical =
+            if (useContentNodeAlignment) Alignment.Vertical.CENTER else verticalAlignment
+
+        this.renderableLoadRequest = ViewRenderableLoader.LoadRequest(
+            view = viewWrapper,
+            horizontalAlignment = alignHorizontal,
+            verticalAlignment = alignVertical
+        ) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
                 onViewLoaded(result.renderable)

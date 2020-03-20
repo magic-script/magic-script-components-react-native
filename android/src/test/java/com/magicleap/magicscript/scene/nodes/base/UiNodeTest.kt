@@ -22,7 +22,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.ar.clip.UiNodeClipper

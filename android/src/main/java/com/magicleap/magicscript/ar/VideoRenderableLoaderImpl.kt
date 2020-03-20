@@ -18,12 +18,41 @@ package com.magicleap.magicscript.ar
 
 import android.content.Context
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.logMessage
 
-class VideoRenderableLoaderImpl(private val context: Context) : VideoRenderableLoader {
-    override fun loadRenderable(resultCallback: (result: RenderableResult<Renderable>) -> Unit) {
+class VideoRenderableLoaderImpl(
+    private val context: Context,
+    private val arResourcesProvider: ArResourcesProvider
+) : VideoRenderableLoader, ArResourcesProvider.ArLoadedListener {
+
+    init {
+        arResourcesProvider.addArLoadedListener(this)
+    }
+
+    private val pendingRequests = mutableListOf<VideoRenderableLoader.LoadRequest>()
+
+    override fun loadRenderable(request: VideoRenderableLoader.LoadRequest) {
+        if (arResourcesProvider.isArLoaded()) {
+            load(request)
+        } else {
+            pendingRequests.add(request)
+        }
+    }
+
+    override fun onArLoaded() {
+        val requestIterator = pendingRequests.iterator()
+        while (requestIterator.hasNext()) {
+            load(requestIterator.next())
+            requestIterator.remove()
+        }
+    }
+
+    override fun cancel(request: VideoRenderableLoader.LoadRequest) {
+        pendingRequests.remove(request)
+    }
+
+    private fun load(request: VideoRenderableLoader.LoadRequest) {
         ModelRenderable.builder()
             .setSource(context, R.raw.chroma_key_video)
             .build()
@@ -32,12 +61,13 @@ class VideoRenderableLoaderImpl(private val context: Context) : VideoRenderableL
                 // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
                 renderable.isShadowCaster = false
                 renderable.isShadowReceiver = false
-                resultCallback(RenderableResult.Success(renderable))
+                request.listener.invoke(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->
                 logMessage("error loading video renderable: $throwable")
-                resultCallback(RenderableResult.Error(throwable))
+                request.listener.invoke(RenderableResult.Error(throwable))
                 null
             }
     }
+
 }

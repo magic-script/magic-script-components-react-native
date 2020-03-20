@@ -21,7 +21,9 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.magicleap.magicscript.ar.*
+import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.RenderableAnimator
+import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Utils
@@ -33,9 +35,8 @@ class ModelNode(
     initProps: ReadableMap,
     private val context: Context,
     private val modelRenderableLoader: ModelRenderableLoader,
-    private val renderableAnimator: RenderableAnimator,
-    private val arResourcesProvider: ArResourcesProvider = ArResourcesManager
-) : TransformNode(initProps, useContentNodeAlignment = true), ArResourcesProvider.ArLoadedListener {
+    private val renderableAnimator: RenderableAnimator
+) : TransformNode(initProps, useContentNodeAlignment = true) {
 
     companion object {
         // properties
@@ -53,21 +54,16 @@ class ModelNode(
             applyClipBounds()
         }
 
+    private var renderableLoadRequest: ModelRenderableLoader.LoadRequest? = null
     private var renderableCopy: ModelRenderable? = null
-    private var renderableAlreadyRequested = false
 
     init {
-        arResourcesProvider.addArLoadedListener(this)
-
         properties.putDefault(PROP_IMPORT_SCALE, DEFAULT_IMPORT_SCALE)
     }
 
     override fun build() {
         super.build()
-        if (arResourcesProvider.isArLoaded()) {
-            // cannot load a renderable before ARCore native library is initialized
-            loadModel()
-        }
+        loadModel()
     }
 
     override fun applyProperties(props: Bundle) {
@@ -75,13 +71,6 @@ class ModelNode(
 
         setModelPath(props)
         setImportScale(props)
-    }
-
-    override fun onArLoaded() {
-        if (!renderableAlreadyRequested) {
-            // cannot load a renderable before ARCore native library is initialized
-            loadModel()
-        }
     }
 
     override fun setAlignment(props: Bundle) {
@@ -110,17 +99,9 @@ class ModelNode(
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        arResourcesProvider.removeArLoadedListener(this)
-    }
-
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
-            // cannot load a renderable before ARCore native library is initialized
-            if (arResourcesProvider.isArLoaded()) {
-                loadModel()
-            }
+            loadModel()
         }
     }
 
@@ -134,11 +115,14 @@ class ModelNode(
     }
 
     private fun loadModel() {
-        renderableAlreadyRequested = true
-
         val modelUri = properties.readFilePath(PROP_MODEL_PATH, context)
         if (modelUri != null) {
-            modelRenderableLoader.loadRenderable(modelUri) { result ->
+            // cancel previous request if exists
+            renderableLoadRequest?.let {
+                modelRenderableLoader.cancel(it)
+            }
+
+            renderableLoadRequest = ModelRenderableLoader.LoadRequest(modelUri) { result ->
                 if (result is RenderableResult.Success) {
                     this.renderableCopy = result.renderable
                     renderableAnimator.play(result.renderable)
@@ -146,6 +130,8 @@ class ModelNode(
                         contentNode.renderable = renderableCopy
                     }
                 }
+            }.also {
+                modelRenderableLoader.loadRenderable(it)
             }
         }
     }

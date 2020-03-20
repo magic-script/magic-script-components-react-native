@@ -23,12 +23,39 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.logMessage
 
-class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableLoader {
+class ModelRenderableLoaderImpl(
+    private val context: Context,
+    private val arResourcesProvider: ArResourcesProvider
+) : ModelRenderableLoader, ArResourcesProvider.ArLoadedListener {
 
-    override fun loadRenderable(
-        modelUri: Uri,
-        resultCallback: (result: RenderableResult<ModelRenderable>) -> Unit
-    ) {
+    init {
+        arResourcesProvider.addArLoadedListener(this)
+    }
+
+    private val pendingRequests = mutableListOf<ModelRenderableLoader.LoadRequest>()
+
+    override fun loadRenderable(request: ModelRenderableLoader.LoadRequest) {
+        if (arResourcesProvider.isArLoaded()) {
+            load(request)
+        } else {
+            pendingRequests.add(request)
+        }
+    }
+
+    override fun cancel(request: ModelRenderableLoader.LoadRequest) {
+        pendingRequests.remove(request)
+    }
+
+    override fun onArLoaded() {
+        val requestIterator = pendingRequests.iterator()
+        while (requestIterator.hasNext()) {
+            load(requestIterator.next())
+            requestIterator.remove()
+        }
+    }
+
+    private fun load(request: ModelRenderableLoader.LoadRequest) {
+        val modelUri = request.modelUri
         val builder = ModelRenderable.builder()
         val modelType = Utils.detectModelType(modelUri, context)
         when (modelType) {
@@ -37,7 +64,7 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
             ModelType.UNKNOWN -> {
                 val errorMessage = "Unresolved model type"
                 logMessage(errorMessage, true)
-                resultCallback(RenderableResult.Error(Exception(errorMessage)))
+                request.listener.invoke(RenderableResult.Error(Exception(errorMessage)))
                 return
             }
         }
@@ -48,11 +75,11 @@ class ModelRenderableLoaderImpl(private val context: Context) : ModelRenderableL
             .thenAccept { renderable ->
                 renderable.isShadowReceiver = false
                 renderable.isShadowCaster = false
-                resultCallback(RenderableResult.Success(renderable))
+                request.listener.invoke(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->
                 logMessage("error loading ModelRenderable: $throwable")
-                resultCallback(RenderableResult.Error(throwable))
+                request.listener.invoke(RenderableResult.Error(throwable))
                 null
             }
     }

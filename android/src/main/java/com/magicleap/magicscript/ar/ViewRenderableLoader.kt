@@ -22,14 +22,18 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 
 interface ViewRenderableLoader {
 
-    fun loadRenderable(
-        config: Config,
-        resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
-    )
+    fun loadRenderable(request: LoadRequest)
+
+    fun cancel(request: LoadRequest)
 
     data class Config(
         val view: View,
         val horizontalAlignment: Alignment.Horizontal,
         val verticalAlignment: Alignment.Vertical
+    )
+
+    data class LoadRequest(
+        val config: Config,
+        val listener: ((result: RenderableResult<Renderable>) -> Unit)
     )
 }

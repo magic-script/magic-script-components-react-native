@@ -159,9 +159,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         this.eventsManager = eventsManager;
         this.mediaPlayerPool = mediaPlayerPool;
 
-        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
-        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
-        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
+        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context, ArResourcesManager.INSTANCE);
+        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context, ArResourcesManager.INSTANCE);
+        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context, ArResourcesManager.INSTANCE);
 
         AndroidFontProvider androidFontProvider = new AndroidFontProvider();
         this.fontProvider = new FontProviderImpl(context, androidFontProvider);
@@ -198,7 +198,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, ArResourcesManager.INSTANCE);
         AnchorCreator anchorCreator = new SimpleAnchorCreator(ArResourcesManager.INSTANCE);
         mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, ArResourcesManager.INSTANCE), nodeId));
     }
@@ -255,16 +255,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
         RenderableAnimator animator = new LoopedAnimator();
-        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator, ArResourcesManager.INSTANCE),
-                                       nodeId));
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator), nodeId));
     }
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper, ArResourcesManager.INSTANCE),
-                    nodeId);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper), nodeId);
         });
     }
 
@@ -314,8 +312,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
-        mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder, ArResourcesManager.INSTANCE), nodeId));
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, ArResourcesManager.INSTANCE);
+        mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder), nodeId));
     }
 
     @ReactMethod
@@ -337,7 +335,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDropdownListNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDropdownListNode node = new UiDropdownListNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
+            UiDropdownListNode node = new UiDropdownListNode(props,
+                                                             context,
+                                                             viewRenderableLoader,
+                                                             uiNodeClipper,
+                                                             fontProvider,
+                                                             iconsRepo,
+                                                             ArResourcesManager.INSTANCE);
             addNode(node, nodeId);
         });
     }

@@ -20,8 +20,13 @@ import android.net.Uri
 import com.google.ar.sceneform.rendering.ModelRenderable
 
 interface ModelRenderableLoader {
-    fun loadRenderable(
-        modelUri: Uri,
-        resultCallback: ((result: RenderableResult<ModelRenderable>) -> Unit)
+
+    fun loadRenderable(request: LoadRequest)
+
+    fun cancel(request: LoadRequest)
+
+    data class LoadRequest(
+        val modelUri: Uri,
+        val listener: ((result: RenderableResult<ModelRenderable>) -> Unit)
     )
 }

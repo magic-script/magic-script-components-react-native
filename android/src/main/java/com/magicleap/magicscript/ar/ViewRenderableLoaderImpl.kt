@@ -17,26 +17,46 @@
 package com.magicleap.magicscript.ar
 
 import android.content.Context
-import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.R
 
-class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoader {
+class ViewRenderableLoaderImpl(
+    private val context: Context,
+    private val arResourcesProvider: ArResourcesProvider
+) : ViewRenderableLoader, ArResourcesProvider.ArLoadedListener {
 
-    override fun loadRenderable(
-        config: ViewRenderableLoader.Config,
-        resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
-    ) {
+    init {
+        arResourcesProvider.addArLoadedListener(this)
+    }
 
+    private val pendingRequests = mutableListOf<ViewRenderableLoader.LoadRequest>()
+
+    override fun loadRenderable(request: ViewRenderableLoader.LoadRequest) {
+        if (arResourcesProvider.isArLoaded()) {
+            load(request)
+        } else {
+            pendingRequests.add(request)
+        }
+    }
+
+    override fun onArLoaded() {
+        val requestIterator = pendingRequests.iterator()
+        while (requestIterator.hasNext()) {
+            load(requestIterator.next())
+            requestIterator.remove()
+        }
+    }
+
+    private fun load(request: ViewRenderableLoader.LoadRequest) {
         val builder = ViewRenderable
             .builder()
             .setSource(context, R.raw.android_view) // using custom material to disable back side
-            .setView(context, config.view)
+            .setView(context, request.config.view)
 
         val horizontalAlignment =
-            ViewRenderable.HorizontalAlignment.valueOf(config.horizontalAlignment.name)
+            ViewRenderable.HorizontalAlignment.valueOf(request.config.horizontalAlignment.name)
         val verticalAlignment =
-            ViewRenderable.VerticalAlignment.valueOf(config.verticalAlignment.name)
+            ViewRenderable.VerticalAlignment.valueOf(request.config.verticalAlignment.name)
         builder.setHorizontalAlignment(horizontalAlignment)
         builder.setVerticalAlignment(verticalAlignment)
 
@@ -44,12 +64,16 @@ class ViewRenderableLoaderImpl(private val context: Context) : ViewRenderableLoa
             .thenAccept { renderable ->
                 renderable.isShadowReceiver = false
                 renderable.isShadowCaster = false
-                resultCallback(RenderableResult.Success(renderable))
+                request.listener.invoke(RenderableResult.Success(renderable))
             }
             .exceptionally { throwable ->
-                resultCallback(RenderableResult.Error(throwable))
+                request.listener.invoke(RenderableResult.Error(throwable))
                 null
             }
+    }
+
+    override fun cancel(request: ViewRenderableLoader.LoadRequest) {
+        pendingRequests.remove(request)
     }
 
 }

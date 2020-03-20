@@ -28,8 +28,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.magicscript.ar.ArResourcesManager
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
@@ -47,9 +45,8 @@ abstract class UiNode(
     protected val context: Context,
     private val viewRenderableLoader: ViewRenderableLoader,
     private val nodeClipper: Clipper,
-    useContentNodeAlignment: Boolean = false,
-    private val arResourcesProvider: ArResourcesProvider = ArResourcesManager
-) : TransformNode(initProps, useContentNodeAlignment), ArResourcesProvider.ArLoadedListener {
+    useContentNodeAlignment: Boolean = false
+) : TransformNode(initProps, useContentNodeAlignment) {
 
     companion object {
         // properties
@@ -101,7 +98,7 @@ abstract class UiNode(
     private var touching = false
     private var touchTime = 0f
 
-    private var renderableAlreadyRequested = false
+    private var renderableLoadRequest: ViewRenderableLoader.LoadRequest? = null
 
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
@@ -112,8 +109,6 @@ abstract class UiNode(
     init {
         // set default values of properties
         properties.putDefault(PROP_ENABLED, true)
-
-        arResourcesProvider.addArLoadedListener(this)
     }
 
     /**
@@ -142,11 +137,7 @@ abstract class UiNode(
     override fun build() {
         initView()
         setup()
-
-        // cannot load a renderable before ARCore native library is initialized
-        if (arResourcesProvider.isArLoaded()) {
-            attachView()
-        }
+        attachView()
 
         if (useContentNodeAlignment) {
             applyAlignment()
@@ -162,12 +153,6 @@ abstract class UiNode(
         setEnabled(props)
     }
 
-    override fun onArLoaded() {
-        if (!renderableAlreadyRequested) {
-            // cannot load a renderable before ARCore native library is initialized
-            attachView()
-        }
-    }
 
     /**
      * Should return the node bounds based on a measured native view size.
@@ -228,7 +213,9 @@ abstract class UiNode(
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null) //stop the loop
-        arResourcesProvider.removeArLoadedListener(this)
+        renderableLoadRequest?.let {
+            viewRenderableLoader.cancel(it)
+        }
     }
 
     protected abstract fun provideView(context: Context): View
@@ -274,7 +261,7 @@ abstract class UiNode(
     override fun applyAlignment() {
         if (useContentNodeAlignment) {
             Utils.applyContentNodeAlignment(this)
-        } else if (arResourcesProvider.isArLoaded()) {
+        } else {
             setNeedsRebuild() // need to re-attach the renderable
         }
     }
@@ -302,7 +289,6 @@ abstract class UiNode(
     }
 
     private fun attachView() {
-        renderableAlreadyRequested = true
         loadingView = true
 
         viewWrapper.addView(view)
@@ -316,11 +302,19 @@ abstract class UiNode(
             horizontalAlignment = alignHorizontal,
             verticalAlignment = alignVertical
         )
-        viewRenderableLoader.loadRenderable(config) { result ->
+
+        // cancel previous load request if exists
+        this.renderableLoadRequest?.let {
+            viewRenderableLoader.cancel(it)
+        }
+
+        this.renderableLoadRequest = ViewRenderableLoader.LoadRequest(config) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
                 onViewLoaded(result.renderable)
             }
+        }.also {
+            viewRenderableLoader.loadRenderable(it)
         }
     }
 
@@ -331,13 +325,7 @@ abstract class UiNode(
      */
     private fun rebuildLoop() {
         if (shouldRebuild && !loadingView) {
-            if (arResourcesProvider.isArLoaded()) {
-                // init a new view, apply all properties and re-attach the view
-                build()
-            } else {
-                // only setup, because the view has not been loaded yet
-                setup()
-            }
+            build()
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")
         }

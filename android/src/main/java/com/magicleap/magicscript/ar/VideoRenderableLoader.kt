@@ -19,5 +19,12 @@ package com.magicleap.magicscript.ar
 import com.google.ar.sceneform.rendering.Renderable
 
 interface VideoRenderableLoader {
-    fun loadRenderable(resultCallback: ((result: RenderableResult<Renderable>) -> Unit))
+
+    fun loadRenderable(request: LoadRequest)
+
+    fun cancel(request: VideoRenderableLoader.LoadRequest)
+
+    data class LoadRequest(
+        val listener: ((result: RenderableResult<Renderable>) -> Unit)
+    )
 }

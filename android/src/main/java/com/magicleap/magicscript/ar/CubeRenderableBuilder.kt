@@ -24,15 +24,22 @@ interface CubeRenderableBuilder {
 
     /**
      * Builds cube asynchronously
-     * @return task id that can be used to cancel the task
      */
-    fun buildRenderable(
-        cubeSize: Vector3,
-        cubeCenter: Vector3,
-        color: Color,
-        resultCallback: ((result: RenderableResult<Renderable>) -> Unit)
-    ): Long
+    fun buildRenderable(request: LoadRequest)
 
-    fun cancel(taskId: Long)
+    fun cancel(request: LoadRequest)
 
+    data class LoadRequest(
+        val cubeSize: Vector3,
+        val cubeCenter: Vector3,
+        val color: Color,
+        val listener: (result: RenderableResult<Renderable>) -> Unit
+    ) {
+        var isCancelled = false
+            private set
+
+        fun cancel() {
+            isCancelled = true
+        }
+    }
 }

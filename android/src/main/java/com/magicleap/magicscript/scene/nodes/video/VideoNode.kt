@@ -22,8 +22,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
-import com.magicleap.magicscript.ar.ArResourcesManager
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
@@ -38,9 +36,8 @@ class VideoNode(
     private val context: Context,
     private val videoPlayer: VideoPlayer,
     private val videoRenderableLoader: VideoRenderableLoader,
-    private val nodeClipper: Clipper,
-    private val arResourcesProvider: ArResourcesProvider = ArResourcesManager
-) : TransformNode(initProps, useContentNodeAlignment = true), ArResourcesProvider.ArLoadedListener {
+    private val nodeClipper: Clipper
+) : TransformNode(initProps, useContentNodeAlignment = true) {
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
@@ -67,7 +64,7 @@ class VideoNode(
             applyClipBounds()
         }
 
-    private var renderableAlreadyRequested = false
+    private var renderableLoadRequest: VideoRenderableLoader.LoadRequest? = null
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
@@ -77,40 +74,25 @@ class VideoNode(
     private var lastUserAction: String = ""
 
     init {
-        arResourcesProvider.addArLoadedListener(this)
-
         // set default values of properties
         properties.putDefault(PROP_VOLUME, DEFAULT_VOLUME)
     }
 
     override fun build() {
         super.build()
-        if (arResourcesProvider.isArLoaded()) {
-            // cannot load a renderable before ARCore native library is initialized
-            loadVideo()
-        }
+        loadVideo()
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         if (props.containsKey(PROP_VIDEO_PATH) || props.containsKey(PROP_SIZE)) {
-            if (arResourcesProvider.isArLoaded()) {
-                // cannot load a renderable before ARCore native library is initialized
-                loadVideo()
-            }
+            loadVideo()
         }
 
         setSize(props)
         setAction(props)
         setLooping(props)
         setVolume(props)
-    }
-
-    override fun onArLoaded() {
-        if (!renderableAlreadyRequested) {
-            // cannot load a renderable before ARCore native library is initialized
-            loadVideo()
-        }
     }
 
     override fun onVisibilityChanged(visibility: Boolean) {
@@ -154,7 +136,6 @@ class VideoNode(
     override fun onDestroy() {
         super.onDestroy()
         videoPlayer.release()
-        arResourcesProvider.removeArLoadedListener(this)
     }
 
     private fun applyClipBounds() {
@@ -162,7 +143,6 @@ class VideoNode(
     }
 
     private fun loadVideo() {
-        renderableAlreadyRequested = true
         val videoUri = properties.readFilePath(PROP_VIDEO_PATH, context)
         if (videoUri != null) {
             val texture = ExternalTexture()
@@ -174,7 +154,12 @@ class VideoNode(
                 logMessage("video load exception: $exception", warn = true)
             }
 
-            videoRenderableLoader.loadRenderable { result ->
+            // cancel previous load request if exists
+            renderableLoadRequest?.let {
+                videoRenderableLoader.cancel(it)
+            }
+            
+            renderableLoadRequest = VideoRenderableLoader.LoadRequest() { result ->
                 if (result is RenderableResult.Success<Renderable>) {
                     result.renderable.material.setExternalTexture("videoTexture", texture)
                     if (isVisible) {
@@ -183,7 +168,10 @@ class VideoNode(
                     renderableCopy = result.renderable
                     applyClipBounds()
                 }
+            }.also {
+                videoRenderableLoader.loadRenderable(it)
             }
+
         }
     }
 

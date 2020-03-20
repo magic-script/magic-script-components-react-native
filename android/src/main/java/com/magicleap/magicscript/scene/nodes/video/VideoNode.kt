@@ -133,6 +133,9 @@ class VideoNode(
     override fun onDestroy() {
         super.onDestroy()
         videoPlayer.release()
+        renderableLoadRequest?.let {
+            videoRenderableLoader.cancel(it)
+        }
     }
 
     private fun applyClipBounds() {

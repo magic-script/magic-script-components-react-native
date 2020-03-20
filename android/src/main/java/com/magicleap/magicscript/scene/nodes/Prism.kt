@@ -199,6 +199,10 @@ class Prism(
         detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
+
+        renderableLoadRequest?.let {
+            cubeBuilder.cancel(it)
+        }
     }
 
     override fun setAnchor(anchor: Anchor?) {

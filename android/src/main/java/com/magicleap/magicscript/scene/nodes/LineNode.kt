@@ -96,6 +96,11 @@ class LineNode(
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelCubeLoadTasks()
+    }
+
     private fun applyClipBounds(clipBounds: AABB) {
         val localBounds = clipBounds.translated(-getContentPosition())
         val center = (localBounds.min + localBounds.max) / 2f

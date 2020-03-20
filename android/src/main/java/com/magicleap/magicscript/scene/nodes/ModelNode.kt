@@ -94,6 +94,13 @@ class ModelNode(
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        renderableLoadRequest?.let {
+            modelRenderableLoader.cancel(it)
+        }
+    }
+
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
             loadModel()

@@ -28,22 +28,10 @@ import com.magicleap.magicscript.utils.logMessage
  * It manages nodes registration and attaching them to scene
  */
 class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : NodesManager,
-    LifecycleEventListener, ArResourcesProvider.ArLoadedListener {
+    LifecycleEventListener {
 
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
-
-    init {
-        arResourcesProvider.addArLoadedListener(this)
-    }
-
-    override fun onArLoaded() {
-        nodesById.values.filterIsInstance<TransformNode>().forEach { node ->
-            if (node.hasRenderable && !node.renderableRequested) {
-                node.attachRenderable()
-            }
-        }
-    }
 
     @Synchronized
     override fun findNodeWithId(nodeId: String): ReactNode? {
@@ -58,11 +46,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
 
         if (node is ReactScene) {
             this.reactScene = node
-        }
-
-        val arReady = arResourcesProvider.isArLoaded()
-        if (arReady && node is TransformNode && node.hasRenderable && !node.renderableRequested) {
-            node.attachRenderable()
         }
     }
 

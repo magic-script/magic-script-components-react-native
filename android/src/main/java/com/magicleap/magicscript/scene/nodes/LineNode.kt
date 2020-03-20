@@ -25,6 +25,8 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
+import com.magicleap.magicscript.ar.ArResourcesManager
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -34,8 +36,10 @@ import com.magicleap.magicscript.utils.*
 // Node that represents a chain of lines
 class LineNode(
     initProps: ReadableMap,
-    private val cubeRenderableBuilder: CubeRenderableBuilder
-) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = false) {
+    private val cubeRenderableBuilder: CubeRenderableBuilder,
+    private val arResourcesProvider: ArResourcesProvider = ArResourcesManager
+) : TransformNode(initProps, useContentNodeAlignment = false),
+    ArResourcesProvider.ArLoadedListener {
 
     companion object {
         // properties
@@ -45,6 +49,10 @@ class LineNode(
         private const val LINE_THICKNESS = 0.002f // in meters
     }
 
+    init {
+        arResourcesProvider.addArLoadedListener(this)
+    }
+
     override var clipBounds: AABB?
         get() = super.clipBounds
         set(value) {
@@ -52,8 +60,9 @@ class LineNode(
             value?.let { applyClipBounds(it) }
         }
 
-    private val colorDefault = Color(1f, 1f, 1f)
+    private var renderablesAlreadyRequested = false
 
+    private val colorDefault = Color(1f, 1f, 1f)
     private var renderableCopies = mutableListOf<Renderable?>()
     private var linesBounding = AABB()
     private var clipBox = BoundingBox(
@@ -64,21 +73,30 @@ class LineNode(
     private val pointsList = mutableListOf<Vector3>()
     private val cubeLoadTasks = mutableListOf<Long>()
 
+    override fun build() {
+        super.build()
+        if (arResourcesProvider.isArLoaded()) {
+            // cannot load renderables before ARCore native library is initialized
+            drawLines(clipBox)
+        }
+    }
+
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
         if (props.containsKey(PROP_POINTS) || props.containsKey(PROP_COLOR)) {
-            // cannot update renderable before [renderableRequested],
-            // because Sceneform may be uninitialized yet
-            // (loadRenderable may have not been called)
-            if (renderableRequested) {
-                loadRenderable()
+            if (arResourcesProvider.isArLoaded()) {
+                // cannot load renderables before ARCore native library is initialized
+                drawLines(clipBox)
             }
         }
     }
 
-    override fun loadRenderable() {
-        drawLines(clipBox)
+    override fun onArLoaded() {
+        // cannot load renderables before ARCore native library is initialized
+        if (!renderablesAlreadyRequested) {
+            drawLines(clipBox)
+        }
     }
 
     override fun getContentBounding(): AABB {
@@ -106,15 +124,25 @@ class LineNode(
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        arResourcesProvider.removeArLoadedListener(this)
+    }
+
     private fun applyClipBounds(clipBounds: AABB) {
         val localBounds = clipBounds.translated(-getContentPosition())
         val center = (localBounds.min + localBounds.max) / 2f
         clipBox = BoundingBox(localBounds.size(), center)
 
-        drawLines(clipBox)
+        if (arResourcesProvider.isArLoaded()) {
+            // cannot load renderables before ARCore native library is initialized
+            drawLines(clipBox)
+        }
     }
 
     private fun drawLines(clipBox: BoundingBox) {
+        renderablesAlreadyRequested = true
+
         // clear old lines in case of points list update
         clearLines()
         cancelCubeLoadTasks()

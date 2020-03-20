@@ -112,13 +112,6 @@ open class UiDropdownListNode(
         }
     }
 
-    override fun loadRenderable() {
-        super.loadRenderable()
-        if (!listNode.renderableRequested) {
-            listNode.attachRenderable()
-        }
-    }
-
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 

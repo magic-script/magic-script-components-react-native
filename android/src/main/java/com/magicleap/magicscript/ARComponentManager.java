@@ -255,14 +255,16 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createModelNode(final ReadableMap props, final String nodeId) {
         RenderableAnimator animator = new LoopedAnimator();
-        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator), nodeId));
+        mainHandler.post(() -> addNode(new ModelNode(props, context, modelRenderableLoader, animator, ArResourcesManager.INSTANCE),
+                                       nodeId));
     }
 
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper), nodeId);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper, ArResourcesManager.INSTANCE),
+                    nodeId);
         });
     }
 
@@ -313,7 +315,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
         CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
-        mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder), nodeId));
+        mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder, ArResourcesManager.INSTANCE), nodeId));
     }
 
     @ReactMethod

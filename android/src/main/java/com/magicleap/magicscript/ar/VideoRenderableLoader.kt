@@ -22,9 +22,16 @@ interface VideoRenderableLoader {
 
     fun loadRenderable(request: LoadRequest)
 
-    fun cancel(request: VideoRenderableLoader.LoadRequest)
+    fun cancel(request: LoadRequest)
 
     data class LoadRequest(
         val listener: ((result: RenderableResult<Renderable>) -> Unit)
-    )
+    ) {
+        var isCancelled = false
+            private set
+
+        fun cancel() {
+            isCancelled = true
+        }
+    }
 }

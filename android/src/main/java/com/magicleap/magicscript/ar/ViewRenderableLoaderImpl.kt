@@ -62,9 +62,11 @@ class ViewRenderableLoaderImpl(
 
         builder.build()
             .thenAccept { renderable ->
-                renderable.isShadowReceiver = false
-                renderable.isShadowCaster = false
-                request.listener.invoke(RenderableResult.Success(renderable))
+                if (!request.isCancelled) {
+                    renderable.isShadowReceiver = false
+                    renderable.isShadowCaster = false
+                    request.listener.invoke(RenderableResult.Success(renderable))
+                }
             }
             .exceptionally { throwable ->
                 request.listener.invoke(RenderableResult.Error(throwable))
@@ -73,6 +75,7 @@ class ViewRenderableLoaderImpl(
     }
 
     override fun cancel(request: ViewRenderableLoader.LoadRequest) {
+        request.cancel()
         pendingRequests.remove(request)
     }
 

@@ -43,6 +43,7 @@ class ModelRenderableLoaderImpl(
     }
 
     override fun cancel(request: ModelRenderableLoader.LoadRequest) {
+        request.cancel()
         pendingRequests.remove(request)
     }
 
@@ -73,9 +74,11 @@ class ModelRenderableLoaderImpl(
             .setRegistryId(modelUri)
             .build()
             .thenAccept { renderable ->
-                renderable.isShadowReceiver = false
-                renderable.isShadowCaster = false
-                request.listener.invoke(RenderableResult.Success(renderable))
+                if (!request.isCancelled) {
+                    renderable.isShadowReceiver = false
+                    renderable.isShadowCaster = false
+                    request.listener.invoke(RenderableResult.Success(renderable))
+                }
             }
             .exceptionally { throwable ->
                 logMessage("error loading ModelRenderable: $throwable")

@@ -35,5 +35,13 @@ interface ViewRenderableLoader {
     data class LoadRequest(
         val config: Config,
         val listener: ((result: RenderableResult<Renderable>) -> Unit)
-    )
+    ) {
+        var isCancelled = false
+            private set
+
+        fun cancel() {
+            isCancelled = true
+        }
+    }
+
 }

@@ -49,6 +49,7 @@ class VideoRenderableLoaderImpl(
     }
 
     override fun cancel(request: VideoRenderableLoader.LoadRequest) {
+        request.cancel()
         pendingRequests.remove(request)
     }
 
@@ -57,11 +58,13 @@ class VideoRenderableLoaderImpl(
             .setSource(context, R.raw.chroma_key_video)
             .build()
             .thenAccept { renderable ->
-                renderable.material.setBoolean("disableChromaKey", true)
-                // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
-                renderable.isShadowCaster = false
-                renderable.isShadowReceiver = false
-                request.listener.invoke(RenderableResult.Success(renderable))
+                if (!request.isCancelled) {
+                    renderable.material.setBoolean("disableChromaKey", true)
+                    // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
+                    renderable.isShadowCaster = false
+                    renderable.isShadowReceiver = false
+                    request.listener.invoke(RenderableResult.Success(renderable))
+                }
             }
             .exceptionally { throwable ->
                 logMessage("error loading video renderable: $throwable")

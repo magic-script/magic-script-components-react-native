@@ -28,5 +28,12 @@ interface ModelRenderableLoader {
     data class LoadRequest(
         val modelUri: Uri,
         val listener: ((result: RenderableResult<ModelRenderable>) -> Unit)
-    )
+    ) {
+        var isCancelled = false
+            private set
+
+        fun cancel() {
+            isCancelled = true
+        }
+    }
 }

@@ -17,9 +17,12 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
+import android.media.MediaFormat
 import android.media.MediaPlayer
+import android.media.MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer.TrackInfo
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.view.Surface
 
@@ -97,7 +100,12 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
 
     override fun addTimedTextPath(path: Uri, onTextChangedListener: (String) -> Unit) {
         mediaPlayer.setOnTimedTextListener(null)
-        mediaPlayer.addTimedTextSource(context, path, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP)
+        if(Build.VERSION.SDK_INT >= 28) {
+            mediaPlayer.addTimedTextSource(context, path, MediaFormat.MIMETYPE_TEXT_SUBRIP)
+        } else {
+            mediaPlayer.addTimedTextSource(context, path, MEDIA_MIMETYPE_TEXT_SUBRIP)
+        }
+        Log.d("VideoNode", "mediaPlayer track info: ${mediaPlayer.trackInfo}")
         val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
         if(textTrackIndex >= 0) {
             mediaPlayer.selectTrack(textTrackIndex)

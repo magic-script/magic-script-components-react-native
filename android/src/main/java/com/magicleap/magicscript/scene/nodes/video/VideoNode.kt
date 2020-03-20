@@ -103,7 +103,6 @@ class VideoNode(
         setLooping(props)
         setVolume(props)
         setSeekTo(props)
-        setTimedTextPath(props)
     }
 
     private fun setTimedTextPath(props: Bundle) {
@@ -196,6 +195,7 @@ class VideoNode(
             try {
                 videoPlayer.loadVideo(videoUri, texture.surface, onLoadedListener = {
                     onVideoPreparedListener?.invoke()
+                    setTimedTextPath(properties)
                 })
             } catch (exception: Exception) {
                 logMessage("video load exception: $exception", warn = true)

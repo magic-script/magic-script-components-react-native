@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import SceneKit
 import UIKit
@@ -30,8 +30,7 @@ import UIKit
         self.direction = direction
         self.length = length
     }
-    
-    // MARK: Intersection
+
     func getClosestPointTo(ray: Ray) -> SCNVector3? {
         // https://en.wikipedia.org/wiki/Skew_lines#Distance
         let p1 = begin
@@ -46,6 +45,18 @@ import UIKit
         let s1 = (p2 - p1).dot(n2)
         let c1 = p1 + (s1 / s2) * d1
         return c1
+    }
+    
+    func getSqDistanceToPoint(_ point: SCNVector3) -> Float {
+        // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        let v1 = begin - point
+        let n = direction.normalized()
+        let v2 = v1.dot(n) * n
+        return (v1 - v2).lengthSq()
+    }
+    
+    func getDistanceToPoint(_ point: SCNVector3) -> Float {
+        return sqrtf(getSqDistanceToPoint(point))
     }
 }
 

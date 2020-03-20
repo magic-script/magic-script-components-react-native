@@ -23,11 +23,12 @@ import SceneKit
         didSet { setDebugMode(debug) }
     }
 
-    @objc fileprivate(set) var debugNode: SCNNode!
-
     @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet { debugNode.scale = size }
+        didSet { invalidateClippingPlanes(); debugNode.scale = size }
     }
+    
+    @objc fileprivate(set) var debugNode: SCNNode!
+    @objc fileprivate var clippingPlanes: [Plane]?
 
     @objc override init() {
         super.init()
@@ -55,7 +56,6 @@ import SceneKit
     }
 
     @objc override func update(_ props: [String: Any]) {
-
         if let size = Convert.toVector3(props["size"]) {
             self.size = size
         }
@@ -91,11 +91,13 @@ import SceneKit
         }
     }
 
-    // TODO: check if Ray intersect Prism box
     @objc override func hitTest(ray: Ray) -> BaseNode? {
+        guard intersect(with: ray) else { return nil }
+        let clippedRay = clipRay(ray)
+        
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
-                if let hitNode = transformNode.hitTest(ray: ray) {
+                if let hitNode = transformNode.hitTest(ray: clippedRay) {
                     return hitNode
                 }
             }
@@ -114,5 +116,31 @@ import SceneKit
                 debugNode.removeFromParentNode()
             }
         }
+    }
+}
+
+// MARK: - Clipping
+extension Prism {
+    fileprivate func invalidateClippingPlanes() {
+        clippingPlanes = nil
+    }
+    
+    @objc func getClippingPlanes() -> [Plane] {
+        if clippingPlanes == nil {
+            let min = -0.5 * size
+            let max = 0.5 * size
+            let planes: [SCNVector4] = [
+                SCNVector4( 1, 0, 0,-min.x),
+                SCNVector4(-1, 0, 0, max.x),
+                SCNVector4(0, 1, 0,-min.y),
+                SCNVector4(0,-1, 0, max.y),
+                SCNVector4(0, 0, 1,-min.z),
+                SCNVector4(0, 0,-1, max.z),
+            ]
+            
+            clippingPlanes = planes.map { rootNode.convertPlane(Plane(vector: $0), to: nil) }
+        }
+
+        return clippingPlanes!
     }
 }

@@ -139,35 +139,6 @@ class PrismSpec: QuickSpec {
                         expect(prism.rootNode.childNodes[1]).to(equal(childNode))                    }
                 }
             }
-
-            context("when asked for hitTest") {
-                context("when contains TransformNode") {
-                    it("should iterate through them") {
-                        let childNode1 = StubbedTransformNode()
-                        let childNode2 = StubbedTransformNode()
-                        let childNode3 = StubbedTransformNode()
-                        let hitNode = TransformNode()
-                        childNode3.hitNode = hitNode
-
-                        _ = prism.addNode(childNode1)
-                        _ = prism.addNode(childNode2)
-                        _ = prism.addNode(childNode3)
-
-                        let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
-                        expect(hitResult).to(equal(hitNode))
-                        expect(childNode1.wasIteratedByHitTest).to(beTrue())
-                        expect(childNode2.wasIteratedByHitTest).to(beTrue())
-                        expect(childNode3.wasIteratedByHitTest).to(beTrue())
-                    }
-                }
-
-                context("when doesn't contain TransformNode") {
-                    it("should return itself") {
-                        let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
-                        expect(hitResult).to(equal(prism))
-                    }
-                }
-            }
         }
     }
 }

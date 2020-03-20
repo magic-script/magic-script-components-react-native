@@ -30,10 +30,7 @@ import UIKit
         self.direction = direction
         self.length = length
     }
-}
 
-// MARK: Intersection
-extension Ray {
     func getClosestPointTo(ray: Ray) -> SCNVector3? {
         // https://en.wikipedia.org/wiki/Skew_lines#Distance
         let p1 = begin

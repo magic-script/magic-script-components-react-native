@@ -42,7 +42,7 @@ interface VideoPlayer {
 
     fun release()
 
-    fun addTimedTextPath(path: String, onTextChangedListener: (String) -> Unit)
+    fun addTimedTextPath(path: Uri, onTextChangedListener: (String) -> Unit)
 
     fun seekTo(millis: Int)
 

@@ -92,9 +92,9 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         mediaPlayer.release()
     }
 
-    override fun addTimedTextPath(path: String, onTextChangedListener: (String) -> Unit) {
+    override fun addTimedTextPath(path: Uri, onTextChangedListener: (String) -> Unit) {
         mediaPlayer.setOnTimedTextListener(null)
-        mediaPlayer.addTimedTextSource(path, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP)
+        mediaPlayer.addTimedTextSource(context, path, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP)
         mediaPlayer.setOnTimedTextListener { _, text ->
             onTextChangedListener(text.text)
         }

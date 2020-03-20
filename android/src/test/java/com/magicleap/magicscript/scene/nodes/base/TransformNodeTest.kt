@@ -150,13 +150,6 @@ class TransformNodeTest {
     }
 
     @Test
-    fun `renderableRequested should be true after attaching renderable`() {
-        val node = NodeBuilder().build()
-        node.attachRenderable()
-        assertTrue(node.renderableRequested)
-    }
-
-    @Test
     fun `should apply clip bounds on the node and children nodes`() {
         val node = NodeBuilder().build()
         val child1 = NodeBuilder().build()

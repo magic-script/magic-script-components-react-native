@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.reactArrayOf
@@ -46,6 +47,7 @@ class VideoNodeTest {
     private lateinit var videoPlayer: VideoPlayer
     private lateinit var videoReadableLoader: VideoRenderableLoader
     private lateinit var clipper: Clipper
+    private lateinit var arResourcesProvider: ArResourcesProvider
 
     @Before
     fun setUp() {
@@ -53,10 +55,18 @@ class VideoNodeTest {
         this.videoPlayer = mock()
         this.videoReadableLoader = mock()
         this.clipper = mock()
+        this.arResourcesProvider = mock()
 
         val videoUri = "http://video.com/sample.mp4"
         val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
-        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader, clipper)
+        videoNode = VideoNode(
+            initProps = props,
+            context = context,
+            videoPlayer = videoPlayer,
+            videoRenderableLoader = videoReadableLoader,
+            nodeClipper = clipper,
+            arResourcesProvider = arResourcesProvider
+        )
         videoNode.build()
     }
 
@@ -185,6 +195,13 @@ class VideoNodeTest {
         videoNode.show()
 
         verify(clipper, times(2)).applyClipBounds(eq(videoNode), eq(clipBounds))
+    }
+
+    @Test
+    fun `should unregister AR loaded listener on destroy`() {
+        videoNode.onDestroy()
+
+        verify(arResourcesProvider).removeArLoadedListener(eq(videoNode))
     }
 
 }

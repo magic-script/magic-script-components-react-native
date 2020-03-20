@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.reactArrayOf
@@ -27,9 +28,7 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import junit.framework.Assert.assertEquals
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
@@ -48,12 +47,15 @@ class ModelNodeTest {
     private lateinit var context: Context
     private lateinit var modelRenderableLoader: ModelRenderableLoader
     private lateinit var renderableAnimator: RenderableAnimator
+    private lateinit var arResourcesProvider: ArResourcesProvider
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         modelRenderableLoader = mock()
         renderableAnimator = mock()
+        arResourcesProvider = mock()
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
     }
 
     @Test
@@ -63,7 +65,6 @@ class ModelNodeTest {
         val node = createNode(props)
 
         node.build()
-        node.attachRenderable()
 
         verify(modelRenderableLoader).loadRenderable(any(), any())
     }
@@ -82,7 +83,6 @@ class ModelNodeTest {
         val node = createNode(props)
 
         node.build()
-        node.attachRenderable()
 
         assertEquals(expectedContentNodeScale, node.contentNode.localScale)
         assertEquals(expectedNodeScale, node.localScale)
@@ -108,7 +108,7 @@ class ModelNodeTest {
 
         node.isVisible shouldBe false
     }
-    
+
     @Test
     fun `should hide the node when its center is outside of clip bounds`() {
         val props = reactMapOf(
@@ -123,8 +123,24 @@ class ModelNodeTest {
         node.isVisible shouldEqual false
     }
 
+    @Test
+    fun `should unregister AR loaded listener on destroy`() {
+        val node = createNode(reactMapOf())
+        node.build()
+
+        node.onDestroy()
+
+        verify(arResourcesProvider).removeArLoadedListener(eq(node))
+    }
+
     private fun createNode(props: JavaOnlyMap): ModelNode {
-        return ModelNode(props, context, modelRenderableLoader, renderableAnimator)
+        return ModelNode(
+            props,
+            context,
+            modelRenderableLoader,
+            renderableAnimator,
+            arResourcesProvider
+        )
     }
 
 }

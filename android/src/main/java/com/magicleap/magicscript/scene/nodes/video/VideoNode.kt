@@ -109,7 +109,6 @@ class VideoNode(
     private fun setTimedTextPath(props: Bundle) {
         if(props.containsKey(PROP_TIMED_TEXT_PATH)) {
             val path = props.readFilePath(PROP_TIMED_TEXT_PATH, context)
-            Log.d("VideoNode", "path: $path, props: $props")
             if(path == null) {
                 videoPlayer.clearTimedTextListener()
                 contentNode.removeChild(subtitles)

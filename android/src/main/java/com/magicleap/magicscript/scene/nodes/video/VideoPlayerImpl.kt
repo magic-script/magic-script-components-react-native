@@ -17,17 +17,20 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
-import android.media.MediaFormat
-import android.media.MediaFormat.MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer
+import android.media.MediaPlayer.TrackInfo
 import android.net.Uri
+import android.util.Log
 import android.view.Surface
+
 
 class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
     private var onLoadedListener: (() -> Unit)? = null
     private var ready = false
+    private var timedTextUri: Uri? = null
+    private var onSubtitleChangeListener: ((String) -> Unit)? = null
 
     override var volume: Float = 1.0F
         set(value) {
@@ -95,11 +98,19 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
     override fun addTimedTextPath(path: Uri, onTextChangedListener: (String) -> Unit) {
         mediaPlayer.setOnTimedTextListener(null)
         mediaPlayer.addTimedTextSource(context, path, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP)
+        val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
+        if(textTrackIndex >= 0) {
+            mediaPlayer.selectTrack(textTrackIndex)
+        }
         mediaPlayer.setOnTimedTextListener { _, text ->
+            Log.d("VideoNode", "timed text changed: $text")
             onTextChangedListener(text.text)
         }
     }
 
+    private fun findTrackIndexFor(trackInfo: Array<TrackInfo>): Int {
+        return trackInfo.find { it.trackType == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT }?.trackType ?: -1
+    }
     override fun seekTo(millis: Int) {
         mediaPlayer.seekTo(millis)
     }

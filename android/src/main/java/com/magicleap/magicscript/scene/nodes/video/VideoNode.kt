@@ -18,10 +18,8 @@ package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.WritableNativeMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
@@ -68,7 +66,7 @@ class VideoNode(
         const val DEFAULT_VOLUME = 1.0
     }
 
-    private var subtitles: UiTextNode? = null
+    private var subtitles: UiSubtitlesNode? = null
     var onVideoPreparedListener: (() -> Unit)? = null
 
     override var clipBounds: AABB?
@@ -108,21 +106,17 @@ class VideoNode(
     private fun setTimedTextPath(props: Bundle) {
         if(props.containsKey(PROP_TIMED_TEXT_PATH)) {
             val path = props.readFilePath(PROP_TIMED_TEXT_PATH, context)
-            if(path == null) {
-                videoPlayer.clearTimedTextListener()
-                contentNode.removeChild(subtitles)
-                subtitles = null
-            } else {
                 if(subtitles == null) {
                     val bundle = Bundle()
                     bundle.putSerializable(UiTextNode.PROP_BOUNDS_SIZE, arrayListOf(2.0, 0.3))
-                    subtitles = UiTextNode(JavaOnlyMap.of(PROP_ALIGNMENT, "bottom-center"), context, viewRenderableLoader, nodeClipper, fontProvider)
+                    subtitles = UiSubtitlesNode(context = context, viewRenderableLoader = viewRenderableLoader, nodeClipper = nodeClipper, fontProvider = fontProvider )
                 }
+            if(path != null) {
                 videoPlayer.addTimedTextPath(path) {
                     subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, it))
                 }
             }
-        }
+            }
     }
 
     private fun setSeekTo(props: Bundle) {

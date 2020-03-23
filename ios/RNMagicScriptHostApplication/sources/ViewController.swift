@@ -97,7 +97,7 @@ class ViewController: UIViewController {
 
         // Slider
         slider = createComponent([
-            "min": 0.3,
+            "min": 0.1,
             "max": 1.0,
             "value": 1.0,
             "localPosition": [0, 0.6, 0]

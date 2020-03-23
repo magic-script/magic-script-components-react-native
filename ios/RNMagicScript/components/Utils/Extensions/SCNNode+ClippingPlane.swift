@@ -35,18 +35,13 @@ extension SCNNode {
     
     func applyClippingPlanesShaderModifiers(recursive: Bool = false) {
         guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
-            
-        if recursive {
-            enumerateHierarchy { (node, result) in
-                guard let nodeGeometry = node.geometry else { return }
-                if nodeGeometry.shaderModifiers == nil {
-                    nodeGeometry.shaderModifiers = modifiers
-                }
-            }
-        } else {
-            guard let nodeGeometry = geometry else { return }
+        invokeClosure(recursive: recursive) { (node) -> (Void) in
+            guard let nodeGeometry = node.geometry else { return }
             if nodeGeometry.shaderModifiers == nil {
                 nodeGeometry.shaderModifiers = modifiers
+            } else {
+                nodeGeometry.shaderModifiers![.fragment] = modifiers[.fragment]
+                nodeGeometry.shaderModifiers![.geometry] = modifiers[.geometry]
             }
         }
     }
@@ -78,7 +73,6 @@ extension SCNNode {
     func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
         guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
         if recursive {
-//            enumerateHierarchy { (node, result) in node.applyClippingPlanes(planes) }
             setClippingPlanesRecursive(planes)
         } else {
             applyClippingPlanes(planes)
@@ -127,6 +121,14 @@ extension SCNNode {
         for i in validPlanesCount..<maxPlanesSupported {
             let value = NSValue(scnVector4: SCNVector4.zero)
             nodeGeometry.setValue(value, forKey: "clippingPlane\(i + 1)")
+        }
+    }
+    
+    fileprivate func invokeClosure(recursive: Bool, callback: @escaping (SCNNode) -> (Void)) {
+        if recursive {
+            enumerateHierarchy { (node, result) in callback(node) }
+        } else {
+            callback(self)
         }
     }
 }

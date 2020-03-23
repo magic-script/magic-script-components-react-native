@@ -33,7 +33,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupARView()
-        setupScene()
+        
+        let scene = Scene()
+        NodesManager.instance.registerScene(scene, sceneId: sceneId)
+        NodesManager.instance.addNodeToRoot(sceneId)
+        
+        for i in 0..<1 {
+            setupScene(index: i)
+        }
         arView.register(self)
     }
 
@@ -42,20 +49,30 @@ class ViewController: UIViewController {
     }
 
     let groupId: String = "group"
+    let sceneId = "scene"
     var slider: UiSliderNode!
     var prism: Prism!
-    fileprivate func setupScene() {
-        let sceneId = "scene"
-        let scene = Scene()
-        NodesManager.instance.registerScene(scene, sceneId: sceneId)
-        NodesManager.instance.addNodeToRoot(sceneId)
+    fileprivate func setupScene(index: Int) {
+        let columns: Int = 10
+        let rows: Int = 10
+        let origin = SCNVector3(0, 0, 0)
+        let size = SCNVector3(0.3, 0.7, 0.2)
+        let gap: Float = 0.05
+        let column: Int = index % columns
+        let row: Int = (index % (columns * rows)) / columns
+        let layer: Int = index / (columns * rows)
 
-        let prismId = "prism"
+        let x: Float = origin.x + Float(column) * (size.x + gap)
+        let y: Float = origin.y + Float(row) * (size.y + gap)
+        let z: Float = origin.z - Float(layer) * (size.z + gap)
+        
+        let prismId = "prism\(index)"
         prism = Prism()
-//        prism.size = SCNVector3(0.3, 0.3, 0.2)
-        prism.size = SCNVector3(1, 1, 1)
-//        prism.debug = true
-        prism.editMode = true
+        prism.size = size
+//        prism.size = SCNVector3(1, 1, 1)
+        prism.debug = true
+//        prism.editMode = true
+        prism.position = SCNVector3(x, y, z)
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)
         NodesManager.instance.addNode(prismId, toParent: sceneId)
@@ -82,11 +99,15 @@ class ViewController: UIViewController {
         // Slider
         slider = createComponent([
             "min": 0.3,
-            "max": 3.0,
+            "max": 1.0,
+            "value": 1.0,
             "localPosition": [0, 0.6, 0]
         ], nodeId: "slider", parentId: groupId)
         slider.onSliderChanged = { [weak self] (sender, value) in
             self?.prism.size = SCNVector3(value, value, value)
+//            self?.prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
+//            self?.prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
+            NodesManager.instance.updateLayout()
         }
 
         let checkbox1: UiToggleNode = createComponent([
@@ -194,6 +215,8 @@ class ViewController: UIViewController {
         }
         return node
     }
+    
+    var tmpValue: Double = 0.0
 }
 
 extension ViewController: RCTARViewObserving {
@@ -202,8 +225,16 @@ extension ViewController: RCTARViewObserving {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-//        DispatchQueue.main.async() { [weak self] in
-//            NodesManager.instance.updateLayout()
-//        }
+        tmpValue += deltaTime
+        if tmpValue > 1.0 {
+            tmpValue = 0.3
+        }
+        
+        let value = tmpValue
+        
+        DispatchQueue.main.async() { [weak self] in
+            self?.prism.size = SCNVector3(value, value, value)
+            NodesManager.instance.updateLayout()
+        }
     }
 }

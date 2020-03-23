@@ -20,8 +20,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.JavaOnlyArray
-import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
@@ -33,23 +31,14 @@ import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.ar.*
-import com.magicleap.magicscript.ar.clip.TextureClipper
-import com.magicleap.magicscript.font.providers.AndroidFontProvider
-import com.magicleap.magicscript.font.providers.FontProviderImpl
-import com.magicleap.magicscript.icons.DefaultIconsProvider
-import com.magicleap.magicscript.icons.ExternalIconsProvider
-import com.magicleap.magicscript.icons.IconsRepositoryImpl
+import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.ar.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.minus
@@ -71,10 +60,7 @@ class Prism(
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
 
-        private const val MENU_MARGIN_BOTTOM = 0.1f
-        private const val MENU_ICON_SIZE = 0.15
-        private const val MENU_TEXT_SIZE = 0.15
-        private const val MENU_SHOW_PRISM_ICON = "generic_three_dimensional"
+        private const val MENU_MARGIN_BOTTOM = 0f
     }
 
     var beingTouched: Boolean = false
@@ -102,7 +88,7 @@ class Prism(
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var container: RotatableNode? = null
     private var content: TransformNode? = null
-    private val menuNode: UiLinearLayout
+    private val menuNode: PrismMenu
     private var lastCameraPosition: Vector3? = null
     private var requestedAnchorPosition: Vector3? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -123,15 +109,7 @@ class Prism(
         arResourcesProvider.addArLoadedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
 
-        menuNode = UiLinearLayout(
-            JavaOnlyMap.of(
-                UiLinearLayout.PROP_ORIENTATION, ORIENTATION_VERTICAL,
-                TransformNode.PROP_ALIGNMENT, "center-center",
-                UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "center-center",
-                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, JavaOnlyArray.of(0.02, 0.02, 0.02, 0.02)
-            ),
-            LinearLayoutManager(VerticalLinearLayoutManager(), HorizontalLinearLayoutManager())
-        )
+        menuNode = PrismMenu(context)
     }
 
     override val reactParent: ReactNode? get() = reactScene
@@ -277,49 +255,11 @@ class Prism(
     }
 
     private fun buildMenu() {
-        val labelProps = JavaOnlyMap.of(
-            UiTextNode.PROP_TEXT, "Catalog app",
-            UiTextNode.PROP_TEXT_SIZE, MENU_TEXT_SIZE,
-            TransformNode.PROP_ALIGNMENT, "center-center"
-        )
-
-        val label = UiTextNode(
-            initProps = labelProps,
-            context = context,
-            viewRenderableLoader = ViewRenderableLoaderImpl(context),
-            nodeClipper = TextureClipper(),
-            fontProvider = FontProviderImpl(context, AndroidFontProvider())
-        ).apply {
-            build()
-        }
-
-        val buttonShowProps = JavaOnlyMap.of(
-            UiButtonNode.PROP_WIDTH, MENU_ICON_SIZE,
-            UiButtonNode.PROP_HEIGHT, MENU_ICON_SIZE,
-            UiButtonNode.PROP_ICON_TYPE, MENU_SHOW_PRISM_ICON
-        )
-
-        val buttonShow = UiButtonNode(
-            initProps = buttonShowProps,
-            context = context,
-            viewRenderableLoader = ViewRenderableLoaderImpl(context),
-            nodeClipper = TextureClipper(),
-            fontProvider = FontProviderImpl(context, AndroidFontProvider()),
-            iconsRepo = IconsRepositoryImpl(
-                DefaultIconsProvider(context),
-                ExternalIconsProvider(context)
-            )
-        ).apply {
-            build()
-        }
-
-        buttonShow.onClickListener = {
+        menuNode.onButtonClickListener = {
             visible = !visible
         }
 
         menuNode.build()
-        menuNode.addContent(label)
-        menuNode.addContent(buttonShow)
         addChild(menuNode)
         adjustMenuPosition()
         attachMenuRenderables()
@@ -338,7 +278,9 @@ class Prism(
     }
 
     private fun adjustMenuRotation(cameraPosition: Vector3) {
-        val direction = worldPosition - cameraPosition
+        val prismFlatPosition = Vector3(worldPosition.x, 0f, worldPosition.z)
+        val cameraFlatPosition = Vector3(cameraPosition.x, 0f, cameraPosition.z)
+        val direction = prismFlatPosition - cameraFlatPosition
         val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
         menuNode.worldRotation = lookRotation
     }

@@ -52,22 +52,22 @@ extension SCNNode {
     }
     
     func forceUpdateClipping(recursive: Bool = false) {
-        if let boundsClipper = getBoundsClipper() {
+        if let boundsClipper = getBoundsClippingManager() {
             boundsClipper.updateClipping(for: self, recursive: recursive)
         }
     }
     
-    func invalidateBoundsClipper() {
-        if let boundsClipper = getBoundsClipper() {
-            boundsClipper.invalidateClipping()
+    func invalidateBoundsClippingManager() {
+        if let boundsClippingManager = getBoundsClippingManager() {
+            boundsClippingManager.invalidateClipping()
         }
     }
     
-    fileprivate func getBoundsClipper() -> BoundsClipping? {
+    fileprivate func getBoundsClippingManager() -> BoundsClippingManaging? {
         var node: SCNNode? = parent
         while (node != nil) {
-            if let boundsClippingNode = node as? BoundsClipping {
-                return boundsClippingNode
+            if let boundsClippingManager = node as? BoundsClippingManaging {
+                return boundsClippingManager
             }
             node = node?.parent
         }
@@ -78,14 +78,45 @@ extension SCNNode {
     func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
         guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
         if recursive {
-            enumerateHierarchy { (node, result) in applyClippingPlanes(planes, for: node) }
+//            enumerateHierarchy { (node, result) in node.applyClippingPlanes(planes) }
+            setClippingPlanesRecursive(planes)
         } else {
-            applyClippingPlanes(planes, for: self)
+            applyClippingPlanes(planes)
         }
     }
+    
+    fileprivate func setClippingPlanesRecursive(_ planes: [SCNVector4]) {
+        let clippingPlanes: [SCNVector4]
+        if let boundsClipper = self as? BoundsClipping {
+            let morePlanes = boundsClipper.getClippingPlanesAsVector4()
+            clippingPlanes = morePlanes.count > 0 ? mergeClippingPlanes(planes, morePlanes) : planes
+        } else {
+            clippingPlanes = planes
+        }
+        applyClippingPlanes(clippingPlanes)
+        childNodes.forEach { $0.setClippingPlanesRecursive(clippingPlanes) }
+    }
+    
+    fileprivate func mergeClippingPlanes(_ planes1: [SCNVector4], _ planes2: [SCNVector4]) -> [SCNVector4] {
+        assert(planes1.count == planes2.count, "Both planes containers must have the same number of elements!")
+        var result: [Plane] = []
+        let tmpPlanes1 = planes1.map { Plane(vector: $0) }
+        let tmpPlanes2 = planes2.map { Plane(vector: $0) }
+        for i in 0..<tmpPlanes1.count {
+            let pl1 = tmpPlanes1[i]
+            let pl2 = tmpPlanes2[i]
+            assert(pl1.normal.dot(pl2.normal) > 0.95, "Normal vectors must be the same.")
+            if pl1.distanceToPoint(SCNVector3.zero) > pl2.distanceToPoint(SCNVector3.zero) {
+                result.append(pl2)
+            } else {
+                result.append(pl1)
+            }
+        }
+        return result.map { $0.toVector4() }
+    }
 
-    fileprivate func applyClippingPlanes(_ planes: [SCNVector4], for node: SCNNode) {
-        guard let nodeGeometry = node.geometry else { return }
+    fileprivate func applyClippingPlanes(_ planes: [SCNVector4]) {
+        guard let nodeGeometry = geometry else { return }
         let maxPlanesSupported: Int = 6
         let validPlanesCount: Int = min(planes.count, maxPlanesSupported)
         for i in 0..<validPlanesCount {

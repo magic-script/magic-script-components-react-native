@@ -18,6 +18,10 @@ import Foundation
 import SceneKit
 
 protocol BoundsClipping {
+    func getClippingPlanesAsVector4() -> [SCNVector4]
+}
+
+protocol BoundsClippingManaging {
     var isUpdateClippingNeeded: Bool { get }
     func invalidateClipping()
     func updateClipping(for node: SCNNode?, recursive: Bool)

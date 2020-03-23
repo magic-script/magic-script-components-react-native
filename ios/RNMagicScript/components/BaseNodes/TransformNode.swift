@@ -193,9 +193,6 @@ import SceneKit
     @objc func updatePivot() {
     }
 
-    @objc func postUpdate() {
-    }
-
     func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()

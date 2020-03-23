@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         let columns: Int = 10
         let rows: Int = 10
         let origin = SCNVector3(0, 0, 0)
-        let size = SCNVector3(0.3, 0.7, 0.2)
+        let size = SCNVector3(1.0, 1.0, 1.0)
         let gap: Float = 0.05
         let column: Int = index % columns
         let row: Int = (index % (columns * rows)) / columns
@@ -69,7 +69,6 @@ class ViewController: UIViewController {
         let prismId = "prism\(index)"
         prism = Prism()
         prism.size = size
-//        prism.size = SCNVector3(1, 1, 1)
         prism.debug = true
 //        prism.editMode = true
         prism.position = SCNVector3(x, y, z)
@@ -115,6 +114,7 @@ class ViewController: UIViewController {
             "text": "Debug mode",
             "textSize": 0.06,
             "localPosition": [-0.2, 0.7, 0],
+            "on": prism.debug,
             "type": "checkbox"
         ], nodeId: "checkbox1", parentId: groupId)
         checkbox1.onChanged = { [weak self] (sender, on) in
@@ -126,10 +126,40 @@ class ViewController: UIViewController {
             "text": "Edit mode",
             "textSize": 0.06,
             "localPosition": [-0.2, 0.8, 0],
+            "on": prism.editMode,
             "type": "checkbox"
         ], nodeId: "checkbox2", parentId: groupId)
         checkbox2.onChanged = { [weak self] (sender, on) in
             self?.prism.editMode = on
+        }
+        
+        // ScrollView
+        let scrollViewId = "scrollView"
+        let _ : UiScrollViewNode = createComponent([
+            "scrollBounds": [
+                "min": [-0.1, -0.2, -0.1],
+                "max": [0.1, 0.2, 0.1]
+            ],
+            "debug": true,
+            "localPosition": [0.3, 0, 0],
+            "scrollDirection": "vertical"
+        ], nodeId: scrollViewId, parentId: groupId)
+//        scrollView.localRotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: 0.5 * Float.pi)
+        let linearLayoutId = "linear_layout"
+        let _: UiLinearLayoutNode = createComponent([:], nodeId: linearLayoutId, parentId: scrollViewId)
+        let colors = [
+            [1,0,0,1],
+            [0,1,0,1],
+            [0,0,1,1],
+            [1,1,0,1],
+            [1,1,1,1],
+        ]
+        for i in 0..<colors.count {
+            let _: UiImageNode = createComponent([
+                "color": colors[i],
+                "width": 0.4,
+                "height": 0.4,
+            ], nodeId: "image_\(i)", parentId: linearLayoutId)
         }
 
         NodesManager.instance.updateLayout()
@@ -225,16 +255,16 @@ extension ViewController: RCTARViewObserving {
         lastTime = time
         guard deltaTime < 0.5 else { return }
 
-        tmpValue += deltaTime
-        if tmpValue > 1.0 {
-            tmpValue = 0.3
-        }
-        
-        let value = tmpValue
-        
-        DispatchQueue.main.async() { [weak self] in
-            self?.prism.size = SCNVector3(value, value, value)
-            NodesManager.instance.updateLayout()
-        }
+//        tmpValue += deltaTime
+//        if tmpValue > 1.0 {
+//            tmpValue = 0.3
+//        }
+//
+//        let value = tmpValue
+//
+//        DispatchQueue.main.async() { [weak self] in
+//            self?.prism.size = SCNVector3(value, value, value)
+//            NodesManager.instance.updateLayout()
+//        }
     }
 }

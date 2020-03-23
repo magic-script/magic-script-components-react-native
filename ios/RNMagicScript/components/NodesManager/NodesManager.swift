@@ -141,7 +141,7 @@ import ARKit
                     if scene != nil {
                         // if node is added in update process (after creation of the nodes tree)
                         // it's need to be clipped by the prism
-                        node.invalidateBoundsClipper()
+                        node.invalidateBoundsClippingManager()
                     }
                     if let dialog = node as? DialogDataProviding {
                         dialogPresenter?.present(dialog)
@@ -244,10 +244,6 @@ import ARKit
 
         rootNode.enumerateTransformNodes { node in
             node.layoutContainerIfNeeded()
-        }
-
-        rootNode.enumerateTransformNodes { node in
-            node.postUpdate()
         }
 
         let invalidatedPrisms: [Prism] = prismsById.filter { $0.value.isUpdateClippingNeeded }.map { $0.value }

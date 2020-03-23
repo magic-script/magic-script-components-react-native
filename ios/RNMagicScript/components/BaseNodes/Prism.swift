@@ -165,8 +165,8 @@ import SceneKit
     }
 }
 
-// MARK: - Clipping
-extension Prism {
+// MARK: - BoundsClipping
+extension Prism: BoundsClipping {
     fileprivate func invalidateClippingPlanes() {
         clippingPlanes = nil
         clippingPlanesAsVector4 = nil
@@ -201,7 +201,8 @@ extension Prism {
     }
 }
 
-extension Prism: BoundsClipping {
+// MARK: - BoundsClippingManaging
+extension Prism: BoundsClippingManaging {
     var isUpdateClippingNeeded: Bool { return clipNeeded }
 
     func invalidateClipping() {

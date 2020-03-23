@@ -18,6 +18,15 @@ import Foundation
 import SceneKit
 
 @objc open class Prism: BaseNode {
+    @objc public var isPointed: Bool = false {
+       didSet {
+#if targetEnvironment(simulator)
+        let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
+        let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+        debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
+#endif
+       }
+    }
     @objc public var size: SCNVector3 = SCNVector3.zero {
         didSet {
             updateSize()
@@ -47,7 +56,10 @@ import SceneKit
     }
 
     @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
+#if targetEnvironment(simulator)
     @objc fileprivate(set) var debugNode: SCNNode?
+    @objc fileprivate(set) var debugClippedRayNode: SCNNode?
+#endif
     @objc fileprivate(set) var editNode: PrismOutlineNode?
     @objc fileprivate var clipNeeded: Bool = true
     @objc fileprivate var clippingPlanes: [Plane]?
@@ -113,9 +125,19 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> BaseNode? {
-        guard intersect(with: ray) else { return nil }
-        let clippedRay = clipRay(ray)
+        var outRay: Ray?
+        guard intersect(with: ray, clippedRay: &outRay) else { return nil }
+        guard let clippedRay = outRay else { return nil }
         
+#if targetEnvironment(simulator)
+        if debug {
+            debugClippedRayNode?.removeFromParentNode()
+            let begin = convertPosition(clippedRay.begin, from: nil)
+            let end = convertPosition(clippedRay.end, from: nil)
+            debugClippedRayNode = NodesFactory.createSegmentNode(vertices: [begin, end])
+            addChildNode(debugClippedRayNode!)
+        }
+#endif
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
                 if let hitNode = transformNode.hitTest(ray: clippedRay) {
@@ -128,11 +150,14 @@ import SceneKit
     }
 
     fileprivate func updateSize() {
+#if targetEnvironment(simulator)
         debugNode?.scale = size
+#endif
         editNode?.size = size
     }
     
     @objc func updateDebugMode() {
+#if targetEnvironment(simulator)
         if debug {
             if debugNode == nil {
                 debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
@@ -146,6 +171,7 @@ import SceneKit
         } else {
             debugNode?.removeFromParentNode()
         }
+#endif
     }
 
     @objc func updateEditMode() {

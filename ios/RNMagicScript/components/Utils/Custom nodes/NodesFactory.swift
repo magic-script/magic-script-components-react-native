@@ -18,7 +18,7 @@ import SceneKit
 
 @objc open class NodesFactory: NSObject {
 
-    @objc static func createPlaneNode(size: CGSize, color: UIColor? = UIColor.white, image: UIImage? = nil) -> SCNNode {
+    @objc static func createPlaneNode(size: CGSize, color: UIColor = UIColor.white, image: UIImage? = nil) -> SCNNode {
         let geometry = SCNPlane(width: size.width, height: size.height)
         geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
@@ -27,7 +27,7 @@ import SceneKit
         return SCNNode(geometry: geometry)
     }
 
-    @objc static func createPlaneNode(width: CGFloat, height: CGFloat, color: UIColor? = UIColor.white, image: UIImage? = nil) -> SCNNode {
+    @objc static func createPlaneNode(width: CGFloat, height: CGFloat, color: UIColor = UIColor.white, image: UIImage? = nil) -> SCNNode {
         return NodesFactory.createPlaneNode(size: CGSize(width: width, height: height), color: color, image: image)
     }
 
@@ -56,7 +56,7 @@ import SceneKit
         return NodesFactory.createOutlineNode(size: CGSize(width: width, height: height), cornerRadius: cornerRadius, thickness: thickness, color: color)
     }
 
-    @objc static func createLinesNode(vertices: [SCNVector3], color: UIColor? = UIColor.white) -> SCNNode {
+    @objc static func createLinesNode(vertices: [SCNVector3], color: UIColor = UIColor.white) -> SCNNode {
         var indices: [Int16] = []
         for i in 1..<vertices.count {
             indices.append(Int16(i - 1))
@@ -68,6 +68,17 @@ import SceneKit
         geometry.firstMaterial?.lightingModel = .constant
         geometry.firstMaterial?.diffuse.contents = color
         return SCNNode(geometry: geometry)
+    }
+    
+    @objc static func createSegmentNode(vertices: [SCNVector3], lineColor: UIColor = .white, cornerColor: UIColor = .yellow) -> SCNNode {
+        let node = NodesFactory.createLinesNode(vertices: vertices, color: lineColor)
+        vertices.forEach { position in
+            let sphere = NodesFactory.createSphereNode(radius: 0.005, color: cornerColor)
+            sphere.position = position
+            node.addChildNode(sphere)
+        }
+        
+        return node
     }
 
     @objc static func createWireBoxNode(size: SCNVector3, color: UIColor = UIColor.white) -> SCNNode {

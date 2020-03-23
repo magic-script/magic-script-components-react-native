@@ -12,14 +12,14 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import Foundation
 import SceneKit
 
 // MARK: - Intersection
 extension Prism {
-    func intersect(with ray: Ray) -> Bool {
+    func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool {
         // Fast test: ray against outer sphere
         let sqDistanceToSpehere = ray.getSqDistanceToPoint(position)
         let maxSize = 0.5 * max(size.x, max(size.y, size.z))
@@ -31,6 +31,9 @@ extension Prism {
         // Fast test: ray against inner sphere
         let minRadius = 0.5 * min(size.x, min(size.y, size.z))
         if sqDistanceToSpehere < minRadius * minRadius {
+            if clippedRay != nil {
+                clippedRay?.pointee = getClippedRay(ray: ray)
+            }
             return true
         }
     
@@ -38,13 +41,48 @@ extension Prism {
         let beginPoint = ray.begin
         let endPoint = ray.end
         if isPointInside(beginPoint) || isPointInside(endPoint) {
+            if clippedRay != nil {
+                clippedRay?.pointee = ray
+            }
             return true
         }
         
         // Exhaustive test: ray against all planes
+        let result = getClippedRay(ray: ray)
+        if clippedRay != nil {
+            clippedRay?.pointee = result
+        }
+        
+        return result != nil
+    }
+    
+    func getIntersectionPoints(ray: Ray) -> (begin: SCNVector3?, end: SCNVector3?)? {
         let worldSpacePlanes = getClippingPlanes()
-        let intersectionPoint: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: worldSpacePlanes, allPlanes: worldSpacePlanes)
-        return intersectionPoint != nil
+        
+        let beginDir = ray.direction
+        let backPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) > 0 }
+        let frontPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) < 0 }
+        
+        // begin of clipped ray
+        let clippedBegin: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: backPlanes, allPlanes: worldSpacePlanes)
+        let clippedEnd: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: frontPlanes, allPlanes: worldSpacePlanes)
+        
+        if clippedBegin == nil && clippedEnd == nil {
+            return nil
+        }
+        
+        return (begin: clippedBegin, end: clippedEnd)
+    }
+    
+    func getClippedRay(ray: Ray) -> Ray? {
+        guard let points = getIntersectionPoints(ray: ray) else {
+            return nil
+        }
+        
+        let newBegin: SCNVector3 = points.begin ?? ray.begin
+        let newEnd: SCNVector3 = points.end ?? ray.end
+        let direction = newEnd - newBegin
+        return Ray(begin: newBegin, direction: direction.normalized(), length: CGFloat(direction.length()))
     }
     
     func clipRay(_ ray: Ray) -> Ray {

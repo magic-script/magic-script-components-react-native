@@ -49,7 +49,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLay
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_HORIZONTAL
+import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.minus
@@ -71,7 +71,10 @@ class Prism(
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
 
-        private const val MENU_MARGIN_BOTTOM = 0.1f // in meters
+        private const val MENU_MARGIN_BOTTOM = 0.1f
+        private const val MENU_ICON_SIZE = 0.15
+        private const val MENU_TEXT_SIZE = 0.15
+        private const val MENU_SHOW_PRISM_ICON = "generic_three_dimensional"
     }
 
     var beingTouched: Boolean = false
@@ -93,7 +96,7 @@ class Prism(
                 null
             }
 
-            container?.rotationController?.isEnabled = value
+            setRotationHintGraphic(value)
         }
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
@@ -122,10 +125,10 @@ class Prism(
 
         menuNode = UiLinearLayout(
             JavaOnlyMap.of(
-                UiLinearLayout.PROP_ORIENTATION, ORIENTATION_HORIZONTAL,
+                UiLinearLayout.PROP_ORIENTATION, ORIENTATION_VERTICAL,
                 TransformNode.PROP_ALIGNMENT, "center-center",
                 UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "center-center",
-                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, JavaOnlyArray.of(0.0, 0.02, 0.0, 0.02)
+                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, JavaOnlyArray.of(0.02, 0.02, 0.02, 0.02)
             ),
             LinearLayoutManager(VerticalLinearLayoutManager(), HorizontalLinearLayoutManager())
         )
@@ -276,8 +279,8 @@ class Prism(
     private fun buildMenu() {
         val labelProps = JavaOnlyMap.of(
             UiTextNode.PROP_TEXT, "Catalog app",
-            UiTextNode.PROP_TEXT_SIZE, 0.15,
-            TransformNode.PROP_ALIGNMENT, "bottom-center"
+            UiTextNode.PROP_TEXT_SIZE, MENU_TEXT_SIZE,
+            TransformNode.PROP_ALIGNMENT, "center-center"
         )
 
         val label = UiTextNode(
@@ -291,9 +294,9 @@ class Prism(
         }
 
         val buttonShowProps = JavaOnlyMap.of(
-            UiButtonNode.PROP_WIDTH, 0.15,
-            UiButtonNode.PROP_HEIGHT, 0.15,
-            UiButtonNode.PROP_ICON_TYPE, "generic_three_dimensional"
+            UiButtonNode.PROP_WIDTH, MENU_ICON_SIZE,
+            UiButtonNode.PROP_HEIGHT, MENU_ICON_SIZE,
+            UiButtonNode.PROP_ICON_TYPE, MENU_SHOW_PRISM_ICON
         )
 
         val buttonShow = UiButtonNode(
@@ -308,6 +311,10 @@ class Prism(
             )
         ).apply {
             build()
+        }
+
+        buttonShow.onClickListener = {
+            visible = !visible
         }
 
         menuNode.build()
@@ -339,8 +346,7 @@ class Prism(
     private fun adjustMenuVisibility() {
         arResourcesProvider.getCamera()?.let { camera ->
             val viewPos = camera.worldToScreenPoint(worldPosition)
-            visible = (viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y)
-            menuNode.isVisible = visible
+            menuNode.isVisible = viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y
         }
     }
 
@@ -396,6 +402,19 @@ class Prism(
         container?.let {
             if (children.contains(it)) {
                 removeChild(it)
+            }
+        }
+    }
+
+    private fun setRotationHintGraphic(visible: Boolean) {
+        container?.let {
+            it.rotationController?.isEnabled = visible
+            it.children.forEach { child ->
+                if (!visible) {
+                    // fixes a bug when rotate hint graphic was visible even after
+                    // disabling the rotation controller
+                    child.renderable = null
+                }
             }
         }
     }

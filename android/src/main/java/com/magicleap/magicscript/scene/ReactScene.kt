@@ -31,12 +31,12 @@ class ReactScene(
     private val arResourcesProvider: ArResourcesProvider
 ) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
-    private var arScene: Scene? = null
     private val prisms = mutableListOf<Prism>()
     private var lastTapAnchor: Anchor? = null
 
+    private val arScene get() = arResourcesProvider.getArScene() // ar scene may change at runtime
+
     init {
-        this.arScene = arResourcesProvider.getArScene()
         arResourcesProvider.addArSceneChangedListener(this)
         arResourcesProvider.addPlaneTapListener(this)
     }
@@ -56,8 +56,6 @@ class ReactScene(
     }
 
     private fun attachPrismsToArScene(arScene: Scene) {
-        this.arScene = arScene
-
         prisms.forEach {
             // detach from old scene
             it.setParent(null)
@@ -112,7 +110,6 @@ class ReactScene(
     }
 
     override fun onDestroy() {
-        arScene = null
         arResourcesProvider.removeArSceneChangedListener(this)
         arResourcesProvider.removePlaneTapListener(this)
     }

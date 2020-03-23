@@ -20,12 +20,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
@@ -35,12 +37,22 @@ import com.magicleap.magicscript.ar.*
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.font.providers.AndroidFontProvider
 import com.magicleap.magicscript.font.providers.FontProviderImpl
+import com.magicleap.magicscript.icons.DefaultIconsProvider
+import com.magicleap.magicscript.icons.ExternalIconsProvider
+import com.magicleap.magicscript.icons.IconsRepositoryImpl
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
+import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
+import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
+import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_HORIZONTAL
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.minus
 import com.magicleap.magicscript.utils.read
 import kotlin.math.min
 import kotlin.math.pow
@@ -87,7 +99,7 @@ class Prism(
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var container: RotatableNode? = null
     private var content: TransformNode? = null
-    private var menuNode = GroupNode(JavaOnlyMap())
+    private val menuNode: UiLinearLayout
     private var lastCameraPosition: Vector3? = null
     private var requestedAnchorPosition: Vector3? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -107,6 +119,16 @@ class Prism(
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addArLoadedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
+
+        menuNode = UiLinearLayout(
+            JavaOnlyMap.of(
+                UiLinearLayout.PROP_ORIENTATION, ORIENTATION_HORIZONTAL,
+                TransformNode.PROP_ALIGNMENT, "center-center",
+                UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, "center-center",
+                UiLinearLayout.PROP_DEFAULT_ITEM_PADDING, JavaOnlyArray.of(0.0, 0.02, 0.0, 0.02)
+            ),
+            LinearLayoutManager(VerticalLinearLayoutManager(), HorizontalLinearLayoutManager())
+        )
     }
 
     override val reactParent: ReactNode? get() = reactScene
@@ -174,9 +196,7 @@ class Prism(
     override fun onArLoaded() {
         if (cubeLoadRequested) {
             buildCube()
-            menuNode.contentNode.children.filterIsInstance<TransformNode>().forEach {
-                it.attachRenderable()
-            }
+            attachMenuRenderables()
             cubeLoadRequested = false
         }
     }
@@ -208,12 +228,8 @@ class Prism(
             localPosition = Vector3.add(localPosition, diff)
         }
 
-
-        arResourcesProvider.getCamera()?.let { camera ->
-            val viewPos = camera.worldToScreenPoint(worldPosition)
-            visible = (viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y)
-            //menuNode.isVisible = visible
-        }
+        adjustMenuVisibility()
+        adjustMenuRotation(position)
 
         lastCameraPosition = position
     }
@@ -264,7 +280,7 @@ class Prism(
             TransformNode.PROP_ALIGNMENT, "bottom-center"
         )
 
-        val menuLabel = UiTextNode(
+        val label = UiTextNode(
             initProps = labelProps,
             context = context,
             viewRenderableLoader = ViewRenderableLoaderImpl(context),
@@ -274,14 +290,58 @@ class Prism(
             build()
         }
 
+        val buttonShowProps = JavaOnlyMap.of(
+            UiButtonNode.PROP_WIDTH, 0.15,
+            UiButtonNode.PROP_HEIGHT, 0.15,
+            UiButtonNode.PROP_ICON_TYPE, "generic_three_dimensional"
+        )
+
+        val buttonShow = UiButtonNode(
+            initProps = buttonShowProps,
+            context = context,
+            viewRenderableLoader = ViewRenderableLoaderImpl(context),
+            nodeClipper = TextureClipper(),
+            fontProvider = FontProviderImpl(context, AndroidFontProvider()),
+            iconsRepo = IconsRepositoryImpl(
+                DefaultIconsProvider(context),
+                ExternalIconsProvider(context)
+            )
+        ).apply {
+            build()
+        }
+
         menuNode.build()
-        menuNode.addContent(menuLabel)
+        menuNode.addContent(label)
+        menuNode.addContent(buttonShow)
         addChild(menuNode)
         adjustMenuPosition()
+        attachMenuRenderables()
+    }
+
+    private fun attachMenuRenderables() {
+        menuNode.childrenList.forEach {
+            if (!it.renderableRequested) {
+                it.attachRenderable()
+            }
+        }
     }
 
     private fun adjustMenuPosition() {
         menuNode.localPosition = Vector3(0f, size.y / 2 + MENU_MARGIN_BOTTOM, 0f)
+    }
+
+    private fun adjustMenuRotation(cameraPosition: Vector3) {
+        val direction = worldPosition - cameraPosition
+        val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
+        menuNode.worldRotation = lookRotation
+    }
+
+    private fun adjustMenuVisibility() {
+        arResourcesProvider.getCamera()?.let { camera ->
+            val viewPos = camera.worldToScreenPoint(worldPosition)
+            visible = (viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y)
+            menuNode.isVisible = visible
+        }
     }
 
     private fun applyProperties(props: Bundle) {

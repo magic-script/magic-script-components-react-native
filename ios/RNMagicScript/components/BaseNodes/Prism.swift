@@ -210,12 +210,12 @@ extension Prism: BoundsClippingManaging {
     }
 
     func updateClipping(for node: SCNNode? = nil, recursive: Bool = true) {
-        guard clipNeeded else { return }
-
-        let worldSpacePlanes = getClippingPlanesAsVector4()
-        let node: SCNNode = node ?? rootNode
-        node.setClippingPlanes(worldSpacePlanes, recursive: recursive)
-
-        clipNeeded = false
+        if let node = node {
+            node.setClippingPlanes(getClippingPlanesAsVector4(), recursive: recursive)
+        } else {
+            guard clipNeeded else { return }
+            rootNode.setClippingPlanes(getClippingPlanesAsVector4(), recursive: recursive)
+            clipNeeded = false
+        }
     }
 }

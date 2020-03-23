@@ -17,41 +17,85 @@
 import SceneKit
 
 extension SCNNode {
-    func setClippingPlanes(_ planes: [SCNVector4]) {
-        guard !planes.isEmpty else {
-            resetClippingPlanes()
-            return
-        }
+    static fileprivate var clippingPlanesShaderModifiers: [SCNShaderModifierEntryPoint : String]? = {
+        guard let bundle = Bundle.resourcesBundle else { return nil }
+        
+        let geometryURL = bundle.url(forResource: "ClippingPlane.geometry", withExtension: "txt")!
+        let geometryModifier: String = try! String(contentsOf: geometryURL)
 
-        if let bundle = Bundle.resourcesBundle {
-            let geometryURL = bundle.url(forResource: "ClippingPlane.geometry", withExtension: "txt")!
-            let geometryModifier: String = try! String(contentsOf: geometryURL)
+        let fragmentURL = bundle.url(forResource: "ClippingPlane.fragment", withExtension: "txt")!
+        let fragmentModifier: String = try! String(contentsOf: fragmentURL)
 
-            let fragmentURL = bundle.url(forResource: "ClippingPlane.fragment", withExtension: "txt")!
-            let fragmentModifier: String = try! String(contentsOf: fragmentURL)
-
-            let modifiers = [
-                SCNShaderModifierEntryPoint.geometry: geometryModifier,
-                SCNShaderModifierEntryPoint.fragment: fragmentModifier
-            ]
-
-            applyShaderModifiers(modifiers, planes: planes)
-        }
-    }
-
-    func resetClippingPlanes() {
-        applyShaderModifiers(nil, planes: [])
-    }
-
-    fileprivate func applyShaderModifiers(_ modifiers: [SCNShaderModifierEntryPoint: String]?, planes: [SCNVector4]) {
-        enumerateHierarchy { (node, result) in
-            guard let nodeGeometry = node.geometry else { return }
-            nodeGeometry.shaderModifiers = modifiers
-            for (index, plane) in planes.enumerated() {
-                guard index < 6 else { break }
-                let value = NSValue(scnVector4: plane)
-                nodeGeometry.setValue(value, forKey: "clippingPlane\(index + 1)")
+        let modifiers = [
+            SCNShaderModifierEntryPoint.geometry: geometryModifier,
+            SCNShaderModifierEntryPoint.fragment: fragmentModifier
+        ]
+        return modifiers
+    }()
+    
+    func applyClippingPlanesShaderModifiers(recursive: Bool = false) {
+        guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
+            
+        if recursive {
+            enumerateHierarchy { (node, result) in
+                guard let nodeGeometry = node.geometry else { return }
+                if nodeGeometry.shaderModifiers == nil {
+                    nodeGeometry.shaderModifiers = modifiers
+                }
             }
+        } else {
+            guard let nodeGeometry = geometry else { return }
+            if nodeGeometry.shaderModifiers == nil {
+                nodeGeometry.shaderModifiers = modifiers
+            }
+        }
+    }
+    
+    func forceUpdateClipping(recursive: Bool = false) {
+        if let boundsClipper = getBoundsClipper() {
+            boundsClipper.updateClipping(for: self, recursive: recursive)
+        }
+    }
+    
+    func invalidateBoundsClipper() {
+        if let boundsClipper = getBoundsClipper() {
+            boundsClipper.invalidateClipping()
+        }
+    }
+    
+    fileprivate func getBoundsClipper() -> BoundsClipping? {
+        var node: SCNNode? = parent
+        while (node != nil) {
+            if let boundsClippingNode = node as? BoundsClipping {
+                return boundsClippingNode
+            }
+            node = node?.parent
+        }
+        
+        return nil
+    }
+    
+    func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
+        guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
+        if recursive {
+            enumerateHierarchy { (node, result) in applyClippingPlanes(planes, for: node) }
+        } else {
+            applyClippingPlanes(planes, for: self)
+        }
+    }
+
+    fileprivate func applyClippingPlanes(_ planes: [SCNVector4], for node: SCNNode) {
+        guard let nodeGeometry = node.geometry else { return }
+        let maxPlanesSupported: Int = 6
+        let validPlanesCount: Int = min(planes.count, maxPlanesSupported)
+        for i in 0..<validPlanesCount {
+            let value = NSValue(scnVector4: planes[i])
+            nodeGeometry.setValue(value, forKey: "clippingPlane\(i + 1)")
+        }
+        
+        for i in validPlanesCount..<maxPlanesSupported {
+            let value = NSValue(scnVector4: SCNVector4.zero)
+            nodeGeometry.setValue(value, forKey: "clippingPlane\(i + 1)")
         }
     }
 }

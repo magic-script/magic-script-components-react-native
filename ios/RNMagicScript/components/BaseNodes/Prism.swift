@@ -19,7 +19,22 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet { updateSize() }
+        didSet {
+            updateSize()
+            invalidateClippingPlanes()
+        }
+    }
+    override open var position: SCNVector3 {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var orientation: SCNQuaternion {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var scale: SCNVector3 {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var transform: SCNMatrix4 {
+        didSet { invalidateClippingPlanes() }
     }
     @objc var debug: Bool = false {
         didSet { updateDebugMode() }
@@ -112,6 +127,11 @@ import SceneKit
         return self
     }
 
+    fileprivate func updateSize() {
+        debugNode?.scale = size
+        editNode?.size = size
+    }
+    
     @objc func updateDebugMode() {
         if debug {
             if debugNode == nil {
@@ -126,23 +146,6 @@ import SceneKit
         } else {
             debugNode?.removeFromParentNode()
         }
-    }
-    
-    fileprivate func invlidateClippingPlanes() {
-        clippingPlanes = nil
-        clippingPlanesAsVector4 = nil
-    }
-
-    fileprivate func updateSize() {
-        debugNode?.scale = size
-        editNode?.size = size
-
-        // Request clip for all nodes
-        rootNode.enumerateTransformNodes { $0.setNeedsClip() }
-        invalidateClipping()
-        invlidateClippingPlanes()
-
-        updateClipping()
     }
 
     @objc func updateEditMode() {
@@ -167,6 +170,7 @@ extension Prism {
     fileprivate func invalidateClippingPlanes() {
         clippingPlanes = nil
         clippingPlanesAsVector4 = nil
+        invalidateClipping()
     }
     
     @objc func getClippingPlanes() -> [Plane] {
@@ -197,20 +201,19 @@ extension Prism {
     }
 }
 
-extension Prism: Clipping {
-    var isClipUpdateNeeded: Bool { return clipNeeded }
+extension Prism: BoundsClipping {
+    var isUpdateClippingNeeded: Bool { return clipNeeded }
 
     func invalidateClipping() {
         clipNeeded = true
     }
 
-    func updateClipping() {
+    func updateClipping(for node: SCNNode? = nil, recursive: Bool = true) {
         guard clipNeeded else { return }
 
         let worldSpacePlanes = getClippingPlanesAsVector4()
-        rootNode.enumerateTransformNodes { transformNode in
-            transformNode.clipIfNeeded(planes: worldSpacePlanes)
-        }
+        let node: SCNNode = node ?? rootNode
+        node.setClippingPlanes(worldSpacePlanes, recursive: recursive)
 
         clipNeeded = false
     }

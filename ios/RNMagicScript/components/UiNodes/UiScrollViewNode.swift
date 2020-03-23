@@ -57,10 +57,6 @@ import SceneKit
     fileprivate var proxyNode: SCNNode!
     fileprivate var invalidateClippingPlanes: Bool = false
 
-    deinit {
-        scrollContent?.resetClippingPlanes()
-    }
-
     @objc override func setupNode() {
         super.setupNode()
 
@@ -212,7 +208,10 @@ import SceneKit
             scrollContent?.setClippingPlanes(worldSpacePlanes)
         }
     }
-
+    
+//    func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
+//        
+//    }
 
     fileprivate func updateScrollBarVisibility() {
         switch scrollBarVisibility {

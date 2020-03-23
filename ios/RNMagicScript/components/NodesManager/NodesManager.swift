@@ -58,7 +58,7 @@ import ARKit
     }
 
     @objc fileprivate func onResourceDidLoad(_ notification: Notification) {
-        print("onResourceDidLoad: \(notification)")
+//        print("onResourceDidLoad: \(notification)")
         if (notification.object is UiModelNode) {
             // We need to update tree hierarchy only for model nodes.
             // Audio, image? and video resources have predefined size.
@@ -67,7 +67,7 @@ import ARKit
     }
 
     @objc fileprivate func onLayoutDidChangeIndependently(_ notification: Notification) {
-        print("onLayoutDidChangeIndependently: \(notification)")
+//        print("onLayoutDidChangeIndependently: \(notification)")
         updateLayout()
     }
 
@@ -118,6 +118,7 @@ import ARKit
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
+        node.applyClippingPlanesShaderModifiers(recursive: true)
     }
 
     @objc public func unregisterNode(_ nodeId: String) {
@@ -137,6 +138,11 @@ import ARKit
         if let node = getNodeById(nodeId) {
             if let parentNode = getNodeById(parentId) {
                 if parentNode.addNode(node) {
+                    if scene != nil {
+                        // if node is added in update process (after creation of the nodes tree)
+                        // it's need to be clipped by the prism
+                        node.invalidateBoundsClipper()
+                    }
                     if let dialog = node as? DialogDataProviding {
                         dialogPresenter?.present(dialog)
                     }
@@ -219,7 +225,18 @@ import ARKit
         return true
     }
 
+    fileprivate var dispatchWorkItem: DispatchWorkItem?
     @objc public func updateLayout() {
+        guard dispatchWorkItem == nil else { return }
+        dispatchWorkItem = DispatchWorkItem { [weak self] in
+            self?.internalUpdateLayout()
+            self?.dispatchWorkItem = nil
+        }
+        
+        DispatchQueue.main.async(execute: dispatchWorkItem!)
+    }
+    
+    fileprivate func internalUpdateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         rootNode.enumerateTransformNodes { node in
             node.layoutIfNeeded()
@@ -233,13 +250,15 @@ import ARKit
             node.postUpdate()
         }
 
-        let invalidatedPrisms: [Prism] = prismsById.filter { $0.value.isClipUpdateNeeded }.map { $0.value }
+        let invalidatedPrisms: [Prism] = prismsById.filter { $0.value.isUpdateClippingNeeded }.map { $0.value }
         invalidatedPrisms.forEach { $0.updateClipping() }
 
+#if targetEnvironment(simulator)
         // ASSERT - remove me
         prismsById.forEach { (key: String, value: Prism) in
-            assert(!value.isClipUpdateNeeded, "Prism.isClipUpdateNeeded must be set to false!")
+            assert(!value.isUpdateClippingNeeded, "Prism.isUpdateClippingNeeded must be set to false!")
         }
+#endif
     }
 
     func registerAnchorNode(_ node: SCNNode, anchorId: String) {

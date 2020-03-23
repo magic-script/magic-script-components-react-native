@@ -228,3 +228,7 @@ extension SCNVector3 {
     static var up: SCNVector3 = SCNVector3(0, 1, 0)
     static var forward: SCNVector3 = SCNVector3(0, 0, 1)
 }
+
+extension SCNVector4 {
+    static var zero: SCNVector4 = SCNVector4Zero
+}

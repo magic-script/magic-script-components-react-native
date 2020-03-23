@@ -15,9 +15,10 @@
 // 
 
 import Foundation
+import SceneKit
 
-protocol Clipping {
-    var isClipUpdateNeeded: Bool { get }
+protocol BoundsClipping {
+    var isUpdateClippingNeeded: Bool { get }
     func invalidateClipping()
-    func updateClipping()
+    func updateClipping(for node: SCNNode?, recursive: Bool)
 }

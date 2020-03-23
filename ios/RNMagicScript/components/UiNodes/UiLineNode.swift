@@ -72,6 +72,8 @@ import SceneKit
     @objc override func updateLayout() {
         if linesNode.geometry == nil {
             linesNode.geometry = generateLinesGeometry()
+            linesNode.applyClippingPlanesShaderModifiers(recursive: false)
+            linesNode.forceUpdateClipping()
         }
 
         linesNode.geometry?.firstMaterial?.diffuse.contents = self.color

@@ -28,6 +28,13 @@ import GLTFSceneKit
             downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
                 self?.setNeedsLayout()
+            #if targetEnvironment(simulator)
+                // Do not clip model nodes on simulator. There is a limitation that causes that models
+                // are not rendered when are clipped.
+            #else
+                self?.contentNode.applyClippingPlanesShaderModifiers(recursive: true)
+                self?.contentNode.forceUpdateClipping(recursive: true)
+            #endif
                 NotificationCenter.default.post(name: .didLoadResource, object: self)
             }
         }

@@ -33,6 +33,24 @@ extension SCNNode {
         return modifiers
     }()
     
+    static fileprivate func mergeClippingPlanes(_ planes1: [SCNVector4], _ planes2: [SCNVector4]) -> [SCNVector4] {
+        assert(planes1.count == planes2.count, "Both planes containers must have the same number of elements!")
+        var result: [Plane] = []
+        let tmpPlanes1 = planes1.map { Plane(vector: $0) }
+        let tmpPlanes2 = planes2.map { Plane(vector: $0) }
+        for i in 0..<tmpPlanes1.count {
+            let pl1 = tmpPlanes1[i]
+            let pl2 = tmpPlanes2[i]
+            assert(pl1.normal.dot(pl2.normal) > 0.95, "Normal vectors must be the same.")
+            if pl1.distanceToPoint(SCNVector3.zero) > pl2.distanceToPoint(SCNVector3.zero) {
+                result.append(pl2)
+            } else {
+                result.append(pl1)
+            }
+        }
+        return result.map { $0.toVector4() }
+    }
+    
     func applyClippingPlanesShaderModifiers(recursive: Bool = false) {
         guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
         invokeClosure(recursive: recursive) { (node) -> (Void) in
@@ -72,41 +90,17 @@ extension SCNNode {
     
     func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
         guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
-        if recursive {
-            setClippingPlanesRecursive(planes)
-        } else {
-            applyClippingPlanes(planes)
-        }
-    }
-    
-    fileprivate func setClippingPlanesRecursive(_ planes: [SCNVector4]) {
-        let clippingPlanes: [SCNVector4]
-        if let boundsClipper = self as? BoundsClipping {
-            let morePlanes = boundsClipper.getClippingPlanesAsVector4()
-            clippingPlanes = morePlanes.count > 0 ? mergeClippingPlanes(planes, morePlanes) : planes
-        } else {
-            clippingPlanes = planes
-        }
-        applyClippingPlanes(clippingPlanes)
-        childNodes.forEach { $0.setClippingPlanesRecursive(clippingPlanes) }
-    }
-    
-    fileprivate func mergeClippingPlanes(_ planes1: [SCNVector4], _ planes2: [SCNVector4]) -> [SCNVector4] {
-        assert(planes1.count == planes2.count, "Both planes containers must have the same number of elements!")
-        var result: [Plane] = []
-        let tmpPlanes1 = planes1.map { Plane(vector: $0) }
-        let tmpPlanes2 = planes2.map { Plane(vector: $0) }
-        for i in 0..<tmpPlanes1.count {
-            let pl1 = tmpPlanes1[i]
-            let pl2 = tmpPlanes2[i]
-            assert(pl1.normal.dot(pl2.normal) > 0.95, "Normal vectors must be the same.")
-            if pl1.distanceToPoint(SCNVector3.zero) > pl2.distanceToPoint(SCNVector3.zero) {
-                result.append(pl2)
+        
+        invokeClosure(recursive: recursive) { node -> (Void) in
+            let clippingPlanes: [SCNVector4]
+            if let boundsClipper = self as? BoundsClipping {
+                let morePlanes = boundsClipper.getClippingPlanesAsVector4()
+                clippingPlanes = morePlanes.count > 0 ? SCNNode.mergeClippingPlanes(planes, morePlanes) : planes
             } else {
-                result.append(pl1)
+                clippingPlanes = planes
             }
+            node.applyClippingPlanes(clippingPlanes)
         }
-        return result.map { $0.toVector4() }
     }
 
     fileprivate func applyClippingPlanes(_ planes: [SCNVector4]) {
@@ -125,8 +119,15 @@ extension SCNNode {
     }
     
     fileprivate func invokeClosure(recursive: Bool, callback: @escaping (SCNNode) -> (Void)) {
+    #if targetEnvironment(simulator)
+        // Do not clip model nodes on simulator. There is a limitation that causes that models
+        // are not rendered when are clipped.
+        if self is UiModelNode { return }
+    #endif
         if recursive {
-            enumerateHierarchy { (node, result) in callback(node) }
+            //enumerateHierarchy { (node, result) in callback(node) }
+            callback(self)
+            childNodes.forEach { $0.invokeClosure(recursive: recursive, callback: callback) }
         } else {
             callback(self)
         }

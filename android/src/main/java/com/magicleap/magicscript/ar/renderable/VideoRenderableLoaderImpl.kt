@@ -62,7 +62,6 @@ class VideoRenderableLoaderImpl(
             .thenAccept { renderable ->
                 if (!request.isCancelled) {
                     renderable.material.setBoolean("disableChromaKey", true)
-                    // renderable.material.setFloat4("keyColor", CHROMA_KEY_COLOR)
                     renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
                     request.listener.invoke(RenderableResult.Success(renderable))

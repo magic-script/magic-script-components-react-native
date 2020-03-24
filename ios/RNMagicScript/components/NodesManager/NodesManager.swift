@@ -154,7 +154,6 @@ import ARKit
             // the parent does not want to add the node to its hierarchy.
             removeNodeWithDescendants(node)
         }
-
     }
 
     @objc public func addNodeToRoot(_ nodeId: String) {

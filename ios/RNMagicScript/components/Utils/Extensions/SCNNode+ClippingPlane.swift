@@ -46,15 +46,15 @@ extension SCNNode {
         }
     }
     
-    func forceUpdateClipping(recursive: Bool = false) {
-        if let boundsClipper = getBoundsClippingManager() {
-            boundsClipper.updateClipping(for: self, recursive: recursive)
-        }
-    }
-    
     func invalidateBoundsClippingManager() {
         if let boundsClippingManager = getBoundsClippingManager() {
             boundsClippingManager.invalidateClipping()
+        }
+    }
+    
+    func forceUpdateClipping(recursive: Bool = false) {
+        if let boundsClipper = getBoundsClippingManager() {
+            boundsClipper.updateClipping(for: self, recursive: recursive)
         }
     }
 }

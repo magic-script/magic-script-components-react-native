@@ -82,7 +82,7 @@ class SCNMatrix4ExtensionSpec: QuickSpec {
                 }
 
                 it("should set matrix position vector") {
-                    let position = SCNVector3(0.1, 0.2, 0.3).normalized()
+                    let position = SCNVector3(0.1, 0.2, 0.3)
                     var matrix = SCNMatrix4Identity
                     matrix.position = position
                     expect(matrix.position).to(beCloseTo(position))

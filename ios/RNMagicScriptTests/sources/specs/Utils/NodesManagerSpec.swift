@@ -99,7 +99,7 @@ class NodesManagerSpec: QuickSpec {
                         referencePrism.anchorUuid = referenceAnchorUUID
                         nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
-                        nodesManager.registerPrism(referencePrism, nodeId: referencePrismId)
+                        nodesManager.registerPrism(referencePrism, prismId: referencePrismId)
                         let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
                         expect(result).to(beIdenticalTo(referencePrism))
                     }

@@ -25,7 +25,7 @@ import com.magicleap.magicscript.utils.putDefault
  * (it's mapped to a native scroll bar view)
  */
 class UiScrollBarNode(initProps: ReadableMap) :
-    TransformNode(initProps, false, useContentNodeAlignment = false) {
+    TransformNode(initProps,  useContentNodeAlignment = false) {
 
     companion object {
         // properties

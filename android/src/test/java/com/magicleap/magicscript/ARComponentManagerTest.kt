@@ -19,6 +19,7 @@ package com.magicleap.magicscript
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactApplicationContext
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.UiNodesManager
 import com.magicleap.magicscript.scene.nodes.*
@@ -29,7 +30,6 @@ import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout
-import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool
@@ -37,6 +37,7 @@ import com.magicleap.magicscript.scene.nodes.video.VideoNode
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.isA
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,11 +57,24 @@ class ARComponentManagerTest {
     @Mock
     private lateinit var mediaPlayerPool: MediaPlayerPool
 
+    @Mock
+    private lateinit var arResourcesProvider: ArResourcesProvider
+
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+
         val context = ReactApplicationContext(ApplicationProvider.getApplicationContext())
-        manager = ARComponentManager(context, nodesManager, eventsManager, mediaPlayerPool)
+        manager = ARComponentManager(
+            context,
+            nodesManager,
+            eventsManager,
+            mediaPlayerPool,
+            arResourcesProvider
+        )
     }
 
     @Test

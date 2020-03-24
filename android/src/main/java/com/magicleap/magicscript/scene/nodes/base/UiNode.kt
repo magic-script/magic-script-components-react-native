@@ -28,9 +28,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.magicleap.magicscript.ar.RenderableResult
-import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.RenderableResult
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.ViewWrapper
@@ -46,7 +46,7 @@ abstract class UiNode(
     private val viewRenderableLoader: ViewRenderableLoader,
     private val nodeClipper: Clipper,
     useContentNodeAlignment: Boolean = false
-) : TransformNode(initProps, true, useContentNodeAlignment) {
+) : TransformNode(initProps, useContentNodeAlignment) {
 
     companion object {
         // properties
@@ -98,6 +98,8 @@ abstract class UiNode(
     private var touching = false
     private var touchTime = 0f
 
+    private var renderableLoadRequest: ViewRenderableLoader.LoadRequest? = null
+
     /**
      * Desired node width and height in meters or equal to [WRAP_CONTENT_DIMENSION]
      * A dimension equal to [WRAP_CONTENT_DIMENSION] means unspecified size that can grow.
@@ -135,6 +137,8 @@ abstract class UiNode(
     override fun build() {
         initView()
         setup()
+        attachView()
+
         if (useContentNodeAlignment) {
             applyAlignment()
         }
@@ -149,9 +153,6 @@ abstract class UiNode(
         setEnabled(props)
     }
 
-    override fun loadRenderable() {
-        attachView()
-    }
 
     /**
      * Should return the node bounds based on a measured native view size.
@@ -212,6 +213,9 @@ abstract class UiNode(
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null) //stop the loop
+        renderableLoadRequest?.let {
+            viewRenderableLoader.cancel(it)
+        }
     }
 
     protected abstract fun provideView(context: Context): View
@@ -287,22 +291,33 @@ abstract class UiNode(
     private fun attachView() {
         loadingView = true
 
+        val viewParent = view.parent
+        if (viewParent is ViewGroup) {
+            viewParent.removeView(view)
+        }
         viewWrapper.addView(view)
+
+        // cancel previous load request if exists
+        this.renderableLoadRequest?.let {
+            viewRenderableLoader.cancel(it)
+        }
 
         val alignHorizontal =
             if (useContentNodeAlignment) Alignment.Horizontal.CENTER else horizontalAlignment
         val alignVertical =
             if (useContentNodeAlignment) Alignment.Vertical.CENTER else verticalAlignment
-        val config = ViewRenderableLoader.Config(
+
+        this.renderableLoadRequest = ViewRenderableLoader.LoadRequest(
             view = viewWrapper,
             horizontalAlignment = alignHorizontal,
             verticalAlignment = alignVertical
-        )
-        viewRenderableLoader.loadRenderable(config) { result ->
+        ) { result ->
             loadingView = false
             if (result is RenderableResult.Success) {
                 onViewLoaded(result.renderable)
             }
+        }.also {
+            viewRenderableLoader.loadRenderable(it)
         }
     }
 
@@ -313,14 +328,7 @@ abstract class UiNode(
      */
     private fun rebuildLoop() {
         if (shouldRebuild && !loadingView) {
-            if (renderableRequested) {
-                // init a new view, apply all properties and re-attach the view
-                build()
-                attachView()
-            } else {
-                // only setup, because the view has not been attached yet
-                setup()
-            }
+            build()
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")
         }

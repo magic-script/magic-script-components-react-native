@@ -19,8 +19,9 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
-import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.clip.TextureClipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoaderImpl
 import com.magicleap.magicscript.font.providers.AndroidFontProvider
 import com.magicleap.magicscript.font.providers.FontProviderImpl
 import com.magicleap.magicscript.icons.DefaultIconsProvider
@@ -33,7 +34,10 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 
-class PrismMenu(private val context: Context) :
+class PrismMenu(
+    private val context: Context,
+    private val arResourcesProvider: ArResourcesProvider
+) :
     UiLinearLayout(createProps(), createLayoutManager()) {
 
     companion object {
@@ -72,7 +76,7 @@ class PrismMenu(private val context: Context) :
         val label = UiTextNode(
             initProps = labelProps,
             context = context,
-            viewRenderableLoader = ViewRenderableLoaderImpl(context),
+            viewRenderableLoader = ViewRenderableLoaderImpl(context, arResourcesProvider),
             nodeClipper = TextureClipper(),
             fontProvider = FontProviderImpl(context, AndroidFontProvider())
         ).apply {
@@ -88,7 +92,7 @@ class PrismMenu(private val context: Context) :
         val buttonShow = UiButtonNode(
             initProps = buttonShowProps,
             context = context,
-            viewRenderableLoader = ViewRenderableLoaderImpl(context),
+            viewRenderableLoader = ViewRenderableLoaderImpl(context, arResourcesProvider),
             nodeClipper = TextureClipper(),
             fontProvider = FontProviderImpl(context, AndroidFontProvider()),
             iconsRepo = IconsRepositoryImpl(

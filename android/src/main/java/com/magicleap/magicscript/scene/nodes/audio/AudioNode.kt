@@ -31,7 +31,7 @@ open class AudioNode(
     private val context: Context,
     private var audioEngine: AudioEngine,
     private val fileProvider: AudioFileProvider
-) : TransformNode(initProps, false, false) {
+) : TransformNode(initProps, false) {
 
     companion object {
         const val PROP_FILE_NAME = "fileName"

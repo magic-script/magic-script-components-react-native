@@ -21,9 +21,9 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
-import com.magicleap.magicscript.ar.RenderableResult
+import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.Utils
@@ -36,7 +36,7 @@ class ModelNode(
     private val context: Context,
     private val modelRenderableLoader: ModelRenderableLoader,
     private val renderableAnimator: RenderableAnimator
-) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = true) {
+) : TransformNode(initProps, useContentNodeAlignment = true) {
 
     companion object {
         // properties
@@ -54,6 +54,7 @@ class ModelNode(
             applyClipBounds()
         }
 
+    private var renderableLoadRequest: ModelRenderableLoader.LoadRequest? = null
     private var renderableCopy: ModelRenderable? = null
 
     init {
@@ -65,10 +66,6 @@ class ModelNode(
 
         setModelPath(props)
         setImportScale(props)
-    }
-
-    override fun loadRenderable() {
-        loadModel()
     }
 
     override fun setAlignment(props: Bundle) {
@@ -97,14 +94,16 @@ class ModelNode(
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        renderableLoadRequest?.let {
+            modelRenderableLoader.cancel(it)
+        }
+    }
+
     private fun setModelPath(props: Bundle) {
         if (props.containsKey(PROP_MODEL_PATH)) {
-            // cannot update the ModelRenderable before [renderableRequested],
-            // because Sceneform may be uninitialized yet
-            // (loadRenderable may have not been called)
-            if (renderableRequested) {
-                loadModel()
-            }
+            loadModel()
         }
     }
 
@@ -120,14 +119,22 @@ class ModelNode(
     private fun loadModel() {
         val modelUri = properties.readFilePath(PROP_MODEL_PATH, context)
         if (modelUri != null) {
-            modelRenderableLoader.loadRenderable(modelUri) { result ->
+            // cancel previous request if exists
+            renderableLoadRequest?.let {
+                modelRenderableLoader.cancel(it)
+            }
+
+            renderableLoadRequest = ModelRenderableLoader.LoadRequest(modelUri) { result ->
                 if (result is RenderableResult.Success) {
+                    result.renderable as ModelRenderable
                     this.renderableCopy = result.renderable
                     renderableAnimator.play(result.renderable)
                     if (isVisible) {
                         contentNode.renderable = renderableCopy
                     }
                 }
+            }.also {
+                modelRenderableLoader.loadRenderable(it)
             }
         }
     }

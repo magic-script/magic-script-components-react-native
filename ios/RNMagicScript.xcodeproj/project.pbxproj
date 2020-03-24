@@ -287,6 +287,8 @@
 		44F5964D235729BB00C60F4C /* SystemIconSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5964C235729BB00C60F4C /* SystemIconSpec.swift */; };
 		44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
 		44F5965423574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */; };
+		44F7401F2424AB88005195F1 /* Prism+Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F7401E2424AB88005195F1 /* Prism+Intersection.swift */; };
+		44F740202424AB88005195F1 /* Prism+Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F7401E2424AB88005195F1 /* Prism+Intersection.swift */; };
 		44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */; };
 		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C400D4422387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */; };
@@ -795,6 +797,7 @@
 		44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+ClippingPlane.swift"; sourceTree = "<group>"; };
 		44F5965823585D4F00C60F4C /* ClippingPlane.geometry.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ClippingPlane.geometry.txt; sourceTree = "<group>"; };
 		44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ClippingPlane.fragment.txt; sourceTree = "<group>"; };
+		44F7401E2424AB88005195F1 /* Prism+Intersection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Prism+Intersection.swift"; sourceTree = "<group>"; };
 		44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssetsSpec.swift; sourceTree = "<group>"; };
 		7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1252,6 +1255,7 @@
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
 				C411CC2C240505E0004C7063 /* Prism.swift */,
+				44F7401E2424AB88005195F1 /* Prism+Intersection.swift */,
 				C411CC2E240505F0004C7063 /* Scene.swift */,
 				C42C1F812406ABE40012B40E /* BaseNode.swift */,
 			);
@@ -2283,6 +2287,7 @@
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				449B5484238524F400D839CC /* UiPanelNode.swift in Sources */,
 				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
+				44F740202424AB88005195F1 /* Prism+Intersection.swift in Sources */,
 				C4F8749623E15EF30044480F /* SIMD+Extension.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AB3974238BCD1F0002DF14 /* UiTabNode.swift in Sources */,
@@ -2611,6 +2616,7 @@
 				4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				C400D4422387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */,
+				44F7401F2424AB88005195F1 /* Prism+Intersection.swift in Sources */,
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,

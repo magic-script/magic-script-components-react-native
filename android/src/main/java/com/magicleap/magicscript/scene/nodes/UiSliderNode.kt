@@ -23,7 +23,7 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CustomSlider
 import com.magicleap.magicscript.utils.Vector2

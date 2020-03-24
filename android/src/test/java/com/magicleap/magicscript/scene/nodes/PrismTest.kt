@@ -26,7 +26,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -37,6 +37,7 @@ import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
 /**
@@ -92,14 +93,15 @@ class PrismTest {
     }
 
     @Test
-    fun `should rebuild cube with new size when size changed`() {
+    fun `should rebuild cube when size changed`() {
         val size = JavaOnlyArray.of(1f, 1f, 1f)
         val prism = buildPrism(reactMapOf(Prism.PROP_SIZE, size))
+        Mockito.reset(cubeBuilder)
         val sizeUpdated = JavaOnlyArray.of(2f, 2f, 2f)
 
         prism.update(reactMapOf(Prism.PROP_SIZE, sizeUpdated))
 
-        verify(cubeBuilder).buildRenderable(eq(Vector3(2f, 2f, 2f)), any(), any(), any())
+        verify(cubeBuilder).buildRenderable(any())
     }
 
 
@@ -141,7 +143,6 @@ class PrismTest {
         prism.onDestroy()
 
         verify(arResourcesProvider).removeCameraUpdatedListener(eq(prism))
-        verify(arResourcesProvider).removeArLoadedListener(eq(prism))
         verify(arResourcesProvider).removeTransformationSystemListener(eq(prism))
     }
 

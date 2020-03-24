@@ -25,8 +25,8 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
-import com.magicleap.magicscript.ar.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.RenderableResult
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
@@ -35,7 +35,7 @@ import com.magicleap.magicscript.utils.*
 class LineNode(
     initProps: ReadableMap,
     private val cubeRenderableBuilder: CubeRenderableBuilder
-) : TransformNode(initProps, hasRenderable = true, useContentNodeAlignment = false) {
+) : TransformNode(initProps, useContentNodeAlignment = false) {
 
     companion object {
         // properties
@@ -53,7 +53,6 @@ class LineNode(
         }
 
     private val colorDefault = Color(1f, 1f, 1f)
-
     private var renderableCopies = mutableListOf<Renderable?>()
     private var linesBounding = AABB()
     private var clipBox = BoundingBox(
@@ -62,23 +61,14 @@ class LineNode(
     )
 
     private val pointsList = mutableListOf<Vector3>()
-    private val cubeLoadTasks = mutableListOf<Long>()
+    private val cubeLoadRequests = mutableListOf<CubeRenderableBuilder.LoadRequest>()
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
 
         if (props.containsKey(PROP_POINTS) || props.containsKey(PROP_COLOR)) {
-            // cannot update renderable before [renderableRequested],
-            // because Sceneform may be uninitialized yet
-            // (loadRenderable may have not been called)
-            if (renderableRequested) {
-                loadRenderable()
-            }
+            drawLines(clipBox)
         }
-    }
-
-    override fun loadRenderable() {
-        drawLines(clipBox)
     }
 
     override fun getContentBounding(): AABB {
@@ -104,6 +94,11 @@ class LineNode(
                 it.renderable = null
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelCubeLoadTasks()
     }
 
     private fun applyClipBounds(clipBounds: AABB) {
@@ -174,22 +169,24 @@ class LineNode(
         val direction = diff.normalized()
         val rotation = Quaternion.lookRotation(direction, Vector3.up())
         val lineSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, diff.length())
-        val taskId =
-            cubeRenderableBuilder.buildRenderable(lineSize, Vector3.zero(), color) { result ->
-                if (result is RenderableResult.Success) {
-                    contentNode.addChild(lineSegment)
-                    if (isVisible) {
-                        lineSegment.renderable = result.renderable
-                        renderableCopies.add(result.renderable)
-                    } else {
-                        renderableCopies.add(result.renderable)
-                    }
-                    lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
-                    lineSegment.localRotation = rotation
-                }
-            }
 
-        cubeLoadTasks.add(taskId)
+        val request = CubeRenderableBuilder.LoadRequest(lineSize, Vector3.zero(), color) { result ->
+            if (result is RenderableResult.Success) {
+                contentNode.addChild(lineSegment)
+                if (isVisible) {
+                    lineSegment.renderable = result.renderable
+                    renderableCopies.add(result.renderable)
+                } else {
+                    renderableCopies.add(result.renderable)
+                }
+                lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
+                lineSegment.localRotation = rotation
+            }
+        }.also {
+            cubeRenderableBuilder.buildRenderable(it)
+        }
+
+        cubeLoadRequests.add(request)
     }
 
     private fun updateLinesBounding() {
@@ -204,10 +201,10 @@ class LineNode(
     }
 
     private fun cancelCubeLoadTasks() {
-        cubeLoadTasks.forEach { taskId ->
-            cubeRenderableBuilder.cancel(taskId)
+        cubeLoadRequests.forEach { task ->
+            cubeRenderableBuilder.cancel(task)
         }
-        cubeLoadTasks.clear()
+        cubeLoadRequests.clear()
     }
 
 }

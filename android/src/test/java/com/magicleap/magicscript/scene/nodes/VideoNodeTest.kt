@@ -20,7 +20,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.VideoRenderableLoader
+import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
@@ -46,6 +47,7 @@ class VideoNodeTest {
     private lateinit var videoPlayer: VideoPlayer
     private lateinit var videoReadableLoader: VideoRenderableLoader
     private lateinit var clipper: Clipper
+    private lateinit var arResourcesProvider: ArResourcesProvider
 
     @Before
     fun setUp() {
@@ -53,10 +55,23 @@ class VideoNodeTest {
         this.videoPlayer = mock()
         this.videoReadableLoader = mock()
         this.clipper = mock()
+        this.arResourcesProvider = mock()
+
+        // we have to return false, since creating textures inside VideoNode requires ar is loaded,
+        // else exception will be thrown
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
         val videoUri = "http://video.com/sample.mp4"
         val props = reactMapOf(VideoNode.PROP_VIDEO_PATH, videoUri)
-        videoNode = VideoNode(props, context, videoPlayer, videoReadableLoader, clipper)
+        videoNode = VideoNode(
+            initProps = props,
+            context = context,
+            videoPlayer = videoPlayer,
+            videoRenderableLoader = videoReadableLoader,
+            nodeClipper = clipper,
+            arResourcesProvider = arResourcesProvider
+        )
+
         videoNode.build()
     }
 

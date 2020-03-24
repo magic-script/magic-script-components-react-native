@@ -22,7 +22,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.ar.clip.UiNodeClipper
@@ -54,6 +54,7 @@ class UiNodeTest {
     private lateinit var nodeClipper: Clipper
     private lateinit var node: UiNode
 
+
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
@@ -74,13 +75,6 @@ class UiNodeTest {
         val enabledProp = node.getProperty(UiNode.PROP_ENABLED)
 
         assertEquals(true, enabledProp)
-    }
-
-    @Test
-    fun `should load renderable when attach requested`() {
-        node.attachRenderable()
-
-        verify(viewRenderableLoader).loadRenderable(any(), any())
     }
 
     @Test
@@ -292,6 +286,19 @@ class UiNodeTest {
         node.clipBounds = AABB(min = Vector3(-1f, -1f, -1f), max = Vector3(1f, 1f, 1f))
 
         node.contentNode.collisionShape shouldBe null
+    }
+
+    @Test
+    fun `should load a view renderable on build`() {
+        val viewRenderableLoader: ViewRenderableLoader = mock()
+        val nodeBuilder = UiNodeBuilder(
+            context = context,
+            viewRenderableLoader = viewRenderableLoader
+        )
+
+        nodeBuilder.build()
+
+        verify(viewRenderableLoader).loadRenderable(any())
     }
 
 }

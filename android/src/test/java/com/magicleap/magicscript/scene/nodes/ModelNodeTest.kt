@@ -20,7 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.ModelRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
@@ -63,9 +63,8 @@ class ModelNodeTest {
         val node = createNode(props)
 
         node.build()
-        node.attachRenderable()
 
-        verify(modelRenderableLoader).loadRenderable(any(), any())
+        verify(modelRenderableLoader).loadRenderable(any())
     }
 
     @Test
@@ -82,7 +81,6 @@ class ModelNodeTest {
         val node = createNode(props)
 
         node.build()
-        node.attachRenderable()
 
         assertEquals(expectedContentNodeScale, node.contentNode.localScale)
         assertEquals(expectedNodeScale, node.localScale)
@@ -108,7 +106,7 @@ class ModelNodeTest {
 
         node.isVisible shouldBe false
     }
-    
+
     @Test
     fun `should hide the node when its center is outside of clip bounds`() {
         val props = reactMapOf(
@@ -124,7 +122,12 @@ class ModelNodeTest {
     }
 
     private fun createNode(props: JavaOnlyMap): ModelNode {
-        return ModelNode(props, context, modelRenderableLoader, renderableAnimator)
+        return ModelNode(
+            props,
+            context,
+            modelRenderableLoader,
+            renderableAnimator
+        )
     }
 
 }

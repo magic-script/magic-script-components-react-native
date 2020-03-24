@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository

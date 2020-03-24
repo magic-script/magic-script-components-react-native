@@ -122,9 +122,9 @@ import ARKit
     }
 
     @objc public func unregisterNode(_ nodeId: String) {
-        if let node = nodesById[nodeId] {
+        if let node = getNodeById(nodeId) {
             node.removeFromParentNode()
-            nodesById.removeValue(forKey: nodeId)
+            removeNodeById(nodeId)
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)
             }
@@ -205,6 +205,11 @@ import ARKit
         
         scene?.removeFromParentNode()
         scene = nil
+    }
+
+    private func removeNodeById(_ nodeId: String) {
+        if nodesById.contains(where: { $0.key == nodeId }) { nodesById.removeValue(forKey: nodeId) }
+        if prismsById.contains(where: { $0.key == nodeId }) { prismsById.removeValue(forKey: nodeId) }
     }
 
     private func getNodeById(_ nodeId: String) -> BaseNode? {

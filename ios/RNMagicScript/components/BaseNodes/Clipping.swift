@@ -17,10 +17,12 @@
 import Foundation
 import SceneKit
 
+//sourcery: AutoMockable
 protocol BoundsClipping {
     func getClippingPlanesAsVector4() -> [SCNVector4]
 }
 
+//sourcery: AutoMockable
 protocol BoundsClippingManaging {
     var isUpdateClippingNeeded: Bool { get }
     func invalidateClipping()

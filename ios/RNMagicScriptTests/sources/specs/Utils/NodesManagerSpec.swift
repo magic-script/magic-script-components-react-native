@@ -116,6 +116,19 @@ class NodesManagerSpec: QuickSpec {
                         expect(result).to(beNil())
                     }
 
+                    context("when node is Prism") {
+                        it("should be removed from storage") {
+                            nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+
+                            let prismId = "prismId"
+                            nodesManager.registerPrism(Prism(props: [:]), prismId: prismId)
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beTrue())
+
+                            nodesManager.unregisterNode(prismId)
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beFalse())
+                        }
+                    }
+
                     it("should be removed from parent") {
                         nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
                         let parentNode = SCNNode(geometry: SCNGeometry(sources: [], elements: nil))

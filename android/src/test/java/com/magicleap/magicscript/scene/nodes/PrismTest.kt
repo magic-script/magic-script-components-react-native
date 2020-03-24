@@ -22,6 +22,7 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
+import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.AnchorCreator
@@ -56,7 +57,9 @@ class PrismTest {
     fun setUp() {
         whenever(arResourcesProvider.getArScene()).thenReturn(mock())
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
     }
 
     @Test
@@ -128,12 +131,12 @@ class PrismTest {
     // Because Prism's container is a TransformableNode, we have detach it explicitly.
     // See https://github.com/magic-script/magic-script-components-react-native/issues/494
     @Test
-    fun `should detach container node on destroy`() {
+    fun `should detach transformable container on destroy`() {
         val prism = buildPrism(reactMapOf())
 
         prism.onDestroy()
 
-        prism.children.shouldBeEmpty()
+        prism.children.filterIsInstance<TransformableNode>().shouldBeEmpty()
     }
 
     @Test
@@ -147,7 +150,7 @@ class PrismTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider).apply {
+        return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider, context).apply {
             build()
         }
     }

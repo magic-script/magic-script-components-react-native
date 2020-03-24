@@ -28,8 +28,10 @@ import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.nhaarman.mockitokotlin2.*
-import org.amshove.kluent.itReturns
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -222,7 +224,7 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider)
+        return Prism(props, mock(), mock(), arResourcesProvider, context)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

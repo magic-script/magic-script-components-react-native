@@ -47,6 +47,9 @@ class ReactSceneTest {
     fun setUp() {
         whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
     }
 
     @Test
@@ -87,7 +90,7 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider)
+        return Prism(props, mock(), mock(), arResourcesProvider, context)
             .apply {
                 build()
             }

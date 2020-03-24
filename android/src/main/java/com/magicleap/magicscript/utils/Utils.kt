@@ -252,22 +252,21 @@ class Utils {
          * Sets correct content node position based on [node] alignment
          */
         fun applyContentNodeAlignment(node: TransformNode) {
-            val bounds = node.getBounding().toBounding2d()
-
-            val rot = node.localRotation.inverted()
-            val p1 = Vector3(bounds.left, bounds.top, node.localPosition.z).rotatedBy(rot)
-            val p2 = Vector3(bounds.left, bounds.bottom, node.localPosition.z).rotatedBy(rot)
-            val p3 = Vector3(bounds.right, bounds.bottom, node.localPosition.z).rotatedBy(rot)
-            val p4 = Vector3(bounds.right, bounds.top, node.localPosition.z).rotatedBy(rot)
-            val boundsBeforeRotation = findMinimumBounding(listOf(p1, p2, p3, p4))
+            val bounds = node.getContentBounding().toBounding2d()
+            val scaledBounds = Bounding(
+                left = bounds.left * node.localScale.x + node.localPosition.x,
+                bottom = bounds.bottom * node.localScale.y + node.localPosition.y,
+                right = bounds.right * node.localScale.x + node.localPosition.x,
+                top = bounds.top * node.localScale.y + node.localPosition.y
+            )
 
             val contentNode = node.contentNode
 
-            val nodeWidth = boundsBeforeRotation.max.x - boundsBeforeRotation.min.x
-            val nodeHeight = boundsBeforeRotation.max.y - boundsBeforeRotation.min.y
-            val boundsCenterX = boundsBeforeRotation.min.x + nodeWidth / 2
+            val nodeWidth = scaledBounds.right - scaledBounds.left
+            val nodeHeight = scaledBounds.top - scaledBounds.bottom
+            val boundsCenterX = scaledBounds.left + nodeWidth / 2
             val pivotOffsetX = node.localPosition.x - boundsCenterX // aligning according to center
-            val boundsCenterY = boundsBeforeRotation.max.y - nodeHeight / 2
+            val boundsCenterY = scaledBounds.top - nodeHeight / 2
             val pivotOffsetY = node.localPosition.y - boundsCenterY  // aligning according to center
 
             // calculating x and y position for content

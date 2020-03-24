@@ -21,7 +21,6 @@
 		441FC1762362F4540004DBF1 /* SCNNodeOrientationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */; };
 		441FC1782362FBFA0004DBF1 /* SCNNodeClippingPlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1772362FBFA0004DBF1 /* SCNNodeClippingPlaneSpec.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
-		44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
 		44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226126232F9173006E2FBA /* MathsExtensionSpec.swift */; };
 		442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442261352334059A006E2FBA /* SCNSpinnerCircle.swift */; };
@@ -2494,7 +2493,6 @@
 				44D8FE91233B8D32007FD766 /* TextEntryModeSpec.swift in Sources */,
 				C4278B32240CD02400CB9250 /* PrismSpec.swift in Sources */,
 				44F09340232DA5530081FF14 /* SCNRectangleSpec.swift in Sources */,
-				44226123232F64AE006E2FBA /* SCNMatrix4+Extension.swift in Sources */,
 				44AB397C238C0D4A0002DF14 /* UiTabSpec.swift in Sources */,
 				C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */,
 				44D8FE8F233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift in Sources */,

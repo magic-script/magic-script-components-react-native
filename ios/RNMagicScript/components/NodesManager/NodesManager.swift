@@ -36,6 +36,9 @@ import ARKit
     @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], prismsByAnchorUuid: [:])
     @objc public private (set) var rootNode: BaseNode
 
+    @objc public private(set) var scene: Scene?
+    @objc public private(set) var prismsById: [String: Prism] = [:]
+
     fileprivate var nodesById: [String: BaseNode]
     fileprivate var prismsByAnchorUuid: [String: Prism]
     fileprivate var anchorNodesByAnchorUuid: [String: SCNNode] = [:]
@@ -90,13 +93,11 @@ import ARKit
         return prismsByAnchorUuid[anchorUuid]
     }
 
-    @objc public private(set) var scene: Scene?
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
     }
 
-    @objc public private(set) var prismsById: [String: Prism] = [:]
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
@@ -207,8 +208,25 @@ import ARKit
     }
 
     private func removeNodeById(_ nodeId: String) {
-        if nodesById.contains(where: { $0.key == nodeId }) { nodesById.removeValue(forKey: nodeId) }
-        if prismsById.contains(where: { $0.key == nodeId }) { prismsById.removeValue(forKey: nodeId) }
+        if let node = nodesById[nodeId] {
+            node.enumerateBaseNodes { node in
+                node.removeFromParentNode()
+                if let childNodeId = node.name {
+                    nodesById.removeValue(forKey: childNodeId)
+                }
+            }
+            node.removeFromParentNode()
+            nodesById.removeValue(forKey: nodeId)
+        } else if let prism = prismsById[nodeId] {
+            prism.enumerateBaseNodes { node in
+                node.removeFromParentNode()
+                if let childNodeId = node.name {
+                    nodesById.removeValue(forKey: childNodeId)
+                }
+            }
+            prism.removeFromParentNode()
+            prismsById.removeValue(forKey: nodeId)
+        }
     }
 
     private func getNodeById(_ nodeId: String) -> BaseNode? {

@@ -120,12 +120,44 @@ class NodesManagerSpec: QuickSpec {
                         it("should be removed from storage") {
                             nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
 
+                            let sceneId = "sceneId"
+                            let scene = Scene(props: [:])
+                            nodesManager.registerScene(scene, sceneId: sceneId)
+                            nodesManager.addNodeToRoot(sceneId)
+
                             let prismId = "prismId"
-                            nodesManager.registerPrism(Prism(props: [:]), prismId: prismId)
+                            let prism = Prism(props: [:])
+                            nodesManager.registerPrism(prism, prismId: prismId)
+                            nodesManager.addNode(prismId, toParent: sceneId)
+                            expect(prism.parent).to(equal(scene.rootNode))
                             expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beTrue())
 
                             nodesManager.unregisterNode(prismId)
                             expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beFalse())
+                        }
+
+                        it("should be removed from storage (with all descendants)") {
+                            nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+
+                            let sceneId = "sceneId"
+                            let scene = Scene(props: [:])
+                            nodesManager.registerScene(scene, sceneId: sceneId)
+                            nodesManager.addNodeToRoot(sceneId)
+
+                            let prismId = "prismId"
+                            let prism = Prism(props: [:])
+                            nodesManager.registerPrism(prism, prismId: prismId)
+                            nodesManager.addNode(prismId, toParent: sceneId)
+                            expect(prism.parent).to(equal(scene.rootNode))
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beTrue())
+
+                            let transformNode = TransformNode(props: [:])
+                            _ = prism.addNode(transformNode)
+                            expect(transformNode.parent).to(equal(prism.rootNode))
+
+                            nodesManager.unregisterNode(prismId)
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beFalse())
+                            expect(transformNode.parent).to(beNil())
                         }
                     }
 
@@ -133,12 +165,12 @@ class NodesManagerSpec: QuickSpec {
                         nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
                         let parentNode = SCNNode(geometry: SCNGeometry(sources: [], elements: nil))
                         parentNode.addChildNode(referenceNode)
+                        expect(referenceNode.parent).toNot(beNil())
 
                         nodesManager.unregisterNode(referenceNodeId)
-
                         let result = nodesManager.findNodeWithId(referenceNodeId)
                         expect(result).to(beNil())
-                        expect(parentNode.childNodes.count).to(equal(0))
+                        expect(referenceNode.parent).to(beNil())
                     }
                 }
             }

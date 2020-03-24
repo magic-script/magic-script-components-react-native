@@ -17,6 +17,50 @@
 import SceneKit
 
 extension SCNNode {
+    func applyClippingPlanesShaderModifiers(recursive: Bool = false) {
+        guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
+        invokeClosure(recursive: recursive, input: modifiers) { (node, input) -> ([SCNShaderModifierEntryPoint : String]) in
+            guard let nodeGeometry = node.geometry else { return modifiers }
+            if nodeGeometry.shaderModifiers == nil {
+                nodeGeometry.shaderModifiers = input
+            } else {
+                nodeGeometry.shaderModifiers![.fragment] = input[.fragment]
+                nodeGeometry.shaderModifiers![.geometry] = input[.geometry]
+            }
+            return modifiers
+        }
+    }
+    
+    func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
+        guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
+        invokeClosure(recursive: recursive, input: planes) { node, input -> ([SCNVector4]) in
+            let clippingPlanes: [SCNVector4]
+            if let boundsClipper = node as? BoundsClipping {
+                let morePlanes = boundsClipper.getClippingPlanesAsVector4()
+                clippingPlanes = morePlanes.count > 0 ? SCNNode.mergeClippingPlanes(input, morePlanes) : input
+            } else {
+                clippingPlanes = input
+            }
+            node.applyClippingPlanes(clippingPlanes)
+            return clippingPlanes
+        }
+    }
+    
+    func forceUpdateClipping(recursive: Bool = false) {
+        if let boundsClipper = getBoundsClippingManager() {
+            boundsClipper.updateClipping(for: self, recursive: recursive)
+        }
+    }
+    
+    func invalidateBoundsClippingManager() {
+        if let boundsClippingManager = getBoundsClippingManager() {
+            boundsClippingManager.invalidateClipping()
+        }
+    }
+}
+
+// MARK: - Clipping (private)
+extension SCNNode {
     static fileprivate var clippingPlanesShaderModifiers: [SCNShaderModifierEntryPoint : String]? = {
         guard let bundle = Bundle.resourcesBundle else { return nil }
         
@@ -51,31 +95,6 @@ extension SCNNode {
         return result.map { $0.toVector4() }
     }
     
-    func applyClippingPlanesShaderModifiers(recursive: Bool = false) {
-        guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
-        invokeClosure(recursive: recursive) { (node) -> (Void) in
-            guard let nodeGeometry = node.geometry else { return }
-            if nodeGeometry.shaderModifiers == nil {
-                nodeGeometry.shaderModifiers = modifiers
-            } else {
-                nodeGeometry.shaderModifiers![.fragment] = modifiers[.fragment]
-                nodeGeometry.shaderModifiers![.geometry] = modifiers[.geometry]
-            }
-        }
-    }
-    
-    func forceUpdateClipping(recursive: Bool = false) {
-        if let boundsClipper = getBoundsClippingManager() {
-            boundsClipper.updateClipping(for: self, recursive: recursive)
-        }
-    }
-    
-    func invalidateBoundsClippingManager() {
-        if let boundsClippingManager = getBoundsClippingManager() {
-            boundsClippingManager.invalidateClipping()
-        }
-    }
-    
     fileprivate func getBoundsClippingManager() -> BoundsClippingManaging? {
         var node: SCNNode? = parent
         while (node != nil) {
@@ -88,21 +107,6 @@ extension SCNNode {
         return nil
     }
     
-    func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
-        guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
-        
-        invokeClosure(recursive: recursive) { node -> (Void) in
-            let clippingPlanes: [SCNVector4]
-            if let boundsClipper = self as? BoundsClipping {
-                let morePlanes = boundsClipper.getClippingPlanesAsVector4()
-                clippingPlanes = morePlanes.count > 0 ? SCNNode.mergeClippingPlanes(planes, morePlanes) : planes
-            } else {
-                clippingPlanes = planes
-            }
-            node.applyClippingPlanes(clippingPlanes)
-        }
-    }
-
     fileprivate func applyClippingPlanes(_ planes: [SCNVector4]) {
         guard let nodeGeometry = geometry else { return }
         let maxPlanesSupported: Int = 6
@@ -118,18 +122,17 @@ extension SCNNode {
         }
     }
     
-    fileprivate func invokeClosure(recursive: Bool, callback: @escaping (SCNNode) -> (Void)) {
+    fileprivate func invokeClosure<T>(recursive: Bool, input: T, callback: @escaping (SCNNode, T) -> (T)) {
     #if targetEnvironment(simulator)
         // Do not clip model nodes on simulator. There is a limitation that causes that models
         // are not rendered when are clipped.
         if self is UiModelNode { return }
     #endif
         if recursive {
-            //enumerateHierarchy { (node, result) in callback(node) }
-            callback(self)
-            childNodes.forEach { $0.invokeClosure(recursive: recursive, callback: callback) }
+            let output = callback(self, input)
+            childNodes.forEach { $0.invokeClosure(recursive: recursive, input: output, callback: callback) }
         } else {
-            callback(self)
+            let _ = callback(self, input)
         }
     }
 }

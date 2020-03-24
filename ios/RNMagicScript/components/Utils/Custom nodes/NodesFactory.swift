@@ -82,7 +82,7 @@ import SceneKit
     }
 
     @objc static func createWireBoxNode(size: SCNVector3, color: UIColor = UIColor.white) -> SCNNode {
-        return NodesFactory.createWireBoxNode(width: CGFloat(size.x), height: CGFloat(size.y), depth: CGFloat(size.z))
+        return NodesFactory.createWireBoxNode(width: CGFloat(size.x), height: CGFloat(size.y), depth: CGFloat(size.z), color: color)
     }
 
     @objc static func createWireBoxNode(width: CGFloat, height: CGFloat, depth: CGFloat, color: UIColor = UIColor.white) -> SCNNode {

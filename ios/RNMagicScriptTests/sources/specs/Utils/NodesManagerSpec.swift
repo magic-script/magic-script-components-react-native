@@ -78,7 +78,7 @@ class NodesManagerSpec: QuickSpec {
                 it("should return nil when prism doesnt exist") {
                     nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
-                    let result = nodesManager.findNodeWithAnchorUuid(referenceAnchorUUID)
+                    let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
                     expect(result).to(beNil())
                 }
             }

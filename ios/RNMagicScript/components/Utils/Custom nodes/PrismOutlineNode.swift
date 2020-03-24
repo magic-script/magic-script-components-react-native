@@ -55,8 +55,8 @@ class PrismOutlineNode : SCNNode {
     fileprivate func updateSize() {
         boxNode.scale = size
         cornersNode.scale = size
-        let unitVector = SCNVector3(1, 1, 1)
-        cornersNode.childNodes.forEach { $0.scale = unitVector / size }
+        let invertedSize = SCNVector3(1, 1, 1) / size
+        cornersNode.childNodes.forEach { $0.scale = invertedSize }
     }
 
     fileprivate func setupCornerNodes() {

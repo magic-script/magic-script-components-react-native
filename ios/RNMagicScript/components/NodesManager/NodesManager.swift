@@ -123,7 +123,6 @@ import ARKit
 
     @objc public func unregisterNode(_ nodeId: String) {
         if let node = getNodeById(nodeId) {
-            node.removeFromParentNode()
             removeNodeById(nodeId)
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)

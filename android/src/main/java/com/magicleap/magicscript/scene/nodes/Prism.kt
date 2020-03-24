@@ -60,7 +60,7 @@ class Prism(
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
 
-        private const val MENU_MARGIN_BOTTOM = 0f
+        private const val MENU_MARGIN_BOTTOM = 0.05f
     }
 
     var beingTouched: Boolean = false
@@ -365,12 +365,9 @@ class Prism(
             scaleController.isEnabled = false
         }
 
-        override fun onTouchEvent(
-            hitTestResult: HitTestResult,
-            motionEvent: MotionEvent
-        ): Boolean {
-            // action up is for some reason not returned for AnchorNode, so we attach renderable and
-            // process click events of the container node
+        override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
+            // action up is for some reason not returned for AnchorNode, so we attach renderable
+            // and process click events of the container node
             when (motionEvent.actionMasked) {
                 MotionEvent.ACTION_DOWN -> beingTouched = true
                 MotionEvent.ACTION_UP -> beingTouched = false

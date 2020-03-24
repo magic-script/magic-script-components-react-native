@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene.nodes
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
@@ -31,37 +30,19 @@ import com.magicleap.magicscript.icons.DefaultIconsProvider
 import com.magicleap.magicscript.icons.ExternalIconsProvider
 import com.magicleap.magicscript.icons.IconsRepositoryImpl
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
-import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 
 class PrismMenu(
     private val context: Context,
     private val arResourcesProvider: ArResourcesProvider
-) : UiLinearLayout(createProps(), createLayoutManager()) {
+) : GroupNode(JavaOnlyMap()) {
 
     companion object {
         private const val MENU_ICON_SIZE = 0.1
         private const val MENU_TEXT_SIZE = 0.1
         private const val MENU_SHOW_PRISM_ICON = "generic_three_dimensional"
 
-        private fun createProps(): JavaOnlyMap {
-            return JavaOnlyMap.of(
-                PROP_ORIENTATION, ORIENTATION_VERTICAL,
-                PROP_ALIGNMENT, "bottom-center",
-                PROP_DEFAULT_ITEM_ALIGNMENT, "center-center",
-                PROP_DEFAULT_ITEM_PADDING, JavaOnlyArray.of(0.02, 0.02, 0.02, 0.02)
-            )
-        }
-
-        private fun createLayoutManager(): LinearLayoutManager {
-            return LinearLayoutManager(
-                VerticalLinearLayoutManager(),
-                HorizontalLinearLayoutManager()
-            )
-        }
+        private const val SHOW_DELAY = 1000L
+        private const val SHOW_ANIM_DURATION = 300L
     }
 
     var onButtonClickListener: (() -> Unit)? = null
@@ -74,7 +55,7 @@ class PrismMenu(
         val labelProps = JavaOnlyMap.of(
             UiTextNode.PROP_TEXT, "Catalog app",
             UiTextNode.PROP_TEXT_SIZE, MENU_TEXT_SIZE,
-            PROP_ALIGNMENT, "center-center"
+            PROP_ALIGNMENT, "bottom-center"
         )
 
         val label = UiTextNode(
@@ -85,6 +66,7 @@ class PrismMenu(
             fontProvider = FontProviderImpl(context, AndroidFontProvider())
         ).apply {
             build()
+            localPosition = Vector3(0f, MENU_ICON_SIZE.toFloat(), 0f)
         }
 
         val buttonShowProps = JavaOnlyMap.of(
@@ -105,6 +87,7 @@ class PrismMenu(
             )
         ).apply {
             build()
+            localPosition = Vector3(0f, (MENU_ICON_SIZE / 2).toFloat(), 0f)
             onClickListener = {
                 onButtonClickListener?.invoke()
             }
@@ -126,34 +109,19 @@ class PrismMenu(
             return
         }
 
+        animator.addListener(object : SimpleAnimatorListener() {
+            override fun onAnimationStart(animation: Animator?) {
+                isVisible = true
+            }
+        })
 
         animator.addUpdateListener {
             val scale = it.animatedValue as Float
             localScale = Vector3(scale, scale, scale)
         }
 
-        animator.addListener(object : Animator.AnimatorListener {
-
-            override fun onAnimationStart(animation: Animator?) {
-                isVisible = true
-            }
-
-            override fun onAnimationRepeat(animation: Animator?) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-
-            }
-
-        })
-
-        animator.startDelay = 1000
-        animator.duration = 300
+        animator.startDelay = SHOW_DELAY
+        animator.duration = SHOW_ANIM_DURATION
         animator.start()
     }
 
@@ -165,6 +133,24 @@ class PrismMenu(
     private fun stopShowAnimation() {
         if (animator.isStarted) {
             animator.cancel()
+        }
+    }
+
+    private abstract class SimpleAnimatorListener : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+
         }
     }
 

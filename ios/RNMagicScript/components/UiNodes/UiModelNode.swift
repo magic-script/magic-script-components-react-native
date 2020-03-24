@@ -58,8 +58,8 @@ import GLTFSceneKit
     }
 
     fileprivate func cleanNode() {
-        while !contentNode.childNodes.isEmpty {
-            contentNode.childNodes.last?.removeFromParentNode()
+        contentNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()
         }
     }
 

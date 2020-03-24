@@ -47,8 +47,8 @@ import SceneKit
     @objc static func createOutlineNode(size: CGSize, cornerRadius: CGFloat, thickness: CGFloat = 0, color: UIColor = UIColor.white) -> SCNNode {
         let geometry = SCNRectangle(size: size, thickness: thickness, radius: cornerRadius)
         geometry.firstMaterial?.lightingModel = .constant
-        geometry.firstMaterial?.diffuse.contents = color
         geometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        geometry.firstMaterial?.diffuse.contents = color
         return SCNNode(geometry: geometry)
     }
 

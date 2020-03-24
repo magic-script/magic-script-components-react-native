@@ -20,6 +20,8 @@
 		441FC1742362F3C60004DBF1 /* ClippingPlane.fragment.txt in Resources */ = {isa = PBXBuildFile; fileRef = 44F5965B23585ED300C60F4C /* ClippingPlane.fragment.txt */; };
 		441FC1762362F4540004DBF1 /* SCNNodeOrientationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */; };
 		441FC1782362FBFA0004DBF1 /* SCNNodeClippingPlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FC1772362FBFA0004DBF1 /* SCNNodeClippingPlaneSpec.swift */; };
+		441FE343242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE342242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift */; };
+		441FE344242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE342242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
 		44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226126232F9173006E2FBA /* MathsExtensionSpec.swift */; };
@@ -177,7 +179,6 @@
 		44AFAC51232B9BCF005AC8EF /* Maths+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1D232B9BCF005AC8EF /* Maths+Extension.swift */; };
 		44AFAC52232B9BCF005AC8EF /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */; };
 		44AFAC53232B9BCF005AC8EF /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */; };
-		44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */; };
 		44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */; };
 		44AFAC56232B9BCF005AC8EF /* FileManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC22232B9BCF005AC8EF /* FileManager+Extension.swift */; };
 		44AFAC57232B9BCF005AC8EF /* SCNQuaternion+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */; };
@@ -220,7 +221,6 @@
 		44AFAD27232BCAE3005AC8EF /* Maths+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1D232B9BCF005AC8EF /* Maths+Extension.swift */; };
 		44AFAD28232BCAE3005AC8EF /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */; };
 		44AFAD29232BCAE3005AC8EF /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */; };
-		44AFAD2A232BCAE3005AC8EF /* SCNMatrix4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */; };
 		44AFAD2B232BCAE3005AC8EF /* SCNQuaternion+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */; };
 		44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */; };
 		44AFAD2D232BCAE3005AC8EF /* UIFont+Lomino.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC24232B9BCF005AC8EF /* UIFont+Lomino.swift */; };
@@ -608,6 +608,7 @@
 		441FC1702362F19B0004DBF1 /* CGPointExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPointExtensionSpec.swift; sourceTree = "<group>"; };
 		441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNodeOrientationSpec.swift; sourceTree = "<group>"; };
 		441FC1772362FBFA0004DBF1 /* SCNNodeClippingPlaneSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNodeClippingPlaneSpec.swift; sourceTree = "<group>"; };
+		441FE342242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtensionSpec.swift; sourceTree = "<group>"; };
 		44226122232F64AE006E2FBA /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
@@ -726,7 +727,6 @@
 		44AFAC1D232B9BCF005AC8EF /* Maths+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Maths+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC1E232B9BCF005AC8EF /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
-		44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNMatrix4+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNVector3+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC22232B9BCF005AC8EF /* FileManager+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Extension.swift"; sourceTree = "<group>"; };
 		44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNQuaternion+Extension.swift"; sourceTree = "<group>"; };
@@ -1381,7 +1381,7 @@
 				C4A12B362361D95B009B7083 /* NSRegularExpression+Extension.swift */,
 				44739B982398034300EC31A0 /* NumberFormatter+Extension.swift */,
 				44739B89239695ED00EC31A0 /* Numeric+Extension.swift */,
-				44AFAC20232B9BCF005AC8EF /* SCNMatrix4+Extension.swift */,
+				441FE342242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift */,
 				44F5965223574DB900C60F4C /* SCNNode+ClippingPlane.swift */,
 				4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */,
 				448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */,
@@ -2311,7 +2311,6 @@
 				44A59E8C233E161A006A15D0 /* InputAccessoryViewFactory.swift in Sources */,
 				C465C264234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */,
 				C4F8749023E157780044480F /* SurfaceNode.swift in Sources */,
-				44AFAD2A232BCAE3005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
@@ -2336,6 +2335,7 @@
 				C428C0A9237D560500771FBC /* UiDialogNode.swift in Sources */,
 				44AFAD2B232BCAE3005AC8EF /* SCNQuaternion+Extension.swift in Sources */,
 				C4C04ACF2334E85100C2725C /* AVPlayer+Extension.swift in Sources */,
+				441FE344242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift in Sources */,
 				448586FC235DC1FD00D372CB /* Ray.swift in Sources */,
 				44AFAD22232BCAE3005AC8EF /* UiToggleNode.swift in Sources */,
 				44D8FE89233A0E93007FD766 /* InputDataProviding.swift in Sources */,
@@ -2604,6 +2604,7 @@
 				442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAC53232B9BCF005AC8EF /* URLSession+Extension.swift in Sources */,
 				C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
+				441FE343242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift in Sources */,
 				C4C04ACE2334E85100C2725C /* AVPlayer+Extension.swift in Sources */,
 				44AFAC3C232B9BCF005AC8EF /* UiGroupNode.swift in Sources */,
 				C4A12B2D2361BD86009B7083 /* ColorPickerDataProviding.swift in Sources */,
@@ -2647,7 +2648,6 @@
 				44AFAC38232B9BCF005AC8EF /* LabelNode.swift in Sources */,
 				C435F90723829F050060F956 /* UIButton+Extension.swift in Sources */,
 				4455654E234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
-				44AFAC54232B9BCF005AC8EF /* SCNMatrix4+Extension.swift in Sources */,
 				C400D4422387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */,
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,

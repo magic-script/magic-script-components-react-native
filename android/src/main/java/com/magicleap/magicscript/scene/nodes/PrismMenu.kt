@@ -16,9 +16,12 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoaderImpl
@@ -37,12 +40,11 @@ import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
 class PrismMenu(
     private val context: Context,
     private val arResourcesProvider: ArResourcesProvider
-) :
-    UiLinearLayout(createProps(), createLayoutManager()) {
+) : UiLinearLayout(createProps(), createLayoutManager()) {
 
     companion object {
-        private const val MENU_ICON_SIZE = 0.15
-        private const val MENU_TEXT_SIZE = 0.15
+        private const val MENU_ICON_SIZE = 0.1
+        private const val MENU_TEXT_SIZE = 0.1
         private const val MENU_SHOW_PRISM_ICON = "generic_three_dimensional"
 
         private fun createProps(): JavaOnlyMap {
@@ -63,6 +65,8 @@ class PrismMenu(
     }
 
     var onButtonClickListener: (() -> Unit)? = null
+
+    private val animator = ValueAnimator.ofFloat(0f, 1.2f, 1f)
 
     override fun build() {
         super.build()
@@ -109,4 +113,59 @@ class PrismMenu(
         addContent(label)
         addContent(buttonShow)
     }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
+        if (!visibility) {
+            stopShowAnimation()
+        }
+    }
+
+    fun showAnimated() {
+        if (animator.isStarted) {
+            return
+        }
+
+
+        animator.addUpdateListener {
+            val scale = it.animatedValue as Float
+            localScale = Vector3(scale, scale, scale)
+        }
+
+        animator.addListener(object : Animator.AnimatorListener {
+
+            override fun onAnimationStart(animation: Animator?) {
+                isVisible = true
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+
+            }
+
+        })
+
+        animator.startDelay = 1000
+        animator.duration = 300
+        animator.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopShowAnimation()
+    }
+
+    private fun stopShowAnimation() {
+        if (animator.isStarted) {
+            animator.cancel()
+        }
+    }
+
 }

@@ -69,7 +69,7 @@ class Prism(
             if (value) {
                 anchor = null // removing the anchor, so we can change local position
             } else {
-                tryToAnchorAtPosition(localPosition)
+                tryAnchorAtPosition(localPosition)
             }
         }
 
@@ -109,6 +109,7 @@ class Prism(
         arResourcesProvider.addTransformationSystemListener(this)
 
         menuNode = PrismMenu(context, arResourcesProvider)
+        menuNode.isVisible = false
     }
 
     override val reactParent: ReactNode? get() = reactScene
@@ -179,7 +180,7 @@ class Prism(
         }
 
         requestedAnchorPosition?.let {
-            tryToAnchorAtPosition(it)
+            tryAnchorAtPosition(it)
         }
 
         if (lastCameraPosition == null) {
@@ -275,7 +276,14 @@ class Prism(
     private fun adjustMenuVisibility() {
         arResourcesProvider.getCamera()?.let { camera ->
             val viewPos = camera.worldToScreenPoint(worldPosition)
-            menuNode.isVisible = viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y
+            val showMenu = viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y
+            if (showMenu) {
+                if (!menuNode.isVisible) {
+                    menuNode.showAnimated()
+                }
+            } else {
+                menuNode.isVisible = false
+            }
         }
     }
 
@@ -298,7 +306,7 @@ class Prism(
 
     private fun setPosition(props: Bundle) {
         props.read<Vector3>(PROP_POSITION)?.let { position ->
-            tryToAnchorAtPosition(position)
+            tryAnchorAtPosition(position)
         }
     }
 
@@ -308,7 +316,7 @@ class Prism(
         }
     }
 
-    private fun tryToAnchorAtPosition(position: Vector3) {
+    private fun tryAnchorAtPosition(position: Vector3) {
         requestedAnchorPosition = position
 
         anchorCreator.createAnchor(position, localRotation, result = {

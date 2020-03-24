@@ -21,8 +21,7 @@ import android.os.Bundle
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.ViewRenderableLoader
-import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
@@ -82,7 +81,7 @@ open class UiDropdownListNode(
         listNode = DropdownItemsListNode(
             listProps,
             context,
-            ViewRenderableLoaderImpl(context),
+            viewRenderableLoader,
             nodeClipper
         )
         listNode.onListVisibilityChanged = onListVisibilityChangedListener
@@ -109,13 +108,6 @@ open class UiDropdownListNode(
         (view as CustomButton).apply {
             iconPosition = CustomButton.IconPosition.RIGHT
             borderEnabled = false
-        }
-    }
-
-    override fun loadRenderable() {
-        super.loadRenderable()
-        if (!listNode.renderableRequested) {
-            listNode.attachRenderable()
         }
     }
 

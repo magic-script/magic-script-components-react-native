@@ -130,39 +130,6 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should not attach renderable if ARCore library is not loaded`() {
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
-        val node1 = mock<TransformNode> {
-            on { hasRenderable }.doReturn(true)
-        }
-
-        nodesManager.registerNode(node1, "1")
-
-        verify(node1, never()).attachRenderable()
-    }
-
-    @Test
-    fun `should attach renderable for all nodes with renderable when ARCore is loaded`() {
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
-        val node1 = mock<TransformNode> {
-            on { hasRenderable }.doReturn(true)
-            nodesManager.registerNode(this.mock, "1")
-        }
-        val node2 = mock<TransformNode> {
-            on { hasRenderable }.doReturn(true)
-            nodesManager.registerNode(this.mock, "2")
-        }
-        val nodeWithoutRenderable = mock<TransformNode> {
-            on { hasRenderable } itReturns false
-            nodesManager.registerNode(this.mock, "3")
-        }
-
-        verify(node1).attachRenderable()
-        verify(node2).attachRenderable()
-        verify(nodeWithoutRenderable, never()).attachRenderable()
-    }
-
-    @Test
     fun `AR scene should not have any children at the beginning`() {
         arScene.children.size shouldEqual 0
     }

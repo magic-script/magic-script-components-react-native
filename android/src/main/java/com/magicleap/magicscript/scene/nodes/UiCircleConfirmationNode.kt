@@ -23,7 +23,7 @@ import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.ViewRenderableLoader
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.views.CircleConfirmationView
 import com.magicleap.magicscript.utils.Vector2

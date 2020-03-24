@@ -31,7 +31,7 @@ import com.magicleap.magicscript.utils.plus
  * so that it would take into account the local position of GroupNode itself.
  */
 open class GroupNode(initProps: ReadableMap) :
-    TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = false) {
+    TransformNode(initProps, useContentNodeAlignment = false) {
 
     override fun getContentBounding(): AABB {
         val childBounds = Utils.calculateSumBounds(contentNode.children)

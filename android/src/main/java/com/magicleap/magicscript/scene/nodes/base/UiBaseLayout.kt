@@ -30,7 +30,7 @@ import com.magicleap.magicscript.utils.read
 abstract class UiBaseLayout<T : LayoutParams>(
     initProps: ReadableMap,
     protected val layoutManager: LayoutManager<T>
-) : TransformNode(initProps, hasRenderable = false, useContentNodeAlignment = true), Layoutable {
+) : TransformNode(initProps, useContentNodeAlignment = true), Layoutable {
 
     companion object {
         const val WRAP_CONTENT_DIMENSION = 0F

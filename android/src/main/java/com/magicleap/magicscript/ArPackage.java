@@ -22,6 +22,7 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.magicleap.magicscript.ar.ArResourcesManager;
+import com.magicleap.magicscript.ar.ArResourcesProvider;
 import com.magicleap.magicscript.plane.ARPlaneDetector;
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge;
 import com.magicleap.magicscript.plane.ARPlaneDetectorEvents;
@@ -46,7 +47,8 @@ public class ArPackage implements ReactPackage {
         NodesManager nodesManager = new UiNodesManager(ArResourcesManager.INSTANCE);
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
-        ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool);
+        ArResourcesProvider arResourcesProvider = ArResourcesManager.INSTANCE;
+        ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool, arResourcesProvider);
         ARPlaneDetectorEventsManager arPlaneEventsManager = new ARPlaneDetectorEvents(reactContext);
         ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext, arPlaneEventsManager, ARPlaneDetectorBridge.Companion.getINSTANCE());
         return Arrays.<NativeModule>asList(arComponentManager, arPlaneDetector);

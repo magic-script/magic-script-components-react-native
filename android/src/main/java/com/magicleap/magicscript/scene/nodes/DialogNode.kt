@@ -36,7 +36,7 @@ class DialogNode(
     private val context: Context,
     private val iconsRepository: IconsRepository,
     private val dialogProvider: DialogProvider
-) : TransformNode(initProps, false, false) {
+) : TransformNode(initProps, false) {
 
     companion object {
         const val PROP_TITLE = "title"

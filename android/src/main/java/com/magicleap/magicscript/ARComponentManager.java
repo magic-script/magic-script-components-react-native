@@ -29,18 +29,18 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.google.vr.sdk.audio.GvrAudioEngine;
 import com.magicleap.magicscript.ar.AnchorCreator;
-import com.magicleap.magicscript.ar.ArResourcesManager;
-import com.magicleap.magicscript.ar.CubeRenderableBuilder;
-import com.magicleap.magicscript.ar.CubeRenderableBuilderImpl;
+import com.magicleap.magicscript.ar.ArResourcesProvider;
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder;
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.LoopedAnimator;
-import com.magicleap.magicscript.ar.ModelRenderableLoader;
-import com.magicleap.magicscript.ar.ModelRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.RenderableAnimator;
 import com.magicleap.magicscript.ar.SimpleAnchorCreator;
-import com.magicleap.magicscript.ar.VideoRenderableLoader;
-import com.magicleap.magicscript.ar.VideoRenderableLoaderImpl;
-import com.magicleap.magicscript.ar.ViewRenderableLoader;
-import com.magicleap.magicscript.ar.ViewRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.clip.Clipper;
 import com.magicleap.magicscript.ar.clip.TextureClipper;
 import com.magicleap.magicscript.ar.clip.UiNodeClipper;
@@ -134,6 +134,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private ReactApplicationContext context;
     private NodesManager nodesManager;
     private EventsManager eventsManager;
+    private ArResourcesProvider arResourcesProvider;
 
     // Renderable loaders
     private ViewRenderableLoader viewRenderableLoader;
@@ -152,16 +153,17 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Clipper videoNodeClipper;
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
-                              MediaPlayerPool mediaPlayerPool) {
+                              MediaPlayerPool mediaPlayerPool, ArResourcesProvider arResourcesProvider) {
         super(reactContext);
         this.context = reactContext;
         this.nodesManager = nodesManager;
         this.eventsManager = eventsManager;
         this.mediaPlayerPool = mediaPlayerPool;
+        this.arResourcesProvider = arResourcesProvider;
 
-        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context);
-        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context);
-        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context);
+        this.viewRenderableLoader = new ViewRenderableLoaderImpl(context, arResourcesProvider);
+        this.modelRenderableLoader = new ModelRenderableLoaderImpl(context, arResourcesProvider);
+        this.videoRenderableLoader = new VideoRenderableLoaderImpl(context, arResourcesProvider);
 
         AndroidFontProvider androidFontProvider = new AndroidFontProvider();
         this.fontProvider = new FontProviderImpl(context, androidFontProvider);
@@ -193,14 +195,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScene(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ReactScene(props, ArResourcesManager.INSTANCE), nodeId));
+        mainHandler.post(() -> addNode(new ReactScene(props, arResourcesProvider), nodeId));
     }
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
-        AnchorCreator anchorCreator = new SimpleAnchorCreator(ArResourcesManager.INSTANCE);
-        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, ArResourcesManager.INSTANCE), nodeId));
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
+        AnchorCreator anchorCreator = new SimpleAnchorCreator(arResourcesProvider);
+        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, arResourcesProvider), nodeId));
     }
 
     /**
@@ -262,7 +264,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
             VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper), nodeId);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper, arResourcesProvider), nodeId);
         });
     }
 
@@ -312,7 +314,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createLineNode(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context);
+        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
         mainHandler.post(() -> addNode(new LineNode(props, cubeRenderableBuilder), nodeId));
     }
 

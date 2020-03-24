@@ -28,7 +28,7 @@ import com.magicleap.magicscript.utils.read
 open class UiDropdownListItemNode(
     initProps: ReadableMap,
     private val fontProvider: FontProvider
-) : TransformNode(initProps, false, false) {
+) : TransformNode(initProps, useContentNodeAlignment = false) {
 
     companion object {
         const val PROP_ID = "id"

@@ -35,13 +35,11 @@ import kotlin.properties.Delegates
  * Properties can be added or changed using the [update] function.
  *
  * @param initProps the initial properties of the node
- * @param hasRenderable indicates whether the node will have a renderable (view, model, etc)
  * @param useContentNodeAlignment whether to use the [contentNode] for alignment (usually it should
  * be true for nodes that don't use renderable alignment in ViewRenderble.Builder)
  */
 abstract class TransformNode(
     initProps: ReadableMap,
-    val hasRenderable: Boolean,
     val useContentNodeAlignment: Boolean
 ) : TransformAwareNode(), ReactNode {
 
@@ -81,13 +79,6 @@ abstract class TransformNode(
         private set
 
     var verticalAlignment: Alignment.Vertical = Alignment.Vertical.CENTER
-        private set
-
-    /**
-     * Returns true if already started loading the renderable, otherwise false
-     * (loading a renderable is an asynchronous operation)
-     */
-    var renderableRequested = false
         private set
 
     /**
@@ -151,16 +142,6 @@ abstract class TransformNode(
         if (useContentNodeAlignment) {
             applyAlignment()
         }
-    }
-
-    /**
-     * Attaches a renderable (view, model) to the node
-     * Must be called after the ARCore resources have been initialized
-     * @see: https://github.com/google-ar/sceneform-android-sdk/issues/574
-     */
-    fun attachRenderable() {
-        loadRenderable()
-        renderableRequested = true
     }
 
     /**
@@ -359,12 +340,6 @@ abstract class TransformNode(
     }
 
     /**
-     * If the node contains a renderable, it should be loaded
-     * and assigned in this method
-     */
-    protected open fun loadRenderable() {}
-
-    /**
      * Applies alignment to the node. Call it to notify that alignment
      * should be adjusted, e.g. after adding a child to a layout.
      *
@@ -441,11 +416,7 @@ abstract class TransformNode(
         if (alignment != null) {
             verticalAlignment = alignment.vertical
             horizontalAlignment = alignment.horizontal
-            if (useContentNodeAlignment) {
-                applyAlignment()
-            } else if (hasRenderable && renderableRequested) {
-                applyAlignment()
-            }
+            applyAlignment()
         }
     }
 

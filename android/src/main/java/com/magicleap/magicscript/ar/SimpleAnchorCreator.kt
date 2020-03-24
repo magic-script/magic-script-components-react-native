@@ -43,8 +43,12 @@ class SimpleAnchorCreator(private val arResourcesProvider: ArResourcesProvider) 
         if (session == null) {
             logMessage("Cannot create anchor, session not ready yet", warn = true)
         } else {
-            val anchor = session.createAnchor(pose)
-            result(anchor)
+            try {
+                val anchor = session.createAnchor(pose)
+                result(anchor)
+            } catch (exception: Exception) {
+                logMessage("Create anchor exception:  $exception", warn = true)
+            }
         }
     }
 

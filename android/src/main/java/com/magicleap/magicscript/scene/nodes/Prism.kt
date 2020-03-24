@@ -31,8 +31,8 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.RenderableResult
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -48,7 +48,7 @@ class Prism(
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
-    ArResourcesProvider.ArLoadedListener, ArResourcesProvider.TransformationSystemListener {
+    ArResourcesProvider.TransformationSystemListener {
 
     companion object {
         const val PROP_SIZE = "size"
@@ -88,11 +88,10 @@ class Prism(
     private var renderableCopy: Renderable? = null
     private var reactScene: ReactScene? = null
 
-    private var cubeLoadRequested = false
+    private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
 
     init {
         arResourcesProvider.addCameraUpdatedListener(this)
-        arResourcesProvider.addArLoadedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
     }
 
@@ -157,13 +156,6 @@ class Prism(
         buildContentNode(transformationSystem)
     }
 
-    override fun onArLoaded() {
-        if (cubeLoadRequested) {
-            buildCube()
-            cubeLoadRequested = false
-        }
-    }
-
     override fun onCameraUpdated(position: Vector3, state: TrackingState) {
         if (state != TrackingState.TRACKING) {
             return
@@ -206,8 +198,11 @@ class Prism(
         // See https://github.com/magic-script/magic-script-components-react-native/issues/494
         detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
-        arResourcesProvider.removeArLoadedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
+
+        renderableLoadRequest?.let {
+            cubeBuilder.cancel(it)
+        }
     }
 
     override fun setAnchor(anchor: Anchor?) {
@@ -216,20 +211,22 @@ class Prism(
     }
 
     private fun buildCube() {
-        if (!arResourcesProvider.isArLoaded()) {
-            cubeLoadRequested = true
-            return
+        // cancel previous load task if exists
+        renderableLoadRequest?.let {
+            cubeBuilder.cancel(it)
         }
 
         val color = Color(1f, 0f, 0f, 0.5f)
-        cubeBuilder.buildRenderable(size, Vector3.zero(), color, resultCallback = {
+        renderableLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
             if (it is RenderableResult.Success) {
                 renderableCopy = it.renderable
                 if (visible) {
                     container?.renderable = it.renderable
                 }
             }
-        })
+        }.also {
+            cubeBuilder.buildRenderable(it)
+        }
     }
 
     private fun applyProperties(props: Bundle) {

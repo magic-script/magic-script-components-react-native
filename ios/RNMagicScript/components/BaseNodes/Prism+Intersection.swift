@@ -85,25 +85,15 @@ extension Prism {
         return Ray(begin: newBegin, direction: direction.normalized(), length: CGFloat(direction.length()))
     }
     
-    func clipRay(_ ray: Ray) -> Ray {
+    func isPointInside(_ point: SCNVector3) -> Bool {
         let worldSpacePlanes = getClippingPlanes()
-        
-        let beginDir = ray.direction
-        let backPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) > 0 }
-        let frontPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) < 0 }
-        
-        // begin of clipped ray
-        let clippedBegin: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: backPlanes, allPlanes: worldSpacePlanes)
-        let clippedEnd: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: frontPlanes, allPlanes: worldSpacePlanes)
-        
-        if clippedBegin == nil && clippedEnd == nil {
-            return ray
+        for plane in worldSpacePlanes {
+            if !plane.isPointInFront(point) {
+                return false
+            }
         }
         
-        let newBegin: SCNVector3 = clippedBegin ?? ray.begin
-        let newEnd: SCNVector3 = clippedEnd ?? ray.end
-        let direction = newEnd - newBegin
-        return Ray(begin: newBegin, direction: direction.normalized(), length: CGFloat(direction.length()))
+        return true
     }
     
     fileprivate func intersectPlanes(ray: Ray, inputPlanes: [Plane], allPlanes: [Plane]) -> SCNVector3? {
@@ -127,16 +117,5 @@ extension Prism {
         }
         
         return nil
-    }
-    
-    func isPointInside(_ point: SCNVector3) -> Bool {
-        let worldSpacePlanes = getClippingPlanes()
-        for plane in worldSpacePlanes {
-            if !plane.isPointInFront(point) {
-                return false
-            }
-        }
-        
-        return true
     }
 }

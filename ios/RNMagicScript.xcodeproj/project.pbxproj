@@ -27,6 +27,7 @@
 		441FE34D242A5C5D008C1BE1 /* SCNCircleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE34C242A5C5D008C1BE1 /* SCNCircleSpec.swift */; };
 		441FE34F242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE34E242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift */; };
 		441FE352242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE351242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift */; };
+		441FE356242B66C2008C1BE1 /* PrismIntersectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE355242B66C2008C1BE1 /* PrismIntersectionSpec.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
 		44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226126232F9173006E2FBA /* MathsExtensionSpec.swift */; };
@@ -617,6 +618,7 @@
 		441FE34C242A5C5D008C1BE1 /* SCNCircleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNCircleSpec.swift; sourceTree = "<group>"; };
 		441FE34E242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismOutlineNodeSpec.swift; sourceTree = "<group>"; };
 		441FE351242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector4ExtensionSpec.swift; sourceTree = "<group>"; };
+		441FE355242B66C2008C1BE1 /* PrismIntersectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismIntersectionSpec.swift; sourceTree = "<group>"; };
 		44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtensionSpec.swift; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
 		44226126232F9173006E2FBA /* MathsExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathsExtensionSpec.swift; sourceTree = "<group>"; };
@@ -1515,6 +1517,7 @@
 				44F09308232D985A0081FF14 /* TransformNodeSpec.swift */,
 				44F09307232D985A0081FF14 /* UiNodeSpec.swift */,
 				C4278B31240CD02400CB9250 /* PrismSpec.swift */,
+				441FE355242B66C2008C1BE1 /* PrismIntersectionSpec.swift */,
 				C4278B33240CD05500CB9250 /* SceneSpec.swift */,
 				C4278B35240CD13900CB9250 /* BaseNodeSpec.swift */,
 			);
@@ -2481,6 +2484,7 @@
 				44A3FD012366258400402912 /* GridLayoutSpec.swift in Sources */,
 				44A3FD0B2366421700402912 /* UiNodeSelectorSpec.swift in Sources */,
 				C4AF1947238563F5006CD523 /* UiCircleConfirmationNodeSpec.swift in Sources */,
+				441FE356242B66C2008C1BE1 /* PrismIntersectionSpec.swift in Sources */,
 				441FC1712362F19B0004DBF1 /* CGPointExtensionSpec.swift in Sources */,
 				44F09331232D985A0081FF14 /* Mock.generated.swift in Sources */,
 				C4278B34240CD05500CB9250 /* SceneSpec.swift in Sources */,

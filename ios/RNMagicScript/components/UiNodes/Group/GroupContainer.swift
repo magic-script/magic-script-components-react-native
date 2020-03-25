@@ -73,7 +73,7 @@ import SceneKit
 
     fileprivate func getBoundsCollection() -> CGRect {
         let nodes: [TransformNode] = container.childNodes.compactMap { $0 as? TransformNode }
-        guard !nodes.isEmpty else { return CGRect.zero }
+        guard nodes.isNotEmpty else { return CGRect.zero }
         var bounds: CGRect = nodes[0].getBounds(parentSpace: true)
         for i in 1..<nodes.count {
             let b = nodes[i].getBounds(parentSpace: true)

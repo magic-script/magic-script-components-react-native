@@ -355,6 +355,8 @@
 		C46014AF23C71F6E002A63D4 /* ARPlaneDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = C46014AE23C71F6E002A63D4 /* ARPlaneDetector.m */; };
 		C46014B323C73618002A63D4 /* GestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46014B223C73618002A63D4 /* GestureHandler.swift */; };
 		C46014B423C73618002A63D4 /* GestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46014B223C73618002A63D4 /* GestureHandler.swift */; };
+		C463D7BF242B6C0F00A96A57 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C463D7BE242B6C0F00A96A57 /* Collection+Extension.swift */; };
+		C463D7C0242B6C0F00A96A57 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C463D7BE242B6C0F00A96A57 /* Collection+Extension.swift */; };
 		C465C260234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */; };
 		C465C261234DDC2000157AA6 /* UiDropdownListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */; };
 		C465C263234DDC3300157AA6 /* UiDropdownListItemNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C262234DDC3300157AA6 /* UiDropdownListItemNode.swift */; };
@@ -853,6 +855,7 @@
 		C46014AD23C71F6E002A63D4 /* ARPlaneDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARPlaneDetector.h; sourceTree = "<group>"; };
 		C46014AE23C71F6E002A63D4 /* ARPlaneDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARPlaneDetector.m; sourceTree = "<group>"; };
 		C46014B223C73618002A63D4 /* GestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHandler.swift; sourceTree = "<group>"; };
+		C463D7BE242B6C0F00A96A57 /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		C465C25F234DDC2000157AA6 /* UiDropdownListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListNode.swift; sourceTree = "<group>"; };
 		C465C262234DDC3300157AA6 /* UiDropdownListItemNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListItemNode.swift; sourceTree = "<group>"; };
 		C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListItemNodeSpec.swift; sourceTree = "<group>"; };
@@ -1417,6 +1420,7 @@
 				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
 				449B54952387FF5300D839CC /* UIView+Screenshot.swift */,
 				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
+				C463D7BE242B6C0F00A96A57 /* Collection+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2394,6 +2398,7 @@
 				44E949372370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
 				44C5D7292360993600AC0B6C /* UiNodeSelector.swift in Sources */,
 				44DF644523946568005E0518 /* SCNCircle.swift in Sources */,
+				C463D7C0242B6C0F00A96A57 /* Collection+Extension.swift in Sources */,
 				44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */,
 				44DA5F56235EF3900058212C /* Plane.swift in Sources */,
 				C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */,
@@ -2604,6 +2609,7 @@
 				44890E162413EF7500903629 /* NodesFactory.swift in Sources */,
 				44444719236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
+				C463D7BF242B6C0F00A96A57 /* Collection+Extension.swift in Sources */,
 				4425EDFE2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				C4B82C5F236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */,
 				448586FB235DC1FD00D372CB /* Ray.swift in Sources */,

@@ -41,7 +41,7 @@ import GLTFSceneKit
     }
 
     @objc var isLoaded: Bool {
-        return !contentNode.childNodes.isEmpty
+        return contentNode.childNodes.isNotEmpty
     }
 
     @objc override func update(_ props: [String: Any]) {

@@ -52,7 +52,7 @@ import SceneKit
     }
     
     @objc override func _calculateSize() -> CGSize {
-        guard !points.isEmpty else { return CGSize.zero }
+        guard points.isEmpty else { return CGSize.zero }
 
         let firstPoint = points.first!
         var bbox: (min: CGPoint, max: CGPoint) = (min: CGPoint(x: CGFloat(firstPoint.x), y: CGFloat(firstPoint.y)),

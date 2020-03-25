@@ -443,8 +443,6 @@
 		C4F8749023E157780044480F /* SurfaceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F8748E23E157780044480F /* SurfaceNode.swift */; };
 		C4F8749223E15E7C0044480F /* SCNVector4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F8749123E15E7C0044480F /* SCNVector4+Extension.swift */; };
 		C4F8749323E15E7C0044480F /* SCNVector4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F8749123E15E7C0044480F /* SCNVector4+Extension.swift */; };
-		C4F8749523E15EF30044480F /* SIMD+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F8749423E15EF30044480F /* SIMD+Extension.swift */; };
-		C4F8749623E15EF30044480F /* SIMD+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F8749423E15EF30044480F /* SIMD+Extension.swift */; };
 		C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */; };
 		C4FB475B234A8E7300E552F5 /* InputViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */; };
 		C4FEFF862398E87B00EA1663 /* RCTARViewObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FEFF852398E87B00EA1663 /* RCTARViewObserving.swift */; };
@@ -912,7 +910,6 @@
 		C4EFE261237ED74100C70001 /* DialogPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenting.swift; sourceTree = "<group>"; };
 		C4F8748E23E157780044480F /* SurfaceNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceNode.swift; sourceTree = "<group>"; };
 		C4F8749123E15E7C0044480F /* SCNVector4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector4+Extension.swift"; sourceTree = "<group>"; };
-		C4F8749423E15EF30044480F /* SIMD+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SIMD+Extension.swift"; sourceTree = "<group>"; };
 		C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactory.swift; sourceTree = "<group>"; };
 		C4FEFF852398E87B00EA1663 /* RCTARViewObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewObserving.swift; sourceTree = "<group>"; };
 		C4FEFF8D2398EFB600EA1663 /* RCTARView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RCTARView+Extension.swift"; sourceTree = "<group>"; };
@@ -1418,7 +1415,6 @@
 				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
 				449B54952387FF5300D839CC /* UIView+Screenshot.swift */,
 				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
-				C4F8749423E15EF30044480F /* SIMD+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2337,7 +2333,6 @@
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				449B5484238524F400D839CC /* UiPanelNode.swift in Sources */,
 				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
-				C4F8749623E15EF30044480F /* SIMD+Extension.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AB3974238BCD1F0002DF14 /* UiTabNode.swift in Sources */,
 				C411CC31240505F6004C7063 /* Prism.swift in Sources */,
@@ -2572,7 +2567,6 @@
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
-				C4F8749523E15EF30044480F /* SIMD+Extension.swift in Sources */,
 				44DF644C23951823005E0518 /* String+Random.swift in Sources */,
 				C418822024126DC000EB84EE /* ButtonType.swift in Sources */,
 				44AB3970238BCD130002DF14 /* UiContentNode.swift in Sources */,

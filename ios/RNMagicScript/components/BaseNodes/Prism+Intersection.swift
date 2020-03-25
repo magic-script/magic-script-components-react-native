@@ -42,7 +42,7 @@ extension Prism {
         let endPoint = ray.end
         if isPointInside(beginPoint) || isPointInside(endPoint) {
             if clippedRay != nil {
-                clippedRay?.pointee = ray
+                clippedRay?.pointee = getClippedRay(ray: ray)
             }
             return true
         }
@@ -75,6 +75,10 @@ extension Prism {
     }
     
     func getClippedRay(ray: Ray) -> Ray? {
+        if isPointInside(ray.begin) && isPointInside(ray.end) {
+            return ray
+        }
+        
         guard let points = getIntersectionPoints(ray: ray) else {
             return nil
         }

@@ -20,6 +20,10 @@ import SceneKit
 @testable import RNMagicScriptHostApplication
 
 class PrismIntersectionSpec: QuickSpec {
+    // func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool
+    // func getIntersectionPoints(ray: Ray) -> (begin: SCNVector3?, end: SCNVector3?)?
+    // func getClippedRay(ray: Ray) -> Ray?
+    // func isPointInside(_ point: SCNVector3) -> Bool
     override func spec() {
         describe("PrismIntersection") {
             var prism: Prism!
@@ -29,26 +33,79 @@ class PrismIntersectionSpec: QuickSpec {
                 prism.size = SCNVector3(1, 1, 1)
             }
             
-            context("prism intersection by ray") {
-                it("should not intersect prism") {
+            context("ray does not intersect prism") {
+                let validateRays: (_ rays: [Ray]) -> () = { rays in
+                    rays.forEach {
+                        var outRay: Ray?
+                        expect(prism.intersect(with: $0, clippedRay: &outRay)).to(beFalse())
+                        expect(outRay).to(beNil())
+                    }
+                }
+                
+                it("should not intersect prism (axis aligned rays)") {
                     let directions: [SCNVector3] = [SCNVector3.right, SCNVector3.up, SCNVector3.forward]
                     directions.forEach { direction in
-                        let rays = self.getSampleRays(direction: direction)
-                        rays.forEach {
-                            expect(prism.intersect(with: $0, clippedRay: nil)).to(beFalse())
-                        }
+                        let rays = self.getAxisAlignedRays(direction: direction)
+                        validateRays(rays)
                     }
+                }
+                
+                it("should not intersect prism (sphere of negated rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 0.87, length: 1.0, negated: true)
+                    validateRays(rays)
+                }
+                
+                it("should not intersect prism (sphere of positive but short rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 1.0, length: 0.1, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should not intersect prism (sphere of rays moved away from prism)") {
+                    let positiveRays = self.getSphereOfRays(center: SCNVector3(3, 3, 3), radius: 1, length: 0.5, negated: false)
+                    validateRays(positiveRays)
                     
-//                    var clippedRay: Ray?
-//                    prism.intersect(with: ray, clippedRay: &clippedRay)
-//                    prism.getIntersectionPoints(ray: ray)
-//                    prism.getClippedRay(ray: ray)
-//                    prism.isPointInside(SCNVector3.zero)
-//                    prism.isPointInside(SCNVector3(10, 10, 10))
-//                    func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool
-//                    func getIntersectionPoints(ray: Ray) -> (begin: SCNVector3?, end: SCNVector3?)?
-//                    func getClippedRay(ray: Ray) -> Ray?
-//                    func isPointInside(_ point: SCNVector3) -> Bool
+                    let negatedRays = self.getSphereOfRays(center: SCNVector3(3, 3, 3), radius: 1, length: 0.5, negated: true)
+                    validateRays(negatedRays)
+                }
+            }
+                
+            context("ray does intersect prism") {
+                let validateRays: (_ rays: [Ray]) -> () = { rays in
+                    rays.forEach {
+                        var outRay: Ray?
+                        expect(prism.intersect(with: $0, clippedRay: &outRay)).to(beTrue())
+
+                        if outRay == nil {
+                            print("outRay must not be nil")
+                            prism.intersect(with: $0, clippedRay: &outRay)
+                        }
+                        expect(outRay).notTo(beNil())
+                    }
+               }
+                
+                it("should intersect prism (sphere of positive rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 1.0, length: 2.0, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should intersect prism (sphere of internal short rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 0.4, length: 0.1, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should intersect prism (sphere of internal short rays with offset)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3(0.35, 0.35, 0.35), radius: 0.1, length: 0.01, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should intersect prism (edge cases)") {
+                    let edgeCaseRays: [Ray] = [
+                        Ray(begin: SCNVector3(-0.49, -0.49, -1.0), direction: SCNVector3.forward, length: 2.0),
+                        Ray(begin: SCNVector3( 0.49,  0.49, -1.0), direction: SCNVector3.forward, length: 0.6),
+                        Ray(begin: SCNVector3(-0.49, -0.49,  1.0), direction: SCNVector3.forward.negated(), length: 2.0),
+                        Ray(begin: SCNVector3( 0.49,  0.49,  1.0), direction: SCNVector3.forward.negated(), length: 0.6),
+                    ]
+                    validateRays(edgeCaseRays)
                 }
             }
             
@@ -63,6 +120,31 @@ class PrismIntersectionSpec: QuickSpec {
                     points.forEach { expect(prism.isPointInside($0)).to(beFalse()) }
                 }
             }
+        }
+    }
+    
+    fileprivate func getSphereOfRays(center: SCNVector3 = SCNVector3.zero, radius: CGFloat = 2.0, length: CGFloat = 5.0, negated: Bool = false) -> [Ray] {
+        var circleOfPoints: [SCNVector3] = []
+        let circlePointsCount: Int = 20
+        let deltaAlpha: CGFloat = 2.0 * CGFloat.pi / CGFloat(circlePointsCount)
+        for alpha in stride(from: -CGFloat.pi, to: CGFloat.pi, by: deltaAlpha) {
+            let x = radius * cos(alpha)
+            let y = radius * sin(alpha)
+            circleOfPoints.append(SCNVector3(x, y, 0))
+        }
+        
+        var sphereOfPoints: [SCNVector3] = []
+        let deltaBeta: CGFloat = CGFloat.pi / CGFloat(circlePointsCount)
+        for beta in stride(from: 0, to: CGFloat.pi, by: deltaBeta) {
+            let quat = SCNQuaternion.fromAxis(SCNVector3.right, andAngle: Float(beta))
+            let matrix: SCNMatrix4 = SCNMatrix4.fromQuaternion(quat: quat)
+            circleOfPoints.forEach { sphereOfPoints.append(matrix * $0) }
+        }
+        
+        if negated {
+            return sphereOfPoints.map { Ray(begin: center + $0, direction: $0.normalized(), length: length) }
+        } else {
+            return sphereOfPoints.map { Ray(begin: center + $0, direction: $0.normalized().negated(), length: length) }
         }
     }
     
@@ -83,7 +165,7 @@ class PrismIntersectionSpec: QuickSpec {
         return points
     }
     
-    fileprivate func getSampleRays(direction: SCNVector3, length: CGFloat = 3.0, distance: CGFloat = 1.0, includeLookingAtCenter: Bool = false) -> [Ray] {
+    fileprivate func getAxisAlignedRays(direction: SCNVector3, length: CGFloat = 3.0, distance: CGFloat = 1.0, includeLookingAtCenter: Bool = false) -> [Ray] {
         let points = getSamplePoints(distance: distance, includeCenter: includeLookingAtCenter)
         var rays: [Ray] = []
         points.forEach {

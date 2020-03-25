@@ -29,6 +29,8 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.ux.BaseTransformableNode
+import com.google.ar.sceneform.ux.SelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
@@ -81,8 +83,6 @@ class Prism(
             } else {
                 null
             }
-
-            setRotationHintGraphic(value)
         }
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
@@ -343,19 +343,6 @@ class Prism(
         }
     }
 
-    private fun setRotationHintGraphic(visible: Boolean) {
-        container?.let {
-            it.rotationController?.isEnabled = visible
-            it.children.forEach { child ->
-                if (!visible) {
-                    // fixes a bug when rotate hint graphic was visible even after
-                    // disabling the rotation controller
-                    child.renderable = null
-                }
-            }
-        }
-    }
-
     inner class RotatableNode(transformationSystem: TransformationSystem) :
         TransformableNode(transformationSystem) {
 
@@ -363,6 +350,8 @@ class Prism(
             // disabling default translationController, because it only allows moving on planes
             translationController.isEnabled = false
             scaleController.isEnabled = false
+
+            transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
         }
 
         override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
@@ -375,6 +364,16 @@ class Prism(
             return super.onTouchEvent(hitTestResult, motionEvent)
         }
 
+    }
+
+    private class EmptySelectionVisualizer : SelectionVisualizer {
+        override fun applySelectionVisual(node: BaseTransformableNode?) {
+
+        }
+
+        override fun removeSelectionVisual(node: BaseTransformableNode?) {
+
+        }
     }
 
 }

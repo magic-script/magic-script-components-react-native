@@ -25,6 +25,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.HitTestResult
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
@@ -35,6 +36,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.ar.ExtendedScaleController
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
@@ -53,12 +55,13 @@ class Prism(
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
-    context: Context
+    private val context: Context
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.TransformationSystemListener {
 
     companion object {
         const val PROP_SIZE = "size"
+        const val PROP_SCALE = "scale"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
 
@@ -160,10 +163,17 @@ class Prism(
     private fun buildContentNode(transformationSystem: TransformationSystem) {
         // detach old container if exists
         detachContainer()
-        container = RotatableNode(transformationSystem).also {
-            it.setParent(this)
+        container = RotatableNode(transformationSystem).also { container ->
+
+            properties.read<Vector3>(PROP_SCALE)?.let { scale ->
+                // in order to scale be applied when using scale controller,
+                // we have to assign local scale before [ScaleController.onActivated] is called
+                container.localScale = scale
+            }
+
+            container.setParent(this)
             if (content != null) {
-                it.addChild(content)
+                container.addChild(content)
             }
         }
 
@@ -262,7 +272,9 @@ class Prism(
     }
 
     private fun adjustMenuPosition() {
-        menuNode.localPosition = Vector3(0f, size.y / 2 + MENU_MARGIN_BOTTOM, 0f)
+        val scaleY = container?.localScale?.y ?: 1f
+        val posY = (size.y * scaleY) / 2 + MENU_MARGIN_BOTTOM
+        menuNode.localPosition = Vector3(0f, posY, 0f)
     }
 
     private fun adjustMenuRotation(cameraPosition: Vector3) {
@@ -346,12 +358,20 @@ class Prism(
     inner class RotatableNode(transformationSystem: TransformationSystem) :
         TransformableNode(transformationSystem) {
 
+        private var lastScale = localScale
+
         init {
             // disabling default translationController, because it only allows moving on planes
             translationController.isEnabled = false
-            scaleController.isEnabled = false
 
             transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
+
+            // disable default scale controller
+            scaleController.isEnabled = false
+
+            val pinchRecognizer = transformationSystem.pinchRecognizer
+            val customScaleController = ExtendedScaleController(this, pinchRecognizer)
+            addTransformationController(customScaleController)
         }
 
         override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
@@ -362,6 +382,14 @@ class Prism(
                 MotionEvent.ACTION_UP -> beingTouched = false
             }
             return super.onTouchEvent(hitTestResult, motionEvent)
+        }
+
+        override fun onTransformChange(node: Node) {
+            super.onTransformChange(node)
+            if (localScale != lastScale) {
+                adjustMenuPosition()
+                lastScale = localScale
+            }
         }
 
     }

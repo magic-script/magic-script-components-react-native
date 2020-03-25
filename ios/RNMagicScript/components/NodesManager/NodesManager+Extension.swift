@@ -24,14 +24,14 @@ extension NodesManager: RCTARViewObserving {
             registerAnchorNode(node, anchorId: anchorId)
         }
 
-        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            transformNode.applyTransform(from: node)
+        if let name = anchor.name, let prism = findPrismWithAnchorUuid(name) {
+            prism.applyTransform(from: node)
         }
     }
 
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        if let name = anchor.name, let transformNode = findNodeWithAnchorUuid(name) {
-            transformNode.applyTransform(from: node)
+        if let name = anchor.name, let prism = findPrismWithAnchorUuid(name) {
+            prism.applyTransform(from: node)
         }
     }
 
@@ -42,8 +42,10 @@ extension NodesManager: RCTARViewObserving {
     }
 }
 
-extension TransformNode {
+extension Prism {
     func applyTransform(from anchorNode: SCNNode) {
-        transform = anchorNode.convertTransform(anchorNode.transform, to: self)
+        // This prism may not yet be attached to its parent
+        // so set the world transform directly
+        setWorldTransform(anchorNode.worldTransform)
     }
 }

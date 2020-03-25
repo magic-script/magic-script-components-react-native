@@ -44,13 +44,6 @@ class TransformNodeTest {
     }
 
     @Test
-    fun `anchor UUID should be empty by default`() {
-        val node = NodeBuilder().build()
-
-        node.anchorUuid shouldEqual ""
-    }
-
-    @Test
     fun `should contain initial properties`() {
         val property = "key"
         val propsMap = JavaOnlyMap()
@@ -75,15 +68,6 @@ class TransformNodeTest {
 
         assertNotNull(node.getProperty(initialProperty))
         assertNotNull(node.getProperty(propertyToAdd))
-    }
-
-    @Test
-    fun `should set anchor UUID on build when property present`() {
-        val uuid = UUID.randomUUID().toString()
-
-        val node = NodeBuilder().withAnchorUUID(uuid).build()
-
-        node.anchorUuid shouldEqual uuid
     }
 
     @Test

@@ -51,7 +51,6 @@ abstract class TransformNode(
         const val PROP_LOCAL_TRANSFORM = "localTransform"
         const val PROP_ALIGNMENT = "alignment"
         const val PROP_VISIBLE = "visible"
-        const val PROP_ANCHOR_UUID = "anchorUuid"
 
         /**
          * Indicates how often we measure bounding and (if necessary)
@@ -68,9 +67,6 @@ abstract class TransformNode(
      * Renderable and / or child nodes should be added to it.
      */
     val contentNode = TransformContentNode()
-
-    var anchorUuid: String = ""
-        private set
 
     /**
      * Alignment used to position a Renderable or [contentNode]
@@ -336,7 +332,6 @@ abstract class TransformNode(
         setLocalTransform(props)
         setAlignment(props)
         setVisibility(props)
-        setAnchorUuid(props)
     }
 
     /**
@@ -350,13 +345,6 @@ abstract class TransformNode(
      */
     protected open fun applyAlignment() {
         Utils.applyContentNodeAlignment(this)
-    }
-
-    private fun setAnchorUuid(props: Bundle) {
-        val anchorUuid = props.read<String>(PROP_ANCHOR_UUID)
-        if (anchorUuid != null) {
-            this.anchorUuid = anchorUuid
-        }
     }
 
     private fun setLocalPosition(props: Bundle) {

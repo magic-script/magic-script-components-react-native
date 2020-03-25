@@ -19,8 +19,11 @@ package com.magicleap.magicscript.scene
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.core.Anchor
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
@@ -162,20 +165,25 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should add node to specified anchor when anchor UUID present and anchor node exists`() {
+    fun `should attach prism to specified anchor when anchor UUID present and anchor node exists`() {
+        val reactScene = ReactScene(reactMapOf(), arResourcesProvider)
+        val anchor = mock<Anchor>()
+
         val uuid = UUID.randomUUID().toString()
         val anchorNode = AnchorNode()
         anchorNode.name = uuid
+        anchorNode.anchor = anchor
         arScene.addChild(anchorNode)
-        val childNode = NodeBuilder()
-            .withProps(reactMapOf(TransformNode.PROP_ANCHOR_UUID, uuid))
-            .build()
 
-        nodesManager.registerNode(childNode, "999")
-        nodesManager.addNodeToParent("999", parentId = "")
+        val prism = createPrism(reactMapOf(Prism.PROP_ANCHOR_UUID, uuid))
+        nodesManager.registerNode(reactScene, nodeId = "0")
+        nodesManager.registerNode(prism, nodeId = "1")
+        nodesManager.addNodeToParent(nodeId = "1", parentId = "0")
+        nodesManager.addNodeToRoot(nodeId = "0")
 
-        anchorNode.children.size shouldEqual 1
-        anchorNode.children.first() shouldEqual childNode
+        prism.build()
+
+        prism.anchor shouldEqual anchor
     }
 
     @Test

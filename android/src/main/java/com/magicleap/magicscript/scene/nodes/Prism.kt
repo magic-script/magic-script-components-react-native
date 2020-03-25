@@ -54,6 +54,7 @@ class Prism(
         const val PROP_SIZE = "size"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
+        const val PROP_ANCHOR_UUID = "anchorUuid"
     }
 
     var beingTouched: Boolean = false
@@ -83,6 +84,7 @@ class Prism(
     private var content: TransformNode? = null
     private var lastCameraPosition: Vector3? = null
     private var requestedAnchorPosition: Vector3? = null
+    private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var renderableCopy: Renderable? = null
@@ -165,6 +167,10 @@ class Prism(
             tryToAnchorAtPosition(it)
         }
 
+        requestedAnchorUuid?.let {
+            tryToAnchorAtUuid(it)
+        }
+
         if (lastCameraPosition == null) {
             lastCameraPosition = position
             return
@@ -208,6 +214,7 @@ class Prism(
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
         requestedAnchorPosition = null
+        requestedAnchorUuid = null
     }
 
     private fun buildCube() {
@@ -232,6 +239,7 @@ class Prism(
     private fun applyProperties(props: Bundle) {
         setSize(props)
         setPosition(props)
+        setAnchorUuid(props)
         setVisible(props)
     }
 
@@ -251,6 +259,12 @@ class Prism(
         }
     }
 
+    private fun setAnchorUuid(props: Bundle) {
+        props.read<String>(PROP_ANCHOR_UUID)?.let { anchorUuid ->
+            tryToAnchorAtUuid(anchorUuid)
+        }
+    }
+
     private fun setVisible(props: Bundle) {
         props.read<Boolean>(PROP_VISIBLE)?.let { visible ->
             this.visible = visible
@@ -267,6 +281,16 @@ class Prism(
             lastCreatedAnchor = it
             requestedAnchorPosition = null
         })
+    }
+
+    private fun tryToAnchorAtUuid(anchorUuid: String) {
+        requestedAnchorUuid = anchorUuid
+
+        val anchorNode = scene?.findByName(anchorUuid) as AnchorNode?
+        anchorNode?.anchor?.let {
+            anchor = it
+            requestedAnchorUuid = null
+        }
     }
 
     private fun clipContent() {

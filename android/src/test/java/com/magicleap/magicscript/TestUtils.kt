@@ -74,11 +74,6 @@ open class NodeBuilder(protected val useContentNodeAlignment: Boolean = true) {
         return this
     }
 
-    fun withAnchorUUID(anchorUUID: String): NodeBuilder {
-        props.putString(TransformNode.PROP_ANCHOR_UUID, anchorUUID)
-        return this
-    }
-
     open fun build(): TransformNode {
         val node = object : TransformNode(props, useContentNodeAlignment) {}
         node.build()

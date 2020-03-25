@@ -33,22 +33,21 @@ import ARKit
 }
 
 @objc open class NodesManager: NSObject {
-    @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+    @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], prismsByAnchorUuid: [:])
     @objc public private (set) var rootNode: BaseNode
 
     fileprivate var nodesById: [String: BaseNode]
-    fileprivate var transformNodeByAnchorUuid: [String: TransformNode]
-    fileprivate var anchorNodeByAnchorUuid: [String: SCNNode]
+    fileprivate var prismsByAnchorUuid: [String: Prism]
+    fileprivate var anchorNodesByAnchorUuid: [String: SCNNode] = [:]
 
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
 
-    init(rootNode: BaseNode, nodesById: [String: TransformNode], transformNodeByAnchorUuid: [String: TransformNode], anchorNodeByAnchorUuid: [String: SCNNode]) {
+    init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
         self.nodesById = nodesById
-        self.transformNodeByAnchorUuid = transformNodeByAnchorUuid
-        self.anchorNodeByAnchorUuid = anchorNodeByAnchorUuid
+        self.prismsByAnchorUuid = prismsByAnchorUuid
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
@@ -66,8 +65,8 @@ import ARKit
         return nodesById[nodeId] as? UiNode
     }
 
-    @objc public func findNodeWithAnchorUuid(_ nodeId: String) -> TransformNode? {
-        return transformNodeByAnchorUuid[nodeId]
+    @objc public func findPrismWithAnchorUuid(_ anchorUuid: String) -> Prism? {
+        return prismsByAnchorUuid[anchorUuid]
     }
 
     @objc public private(set) var scene: Scene?
@@ -80,26 +79,30 @@ import ARKit
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
+        updatePrismAnchorUuid(prism, oldAnchorUuid: "")
+    }
+
+    @objc public func updatePrismAnchorUuid(_ prism: Prism, oldAnchorUuid: String) {
+        if !oldAnchorUuid.isEmpty {
+            prismsByAnchorUuid.removeValue(forKey: oldAnchorUuid)
+        }
+        if !prism.anchorUuid.isEmpty {
+            prismsByAnchorUuid[prism.anchorUuid] = prism
+            if let anchorNode = anchorNodesByAnchorUuid[prism.anchorUuid] {
+                prism.applyTransform(from: anchorNode)
+            }
+        }
     }
 
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
-        if !node.anchorUuid.isEmpty {
-            transformNodeByAnchorUuid[node.anchorUuid] = node;
-            if let anchorNode = anchorNodeByAnchorUuid[node.anchorUuid] {
-                node.applyTransform(from: anchorNode)
-            }
-        }
     }
 
     @objc public func unregisterNode(_ nodeId: String) {
         if let node = nodesById[nodeId] {
             node.removeFromParentNode()
             nodesById.removeValue(forKey: nodeId)
-            if let transformNode = node as? TransformNode, !transformNode.anchorUuid.isEmpty {
-                transformNodeByAnchorUuid.removeValue(forKey: transformNode.anchorUuid)
-            }
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)
             }
@@ -172,6 +175,7 @@ import ARKit
         
         prismsById.forEach { $0.value.removeFromParentNode() }
         prismsById.removeAll()
+        prismsByAnchorUuid.removeAll()
         
         scene?.removeFromParentNode()
         scene = nil
@@ -210,10 +214,10 @@ import ARKit
     }
 
     func registerAnchorNode(_ node: SCNNode, anchorId: String) {
-        anchorNodeByAnchorUuid[anchorId] = node
+        anchorNodesByAnchorUuid[anchorId] = node
     }
 
     func unregisterAnchorNode(anchorId: String) {
-        anchorNodeByAnchorUuid.removeValue(forKey: anchorId)
+        anchorNodesByAnchorUuid.removeValue(forKey: anchorId)
     }
 }

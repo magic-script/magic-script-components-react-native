@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.sceneform.AnchorNode
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -62,8 +61,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
             logMessage("cannot add node with id = $nodeId to root: not found", warn = true)
             return
         }
-
-        tryAddNodeToAnchor(node)
     }
 
     @Synchronized
@@ -75,39 +72,11 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
             logMessage("cannot add node: not found", warn = true)
             return
         }
-        if (tryAddNodeToAnchor(node)) {
-            return
-        }
         if (parentNode == null) {
             logMessage("cannot add node: parent not found", warn = true)
             return
         }
         parentNode.addContent(node)
-    }
-
-    private fun tryAddNodeToAnchor(node: ReactNode): Boolean {
-        if (node !is TransformNode) {
-            return false
-        }
-
-        if (node.anchorUuid.isEmpty()) {
-            return false
-        }
-
-        val scene = arResourcesProvider.getArScene()
-        if (scene == null) {
-            logMessage("tryAddNodeToAnchor ar scene not initialized", warn = true)
-            return false
-        }
-
-        val anchorNode = scene.findByName(node.anchorUuid)
-        return if (anchorNode is AnchorNode) {
-            anchorNode.addChild(node)
-            true
-        } else {
-            logMessage("tryAddNodeToAnchor anchorUuid not found: ${node.anchorUuid}", warn = true)
-            false
-        }
     }
 
     @Synchronized

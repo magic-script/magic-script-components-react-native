@@ -27,7 +27,9 @@ class NodesManagerSpec: QuickSpec {
             let referenceSceneNodeId = "referenceSceneNodeId"
             let referenceNode = TransformNode()
             let referenceNodeId = "referenceNodeId"
+            let referencePrismId = "referencePrismId"
             let referenceAnchorUUID = "referenceAnchorUUID"
+            let referencePrism = Prism()
 
             context("always") {
                 it("should register AR view when requested") {
@@ -44,46 +46,46 @@ class NodesManagerSpec: QuickSpec {
 
                     let localReferenceNode = UiButtonNode()
                     let localReferenceNodeId = "referenceNodeId"
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [localReferenceNodeId: localReferenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [localReferenceNodeId: localReferenceNode], prismsByAnchorUuid: [:])
                     expect(focusedNode.hasFocus).to(beFalse())
                 }
             }
 
             context("when asked for node by ID") {
                 it("should return node when exists") {
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
 
                     let result = nodesManager.findNodeWithId(referenceNodeId)
                     expect(result).to(beIdenticalTo(referenceNode))
                 }
 
                 it("should return nil when node doesnt exist") {
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
                     let result = nodesManager.findNodeWithId(referenceNodeId)
                     expect(result).to(beNil())
                 }
             }
 
-            context("when asked for node by Anchor UUID") {
-                it("should return node when exists") {
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [referenceNodeId: referenceNode], anchorNodeByAnchorUuid: [:])
+            context("when asked for prism by Anchor UUID") {
+                it("should return prism when exists") {
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [referenceAnchorUUID: referencePrism])
 
-                    let result = nodesManager.findNodeWithAnchorUuid(referenceNodeId)
-                    expect(result).to(beIdenticalTo(referenceNode))
+                    let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
+                    expect(result).to(beIdenticalTo(referencePrism))
                 }
 
-                it("should return nil when node doesnt exist") {
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                it("should return nil when prism doesnt exist") {
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
-                    let result = nodesManager.findNodeWithAnchorUuid(referenceNodeId)
+                    let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
                     expect(result).to(beNil())
                 }
             }
 
             context("when registering node") {
                 it("node should be stored (by ID)") {
-                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                    nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
                     nodesManager.registerNode(referenceNode, nodeId: referenceNodeId)
 
@@ -92,15 +94,14 @@ class NodesManagerSpec: QuickSpec {
                     expect(result?.name).to(equal(referenceNodeId))
                 }
 
-                context("when anchor UUID set (different than rootUuid)") {
-                    it("node should be stored (by UUID)") {
-                        referenceNode.anchorUuid = referenceAnchorUUID
-                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                context("when anchor UUID set (not empty)") {
+                    it("prism should be stored (by UUID)") {
+                        referencePrism.anchorUuid = referenceAnchorUUID
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [:])
 
-                        nodesManager.registerNode(referenceNode, nodeId: referenceNodeId)
-
-                        let result = nodesManager.findNodeWithAnchorUuid(referenceAnchorUUID)
-                        expect(result).to(beIdenticalTo(referenceNode))
+                        nodesManager.registerPrism(referencePrism, prismId: referencePrismId)
+                        let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
+                        expect(result).to(beIdenticalTo(referencePrism))
                     }
                 }
             }
@@ -108,7 +109,7 @@ class NodesManagerSpec: QuickSpec {
             context("when asked to unregister node") {
                 context("when node exists in store (by ID)") {
                     it("should be removed from storage") {
-                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
                         nodesManager.unregisterNode(referenceNodeId)
 
                         let result = nodesManager.findNodeWithId(referenceNodeId)
@@ -116,7 +117,7 @@ class NodesManagerSpec: QuickSpec {
                     }
 
                     it("should be removed from parent") {
-                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], transformNodeByAnchorUuid: [:], anchorNodeByAnchorUuid: [:])
+                        nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
                         let parentNode = SCNNode(geometry: SCNGeometry(sources: [], elements: nil))
                         parentNode.addChildNode(referenceNode)
 
@@ -136,8 +137,7 @@ class NodesManagerSpec: QuickSpec {
 
                     nodesManager = NodesManager(rootNode: TransformNode(),
                                                 nodesById: [referenceNodeId: referenceNode, parentRreferenceNodeId: parentReferenceNode],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
                     nodesManager.addNode(referenceNodeId, toParent: parentRreferenceNodeId)
                     expect(parentReferenceNode.contentNode.childNodes).to(contain(referenceNode))
                 }
@@ -149,8 +149,7 @@ class NodesManagerSpec: QuickSpec {
 
                     nodesManager = NodesManager(rootNode: TransformNode(),
                                                 nodesById: [referenceNodeId: referenceNode, parentRreferenceNodeId: parentReferenceNode],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
                     nodesManager.removeNode(referenceNodeId, fromParent: parentRreferenceNodeId)
                     expect(parentReferenceNode.contentNode.childNodes).toNot(contain(referenceNode))
                 }
@@ -161,8 +160,7 @@ class NodesManagerSpec: QuickSpec {
                     let rootRefereneceNode = BaseNode()
                     nodesManager = NodesManager(rootNode: rootRefereneceNode,
                                                 nodesById: [:],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
 
                     nodesManager.registerScene(referenceSceneNode, sceneId: referenceSceneNodeId)
                     nodesManager.addNodeToRoot(referenceSceneNodeId)
@@ -173,8 +171,7 @@ class NodesManagerSpec: QuickSpec {
                     let rootRefereneceNode = BaseNode()
                     nodesManager = NodesManager(rootNode: rootRefereneceNode,
                                                 nodesById: [:],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
 
                     nodesManager.registerScene(referenceSceneNode, sceneId: referenceSceneNodeId)
                     nodesManager.addNodeToRoot(referenceSceneNodeId)
@@ -190,8 +187,7 @@ class NodesManagerSpec: QuickSpec {
                     rootRefereneceNode.addChildNode(referenceNode)
                     nodesManager = NodesManager(rootNode: rootRefereneceNode,
                                                 nodesById: [referenceNodeId: referenceNode],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
 
                     nodesManager.clear()
                     expect(rootRefereneceNode.childNodes).toNot(contain(referenceNode))
@@ -208,8 +204,7 @@ class NodesManagerSpec: QuickSpec {
                 it("whould do nothing when node doesn't exist in storage") {
                     nodesManager = NodesManager(rootNode: TransformNode(),
                                                 nodesById: [referenceNodeId: referenceNode],
-                                                transformNodeByAnchorUuid: [:],
-                                                anchorNodeByAnchorUuid: [:])
+                                                prismsByAnchorUuid: [:])
 
                     let result = nodesManager.updateNode(referenceNodeId, properties: ["visible" : true])
                     expect(result).to(beTrue())

@@ -213,12 +213,23 @@ func /= (vector: inout SCNVector3, scalar: Float) {
 }
 
 extension SCNVector3 {
-    init(_ vector: SIMD4<Float>) {
-        self.init(x: vector.x / vector.w, y: vector.y / vector.w, z: vector.z / vector.w)
+    init(_ v: SIMD4<Float>) {
+        self.init(x: v.x / v.w, y: v.y / v.w, z: v.z / v.w)
     }
+}
 
+extension SCNVector3 {
+    var toArrayOfFloat: [Float] {
+        return [x, y, z]
+    }
     var toArrayOfCGFloat: [CGFloat] {
         return [CGFloat(x), CGFloat(y), CGFloat(z)]
+    }
+    var toArrayOfDouble: [Double] {
+        return [Double(x), Double(y), Double(z)]
+    }
+    var toArrayOfInt: [Int] {
+        return [Int(x), Int(y), Int(z)]
     }
 }
 
@@ -227,8 +238,4 @@ extension SCNVector3 {
     static var right: SCNVector3 = SCNVector3(1, 0, 0)
     static var up: SCNVector3 = SCNVector3(0, 1, 0)
     static var forward: SCNVector3 = SCNVector3(0, 0, 1)
-}
-
-extension SCNVector4 {
-    static var zero: SCNVector4 = SCNVector4Zero
 }

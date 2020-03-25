@@ -26,6 +26,7 @@
 		441FE34B242A5C09008C1BE1 /* NodesFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE34A242A5C09008C1BE1 /* NodesFactorySpec.swift */; };
 		441FE34D242A5C5D008C1BE1 /* SCNCircleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE34C242A5C5D008C1BE1 /* SCNCircleSpec.swift */; };
 		441FE34F242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE34E242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift */; };
+		441FE352242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441FE351242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift */; };
 		44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */; };
 		44226125232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */; };
 		44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44226126232F9173006E2FBA /* MathsExtensionSpec.swift */; };
@@ -617,6 +618,7 @@
 		441FE34A242A5C09008C1BE1 /* NodesFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesFactorySpec.swift; sourceTree = "<group>"; };
 		441FE34C242A5C5D008C1BE1 /* SCNCircleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNCircleSpec.swift; sourceTree = "<group>"; };
 		441FE34E242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismOutlineNodeSpec.swift; sourceTree = "<group>"; };
+		441FE351242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector4ExtensionSpec.swift; sourceTree = "<group>"; };
 		44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNQuaternionExtensionSpec.swift; sourceTree = "<group>"; };
 		44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3ExtensionSpec.swift; sourceTree = "<group>"; };
 		44226126232F9173006E2FBA /* MathsExtensionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathsExtensionSpec.swift; sourceTree = "<group>"; };
@@ -1407,6 +1409,7 @@
 				448586FD235DF4D200D372CB /* SCNNode+Orientation.swift */,
 				44AFAC23232B9BCF005AC8EF /* SCNQuaternion+Extension.swift */,
 				44AFAC21232B9BCF005AC8EF /* SCNVector3+Extension.swift */,
+				C4F8749123E15E7C0044480F /* SCNVector4+Extension.swift */,
 				44DF644B23951823005E0518 /* String+Random.swift */,
 				C435F90623829F050060F956 /* UIButton+Extension.swift */,
 				4474A06023896AC2001BE61E /* UIColor+Extension.swift */,
@@ -1415,7 +1418,6 @@
 				C4C1D4732383F9CD00437249 /* UIScreen+Extension.swift */,
 				449B54952387FF5300D839CC /* UIView+Screenshot.swift */,
 				44AFAC1F232B9BCF005AC8EF /* URLSession+Extension.swift */,
-				C4F8749123E15E7C0044480F /* SCNVector4+Extension.swift */,
 				C4F8749423E15EF30044480F /* SIMD+Extension.swift */,
 			);
 			path = Extensions;
@@ -1630,6 +1632,7 @@
 				441FC1752362F4540004DBF1 /* SCNNodeOrientationSpec.swift */,
 				44226120232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift */,
 				44226124232F7CEC006E2FBA /* SCNVector3ExtensionSpec.swift */,
+				441FE351242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift */,
 				44DF644E23952AC7005E0518 /* StringRandomSpec.swift */,
 				449B54A323889F4A00D839CC /* UIFontLominoSpec.swift */,
 			);
@@ -2525,6 +2528,7 @@
 				441FE34B242A5C09008C1BE1 /* NodesFactorySpec.swift in Sources */,
 				44931E0B237D898C00E11972 /* UiSpinnerNodeSpec.swift in Sources */,
 				441FE346242A5B10008C1BE1 /* SCNMatrix4ExtensionSpec.swift in Sources */,
+				441FE352242B4482008C1BE1 /* SCNVector4ExtensionSpec.swift in Sources */,
 				44A5893B237E8FA800934E5E /* UiAudioNodeSpec.swift in Sources */,
 				C47E419B23C4A07B00AB81C9 /* CustomUITouch.swift in Sources */,
 				449B549B2388021C00D839CC /* UiWebViewNodeSpec.swift in Sources */,

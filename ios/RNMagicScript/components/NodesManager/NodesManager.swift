@@ -23,6 +23,7 @@ import ARKit
 @objc protocol NodesManaging: NSObjectProtocol {
     @objc var scene: Scene? { get }
     @objc var prismsById: [String: Prism] { get }
+//    @objc var nodesById: [String: BaseNode] { get }
 
     @objc func registerScene(_ scene: Scene, sceneId: String)
     @objc func registerPrism(_ prism: Prism, prismId: String)
@@ -143,9 +144,11 @@ import ARKit
                         // it's need to be clipped by the prism
                         node.invalidateBoundsClippingManager()
                     }
+
                     if let dialog = node as? DialogDataProviding {
                         dialogPresenter?.present(dialog)
                     }
+                    
                     return
                 }
             }

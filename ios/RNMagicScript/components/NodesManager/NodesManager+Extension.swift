@@ -44,6 +44,8 @@ extension NodesManager: RCTARViewObserving {
 
 extension Prism {
     func applyTransform(from anchorNode: SCNNode) {
-        transform = anchorNode.convertTransform(anchorNode.transform, to: self.parent)
+        // This prism may not yet be attached to its parent
+        // so set the world transform directly
+        setWorldTransform(anchorNode.worldTransform)
     }
 }

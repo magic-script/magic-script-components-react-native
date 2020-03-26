@@ -60,8 +60,11 @@ class Prism(
         const val PROP_SIZE = "size"
         const val PROP_SCALE = "scale"
         const val PROP_POSITION = "position"
-        const val PROP_VISIBLE = "visible"
+        const val PROP_MODE = "mode"
         const val PROP_ANCHOR_UUID = "anchorUuid"
+
+        const val MODE_NORMAL = "normal"
+        const val MODE_EDIT = "edit"
 
         private const val MENU_MARGIN_BOTTOM = 0.05f
     }
@@ -308,7 +311,7 @@ class Prism(
         setPosition(props)
         setScale(props)
         setAnchorUuid(props)
-        setVisible(props)
+        setMode(props)
     }
 
     private fun setSize(props: Bundle) {
@@ -345,9 +348,15 @@ class Prism(
         }
     }
 
-    private fun setVisible(props: Bundle) {
-        props.read<Boolean>(PROP_VISIBLE)?.let { visible ->
-            this.visible = visible
+    private fun setMode(props: Bundle) {
+        val mode = props.read<String>(PROP_MODE) ?: return
+        when (mode) {
+            MODE_NORMAL -> {
+                visible = false
+            }
+            MODE_EDIT -> {
+                visible = true
+            }
         }
     }
 

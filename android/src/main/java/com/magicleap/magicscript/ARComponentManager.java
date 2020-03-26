@@ -104,6 +104,7 @@ import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
+import com.magicleap.magicscript.scene.nodes.video.SubtitlesClient;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
@@ -117,6 +118,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+
+import okhttp3.OkHttpClient;
 
 /**
  * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
@@ -263,7 +266,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            VideoPlayer videoPlayer = new VideoPlayerImpl(context);
+            SubtitlesClient subtitlesClient = new SubtitlesClient(new OkHttpClient(), context);
+            VideoPlayer videoPlayer = new VideoPlayerImpl(context, subtitlesClient);
             addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, viewRenderableLoader, videoNodeClipper, fontProvider, arResourcesProvider), nodeId);
         });
     }

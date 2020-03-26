@@ -17,23 +17,26 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
-import android.media.MediaFormat
+import android.media.MediaFormat.MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer
 import android.media.MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer.TrackInfo
 import android.net.Uri
 import android.os.Build
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.Surface
+import com.magicleap.magicscript.utils.logMessage
 
 
-class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.OnPreparedListener {
+class VideoPlayerImpl(
+        private val context: Context,
+        private val subtitlesClient: SubtitlesClient
+) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
     private val mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
     private var onLoadedListener: (() -> Unit)? = null
     private var ready = false
-    private var timedTextUri: Uri? = null
-    private var onSubtitleChangeListener: ((String) -> Unit)? = null
 
     override var volume: Float = 1.0F
         set(value) {
@@ -62,9 +65,10 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
     }
 
     @Throws(Exception::class)
-    override fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit) {
+    override fun loadVideo(uri: Uri, subtitlesPath: Uri?, onSubtitleChangeListener: ((String) -> Unit)?, surface: Surface, onLoadedListener: () -> Unit) {
         ready = false
         mediaPlayer.reset()
+        mediaPlayer.setOnTimedTextListener(null)
         val path = uri.toString()
         if (path.startsWith("http")) {
             mediaPlayer.setDataSource(path) // load from URL
@@ -74,6 +78,28 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         }
         this.onLoadedListener = onLoadedListener
         mediaPlayer.setSurface(surface)
+        if (subtitlesPath == null) {
+            prepareMediaPlayer()
+        } else {
+            addSubtitles(subtitlesPath, onSubtitleChangeListener)
+        }
+    }
+
+    private fun addSubtitles(subtitlesPath: Uri, onSubtitleChangeListener: ((String) -> Unit)?) {
+        if (subtitlesPath.toString().startsWith("http")) {
+            subtitlesClient.downloadSubtitleFile(subtitlesPath.toString()) {
+                Handler(Looper.getMainLooper()).post {
+                    addTimedTextPath(it, onSubtitleChangeListener)
+                }
+            }
+            prepareMediaPlayer()
+        } else {
+            addTimedTextPath(subtitlesPath.toString(), onSubtitleChangeListener)
+            prepareMediaPlayer()
+        }
+    }
+
+    private fun prepareMediaPlayer() {
         mediaPlayer.setOnPreparedListener(this)
         mediaPlayer.prepareAsync() // loading the video asynchronously
     }
@@ -98,28 +124,34 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         mediaPlayer.release()
     }
 
-    override fun addTimedTextPath(path: Uri, onTextChangedListener: (String) -> Unit) {
-        mediaPlayer.setOnTimedTextListener(null)
-        if(Build.VERSION.SDK_INT >= 28) {
-            mediaPlayer.addTimedTextSource(context, path, MediaFormat.MIMETYPE_TEXT_SUBRIP)
-        } else {
-            mediaPlayer.addTimedTextSource(context, path, MEDIA_MIMETYPE_TEXT_SUBRIP)
-        }
-        Log.d("VideoNode", "mediaPlayer track info: ${mediaPlayer.trackInfo}")
-        val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
-        if(textTrackIndex >= 0) {
-            Log.d("VideoNode", "mediaPlayer selected track index: $textTrackIndex")
-            mediaPlayer.selectTrack(textTrackIndex)
-        }
-        mediaPlayer.setOnTimedTextListener { _, text ->
-            Log.d("VideoNode", "timed text changed: $text")
-            onTextChangedListener(text.text)
+    private fun addTimedTextPath(path: String, onTextChangedListener: ((String) -> Unit)?) {
+        try {
+            if (Build.VERSION.SDK_INT >= 28) {
+                mediaPlayer.addTimedTextSource(path, MIMETYPE_TEXT_SUBRIP)
+            } else {
+                mediaPlayer.addTimedTextSource(path, MEDIA_MIMETYPE_TEXT_SUBRIP)
+            }
+            val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
+            if (textTrackIndex >= 0) {
+                mediaPlayer.selectTrack(textTrackIndex)
+            }
+            mediaPlayer.setOnTimedTextListener { _, text ->
+                onTextChangedListener?.invoke(text.text)
+            }
+        } catch (e: java.lang.Exception) {
+            logMessage("Error occured on adding subtitles to mediaPlayer: $e", warn = true)
         }
     }
 
     private fun findTrackIndexFor(trackInfo: Array<TrackInfo>): Int {
-        return trackInfo.find { it.trackType == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT }?.trackType ?: -1
+        for (i in trackInfo.indices) {
+            if (trackInfo[i].trackType == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                return i
+            }
+        }
+        return -1
     }
+
     override fun seekTo(millis: Int) {
         mediaPlayer.seekTo(millis)
     }

@@ -17,10 +17,14 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
+import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.ArResourcesProvider
@@ -30,12 +34,13 @@ import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
+import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.UiTextNode
+import com.magicleap.magicscript.scene.nodes.UiTextNode.Companion.PROP_BOUNDS_SIZE
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.readFilePath
+import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.utils.*
 
 class VideoNode(
         initProps: ReadableMap,
@@ -101,26 +106,35 @@ class VideoNode(
         setLooping(props)
         setVolume(props)
         setSeekTo(props)
+        if(props.containsAny(PROP_SIZE, PROP_LOCAL_SCALE, PROP_LOCAL_POSITION)) updateSubtitlesProps()
     }
 
-    private fun setTimedTextPath(props: Bundle) {
-        if(props.containsKey(PROP_TIMED_TEXT_PATH)) {
+    private fun updateSubtitlesProps() {
+        subtitles?.update(getSubtitleProps())
+    }
+
+    private fun getSubtitleProps() = JavaOnlyMap.of(
+            UiTextNode.PROP_TEXT_SIZE,
+            0.1,
+            PROP_LOCAL_POSITION,
+            JavaOnlyArray.of(localPosition.x, localPosition.y, localPosition.z + 0.01f),
+            PROP_LOCAL_SCALE,
+            JavaOnlyArray.of(localScale.x, localScale.y, localScale.z),
+            PROP_ALIGNMENT,
+            "top-center",
+            PROP_BOUNDS_SIZE,
+            JavaOnlyMap.of(PROP_BOUNDS_SIZE, JavaOnlyArray.of(getBounding().size().x, getBounding().size().y)))
+
+    private fun getTimedTextPath(props: Bundle): Uri? {
+        if (props.containsKey(PROP_TIMED_TEXT_PATH)) {
             val path = props.readFilePath(PROP_TIMED_TEXT_PATH, context)
-                if(subtitles == null) {
-                    val bundle = Bundle()
-                    bundle.putSerializable(UiTextNode.PROP_BOUNDS_SIZE, arrayListOf(2.0, 0.3))
-                    subtitles = UiSubtitlesNode(context = context, viewRenderableLoader = viewRenderableLoader, nodeClipper = nodeClipper, fontProvider = fontProvider )
-                }
-            if(path != null) {
-                videoPlayer.addTimedTextPath(path) {
-                    subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, it))
-                }
-            }
-            }
+            return path
+        }
+        return null
     }
 
     private fun setSeekTo(props: Bundle) {
-        if(props.containsKey(PROP_SEEK_TO)) {
+        if (props.containsKey(PROP_SEEK_TO)) {
             videoPlayer.seekTo(props.getDouble(PROP_SEEK_TO).toInt())
         }
     }
@@ -177,6 +191,15 @@ class VideoNode(
         nodeClipper.applyClipBounds(this, clipBounds)
     }
 
+    private fun createSubtitles() {
+        if (subtitles == null) {
+            subtitles = UiSubtitlesNode(
+                    props = getSubtitleProps(), context = context, viewRenderableLoader = viewRenderableLoader, nodeClipper = nodeClipper, fontProvider = fontProvider)
+            contentNode.addChild(subtitles)
+            subtitles?.build()
+        }
+    }
+
     private fun loadVideo() {
         if (!arResourcesProvider.isArLoaded()) {
             // ar must be load to create ExternalTexture object
@@ -187,10 +210,28 @@ class VideoNode(
         if (videoUri != null) {
             val texture = ExternalTexture()
             try {
-                videoPlayer.loadVideo(videoUri, texture.surface, onLoadedListener = {
-                    onVideoPreparedListener?.invoke()
-                    setTimedTextPath(properties)
-                })
+                val timedTextUri = getTimedTextPath(properties)
+                if (timedTextUri != null) {
+                    videoPlayer.loadVideo(uri = videoUri,
+                            subtitlesPath = timedTextUri,
+                            onSubtitleChangeListener = {
+                                subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, it))
+                            },
+                            surface = texture.surface,
+                            onLoadedListener = {
+                                onVideoPreparedListener?.invoke()
+                                createSubtitles()
+                            })
+                } else {
+                    if(subtitles != null) {
+                        contentNode.removeChild(subtitles)
+                        subtitles = null
+                    }
+                    videoPlayer.loadVideo(uri = videoUri, surface = texture.surface, onLoadedListener = {
+                        onVideoPreparedListener?.invoke()
+                    })
+                }
+
             } catch (exception: Exception) {
                 logMessage("video load exception: $exception", warn = true)
             }

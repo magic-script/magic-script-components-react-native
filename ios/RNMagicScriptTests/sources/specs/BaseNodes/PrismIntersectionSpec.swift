@@ -20,10 +20,6 @@ import SceneKit
 @testable import RNMagicScriptHostApplication
 
 class PrismIntersectionSpec: QuickSpec {
-    // func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool
-    // func getIntersectionPoints(ray: Ray) -> (begin: SCNVector3?, end: SCNVector3?)?
-    // func getClippedRay(ray: Ray) -> Ray?
-    // func isPointInside(_ point: SCNVector3) -> Bool
     override func spec() {
         describe("PrismIntersection") {
             var prism: Prism!
@@ -74,11 +70,6 @@ class PrismIntersectionSpec: QuickSpec {
                     rays.forEach {
                         var outRay: Ray?
                         expect(prism.intersect(with: $0, clippedRay: &outRay)).to(beTrue())
-
-                        if outRay == nil {
-                            print("outRay must not be nil")
-                            prism.intersect(with: $0, clippedRay: &outRay)
-                        }
                         expect(outRay).notTo(beNil())
                     }
                }
@@ -106,6 +97,96 @@ class PrismIntersectionSpec: QuickSpec {
                         Ray(begin: SCNVector3( 0.49,  0.49,  1.0), direction: SCNVector3.forward.negated(), length: 0.6),
                     ]
                     validateRays(edgeCaseRays)
+                }
+            }
+            
+            context("getIntersectionPoints - negative") {
+                let validateRays: (_ rays: [Ray]) -> () = { rays in
+                    rays.forEach {
+                        let result = prism.getIntersectionPoints(ray: $0)
+                        expect(result).to(beNil())
+                        expect(result?.begin).to(beNil())
+                        expect(result?.end).to(beNil())
+                    }
+                }
+                
+                it("should not return any intersection points (sphere of negated rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 0.87, length: 1.0, negated: true)
+                    validateRays(rays)
+                }
+                
+                it("should not return intersection points (sphere of positive but short rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 1.0, length: 0.1, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should not return intersection points (sphere of internal short rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 0.4, length: 0.1, negated: false)
+                    validateRays(rays)
+                }
+            }
+            
+            context("getIntersectionPoints - positive") {
+                let validateRays: (_ rays: [Ray]) -> () = { rays in
+                    rays.forEach {
+                        let result = prism.getIntersectionPoints(ray: $0)
+                        expect(result).notTo(beNil())
+                        expect(result!.begin).notTo(beNil())
+                        expect(result!.end).notTo(beNil())
+                    }
+                }
+                
+                it("should return intersection points (sphere of positive rays)") {
+                    let rays = self.getSphereOfRays(center: SCNVector3.zero, radius: 1.0, length: 2.0, negated: false)
+                    validateRays(rays)
+                }
+                
+                it("should return intersection points (custom cases)") {
+                    let rays = [
+                        Ray(begin: SCNVector3(-0.49, -0.49, -1.0), direction: SCNVector3.forward, length: 2.0),
+                        Ray(begin: SCNVector3(1,  1, 1), direction: SCNVector3(-1, -1, -1).normalized(), length: 3),
+                    ]
+                    let intersectionPoints = [
+                        (begin: SCNVector3(-0.49, -0.49, -0.5), end: SCNVector3(-0.49, -0.49, 0.5)),
+                        (begin: SCNVector3(0.5, 0.5, 0.5), end: SCNVector3(-0.5, -0.5, -0.5)),
+                    ]
+                    
+                    for i in 0..<rays.count {
+                        let result = prism.getIntersectionPoints(ray: rays[i])
+                        expect(result).notTo(beNil())
+                        expect(result!.begin).to(beCloseTo(intersectionPoints[i].begin))
+                        expect(result!.end).to(beCloseTo(intersectionPoints[i].end))
+                    }
+                }
+            }
+            
+            context("getClippedRay") {
+                it("should return nil if ray is outside the prism") {
+                    let ray = Ray(begin: SCNVector3(1, 1, 1), direction: SCNVector3.up, length: 3)
+                    let clippedRay = prism.getClippedRay(ray: ray)
+                    expect(clippedRay).to(beNil())
+                }
+                
+                it("should return clipped ray") {
+                    let ray = Ray(begin: SCNVector3(-0.49, 1.0, 0.49), direction: SCNVector3.up.negated(), length: 3)
+                    let clippedRay = prism.getClippedRay(ray: ray)
+                    expect(clippedRay).notTo(beNil())
+                    expect(clippedRay!.begin).to(beCloseTo(SCNVector3(-0.49, 0.5, 0.49)))
+                    expect(clippedRay!.end).to(beCloseTo(SCNVector3(-0.49, -0.5, 0.49)))
+                }
+                
+                it("should return half-clipped ray") {
+                    let ray1 = Ray(begin: SCNVector3(-0.3, 0.3, 0), direction: SCNVector3.forward, length: 3)
+                    let clippedRay1 = prism.getClippedRay(ray: ray1)
+                    expect(clippedRay1).notTo(beNil())
+                    expect(clippedRay1!.begin).to(beCloseTo(SCNVector3(-0.3, 0.3, 0)))
+                    expect(clippedRay1!.end).to(beCloseTo(SCNVector3(-0.3, 0.3, 0.5)))
+                    
+                    let ray2 = Ray(begin: SCNVector3(0.2, -1, 0.2), direction: SCNVector3.up, length: 1.2)
+                    let clippedRay2 = prism.getClippedRay(ray: ray2)
+                    expect(clippedRay2).notTo(beNil())
+                    expect(clippedRay2!.begin).to(beCloseTo(SCNVector3(0.2, -0.5, 0.2)))
+                    expect(clippedRay2!.end).to(beCloseTo(SCNVector3(0.2, 0.2, 0.2)))
                 }
             }
             

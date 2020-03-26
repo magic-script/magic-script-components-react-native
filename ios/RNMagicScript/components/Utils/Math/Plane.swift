@@ -51,6 +51,14 @@ import SceneKit
     func isPointInFront(_ point: SCNVector3) -> Bool {
         return distanceToPoint(point) > 0
     }
+    
+    func isPointInFrontOrOn(_ point: SCNVector3) -> Bool {
+        return distanceToPoint(point) >= 0
+    }
+    
+    func isPointBehind(_ point: SCNVector3) -> Bool {
+        return distanceToPoint(point) < 0
+    }
 
     func intersectRay(_ ray: Ray) -> SCNVector3? {
         // http://geomalgorithms.com/a05-_intersect-1.html

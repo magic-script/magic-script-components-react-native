@@ -92,7 +92,7 @@ extension Prism {
     func isPointInside(_ point: SCNVector3) -> Bool {
         let worldSpacePlanes = getClippingPlanes()
         for plane in worldSpacePlanes {
-            if !plane.isPointInFront(point) {
+            if !plane.isPointInFrontOrOn(point) {
                 return false
             }
         }
@@ -108,13 +108,13 @@ extension Prism {
             for j in 0..<allPlanes.count {
                 let plane2: Plane = allPlanes[j]
                 guard abs(plane1.normal.dot(plane2.normal)) < 0.95 else { continue }
-                guard plane2.isPointInFront(intersection) else {
+                guard plane2.isPointInFrontOrOn(intersection) else {
                     break
                 }
                 edgeCounter += 1
             }
             
-            assert(edgeCounter <= 4, "Logic error: point must not be bounded by more than 4 planes!")
+            // assert(edgeCounter <= 4, "Logic error: point must not be bounded by more than 4 planes!")
             if edgeCounter == 4 {
                 return intersection
             }

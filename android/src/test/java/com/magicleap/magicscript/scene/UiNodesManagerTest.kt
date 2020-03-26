@@ -27,7 +27,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -230,7 +230,13 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider, context)
+        return Prism(
+            props,
+            mock(),
+            mock(),
+            arResourcesProvider,
+            context
+        )
     }
 
     private fun getTransformationSystem(): TransformationSystem {

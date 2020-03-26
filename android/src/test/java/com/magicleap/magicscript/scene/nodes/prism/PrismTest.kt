@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider

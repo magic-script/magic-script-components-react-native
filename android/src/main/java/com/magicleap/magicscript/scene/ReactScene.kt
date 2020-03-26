@@ -23,7 +23,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 
 class ReactScene(

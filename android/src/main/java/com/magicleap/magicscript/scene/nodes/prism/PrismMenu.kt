@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.prism
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -29,6 +29,8 @@ import com.magicleap.magicscript.font.providers.FontProviderImpl
 import com.magicleap.magicscript.icons.DefaultIconsProvider
 import com.magicleap.magicscript.icons.ExternalIconsProvider
 import com.magicleap.magicscript.icons.IconsRepositoryImpl
+import com.magicleap.magicscript.scene.nodes.GroupNode
+import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 
 class PrismMenu(
@@ -37,9 +39,9 @@ class PrismMenu(
 ) : GroupNode(JavaOnlyMap()) {
 
     companion object {
-        private const val MENU_ICON_SIZE = 0.1
-        private const val MENU_TEXT_SIZE = 0.1
-        private const val MENU_SHOW_PRISM_ICON = "generic_three_dimensional"
+        private const val ICON_SIZE = 0.1
+        private const val TEXT_SIZE = 0.1
+        private const val ICON_TYPE = "generic_three_dimensional"
 
         private const val SHOW_DELAY = 1000L
         private const val SHOW_ANIM_DURATION = 300L
@@ -54,7 +56,7 @@ class PrismMenu(
 
         val labelProps = JavaOnlyMap.of(
             UiTextNode.PROP_TEXT, "Catalog app",
-            UiTextNode.PROP_TEXT_SIZE, MENU_TEXT_SIZE,
+            UiTextNode.PROP_TEXT_SIZE, TEXT_SIZE,
             PROP_ALIGNMENT, "bottom-center"
         )
 
@@ -66,13 +68,13 @@ class PrismMenu(
             fontProvider = FontProviderImpl(context, AndroidFontProvider())
         ).apply {
             build()
-            localPosition = Vector3(0f, MENU_ICON_SIZE.toFloat(), 0f)
+            localPosition = Vector3(0f, ICON_SIZE.toFloat(), 0f)
         }
 
         val buttonShowProps = JavaOnlyMap.of(
-            UiButtonNode.PROP_WIDTH, MENU_ICON_SIZE,
-            UiButtonNode.PROP_HEIGHT, MENU_ICON_SIZE,
-            UiButtonNode.PROP_ICON_TYPE, MENU_SHOW_PRISM_ICON
+            UiButtonNode.PROP_WIDTH, ICON_SIZE,
+            UiButtonNode.PROP_HEIGHT, ICON_SIZE,
+            UiButtonNode.PROP_ICON_TYPE, ICON_TYPE
         )
 
         val buttonShow = UiButtonNode(
@@ -87,7 +89,7 @@ class PrismMenu(
             )
         ).apply {
             build()
-            localPosition = Vector3(0f, (MENU_ICON_SIZE / 2).toFloat(), 0f)
+            localPosition = Vector3(0f, (ICON_SIZE / 2).toFloat(), 0f)
             onClickListener = {
                 onButtonClickListener?.invoke()
             }

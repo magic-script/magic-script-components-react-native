@@ -61,7 +61,7 @@ import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
-import com.magicleap.magicscript.scene.nodes.Prism;
+import com.magicleap.magicscript.scene.nodes.prism.Prism;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
 import android.os.Bundle
@@ -30,13 +30,10 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.ux.BaseTransformableNode
-import com.google.ar.sceneform.ux.SelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.ExtendedScaleController
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
@@ -113,7 +110,10 @@ class Prism(
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
 
-        menuNode = PrismMenu(context, arResourcesProvider)
+        menuNode = PrismMenu(
+            context,
+            arResourcesProvider
+        )
         menuNode.isVisible = false
     }
 
@@ -243,6 +243,7 @@ class Prism(
         }
     }
 
+    // Prism can also be anchored through this function when initial placement is active
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
         requestedAnchorPosition = null
@@ -388,10 +389,10 @@ class Prism(
             // disabling default translationController, because it only allows moving on planes
             translationController.isEnabled = false
 
-            transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
-
             // disable default scale controller
             scaleController.isEnabled = false
+
+            transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
 
             val pinchRecognizer = transformationSystem.pinchRecognizer
             val customScaleController = ExtendedScaleController(this, pinchRecognizer)
@@ -415,17 +416,5 @@ class Prism(
                 lastScale = localScale
             }
         }
-
     }
-
-    private class EmptySelectionVisualizer : SelectionVisualizer {
-        override fun applySelectionVisual(node: BaseTransformableNode?) {
-
-        }
-
-        override fun removeSelectionVisual(node: BaseTransformableNode?) {
-
-        }
-    }
-
 }

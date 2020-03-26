@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript.scene.nodes.prism
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3

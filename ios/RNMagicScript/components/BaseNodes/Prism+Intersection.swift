@@ -114,7 +114,7 @@ extension Prism {
                 edgeCounter += 1
             }
             
-            // assert(edgeCounter <= 4, "Logic error: point must not be bounded by more than 4 planes!")
+            assert(edgeCounter <= 4, "Logic error: point must not be bounded by more than 4 planes!")
             if edgeCounter == 4 {
                 return intersection
             }

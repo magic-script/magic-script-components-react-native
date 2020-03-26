@@ -122,7 +122,7 @@ extension SCNNode {
         }
     }
     
-    fileprivate func invokeClosure<T>(recursive: Bool, input: T, callback: @escaping (SCNNode, T) -> (T)) {
+    fileprivate func invokeClosure<T>(recursive: Bool, input: T, closure: @escaping (SCNNode, T) -> (T)) {
     #if targetEnvironment(simulator)
         // Do not clip model nodes on simulator. There is a limitation that causes that models
         // are not rendered when are clipped.
@@ -130,10 +130,10 @@ extension SCNNode {
         if self is UiModelNode { return }
     #endif
         if recursive {
-            let output = callback(self, input)
-            childNodes.forEach { $0.invokeClosure(recursive: recursive, input: output, callback: callback) }
+            let output = closure(self, input)
+            childNodes.forEach { $0.invokeClosure(recursive: recursive, input: output, closure: closure) }
         } else {
-            let _ = callback(self, input)
+            let _ = closure(self, input)
         }
     }
 }

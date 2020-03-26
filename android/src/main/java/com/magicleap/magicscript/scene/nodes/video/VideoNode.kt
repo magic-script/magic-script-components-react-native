@@ -208,6 +208,7 @@ class VideoNode(
 
         val videoUri = properties.readFilePath(PROP_VIDEO_PATH, context)
         if (videoUri != null) {
+            subtitles?.update(JavaOnlyMap.of(UiTextNode.PROP_TEXT, "")) // add empty text to hide last subtitles
             val texture = ExternalTexture()
             try {
                 val timedTextUri = getTimedTextPath(properties)

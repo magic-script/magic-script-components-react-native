@@ -34,7 +34,7 @@ class VideoPlayerImpl(
         private val subtitlesClient: SubtitlesClient
 ) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
-    private val mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
+    private var mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
     private var onLoadedListener: (() -> Unit)? = null
     private var ready = false
 
@@ -67,8 +67,8 @@ class VideoPlayerImpl(
     @Throws(Exception::class)
     override fun loadVideo(uri: Uri, subtitlesPath: Uri?, onSubtitleChangeListener: ((String) -> Unit)?, surface: Surface, onLoadedListener: () -> Unit) {
         ready = false
-        mediaPlayer.reset()
-        mediaPlayer.setOnTimedTextListener(null)
+        mediaPlayer.release() // We have to release media player and create new one to add new subtitles
+        mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
         val path = uri.toString()
         if (path.startsWith("http")) {
             mediaPlayer.setDataSource(path) // load from URL

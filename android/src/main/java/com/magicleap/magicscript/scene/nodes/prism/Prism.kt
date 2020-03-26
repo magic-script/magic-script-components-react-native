@@ -87,6 +87,7 @@ class Prism(
         }
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
+    private var reactScene: ReactScene? = null
     private var container: RotatableNode? = null
     private var content: TransformNode? = null
     private val menuNode: PrismMenu
@@ -95,11 +96,9 @@ class Prism(
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
-    private var renderableCopy: Renderable? = null
-    private var reactScene: ReactScene? = null
-
+    private var requestedScale: Vector3? = null
     private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
-
+    private var renderableCopy: Renderable? = null
     private var screenSizePx: Vector2
 
     init {
@@ -166,19 +165,16 @@ class Prism(
         // detach old container if exists
         detachContainer()
         container = RotatableNode(transformationSystem).also { container ->
-
-            properties.read<Vector3>(PROP_SCALE)?.let { scale ->
-                // in order to scale be applied when using scale controller,
-                // we have to assign local scale before [ScaleController.onActivated] is called
-                container.localScale = scale
-            }
-
             container.setParent(this)
+            requestedScale?.let {
+                container.extendedScaleController.setScale(it)
+                requestedScale = null
+            }
             if (content != null) {
                 container.addChild(content)
             }
         }
-
+        adjustMenuPosition()
         buildCube()
     }
 
@@ -310,6 +306,7 @@ class Prism(
     private fun applyProperties(props: Bundle) {
         setSize(props)
         setPosition(props)
+        setScale(props)
         setAnchorUuid(props)
         setVisible(props)
     }
@@ -328,6 +325,17 @@ class Prism(
     private fun setPosition(props: Bundle) {
         props.read<Vector3>(PROP_POSITION)?.let { position ->
             tryToAnchorAtPosition(position)
+        }
+    }
+
+    private fun setScale(props: Bundle) {
+        props.read<Vector3>(PROP_SCALE)?.let { scale ->
+            val scaleController = container?.extendedScaleController
+            if (scaleController != null) {
+                scaleController.setScale(scale)
+            } else {
+                requestedScale = scale
+            }
         }
     }
 
@@ -383,6 +391,9 @@ class Prism(
     inner class RotatableNode(transformationSystem: TransformationSystem) :
         TransformableNode(transformationSystem) {
 
+        var extendedScaleController: ExtendedScaleController
+            private set
+
         private var lastScale = localScale
 
         init {
@@ -395,8 +406,8 @@ class Prism(
             transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
 
             val pinchRecognizer = transformationSystem.pinchRecognizer
-            val customScaleController = ExtendedScaleController(this, pinchRecognizer)
-            addTransformationController(customScaleController)
+            extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
+            addTransformationController(extendedScaleController)
         }
 
         override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {

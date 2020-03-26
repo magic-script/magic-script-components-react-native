@@ -28,9 +28,11 @@ import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
@@ -115,6 +117,17 @@ class PrismTest {
         prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
 
         verify(anchorCreator).createAnchor(eq(Vector3(2f, 1f, 0f)), eq(prism.localRotation), any())
+    }
+
+    @Test
+    fun `should apply the scale property`() {
+        val scale = reactArrayOf(1.5, 0.5, 1.0)
+        val content = NodeBuilder().withScale(1.0, 1.0, 1.0).build()
+
+        val prism = buildPrism(reactMapOf(Prism.PROP_SCALE, scale))
+        prism.addContent(content)
+
+        content.worldScale shouldEqualInexact Vector3(1.5f, 0.5f, 1f)
     }
 
     @Test

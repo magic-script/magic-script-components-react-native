@@ -27,8 +27,8 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -53,7 +53,8 @@ class UiNodesManagerTest {
     fun setUp() {
         whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
         nodesManager = UiNodesManager(arResourcesProvider)
     }
@@ -168,7 +169,6 @@ class UiNodesManagerTest {
     fun `should attach prism to specified anchor when anchor UUID present and anchor node exists`() {
         val reactScene = ReactScene(reactMapOf(), arResourcesProvider)
         val anchor = mock<Anchor>()
-
         val uuid = UUID.randomUUID().toString()
         val anchorNode = AnchorNode()
         anchorNode.name = uuid
@@ -230,13 +230,7 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(
-            props,
-            mock(),
-            mock(),
-            arResourcesProvider,
-            context
-        )
+        return Prism(props, mock(), mock(), arResourcesProvider, context)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

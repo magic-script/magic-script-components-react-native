@@ -35,20 +35,23 @@ class ExtendedScaleController(
 ) : BaseTransformationController<PinchGesture>(transformableNode, gestureRecognizer) {
 
     var minScale = 0.01f
-    var maxScale = 2f
+    var maxScale = 2.5f
     var sensitivity = 0.75f
 
     private lateinit var currentScaleRatio: Vector3
 
-    override fun onActivated(node: Node?) {
-        super.onActivated(node)
-        val scale = transformableNode.localScale
-
+    fun setScale(scale: Vector3) {
         val ratioX = (scale.x - minScale) / getScaleDelta()
         val ratioY = (scale.y - minScale) / getScaleDelta()
         val ratioZ = (scale.z - minScale) / getScaleDelta()
 
         currentScaleRatio = Vector3(ratioX, ratioY, ratioZ)
+        transformableNode.localScale = getFinalScale()
+    }
+
+    override fun onActivated(node: Node?) {
+        super.onActivated(node)
+        setScale(transformableNode.localScale)
     }
 
     override fun canStartTransformation(gesture: PinchGesture?) = transformableNode.isSelected

@@ -22,30 +22,41 @@ import com.google.ar.sceneform.ux.BaseTransformableNode
 import com.google.ar.sceneform.ux.BaseTransformationController
 import com.google.ar.sceneform.ux.PinchGesture
 import com.google.ar.sceneform.ux.PinchGestureRecognizer
+import com.magicleap.magicscript.utils.minus
 import kotlin.math.max
 import kotlin.math.min
 
 /**
  * Scale controller that works correctly even if the [transformableNode]
- * has specified different x, y and z local scale
+ * has specified different x, y and z local scale. In order to change the scale programmatically,
+ * use the [setScale] function instead of [Node.setLocalScale] - this way the controller will
+ * properly update the min and max scale limits.
  */
 class ExtendedScaleController(
     transformableNode: BaseTransformableNode,
     gestureRecognizer: PinchGestureRecognizer
 ) : BaseTransformationController<PinchGesture>(transformableNode, gestureRecognizer) {
 
-    var minScale = 0.01f
-    var maxScale = 2.5f
     var sensitivity = 0.75f
 
-    private lateinit var currentScaleRatio: Vector3
+    private val minScaleFactor = 0.5f
+    private val maxScaleFactor = 1.75f
+    private var minScale = transformableNode.localScale.scaled(minScaleFactor)
+    private var maxScale = transformableNode.localScale.scaled(maxScaleFactor)
+    private var currentScaleRatio: Vector3
 
+    init {
+        currentScaleRatio = calculateScaleRatio(transformableNode.localScale)
+    }
+
+    /**
+     * Sets the scale of the [transformableNode] as well as updates the min and max
+     * allowed scale.
+     */
     fun setScale(scale: Vector3) {
-        val ratioX = (scale.x - minScale) / getScaleDelta()
-        val ratioY = (scale.y - minScale) / getScaleDelta()
-        val ratioZ = (scale.z - minScale) / getScaleDelta()
-
-        currentScaleRatio = Vector3(ratioX, ratioY, ratioZ)
+        minScale = scale.scaled(minScaleFactor)
+        maxScale = scale.scaled(maxScaleFactor)
+        currentScaleRatio = calculateScaleRatio(scale)
         transformableNode.localScale = getFinalScale()
     }
 
@@ -74,6 +85,15 @@ class ExtendedScaleController(
         // no-op
     }
 
+    private fun calculateScaleRatio(initialScale: Vector3): Vector3 {
+        val scaleDelta = getScaleDelta()
+        val ratioX = (initialScale.x - minScale.x) / scaleDelta.x
+        val ratioY = (initialScale.y - minScale.y) / scaleDelta.y
+        val ratioZ = (initialScale.z - minScale.z) / scaleDelta.z
+
+        return Vector3(ratioX, ratioY, ratioZ)
+    }
+
     private fun getScaleDelta() = maxScale - minScale
 
     private fun getClampedScaleRatio(): Vector3 {
@@ -86,9 +106,9 @@ class ExtendedScaleController(
     private fun getFinalScale(): Vector3 {
         val scaleDelta = getScaleDelta()
         return getClampedScaleRatio().apply {
-            x = x * scaleDelta + minScale
-            y = y * scaleDelta + minScale
-            z = z * scaleDelta + minScale
+            x = x * scaleDelta.x + minScale.x
+            y = y * scaleDelta.y + minScale.y
+            z = z * scaleDelta.z + minScale.z
         }
     }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+// Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
 import SceneBuilder from "./elements/builders/scene-builder.js";
 import PrismBuilder from "./elements/builders/prism-builder.js";
 

@@ -9,8 +9,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.RenderPriority
-import com.magicleap.magicscript.ar.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.scene.nodes.UiTextNode
 
@@ -21,16 +21,6 @@ class UiSubtitlesNode(
         nodeClipper: Clipper,
         fontProvider: FontProvider
 ) : UiTextNode(props, context, viewRenderableLoader, nodeClipper, fontProvider) {
-
-    private var isAfterFirstCall = false
-
-    override fun applyProperties(props: Bundle) {
-        super.applyProperties(props)
-        if(!isAfterFirstCall) {
-            loadRenderable()
-            isAfterFirstCall = true
-        }
-    }
 
     override fun provideView(context: Context): View {
         return LayoutInflater.from(context).inflate(R.layout.subtitles, null) as TextView

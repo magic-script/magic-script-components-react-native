@@ -126,6 +126,7 @@ extension SCNNode {
     #if targetEnvironment(simulator)
         // Do not clip model nodes on simulator. There is a limitation that causes that models
         // are not rendered when are clipped.
+        // CompilerError: "only 14 constant buffers binding are supported in the simulator but 20 were used"
         if self is UiModelNode { return }
     #endif
         if recursive {

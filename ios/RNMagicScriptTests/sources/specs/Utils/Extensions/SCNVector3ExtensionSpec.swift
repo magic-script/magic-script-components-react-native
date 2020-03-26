@@ -176,6 +176,70 @@ class SCNVector3ExtensionSpec: QuickSpec {
                     expect(vector2).to(beCloseTo(SCNVector3(vector.x / scalar, vector.y / scalar, vector.z / scalar)))
                 }
             }
+            
+            context("init with SIMD4<Float>") {
+                it("should init vector with input of type SIMD4<Float>") {
+                    let referenceSIMD4 = SIMD4<Float>(2.0, 0.7, 0.46, 0.2)
+                    let result = SCNVector3(referenceSIMD4)
+                    expect(result.x).to(beCloseTo(referenceSIMD4.x / referenceSIMD4.w))
+                    expect(result.y).to(beCloseTo(referenceSIMD4.y / referenceSIMD4.w))
+                    expect(result.z).to(beCloseTo(referenceSIMD4.z / referenceSIMD4.w))
+                }
+            }
+            
+            context("array of floats") {
+                it("should return vector's coordintes as an array of Float") {
+                    let referenceVector = SCNVector3(29.722, -88.51, 7.004)
+                    let referenceArray: [Float] = [referenceVector.x, referenceVector.y, referenceVector.z]
+                    let array = referenceVector.toArrayOfFloat
+                    expect(array.count).to(equal(referenceArray.count))
+                    for i in 0..<array.count {
+                        expect(array[i]).to(beCloseTo(referenceArray[i]))
+                    }
+                }
+                
+                it("should return vector's coordintes as an array of CGFloat") {
+                    let referenceVector = SCNVector3(71.332, 14.11, -3.119)
+                    let referenceArray: [CGFloat] = [CGFloat(referenceVector.x), CGFloat(referenceVector.y), CGFloat(referenceVector.z)]
+                    let array = referenceVector.toArrayOfCGFloat
+                    expect(array.count).to(equal(referenceArray.count))
+                    for i in 0..<array.count {
+                        expect(array[i]).to(beCloseTo(referenceArray[i]))
+                    }
+                }
+                
+                it("should return vector's coordintes as an array of Double") {
+                    let referenceVector = SCNVector3(-0.09, 8.0, 9.9)
+                    let referenceArray: [Double] = [Double(referenceVector.x), Double(referenceVector.y), Double(referenceVector.z)]
+                    let array = referenceVector.toArrayOfDouble
+                    expect(array.count).to(equal(referenceArray.count))
+                    for i in 0..<array.count {
+                        expect(array[i]).to(beCloseTo(referenceArray[i]))
+                    }
+                }
+                
+                it("should return vector's coordintes as an array of Int") {
+                    let referenceVector = SCNVector3(-6.4, 2.72, 3.1415)
+                    let referenceArray: [Int] = [Int(referenceVector.x), Int(referenceVector.y), Int(referenceVector.z)]
+                    let array = referenceVector.toArrayOfInt
+                    expect(array.count).to(equal(referenceArray.count))
+                    for i in 0..<array.count {
+                        expect(array[i]).to(equal(referenceArray[i]))
+                    }
+                }
+            }
+            
+            context("static constants") {
+                it("should return zero vector") {
+                    expect(SCNVector3.zero).to(beCloseTo(SCNVector3(0, 0, 0)))
+                }
+                
+                it("should return directional vectors") {
+                    expect(SCNVector3.right).to(beCloseTo(SCNVector3(1, 0, 0)))
+                    expect(SCNVector3.up).to(beCloseTo(SCNVector3(0, 1, 0)))
+                    expect(SCNVector3.forward).to(beCloseTo(SCNVector3(0, 0, 1)))
+                }
+            }
         }
     }
 }

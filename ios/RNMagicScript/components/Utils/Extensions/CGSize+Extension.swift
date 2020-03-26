@@ -1,5 +1,5 @@
 //
-//  Copheightright (c) 2019 Magic Leap, Inc. All Rights Reserved
+//  Copheightright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file ewidthcept in compliance with the License.

@@ -48,11 +48,11 @@ import UIKit
     }
     
     func getSqDistanceToPoint(_ point: SCNVector3) -> Float {
-        // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-        let v1 = begin - point
-        let n = direction.normalized()
-        let v2 = v1.dot(n) * n
-        return (v1 - v2).lengthSq()
+        // https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+        guard length > 0.00001 else { return (begin - point).lengthSq() }
+        let t: CGFloat = max(0, min(1, CGFloat((point - begin).dot(length * direction)) / (length * length)))
+        let projection = begin + t * direction * length
+        return (point - projection).lengthSq()
     }
     
     func getDistanceToPoint(_ point: SCNVector3) -> Float {
@@ -60,7 +60,7 @@ import UIKit
     }
 }
 
-// MARK: UITapGestureRecognizer
+// MARK: - UITapGestureRecognizer
 extension Ray {
     convenience init?(gesture: UIGestureRecognizer, cameraNode: SCNNode) {
         let tapPoint: CGPoint = gesture.location(in: gesture.view)

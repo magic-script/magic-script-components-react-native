@@ -224,6 +224,349 @@ open class AVPlayerProtocolMock: AVPlayerProtocol, Mock {
     }
 }
 
+// MARK: - BoundsClipping
+open class BoundsClippingMock: BoundsClipping, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func getClippingPlanesAsVector4() -> [SCNVector4] {
+        addInvocation(.m_getClippingPlanesAsVector4)
+		let perform = methodPerformValue(.m_getClippingPlanesAsVector4) as? () -> Void
+		perform?()
+		var __value: [SCNVector4]
+		do {
+		    __value = try methodReturnValue(.m_getClippingPlanesAsVector4).casted()
+		} catch {
+			onFatalFailure("Stub return value not specified for getClippingPlanesAsVector4(). Use given")
+			Failure("Stub return value not specified for getClippingPlanesAsVector4(). Use given")
+		}
+		return __value
+    }
+
+
+    fileprivate enum MethodType {
+        case m_getClippingPlanesAsVector4
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_getClippingPlanesAsVector4, .m_getClippingPlanesAsVector4):
+                return true 
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .m_getClippingPlanesAsVector4: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+        public static func getClippingPlanesAsVector4(willReturn: [SCNVector4]...) -> MethodStub {
+            return Given(method: .m_getClippingPlanesAsVector4, products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func getClippingPlanesAsVector4(willProduce: (Stubber<[SCNVector4]>) -> Void) -> MethodStub {
+            let willReturn: [[SCNVector4]] = []
+			let given: Given = { return Given(method: .m_getClippingPlanesAsVector4, products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: ([SCNVector4]).self)
+			willProduce(stubber)
+			return given
+        }
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func getClippingPlanesAsVector4() -> Verify { return Verify(method: .m_getClippingPlanesAsVector4)}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func getClippingPlanesAsVector4(perform: @escaping () -> Void) -> Perform {
+            return Perform(method: .m_getClippingPlanesAsVector4, performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - BoundsClippingManaging
+open class BoundsClippingManagingMock: BoundsClippingManaging, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var isUpdateClippingNeeded: Bool {
+		get {	invocations.append(.p_isUpdateClippingNeeded_get); return __p_isUpdateClippingNeeded ?? givenGetterValue(.p_isUpdateClippingNeeded_get, "BoundsClippingManagingMock - stub value for isUpdateClippingNeeded was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_isUpdateClippingNeeded = newValue }
+	}
+	private var __p_isUpdateClippingNeeded: (Bool)?
+
+
+
+
+
+    open func invalidateClipping() {
+        addInvocation(.m_invalidateClipping)
+		let perform = methodPerformValue(.m_invalidateClipping) as? () -> Void
+		perform?()
+    }
+
+    open func updateClipping(for node: SCNNode?, recursive: Bool) {
+        addInvocation(.m_updateClipping__for_noderecursive_recursive(Parameter<SCNNode?>.value(`node`), Parameter<Bool>.value(`recursive`)))
+		let perform = methodPerformValue(.m_updateClipping__for_noderecursive_recursive(Parameter<SCNNode?>.value(`node`), Parameter<Bool>.value(`recursive`))) as? (SCNNode?, Bool) -> Void
+		perform?(`node`, `recursive`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_invalidateClipping
+        case m_updateClipping__for_noderecursive_recursive(Parameter<SCNNode?>, Parameter<Bool>)
+        case p_isUpdateClippingNeeded_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_invalidateClipping, .m_invalidateClipping):
+                return true 
+            case (.m_updateClipping__for_noderecursive_recursive(let lhsNode, let lhsRecursive), .m_updateClipping__for_noderecursive_recursive(let rhsNode, let rhsRecursive)):
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsRecursive, rhs: rhsRecursive, with: matcher) else { return false } 
+                return true 
+            case (.p_isUpdateClippingNeeded_get,.p_isUpdateClippingNeeded_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case .m_invalidateClipping: return 0
+            case let .m_updateClipping__for_noderecursive_recursive(p0, p1): return p0.intValue + p1.intValue
+            case .p_isUpdateClippingNeeded_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func isUpdateClippingNeeded(getter defaultValue: Bool...) -> PropertyStub {
+            return Given(method: .p_isUpdateClippingNeeded_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func invalidateClipping() -> Verify { return Verify(method: .m_invalidateClipping)}
+        public static func updateClipping(for node: Parameter<SCNNode?>, recursive: Parameter<Bool>) -> Verify { return Verify(method: .m_updateClipping__for_noderecursive_recursive(`node`, `recursive`))}
+        public static var isUpdateClippingNeeded: Verify { return Verify(method: .p_isUpdateClippingNeeded_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func invalidateClipping(perform: @escaping () -> Void) -> Perform {
+            return Perform(method: .m_invalidateClipping, performs: perform)
+        }
+        public static func updateClipping(for node: Parameter<SCNNode?>, recursive: Parameter<Bool>, perform: @escaping (SCNNode?, Bool) -> Void) -> Perform {
+            return Perform(method: .m_updateClipping__for_noderecursive_recursive(`node`, `recursive`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - ColorPickerDataProviding
 open class ColorPickerDataProvidingMock: ColorPickerDataProviding, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -3367,6 +3710,265 @@ open class NodesGestureHandlingMock: NodesGestureHandling, Mock {
         }
         public static func handleNodeLongPress(_ node: Parameter<BaseNode?>, _ state: Parameter<UIGestureRecognizer.State>, perform: @escaping (BaseNode?, UIGestureRecognizer.State) -> Void) -> Perform {
             return Perform(method: .m_handleNodeLongPress__node_state(`node`, `state`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - NodesManaging
+open class NodesManagingMock: NSObject, NodesManaging, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var scene: Scene? {
+		get {	invocations.append(.p_scene_get); return __p_scene ?? optionalGivenGetterValue(.p_scene_get, "NodesManagingMock - stub value for scene was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_scene = newValue }
+	}
+	private var __p_scene: (Scene)?
+
+    public var prismsById: [String: Prism] {
+		get {	invocations.append(.p_prismsById_get); return __p_prismsById ?? givenGetterValue(.p_prismsById_get, "NodesManagingMock - stub value for prismsById was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_prismsById = newValue }
+	}
+	private var __p_prismsById: ([String: Prism])?
+
+
+
+
+
+    open func registerScene(_ scene: Scene, sceneId: String) {
+        addInvocation(.m_registerScene__scenesceneId_sceneId(Parameter<Scene>.value(`scene`), Parameter<String>.value(`sceneId`)))
+		let perform = methodPerformValue(.m_registerScene__scenesceneId_sceneId(Parameter<Scene>.value(`scene`), Parameter<String>.value(`sceneId`))) as? (Scene, String) -> Void
+		perform?(`scene`, `sceneId`)
+    }
+
+    open func registerPrism(_ prism: Prism, prismId: String) {
+        addInvocation(.m_registerPrism__prismprismId_prismId(Parameter<Prism>.value(`prism`), Parameter<String>.value(`prismId`)))
+		let perform = methodPerformValue(.m_registerPrism__prismprismId_prismId(Parameter<Prism>.value(`prism`), Parameter<String>.value(`prismId`))) as? (Prism, String) -> Void
+		perform?(`prism`, `prismId`)
+    }
+
+    open func registerNode(_ node: TransformNode, nodeId: String) {
+        addInvocation(.m_registerNode__nodenodeId_nodeId(Parameter<TransformNode>.value(`node`), Parameter<String>.value(`nodeId`)))
+		let perform = methodPerformValue(.m_registerNode__nodenodeId_nodeId(Parameter<TransformNode>.value(`node`), Parameter<String>.value(`nodeId`))) as? (TransformNode, String) -> Void
+		perform?(`node`, `nodeId`)
+    }
+
+    open func unregisterNode(_ nodeId: String) {
+        addInvocation(.m_unregisterNode__nodeId(Parameter<String>.value(`nodeId`)))
+		let perform = methodPerformValue(.m_unregisterNode__nodeId(Parameter<String>.value(`nodeId`))) as? (String) -> Void
+		perform?(`nodeId`)
+    }
+
+    open func updateNode(_ nodeId: String, properties: [String: Any]) -> Bool {
+        addInvocation(.m_updateNode__nodeIdproperties_properties(Parameter<String>.value(`nodeId`), Parameter<[String: Any]>.value(`properties`)))
+		let perform = methodPerformValue(.m_updateNode__nodeIdproperties_properties(Parameter<String>.value(`nodeId`), Parameter<[String: Any]>.value(`properties`))) as? (String, [String: Any]) -> Void
+		perform?(`nodeId`, `properties`)
+		var __value: Bool
+		do {
+		    __value = try methodReturnValue(.m_updateNode__nodeIdproperties_properties(Parameter<String>.value(`nodeId`), Parameter<[String: Any]>.value(`properties`))).casted()
+		} catch {
+			onFatalFailure("Stub return value not specified for updateNode(_ nodeId: String, properties: [String: Any]). Use given")
+			Failure("Stub return value not specified for updateNode(_ nodeId: String, properties: [String: Any]). Use given")
+		}
+		return __value
+    }
+
+
+    fileprivate enum MethodType {
+        case m_registerScene__scenesceneId_sceneId(Parameter<Scene>, Parameter<String>)
+        case m_registerPrism__prismprismId_prismId(Parameter<Prism>, Parameter<String>)
+        case m_registerNode__nodenodeId_nodeId(Parameter<TransformNode>, Parameter<String>)
+        case m_unregisterNode__nodeId(Parameter<String>)
+        case m_updateNode__nodeIdproperties_properties(Parameter<String>, Parameter<[String: Any]>)
+        case p_scene_get
+        case p_prismsById_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_registerScene__scenesceneId_sceneId(let lhsScene, let lhsSceneid), .m_registerScene__scenesceneId_sceneId(let rhsScene, let rhsSceneid)):
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsSceneid, rhs: rhsSceneid, with: matcher) else { return false } 
+                return true 
+            case (.m_registerPrism__prismprismId_prismId(let lhsPrism, let lhsPrismid), .m_registerPrism__prismprismId_prismId(let rhsPrism, let rhsPrismid)):
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsPrismid, rhs: rhsPrismid, with: matcher) else { return false } 
+                return true 
+            case (.m_registerNode__nodenodeId_nodeId(let lhsNode, let lhsNodeid), .m_registerNode__nodenodeId_nodeId(let rhsNode, let rhsNodeid)):
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                return true 
+            case (.m_unregisterNode__nodeId(let lhsNodeid), .m_unregisterNode__nodeId(let rhsNodeid)):
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                return true 
+            case (.m_updateNode__nodeIdproperties_properties(let lhsNodeid, let lhsProperties), .m_updateNode__nodeIdproperties_properties(let rhsNodeid, let rhsProperties)):
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsProperties, rhs: rhsProperties, with: matcher) else { return false } 
+                return true 
+            case (.p_scene_get,.p_scene_get): return true
+            case (.p_prismsById_get,.p_prismsById_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_registerScene__scenesceneId_sceneId(p0, p1): return p0.intValue + p1.intValue
+            case let .m_registerPrism__prismprismId_prismId(p0, p1): return p0.intValue + p1.intValue
+            case let .m_registerNode__nodenodeId_nodeId(p0, p1): return p0.intValue + p1.intValue
+            case let .m_unregisterNode__nodeId(p0): return p0.intValue
+            case let .m_updateNode__nodeIdproperties_properties(p0, p1): return p0.intValue + p1.intValue
+            case .p_scene_get: return 0
+            case .p_prismsById_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func scene(getter defaultValue: Scene?...) -> PropertyStub {
+            return Given(method: .p_scene_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func prismsById(getter defaultValue: [String: Prism]...) -> PropertyStub {
+            return Given(method: .p_prismsById_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+        public static func updateNode(_ nodeId: Parameter<String>, properties: Parameter<[String: Any]>, willReturn: Bool...) -> MethodStub {
+            return Given(method: .m_updateNode__nodeIdproperties_properties(`nodeId`, `properties`), products: willReturn.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func updateNode(_ nodeId: Parameter<String>, properties: Parameter<[String: Any]>, willProduce: (Stubber<Bool>) -> Void) -> MethodStub {
+            let willReturn: [Bool] = []
+			let given: Given = { return Given(method: .m_updateNode__nodeIdproperties_properties(`nodeId`, `properties`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
+			let stubber = given.stub(for: (Bool).self)
+			willProduce(stubber)
+			return given
+        }
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func registerScene(_ scene: Parameter<Scene>, sceneId: Parameter<String>) -> Verify { return Verify(method: .m_registerScene__scenesceneId_sceneId(`scene`, `sceneId`))}
+        public static func registerPrism(_ prism: Parameter<Prism>, prismId: Parameter<String>) -> Verify { return Verify(method: .m_registerPrism__prismprismId_prismId(`prism`, `prismId`))}
+        public static func registerNode(_ node: Parameter<TransformNode>, nodeId: Parameter<String>) -> Verify { return Verify(method: .m_registerNode__nodenodeId_nodeId(`node`, `nodeId`))}
+        public static func unregisterNode(_ nodeId: Parameter<String>) -> Verify { return Verify(method: .m_unregisterNode__nodeId(`nodeId`))}
+        public static func updateNode(_ nodeId: Parameter<String>, properties: Parameter<[String: Any]>) -> Verify { return Verify(method: .m_updateNode__nodeIdproperties_properties(`nodeId`, `properties`))}
+        public static var scene: Verify { return Verify(method: .p_scene_get) }
+        public static var prismsById: Verify { return Verify(method: .p_prismsById_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func registerScene(_ scene: Parameter<Scene>, sceneId: Parameter<String>, perform: @escaping (Scene, String) -> Void) -> Perform {
+            return Perform(method: .m_registerScene__scenesceneId_sceneId(`scene`, `sceneId`), performs: perform)
+        }
+        public static func registerPrism(_ prism: Parameter<Prism>, prismId: Parameter<String>, perform: @escaping (Prism, String) -> Void) -> Perform {
+            return Perform(method: .m_registerPrism__prismprismId_prismId(`prism`, `prismId`), performs: perform)
+        }
+        public static func registerNode(_ node: Parameter<TransformNode>, nodeId: Parameter<String>, perform: @escaping (TransformNode, String) -> Void) -> Perform {
+            return Perform(method: .m_registerNode__nodenodeId_nodeId(`node`, `nodeId`), performs: perform)
+        }
+        public static func unregisterNode(_ nodeId: Parameter<String>, perform: @escaping (String) -> Void) -> Perform {
+            return Perform(method: .m_unregisterNode__nodeId(`nodeId`), performs: perform)
+        }
+        public static func updateNode(_ nodeId: Parameter<String>, properties: Parameter<[String: Any]>, perform: @escaping (String, [String: Any]) -> Void) -> Perform {
+            return Perform(method: .m_updateNode__nodeIdproperties_properties(`nodeId`, `properties`), performs: perform)
         }
     }
 

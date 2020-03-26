@@ -44,7 +44,7 @@ import SceneKit
     }
     //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
-        didSet { invalidateClippingPlanes = true; setNeedsLayout() }
+        didSet { setNeedsLayout(); invalidateBoundsClippingManager() }
     }
     @objc var scrollBarVisibility: ScrollBarVisibility = .auto {
         didSet { updateScrollBarVisibility() }
@@ -55,11 +55,6 @@ import SceneKit
     fileprivate weak var scrollBar: UiScrollBarNode?
     fileprivate weak var scrollContent: TransformNode?
     fileprivate var proxyNode: SCNNode!
-    fileprivate var invalidateClippingPlanes: Bool = false
-
-    deinit {
-        scrollContent?.resetClippingPlanes()
-    }
 
     @objc override func setupNode() {
         super.setupNode()
@@ -125,7 +120,6 @@ import SceneKit
         guard scrollContent == nil else { return false }
         scrollContent = child
         proxyNode.addChildNode(child)
-        invalidateClippingPlanes = true
         setNeedsLayout()
         return true
     }
@@ -138,7 +132,6 @@ import SceneKit
         } else if child == scrollContent {
             scrollContent?.removeFromParentNode()
             scrollContent = nil
-            invalidateClippingPlanes = true
             setNeedsLayout()
         }
     }
@@ -190,30 +183,6 @@ import SceneKit
         scrollBar?.thumbPosition = scrollValue
     }
 
-    @objc override func postUpdate() {
-        guard let scrollBounds = scrollBounds else { return }
-
-        // Update clipping planes
-        if invalidateClippingPlanes {
-            invalidateClippingPlanes = false
-
-            let min = scrollBounds.min
-            let max = scrollBounds.max
-            let planes: [SCNVector4] = [
-                SCNVector4( 1, 0, 0,-min.x),
-                SCNVector4(-1, 0, 0, max.x),
-                SCNVector4(0, 1, 0,-min.y),
-                SCNVector4(0,-1, 0, max.y),
-                SCNVector4(0, 0, 1,-min.z),
-                SCNVector4(0, 0,-1, max.z),
-            ]
-
-            let worldSpacePlanes: [SCNVector4] = planes.map { convertPlane(Plane(vector: $0), to: nil).toVector4() }
-            scrollContent?.setClippingPlanes(worldSpacePlanes)
-        }
-    }
-
-
     fileprivate func updateScrollBarVisibility() {
         switch scrollBarVisibility {
             case .always:
@@ -225,6 +194,26 @@ import SceneKit
             case .off:
                 scrollBar?.visible = false
         }
+    }
+}
+
+extension UiScrollViewNode: BoundsClipping {
+    func getClippingPlanesAsVector4() -> [SCNVector4] {
+        guard let scrollBounds = scrollBounds else { return [] }
+
+        let min = scrollBounds.min
+        let max = scrollBounds.max
+        let planes: [SCNVector4] = [
+            SCNVector4( 1, 0, 0,-min.x),
+            SCNVector4(-1, 0, 0, max.x),
+            SCNVector4(0, 1, 0,-min.y),
+            SCNVector4(0,-1, 0, max.y),
+            SCNVector4(0, 0, 1,-min.z),
+            SCNVector4(0, 0,-1, max.z),
+        ]
+
+        let worldSpacePlanes: [SCNVector4] = planes.map { convertPlane(Plane(vector: $0), to: nil).toVector4() }
+        return worldSpacePlanes
     }
 }
 

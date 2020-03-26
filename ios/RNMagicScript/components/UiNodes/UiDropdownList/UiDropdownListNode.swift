@@ -321,6 +321,8 @@ import SceneKit
         backgroundNode?.position = SCNVector3(0, -0.5 * listSize.height, -0.01)
         backgroundNode?.renderingOrder = 0
         listNode.insertChildNode(backgroundNode!, at: 0)
+        backgroundNode?.applyClippingPlanesShaderModifiers(recursive: false)
+        backgroundNode?.forceUpdateClipping()
     }
 }
 

@@ -23,6 +23,7 @@ import ARKit
 @objc protocol NodesManaging: NSObjectProtocol {
     @objc var scene: Scene? { get }
     @objc var prismsById: [String: Prism] { get }
+//    @objc var nodesById: [String: BaseNode] { get }
 
     @objc func registerScene(_ scene: Scene, sceneId: String)
     @objc func registerPrism(_ prism: Prism, prismId: String)
@@ -36,6 +37,9 @@ import ARKit
     @objc public static let instance = NodesManager(rootNode: BaseNode(), nodesById: [:], prismsByAnchorUuid: [:])
     @objc public private (set) var rootNode: BaseNode
 
+    @objc public private(set) var scene: Scene?
+    @objc public private(set) var prismsById: [String: Prism] = [:]
+
     fileprivate var nodesById: [String: BaseNode]
     fileprivate var prismsByAnchorUuid: [String: Prism]
     fileprivate var anchorNodesByAnchorUuid: [String: SCNNode] = [:]
@@ -48,6 +52,27 @@ import ARKit
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.prismsByAnchorUuid = prismsByAnchorUuid
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(onResourceDidLoad(_:)), name: .didLoadResource, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onLayoutDidChangeIndependently(_:)), name: .didChangeLayoutIndependently, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc fileprivate func onResourceDidLoad(_ notification: Notification) {
+//        print("onResourceDidLoad: \(notification)")
+        if (notification.object is UiModelNode) {
+            // We need to update tree hierarchy only for model nodes.
+            // Audio, image? and video resources have predefined size.
+            updateLayout()
+        }
+    }
+
+    @objc fileprivate func onLayoutDidChangeIndependently(_ notification: Notification) {
+//        print("onLayoutDidChangeIndependently: \(notification)")
+        updateLayout()
     }
 
     @objc public func registerARView(_ arView: RCTARView) {
@@ -69,13 +94,11 @@ import ARKit
         return prismsByAnchorUuid[anchorUuid]
     }
 
-    @objc public private(set) var scene: Scene?
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
     }
 
-    @objc public private(set) var prismsById: [String: Prism] = [:]
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
@@ -97,12 +120,12 @@ import ARKit
     @objc public func registerNode(_ node: TransformNode, nodeId: String) {
         node.name = nodeId
         nodesById[nodeId] = node
+        node.applyClippingPlanesShaderModifiers(recursive: true)
     }
 
     @objc public func unregisterNode(_ nodeId: String) {
-        if let node = nodesById[nodeId] {
-            node.removeFromParentNode()
-            nodesById.removeValue(forKey: nodeId)
+        if let node = getNodeById(nodeId) {
+            removeNodeById(nodeId)
             if let dialog = node as? DialogDataProviding {
                 dialogPresenter?.dismiss(dialog)
             }
@@ -116,9 +139,16 @@ import ARKit
         if let node = getNodeById(nodeId) {
             if let parentNode = getNodeById(parentId) {
                 if parentNode.addNode(node) {
+                    if scene != nil {
+                        // if node is added in update process (after creation of the nodes tree)
+                        // it's need to be clipped by the prism
+                        node.invalidateBoundsClippingManager()
+                    }
+
                     if let dialog = node as? DialogDataProviding {
                         dialogPresenter?.present(dialog)
                     }
+                    
                     return
                 }
             }
@@ -127,7 +157,6 @@ import ARKit
             // the parent does not want to add the node to its hierarchy.
             removeNodeWithDescendants(node)
         }
-
     }
 
     @objc public func addNodeToRoot(_ nodeId: String) {
@@ -181,6 +210,28 @@ import ARKit
         scene = nil
     }
 
+    private func removeNodeById(_ nodeId: String) {
+        if let node = nodesById[nodeId] {
+            node.enumerateBaseNodes { node in
+                node.removeFromParentNode()
+                if let childNodeId = node.name {
+                    nodesById.removeValue(forKey: childNodeId)
+                }
+            }
+            node.removeFromParentNode()
+            nodesById.removeValue(forKey: nodeId)
+        } else if let prism = prismsById[nodeId] {
+            prism.enumerateBaseNodes { node in
+                node.removeFromParentNode()
+                if let childNodeId = node.name {
+                    nodesById.removeValue(forKey: childNodeId)
+                }
+            }
+            prism.removeFromParentNode()
+            prismsById.removeValue(forKey: nodeId)
+        }
+    }
+
     private func getNodeById(_ nodeId: String) -> BaseNode? {
         var result: BaseNode?
         result = nodesById[nodeId]
@@ -198,7 +249,18 @@ import ARKit
         return true
     }
 
+    fileprivate var dispatchWorkItem: DispatchWorkItem?
     @objc public func updateLayout() {
+        guard dispatchWorkItem == nil else { return }
+        dispatchWorkItem = DispatchWorkItem { [weak self] in
+            self?.internalUpdateLayout()
+            self?.dispatchWorkItem = nil
+        }
+        
+        DispatchQueue.main.async(execute: dispatchWorkItem!)
+    }
+    
+    fileprivate func internalUpdateLayout() {
         assert(Thread.isMainThread, "updateLayout must be called in main thread!")
         rootNode.enumerateTransformNodes { node in
             node.layoutIfNeeded()
@@ -208,9 +270,15 @@ import ARKit
             node.layoutContainerIfNeeded()
         }
 
-        rootNode.enumerateTransformNodes { node in
-            node.postUpdate()
+        let invalidatedPrisms: [Prism] = prismsById.filter { $0.value.isUpdateClippingNeeded }.map { $0.value }
+        invalidatedPrisms.forEach { $0.updateClipping() }
+
+#if targetEnvironment(simulator)
+        // ASSERT - remove me
+        prismsById.forEach { (key: String, value: Prism) in
+            assert(!value.isUpdateClippingNeeded, "Prism.isUpdateClippingNeeded must be set to false!")
         }
+#endif
     }
 
     func registerAnchorNode(_ node: SCNNode, anchorId: String) {

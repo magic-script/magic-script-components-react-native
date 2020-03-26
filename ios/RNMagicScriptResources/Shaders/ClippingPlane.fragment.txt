@@ -1,4 +1,9 @@
+//
+//  Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+//
+
 #pragma arguments
+
 float4 clippingPlane1 = float4(0);
 float4 clippingPlane2 = float4(0);
 float4 clippingPlane3 = float4(0);
@@ -8,9 +13,7 @@ float4 clippingPlane6 = float4(0);
 
 #pragma body
 
-if (dot(in.myPos, clippingPlane1) < 0) { discard_fragment(); }
-if (dot(in.myPos, clippingPlane2) < 0) { discard_fragment(); }
-if (dot(in.myPos, clippingPlane3) < 0) { discard_fragment(); }
-if (dot(in.myPos, clippingPlane4) < 0) { discard_fragment(); }
-if (dot(in.myPos, clippingPlane5) < 0) { discard_fragment(); }
-if (dot(in.myPos, clippingPlane6) < 0) { discard_fragment(); }
+float result = sign(dot(in.myPos, clippingPlane1)) + sign(dot(in.myPos, clippingPlane2)) + sign(dot(in.myPos, clippingPlane3)) +
+               sign(dot(in.myPos, clippingPlane4)) + sign(dot(in.myPos, clippingPlane5)) + sign(dot(in.myPos, clippingPlane6));
+
+if (result < 6) { discard_fragment(); }

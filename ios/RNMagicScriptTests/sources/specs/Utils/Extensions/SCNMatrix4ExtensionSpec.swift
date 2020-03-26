@@ -82,13 +82,42 @@ class SCNMatrix4ExtensionSpec: QuickSpec {
                 }
 
                 it("should set matrix position vector") {
-                    let position = SCNVector3(0.1, 0.2, 0.3).normalized()
+                    let position = SCNVector3(0.1, 0.2, 0.3)
                     var matrix = SCNMatrix4Identity
                     matrix.position = position
                     expect(matrix.position).to(beCloseTo(position))
                     expect(matrix.m41).to(beCloseTo(position.x))
                     expect(matrix.m42).to(beCloseTo(position.y))
                     expect(matrix.m43).to(beCloseTo(position.z))
+                }
+            }
+        }
+        
+        describe("float4x4 extension") {
+            context("float4x4 init") {
+                it("should init float4x4") {
+                    let quat = SCNQuaternion.fromAxis(SCNVector3(2.7, 4.5, 3.8).normalized(), andAngle: Float(34.0).toRadians)
+                    let referenceMatrix = SCNMatrix4.fromQuaternion(quat: quat)
+                    let result = float4x4(referenceMatrix)
+                    expect(result.columns.0.x).to(beCloseTo(referenceMatrix.m11))
+                    expect(result.columns.0.y).to(beCloseTo(referenceMatrix.m12))
+                    expect(result.columns.0.z).to(beCloseTo(referenceMatrix.m13))
+                    expect(result.columns.0.w).to(beCloseTo(referenceMatrix.m14))
+                    
+                    expect(result.columns.1.x).to(beCloseTo(referenceMatrix.m21))
+                    expect(result.columns.1.y).to(beCloseTo(referenceMatrix.m22))
+                    expect(result.columns.1.z).to(beCloseTo(referenceMatrix.m23))
+                    expect(result.columns.1.w).to(beCloseTo(referenceMatrix.m24))
+                    
+                    expect(result.columns.2.x).to(beCloseTo(referenceMatrix.m31))
+                    expect(result.columns.2.y).to(beCloseTo(referenceMatrix.m32))
+                    expect(result.columns.2.z).to(beCloseTo(referenceMatrix.m33))
+                    expect(result.columns.2.w).to(beCloseTo(referenceMatrix.m34))
+                    
+                    expect(result.columns.3.x).to(beCloseTo(referenceMatrix.m41))
+                    expect(result.columns.3.y).to(beCloseTo(referenceMatrix.m42))
+                    expect(result.columns.3.z).to(beCloseTo(referenceMatrix.m43))
+                    expect(result.columns.3.w).to(beCloseTo(referenceMatrix.m44))
                 }
             }
         }

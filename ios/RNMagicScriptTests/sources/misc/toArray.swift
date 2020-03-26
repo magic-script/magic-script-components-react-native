@@ -16,36 +16,6 @@
 
 import SceneKit
 
-extension SCNVector3 {
-    var toArrayOfFloat: [Float] {
-        return [x, y, z]
-    }
-    var toArrayOfCGFloat: [CGFloat] {
-        return [CGFloat(x), CGFloat(y), CGFloat(z)]
-    }
-    var toArrayOfDouble: [Double] {
-        return [Double(x), Double(y), Double(z)]
-    }
-    var toArrayOfInt: [Int] {
-        return [Int(x), Int(y), Int(z)]
-    }
-}
-
-extension SCNVector4 {
-    var toArrayOfFloat: [Float] {
-        return [x, y, z, w]
-    }
-    var toArrayOfCGFloat: [CGFloat] {
-        return [CGFloat(x), CGFloat(y), CGFloat(z), CGFloat(w)]
-    }
-    var toArrayOfDouble: [Double] {
-        return [Double(x), Double(y), Double(z), Double(w)]
-    }
-    var toArrayOfInt: [Int] {
-        return [Int(x), Int(y), Int(z), Int(w)]
-    }
-}
-
 extension SCNMatrix4 {
     var toArrayOfFloat: [Float] {
         return [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44]

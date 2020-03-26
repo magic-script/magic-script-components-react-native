@@ -40,6 +40,58 @@ extension NodesManager: RCTARViewObserving {
             unregisterAnchorNode(anchorId: anchorId)
         }
     }
+
+    @objc internal func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        if let pointOfView = renderer.pointOfView {
+            
+            let begin = pointOfView.position
+            let direction = pointOfView.worldFront
+            let ray = Ray(begin: begin, direction: direction, length: 5.0)
+            
+            var results: [(prism: Prism, intersectionPoint: SCNVector3)] = []
+            prismsById.forEach {
+                $0.value.isPointed = false
+                var outRay: Ray? = nil
+                if $0.value.intersect(with: ray, clippedRay: &outRay),
+                    let clippedRay = outRay {
+                    let value = (prism: $0.value, intersectionPoint: clippedRay.begin)
+                    results.append(value)
+                }
+            }
+            if results.count > 0 {
+                results.sort { (item1, item2) -> Bool in
+                    let distSq1 = (item1.intersectionPoint - ray.begin).lengthSq()
+                    let distSq2 = (item2.intersectionPoint - ray.begin).lengthSq()
+                    return distSq1 < distSq2
+                }
+                
+                results.first!.prism.isPointed = true
+            }
+#if targetEnvironment(simulator)
+            if let position = results.first?.intersectionPoint {
+                getDebugIntersectionPointNode().position = position
+                getDebugIntersectionPointNode().isHidden = false
+            } else {
+                getDebugIntersectionPointNode().isHidden = true
+            }
+#endif
+        }
+    }
+    
+#if targetEnvironment(simulator)
+    fileprivate func getDebugIntersectionPointNode() -> SCNNode {
+        let name = "debugIntersectionPointNode"
+        if let node = rootNode.childNode(withName: name, recursively: false) {
+            return node
+        }
+        
+        let node = NodesFactory.createSphereNode(radius: 0.005, segmentCount: 20, color: UIColor.yellow)
+        node.name = name
+        rootNode.addChildNode(node)
+        
+        return node
+    }
+#endif
 }
 
 extension Prism {

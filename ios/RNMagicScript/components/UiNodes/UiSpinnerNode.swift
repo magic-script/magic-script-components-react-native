@@ -116,6 +116,9 @@ import SceneKit
             contentNode.addChildNode(spinnerNode)
             startAnimation()
         }
+        
+        contentNode.applyClippingPlanesShaderModifiers(recursive: true)
+        contentNode.forceUpdateClipping(recursive: true)
     }
 
     fileprivate func startAnimation() {

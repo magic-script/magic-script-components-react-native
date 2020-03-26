@@ -24,6 +24,7 @@ import SceneKit
             guard let url = url else { image = nil; return }
             downloadImage(imageURL: url) { [weak self] (image) -> (Void) in
                 self?.image = image
+                NotificationCenter.default.post(name: .didLoadResource, object: self)
             }
         }
     }

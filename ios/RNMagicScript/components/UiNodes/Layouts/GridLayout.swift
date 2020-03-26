@@ -192,7 +192,7 @@ extension GridLayout {
         let filteredChildren: [SCNNode] = container.childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
         let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
-        guard !nodes.isEmpty else { return nil }
+        guard nodes.isNotEmpty else { return nil }
 
         let defaultItemPaddingSize = CGSize(width: defaultItemPadding.left + defaultItemPadding.right, height: defaultItemPadding.top + defaultItemPadding.bottom)
         var cellSizes: [CGSize] = []

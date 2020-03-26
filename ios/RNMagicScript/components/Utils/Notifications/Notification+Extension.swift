@@ -12,32 +12,11 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import Foundation
-import SceneKit
 
-extension SCNVector4 {
-    init(_ v: SCNVector3) {
-        self.init(x: v.x, y: v.y, z: v.z, w: 1)
-    }
-}
-
-extension SCNVector4 {
-    var toArrayOfFloat: [Float] {
-        return [x, y, z, w]
-    }
-    var toArrayOfCGFloat: [CGFloat] {
-        return [CGFloat(x), CGFloat(y), CGFloat(z), CGFloat(w)]
-    }
-    var toArrayOfDouble: [Double] {
-        return [Double(x), Double(y), Double(z), Double(w)]
-    }
-    var toArrayOfInt: [Int] {
-        return [Int(x), Int(y), Int(z), Int(w)]
-    }
-}
-
-extension SCNVector4 {
-    static var zero: SCNVector4 = SCNVector4Zero
+extension Notification.Name {
+    static let didLoadResource = Notification.Name("didLoadResource")
+    static let didChangeLayoutIndependently = Notification.Name("didChangeLayoutIndependently")
 }

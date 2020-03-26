@@ -28,12 +28,20 @@ import GLTFSceneKit
             downloader.download(remoteURL: url) { [weak self] (localURL) -> (Void) in
                 self?.loadModel(localURL)
                 self?.setNeedsLayout()
+            #if targetEnvironment(simulator)
+                // Do not clip model nodes on simulator. There is a limitation that causes that models
+                // are not rendered when are clipped.
+            #else
+                self?.contentNode.applyClippingPlanesShaderModifiers(recursive: true)
+                self?.contentNode.forceUpdateClipping(recursive: true)
+            #endif
+                NotificationCenter.default.post(name: .didLoadResource, object: self)
             }
         }
     }
 
     @objc var isLoaded: Bool {
-        return !contentNode.childNodes.isEmpty
+        return contentNode.childNodes.isNotEmpty
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -50,8 +58,8 @@ import GLTFSceneKit
     }
 
     fileprivate func cleanNode() {
-        while !contentNode.childNodes.isEmpty {
-            contentNode.childNodes.last?.removeFromParentNode()
+        contentNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()
         }
     }
 

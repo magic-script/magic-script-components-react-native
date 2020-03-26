@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+// Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
 
 import { Image, NativeEventEmitter, NativeModules, Platform, processColor } from 'react-native';
 import { NativeFactory } from '../core/native-factory';

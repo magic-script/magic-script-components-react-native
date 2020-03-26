@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+ *  Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -71,11 +71,6 @@ open class NodeBuilder(protected val useContentNodeAlignment: Boolean = true) {
 
     fun withAlignment(alignment: String): NodeBuilder {
         props.putString(TransformNode.PROP_ALIGNMENT, alignment)
-        return this
-    }
-
-    fun withAnchorUUID(anchorUUID: String): NodeBuilder {
-        props.putString(TransformNode.PROP_ANCHOR_UUID, anchorUUID)
         return this
     }
 

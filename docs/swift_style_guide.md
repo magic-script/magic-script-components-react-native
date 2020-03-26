@@ -1038,7 +1038,7 @@ file:
 
 ```swift
 ///
-///  Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+///  Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
 /// 
 ```
 

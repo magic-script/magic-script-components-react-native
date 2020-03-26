@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ class Prism(
         const val PROP_SCALE = "scale"
         const val PROP_POSITION = "position"
         const val PROP_VISIBLE = "visible"
+        const val PROP_ANCHOR_UUID = "anchorUuid"
 
         private const val MENU_MARGIN_BOTTOM = 0.05f
     }
@@ -74,7 +75,7 @@ class Prism(
             if (value) {
                 anchor = null // removing the anchor, so we can change local position
             } else {
-                tryAnchorAtPosition(localPosition)
+                tryToAnchorAtPosition(localPosition)
             }
         }
 
@@ -94,6 +95,7 @@ class Prism(
     private val menuNode: PrismMenu
     private var lastCameraPosition: Vector3? = null
     private var requestedAnchorPosition: Vector3? = null
+    private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var renderableCopy: Renderable? = null
@@ -190,7 +192,11 @@ class Prism(
         }
 
         requestedAnchorPosition?.let {
-            tryAnchorAtPosition(it)
+            tryToAnchorAtPosition(it)
+        }
+
+        requestedAnchorUuid?.let {
+            tryToAnchorAtUuid(it)
         }
 
         if (lastCameraPosition == null) {
@@ -240,6 +246,7 @@ class Prism(
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
         requestedAnchorPosition = null
+        requestedAnchorUuid = null
     }
 
     private fun buildCube() {
@@ -302,6 +309,7 @@ class Prism(
     private fun applyProperties(props: Bundle) {
         setSize(props)
         setPosition(props)
+        setAnchorUuid(props)
         setVisible(props)
     }
 
@@ -318,7 +326,13 @@ class Prism(
 
     private fun setPosition(props: Bundle) {
         props.read<Vector3>(PROP_POSITION)?.let { position ->
-            tryAnchorAtPosition(position)
+            tryToAnchorAtPosition(position)
+        }
+    }
+
+    private fun setAnchorUuid(props: Bundle) {
+        props.read<String>(PROP_ANCHOR_UUID)?.let { anchorUuid ->
+            tryToAnchorAtUuid(anchorUuid)
         }
     }
 
@@ -328,7 +342,7 @@ class Prism(
         }
     }
 
-    private fun tryAnchorAtPosition(position: Vector3) {
+    private fun tryToAnchorAtPosition(position: Vector3) {
         requestedAnchorPosition = position
 
         anchorCreator.createAnchor(position, localRotation, result = {
@@ -338,6 +352,16 @@ class Prism(
             lastCreatedAnchor = it
             requestedAnchorPosition = null
         })
+    }
+
+    private fun tryToAnchorAtUuid(anchorUuid: String) {
+        requestedAnchorUuid = anchorUuid
+
+        val anchorNode = scene?.findByName(anchorUuid) as AnchorNode?
+        anchorNode?.anchor?.let {
+            anchor = it
+            requestedAnchorUuid = null
+        }
     }
 
     private fun clipContent() {

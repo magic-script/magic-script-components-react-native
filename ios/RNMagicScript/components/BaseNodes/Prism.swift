@@ -19,6 +19,10 @@ import SceneKit
 @objc open class Prism: BaseNode {
     @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
 
+    @objc var anchorUuid: String = "" {
+        didSet { NodesManager.instance.updatePrismAnchorUuid(self, oldAnchorUuid: oldValue) }
+    }
+
     @objc var debug: Bool = false {
         didSet { setDebugMode(debug) }
     }
@@ -74,6 +78,10 @@ import SceneKit
 
         if let debug = Convert.toBool(props["debug"]) {
             self.debug = debug
+        }
+
+        if let anchorUuid = Convert.toString(props["anchorUuid"]) {
+            self.anchorUuid = anchorUuid;
         }
     }
 

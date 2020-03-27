@@ -39,6 +39,13 @@ import SceneKit
     @objc var skipInvisibleItems: Bool = false {
         didSet { invalidate() }
     }
+    //@objc
+    var alignmentByIndex: [Int : Alignment] = [:] {
+        didSet { invalidate() }
+    }
+    @objc var paddingByIndex: [Int : UIEdgeInsets] = [:] {
+        didSet { invalidate() }
+    }
 
     var itemsCount: Int {
         return container.childNodes.count

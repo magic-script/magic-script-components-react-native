@@ -26,12 +26,13 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.Surface
+import com.magicleap.magicscript.scene.nodes.audio.FileProvider
 import com.magicleap.magicscript.utils.logMessage
 
 
 class VideoPlayerImpl(
         private val context: Context,
-        private val subtitlesClient: SubtitlesClient
+        private val fileProvider: FileProvider
 ) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
     private var mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
@@ -86,15 +87,10 @@ class VideoPlayerImpl(
     }
 
     private fun addSubtitles(subtitlesPath: Uri, onSubtitleChangeListener: ((String) -> Unit)?) {
-        if (subtitlesPath.toString().startsWith("http")) {
-            subtitlesClient.downloadSubtitleFile(subtitlesPath.toString()) {
-                Handler(Looper.getMainLooper()).post {
-                    addTimedTextPath(it, onSubtitleChangeListener)
-                }
+        fileProvider.provideFile(subtitlesPath) {
+            Handler(Looper.getMainLooper()).post {
+                addTimedTextPath(Uri.fromFile(it), onSubtitleChangeListener)
             }
-            prepareMediaPlayer()
-        } else {
-            addTimedTextPath(subtitlesPath.toString(), onSubtitleChangeListener)
             prepareMediaPlayer()
         }
     }
@@ -124,12 +120,12 @@ class VideoPlayerImpl(
         mediaPlayer.release()
     }
 
-    private fun addTimedTextPath(path: String, onTextChangedListener: ((String) -> Unit)?) {
+    private fun addTimedTextPath(path: Uri, onTextChangedListener: ((String) -> Unit)?) {
         try {
             if (Build.VERSION.SDK_INT >= 28) {
-                mediaPlayer.addTimedTextSource(path, MIMETYPE_TEXT_SUBRIP)
+                mediaPlayer.addTimedTextSource(context, path, MIMETYPE_TEXT_SUBRIP)
             } else {
-                mediaPlayer.addTimedTextSource(path, MEDIA_MIMETYPE_TEXT_SUBRIP)
+                mediaPlayer.addTimedTextSource(context, path, MEDIA_MIMETYPE_TEXT_SUBRIP)
             }
             val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
             if (textTrackIndex >= 0) {

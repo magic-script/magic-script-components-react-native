@@ -30,7 +30,7 @@ open class AudioNode(
     initProps: ReadableMap,
     private val context: Context,
     private var audioEngine: AudioEngine,
-    private val fileProvider: AudioFileProvider
+    private val fileProvider: FileProvider
 ) : TransformNode(initProps, false) {
 
     companion object {

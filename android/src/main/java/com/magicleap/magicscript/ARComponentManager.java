@@ -78,11 +78,11 @@ import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
-import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
+import com.magicleap.magicscript.scene.nodes.audio.FileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
-import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
+import com.magicleap.magicscript.scene.nodes.audio.UriFileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
@@ -104,7 +104,6 @@ import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
-import com.magicleap.magicscript.scene.nodes.video.SubtitlesClient;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
@@ -118,8 +117,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-
-import okhttp3.OkHttpClient;
 
 /**
  * A React module that is responsible for "parsing" JS tags in order to generate AR Nodes
@@ -266,8 +263,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            SubtitlesClient subtitlesClient = new SubtitlesClient(new OkHttpClient(), context);
-            VideoPlayer videoPlayer = new VideoPlayerImpl(context, subtitlesClient);
+            FileProvider fileProvider = new UriFileProvider(context);
+            VideoPlayer videoPlayer = new VideoPlayerImpl(context, fileProvider);
             addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, viewRenderableLoader, videoNodeClipper, fontProvider, arResourcesProvider), nodeId);
         });
     }
@@ -456,8 +453,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             GvrAudioEngine gvrAudioEngine = new GvrAudioEngine(context, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
             ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(gvrAudioEngine);
             VrAudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
-            AudioFileProvider audioFileProvider = new UriAudioProvider(context);
-            AudioNode node = new AudioNode(props, context, audioEngine, audioFileProvider);
+            FileProvider fileProvider = new UriFileProvider(context);
+            AudioNode node = new AudioNode(props, context, audioEngine, fileProvider);
             addNode(node, nodeId);
         });
     }

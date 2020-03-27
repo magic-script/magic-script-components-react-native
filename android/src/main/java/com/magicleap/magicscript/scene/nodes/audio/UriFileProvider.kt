@@ -67,7 +67,7 @@ class UriFileProvider(private val context: Context) :
                     bufferedInputStream.close()
                     fileDownloaded(uri.path, result, file)
                 } catch (e: Exception) {
-                    logMessage("Error during reading Audio File $e", true)
+                    logMessage("Error during reading file $e", true)
                 }
             }
         )

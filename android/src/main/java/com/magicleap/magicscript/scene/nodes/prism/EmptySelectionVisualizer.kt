@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@ package com.magicleap.magicscript.scene.nodes.prism
 import com.google.ar.sceneform.ux.BaseTransformableNode
 import com.google.ar.sceneform.ux.SelectionVisualizer
 
+/**
+ * This selection visualizer can be used to hide the default hint model displayed
+ * when the node is selected.
+ */
 class EmptySelectionVisualizer : SelectionVisualizer {
     override fun applySelectionVisual(node: BaseTransformableNode?) {
         // no-op

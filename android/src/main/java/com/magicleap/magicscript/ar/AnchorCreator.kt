@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 package com.magicleap.magicscript.ar
 
 import com.google.ar.core.Anchor
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
+import com.google.ar.core.Pose
 
 interface AnchorCreator {
-    fun createAnchor(position: Vector3, rotation: Quaternion, result: (anchor: Anchor) -> Unit)
+    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
 }

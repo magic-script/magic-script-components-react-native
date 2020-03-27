@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
@@ -40,6 +41,7 @@ import org.amshove.kluent.shouldEqual
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatcher
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 
@@ -113,10 +115,16 @@ class PrismTest {
     @Test
     fun `should create anchor when position changed`() {
         val prism = buildPrism(reactMapOf())
+        val position = JavaOnlyArray.of(2.0, 1.0, 0.0)
+        val anchorRotation = prism.localRotation
+        val expectedPose = Pose(
+            floatArrayOf(2f, 1f, 0f),
+            floatArrayOf(anchorRotation.x, anchorRotation.y, anchorRotation.z, anchorRotation.w)
+        )
 
-        prism.update(reactMapOf(Prism.PROP_POSITION, JavaOnlyArray.of(2, 1, 0)))
+        prism.update(reactMapOf(Prism.PROP_POSITION, position))
 
-        verify(anchorCreator).createAnchor(eq(Vector3(2f, 1f, 0f)), eq(prism.localRotation), any())
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
     }
 
     @Test
@@ -173,5 +181,11 @@ class PrismTest {
         return TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
     }
 
+    private class PoseMatcher(private val pose: Pose) : ArgumentMatcher<Pose> {
+        override fun matches(argument: Pose): Boolean {
+            return pose.rotationQuaternion.contentEquals(argument.rotationQuaternion)
+                    && pose.translation.contentEquals(argument.translation)
+        }
+    }
 
 }

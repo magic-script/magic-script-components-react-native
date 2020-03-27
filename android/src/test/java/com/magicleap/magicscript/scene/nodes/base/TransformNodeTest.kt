@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.base
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -27,7 +28,6 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import java.util.*
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -92,10 +92,12 @@ class TransformNodeTest {
         val node = NodeBuilder()
             .withPosition(4.0, 2.0, -5.0)
             .withScale(2.0, 2.0, 2.0)
+            .withRotation(0.0, 0.42, 0.0, 0.9)
             .build()
 
         assertEquals(Vector3(4f, 2f, -5f), node.localPosition)
         assertEquals(Vector3(2f, 2f, 2f), node.localScale)
+        assertEquals(Quaternion(0.0f, 0.42f, 0.0f, 0.9f), node.localRotation)
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,28 +22,20 @@ import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
+import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.HitTestResult
-import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.rendering.Color
-import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.minus
-import com.magicleap.magicscript.utils.read
+import com.magicleap.magicscript.utils.*
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -60,6 +52,7 @@ class Prism(
         const val PROP_SIZE = "size"
         const val PROP_SCALE = "scale"
         const val PROP_POSITION = "position"
+        const val PROP_ROTATION = "rotation"
         const val PROP_MODE = "mode"
         const val PROP_ANCHOR_UUID = "anchorUuid"
 
@@ -69,40 +62,31 @@ class Prism(
         private const val MENU_MARGIN_BOTTOM = 0.05f
     }
 
-    var beingTouched: Boolean = false
+    private var properties = Arguments.toBundle(initProps) ?: Bundle()
+    private var reactScene: ReactScene? = null
+    private var container: PrismContentNode? = null
+    private var childNode: TransformNode? = null
+    private val menuNode: PrismMenu
+    private var lastCameraPosition: Vector3? = null
+    private var requestedAnchorPose: Pose? = null
+    private var requestedAnchorUuid: String? = null
+    private var lastCreatedAnchor: Anchor? = null
+    private var requestedEditMode: Boolean = false
+    private var size: Vector3 = Vector3(2f, 2f, 0.3f)
+    private var requestedScale: Vector3? = null
+    private var screenSizePx: Vector2
+
+    private var beingTouched: Boolean = false
         private set(value) {
             field = value
             if (value) {
-                anchor = null // removing the anchor, so we can change local position
+                anchor = null // remove anchor, so we can change prism local position while moving
             } else {
-                tryToAnchorAtPosition(localPosition)
+                // user has stopped moving the prism, so we anchor it to the final position
+                val pose = createPose(localPosition, localRotation)
+                tryToAnchorAtPose(pose)
             }
         }
-
-    var visible: Boolean = false
-        set(value) {
-            field = value
-            container?.renderable = if (value) {
-                renderableCopy
-            } else {
-                null
-            }
-        }
-
-    private var properties = Arguments.toBundle(initProps) ?: Bundle()
-    private var reactScene: ReactScene? = null
-    private var container: RotatableNode? = null
-    private var content: TransformNode? = null
-    private val menuNode: PrismMenu
-    private var lastCameraPosition: Vector3? = null
-    private var requestedAnchorPosition: Vector3? = null
-    private var requestedAnchorUuid: String? = null
-    private var lastCreatedAnchor: Anchor? = null
-    private var size: Vector3 = Vector3(2f, 2f, 0.3f)
-    private var requestedScale: Vector3? = null
-    private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
-    private var renderableCopy: Renderable? = null
-    private var screenSizePx: Vector2
 
     init {
         val screenWidthPx = context.resources.displayMetrics.widthPixels
@@ -138,11 +122,11 @@ class Prism(
         if (child !is TransformNode) {
             return
         }
-        if (content != null) {
-            logMessage("Prism content already added", true)
+        if (childNode != null) {
+            logMessage("Prism child already added", true)
             return
         }
-        content = child
+        childNode = child
         container?.let {
             it.setParent(this)
             it.addChild(child)
@@ -157,32 +141,64 @@ class Prism(
     }
 
     override fun build() {
+        val size = properties.read(PROP_SIZE) ?: size
         arResourcesProvider.getTransformationSystem()?.let {
-            buildContentNode(it)
+            buildContainer(it, size)
         }
         buildMenu()
         applyProperties(properties)
     }
 
-    private fun buildContentNode(transformationSystem: TransformationSystem) {
+    private fun applyProperties(props: Bundle) {
+        setSize(props)
+        setPose(props)
+        setScale(props)
+        setAnchorUuid(props)
+        setMode(props)
+    }
+
+    private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
         // detach old container if exists
         detachContainer()
-        container = RotatableNode(transformationSystem).also { container ->
+        container = PrismContentNode(transformationSystem, cubeBuilder, size).also { container ->
             container.setParent(this)
+
             requestedScale?.let {
                 container.extendedScaleController.setScale(it)
                 requestedScale = null
             }
-            if (content != null) {
-                container.addChild(content)
+
+            if (requestedEditMode) {
+                container.editModeActive = requestedEditMode
+                requestedEditMode = false
+            }
+
+            if (childNode != null) {
+                container.addChild(childNode)
+            }
+            container.setOnTouchListener { _, motionEvent ->
+                // action up is for some reason not returned for AnchorNode, so we attach renderable
+                // and process click events of the container node
+                when (motionEvent.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> {
+                        beingTouched = true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        beingTouched = false
+                    }
+                }
+                false
+            }
+
+            container.scaleChangedListener = { _ ->
+                adjustMenuPosition()
             }
         }
         adjustMenuPosition()
-        buildCube()
     }
 
     override fun onTransformationSystemChanged(transformationSystem: TransformationSystem) {
-        buildContentNode(transformationSystem)
+        buildContainer(transformationSystem, size)
     }
 
     override fun onCameraUpdated(position: Vector3, state: TrackingState) {
@@ -190,8 +206,8 @@ class Prism(
             return
         }
 
-        requestedAnchorPosition?.let {
-            tryToAnchorAtPosition(it)
+        requestedAnchorPose?.let {
+            tryToAnchorAtPose(it)
         }
 
         requestedAnchorUuid?.let {
@@ -231,46 +247,26 @@ class Prism(
     }
 
     override fun onDestroy() {
+        container?.onDestroy()
         // Because Prism's container is a Transformable node, we should detach it explicitly.
         // See https://github.com/magic-script/magic-script-components-react-native/issues/494
         detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
-
-        renderableLoadRequest?.let {
-            cubeBuilder.cancel(it)
-        }
     }
 
     // Prism can also be anchored through this function when initial placement is active
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
-        requestedAnchorPosition = null
+        requestedAnchorPose = null
         requestedAnchorUuid = null
-    }
-
-    private fun buildCube() {
-        // cancel previous load task if exists
-        renderableLoadRequest?.let {
-            cubeBuilder.cancel(it)
-        }
-
-        val color = Color(1f, 0f, 0f, 0.5f)
-        renderableLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
-            if (it is RenderableResult.Success) {
-                renderableCopy = it.renderable
-                if (visible) {
-                    container?.renderable = it.renderable
-                }
-            }
-        }.also {
-            cubeBuilder.buildRenderable(it)
-        }
     }
 
     private fun buildMenu() {
         menuNode.onButtonClickListener = {
-            visible = !visible
+            container?.let {
+                it.editModeActive = !it.editModeActive
+            }
         }
 
         menuNode.build()
@@ -306,28 +302,23 @@ class Prism(
         }
     }
 
-    private fun applyProperties(props: Bundle) {
-        setSize(props)
-        setPosition(props)
-        setScale(props)
-        setAnchorUuid(props)
-        setMode(props)
-    }
-
     private fun setSize(props: Bundle) {
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             if (size != this.size) {
                 this.size = size
-                buildCube()
+                container?.setSize(size)
                 adjustMenuPosition()
                 clipContent()
             }
         }
     }
 
-    private fun setPosition(props: Bundle) {
-        props.read<Vector3>(PROP_POSITION)?.let { position ->
-            tryToAnchorAtPosition(position)
+    private fun setPose(props: Bundle) {
+        if (props.containsAny(PROP_POSITION, PROP_ROTATION)) {
+            val position = properties.read(PROP_POSITION) ?: localPosition
+            val rotation = properties.read(PROP_ROTATION) ?: localRotation
+            val pose = createPose(position, rotation)
+            tryToAnchorAtPose(pose)
         }
     }
 
@@ -350,25 +341,23 @@ class Prism(
 
     private fun setMode(props: Bundle) {
         val mode = props.read<String>(PROP_MODE) ?: return
-        when (mode) {
-            MODE_NORMAL -> {
-                visible = false
-            }
-            MODE_EDIT -> {
-                visible = true
-            }
+        val container = this.container
+        if (container != null) {
+            container.editModeActive = mode == MODE_EDIT
+        } else if (mode == MODE_EDIT) {
+            requestedEditMode = true
         }
     }
 
-    private fun tryToAnchorAtPosition(position: Vector3) {
-        requestedAnchorPosition = position
+    private fun tryToAnchorAtPose(pose: Pose) {
+        requestedAnchorPose = pose
 
-        anchorCreator.createAnchor(position, localRotation, result = {
+        anchorCreator.createAnchor(pose, result = {
             // it's important to release unused anchors
             lastCreatedAnchor?.detach()
             anchor = it
             lastCreatedAnchor = it
-            requestedAnchorPosition = null
+            requestedAnchorPose = null
         })
     }
 
@@ -386,7 +375,7 @@ class Prism(
         val min = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
         val max = Vector3(size.x / 2, size.y / 2, size.z / 2)
 
-        content?.clipBounds = AABB(min, max)
+        childNode?.clipBounds = AABB(min, max)
     }
 
     private fun detachContainer() {
@@ -397,44 +386,9 @@ class Prism(
         }
     }
 
-    inner class RotatableNode(transformationSystem: TransformationSystem) :
-        TransformableNode(transformationSystem) {
-
-        var extendedScaleController: ExtendedScaleController
-            private set
-
-        private var lastScale = localScale
-
-        init {
-            // disabling default translationController, because it only allows moving on planes
-            translationController.isEnabled = false
-
-            // disable default scale controller
-            scaleController.isEnabled = false
-
-            transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
-
-            val pinchRecognizer = transformationSystem.pinchRecognizer
-            extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
-            addTransformationController(extendedScaleController)
-        }
-
-        override fun onTouchEvent(hitTestResult: HitTestResult, motionEvent: MotionEvent): Boolean {
-            // action up is for some reason not returned for AnchorNode, so we attach renderable
-            // and process click events of the container node
-            when (motionEvent.actionMasked) {
-                MotionEvent.ACTION_DOWN -> beingTouched = true
-                MotionEvent.ACTION_UP -> beingTouched = false
-            }
-            return super.onTouchEvent(hitTestResult, motionEvent)
-        }
-
-        override fun onTransformChange(node: Node) {
-            super.onTransformChange(node)
-            if (localScale != lastScale) {
-                adjustMenuPosition()
-                lastScale = localScale
-            }
-        }
+    private fun createPose(position: Vector3, rotation: Quaternion): Pose {
+        val positionArray = floatArrayOf(position.x, position.y, position.z)
+        val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
+        return Pose(positionArray, rotationArray)
     }
 }

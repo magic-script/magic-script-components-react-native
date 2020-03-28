@@ -20,7 +20,7 @@ import SceneKit
 
     // var name: String // native property
     // var parentedBoneName: String
-     var skipRaycast: Bool = false
+    @objc var skipRaycast: Bool = false
     // var triggerable: Bool = true // not related to iOS
     @objc var visible: Bool {
         get { return !self.isHidden }

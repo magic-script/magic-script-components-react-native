@@ -114,30 +114,6 @@ class Convert {
             let left = Convert.toFloat(padding[3]) else { return nil }
         return UIEdgeInsets(top: CGFloat(top), left: CGFloat(left), bottom: CGFloat(bottom), right: CGFloat(right))
     }
-    
-    static func toItemAlignment(_ value: Any?) -> [Int : Alignment]? {
-        guard let itemAlignmentArray = value as? [[String : Any]] else { return nil }
-        var itemAlignment: [Int : Alignment] = [:]
-        for element in itemAlignmentArray {
-            if let index = Convert.toInt(element["index"]),
-                let alignment = Convert.toAlignment(element["alignment"]) {
-                itemAlignment[index] = alignment
-            }
-        }
-        return itemAlignment
-    }
-    
-    static func toItemPadding(_ value: Any?) -> [Int : UIEdgeInsets]? {
-        guard let itemPaddingArray = value as? [[String : Any]] else { return nil }
-        var itemPadding: [Int : UIEdgeInsets] = [:]
-        for element in itemPaddingArray {
-            if let index = Convert.toInt(element["index"]),
-                let padding = Convert.toPadding(element["padding"]) {
-                itemPadding[index] = padding
-            }
-        }
-        return itemPadding
-    }
 
     static func toColor(_ value: Any?) -> UIColor? {
         guard let rgba = value as? [Any], rgba.count >= 3 else { return nil }
@@ -255,5 +231,55 @@ class Convert {
     static func toButtonType(_ value: Any?) -> ButtonType? {
         guard let type = value as? String else { return nil }
         return ButtonType(rawValue: type)
+    }
+    
+    static func toItemAlignment(_ value: Any?) -> [Int : Alignment]? {
+        guard let itemAlignmentArray = value as? [[String : Any]] else { return nil }
+        var itemAlignment: [Int : Alignment] = [:]
+        for element in itemAlignmentArray {
+            if let index = Convert.toInt(element["index"]),
+                let alignment = Convert.toAlignment(element["alignment"]) {
+                itemAlignment[index] = alignment
+            }
+        }
+        return itemAlignment
+    }
+    
+    static func toItemPadding(_ value: Any?) -> [Int : UIEdgeInsets]? {
+        guard let itemPaddingArray = value as? [[String : Any]] else { return nil }
+        var itemPadding: [Int : UIEdgeInsets] = [:]
+        for element in itemPaddingArray {
+            if let index = Convert.toInt(element["index"]),
+                let padding = Convert.toPadding(element["padding"]) {
+                itemPadding[index] = padding
+            }
+        }
+        return itemPadding
+    }
+    
+    static func toItemAlignmentColumnRow(_ value: Any?) -> [(column: Int, row: Int, alignment: Alignment)]? {
+        guard let itemAlignmentArray = value as? [[String : Any]] else { return nil }
+        var itemAlignment: [(column: Int, row: Int, alignment: Alignment)] = []
+        for element in itemAlignmentArray {
+            if let column = Convert.toInt(element["column"]),
+                let row = Convert.toInt(element["row"]),
+                let alignment = Convert.toAlignment(element["alignment"]) {
+                itemAlignment.append((column: column, row: row, alignment: alignment))
+            }
+        }
+        return itemAlignment
+    }
+    
+    static func toItemPaddingColumnRow(_ value: Any?) -> [(column: Int, row: Int, padding: UIEdgeInsets)]? {
+        guard let itemPaddingArray = value as? [[String : Any]] else { return nil }
+        var itemPadding: [(column: Int, row: Int, padding: UIEdgeInsets)] = []
+        for element in itemPaddingArray {
+            if let column = Convert.toInt(element["column"]),
+                let row = Convert.toInt(element["row"]),
+                let padding = Convert.toPadding(element["padding"]) {
+                itemPadding.append((column: column, row: row, padding: padding))
+            }
+        }
+        return itemPadding
     }
 }

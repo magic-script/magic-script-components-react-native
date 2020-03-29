@@ -164,6 +164,21 @@ extension GridLayout {
         return (columns > 0) ? .vertical : .horizontal
     }
     
+    func getCurrentColumns() -> Int {
+        if columns > 0 { return columns }
+        
+        let itemsCount = getCurrentItemNodes().count
+        let rowsCount: Int = max(rows, 1)
+        return ((itemsCount - 1) / rowsCount) + 1
+    }
+    
+    func getCurrentRows() -> Int {
+        if columns == 0 { return max(rows, 1) }
+
+        let itemsCount = getCurrentItemNodes().count
+        return ((itemsCount - 1) / columns) + 1
+    }
+    
     fileprivate func getAlignmentForItem(at index: Int) -> Alignment {
         return alignmentByIndex[index] ?? defaultItemAlignment
     }
@@ -215,10 +230,15 @@ extension GridLayout {
         let localPositionY = gridSlotCenter.y + itemCenterOffset.y + gridItemAlignmentOffset.y
         return (position: CGPoint(x: localPositionX, y: localPositionY), scale: scale)
     }
-
-    fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
+    
+    fileprivate func getCurrentItemNodes() -> [SCNNode] {
         let filteredChildren: [SCNNode] = container.childNodes.filter { ($0.childNodes.first is TransformNode) }
         let children: [SCNNode] = skipInvisibleItems ? filteredChildren.filter { ($0.childNodes[0] as! TransformNode).visible } : filteredChildren
+        return children
+    }
+
+    fileprivate func calculateGridDescriptor() -> GridLayoutDescriptor? {
+        let children: [SCNNode] = getCurrentItemNodes()
         let nodes: [TransformNode] = children.map { $0.childNodes[0] as! TransformNode }
         guard nodes.isNotEmpty else { return nil }
 

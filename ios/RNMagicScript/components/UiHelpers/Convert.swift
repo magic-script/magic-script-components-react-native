@@ -114,6 +114,30 @@ class Convert {
             let left = Convert.toFloat(padding[3]) else { return nil }
         return UIEdgeInsets(top: CGFloat(top), left: CGFloat(left), bottom: CGFloat(bottom), right: CGFloat(right))
     }
+    
+    static func toItemAlignment(_ value: Any?) -> [Int : Alignment]? {
+        guard let itemAlignmentArray = value as? [[String : Any]] else { return nil }
+        var itemAlignment: [Int : Alignment] = [:]
+        for element in itemAlignmentArray {
+            if let index = Convert.toInt(element["index"]),
+                let alignment = Convert.toAlignment(element["alignment"]) {
+                itemAlignment[index] = alignment
+            }
+        }
+        return itemAlignment
+    }
+    
+    static func toItemPadding(_ value: Any?) -> [Int : UIEdgeInsets]? {
+        guard let itemPaddingArray = value as? [[String : Any]] else { return nil }
+        var itemPadding: [Int : UIEdgeInsets] = [:]
+        for element in itemPaddingArray {
+            if let index = Convert.toInt(element["index"]),
+                let padding = Convert.toPadding(element["padding"]) {
+                itemPadding[index] = padding
+            }
+        }
+        return itemPadding
+    }
 
     static func toColor(_ value: Any?) -> UIColor? {
         guard let rgba = value as? [Any], rgba.count >= 3 else { return nil }

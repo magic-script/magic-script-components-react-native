@@ -164,6 +164,10 @@ extension GridLayout {
         return (columns > 0) ? .vertical : .horizontal
     }
     
+    fileprivate func getAlignmentForItem(at index: Int) -> Alignment {
+        return alignmentByIndex[index] ?? defaultItemAlignment
+    }
+    
     fileprivate func getPaddingForItem(at index: Int) -> UIEdgeInsets {
         return paddingByIndex[index] ?? defaultItemPadding
     }
@@ -196,7 +200,7 @@ extension GridLayout {
 
         let deltaWidth: CGFloat = columnContentWidth - childNodeSize.width * scale
         let deltaHeight: CGFloat = rowContnetHeight - childNodeSize.height * scale
-        let offset: CGPoint = defaultItemAlignment.shiftDirection
+        let offset: CGPoint = getAlignmentForItem(at: index).shiftDirection
         let gridItemAlignmentOffset = CGPoint(
             x: max(0, deltaWidth) * offset.x,
             y: max(0, deltaHeight) * offset.y

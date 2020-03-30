@@ -17,6 +17,7 @@
 import Quick
 import Nimble
 import SceneKit
+import ARKit
 @testable import RNMagicScriptHostApplication
 
 class ConvertSpec: QuickSpec {
@@ -714,6 +715,202 @@ class ConvertSpec: QuickSpec {
                     expect(Convert.toToggleType(any_double)).to(beNil())
                     expect(Convert.toToggleType(any_vec3)).to(beNil())
                     expect(Convert.toToggleType(any_arrayOfInts)).to(beNil())
+                }
+            }
+            
+            context("toPlaneDetection") {
+                it("should convert to PlaneDetection option set") {
+                    let horizontal: ARWorldTrackingConfiguration.PlaneDetection = .horizontal
+                    let vertical: ARWorldTrackingConfiguration.PlaneDetection = .vertical
+                    let bothValues: ARWorldTrackingConfiguration.PlaneDetection = [.horizontal, .vertical]
+                    
+                    let horizontalInput: [String] = ["horizontal"]
+                    let verticalInput: [String] = ["vertical"]
+                    let bothValuesInput: [String] = ["horizontal", "vertical"]
+                    
+                    expect(Convert.toPlaneDetection(horizontalInput)).to(equal(horizontal))
+                    expect(Convert.toPlaneDetection(verticalInput)).to(equal(vertical))
+                    expect(Convert.toPlaneDetection(bothValuesInput)).to(equal(bothValues))
+                    
+                    expect(Convert.toPlaneDetection(horizontalInput)).notTo(equal(vertical))
+                    expect(Convert.toPlaneDetection(verticalInput)).notTo(equal(horizontal))
+                    expect(Convert.toPlaneDetection(verticalInput)).notTo(equal(bothValues))
+                }
+            }
+            
+            context("toButtonType") {
+                it("should convert to ButtonType value") {
+                    let simple: ButtonType = .simple
+                    let icon: ButtonType = .icon
+                    let iconWithLabel: ButtonType = .iconWithLabel
+                    let text: ButtonType = .text
+                    let textWithIcon: ButtonType = .textWithIcon
+
+                    let simpleButtonTypeString: String = "simple"
+                    let iconButtonTypeString: String = "icon"
+                    let iconWithLabelButtonTypeString: String = "icon-with-label"
+                    let textButtonTypeString: String = "text"
+                    let textWithIconButtonTypeString: String = "text-with-icon"
+                    
+                    expect(Convert.toButtonType(simpleButtonTypeString)).to(equal(simple))
+                    expect(Convert.toButtonType(iconButtonTypeString)).to(equal(icon))
+                    expect(Convert.toButtonType(iconWithLabelButtonTypeString)).to(equal(iconWithLabel))
+                    expect(Convert.toButtonType(textButtonTypeString)).to(equal(text))
+                    expect(Convert.toButtonType(textWithIconButtonTypeString)).to(equal(textWithIcon))
+                    
+                    expect(Convert.toButtonType(iconButtonTypeString)).notTo(equal(simple))
+                    expect(Convert.toButtonType(iconButtonTypeString)).notTo(equal(iconWithLabel))
+                    expect(Convert.toButtonType(iconButtonTypeString)).notTo(equal(text))
+                    expect(Convert.toButtonType(iconButtonTypeString)).notTo(equal(textWithIcon))
+                    
+                    expect(Convert.toButtonType(nil)).to(beNil())
+                    expect(Convert.toButtonType(any_bool)).to(beNil())
+                    expect(Convert.toButtonType(any_int)).to(beNil())
+                    expect(Convert.toButtonType(any_cgFloat)).to(beNil())
+                    expect(Convert.toButtonType(any_float)).to(beNil())
+                    expect(Convert.toButtonType(any_double)).to(beNil())
+                    expect(Convert.toButtonType(any_vec3)).to(beNil())
+                    expect(Convert.toButtonType(any_arrayOfInts)).to(beNil())
+                }
+            }
+            
+            context("toItemAlignment") {
+                it("should convert to an array of Alignment values") {
+                    let validInput: [[String: Any]] = [
+                        ["index": 0, "alignment": "center-left"],
+                        ["index": 3, "alignment": "bottom-left"],
+                        ["index": 6, "alignment": "top-right"],
+                        ["index": 9, "alignment": "top-center"],
+                        ["index": 12, "align": "top-left"],
+                        ["index": 15, "alignment": "left-bottom"],
+                    ]
+                    let validOutput = Convert.toItemAlignment(validInput)
+                    expect(validOutput?.count).to(equal(validInput.count - 2))
+                    expect(validOutput![0]).to(equal(Alignment.centerLeft))
+                    expect(validOutput![3]).to(equal(Alignment.bottomLeft))
+                    expect(validOutput![6]).to(equal(Alignment.topRight))
+                    expect(validOutput![9]).to(equal(Alignment.topCenter))
+                    expect(validOutput![12]).to(beNil())
+                    expect(validOutput![15]).to(beNil())
+                        
+                    expect(Convert.toItemAlignment(nil)).to(beNil())
+                    expect(Convert.toItemAlignment(any_bool)).to(beNil())
+                    expect(Convert.toItemAlignment(any_int)).to(beNil())
+                    expect(Convert.toItemAlignment(any_cgFloat)).to(beNil())
+                    expect(Convert.toItemAlignment(any_float)).to(beNil())
+                    expect(Convert.toItemAlignment(any_double)).to(beNil())
+                    expect(Convert.toItemAlignment(any_vec3)).to(beNil())
+                    expect(Convert.toItemAlignment(any_arrayOfInts)).to(beNil())
+                }
+            }
+            
+            context("toItemPadding") {
+                it("should convert to array of UIEdgeInsets values") {
+                    let getPadding: (_ value: CGFloat) -> ([CGFloat]) = { [$0, $0, $0, $0] }
+                    let getUIEdgeInsets: (_ value: CGFloat) -> (UIEdgeInsets) = { UIEdgeInsets(top: $0, left: $0, bottom: $0, right: $0) }
+                    let validInput: [[String: Any]] = [
+                        ["index": 0, "padding": getPadding(0.1)],
+                        ["index": 3, "padding": getPadding(0.2)],
+                        ["index": 6, "padding": getPadding(0.3)],
+                        ["index": 9, "padding": getPadding(0.4)],
+                        ["index": 12, "padd": getPadding(0.5)],
+                        ["index": 15, "padding": [0, 0]],
+                    ]
+                    let validOutput = Convert.toItemPadding(validInput)
+                    expect(validOutput?.count).to(equal(validInput.count - 2))
+                    expect(validOutput![0]).to(beCloseTo(getUIEdgeInsets(0.1)))
+                    expect(validOutput![3]).to(beCloseTo(getUIEdgeInsets(0.2)))
+                    expect(validOutput![6]).to(beCloseTo(getUIEdgeInsets(0.3)))
+                    expect(validOutput![9]).to(beCloseTo(getUIEdgeInsets(0.4)))
+                    expect(validOutput![12]).to(beNil())
+                    expect(validOutput![15]).to(beNil())
+                        
+                    expect(Convert.toItemPadding(nil)).to(beNil())
+                    expect(Convert.toItemPadding(any_bool)).to(beNil())
+                    expect(Convert.toItemPadding(any_int)).to(beNil())
+                    expect(Convert.toItemPadding(any_cgFloat)).to(beNil())
+                    expect(Convert.toItemPadding(any_float)).to(beNil())
+                    expect(Convert.toItemPadding(any_double)).to(beNil())
+                    expect(Convert.toItemPadding(any_vec3)).to(beNil())
+                    expect(Convert.toItemPadding(any_arrayOfInts)).to(beNil())
+                }
+            }
+            
+            context("toItemAlignmentColumnRow") {
+                it("should convert to array of Alignment values") {
+                    let validInput: [[String: Any]] = [
+                        ["column": 0, "row": 0, "alignment": "center-left"],
+                        ["column": 0, "row": 1, "alignment": "bottom-left"],
+                        ["column": 1, "row": 2, "alignment": "top-right"],
+                        ["column": 2, "row": 3, "alignment": "top-center"],
+                        ["column": 3, "row": 4, "align": "top-left"],
+                        ["column": 4, "row": 5, "alignment": "left-bottom"],
+                        ["col":    5, "row": 6, "alignment": "top-left"],
+                        ["column": 6, "raw": 7, "alignment": "top-left"],
+                    ]
+                    let validOutput = Convert.toItemAlignmentColumnRow(validInput)
+                    expect(validOutput?.count).to(equal(validInput.count - 4))
+                    expect(validOutput![0].column).to(equal(0))
+                    expect(validOutput![0].row).to(equal(0))
+                    expect(validOutput![0].alignment).to(equal(Alignment.centerLeft))
+                    expect(validOutput![1].column).to(equal(0))
+                    expect(validOutput![1].row).to(equal(1))
+                    expect(validOutput![1].alignment).to(equal(Alignment.bottomLeft))
+                    expect(validOutput![2].column).to(equal(1))
+                    expect(validOutput![2].row).to(equal(2))
+                    expect(validOutput![2].alignment).to(equal(Alignment.topRight))
+                    expect(validOutput![3].column).to(equal(2))
+                    expect(validOutput![3].row).to(equal(3))
+                    expect(validOutput![3].alignment).to(equal(Alignment.topCenter))
+                        
+                    expect(Convert.toItemAlignmentColumnRow(nil)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_bool)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_int)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_cgFloat)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_float)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_double)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_vec3)).to(beNil())
+                    expect(Convert.toItemAlignmentColumnRow(any_arrayOfInts)).to(beNil())
+                }
+            }
+            
+            context("toItemPaddingColumnRow") {
+                it("should convert to array of UIEdgeInsets values") {
+                    let getPadding: (_ value: CGFloat) -> ([CGFloat]) = { [$0, $0, $0, $0] }
+                    let getUIEdgeInsets: (_ value: CGFloat) -> (UIEdgeInsets) = { UIEdgeInsets(top: $0, left: $0, bottom: $0, right: $0) }
+                    let validInput: [[String: Any]] = [
+                        ["column": 0, "row": 0, "padding": getPadding(0.1)],
+                        ["column": 0, "row": 1, "padding": getPadding(0.2)],
+                        ["column": 1, "row": 2, "padding": getPadding(0.3)],
+                        ["column": 2, "row": 3, "padding": getPadding(0.4)],
+                        ["column": 3, "row": 4, "padd": getPadding(0.5)],
+                        ["column": 4, "row": 5, "padding": [0.6, 0.6]],
+                        ["col":    5, "row": 6, "padding": getPadding(0.7)],
+                        ["column": 6, "raw": 7, "padding": getPadding(0.8)],
+                    ]
+                    let validOutput = Convert.toItemPaddingColumnRow(validInput)
+                    expect(validOutput?.count).to(equal(validInput.count - 4))
+                    expect(validOutput![0].column).to(equal(0))
+                    expect(validOutput![0].row).to(equal(0))
+                    expect(validOutput![0].padding).to(beCloseTo(getUIEdgeInsets(0.1)))
+                    expect(validOutput![1].column).to(equal(0))
+                    expect(validOutput![1].row).to(equal(1))
+                    expect(validOutput![1].padding).to(beCloseTo(getUIEdgeInsets(0.2)))
+                    expect(validOutput![2].column).to(equal(1))
+                    expect(validOutput![2].row).to(equal(2))
+                    expect(validOutput![2].padding).to(beCloseTo(getUIEdgeInsets(0.3)))
+                    expect(validOutput![3].column).to(equal(2))
+                    expect(validOutput![3].row).to(equal(3))
+                    expect(validOutput![3].padding).to(beCloseTo(getUIEdgeInsets(0.4)))
+                        
+                    expect(Convert.toItemPaddingColumnRow(nil)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_bool)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_int)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_cgFloat)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_float)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_double)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_vec3)).to(beNil())
+                    expect(Convert.toItemPaddingColumnRow(any_arrayOfInts)).to(beNil())
                 }
             }
         }

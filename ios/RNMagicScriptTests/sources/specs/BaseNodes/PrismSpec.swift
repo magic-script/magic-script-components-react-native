@@ -157,7 +157,6 @@ class PrismSpec: QuickSpec {
                         expect(prism.rootNode.childNodes.count).to(equal(1))
                     }
                 }
-
             }
 
             context("when asked to remove child node") {
@@ -183,7 +182,8 @@ class PrismSpec: QuickSpec {
                         let baseNode = BaseNode()
                         prism.removeNode(baseNode)
                         expect(prism.rootNode.childNodes.count).to(equal(2))
-                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))                    }
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))
+                    }
                 }
             }
         }

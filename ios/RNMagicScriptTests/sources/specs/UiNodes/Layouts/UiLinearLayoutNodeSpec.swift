@@ -33,6 +33,8 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                     expect(node.layoutOrientation).to(equal(Orientation.vertical))
                     expect(node.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
+                    expect(node.itemAlignment).to(equal([:]))
+                    expect(node.itemPadding).to(equal([:]))
                     expect(node.skipInvisibleItems).to(beFalse())
                     expect(node.itemsCount).to(equal(0))
                 }
@@ -73,6 +75,26 @@ class UiLinearLayoutNodeSpec: QuickSpec {
                     let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
                     node = UiLinearLayoutNode(props: ["defaultItemPadding": referencePadding.toArrayOfFloat])
                     expect(node.defaultItemPadding).to(beCloseTo(referencePadding))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'itemAlignment' prop") {
+                    let referenceIndex: Int = 2
+                    let referenceAlignment = Alignment.topRight
+                    let itemAlignment = [["index": referenceIndex, "alignment": referenceAlignment.rawValue]]
+                    node.update(["itemAlignment": itemAlignment])
+                    expect(node.itemAlignment.count).to(equal(1))
+                    expect(node.itemAlignment[referenceIndex]).to(equal(referenceAlignment))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'itemPadding' prop") {
+                    let referenceIndex: Int = 1
+                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
+                    let itemPadding = [["index": referenceIndex, "padding": referencePadding.toArrayOfFloat]]
+                    node.update(["itemPadding": itemPadding])
+                    expect(node.itemPadding.count).to(equal(1))
+                    expect(node.itemPadding[referenceIndex]).to(beCloseTo(referencePadding))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 

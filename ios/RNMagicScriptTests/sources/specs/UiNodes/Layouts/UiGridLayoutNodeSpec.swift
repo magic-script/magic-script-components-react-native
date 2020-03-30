@@ -34,6 +34,8 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     expect(node.rows).to(equal(0))
                     expect(node.defaultItemAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultItemPadding).to(beCloseTo(UIEdgeInsets.zero))
+                    expect(node.itemAlignment.count).to(equal(0))
+                    expect(node.itemPadding.count).to(equal(0))
                     expect(node.skipInvisibleItems).to(beFalse())
                     expect(node.itemsCount).to(equal(0))
                 }
@@ -88,6 +90,32 @@ class UiGridLayoutNodeSpec: QuickSpec {
                     let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
                     node = UiGridLayoutNode(props: ["defaultItemPadding": referencePadding.toArrayOfFloat])
                     expect(node.defaultItemPadding).to(beCloseTo(referencePadding))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'itemAlignment' prop") {
+                    let referenceColumn: Int = 2
+                    let referenceRow: Int = 5
+                    let referenceAlignment = Alignment.topRight
+                    let itemAlignment = [["column": referenceColumn, "row": referenceRow, "alignment": referenceAlignment.rawValue]]
+                    node.update(["itemAlignment": itemAlignment])
+                    expect(node.itemAlignment.count).to(equal(1))
+                    expect(node.itemAlignment[0].column).to(equal(referenceColumn))
+                    expect(node.itemAlignment[0].row).to(equal(referenceRow))
+                    expect(node.itemAlignment[0].alignment).to(equal(referenceAlignment))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'itemPadding' prop") {
+                    let referenceColumn: Int = 3
+                    let referenceRow: Int = 1
+                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
+                    let itemPadding = [["column": referenceColumn, "row": referenceRow, "padding": referencePadding.toArrayOfFloat]]
+                    node.update(["itemPadding": itemPadding])
+                    expect(node.itemPadding.count).to(equal(1))
+                    expect(node.itemPadding[0].column).to(equal(referenceColumn))
+                    expect(node.itemPadding[0].row).to(equal(referenceRow))
+                    expect(node.itemPadding[0].padding).to(beCloseTo(referencePadding))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -163,7 +191,19 @@ class UiGridLayoutNodeSpec: QuickSpec {
 
             context("when asked for size") {
                 it("should calculate it according to configuration") {
-                    node = UiGridLayoutNode(props: ["columns": 0, "rows": 0])
+                    let referencePadding = UIEdgeInsets(top: 0.05, left: 0.06, bottom: 0.07, right: 0.08)
+                    let referencePaddingWidth: CGFloat = referencePadding.left + referencePadding.right
+                    let referencePaddingHeight: CGFloat = referencePadding.top + referencePadding.bottom
+                    node = UiGridLayoutNode(props: [
+                        "columns": 0,
+                        "rows": 0,
+                        "itemPadding": [
+                            ["column": 0, "row": 0, "padding": referencePadding.toArrayOfCGFloat]
+                        ],
+                        "itemAlignment": [
+                            ["column": 0, "row": 0, "alignment": Alignment.bottomLeft.rawValue]
+                        ]
+                    ])
                     expect(node.getSize()).to(beCloseTo(CGSize.zero))
 
                     var referenceWidth: CGFloat = 0.0
@@ -178,30 +218,30 @@ class UiGridLayoutNodeSpec: QuickSpec {
                         referenceHeight = referenceNode.getSize().height
                     }
 
-                    // If neither rows or columns are set, the grid layout will have 1 row and add columns as needed.
+                    // If neither rows or columns are set, the grid layout will have 1 row and as many columns as needed.
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth, height: referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth + referencePaddingWidth, height: referenceHeight + referencePaddingHeight)))
 
                     node.update(["columns": 2, "rows": 2])
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth, height: 2 * referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 2 * referenceWidth + referencePaddingWidth, height: 2 * referenceHeight + referencePaddingHeight)))
 
                     node.update(["columns": 3, "rows": 3])
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 3 * referenceWidth, height: 2 * referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 3 * referenceWidth + referencePaddingWidth, height: 2 * referenceHeight + referencePaddingHeight)))
 
                     // If both 'columns' and 'rows' props are set to be non-zero, the columns will take precedence.
                     node.update(["columns": 1, "rows": 1])
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: 4 * referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceWidth + referencePaddingWidth, height: 4 * referenceHeight + referencePaddingHeight)))
 
                     node.update(["columns": 0, "rows": 1])
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth, height: referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: 4 * referenceWidth + referencePaddingWidth, height: referenceHeight + referencePaddingHeight)))
 
                     node.update(["columns": 1, "rows": 0])
                     node.updateLayout()
-                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceWidth, height: 4 * referenceHeight)))
+                    expect(node.getSize()).to(beCloseTo(CGSize(width: referenceWidth + referencePaddingWidth, height: 4 * referenceHeight + referencePaddingHeight)))
                 }
 
                 it("should ignore invisible items in calculation") {

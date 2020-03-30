@@ -29,7 +29,7 @@ class PrismOutlineNodeSpec: QuickSpec {
                     expect(node.childNodes[1].childNodes.count).to(equal(8))
                 }
                 
-                it("should init with codec") {
+                it("should throw exception when trying to init with codec") {
                     expect { _ = PrismOutlineNode(coder: NSCoder()) }.to(throwAssertion())
                 }
             }

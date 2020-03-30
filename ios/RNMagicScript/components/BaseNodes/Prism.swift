@@ -14,25 +14,56 @@
 //  limitations under the License.
 //
 
+import Foundation
 import SceneKit
 
 @objc open class Prism: BaseNode {
-    @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
-
+    @objc public var isPointed: Bool = false {
+       didSet {
+#if targetEnvironment(simulator)
+        let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
+        let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+        debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
+#endif
+       }
+    }
+    @objc public var size: SCNVector3 = SCNVector3.zero {
+        didSet {
+            updateSize()
+            invalidateClippingPlanes()
+        }
+    }
+    override open var position: SCNVector3 {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var orientation: SCNQuaternion {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var scale: SCNVector3 {
+        didSet { invalidateClippingPlanes() }
+    }
+    override open var transform: SCNMatrix4 {
+        didSet { invalidateClippingPlanes() }
+    }
+    @objc var debug: Bool = false {
+        didSet { updateDebugMode() }
+    }
+    @objc public var editMode: Bool = false {
+        didSet { updateEditMode() }
+    }
     @objc var anchorUuid: String = "" {
         didSet { NodesManager.instance.updatePrismAnchorUuid(self, oldAnchorUuid: oldValue) }
     }
 
-    @objc var debug: Bool = false {
-        didSet { setDebugMode(debug) }
-    }
-
-    @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet { invalidateClippingPlanes(); debugNode.scale = size }
-    }
-    
-    @objc fileprivate(set) var debugNode: SCNNode!
+    @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
+#if targetEnvironment(simulator)
+    @objc fileprivate(set) var debugNode: SCNNode?
+    @objc fileprivate(set) var debugClippedRayNode: SCNNode?
+#endif
+    @objc fileprivate(set) var editNode: PrismOutlineNode?
+    @objc fileprivate var clipNeeded: Bool = true
     @objc fileprivate var clippingPlanes: [Plane]?
+    @objc fileprivate var clippingPlanesAsVector4: [SCNVector4]?
 
     @objc override init() {
         super.init()
@@ -51,12 +82,6 @@ import SceneKit
 
     @objc func setupPrism() {
         addChildNode(rootNode)
-
-        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
-        box.firstMaterial?.diffuse.contents = UIColor.green.withAlphaComponent(0.25)
-        debugNode = SCNNode(geometry: box)
-        debugNode.scale = SCNVector3.zero
-        debugNode.renderingOrder = 1000
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -100,9 +125,19 @@ import SceneKit
     }
 
     @objc override func hitTest(ray: Ray) -> BaseNode? {
-        guard intersect(with: ray) else { return nil }
-        let clippedRay = clipRay(ray)
+        var outRay: Ray?
+        guard intersect(with: ray, clippedRay: &outRay) else { return nil }
+        guard let clippedRay = outRay else { return nil }
         
+#if targetEnvironment(simulator)
+        if debug {
+            debugClippedRayNode?.removeFromParentNode()
+            let begin = convertPosition(clippedRay.begin, from: nil)
+            let end = convertPosition(clippedRay.end, from: nil)
+            debugClippedRayNode = NodesFactory.createSegmentNode(vertices: [begin, end])
+            addChildNode(debugClippedRayNode!)
+        }
+#endif
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
                 if let hitNode = transformNode.hitTest(ray: clippedRay) {
@@ -114,23 +149,54 @@ import SceneKit
         return self
     }
 
-    @objc func setDebugMode(_ debug: Bool) {
+    fileprivate func updateSize() {
+#if targetEnvironment(simulator)
+        debugNode?.scale = size
+#endif
+        editNode?.size = size
+    }
+    
+    @objc func updateDebugMode() {
+#if targetEnvironment(simulator)
         if debug {
-            if !rootNode.childNodes.contains(debugNode) {
-                rootNode.addChildNode(debugNode)
+            if debugNode == nil {
+                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
+                debugNode!.scale = size
+                debugNode!.renderingOrder = 990
+            }
+
+            if debugNode!.parent == nil {
+                addChildNode(debugNode!)
             }
         } else {
-            if debugNode.parent == rootNode {
-                debugNode.removeFromParentNode()
+            debugNode?.removeFromParentNode()
+        }
+#endif
+    }
+
+    @objc func updateEditMode() {
+        if editMode {
+            if editNode == nil {
+                editNode = PrismOutlineNode()
+                editNode!.size = size
+                editNode!.renderingOrder = 1000
             }
+
+            if editNode!.parent == nil {
+                addChildNode(editNode!)
+            }
+        } else {
+            editNode?.removeFromParentNode()
         }
     }
 }
 
-// MARK: - Clipping
-extension Prism {
+// MARK: - BoundsClipping
+extension Prism: BoundsClipping {
     fileprivate func invalidateClippingPlanes() {
         clippingPlanes = nil
+        clippingPlanesAsVector4 = nil
+        invalidateClipping()
     }
     
     @objc func getClippingPlanes() -> [Plane] {
@@ -150,5 +216,32 @@ extension Prism {
         }
 
         return clippingPlanes!
+    }
+    
+    @objc func getClippingPlanesAsVector4() -> [SCNVector4] {
+        if clippingPlanesAsVector4 == nil {
+            clippingPlanesAsVector4 = getClippingPlanes().map { $0.toVector4() }
+        }
+
+        return clippingPlanesAsVector4!
+    }
+}
+
+// MARK: - BoundsClippingManaging
+extension Prism: BoundsClippingManaging {
+    var isUpdateClippingNeeded: Bool { return clipNeeded }
+
+    func invalidateClipping() {
+        clipNeeded = true
+    }
+
+    func updateClipping(for node: SCNNode? = nil, recursive: Bool = true) {
+        if let node = node {
+            node.setClippingPlanes(getClippingPlanesAsVector4(), recursive: recursive)
+        } else {
+            guard clipNeeded else { return }
+            rootNode.setClippingPlanes(getClippingPlanesAsVector4(), recursive: recursive)
+            clipNeeded = false
+        }
     }
 }

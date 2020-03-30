@@ -17,13 +17,25 @@
 package com.magicleap.magicscript.scene.nodes.video
 
 import android.content.Context
+import android.media.MediaFormat.MIMETYPE_TEXT_SUBRIP
 import android.media.MediaPlayer
+import android.media.MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP
+import android.media.MediaPlayer.TrackInfo
 import android.net.Uri
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Surface
+import com.magicleap.magicscript.scene.nodes.audio.FileProvider
+import com.magicleap.magicscript.utils.logMessage
 
-class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.OnPreparedListener {
 
-    private val mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
+class VideoPlayerImpl(
+        private val context: Context,
+        private val fileProvider: FileProvider
+) : VideoPlayer, MediaPlayer.OnPreparedListener {
+
+    private var mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
     private var onLoadedListener: (() -> Unit)? = null
     private var ready = false
 
@@ -54,9 +66,10 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
     }
 
     @Throws(Exception::class)
-    override fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit) {
+    override fun loadVideo(uri: Uri, subtitlesPath: Uri?, onSubtitleChangeListener: ((String) -> Unit)?, surface: Surface, onLoadedListener: () -> Unit) {
         ready = false
-        mediaPlayer.reset()
+        mediaPlayer.release() // We have to release media player and create new one to add new subtitles
+        mediaPlayer = GlobalMediaPlayerPool.createMediaPlayer()
         val path = uri.toString()
         if (path.startsWith("http")) {
             mediaPlayer.setDataSource(path) // load from URL
@@ -66,6 +79,23 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         }
         this.onLoadedListener = onLoadedListener
         mediaPlayer.setSurface(surface)
+        if (subtitlesPath == null) {
+            prepareMediaPlayer()
+        } else {
+            addSubtitles(subtitlesPath, onSubtitleChangeListener)
+        }
+    }
+
+    private fun addSubtitles(subtitlesPath: Uri, onSubtitleChangeListener: ((String) -> Unit)?) {
+        fileProvider.provideFile(subtitlesPath) {
+            Handler(Looper.getMainLooper()).post {
+                addTimedTextPath(Uri.fromFile(it), onSubtitleChangeListener)
+            }
+            prepareMediaPlayer()
+        }
+    }
+
+    private fun prepareMediaPlayer() {
         mediaPlayer.setOnPreparedListener(this)
         mediaPlayer.prepareAsync() // loading the video asynchronously
     }
@@ -90,4 +120,39 @@ class VideoPlayerImpl(private val context: Context) : VideoPlayer, MediaPlayer.O
         mediaPlayer.release()
     }
 
+    private fun addTimedTextPath(path: Uri, onTextChangedListener: ((String) -> Unit)?) {
+        try {
+            if (Build.VERSION.SDK_INT >= 28) {
+                mediaPlayer.addTimedTextSource(context, path, MIMETYPE_TEXT_SUBRIP)
+            } else {
+                mediaPlayer.addTimedTextSource(context, path, MEDIA_MIMETYPE_TEXT_SUBRIP)
+            }
+            val textTrackIndex: Int = findTrackIndexFor(mediaPlayer.trackInfo)
+            if (textTrackIndex >= 0) {
+                mediaPlayer.selectTrack(textTrackIndex)
+            }
+            mediaPlayer.setOnTimedTextListener { _, text ->
+                onTextChangedListener?.invoke(text.text)
+            }
+        } catch (e: java.lang.Exception) {
+            logMessage("Error occured on adding subtitles to mediaPlayer: $e", warn = true)
+        }
+    }
+
+    private fun findTrackIndexFor(trackInfo: Array<TrackInfo>): Int {
+        for (i in trackInfo.indices) {
+            if (trackInfo[i].trackType == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                return i
+            }
+        }
+        return -1
+    }
+
+    override fun seekTo(millis: Int) {
+        mediaPlayer.seekTo(millis)
+    }
+
+    override fun clearTimedTextListener() {
+        mediaPlayer.setOnTimedTextListener(null)
+    }
 }

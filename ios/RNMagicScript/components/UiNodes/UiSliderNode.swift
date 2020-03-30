@@ -229,6 +229,9 @@ import SceneKit
             outlineNode = NodesFactory.createOutlineNode(width: size.width + minLabelWidthFactor + maxLabelWidthFactor + 0.02 + 0.075, height: size.height + 0.075, cornerRadius: radius, thickness: thickness, color: .white)
             contentNode.addChildNode(outlineNode)
             outlineNode.position = SCNVector3((maxLabelWidthFactor-minLabelWidthFactor) / 2, 0.0, 0.0)
+            outlineNode.applyClippingPlanesShaderModifiers(recursive: false)
+            outlineNode.forceUpdateClipping()
+            NotificationCenter.default.post(name: .didChangeLayoutIndependently, object: self)
         }
     }
 

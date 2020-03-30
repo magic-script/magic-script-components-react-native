@@ -12,28 +12,19 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-//
+// 
 
 import Foundation
 import SceneKit
 
-extension float4x4 {
-    init(_ matrix: SCNMatrix4) {
-        self.init([
-            SIMD4<Float>(matrix.m11, matrix.m12, matrix.m13, matrix.m14),
-            SIMD4<Float>(matrix.m21, matrix.m22, matrix.m23, matrix.m24),
-            SIMD4<Float>(matrix.m31, matrix.m32, matrix.m33, matrix.m34),
-            SIMD4<Float>(matrix.m41, matrix.m42, matrix.m43, matrix.m44)
-        ])
-    }
+//sourcery: AutoMockable
+protocol BoundsClipping {
+    func getClippingPlanesAsVector4() -> [SCNVector4]
 }
 
-extension SIMD4 where Scalar == Float {
-    init(_ vector: SCNVector4) {
-        self.init(vector.x, vector.y, vector.z, vector.w)
-    }
-
-    init(_ vector: SCNVector3) {
-        self.init(vector.x, vector.y, vector.z, 1)
-    }
+//sourcery: AutoMockable
+protocol BoundsClippingManaging {
+    var isUpdateClippingNeeded: Bool { get }
+    func invalidateClipping()
+    func updateClipping(for node: SCNNode?, recursive: Bool)
 }

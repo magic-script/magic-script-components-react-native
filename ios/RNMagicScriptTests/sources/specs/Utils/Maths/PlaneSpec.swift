@@ -87,10 +87,52 @@ class PlaneSpec: QuickSpec {
                     expect(plane2.isPointInFront(referencePoint2)).to(beTrue())
                 }
 
-                it("should return false if point lies in plane") {
+                it("should return false if point lies on plane") {
                     let referenceCenter = SCNVector3(0, 1, 0)
                     let plane = Plane(center: referenceCenter, normal: SCNVector3(0, 1, 0))
                     expect(plane.isPointInFront(referenceCenter)).to(beFalse())
+                }
+            }
+            
+            context("isPointInFrontOrOn") {
+                it("should return true if point is in front of plane") {
+                    let referenceNormal = SCNVector3(0, 0, 1)
+                    let plane1 = Plane(center: SCNVector3(0, 0, 0), normal: referenceNormal)
+                    let referencePoint1 = SCNVector3(-1, 2, 3)
+                    let referencePoint2 = SCNVector3(-1, 2, -3)
+                    expect(plane1.isPointInFrontOrOn(referencePoint1)).to(beTrue())
+                    expect(plane1.isPointInFrontOrOn(referencePoint2)).to(beFalse())
+
+                    let plane2 = Plane(center: SCNVector3(0, 0, 0), normal: referenceNormal.negated())
+                    expect(plane2.isPointInFrontOrOn(referencePoint1)).to(beFalse())
+                    expect(plane2.isPointInFrontOrOn(referencePoint2)).to(beTrue())
+                }
+
+                it("should return true if point lies on plane") {
+                    let referenceCenter = SCNVector3(0, 1, 0)
+                    let plane = Plane(center: referenceCenter, normal: SCNVector3(0, 1, 0))
+                    expect(plane.isPointInFrontOrOn(referenceCenter)).to(beTrue())
+                }
+            }
+            
+            context("isPointBehind") {
+                it("should return true if point is behind plane") {
+                    let referenceNormal = SCNVector3(0, 0, 1)
+                    let plane1 = Plane(center: SCNVector3(0, 0, 0), normal: referenceNormal)
+                    let referencePoint1 = SCNVector3(-1, 2, 3)
+                    let referencePoint2 = SCNVector3(-1, 2, -3)
+                    expect(plane1.isPointBehind(referencePoint1)).to(beFalse())
+                    expect(plane1.isPointBehind(referencePoint2)).to(beTrue())
+
+                    let plane2 = Plane(center: SCNVector3(0, 0, 0), normal: referenceNormal.negated())
+                    expect(plane2.isPointBehind(referencePoint1)).to(beTrue())
+                    expect(plane2.isPointBehind(referencePoint2)).to(beFalse())
+                }
+
+                it("should return false if point lies in plane") {
+                    let referenceCenter = SCNVector3(0, 1, 0)
+                    let plane = Plane(center: referenceCenter, normal: SCNVector3(0, 1, 0))
+                    expect(plane.isPointBehind(referenceCenter)).to(beFalse())
                 }
             }
 

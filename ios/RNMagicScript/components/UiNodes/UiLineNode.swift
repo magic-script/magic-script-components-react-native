@@ -52,7 +52,7 @@ import SceneKit
     }
     
     @objc override func _calculateSize() -> CGSize {
-        guard !points.isEmpty else { return CGSize.zero }
+        guard points.isNotEmpty else { return CGSize.zero }
 
         let firstPoint = points.first!
         var bbox: (min: CGPoint, max: CGPoint) = (min: CGPoint(x: CGFloat(firstPoint.x), y: CGFloat(firstPoint.y)),
@@ -72,6 +72,8 @@ import SceneKit
     @objc override func updateLayout() {
         if linesNode.geometry == nil {
             linesNode.geometry = generateLinesGeometry()
+            linesNode.applyClippingPlanesShaderModifiers(recursive: false)
+            linesNode.forceUpdateClipping()
         }
 
         linesNode.geometry?.firstMaterial?.diffuse.contents = self.color

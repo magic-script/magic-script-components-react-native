@@ -67,10 +67,31 @@ class NodesManagerSpec: QuickSpec {
                 }
             }
 
+            context("when asked for UiNode by ID") {
+                it("should return node when exists") {
+                    let referenceUiNodeId = "referenceUiNodeId"
+                    let referenceUiNode = UiNode(props: [:])
+                    nodesManager = NodesManager(rootNode: BaseNode(),
+                                                nodesById: [referenceUiNodeId: referenceUiNode],
+                                                prismsByAnchorUuid: [:])
+
+                    let result = nodesManager.findUiNodeWithId(referenceUiNodeId)
+                    expect(result).to(equal(referenceUiNode))
+                }
+
+                it("should return nil when node doesnt exist") {
+                    nodesManager = NodesManager(rootNode: BaseNode(),
+                                                nodesById: [referenceNodeId: referenceNode],
+                                                prismsByAnchorUuid: [:])
+
+                    let result = nodesManager.findUiNodeWithId(referenceNodeId)
+                    expect(result).to(beNil())
+                }
+            }
+            
             context("when asked for prism by Anchor UUID") {
                 it("should return prism when exists") {
                     nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [:], prismsByAnchorUuid: [referenceAnchorUUID: referencePrism])
-
                     let result = nodesManager.findPrismWithAnchorUuid(referenceAnchorUUID)
                     expect(result).to(beIdenticalTo(referencePrism))
                 }
@@ -116,16 +137,99 @@ class NodesManagerSpec: QuickSpec {
                         expect(result).to(beNil())
                     }
 
+                    context("when node is Prism") {
+                        it("should be removed from storage") {
+                            nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
+
+                            let sceneId = "sceneId"
+                            let scene = Scene(props: [:])
+                            nodesManager.registerScene(scene, sceneId: sceneId)
+                            nodesManager.addNodeToRoot(sceneId)
+
+                            let prismId = "prismId"
+                            let prism = Prism(props: [:])
+                            nodesManager.registerPrism(prism, prismId: prismId)
+                            nodesManager.addNode(prismId, toParent: sceneId)
+                            expect(prism.parent).to(equal(scene.rootNode))
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beTrue())
+
+                            nodesManager.unregisterNode(prismId)
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beFalse())
+                        }
+
+                        it("should be removed from storage (with all descendants)") {
+                            nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
+
+                            let sceneId = "sceneId"
+                            let scene = Scene(props: [:])
+                            nodesManager.registerScene(scene, sceneId: sceneId)
+                            nodesManager.addNodeToRoot(sceneId)
+
+                            let prismId = "prismId"
+                            let prism = Prism(props: [:])
+                            nodesManager.registerPrism(prism, prismId: prismId)
+                            nodesManager.addNode(prismId, toParent: sceneId)
+                            expect(prism.parent).to(equal(scene.rootNode))
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beTrue())
+
+                            let transformNode = TransformNode(props: [:])
+                            _ = prism.addNode(transformNode)
+                            expect(transformNode.parent).to(equal(prism.rootNode))
+
+                            nodesManager.unregisterNode(prismId)
+                            expect(nodesManager.prismsById.contains(where: { $0.key == prismId })).to(beFalse())
+                            expect(transformNode.parent).to(beNil())
+                        }
+                    }
+
                     it("should be removed from parent") {
                         nodesManager = NodesManager(rootNode: TransformNode(), nodesById: [referenceNodeId: referenceNode], prismsByAnchorUuid: [:])
                         let parentNode = SCNNode(geometry: SCNGeometry(sources: [], elements: nil))
                         parentNode.addChildNode(referenceNode)
+                        expect(referenceNode.parent).toNot(beNil())
 
                         nodesManager.unregisterNode(referenceNodeId)
-
                         let result = nodesManager.findNodeWithId(referenceNodeId)
                         expect(result).to(beNil())
-                        expect(parentNode.childNodes.count).to(equal(0))
+                        expect(referenceNode.parent).to(beNil())
+                    }
+
+                    context("when node is DialogDataProviding type") {
+                        it("should be dismissed on DialogPresenter") {
+                            let dialogPresenterMock = DialogPresentingMock()
+                            nodesManager.dialogPresenter = dialogPresenterMock
+                            let simpleDialogNode = SimpleDialogDataProvidingNode()
+                            let simpleDialogNodeId = "simpleDialogNodeId"
+                            simpleDialogNode.id = simpleDialogNodeId
+                            nodesManager.registerNode(simpleDialogNode, nodeId: simpleDialogNodeId)
+                            let result = nodesManager.findNodeWithId(simpleDialogNodeId)
+                            expect(result).to(beIdenticalTo(simpleDialogNode))
+                            expect(result?.name).to(equal(simpleDialogNodeId))
+
+                            nodesManager.unregisterNode(simpleDialogNodeId)
+                            dialogPresenterMock.verify(.dismiss(.matching({ input -> Bool in
+                                return input.id == simpleDialogNode.id
+                            })))
+                        }
+                    }
+
+                    context("when node is UiNode type") {
+                        it("onDelete should be called") {
+                            let uiNode = UiNode(props: [:])
+                            let uiNodeId = "uiNodeId"
+                            nodesManager.registerNode(uiNode, nodeId: uiNodeId)
+                            let foundNode = nodesManager.findNodeWithId(uiNodeId)
+                            expect(foundNode).to(beIdenticalTo(uiNode))
+                            expect(foundNode?.name).to(equal(uiNodeId))
+
+                            var result = false
+                            uiNode.onDelete = { node in
+                                result = true
+                            }
+
+                            nodesManager.unregisterNode(uiNodeId)
+                            expect(result).toEventually(beTrue())
+                        }
                     }
                 }
             }
@@ -142,6 +246,30 @@ class NodesManagerSpec: QuickSpec {
                     expect(parentReferenceNode.contentNode.childNodes).to(contain(referenceNode))
                 }
 
+                context("when node is DialogDataProviding type") {
+                    it("should be presented on DialogPresenter") {
+                        let parentNode = Prism(props: [:])
+                        let parentNodeId = "parentNodeId"
+                        nodesManager.registerPrism(parentNode, prismId: parentNodeId)
+
+                        let dialogPresenterMock = DialogPresentingMock()
+                        nodesManager.dialogPresenter = dialogPresenterMock
+                        let simpleDialogNode = SimpleDialogDataProvidingNode()
+                        let simpleDialogNodeId = "simpleDialogNodeId"
+                        simpleDialogNode.id = simpleDialogNodeId
+                        nodesManager.registerNode(simpleDialogNode, nodeId: simpleDialogNodeId)
+                        nodesManager.addNode(simpleDialogNodeId, toParent: parentNodeId)
+
+                        dialogPresenterMock.verify(.present(.matching({ input -> Bool in
+                            return input.id == simpleDialogNode.id
+                        })))
+
+                        let result = nodesManager.findNodeWithId(simpleDialogNodeId)
+                        expect(result).to(beIdenticalTo(simpleDialogNode))
+                        expect(result?.name).to(equal(simpleDialogNodeId))
+                    }
+                }
+
                 it("should remove node from parent (when requested)") {
                     let parentReferenceNode = TransformNode()
                     let parentRreferenceNodeId = "parentRreferenceNodeId"
@@ -156,6 +284,10 @@ class NodesManagerSpec: QuickSpec {
             }
 
             context("when child node exists in storage (by ID)") {
+                beforeEach {
+                    referenceSceneNode.name = referenceSceneNodeId
+                }
+
                 it("should add node to root node (when requested)") {
                     let rootRefereneceNode = BaseNode()
                     nodesManager = NodesManager(rootNode: rootRefereneceNode,
@@ -176,8 +308,8 @@ class NodesManagerSpec: QuickSpec {
                     nodesManager.registerScene(referenceSceneNode, sceneId: referenceSceneNodeId)
                     nodesManager.addNodeToRoot(referenceSceneNodeId)
 
-                    nodesManager.removeNodeFromRoot(referenceNodeId)
-                    expect(rootRefereneceNode.childNodes).toNot(contain(referenceNode))
+                    nodesManager.removeNodeFromRoot(referenceSceneNodeId)
+                    expect(rootRefereneceNode.childNodes).toNot(contain(referenceSceneNode))
                 }
             }
 
@@ -198,11 +330,7 @@ class NodesManagerSpec: QuickSpec {
 
             context("update properties") {
                 it("should be delegated update to correct node") {
-
-                }
-
-                it("whould do nothing when node doesn't exist in storage") {
-                    nodesManager = NodesManager(rootNode: TransformNode(),
+                    nodesManager = NodesManager(rootNode: BaseNode(),
                                                 nodesById: [referenceNodeId: referenceNode],
                                                 prismsByAnchorUuid: [:])
 
@@ -210,7 +338,54 @@ class NodesManagerSpec: QuickSpec {
                     expect(result).to(beTrue())
                     expect(referenceNode.visible).to(beTrue())
                 }
+
+                it("whould do nothing when node doesn't exist in storage") {
+                    nodesManager = NodesManager(rootNode: BaseNode(),
+                                                nodesById: [referenceNodeId: referenceNode],
+                                                prismsByAnchorUuid: [:])
+
+                    let unregisteredReferenceNodeId = "unregisteredReferenceNodeId"
+                    let result = nodesManager.updateNode(unregisteredReferenceNodeId, properties: ["visible" : true])
+                    expect(result).to(beFalse())
+                }
+
+                context("when node is UiNode type") {
+                    it("onUpdate should be called") {
+                        let uiNode = UiNode(props: [:])
+                        let uiNodeId = "uiNodeId"
+                        nodesManager.registerNode(uiNode, nodeId: uiNodeId)
+                        let foundNode = nodesManager.findNodeWithId(uiNodeId)
+                        expect(foundNode).to(beIdenticalTo(uiNode))
+                        expect(foundNode?.name).to(equal(uiNodeId))
+
+                        var result = false
+                        uiNode.onUpdate = { node in
+                            result = true
+                        }
+
+                        let updateResult = nodesManager.updateNode(uiNodeId, properties: ["visible" : true])
+                        expect(updateResult).to(beTrue())
+                        expect(uiNode.visible).to(beTrue())
+                        expect(result).toEventually(beTrue())
+                    }
+                }
             }
         }
     }
+}
+
+private class SimpleDialogDataProvidingNode: TransformNode, DialogDataProviding {
+    var id: String = "simpleDialogDataProvidingTypeId"
+    var title: String?
+    var message: String?
+    var confirmText: String?
+    var confirmIcon: SystemIcon?
+    var cancelText: String?
+    var cancelIcon: SystemIcon?
+    var scrolling: Bool = false
+    var expireTime: CGFloat = 0.0
+
+    func dialogConfirmed() { }
+    func dialogCanceled() { }
+    func dialogTimeExpired() { }
 }

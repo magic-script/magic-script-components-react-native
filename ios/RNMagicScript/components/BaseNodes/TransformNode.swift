@@ -59,10 +59,10 @@ import SceneKit
     fileprivate var borderNode: SCNNode?
 #endif
     @objc fileprivate(set) var contentNode: SCNNode!
-
     fileprivate var currentSize: CGSize?
     fileprivate var layoutNeeded: Bool = false
     fileprivate var containerLayoutNeeded: Bool = false
+    fileprivate var clipNeeded: Bool = false
 
     @objc override init() {
         super.init()
@@ -193,9 +193,6 @@ import SceneKit
     @objc func updatePivot() {
     }
 
-    @objc func postUpdate() {
-    }
-
     func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
         let localPlane = getPlane()
@@ -275,6 +272,8 @@ extension TransformNode {
         borderNode?.removeFromParentNode()
         let bounds = getBounds(scaled: false)
         borderNode = NodesFactory.createOutlineNode(size: bounds.size, cornerRadius: 0, thickness: 0, color: UIColor.yellow)
+        borderNode?.applyClippingPlanesShaderModifiers(recursive: false)
+        borderNode?.forceUpdateClipping()
         borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
         addChildNode(borderNode!)
     }

@@ -309,6 +309,8 @@ import SceneKit
         if (buttonType == .iconWithLabel || buttonType == .textWithIcon || buttonType == .text) {
             outlineNode.isHidden = true
         }
+        outlineNode.applyClippingPlanesShaderModifiers()
+        outlineNode.forceUpdateClipping()
         contentNode.addChildNode(outlineNode)
     }
 

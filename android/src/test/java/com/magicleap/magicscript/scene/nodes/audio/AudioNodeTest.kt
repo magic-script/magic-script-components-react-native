@@ -36,12 +36,12 @@ class AudioNodeTest {
 
     private val FILE_URL = "http://localhost:8081/assets/resources/bg_stereo.mp3"
     private val audioEngine: AudioEngine = mock()
-    private lateinit var audioProvider: AudioFileProvider
+    private lateinit var provider: FileProvider
     private lateinit var tested: AudioNode
 
     @Before
     fun setup() {
-        audioProvider = spy(object : AudioFileProvider {
+        provider = spy(object : FileProvider {
             override fun provideFile(uri: Uri, result: (File) -> Unit) {
                 result.invoke(File(""))
             }
@@ -53,7 +53,7 @@ class AudioNodeTest {
             initProps = reactMapOf(),
             context = ApplicationProvider.getApplicationContext(),
             audioEngine = audioEngine,
-            fileProvider = audioProvider
+            fileProvider = provider
         )
     }
 
@@ -81,7 +81,7 @@ class AudioNodeTest {
                 .fileName(FILE_URL)
         )
 
-        verify(audioProvider).provideFile(eq(Uri.parse(FILE_URL)), any())
+        verify(provider).provideFile(eq(Uri.parse(FILE_URL)), any())
     }
 
     @Test
@@ -214,7 +214,7 @@ class AudioNodeTest {
     fun `onDestroy should destroy file downloader and audio engine`() {
         tested.onDestroy()
 
-        verify(audioProvider).onDestroy()
+        verify(provider).onDestroy()
         verify(audioEngine).onDestroy()
     }
 }

@@ -19,7 +19,7 @@ package com.magicleap.magicscript.scene.nodes.audio
 import android.net.Uri
 import java.io.File
 
-interface AudioFileProvider {
+interface FileProvider {
     fun provideFile(uri: Uri, result: (File) -> Unit)
     fun onDestroy()
 }

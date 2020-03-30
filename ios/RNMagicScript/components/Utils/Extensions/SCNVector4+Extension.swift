@@ -18,15 +18,26 @@ import Foundation
 import SceneKit
 
 extension SCNVector4 {
-    init(_ vector: SIMD4<Float>) {
-        self.init(x: vector.x, y: vector.y, z: vector.z, w: vector.w)
+    init(_ v: SCNVector3) {
+        self.init(x: v.x, y: v.y, z: v.z, w: 1)
     }
+}
 
-    init(_ vector: SCNVector3) {
-        self.init(x: vector.x, y: vector.y, z: vector.z, w: 1)
+extension SCNVector4 {
+    var toArrayOfFloat: [Float] {
+        return [x, y, z, w]
     }
-
     var toArrayOfCGFloat: [CGFloat] {
         return [CGFloat(x), CGFloat(y), CGFloat(z), CGFloat(w)]
     }
+    var toArrayOfDouble: [Double] {
+        return [Double(x), Double(y), Double(z), Double(w)]
+    }
+    var toArrayOfInt: [Int] {
+        return [Int(x), Int(y), Int(z), Int(w)]
+    }
+}
+
+extension SCNVector4 {
+    static var zero: SCNVector4 = SCNVector4Zero
 }

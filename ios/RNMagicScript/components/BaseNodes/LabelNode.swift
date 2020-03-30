@@ -156,7 +156,7 @@ class LabelNode: SCNNode {
     }
 
     func getSize() -> CGSize {
-        guard let text = text, !text.isEmpty else { return boundsSize }
+        guard let text = text, text.isNotEmpty else { return boundsSize }
 
         if boundsSize.width > 0 && boundsSize.height > 0 {
             return boundsSize

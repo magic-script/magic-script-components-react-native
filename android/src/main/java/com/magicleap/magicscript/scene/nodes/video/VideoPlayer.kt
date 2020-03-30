@@ -29,7 +29,7 @@ interface VideoPlayer {
     val isReady: Boolean
 
     @Throws(Exception::class)
-    fun loadVideo(uri: Uri, surface: Surface, onLoadedListener: () -> Unit)
+    fun loadVideo(uri: Uri, subtitlesPath: Uri? = null, onSubtitleChangeListener: ((String) -> Unit)? = null, surface: Surface, onLoadedListener: () -> Unit)
 
     @Throws(IllegalStateException::class)
     fun start()
@@ -41,4 +41,8 @@ interface VideoPlayer {
     fun stop()
 
     fun release()
+
+    fun seekTo(millis: Int)
+
+    fun clearTimedTextListener()
 }

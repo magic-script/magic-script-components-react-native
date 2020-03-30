@@ -22,22 +22,6 @@ import SceneKit
 class SCNNodeClippingPlaneSpec: QuickSpec {
     override func spec() {
         describe("SCNNode+ClippingPlane") {
-            let min = SCNVector3(-2, -2, -2)
-            let max = SCNVector3(2, 2, 2)
-            let planes: [SCNVector4] = [
-                SCNVector4( 1, 0, 0,-min.x),
-                SCNVector4(-1, 0, 0, max.x),
-                SCNVector4(0, 1, 0,-min.y),
-                SCNVector4(0,-1, 0, max.y),
-                SCNVector4(0, 0, 1,-min.z),
-                SCNVector4(0, 0,-1, max.z),
-            ]
-            var referenceNode: SCNNode!
-
-            beforeEach {
-                referenceNode = SCNNode(geometry: SCNSphere(radius: 3.0))
-            }
-
             context("shaders source code") {
                 it("should load shaders source code") {
                     let bundle = Bundle.resourcesBundle
@@ -54,31 +38,267 @@ class SCNNodeClippingPlaneSpec: QuickSpec {
                     expect(fragmentModifier.isEmpty).to(beFalse())
                 }
             }
-
-            context("setClippingPlanes") {
-                it("should set clipping planes (> 0)") {
-                    referenceNode.setClippingPlanes(planes)
-                    let modifiers = referenceNode.geometry?.shaderModifiers
-                    expect(modifiers).notTo(beNil())
-                    expect(modifiers?.count).to(equal(2))
+            
+            context("applyClippingPlanesShaderModifiers") {
+                it("should apply shader modifiers for given node only") {
+                    let referenceNode = self.createSampleHierarchy()
+                    expect(referenceNode.geometry!.shaderModifiers).to(beNil())
+                    referenceNode.enumerateChildNodes { (node, result) in
+                        expect(node.geometry!.shaderModifiers).to(beNil())
+                    }
+                    
+                    referenceNode.applyClippingPlanesShaderModifiers()
+                    
+                    expect(referenceNode.geometry!.shaderModifiers).notTo(beNil())
+                    referenceNode.enumerateChildNodes { (node, result) in
+                        expect(node.geometry!.shaderModifiers).to(beNil())
+                    }
                 }
-
-                it("should reset clipping planes (= 0)") {
-                    referenceNode.setClippingPlanes(planes)
-                    referenceNode.setClippingPlanes([])
-                    let modifiers = referenceNode.geometry?.shaderModifiers
-                    expect(modifiers).to(beNil())
+                
+                it("should apply shader modifiers for given node and all child nodes") {
+                    let referenceNode = self.createSampleHierarchy()
+                    expect(referenceNode.geometry!.shaderModifiers).to(beNil())
+                    referenceNode.enumerateChildNodes { (node, result) in
+                        expect(node.geometry!.shaderModifiers).to(beNil())
+                    }
+                    
+                    referenceNode.applyClippingPlanesShaderModifiers(recursive: true)
+                    
+                    expect(referenceNode.geometry!.shaderModifiers).notTo(beNil())
+                    referenceNode.enumerateChildNodes { (node, result) in
+                        expect(node.geometry!.shaderModifiers).notTo(beNil())
+                    }
                 }
             }
-
-            context("resetClippingPlanes") {
-                it("should reset clipping planes") {
-                    referenceNode.setClippingPlanes(planes)
-                    referenceNode.resetClippingPlanes()
-                    let modifiers = referenceNode.geometry?.shaderModifiers
-                    expect(modifiers).to(beNil())
+            
+            context("setClippingPlanes") {
+                it("should set clipping planes to node") {
+                    let referenceNode = SCNNode(geometry: SCNSphere(radius: 0.2))
+                    let referenceChildNode = SCNNode(geometry: SCNSphere(radius: 0.1))
+                    referenceNode.addChildNode(referenceChildNode)
+                    let referencePlanes = self.getSampleClippingPlanes(1.0)
+                    
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceChildNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    
+                    referenceNode.setClippingPlanes(referencePlanes)
+                    
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                        expect(clippingPlane).to(beCloseTo(referencePlanes[i]))
+                    }
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceChildNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                }
+                
+                it("should set clipping planes recursively") {
+                    let referenceNode = SCNNode(geometry: SCNSphere(radius: 0.2))
+                    let referenceChildNode = SCNNode(geometry: SCNSphere(radius: 0.1))
+                    referenceNode.addChildNode(referenceChildNode)
+                    let referencePlanes = self.getSampleClippingPlanes(1.0)
+                    
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceChildNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    
+                    referenceNode.setClippingPlanes(referencePlanes, recursive: true)
+                    
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                        expect(clippingPlane).to(beCloseTo(referencePlanes[i]))
+                    }
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (referenceChildNode.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                        expect(clippingPlane).to(beCloseTo(referencePlanes[i]))
+                    }
+                }
+                
+                it("should narrow the clipping bounds if there is scrollView in the hierarchy") {
+                    let result = self.createSamplePrism()
+                    let prism = result.prism
+                    let text = result.text
+                    let scrollView = result.scrollView
+                    let images = result.images
+                    
+                    prism.invalidateClipping()
+                    prism.updateClipping()
+                    
+                    let prismPlanes = prism.getClippingPlanesAsVector4()
+                    let scrollViewPlanes = scrollView.getClippingPlanesAsVector4()
+                    
+                    // text should be clipped by prism's bounds
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (text.contentNode.childNodes[0].childNodes[0].geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                        expect(clippingPlane).to(beCloseTo(prismPlanes[i]))
+                        expect(clippingPlane).notTo(beCloseTo(scrollViewPlanes[i]))
+                    }
+                    
+                    // images should be clipped by scrollView's bounds
+                    for image in images {
+                        for i in 0..<6 {
+                            let clippingPlane: SCNVector4? = (image.contentNode.childNodes[0].geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                            expect(clippingPlane).notTo(beNil())
+                            expect(clippingPlane).notTo(beCloseTo(prismPlanes[i]))
+                            expect(clippingPlane).to(beCloseTo(scrollViewPlanes[i]))
+                        }
+                    }
+                }
+            }
+            
+            context("invalidateBoundsClippingManager") {
+                it("should invalidate prism's clipping") {
+                    let result = self.createSamplePrism()
+                    let prism = result.prism
+                    let image = result.images[0]
+                    
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    prism.updateClipping()
+                    expect(prism.isUpdateClippingNeeded).to(beFalse())
+                    image.invalidateBoundsClippingManager()
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                }
+            }
+            
+            context("forceUpdateClipping") {
+                it("should update clipping for given node") {
+                    let result = self.createSamplePrism()
+                    let prism = result.prism
+                    let image = result.images[0]
+                    let imageWithGeometry = image.contentNode.childNodes[0]
+                    
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (imageWithGeometry.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    
+                    imageWithGeometry.forceUpdateClipping()
+                    
+                    // Prism should still be invalidated
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    // image clip bounds should be updated
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (imageWithGeometry.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                    }
+                }
+                
+                it("should update clipping recursively") {
+                    let result = self.createSamplePrism()
+                    let prism = result.prism
+                    let scrollView = result.scrollView
+                    let image = result.images[0]
+                    let imageWithGeometry = image.contentNode.childNodes[0]
+                    
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (imageWithGeometry.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    
+                    scrollView.forceUpdateClipping(recursive: false)
+                    
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (imageWithGeometry.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).to(beNil())
+                    }
+                    
+                    scrollView.forceUpdateClipping(recursive: true)
+                    
+                    // Prism should still be invalidated
+                    expect(prism.isUpdateClippingNeeded).to(beTrue())
+                    // image clip bounds should be updated
+                    for i in 0..<6 {
+                        let clippingPlane: SCNVector4? = (imageWithGeometry.geometry!.value(forKey: "clippingPlane\(i + 1)") as? NSValue)?.scnVector4Value
+                        expect(clippingPlane).notTo(beNil())
+                    }
                 }
             }
         }
+    }
+    
+    func getSampleClippingPlanes(_ size: Float) -> [SCNVector4] {
+        let min = SCNVector3(-0.5 * size, -0.5 * size, -0.5 * size)
+        let max = SCNVector3(0.5 * size, 0.5 * size, 0.5 * size)
+        let planes: [SCNVector4] = [
+            SCNVector4( 1, 0, 0,-min.x),
+            SCNVector4(-1, 0, 0, max.x),
+            SCNVector4(0, 1, 0,-min.y),
+            SCNVector4(0,-1, 0, max.y),
+            SCNVector4(0, 0, 1,-min.z),
+            SCNVector4(0, 0,-1, max.z),
+        ]
+        
+        return planes
+    }
+    
+    func createSampleHierarchy() -> SCNNode {
+        let createNode: (_ radius: CGFloat, _ parent: SCNNode?) -> (SCNNode) = { radius, parent in
+            let node = SCNNode(geometry: SCNSphere(radius: radius))
+            parent?.addChildNode(node)
+            return node
+        }
+        let rootNode = createNode(0.5, nil)
+        
+        let node1 = createNode(0.1, rootNode)
+        let node2 = createNode(0.2, rootNode)
+        
+        let _ = createNode(0.11, node1)
+        let _ = createNode(0.12, node1)
+        let _ = createNode(0.13, node1)
+        
+        let _ = createNode(0.21, node2)
+        let _ = createNode(0.22, node2)
+        let _ = createNode(0.23, node2)
+        
+        return rootNode
+    }
+    
+    func createSamplePrism() -> (prism: Prism, group: UiGroupNode, text: UiTextNode, scrollView: UiScrollViewNode, linearLayout: UiLinearLayoutNode, images: [UiImageNode]) {
+        let linearLayout = UiLinearLayoutNode()
+        var images: [UiImageNode] = []
+        for i in 0..<10 {
+            let image = UiImageNode()
+            image.width = 0.2
+            image.height = 0.2
+            image.color = i % 2 == 0 ? UIColor.yellow : UIColor.purple
+            linearLayout.addChild(image)
+            images.append(image)
+        }
+        
+        let scrollView = UiScrollViewNode()
+        scrollView.scrollBounds = (min: SCNVector3(-0.2, -0.2, -0.1), max: SCNVector3(0.2, 0.2, 0.1))
+        scrollView.addChild(linearLayout)
+        
+        let text = UiTextNode()
+        text.text = "Lorem ipsum"
+        
+        let group = UiGroupNode()
+        group.addChild(text)
+        group.addChild(scrollView)
+        
+        let prism = Prism()
+        prism.size = SCNVector3(2, 2, 2)
+        let _ = prism.addNode(group)
+        
+        return (prism, group, text, scrollView, linearLayout, images)
     }
 }

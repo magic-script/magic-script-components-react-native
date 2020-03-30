@@ -22,6 +22,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.TestAppInfoProvider
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.prism.Prism
@@ -90,7 +91,8 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider, context).apply {
+        val appInfoProvider = TestAppInfoProvider()
+        return Prism(props, mock(), mock(), arResourcesProvider, context, appInfoProvider).apply {
             build()
         }
     }

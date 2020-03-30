@@ -29,6 +29,7 @@ import com.magicleap.magicscript.plane.ARPlaneDetectorEvents;
 import com.magicleap.magicscript.plane.ARPlaneDetectorEventsManager;
 import com.magicleap.magicscript.scene.NodesManager;
 import com.magicleap.magicscript.scene.UiNodesManager;
+import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider;
 import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 
@@ -48,9 +49,17 @@ public class ArPackage implements ReactPackage {
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
         ArResourcesProvider arResourcesProvider = ArResourcesManager.INSTANCE;
-        ARComponentManager arComponentManager = new ARComponentManager(reactContext, nodesManager, eventsManager, mediaPlayerPool, arResourcesProvider);
+        AppInfoProvider appInfoProvider = new ReactAppInfoProvider(reactContext);
+        ARComponentManager arComponentManager = new ARComponentManager(reactContext,
+                                                                       nodesManager,
+                                                                       eventsManager,
+                                                                       mediaPlayerPool,
+                                                                       arResourcesProvider,
+                                                                       appInfoProvider);
         ARPlaneDetectorEventsManager arPlaneEventsManager = new ARPlaneDetectorEvents(reactContext);
-        ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext, arPlaneEventsManager, ARPlaneDetectorBridge.Companion.getINSTANCE());
+        ARPlaneDetector arPlaneDetector = new ARPlaneDetector(reactContext,
+                                                              arPlaneEventsManager,
+                                                              ARPlaneDetectorBridge.Companion.getINSTANCE());
         return Arrays.<NativeModule>asList(arComponentManager, arPlaneDetector);
     }
 

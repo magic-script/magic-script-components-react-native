@@ -32,10 +32,12 @@ import com.magicleap.magicscript.icons.IconsRepositoryImpl
 import com.magicleap.magicscript.scene.nodes.GroupNode
 import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
+import com.magicleap.magicscript.utils.SimpleAnimatorListener
 
 class PrismMenu(
     private val context: Context,
-    private val arResourcesProvider: ArResourcesProvider
+    private val arResourcesProvider: ArResourcesProvider,
+    private val title: String
 ) : GroupNode(JavaOnlyMap()) {
 
     companion object {
@@ -49,36 +51,21 @@ class PrismMenu(
 
     var onButtonClickListener: (() -> Unit)? = null
 
+    private val label: UiTextNode
+    private val buttonEdit: UiButtonNode
     private val animator = ValueAnimator.ofFloat(0f, 1.2f, 1f)
 
-    override fun build() {
-        super.build()
-
-        val labelProps = JavaOnlyMap.of(
-            UiTextNode.PROP_TEXT, "Catalog app",
-            UiTextNode.PROP_TEXT_SIZE, TEXT_SIZE,
-            PROP_ALIGNMENT, "bottom-center"
-        )
-
-        val label = UiTextNode(
-            initProps = labelProps,
+    init {
+        label = UiTextNode(
+            initProps = getLabelProps(),
             context = context,
             viewRenderableLoader = ViewRenderableLoaderImpl(context, arResourcesProvider),
             nodeClipper = TextureClipper(),
             fontProvider = FontProviderImpl(context, AndroidFontProvider())
-        ).apply {
-            build()
-            localPosition = Vector3(0f, ICON_SIZE.toFloat(), 0f)
-        }
-
-        val buttonShowProps = JavaOnlyMap.of(
-            UiButtonNode.PROP_WIDTH, ICON_SIZE,
-            UiButtonNode.PROP_HEIGHT, ICON_SIZE,
-            UiButtonNode.PROP_ICON_TYPE, ICON_TYPE
         )
 
-        val buttonShow = UiButtonNode(
-            initProps = buttonShowProps,
+        buttonEdit = UiButtonNode(
+            initProps = getButtonProps(),
             context = context,
             viewRenderableLoader = ViewRenderableLoaderImpl(context, arResourcesProvider),
             nodeClipper = TextureClipper(),
@@ -87,23 +74,7 @@ class PrismMenu(
                 DefaultIconsProvider(context),
                 ExternalIconsProvider(context)
             )
-        ).apply {
-            build()
-            localPosition = Vector3(0f, (ICON_SIZE / 2).toFloat(), 0f)
-            onClickListener = {
-                onButtonClickListener?.invoke()
-            }
-        }
-
-        addContent(label)
-        addContent(buttonShow)
-    }
-
-    override fun onVisibilityChanged(visibility: Boolean) {
-        super.onVisibilityChanged(visibility)
-        if (!visibility) {
-            stopShowAnimation()
-        }
+        )
     }
 
     fun showAnimated() {
@@ -127,9 +98,54 @@ class PrismMenu(
         animator.start()
     }
 
+    override fun build() {
+        super.build()
+
+        label.apply {
+            build()
+            val positionY = ICON_SIZE.toFloat()
+            localPosition = Vector3(0f, positionY, 0f)
+        }
+
+        buttonEdit.apply {
+            build()
+            val positionY = (ICON_SIZE / 2).toFloat()
+            localPosition = Vector3(0f, positionY, 0f)
+            onClickListener = {
+                onButtonClickListener?.invoke()
+            }
+        }
+
+        addContent(label)
+        addContent(buttonEdit)
+    }
+
+    override fun onVisibilityChanged(visibility: Boolean) {
+        super.onVisibilityChanged(visibility)
+        if (!visibility) {
+            stopShowAnimation()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         stopShowAnimation()
+    }
+
+    private fun getLabelProps(): JavaOnlyMap {
+        return JavaOnlyMap.of(
+            UiTextNode.PROP_TEXT, title,
+            UiTextNode.PROP_TEXT_SIZE, TEXT_SIZE,
+            PROP_ALIGNMENT, "bottom-center"
+        )
+    }
+
+    private fun getButtonProps(): JavaOnlyMap {
+        return JavaOnlyMap.of(
+            UiButtonNode.PROP_WIDTH, ICON_SIZE,
+            UiButtonNode.PROP_HEIGHT, ICON_SIZE,
+            UiButtonNode.PROP_ICON_TYPE, ICON_TYPE
+        )
     }
 
     private fun stopShowAnimation() {
@@ -137,23 +153,4 @@ class PrismMenu(
             animator.cancel()
         }
     }
-
-    private abstract class SimpleAnimatorListener : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
-
-        }
-
-        override fun onAnimationRepeat(animation: Animator?) {
-
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-
-        }
-    }
-
 }

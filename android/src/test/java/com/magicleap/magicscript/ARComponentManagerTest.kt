@@ -69,12 +69,14 @@ class ARComponentManagerTest {
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
         val context = ReactApplicationContext(ApplicationProvider.getApplicationContext())
+        val appInfoProvider = TestAppInfoProvider()
         manager = ARComponentManager(
             context,
             nodesManager,
             eventsManager,
             mediaPlayerPool,
-            arResourcesProvider
+            arResourcesProvider,
+            appInfoProvider
         )
     }
 

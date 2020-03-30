@@ -25,6 +25,7 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.TestAppInfoProvider
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -230,7 +231,8 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider, context)
+        val appInfoProvider = TestAppInfoProvider()
+        return Prism(props, mock(), mock(), arResourcesProvider, context, appInfoProvider)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

@@ -25,15 +25,12 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.*
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
-import com.magicleap.magicscript.reactArrayOf
-import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
@@ -171,7 +168,15 @@ class PrismTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, cubeBuilder, anchorCreator, arResourcesProvider, context).apply {
+        val appInfoProvider = TestAppInfoProvider()
+        return Prism(
+            props,
+            cubeBuilder,
+            anchorCreator,
+            arResourcesProvider,
+            context,
+            appInfoProvider
+        ).apply {
             build()
         }
     }

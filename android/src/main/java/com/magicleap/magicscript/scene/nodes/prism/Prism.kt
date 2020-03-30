@@ -44,7 +44,8 @@ class Prism(
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
-    private val context: Context
+    private val context: Context,
+    private val appInfoProvider: AppInfoProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.TransformationSystemListener {
 
@@ -96,10 +97,8 @@ class Prism(
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
 
-        menuNode = PrismMenu(
-            context,
-            arResourcesProvider
-        )
+        val title = appInfoProvider.getAppName()
+        menuNode = PrismMenu(context, arResourcesProvider, title)
         menuNode.isVisible = false
     }
 

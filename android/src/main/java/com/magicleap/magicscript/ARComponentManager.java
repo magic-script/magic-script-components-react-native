@@ -78,11 +78,11 @@ import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
-import com.magicleap.magicscript.scene.nodes.audio.AudioFileProvider;
+import com.magicleap.magicscript.scene.nodes.audio.FileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
-import com.magicleap.magicscript.scene.nodes.audio.UriAudioProvider;
+import com.magicleap.magicscript.scene.nodes.audio.UriFileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
@@ -263,8 +263,9 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createVideoNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            VideoPlayer videoPlayer = new VideoPlayerImpl(context);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, videoNodeClipper, arResourcesProvider), nodeId);
+            FileProvider fileProvider = new UriFileProvider(context);
+            VideoPlayer videoPlayer = new VideoPlayerImpl(context, fileProvider);
+            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, viewRenderableLoader, videoNodeClipper, fontProvider, arResourcesProvider), nodeId);
         });
     }
 
@@ -452,8 +453,8 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             GvrAudioEngine gvrAudioEngine = new GvrAudioEngine(context, GvrAudioEngine.RenderingMode.BINAURAL_HIGH_QUALITY);
             ExternalAudioEngine externalAudioEngine = new GvrAudioEngineWrapper(gvrAudioEngine);
             VrAudioEngine audioEngine = new VrAudioEngine(Executors.newSingleThreadExecutor(), externalAudioEngine);
-            AudioFileProvider audioFileProvider = new UriAudioProvider(context);
-            AudioNode node = new AudioNode(props, context, audioEngine, audioFileProvider);
+            FileProvider fileProvider = new UriFileProvider(context);
+            AudioNode node = new AudioNode(props, context, audioEngine, fileProvider);
             addNode(node, nodeId);
         });
     }

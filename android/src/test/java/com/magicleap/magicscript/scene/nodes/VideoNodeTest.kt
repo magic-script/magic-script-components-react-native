@@ -23,6 +23,8 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
+import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.props.AABB
@@ -46,6 +48,8 @@ class VideoNodeTest {
     private lateinit var context: Context
     private lateinit var videoPlayer: VideoPlayer
     private lateinit var videoReadableLoader: VideoRenderableLoader
+    private lateinit var viewRenderableLoader: ViewRenderableLoader
+    private lateinit var fontProvider: FontProvider
     private lateinit var clipper: Clipper
     private lateinit var arResourcesProvider: ArResourcesProvider
 
@@ -56,6 +60,8 @@ class VideoNodeTest {
         this.videoReadableLoader = mock()
         this.clipper = mock()
         this.arResourcesProvider = mock()
+        this.viewRenderableLoader = mock()
+        this.fontProvider = mock()
 
         // we have to return false, since creating textures inside VideoNode requires ar is loaded,
         // else exception will be thrown
@@ -69,7 +75,9 @@ class VideoNodeTest {
             videoPlayer = videoPlayer,
             videoRenderableLoader = videoReadableLoader,
             nodeClipper = clipper,
-            arResourcesProvider = arResourcesProvider
+            arResourcesProvider = arResourcesProvider,
+                viewRenderableLoader = viewRenderableLoader,
+                fontProvider = fontProvider
         )
 
         videoNode.build()

@@ -24,9 +24,12 @@ import java.io.BufferedInputStream
 import java.io.File
 import java.io.InputStream
 import java.net.URL
-
-class UriAudioProvider(private val context: Context) :
-    AudioFileProvider {
+/*
+ * When the Uri is provided and framework is not handling the Files properly,
+ * we use this provider to fetch the files and use it for example for audio files, subtitle files etc
+ */
+class UriFileProvider(private val context: Context) :
+    FileProvider {
 
     companion object {
         private const val READ_TIMEOUT = 5000
@@ -64,7 +67,7 @@ class UriAudioProvider(private val context: Context) :
                     bufferedInputStream.close()
                     fileDownloaded(uri.path, result, file)
                 } catch (e: Exception) {
-                    logMessage("Error during reading Audio File $e", true)
+                    logMessage("Error during reading file $e", true)
                 }
             }
         )

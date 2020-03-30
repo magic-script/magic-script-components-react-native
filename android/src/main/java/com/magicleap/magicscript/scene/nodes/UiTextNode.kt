@@ -158,6 +158,9 @@ open class UiTextNode(
             "right" -> {
                 (view as TextView).gravity = Gravity.RIGHT
             }
+            "bottom-center" -> {
+                (view as TextView).gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            }
         }
     }
 

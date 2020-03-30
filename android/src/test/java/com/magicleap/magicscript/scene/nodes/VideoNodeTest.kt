@@ -62,6 +62,7 @@ class VideoNodeTest {
         this.arResourcesProvider = mock()
         this.viewRenderableLoader = mock()
         this.fontProvider = mock()
+
         // we have to return false, since creating textures inside VideoNode requires ar is loaded,
         // else exception will be thrown
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)

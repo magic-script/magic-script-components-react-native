@@ -53,7 +53,7 @@ class LineNode(
         }
 
     private val colorDefault = Color(1f, 1f, 1f)
-    private var renderableCopies = mutableListOf<Renderable?>()
+    private var baseCube: Renderable? = null // reused by all line segments
     private var linesBounding = AABB()
     private var clipBox = BoundingBox(
         Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE),
@@ -61,7 +61,14 @@ class LineNode(
     )
 
     private val pointsList = mutableListOf<Vector3>()
-    private val cubeLoadRequests = mutableListOf<CubeRenderableBuilder.LoadRequest>()
+    private var cubeLoadRequest: CubeRenderableBuilder.LoadRequest? = null
+
+    override fun build() {
+        super.build()
+        val androidColor = properties.readColor(PROP_COLOR)
+        val color = if (androidColor != null) Color(androidColor) else colorDefault
+        loadBaseCube(color)
+    }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -84,10 +91,8 @@ class LineNode(
 
     override fun onVisibilityChanged(visibility: Boolean) {
         if (visibility) {
-            contentNode.children.forEachIndexed { index, node ->
-                if (index < renderableCopies.size) {
-                    node.renderable = renderableCopies[index]
-                }
+            contentNode.children.forEach {
+                it.renderable = baseCube
             }
         } else {
             contentNode.children.forEach {
@@ -98,7 +103,7 @@ class LineNode(
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelCubeLoadTasks()
+        cancelCubeLoadRequest()
     }
 
     private fun applyClipBounds(clipBounds: AABB) {
@@ -112,19 +117,16 @@ class LineNode(
     private fun drawLines(clipBox: BoundingBox) {
         // clear old lines in case of points list update
         clearLines()
-        cancelCubeLoadTasks()
 
         // draw each line segment
         val points = properties.readVectorsList(PROP_POINTS)
-        val androidColor = properties.readColor(PROP_COLOR)
-        val color = if (androidColor != null) Color(androidColor) else colorDefault
 
         var idx = 0
         while (idx + 1 < points.size) {
             val clipped = clipLineSegment(points[idx], points[idx + 1], clipBox)
             if (clipped != null) {
                 val (start, end) = clipped
-                drawLineSegment(start, end, color)
+                drawLineSegment(start, end)
                 this.pointsList.add(start)
                 this.pointsList.add(end)
             }
@@ -163,30 +165,39 @@ class LineNode(
         return Pair(startClipped, endClipped)
     }
 
-    private fun drawLineSegment(start: Vector3, end: Vector3, color: Color) {
+    private fun drawLineSegment(start: Vector3, end: Vector3) {
         val lineSegment = Node()
         val diff = Vector3.subtract(start, end)
         val direction = diff.normalized()
         val rotation = Quaternion.lookRotation(direction, Vector3.up())
-        val lineSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, diff.length())
+        val scaleZ = diff.length() / LINE_THICKNESS
 
-        val request = CubeRenderableBuilder.LoadRequest(lineSize, Vector3.zero(), color) { result ->
-            if (result is RenderableResult.Success) {
-                contentNode.addChild(lineSegment)
-                if (isVisible) {
-                    lineSegment.renderable = result.renderable
-                    renderableCopies.add(result.renderable)
-                } else {
-                    renderableCopies.add(result.renderable)
-                }
-                lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
-                lineSegment.localRotation = rotation
-            }
-        }.also {
-            cubeRenderableBuilder.buildRenderable(it)
+        contentNode.addChild(lineSegment)
+
+        if (isVisible && baseCube != null) {
+            lineSegment.renderable = baseCube
         }
 
-        cubeLoadRequests.add(request)
+        lineSegment.localScale = Vector3(1f, 1f, scaleZ)
+        lineSegment.localPosition = Vector3.add(start, end).scaled(0.5f)
+        lineSegment.localRotation = rotation
+    }
+
+    private fun loadBaseCube(color: Color) {
+        val cubeSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, LINE_THICKNESS)
+        cubeLoadRequest =
+            CubeRenderableBuilder.LoadRequest(cubeSize, Vector3.zero(), color) { result ->
+                if (result is RenderableResult.Success) {
+                    baseCube = result.renderable
+                    if (isVisible) {
+                        contentNode.children.forEach {
+                            it.renderable = baseCube
+                        }
+                    }
+                }
+            }.also {
+                cubeRenderableBuilder.buildRenderable(it)
+            }
     }
 
     private fun updateLinesBounding() {
@@ -200,11 +211,10 @@ class LineNode(
         pointsList.clear()
     }
 
-    private fun cancelCubeLoadTasks() {
-        cubeLoadRequests.forEach { task ->
-            cubeRenderableBuilder.cancel(task)
+    private fun cancelCubeLoadRequest() {
+        cubeLoadRequest?.let { it ->
+            cubeRenderableBuilder.cancel(it)
         }
-        cubeLoadRequests.clear()
     }
 
 }

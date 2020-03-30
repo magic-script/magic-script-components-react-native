@@ -18,14 +18,17 @@ package com.magicleap.magicscript.scene.nodes
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.shouldEqualInexact
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import org.amshove.kluent.shouldHaveSize
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -40,13 +43,10 @@ import org.robolectric.RobolectricTestRunner
 class LineNodeTest {
 
     private lateinit var cubeBuilder: CubeRenderableBuilder
-    private lateinit var arResourcesProvider: ArResourcesProvider
 
     @Before
     fun setUp() {
         cubeBuilder = mock()
-        arResourcesProvider = mock()
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
     }
 
     @Test
@@ -86,19 +86,22 @@ class LineNodeTest {
 
         node.build()
 
-        verify(cubeBuilder, times(2)).buildRenderable(any())
+        node.contentNode.children shouldHaveSize 2
     }
 
     @Test
-    fun `should not build cube when only one point provided`() {
-        val point = reactArrayOf(1.0, 2.0, 0.0)
-        val points = reactArrayOf(point)
+    fun `should use only one cube renderable for all line segments`() {
+        val point1 = reactArrayOf(1.0, 2.0, 0.0)
+        val point2 = reactArrayOf(3.0, 4.0, 1.0)
+        val point3 = reactArrayOf(4.0, 2.0, 1.5)
+        val point4 = reactArrayOf(5.0, 1.0, 0.5)
+        val points = reactArrayOf(point1, point2, point3, point4)
         val props = reactMapOf(LineNode.PROP_POINTS, points)
         val node = createLineNode(props)
 
         node.build()
 
-        verify(cubeBuilder, never()).buildRenderable(any())
+        verify(cubeBuilder, times(1)).buildRenderable(any())
     }
 
     private fun createLineNode(props: JavaOnlyMap): LineNode {

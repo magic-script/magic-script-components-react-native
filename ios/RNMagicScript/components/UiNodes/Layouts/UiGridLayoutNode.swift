@@ -112,9 +112,26 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
+        updatePaddingAndAlignmentPerItem()
+        return gridLayout.getSize()
+    }
+
+    @objc override func updateLayout() {
+        // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
+        _ = getSize()
+        gridLayout.updateLayout()
+    }
+
+    @objc override func setNeedsLayout() {
+        super.setNeedsLayout()
+        gridLayout.invalidate()
+    }
+    
+    fileprivate func updatePaddingAndAlignmentPerItem() {
         let flowDirection = gridLayout.getFlowDirection()
         let currentRows = gridLayout.getCurrentRows()
         let currentColumns = gridLayout.getCurrentColumns()
+        
         var paddingByIndex: [Int: UIEdgeInsets] = [:]
         itemPadding.forEach {
             let index: Int = (flowDirection == .vertical) ? ($0.row * currentColumns + $0.column) : ($0.column * currentRows + $0.row)
@@ -128,18 +145,6 @@ import SceneKit
             alignmentByIndex[index] = $0.alignment
         }
         gridLayout.alignmentByIndex = alignmentByIndex
-        return gridLayout.getSize()
-    }
-
-    @objc override func updateLayout() {
-        // Invoke getSize to make sure the grid's sizes are calcualted and cached in gridDesc.
-        _ = getSize()
-        gridLayout.updateLayout()
-    }
-
-    @objc override func setNeedsLayout() {
-        super.setNeedsLayout()
-        gridLayout.invalidate()
     }
 }
 

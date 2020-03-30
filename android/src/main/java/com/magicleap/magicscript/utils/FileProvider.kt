@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes.audio
+package com.magicleap.magicscript.utils
 
 import android.net.Uri
 import java.io.File

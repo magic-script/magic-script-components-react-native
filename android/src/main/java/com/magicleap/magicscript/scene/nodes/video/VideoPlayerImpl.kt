@@ -26,7 +26,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.Surface
-import com.magicleap.magicscript.scene.nodes.audio.FileProvider
+import com.magicleap.magicscript.utils.FileProvider
 import com.magicleap.magicscript.utils.logMessage
 
 

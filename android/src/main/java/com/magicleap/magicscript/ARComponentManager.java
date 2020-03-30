@@ -203,10 +203,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
-        AnchorCreator anchorCreator = new SimpleAnchorCreator(arResourcesProvider);
-        Prism prism = new Prism(props, cubeRenderableBuilder, anchorCreator, arResourcesProvider, context, appInfoProvider);
-        mainHandler.post(() -> addNode(prism, nodeId));
+        mainHandler.post(() -> {
+            CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
+            AnchorCreator anchorCreator = new SimpleAnchorCreator(arResourcesProvider);
+            Prism prism = new Prism(props, cubeRenderableBuilder, anchorCreator, arResourcesProvider, context, appInfoProvider);
+            addNode(prism, nodeId);
+        });
     }
 
     /**

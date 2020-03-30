@@ -23,7 +23,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LinearLayoutParams
 import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.utils.*
 
-open class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayoutParams>) :
+class UiLinearLayout(props: ReadableMap, layoutManager: LayoutManager<LinearLayoutParams>) :
     UiBaseLayout<LinearLayoutParams>(props, layoutManager) {
 
     companion object {

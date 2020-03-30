@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript
 
-import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
+import android.content.Context
+import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider
 
-interface AnchorCreator {
-    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
+class ReactAppInfoProvider(private val context: Context) : AppInfoProvider {
+
+    override fun getAppName(): String {
+        val appInfo = context.applicationInfo
+        val labelId = appInfo.labelRes
+        return if (labelId == 0) {
+            appInfo.nonLocalizedLabel.toString()
+        } else {
+            context.getString(labelId)
+        }
+    }
+
 }

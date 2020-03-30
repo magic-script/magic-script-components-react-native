@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.magicleap.magicscript.ar
 import com.google.ar.core.HitResult
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.Camera
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
@@ -101,6 +102,11 @@ abstract class ArResourcesProvider {
      * Returns current ARCore's scene if already loaded or null otherwise
      */
     abstract fun getArScene(): Scene?
+
+    /**
+     * Returns current Camera if already initialized or null otherwise
+     */
+    abstract fun getCamera(): Camera?
 
     /**
      * Returns true if ARCore native libraries are loaded (this is true after AR fragment

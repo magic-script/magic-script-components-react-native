@@ -32,6 +32,7 @@ class CustomArFragment : ArFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         ArResourcesManager.setupScene(arSceneView.scene)
+        ArResourcesManager.setupCamera(arSceneView.scene.camera)
 
         arSceneView.scene.addOnUpdateListener {
             arSceneView.arFrame?.camera?.let { camera ->

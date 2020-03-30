@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript
 
-import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
+import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider
 
-interface AnchorCreator {
-    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
+class TestAppInfoProvider : AppInfoProvider {
+    override fun getAppName(): String {
+        return "Test app"
+    }
 }

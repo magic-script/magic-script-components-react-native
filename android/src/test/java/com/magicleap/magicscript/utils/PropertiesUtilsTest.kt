@@ -21,12 +21,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Matrix
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Padding
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBe
 import org.amshove.kluent.shouldNotBeNull
@@ -252,6 +254,31 @@ class PropertiesUtilsTest {
         spatialSoundDistance.minDistance shouldEqual 1f
         spatialSoundDistance.maxDistance shouldEqual 3f
         spatialSoundDistance.rolloffFactor shouldEqual 2
+    }
+
+    @Test
+    fun `should read Quaternion if provided 4 elements double list`() {
+        val bundle = Bundle()
+        val prop = "PROP_NAME"
+        val list = arrayListOf(0.0, 0.38, 0.0, 0.92)
+        bundle.putSerializable(prop, list)
+
+        val result = bundle.read<Quaternion>(prop)
+
+        result shouldNotBe null
+        result shouldEqual Quaternion(0.0f, 0.38f, 0.0f, 0.92f)
+    }
+
+    @Test
+    fun `read quaternion should return null if provided strings list`() {
+        val bundle = Bundle()
+        val prop = "PROP_NAME"
+        val list = arrayListOf("a", "32", "ok")
+        bundle.putSerializable(prop, list)
+
+        val result = bundle.read<Quaternion>(prop)
+
+        result shouldBe null
     }
 
 }

@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import com.google.ar.sceneform.math.Matrix
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
@@ -50,6 +51,7 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             AABB::class -> readAABB(this, key) as T?
             Vector2::class -> readVector2(this, key) as T?
             Vector3::class -> readVector3(this, key) as T?
+            Quaternion::class -> readQuaternion(this, key) as T?
             Matrix::class -> readMatrix(this, key) as T?
             Padding::class -> readPadding(this, key) as T?
             Alignment::class -> readAlignment(this, key) as T?
@@ -122,6 +124,18 @@ fun readVector2(props: Bundle, propertyName: String): Vector2? {
 fun readVector3(props: Bundle, propertyName: String): Vector3? {
     val list = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
     return getVectorFromList(list)
+}
+
+fun readQuaternion(props: Bundle, propertyName: String): Quaternion? {
+    val quaternionData = props.getSerializable(propertyName) as? ArrayList<Double> ?: return null
+    if (quaternionData.size == 4) {
+        val x = quaternionData[0].toFloat()
+        val y = quaternionData[1].toFloat()
+        val z = quaternionData[2].toFloat()
+        val w = quaternionData[3].toFloat()
+        return Quaternion(x, y, z, w)
+    }
+    return null
 }
 
 fun TransformNode.getUserSpecifiedScale(): Vector3? {

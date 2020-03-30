@@ -22,9 +22,10 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.TestAppInfoProvider
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.Prism
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -47,6 +48,9 @@ class ReactSceneTest {
     fun setUp() {
         whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
+
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
     }
 
     @Test
@@ -87,10 +91,10 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider)
-            .apply {
-                build()
-            }
+        val appInfoProvider = TestAppInfoProvider()
+        return Prism(props, mock(), mock(), arResourcesProvider, context, appInfoProvider).apply {
+            build()
+        }
     }
 
     private fun getTransformationSystem(): TransformationSystem {

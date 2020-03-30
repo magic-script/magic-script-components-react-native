@@ -20,19 +20,20 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.core.Anchor
-import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
+import com.magicleap.magicscript.TestAppInfoProvider
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.Prism
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
-import com.nhaarman.mockitokotlin2.*
-import org.amshove.kluent.itReturns
+import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -53,7 +54,8 @@ class UiNodesManagerTest {
     fun setUp() {
         whenever(arResourcesProvider.getArScene()).thenReturn(arScene)
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
-        whenever(arResourcesProvider.isArLoaded()).thenReturn(true)
+        // we have to prevent renderable loading in tests, because ARCore is not initialized
+        whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
         nodesManager = UiNodesManager(arResourcesProvider)
     }
@@ -168,7 +170,6 @@ class UiNodesManagerTest {
     fun `should attach prism to specified anchor when anchor UUID present and anchor node exists`() {
         val reactScene = ReactScene(reactMapOf(), arResourcesProvider)
         val anchor = mock<Anchor>()
-
         val uuid = UUID.randomUUID().toString()
         val anchorNode = AnchorNode()
         anchorNode.name = uuid
@@ -230,7 +231,8 @@ class UiNodesManagerTest {
     }
 
     private fun createPrism(props: JavaOnlyMap): Prism {
-        return Prism(props, mock(), mock(), arResourcesProvider)
+        val appInfoProvider = TestAppInfoProvider()
+        return Prism(props, mock(), mock(), arResourcesProvider, context, appInfoProvider)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

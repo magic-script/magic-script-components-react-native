@@ -30,21 +30,21 @@ import com.facebook.react.bridge.ReadableMap;
 import com.google.vr.sdk.audio.GvrAudioEngine;
 import com.magicleap.magicscript.ar.AnchorCreator;
 import com.magicleap.magicscript.ar.ArResourcesProvider;
-import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder;
-import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilderImpl;
 import com.magicleap.magicscript.ar.LoopedAnimator;
-import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader;
-import com.magicleap.magicscript.ar.renderable.ModelRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.RenderableAnimator;
 import com.magicleap.magicscript.ar.SimpleAnchorCreator;
-import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader;
-import com.magicleap.magicscript.ar.renderable.VideoRenderableLoaderImpl;
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader;
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoaderImpl;
 import com.magicleap.magicscript.ar.clip.Clipper;
 import com.magicleap.magicscript.ar.clip.TextureClipper;
 import com.magicleap.magicscript.ar.clip.UiNodeClipper;
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper;
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder;
+import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilderImpl;
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoaderImpl;
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader;
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoaderImpl;
 import com.magicleap.magicscript.font.FontProvider;
 import com.magicleap.magicscript.font.providers.AndroidFontProvider;
 import com.magicleap.magicscript.font.providers.FontProviderImpl;
@@ -61,7 +61,6 @@ import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
 import com.magicleap.magicscript.scene.nodes.PanelNode;
-import com.magicleap.magicscript.scene.nodes.Prism;
 import com.magicleap.magicscript.scene.nodes.UIWebViewNode;
 import com.magicleap.magicscript.scene.nodes.UiCircleConfirmationNode;
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode;
@@ -99,6 +98,8 @@ import com.magicleap.magicscript.scene.nodes.layouts.manager.PageViewLayoutManag
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager;
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams;
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode;
+import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider;
+import com.magicleap.magicscript.scene.nodes.prism.Prism;
 import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
@@ -135,6 +136,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private NodesManager nodesManager;
     private EventsManager eventsManager;
     private ArResourcesProvider arResourcesProvider;
+    private AppInfoProvider appInfoProvider;
 
     // Renderable loaders
     private ViewRenderableLoader viewRenderableLoader;
@@ -153,13 +155,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     private Clipper videoNodeClipper;
 
     public ARComponentManager(ReactApplicationContext reactContext, NodesManager nodesManager, EventsManager eventsManager,
-                              MediaPlayerPool mediaPlayerPool, ArResourcesProvider arResourcesProvider) {
+                              MediaPlayerPool mediaPlayerPool, ArResourcesProvider arResourcesProvider, AppInfoProvider appInfoProvider) {
         super(reactContext);
         this.context = reactContext;
         this.nodesManager = nodesManager;
         this.eventsManager = eventsManager;
         this.mediaPlayerPool = mediaPlayerPool;
         this.arResourcesProvider = arResourcesProvider;
+        this.appInfoProvider = appInfoProvider;
 
         this.viewRenderableLoader = new ViewRenderableLoaderImpl(context, arResourcesProvider);
         this.modelRenderableLoader = new ModelRenderableLoaderImpl(context, arResourcesProvider);
@@ -200,9 +203,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createPrism(final ReadableMap props, final String nodeId) {
-        CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
-        AnchorCreator anchorCreator = new SimpleAnchorCreator(arResourcesProvider);
-        mainHandler.post(() -> addNode(new Prism(props, cubeRenderableBuilder, anchorCreator, arResourcesProvider), nodeId));
+        mainHandler.post(() -> {
+            CubeRenderableBuilder cubeRenderableBuilder = new CubeRenderableBuilderImpl(context, arResourcesProvider);
+            AnchorCreator anchorCreator = new SimpleAnchorCreator(arResourcesProvider);
+            Prism prism = new Prism(props, cubeRenderableBuilder, anchorCreator, arResourcesProvider, context, appInfoProvider);
+            addNode(prism, nodeId);
+        });
     }
 
     /**

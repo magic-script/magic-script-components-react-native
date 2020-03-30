@@ -368,16 +368,9 @@ abstract class TransformNode(
     }
 
     private fun setLocalRotation(props: Bundle) {
-        val quaternionData = props.getSerializable(PROP_LOCAL_ROTATION)
-        if (quaternionData != null && quaternionData is ArrayList<*>) {
-            quaternionData as ArrayList<Double>
-            if (quaternionData.size == 4) {
-                val x = quaternionData[0].toFloat()
-                val y = quaternionData[1].toFloat()
-                val z = quaternionData[2].toFloat()
-                val w = quaternionData[3].toFloat()
-                this.localRotation = Quaternion(x, y, z, w) // Quaternion.axisAngle
-            }
+        val quaternion = props.read<Quaternion>(PROP_LOCAL_ROTATION)
+        if (quaternion != null) {
+            this.localRotation = quaternion
         }
     }
 

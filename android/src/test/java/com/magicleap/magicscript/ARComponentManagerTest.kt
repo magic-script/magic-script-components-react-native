@@ -30,6 +30,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode
 import com.magicleap.magicscript.scene.nodes.layouts.UiGridLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiRectLayout
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool
@@ -68,12 +69,14 @@ class ARComponentManagerTest {
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
         val context = ReactApplicationContext(ApplicationProvider.getApplicationContext())
+        val appInfoProvider = TestAppInfoProvider()
         manager = ARComponentManager(
             context,
             nodesManager,
             eventsManager,
             mediaPlayerPool,
-            arResourcesProvider
+            arResourcesProvider,
+            appInfoProvider
         )
     }
 

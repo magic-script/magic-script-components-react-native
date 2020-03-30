@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript.scene.nodes.prism
 
-import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
+import com.google.ar.sceneform.ux.BaseTransformableNode
+import com.google.ar.sceneform.ux.SelectionVisualizer
 
-interface AnchorCreator {
-    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
+/**
+ * This selection visualizer can be used to hide the default hint model displayed
+ * when the node is selected.
+ */
+class EmptySelectionVisualizer : SelectionVisualizer {
+    override fun applySelectionVisual(node: BaseTransformableNode?) {
+        // no-op
+    }
+
+    override fun removeSelectionVisual(node: BaseTransformableNode?) {
+        // no-op
+    }
 }

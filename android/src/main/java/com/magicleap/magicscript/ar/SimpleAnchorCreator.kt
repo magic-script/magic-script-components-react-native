@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,11 @@ package com.magicleap.magicscript.ar
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.utils.logMessage
 
 class SimpleAnchorCreator(private val arResourcesProvider: ArResourcesProvider) : AnchorCreator {
 
-    override fun createAnchor(
-        position: Vector3,
-        rotation: Quaternion,
-        result: (anchor: Anchor) -> Unit
-    ) {
-        val positionArray = floatArrayOf(position.x, position.y, position.z)
-        val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
-        val pose = Pose(positionArray, rotationArray)
-
+    override fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit) {
         if (arResourcesProvider.getCameraState() != TrackingState.TRACKING) {
             logMessage("Cannot create anchor, camera is not tracking", warn = true)
             return

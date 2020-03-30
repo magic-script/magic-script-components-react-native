@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar
+package com.magicleap.magicscript.utils
 
-import com.google.ar.core.Anchor
-import com.google.ar.core.Pose
+import android.animation.Animator
 
-interface AnchorCreator {
-    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
+abstract class SimpleAnimatorListener : Animator.AnimatorListener {
+    override fun onAnimationStart(animation: Animator?) {
+
+    }
+
+    override fun onAnimationRepeat(animation: Animator?) {
+
+    }
+
+    override fun onAnimationEnd(animation: Animator?) {
+
+    }
+
+    override fun onAnimationCancel(animation: Animator?) {
+
+    }
 }

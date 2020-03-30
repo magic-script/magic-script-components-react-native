@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.utils.FileProvider
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 import com.magicleap.magicscript.utils.readFilePath

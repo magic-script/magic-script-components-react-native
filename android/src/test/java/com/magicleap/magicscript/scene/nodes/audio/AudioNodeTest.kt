@@ -20,6 +20,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
+import com.magicleap.magicscript.utils.FileProvider
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual

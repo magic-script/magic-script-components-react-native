@@ -42,12 +42,16 @@ class UriFileProvider(private val context: Context) :
             Runnable {
                 try {
                     val inputStream: InputStream =
-                        if (uri.toString().startsWith("android.resource")) {
-                            getLocalInputStream(uri)
-                        } else if (uri.toString().startsWith("content://")) {
-                            getLocalContentStream(uri)
-                        } else {
-                            getRemoteInputStream(uri)
+                        when {
+                            uri.toString().startsWith("android.resource") -> {
+                                getLocalInputStream(uri)
+                            }
+                            uri.toString().startsWith("content://") -> {
+                                getLocalContentStream(uri)
+                            }
+                            else -> {
+                                getRemoteInputStream(uri)
+                            }
                         }
 
                     val bufferedInputStream = BufferedInputStream(inputStream, 1024 * 5)
@@ -77,10 +81,8 @@ class UriFileProvider(private val context: Context) :
     private fun getRemoteInputStream(uri: Uri): InputStream {
         val url = URL(uri.toString())
         val connection = url.openConnection().apply {
-            readTimeout =
-                READ_TIMEOUT
-            connectTimeout =
-                CONNECT_TIMEOUT
+            readTimeout = READ_TIMEOUT
+            connectTimeout = CONNECT_TIMEOUT
         }
 
         return connection.getInputStream()

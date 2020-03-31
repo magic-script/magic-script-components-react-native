@@ -39,7 +39,6 @@ import SceneKit
     @objc var skipInvisibleItems: Bool = false {
         didSet { invalidate() }
     }
-    //@objc
     var alignmentByIndex: [Int : Alignment] = [:] {
         didSet { invalidate() }
     }

@@ -42,11 +42,9 @@ import SceneKit
         get { return gridLayout.defaultItemPadding }
         set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
-    //@objc
     var itemAlignment: [(column: Int, row: Int, alignment: Alignment)] = [] {
         didSet { setNeedsLayout() }
     }
-    //@objc
     var itemPadding: [(column: Int, row: Int, padding: UIEdgeInsets)] = [] {
         didSet { setNeedsLayout() }
     }

@@ -31,7 +31,6 @@ import SceneKit
     @objc var defaultPagePadding: UIEdgeInsets = UIEdgeInsets.zero {
         didSet { setNeedsLayout() }
     }
-    //@objc
     var pageAlignment: [Int : Alignment] = [:] {
         didSet { setNeedsLayout() }
     }

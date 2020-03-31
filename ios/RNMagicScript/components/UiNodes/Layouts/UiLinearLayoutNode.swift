@@ -37,7 +37,6 @@ import SceneKit
         get { return gridLayout.defaultItemPadding }
         set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
-    //@objc
     var itemAlignment: [Int : Alignment] {
         get { return gridLayout.alignmentByIndex }
         set { gridLayout.alignmentByIndex = newValue; setNeedsLayout() }

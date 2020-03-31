@@ -42,7 +42,6 @@ import SceneKit
             }
         }
     }
-    //@objc
     var scrollBounds: (min: SCNVector3, max: SCNVector3)? {
         didSet { setNeedsLayout(); invalidateBoundsClippingManager() }
     }

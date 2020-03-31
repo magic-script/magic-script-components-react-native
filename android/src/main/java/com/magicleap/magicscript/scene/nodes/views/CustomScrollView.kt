@@ -27,6 +27,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.isCloseTo
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -86,15 +87,12 @@ class CustomScrollView @JvmOverloads constructor(
     var scrollBarsVisibility: String = ScrollBarVisibility.AUTO
         set(value) {
             field = value
-            when (value) {
-                ScrollBarVisibility.AUTO, ScrollBarVisibility.ALWAYS -> {
-                    vBar?.visibility = View.VISIBLE
-                    hBar?.visibility = View.VISIBLE
-                }
-                ScrollBarVisibility.OFF -> {
-                    vBar?.visibility = View.INVISIBLE
-                    hBar?.visibility = View.INVISIBLE
-                }
+            val maxTravel = getMaxPossibleTravel()
+            vBar?.let {
+                adjustScrollBarVisibility(it, maxTravel.y)
+            }
+            hBar?.let {
+                adjustScrollBarVisibility(it, maxTravel.x)
             }
         }
 
@@ -167,8 +165,7 @@ class CustomScrollView @JvmOverloads constructor(
         if (action == MotionEvent.ACTION_MOVE) {
             velocityTracker?.addMovement(event)
             val movePx = previousTouch - touch
-            val viewSize = Vector2(width.toFloat(), height.toFloat())
-            val maxTravel = contentSize - viewSize
+            val maxTravel = getMaxPossibleTravel()
 
             val moveX = if (maxTravel.x != 0f) movePx.x / maxTravel.x else 0f
             val moveY = if (maxTravel.y != 0f) movePx.y / maxTravel.y else 0f
@@ -246,18 +243,41 @@ class CustomScrollView @JvmOverloads constructor(
     }
 
     private fun updateScrollbars() {
+        val maxTravel = getMaxPossibleTravel()
+
         // set default thumb length if not specified
         hBar?.let {
             if (it.useAutoThumbSize && contentSize.x > 0) {
-                hBar?.thumbSize = width.toFloat() / contentSize.x
+                it.thumbSize = width.toFloat() / contentSize.x
+                adjustScrollBarVisibility(it, maxTravel.x)
             }
         }
 
         vBar?.let {
             if (it.useAutoThumbSize && contentSize.y > 0) {
-                vBar?.thumbSize = height.toFloat() / contentSize.y
+                it.thumbSize = height.toFloat() / contentSize.y
+                adjustScrollBarVisibility(it, maxTravel.y)
             }
         }
+    }
+
+    private fun adjustScrollBarVisibility(bar: CustomScrollBar, maxTravel: Float) {
+        when (scrollBarsVisibility) {
+            ScrollBarVisibility.AUTO -> {
+                if (maxTravel.isCloseTo(0f, epsilon = 1e-5f)) {
+                    bar.visibility = View.INVISIBLE
+                } else {
+                    bar.visibility = View.VISIBLE
+                }
+            }
+            ScrollBarVisibility.ALWAYS -> bar.visibility = View.VISIBLE
+            ScrollBarVisibility.OFF -> bar.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun getMaxPossibleTravel(): Vector2 {
+        val viewSize = Vector2(width.toFloat(), height.toFloat())
+        return (contentSize - viewSize).coerceAtLeast(0f)
     }
 
     private fun startScrollAnimation(direction: Vector2, speedX: Float, speedY: Float) {

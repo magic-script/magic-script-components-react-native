@@ -27,6 +27,7 @@ import com.magicleap.magicscript.*
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
@@ -132,7 +133,7 @@ class UiScrollViewNodeTest {
     fun `should apply scroll bars visibility`() {
         tested.update(UiScrollViewNode.PROP_SCROLLBAR_VISIBILITY, "off")
 
-        verify(viewSpy).scrollBarsVisibility = "off"
+        verify(viewSpy).scrollBarsVisibility = ScrollBarVisibility.OFF
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiScrollViewNode {

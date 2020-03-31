@@ -163,8 +163,8 @@ open class UiListViewNode(
             is UiListViewItemNode -> {
                 addItem(child)
                 val itemIndex = getItems().size - 1
-                child.padding = itemsPaddingMap?.get(itemIndex) ?: defaultItemsPadding
-                child.alignment = itemAlignmentMap?.get(itemIndex) ?: defaultItemAlignment
+                child.contentPadding = itemsPaddingMap?.get(itemIndex) ?: defaultItemsPadding
+                child.contentAlignment = itemAlignmentMap?.get(itemIndex) ?: defaultItemAlignment
 
                 if (itemIndex == requestedScrollIndex) {
                     scrollToItem(requestedScrollIndex)
@@ -298,7 +298,7 @@ open class UiListViewNode(
         defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
 
         getItems().forEachIndexed { index, item ->
-            item.padding = itemsPaddingMap?.get(index) ?: defaultItemsPadding
+            item.contentPadding = itemsPaddingMap?.get(index) ?: defaultItemsPadding
         }
     }
 
@@ -307,7 +307,7 @@ open class UiListViewNode(
         defaultItemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
 
         getItems().forEachIndexed { index, item ->
-            item.alignment = itemAlignmentMap?.get(index) ?: defaultItemAlignment
+            item.contentAlignment = itemAlignmentMap?.get(index) ?: defaultItemAlignment
         }
     }
 

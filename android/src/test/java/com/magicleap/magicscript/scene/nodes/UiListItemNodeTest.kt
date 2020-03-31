@@ -19,11 +19,15 @@ package com.magicleap.magicscript.scene.nodes
 import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.shouldEqualInexact
+import com.magicleap.magicscript.utils.Vector2
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
@@ -52,18 +56,87 @@ class UiListItemNodeTest {
     fun `should apply background color`() {
         val color = reactArrayOf(1.0, 1.0, 1.0, 1.0)
         val props = reactMapOf(UiListViewItemNode.PROP_BACKGROUND_COLOR, color)
-        val node = createNodeWithViewSpy(props)
 
-        node.build()
+        buildNodeWithViewSpy(props)
 
         verify(viewSpy).setBackgroundColor(0xFFFFFFFF.toInt())
     }
 
-    private fun createNodeWithViewSpy(props: ReadableMap): UiListViewItemNode {
+    @Test
+    fun `should align content at the center when minSize not specified`() {
+        val node = buildNodeWithViewSpy(reactMapOf())
+        // contentAlignment should not matter because content size is equal to list item size
+        node.contentAlignment = Alignment(Alignment.Vertical.BOTTOM, Alignment.Horizontal.LEFT)
+        node.contentPadding = Padding(0f, 0f, 0f, 0f)
+        val child = UiNodeBuilder(context)
+            .withSize(0.4f, 0.2f)
+            .withAlignment("center-center")
+            .build()
+
+        node.addContent(child)
+
+        child.localPosition.x shouldEqualInexact 0f
+        child.localPosition.y shouldEqualInexact 0f
+    }
+
+    @Test
+    fun `should correctly align content if contentAlignment is top-right and minSize set`() {
+        val node = buildNodeWithViewSpy(reactMapOf())
+        node.contentAlignment = Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.RIGHT)
+        node.minSize = Vector2(2f, 1f)
+        node.contentPadding = Padding(0f, 0f, 0f, 0f)
+        val child = UiNodeBuilder(context)
+            .withSize(0.4f, 0.2f)
+            .withAlignment("top-right")
+            .build()
+
+        node.addContent(child)
+
+        child.localPosition.x shouldEqualInexact 1.0f
+        child.localPosition.y shouldEqualInexact 0.5f
+    }
+
+    @Test
+    fun `should correctly align content center-left if contentPadding specified`() {
+        val node = buildNodeWithViewSpy(reactMapOf())
+        node.contentAlignment = Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.LEFT)
+        node.minSize = Vector2(2f, 1f)
+        node.contentPadding = Padding(top = 0f, right = 0f, bottom = 0f, left = 0.1f)
+        val child = UiNodeBuilder(context)
+            .withSize(0.4f, 0.2f)
+            .withAlignment("center-center")
+            .build()
+
+        node.addContent(child)
+
+        child.localPosition.x shouldEqualInexact -0.7f
+        child.localPosition.y shouldEqualInexact 0f
+    }
+
+    @Test
+    fun `should correctly align content center-center if contentPadding specified`() {
+        val node = buildNodeWithViewSpy(reactMapOf())
+        node.contentAlignment = Alignment(Alignment.Vertical.CENTER, Alignment.Horizontal.LEFT)
+        node.minSize = Vector2(2f, 1f)
+        node.contentPadding = Padding(top = 0.2f, right = 0.2f, bottom = 0.1f, left = 0.1f)
+        val child = UiNodeBuilder(context)
+            .withSize(0.8f, 0.5f)
+            .withAlignment("center-center")
+            .build()
+
+        node.addContent(child)
+
+        child.localPosition.x shouldEqualInexact -0.5f
+        child.localPosition.y shouldEqualInexact -0.05f
+    }
+
+    private fun buildNodeWithViewSpy(props: ReadableMap): UiListViewItemNode {
         return object : UiListViewItemNode(props, context, mock(), mock()) {
             override fun provideView(context: Context): View {
                 return viewSpy
             }
+        }.apply {
+            build()
         }
     }
 

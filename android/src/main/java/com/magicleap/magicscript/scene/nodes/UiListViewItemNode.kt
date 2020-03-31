@@ -81,12 +81,13 @@ open class UiListViewItemNode(
 
     override fun addContent(child: ReactNode) {
         super.addContent(child)
+        if (contentNode.children.size > 1) {
+            logMessage("Only one node can be added as list item child", true)
+            return
+        }
         if (child is TransformNode) {
             lastContentBounds = child.getBounding()
             adjustContentPosition(child, lastContentBounds)
-        }
-        if (contentNode.children.size > 1) {
-            logMessage("Only one node can be added as list item child", true)
         }
     }
 

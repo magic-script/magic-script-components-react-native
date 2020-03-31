@@ -28,11 +28,24 @@ class PrismSpec: QuickSpec {
             beforeEach {
                 prism = Prism(props: [:])
             }
+            
+            context("init(codec)") {
+                it("should throw exception when trying to init with codec") {
+                    expect { _ = Prism(coder: NSCoder()) }.to(throwAssertion())
+                }
+            }
 
             context("when initialized") {
                 it("should have set default values") {
-                    expect(prism.debug).to(beFalse())
+                    expect(prism.isPointed).to(beFalse())
                     expect(prism.size).to(beCloseTo(SCNVector3.zero))
+                    expect(prism.position).to(beCloseTo(SCNVector3.zero))
+                    expect(prism.orientation).to(beCloseTo(SCNQuaternion.identity))
+                    expect(prism.scale).to(beCloseTo(SCNVector3(1, 1, 1)))
+                    expect(prism.transform).to(beCloseTo(SCNMatrix4Identity))    
+                    expect(prism.debug).to(beFalse())
+                    expect(prism.editMode).to(beFalse())
+                    expect(prism.anchorUuid).to(equal(""))
                 }
 
                 it("content node should be initialized") {
@@ -43,6 +56,13 @@ class PrismSpec: QuickSpec {
             }
 
             context("update properties") {
+                it("should update 'isPointed' prop") {
+                    prism.isPointed = true
+                    expect(prism.isPointed).to(beTrue())
+                    prism.isPointed = false
+                    expect(prism.isPointed).to(beFalse())
+                }
+                
                 it("should update 'size' prop") {
                     let referenceSize = SCNVector3(0.5, 0.75, 1.25)
                     prism.update(["size": referenceSize.toArrayOfFloat])
@@ -62,9 +82,9 @@ class PrismSpec: QuickSpec {
                     let q1 = SCNQuaternion(0.8, 1.7, 0, 1)
                     let q2 = SCNQuaternion(-0.6, 1, 1.333, 1)
                     prism = Prism(props: ["rotation": q1.toArrayOfDouble])
-                    expect(prism.rotation).to(beCloseTo(q1))
+                    expect(prism.orientation).to(beCloseTo(q1))
                     prism.update(["rotation": q2.toArrayOfDouble])
-                    expect(prism.rotation).to(beCloseTo(q2))
+                    expect(prism.orientation).to(beCloseTo(q2))
                 }
 
                 it("should update 'scale' prop") {
@@ -75,6 +95,17 @@ class PrismSpec: QuickSpec {
                     prism.update(["scale": v2.toArrayOfCGFloat])
                     expect(prism.scale).to(beCloseTo(v2))
                 }
+                
+                it("should update 'transform' prop") {
+                    let quat1 = SCNQuaternion.fromAxis(SCNVector3(0, 1, 0), andAngle: Float.pi)
+                    let quat2 = SCNQuaternion.fromAxis(SCNVector3(0.707, 0, -0.707), andAngle: -Float.pi)
+                    let m1 = SCNMatrix4.fromQuaternion(quat: quat1)
+                    let m2 = SCNMatrix4.fromQuaternion(quat: quat2)
+                    prism = Prism(props: ["transform": m1.toArrayOfFloat])
+                    expect(prism.transform).to(beCloseTo(m1))
+                    prism.update(["transform": m2.toArrayOfCGFloat])
+                    expect(prism.transform).to(beCloseTo(m2))
+                }
 
                 it("should update 'debug' prop") {
                     prism = Prism(props: ["debug": true])
@@ -82,8 +113,24 @@ class PrismSpec: QuickSpec {
                     prism.update(["debug": false])
                     expect(prism.debug).to(beFalse())
                 }
+                
+                it("should update 'editMode' prop") {
+                    prism = Prism()
+                    prism.editMode = true
+                    expect(prism.editMode).to(beTrue())
+                    prism.editMode = false
+                    expect(prism.editMode).to(beFalse())
+                }
+                
+                it("should update 'anchorUuid' prop") {
+                    let referenceAnchorUuid1 = "__anchor_uuid1__"
+                    let referenceAnchorUuid2 = "__anchor_uuid2__"
+                    prism = Prism(props: ["anchorUuid": referenceAnchorUuid1])
+                    expect(prism.anchorUuid).to(equal(referenceAnchorUuid1))
+                    prism.update(["anchorUuid": referenceAnchorUuid2])
+                    expect(prism.anchorUuid).to(equal(referenceAnchorUuid2))
+                }
             }
-
 
             context("when asked to add child node") {
                 context("when child node is TransformNode") {
@@ -110,7 +157,6 @@ class PrismSpec: QuickSpec {
                         expect(prism.rootNode.childNodes.count).to(equal(1))
                     }
                 }
-
             }
 
             context("when asked to remove child node") {
@@ -136,7 +182,8 @@ class PrismSpec: QuickSpec {
                         let baseNode = BaseNode()
                         prism.removeNode(baseNode)
                         expect(prism.rootNode.childNodes.count).to(equal(2))
-                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))                    }
+                        expect(prism.rootNode.childNodes[1]).to(equal(childNode))
+                    }
                 }
             }
         }

@@ -36,6 +36,8 @@ class UiPageViewNodeSpec: QuickSpec {
                     expect(node.height).to(beCloseTo(0))
                     expect(node.defaultPageAlignment).to(equal(Alignment.topLeft))
                     expect(node.defaultPagePadding).to(beCloseTo(UIEdgeInsets.zero))
+                    expect(node.pageAlignment).to(equal([:]))
+                    expect(node.pagePadding).to(equal([:]))
                     expect(node.visiblePage).to(equal(-1))
                 }
             }
@@ -72,6 +74,26 @@ class UiPageViewNodeSpec: QuickSpec {
                     let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
                     node.update(["defaultPagePadding": referencePadding.toArrayOfFloat])
                     expect(node.defaultPagePadding).to(beCloseTo(referencePadding))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'pageAlignment' prop") {
+                    let referenceIndex: Int = 2
+                    let referenceAlignment = Alignment.topRight
+                    let pageAlignment = [["index": referenceIndex, "alignment": referenceAlignment.rawValue]]
+                    node.update(["pageAlignment": pageAlignment])
+                    expect(node.pageAlignment.count).to(equal(1))
+                    expect(node.pageAlignment[referenceIndex]).to(equal(referenceAlignment))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
+                
+                it("should update 'pagePadding' prop") {
+                    let referenceIndex: Int = 1
+                    let referencePadding = UIEdgeInsets(top: 0.1, left: 0.2, bottom: 0.3, right: 0.4)
+                    let pagePadding = [["index": referenceIndex, "padding": referencePadding.toArrayOfFloat]]
+                    node.update(["pagePadding": pagePadding])
+                    expect(node.pagePadding.count).to(equal(1))
+                    expect(node.pagePadding[referenceIndex]).to(beCloseTo(referencePadding))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -183,6 +205,40 @@ class UiPageViewNodeSpec: QuickSpec {
                     node.visiblePage = 1
                     node.layoutIfNeeded()
                     expect(node.getVisiblePage()).to(beNil())
+                }
+            }
+            
+            context("enumerateTransformNodes") {
+                it("should iterate through all pages even though they are not in the nodes hierarchy") {
+                    let referenceName = "__ref_name_of_page_view_node__"
+                    node.name = referenceName
+                    let referenceNodesCount: Int = 10
+                    for _ in 0..<referenceNodesCount {
+                        let referenceNode = TransformNode()
+                        referenceNode.name = referenceName
+                        node.addChild(referenceNode)
+                    }
+                    
+                    var iterationCount: Int = 0
+                    node.enumerateTransformNodes {
+                        expect($0.name).to(equal(referenceName))
+                        iterationCount += 1
+                    }
+                    
+                    expect(iterationCount - 1).to(equal(referenceNodesCount))
+                }
+            }
+            
+            context("TransformNodeContainer") {
+                it("should return itemsCount which equals to pagesCount") {
+                    expect(node.itemsCount).to(equal(0))
+
+                    for i in 0..<10 {
+                        let referenceNode = TransformNode()
+                        node.addChild(referenceNode)
+                        expect(node.itemsCount).to(equal(node.pagesCount))
+                        expect(node.itemsCount).to(equal(i + 1))
+                    }
                 }
             }
         }

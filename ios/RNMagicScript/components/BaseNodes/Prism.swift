@@ -71,7 +71,7 @@ import SceneKit
     }
 
     @objc public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     @objc public required init(props: [String: Any]) {
@@ -94,7 +94,11 @@ import SceneKit
         }
 
         if let rotation = Convert.toQuaternion(props["rotation"]) {
-            self.rotation = rotation
+            self.orientation = rotation
+        }
+        
+        if let transform = Convert.toMatrix4(props["transform"]) {
+            self.transform = transform
         }
 
         if let scale = Convert.toVector3(props["scale"]) {
@@ -106,7 +110,7 @@ import SceneKit
         }
 
         if let anchorUuid = Convert.toString(props["anchorUuid"]) {
-            self.anchorUuid = anchorUuid;
+            self.anchorUuid = anchorUuid
         }
     }
 

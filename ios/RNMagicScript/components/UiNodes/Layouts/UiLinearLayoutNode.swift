@@ -37,6 +37,14 @@ import SceneKit
         get { return gridLayout.defaultItemPadding }
         set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
+    var itemAlignment: [Int : Alignment] {
+        get { return gridLayout.alignmentByIndex }
+        set { gridLayout.alignmentByIndex = newValue; setNeedsLayout() }
+    }
+    @objc var itemPadding: [Int : UIEdgeInsets] {
+        get { return gridLayout.paddingByIndex }
+        set { gridLayout.paddingByIndex = newValue; setNeedsLayout() }
+    }
     @objc var skipInvisibleItems: Bool {
         get { return gridLayout.skipInvisibleItems }
         set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
@@ -67,6 +75,14 @@ import SceneKit
 
         if let defaultItemPadding = Convert.toPadding(props["defaultItemPadding"]) {
             self.defaultItemPadding = defaultItemPadding
+        }
+        
+        if let itemAlignment = Convert.toItemAlignment(props["itemAlignment"]) {
+            self.itemAlignment = itemAlignment
+        }
+        
+        if let itemPadding = Convert.toItemPadding(props["itemPadding"]) {
+            self.itemPadding = itemPadding
         }
 
         if let skipInvisibleItems = Convert.toBool(props["skipInvisibleItems"]) {

@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import SceneKit
 
@@ -25,13 +25,17 @@ import SceneKit
         get { return pageLayout.height }
         set { pageLayout.height = newValue; setNeedsLayout() }
     }
-    @objc var defaultPageAlignment: Alignment {
-        get { return pageLayout.defaultItemAlignment }
-        set { pageLayout.defaultItemAlignment = newValue; setNeedsLayout() }
+    @objc var defaultPageAlignment: Alignment = .topLeft {
+        didSet { setNeedsLayout() }
     }
-    @objc var defaultPagePadding: UIEdgeInsets {
-        get { return pageLayout.defaultItemPadding }
-        set { pageLayout.defaultItemPadding = newValue; setNeedsLayout() }
+    @objc var defaultPagePadding: UIEdgeInsets = UIEdgeInsets.zero {
+        didSet { setNeedsLayout() }
+    }
+    var pageAlignment: [Int : Alignment] = [:] {
+        didSet { setNeedsLayout() }
+    }
+    @objc var pagePadding: [Int : UIEdgeInsets] = [:] {
+        didSet { setNeedsLayout() }
     }
     @objc var visiblePage: Int = -1 {
         didSet { setNeedsLayout() }
@@ -79,6 +83,14 @@ import SceneKit
         if let defaultPagePadding = Convert.toPadding(props["defaultPagePadding"]) {
             self.defaultPagePadding = defaultPagePadding
         }
+        
+        if let pageAlignment = Convert.toItemAlignment(props["pageAlignment"]) {
+            self.pageAlignment = pageAlignment
+        }
+
+        if let pagePadding = Convert.toItemPadding(props["pagePadding"]) {
+            self.pagePadding = pagePadding
+        }
 
         if let visiblePage = Convert.toInt(props["visiblePage"]) {
             self.visiblePage = visiblePage
@@ -115,24 +127,27 @@ import SceneKit
         super.setNeedsLayout()
         pageLayout.invalidate()
     }
+    
+    fileprivate func getAlignmentForPage(_ page: Int) -> Alignment {
+        return pageAlignment[page] ?? defaultPageAlignment
+    }
+    
+    fileprivate func getPaddingForPage(_ page: Int) -> UIEdgeInsets {
+        return pagePadding[page] ?? defaultPagePadding
+    }
 
     fileprivate func updateVisiblePage(_ pageIndex: Int) {
         if let currentPage = pageLayout.getItem(at: 0) {
-            if let currentPageIndex = pages.firstIndex(of: currentPage) {
-                if currentPageIndex == pageIndex {
-                    // Do not change current page to the same page.
-                    return
-                }
-            }
-
             // Hide current page
             pageLayout.removeItem(currentPage)
         }
 
         guard pageIndex >= 0 && pageIndex < pages.count else { return }
-
         let newPage = pages[pageIndex]
         pageLayout.addItem(newPage)
+        newPage.forceUpdateClipping(recursive: true)
+        pageLayout.defaultItemAlignment = getAlignmentForPage(pageIndex)
+        pageLayout.defaultItemPadding = getPaddingForPage(pageIndex)
     }
 
     @objc override func enumerateTransformNodes(_ block: (TransformNode) -> Void) {
@@ -145,3 +160,6 @@ import SceneKit
     }
 }
 
+extension UiPageViewNode: TransformNodeContainer {
+    var itemsCount: Int { return pagesCount }
+}

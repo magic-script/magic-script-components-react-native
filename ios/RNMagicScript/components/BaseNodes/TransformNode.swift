@@ -20,7 +20,7 @@ import SceneKit
 
     // var name: String // native property
     // var parentedBoneName: String
-     var skipRaycast: Bool = false
+    @objc var skipRaycast: Bool = false
     // var triggerable: Bool = true // not related to iOS
     @objc var visible: Bool {
         get { return !self.isHidden }
@@ -31,7 +31,7 @@ import SceneKit
         get { return self.pivot.position }
         set { self.pivot.position = newValue; setNeedsLayout() }
     }
-    @objc public var localPosition: SCNVector3 {
+    @objc var localPosition: SCNVector3 {
         get { return self.position }
         set { self.position = newValue; setNeedsLayout() }
     }
@@ -257,8 +257,10 @@ extension TransformNode {
             sphere.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
             sphere.firstMaterial?.diffuse.contents = UIColor.yellow
             originNode = SCNNode(geometry: sphere)
+            originNode?.applyClippingPlanesShaderModifiers(recursive: false)
         }
         addChildNode(originNode!)
+        originNode?.forceUpdateClipping()
 
         updateDebugLayout()
 #endif
@@ -273,9 +275,9 @@ extension TransformNode {
         let bounds = getBounds(scaled: false)
         borderNode = NodesFactory.createOutlineNode(size: bounds.size, cornerRadius: 0, thickness: 0, color: UIColor.yellow)
         borderNode?.applyClippingPlanesShaderModifiers(recursive: false)
-        borderNode?.forceUpdateClipping()
         borderNode?.position = SCNVector3(bounds.midX, bounds.midY, 0.0)
         addChildNode(borderNode!)
+        borderNode?.forceUpdateClipping()
     }
 #endif
 }

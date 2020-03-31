@@ -42,6 +42,12 @@ import SceneKit
         get { return gridLayout.defaultItemPadding }
         set { gridLayout.defaultItemPadding = newValue; setNeedsLayout() }
     }
+    var itemAlignment: [(column: Int, row: Int, alignment: Alignment)] = [] {
+        didSet { setNeedsLayout() }
+    }
+    var itemPadding: [(column: Int, row: Int, padding: UIEdgeInsets)] = [] {
+        didSet { setNeedsLayout() }
+    }
     @objc var skipInvisibleItems: Bool {
         get { return gridLayout.skipInvisibleItems }
         set { gridLayout.skipInvisibleItems = newValue; setNeedsLayout() }
@@ -76,6 +82,14 @@ import SceneKit
         if let defaultItemPadding = Convert.toPadding(props["defaultItemPadding"]) {
             self.defaultItemPadding = defaultItemPadding
         }
+        
+        if let itemAlignment = Convert.toItemAlignmentColumnRow(props["itemAlignment"]) {
+            self.itemAlignment = itemAlignment
+        }
+
+        if let itemPadding = Convert.toItemPaddingColumnRow(props["itemPadding"]) {
+            self.itemPadding = itemPadding
+        }
 
         if let skipInvisibleItems = Convert.toBool(props["skipInvisibleItems"]) {
             self.skipInvisibleItems = skipInvisibleItems
@@ -96,6 +110,7 @@ import SceneKit
     }
 
     @objc override func _calculateSize() -> CGSize {
+        updatePaddingAndAlignmentPerItem()
         return gridLayout.getSize()
     }
 
@@ -108,6 +123,26 @@ import SceneKit
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         gridLayout.invalidate()
+    }
+    
+    fileprivate func updatePaddingAndAlignmentPerItem() {
+        let flowDirection = gridLayout.getFlowDirection()
+        let currentRows = gridLayout.getCurrentRows()
+        let currentColumns = gridLayout.getCurrentColumns()
+        
+        var paddingByIndex: [Int: UIEdgeInsets] = [:]
+        itemPadding.forEach {
+            let index: Int = (flowDirection == .vertical) ? ($0.row * currentColumns + $0.column) : ($0.column * currentRows + $0.row)
+            paddingByIndex[index] = $0.padding
+        }
+        gridLayout.paddingByIndex = paddingByIndex
+        
+        var alignmentByIndex: [Int: Alignment] = [:]
+        itemAlignment.forEach {
+            let index: Int = (flowDirection == .vertical) ? ($0.row * currentColumns + $0.column) : ($0.column * currentRows + $0.row)
+            alignmentByIndex[index] = $0.alignment
+        }
+        gridLayout.alignmentByIndex = alignmentByIndex
     }
 }
 

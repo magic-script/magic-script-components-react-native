@@ -23,12 +23,14 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="right"
+        android:visibility="invisible"
         app:orientation="vertical" />
 
     <com.magicleap.magicscript.scene.nodes.views.CustomScrollBar
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
+        android:visibility="invisible"
         app:orientation="horizontal" />
 
 </com.magicleap.magicscript.scene.nodes.views.CustomScrollView>

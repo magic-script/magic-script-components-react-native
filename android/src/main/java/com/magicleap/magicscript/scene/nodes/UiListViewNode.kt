@@ -18,22 +18,18 @@ package com.magicleap.magicscript.scene.nodes
 
 import android.content.Context
 import android.os.Bundle
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
 import com.magicleap.magicscript.scene.nodes.layouts.manager.HorizontalLinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.LinearLayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.manager.VerticalLinearLayoutManager
-import com.magicleap.magicscript.scene.nodes.props.ItemAlignmentMap
-import com.magicleap.magicscript.scene.nodes.props.ItemPaddingMap
-import com.magicleap.magicscript.scene.nodes.props.ORIENTATION_VERTICAL
-import com.magicleap.magicscript.scene.nodes.props.Padding
+import com.magicleap.magicscript.scene.nodes.props.*
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.containsAny
@@ -68,10 +64,12 @@ open class UiListViewNode(
     }
 
     private var contentAdded = false
+    private var contentSize = Vector3()
     private var requestedScrollIndex = 0
     private var itemsPaddingMap: Map<Int, Padding>? = null
     private var defaultItemsPadding = Padding()
-    private var contentSize = Vector3()
+    private var itemAlignmentMap: Map<Int, Alignment>? = null
+    private var defaultItemAlignment = Alignment(Alignment.Vertical.TOP, Alignment.Horizontal.LEFT)
 
     init {
         // setting default values of properties
@@ -111,7 +109,11 @@ open class UiListViewNode(
         }
 
         if (props.containsAny(PROP_ITEM_PADDING, PROP_DEFAULT_ITEM_PADDING)) {
-            refreshItemsPadding()
+            readItemsPadding()
+        }
+
+        if (props.containsAny(PROP_ITEM_ALIGNMENT, PROP_DEFAULT_ITEM_ALIGNMENT)) {
+            readItemsAlignment()
         }
 
         if (updatingProperties) {
@@ -162,6 +164,7 @@ open class UiListViewNode(
                 addItem(child)
                 val itemIndex = getItems().size - 1
                 child.padding = itemsPaddingMap?.get(itemIndex) ?: defaultItemsPadding
+                child.alignment = itemAlignmentMap?.get(itemIndex) ?: defaultItemAlignment
 
                 if (itemIndex == requestedScrollIndex) {
                     scrollToItem(requestedScrollIndex)
@@ -283,32 +286,28 @@ open class UiListViewNode(
             containerProps.putString(UiLinearLayout.PROP_ORIENTATION, orientation)
         }
 
-        props.read<String>(PROP_DEFAULT_ITEM_ALIGNMENT)?.let { alignment ->
-            containerProps.putString(UiLinearLayout.PROP_DEFAULT_ITEM_ALIGNMENT, alignment)
-        }
-
         props.read<Boolean>(PROP_SKIP_INVISIBLE_ITEMS)?.let { skip ->
             containerProps.putBoolean(UiBaseLayout.PROP_SKIP_INVISIBLE_ITEMS, skip)
-        }
-
-        props.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)?.let { map ->
-            val alignmentsArray = JavaOnlyArray()
-            map.alignments.forEach { (index, alignment) ->
-                val alignmentMap = JavaOnlyMap.of("index", index, "alignment", alignment)
-                alignmentsArray.pushMap(alignmentMap)
-            }
-            containerProps.putArray(UiLinearLayout.DEFAULT_ITEM_ALIGNMENT, alignmentsArray)
         }
 
         return containerProps
     }
 
-    private fun refreshItemsPadding() {
-        this.itemsPaddingMap = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)?.paddings
-        this.defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
+    private fun readItemsPadding() {
+        itemsPaddingMap = properties.read<ItemPaddingMap>(PROP_ITEM_PADDING)?.paddings
+        defaultItemsPadding = properties.read<Padding>(PROP_DEFAULT_ITEM_PADDING)!!
 
         getItems().forEachIndexed { index, item ->
             item.padding = itemsPaddingMap?.get(index) ?: defaultItemsPadding
+        }
+    }
+
+    private fun readItemsAlignment() {
+        itemAlignmentMap = properties.read<ItemAlignmentMap>(PROP_ITEM_ALIGNMENT)?.alignments
+        defaultItemAlignment = properties.read<Alignment>(PROP_DEFAULT_ITEM_ALIGNMENT)!!
+
+        getItems().forEachIndexed { index, item ->
+            item.alignment = itemAlignmentMap?.get(index) ?: defaultItemAlignment
         }
     }
 

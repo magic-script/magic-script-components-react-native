@@ -16,7 +16,10 @@ import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.*
+import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
+import com.magicleap.magicscript.utils.putDefault
+import com.magicleap.magicscript.utils.readColor
 import kotlin.math.max
 
 open class UiListViewItemNode(
@@ -41,7 +44,7 @@ open class UiListViewItemNode(
             }
         }
 
-    var padding = Padding()
+    var contentPadding = Padding()
         set(value) {
             if (field != value) {
                 field = value
@@ -49,7 +52,7 @@ open class UiListViewItemNode(
             }
         }
 
-    var alignment = Alignment()
+    var contentAlignment = Alignment()
 
     private var lastContentBounds = AABB()
 
@@ -62,11 +65,7 @@ open class UiListViewItemNode(
     }
 
     override fun provideDesiredSize(): Vector2 {
-        val originalWidth = lastContentBounds.size().x + padding.left + padding.right
-        val originalHeight = lastContentBounds.size().y + padding.top + padding.bottom
-        val width = max(originalWidth, minSize.x)
-        val height = max(originalHeight, minSize.y)
-        return Vector2(width, height)
+        return calculateSize()
     }
 
     override fun onViewLoaded(viewRenderable: Renderable) {
@@ -82,6 +81,10 @@ open class UiListViewItemNode(
 
     override fun addContent(child: ReactNode) {
         super.addContent(child)
+        if (child is TransformNode) {
+            lastContentBounds = child.getBounding()
+            adjustContentPosition(child, lastContentBounds)
+        }
         if (contentNode.children.size > 1) {
             logMessage("Only one node can be added as list item child", true)
         }
@@ -106,26 +109,27 @@ open class UiListViewItemNode(
         val centerOffsetX = content.localPosition.x - contentBounds.center().x
         val centerOffsetY = content.localPosition.y - contentBounds.center().y
 
-        val parentSize = getBounding().size()
-        val space = parentSize - contentBounds.size()
+        val parentSize = calculateSize()
+        val spaceX = parentSize.x - contentBounds.size().x
+        val spaceY = parentSize.y - contentBounds.size().y
 
-        val alignmentOffsetX = space.x * alignment.horizontal.centerOffset
-        val alignmentOffsetY = space.y * alignment.vertical.centerOffset
+        val alignmentOffsetX = spaceX * contentAlignment.horizontal.centerOffset
+        val alignmentOffsetY = spaceY * contentAlignment.vertical.centerOffset
 
-        val paddingXDiff = when (alignment.horizontal) {
-            Alignment.Horizontal.LEFT -> padding.left
-            Alignment.Horizontal.CENTER -> (padding.left - padding.right) / 2
-            Alignment.Horizontal.RIGHT -> -padding.right
+        val paddingOffsetX = when (contentAlignment.horizontal) {
+            Alignment.Horizontal.LEFT -> contentPadding.left
+            Alignment.Horizontal.CENTER -> (contentPadding.left - contentPadding.right) / 2
+            Alignment.Horizontal.RIGHT -> -contentPadding.right
         }
 
-        val paddingYDiff = when (alignment.vertical) {
-            Alignment.Vertical.TOP -> -padding.top
-            Alignment.Vertical.CENTER -> (padding.bottom - padding.top) / 2
-            Alignment.Vertical.BOTTOM -> padding.bottom
+        val paddingOffsetY = when (contentAlignment.vertical) {
+            Alignment.Vertical.TOP -> -contentPadding.top
+            Alignment.Vertical.CENTER -> (contentPadding.bottom - contentPadding.top) / 2
+            Alignment.Vertical.BOTTOM -> contentPadding.bottom
         }
 
-        val posX = centerOffsetX + alignmentOffsetX + paddingXDiff / 2
-        val posY = centerOffsetY + alignmentOffsetY + paddingYDiff / 2
+        val posX = centerOffsetX + alignmentOffsetX + paddingOffsetX
+        val posY = centerOffsetY + alignmentOffsetY + paddingOffsetY
         content.localPosition = Vector3(posX, posY, CONTENT_Z_OFFSET)
     }
 
@@ -134,5 +138,13 @@ open class UiListViewItemNode(
         if (androidColor != null) {
             view.setBackgroundColor(androidColor)
         }
+    }
+
+    private fun calculateSize(): Vector2 {
+        val originalWidth = lastContentBounds.size().x + contentPadding.left + contentPadding.right
+        val originalHeight = lastContentBounds.size().y + contentPadding.top + contentPadding.bottom
+        val width = max(originalWidth, minSize.x)
+        val height = max(originalHeight, minSize.y)
+        return Vector2(width, height)
     }
 }

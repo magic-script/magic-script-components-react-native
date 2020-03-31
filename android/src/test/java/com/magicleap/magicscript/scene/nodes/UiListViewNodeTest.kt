@@ -29,7 +29,6 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiBaseLayout
 import com.magicleap.magicscript.scene.nodes.layouts.UiLinearLayout
-import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.views.CustomScrollView
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
@@ -133,23 +132,6 @@ class UiListViewNodeTest {
         val containerNode = node.contentNode.children.firstOrNull()
         containerNode shouldBeInstanceOf UiLinearLayout::class
         (containerNode as UiLinearLayout).childrenList shouldContain listItem
-    }
-
-    @Test
-    fun `should apply default items alignment on the container`() {
-        val alignment = "top-right"
-        val props = reactMapOf(UiListViewNode.PROP_DEFAULT_ITEM_ALIGNMENT, alignment)
-        val node = createNodeWithViewSpy(props)
-        val listItem = UiListViewItemNode(reactMapOf(), context, mock(), mock())
-
-        node.build()
-        node.addContent(listItem)
-
-        val containerNode = node.contentNode.children.firstOrNull()
-        containerNode shouldBeInstanceOf UiLinearLayout::class
-        val layoutParams = (containerNode as UiLinearLayout).getLayoutParams()
-        layoutParams.itemsAlignment[listItem]?.vertical shouldEqual Alignment.Vertical.TOP
-        layoutParams.itemsAlignment[listItem]?.horizontal shouldEqual Alignment.Horizontal.RIGHT
     }
 
     @Test

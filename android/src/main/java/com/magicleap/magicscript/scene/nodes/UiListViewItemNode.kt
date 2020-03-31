@@ -7,18 +7,16 @@ import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.RenderPriority
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.Layoutable
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.scene.nodes.props.Padding
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.logMessage
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.readColor
+import com.magicleap.magicscript.utils.*
 import kotlin.math.max
 
 open class UiListViewItemNode(
@@ -50,6 +48,8 @@ open class UiListViewItemNode(
                 setNeedsRebuild(true)
             }
         }
+
+    var alignment = Alignment()
 
     private var lastContentBounds = AABB()
 
@@ -90,21 +90,43 @@ open class UiListViewItemNode(
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
 
-        // align the content node
         val content = contentNode.children.firstOrNull() as? TransformNode
         if (content != null) {
             val contentBounds = content.getBounding()
-
             if (!contentBounds.equalInexact(lastContentBounds)) {
-                val paddingXDiff = padding.left - padding.right
-                val paddingYDiff = padding.bottom - padding.top
-                val offsetX = content.localPosition.x - contentBounds.center().x + paddingXDiff / 2
-                val offsetY = content.localPosition.y - contentBounds.center().y + paddingYDiff / 2
-                content.localPosition = Vector3(offsetX, offsetY, CONTENT_Z_OFFSET)
-                lastContentBounds = contentBounds
                 setNeedsRebuild(true) // need to create a new background
+                lastContentBounds = contentBounds
             }
+
+            adjustContentPosition(content, contentBounds)
         }
+    }
+
+    private fun adjustContentPosition(content: TransformNode, contentBounds: AABB) {
+        val centerOffsetX = content.localPosition.x - contentBounds.center().x
+        val centerOffsetY = content.localPosition.y - contentBounds.center().y
+
+        val parentSize = getBounding().size()
+        val space = parentSize - contentBounds.size()
+
+        val alignmentOffsetX = space.x * alignment.horizontal.centerOffset
+        val alignmentOffsetY = space.y * alignment.vertical.centerOffset
+
+        val paddingXDiff = when (alignment.horizontal) {
+            Alignment.Horizontal.LEFT -> padding.left
+            Alignment.Horizontal.CENTER -> (padding.left - padding.right) / 2
+            Alignment.Horizontal.RIGHT -> -padding.right
+        }
+
+        val paddingYDiff = when (alignment.vertical) {
+            Alignment.Vertical.TOP -> -padding.top
+            Alignment.Vertical.CENTER -> (padding.bottom - padding.top) / 2
+            Alignment.Vertical.BOTTOM -> padding.bottom
+        }
+
+        val posX = centerOffsetX + alignmentOffsetX + paddingXDiff / 2
+        val posY = centerOffsetY + alignmentOffsetY + paddingYDiff / 2
+        content.localPosition = Vector3(posX, posY, CONTENT_Z_OFFSET)
     }
 
     private fun setBackgroundColor(props: Bundle) {

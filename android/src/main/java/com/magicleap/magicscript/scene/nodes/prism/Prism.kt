@@ -78,6 +78,7 @@ class Prism(
     private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var requestedScale: Vector3? = null
     private var screenSizePx: Vector2
+    private var autoRotateInEditMode = true
 
     private var beingTouched: Boolean = false
         private set(value) {
@@ -268,18 +269,6 @@ class Prism(
         adjustMenuPosition()
     }
 
-    private fun movePrism(cameraPos: Vector3, prevCameraPos: Vector3) {
-        val camToPrismDiff = Vector3.subtract(localPosition, cameraPos)
-        val camToPrismDistance =
-            camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
-
-        // Limiting the movement speed since sometimes the [dist] is near
-        // to infinity when moving device (ar core bug?)
-        val speed = min(1 + camToPrismDistance, 2f).pow(2)
-
-        val diff = Vector3.subtract(cameraPos, prevCameraPos).scaled(speed)
-        localPosition = Vector3.add(localPosition, diff)
-    }
 
     private fun adjustMenuPosition() {
         val scaleY = container?.localScale?.y ?: 1f
@@ -288,11 +277,14 @@ class Prism(
     }
 
     private fun adjustMenuRotation(cameraPosition: Vector3) {
+        menuNode.worldRotation = getLookAtCameraRotation(cameraPosition)
+    }
+
+    private fun getLookAtCameraRotation(cameraPosition: Vector3): Quaternion {
         val prismFlatPosition = Vector3(worldPosition.x, 0f, worldPosition.z)
         val cameraFlatPosition = Vector3(cameraPosition.x, 0f, cameraPosition.z)
         val direction = prismFlatPosition - cameraFlatPosition
-        val lookRotation = Quaternion.lookRotation(direction, Vector3.up())
-        menuNode.worldRotation = lookRotation
+        return Quaternion.lookRotation(direction, Vector3.up())
     }
 
     private fun adjustMenuVisibility(cameraPosition: Vector3) {
@@ -319,6 +311,20 @@ class Prism(
             } else {
                 menuNode.isVisible = false
             }
+        }
+    }
+
+    private fun movePrism(cameraPos: Vector3, prevCameraPos: Vector3) {
+        val cameraToPrismDist = Vector3.subtract(localPosition, cameraPos).length()
+        val diff = Vector3.subtract(cameraPos, prevCameraPos)
+        val speed = min(1 + cameraToPrismDist, 2f).pow(2)
+        val cameraRot = scene?.camera?.worldRotation ?: Quaternion()
+        val rayDirection = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
+        localPosition = cameraPos + rayDirection + diff.scaled(speed)
+
+        // look at camera
+        if (autoRotateInEditMode) {
+            container?.localRotation = getLookAtCameraRotation(cameraPos)
         }
     }
 

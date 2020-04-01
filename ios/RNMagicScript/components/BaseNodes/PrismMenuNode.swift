@@ -108,6 +108,5 @@ class PrismMenuNode: UiNode {
         linearLayout.setDebugMode(debug)
         titleNode.setDebugMode(debug)
         actionButton.setDebugMode(debug)
-        contentNode.resetClippingPlanesShaderModifiers(recursive: true)
     }
 }

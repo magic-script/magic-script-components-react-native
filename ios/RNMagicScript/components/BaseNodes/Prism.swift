@@ -95,7 +95,7 @@ import SceneKit
     @objc func setupPrism() {
         addChildNode(rootNode)
         prismMenu = PrismContextMenuBuilder.build(for: self)
-        prismMenu.debug = true
+        prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
         addChildNode(prismMenu)
     }
 
@@ -183,6 +183,7 @@ import SceneKit
         prismMenu.position = SCNVector3(0.0, size.y / 2 + 0.25, 0.0)
         prismMenu.setNeedsLayout()
         prismMenu.layoutIfNeeded()
+        prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
     }
     
     @objc func updateDebugMode() {
@@ -200,6 +201,8 @@ import SceneKit
         } else {
             debugNode?.removeFromParentNode()
         }
+        prismMenu.debug = debug
+        prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
 #endif
     }
 

@@ -25,6 +25,8 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.collision.Ray
+import com.google.ar.sceneform.collision.RayHit
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
@@ -231,7 +233,7 @@ class Prism(
             localPosition = Vector3.add(localPosition, diff)
         }
 
-        adjustMenuVisibility()
+        adjustMenuVisibility(position)
         adjustMenuRotation(position)
 
         lastCameraPosition = position
@@ -287,11 +289,22 @@ class Prism(
         menuNode.worldRotation = lookRotation
     }
 
-    private fun adjustMenuVisibility() {
+    private fun adjustMenuVisibility(cameraPosition: Vector3) {
         arResourcesProvider.getCamera()?.let { camera ->
-            val viewPos = camera.worldToScreenPoint(worldPosition)
-            val showMenu = viewPos.x in 0f..screenSizePx.x && viewPos.y in 0f..screenSizePx.y
-            if (showMenu) {
+            val box = BoundingBox(size, worldPosition)
+            box.rotation = container?.worldRotation ?: Quaternion()
+            val rayDirection = Vector3.forward().rotatedBy(camera.worldRotation)
+            val ray = Ray(cameraPosition, rayDirection)
+
+            // drawPoint(Vector3(cameraPosition + rayDirection))
+
+            val rayHit = RayHit()
+            val collided = box.getRayIntersection(ray, rayHit)
+
+            val onScreenPosition = camera.worldToScreenPoint(worldPosition)
+            val prismCenterOnScreen = isInsideScreen(onScreenPosition)
+
+            if (collided || prismCenterOnScreen) {
                 if (!menuNode.isVisible) {
                     menuNode.showAnimated()
                 }
@@ -299,6 +312,10 @@ class Prism(
                 menuNode.isVisible = false
             }
         }
+    }
+
+    private fun isInsideScreen(point: Vector3): Boolean {
+        return point.x in 0f..screenSizePx.x && point.y in 0f..screenSizePx.y
     }
 
     private fun setSize(props: Bundle) {

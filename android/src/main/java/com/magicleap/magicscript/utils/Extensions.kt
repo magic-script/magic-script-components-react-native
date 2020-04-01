@@ -92,7 +92,7 @@ operator fun Vector3.div(other: Float): Vector3 {
 }
 
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
-    return Utils.rotateVector(this, quaternion)
+    return Quaternion.rotateVector(quaternion, this)
 }
 
 fun Bounding.scaled(horizontalScale: Float, verticalScale: Float): Bounding {

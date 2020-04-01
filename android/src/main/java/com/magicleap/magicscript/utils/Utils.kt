@@ -165,27 +165,6 @@ class Utils {
             return AABB(minEdge, maxEdge)
         }
 
-        /**
-         * Rotates vector by a quaternion
-         */
-        fun rotateVector(v: Vector3, quat: Quaternion): Vector3 {
-            val u = Vector3(quat.x, quat.y, quat.z)
-            val s = quat.w
-
-            val a = 2.0f * Vector3.dot(u, v)
-            val p1 = Vector3(u.x * a, u.y * a, u.z * a)
-
-            val b = s * s - Vector3.dot(u, u)
-            val p2 = Vector3(v.x * b, v.y * b, v.z * b)
-
-            val c = 2.0f * s
-            val cross = Vector3.cross(u, v)
-            val p3 = Vector3(cross.x * c, cross.y * c, cross.z * c)
-
-            val sum1 = Vector3.add(p1, p2)
-            return Vector3.add(sum1, p3)
-        }
-
         fun calculateMaterialClipping(nodeBounds: AABB, clipBounds: AABB): Bounding {
             val intersecting = !nodeBounds.intersection(clipBounds).equalInexact(AABB())
             if (!intersecting) {

@@ -24,7 +24,6 @@ struct PrismContextMenuBuilder {
     static func build(for prism: Prism) -> PrismMenuNode? {
         let prismContextMenu = PrismMenuNode()
         prismContextMenu.prism = prism
-//        prismContextMenu.setDebugMode(true)
         return prismContextMenu
     }
 }
@@ -33,8 +32,8 @@ class PrismMenuNode: UiNode {
     var text: String = "" {
         didSet {
             titleNode.text = text + "long long long"
-            titleNode.layoutIfNeeded()
-            linearLayout.layoutIfNeeded()
+            setNeedsLayout()
+            updateLayout()
         }
     }
 
@@ -78,6 +77,9 @@ class PrismMenuNode: UiNode {
         linearLayout.addChild(actionButton)
 
         contentNode.addChildNode(linearLayout)
+        contentNode.resetClippingPlanesShaderModifiers(recursive: true)
+
+        alignment = .centerCenter
     }
 
     @objc override func _calculateSize() -> CGSize {
@@ -93,6 +95,8 @@ class PrismMenuNode: UiNode {
     @objc override func setNeedsLayout() {
         super.setNeedsLayout()
         linearLayout.setNeedsLayout()
+        titleNode.setNeedsLayout()
+        actionButton.setNeedsLayout()
     }
 
     @objc override func hitTest(ray: Ray) -> BaseNode? {
@@ -104,5 +108,6 @@ class PrismMenuNode: UiNode {
         linearLayout.setDebugMode(debug)
         titleNode.setDebugMode(debug)
         actionButton.setDebugMode(debug)
+        contentNode.resetClippingPlanesShaderModifiers(recursive: true)
     }
 }

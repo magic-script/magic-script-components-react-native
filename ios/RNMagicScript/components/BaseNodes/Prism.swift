@@ -95,6 +95,7 @@ import SceneKit
     @objc func setupPrism() {
         addChildNode(rootNode)
         prismMenu = PrismContextMenuBuilder.build(for: self)
+        prismMenu.debug = true
         addChildNode(prismMenu)
     }
 
@@ -182,7 +183,6 @@ import SceneKit
         prismMenu.position = SCNVector3(0.0, size.y / 2 + 0.25, 0.0)
         prismMenu.setNeedsLayout()
         prismMenu.layoutIfNeeded()
-        prismMenu.setDebugMode(true)
     }
     
     @objc func updateDebugMode() {

@@ -31,6 +31,21 @@ extension SCNNode {
         }
     }
     
+    func resetClippingPlanesShaderModifiers(recursive: Bool = false) {
+        guard let modifiers = SCNNode.clippingPlanesShaderModifiers else { return }
+        invokeClosure(recursive: recursive, input: modifiers) { (node, input) -> ([SCNShaderModifierEntryPoint : String]) in
+            guard let nodeGeometry = node.geometry else { return modifiers }
+            if nodeGeometry.shaderModifiers != nil {
+                nodeGeometry.shaderModifiers!.removeValue(forKey: .fragment)
+                nodeGeometry.shaderModifiers!.removeValue(forKey: .geometry)
+                if nodeGeometry.shaderModifiers!.isEmpty {
+                   nodeGeometry.shaderModifiers = nil
+                }
+            }
+            return modifiers
+        }
+    }
+
     func setClippingPlanes(_ planes: [SCNVector4], recursive: Bool = false) {
         guard let _ = SCNNode.clippingPlanesShaderModifiers else { return }
         invokeClosure(recursive: recursive, input: planes) { node, input -> ([SCNVector4]) in

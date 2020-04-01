@@ -221,16 +221,9 @@ class Prism(
         }
 
         if (beingTouched) {
-            val camToPrismDiff = Vector3.subtract(localPosition, position)
-            val camToPrismDistance =
-                camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
-
-            // Limiting the movement speed since sometimes the [dist] is near
-            // to infinity when moving device (ar core bug?)
-            val speed = min(1 + camToPrismDistance, 2f).pow(2)
-
-            val diff = Vector3.subtract(position, lastCameraPosition).scaled(speed)
-            localPosition = Vector3.add(localPosition, diff)
+            lastCameraPosition?.let {
+                movePrism(position, it)
+            }
         }
 
         adjustMenuVisibility(position)
@@ -275,6 +268,19 @@ class Prism(
         adjustMenuPosition()
     }
 
+    private fun movePrism(cameraPos: Vector3, prevCameraPos: Vector3) {
+        val camToPrismDiff = Vector3.subtract(localPosition, cameraPos)
+        val camToPrismDistance =
+            camToPrismDiff.x.pow(2) + camToPrismDiff.y.pow(2) + camToPrismDiff.z.pow(2)
+
+        // Limiting the movement speed since sometimes the [dist] is near
+        // to infinity when moving device (ar core bug?)
+        val speed = min(1 + camToPrismDistance, 2f).pow(2)
+
+        val diff = Vector3.subtract(cameraPos, prevCameraPos).scaled(speed)
+        localPosition = Vector3.add(localPosition, diff)
+    }
+
     private fun adjustMenuPosition() {
         val scaleY = container?.localScale?.y ?: 1f
         val posY = (size.y * scaleY) / 2 + MENU_MARGIN_BOTTOM
@@ -291,7 +297,9 @@ class Prism(
 
     private fun adjustMenuVisibility(cameraPosition: Vector3) {
         arResourcesProvider.getCamera()?.let { camera ->
-            val box = BoundingBox(size, worldPosition)
+            val scale = container?.localScale ?: Vector3.one()
+            val boxSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
+            val box = BoundingBox(boxSize, worldPosition)
             box.rotation = container?.worldRotation ?: Quaternion()
             val rayDirection = Vector3.forward().rotatedBy(camera.worldRotation)
             val ray = Ray(cameraPosition, rayDirection)

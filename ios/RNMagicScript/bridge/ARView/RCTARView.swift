@@ -26,7 +26,11 @@ import SceneKit
     fileprivate var rayCastNode: SCNNode?
 #endif
 
+#if targetEnvironment(simulator)
+    static var instance: RCTARView!
+#else
     static fileprivate var instance: RCTARView!
+#endif
     @objc static public var arSession: ARSession {
         return instance.arView.session
     }
@@ -143,7 +147,7 @@ import SceneKit
         view.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
         view.defaultCameraController.maximumVerticalAngle = 45
         view.defaultCameraController.inertiaEnabled = true
-        view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 1.5)
+        view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 2.5)
     #endif
 
         // Set camera's range
@@ -198,6 +202,12 @@ import SceneKit
                                                                      action: #selector(GestureHandling.handleLongPressGesture(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
+
+        // Add pinch gesture
+        let pinchGestureRecogrnizer = UIPinchGestureRecognizer(target: gestureHandler,
+                                                                   action: #selector(GestureHandling.handlePinchGesture(_:)))
+
+        addGestureRecognizer(pinchGestureRecogrnizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {

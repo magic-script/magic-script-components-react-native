@@ -25,6 +25,7 @@ import SceneKit
         let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
         debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
 #endif
+        prismMenu.isHidden = !isPointed
        }
     }
     @objc public var size: SCNVector3 = SCNVector3.zero {
@@ -65,13 +66,15 @@ import SceneKit
     @objc fileprivate var clippingPlanes: [Plane]?
     @objc fileprivate var clippingPlanesAsVector4: [SCNVector4]?
 
+    private var prismMenu: PrismMenuNode!
+
     @objc override init() {
         super.init()
         setupPrism()
     }
 
     @objc public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 
     @objc public required init(props: [String: Any]) {
@@ -80,8 +83,19 @@ import SceneKit
         update(props)
     }
 
+    override open var name: String? {
+        didSet {
+            if let prismName = name {
+                prismMenu.text = prismName
+                updateSize()
+            }
+        }
+    }
+
     @objc func setupPrism() {
         addChildNode(rootNode)
+        prismMenu = PrismContextMenuBuilder.build(for: self)
+        addChildNode(prismMenu)
     }
 
     @objc override func update(_ props: [String: Any]) {
@@ -94,11 +108,7 @@ import SceneKit
         }
 
         if let rotation = Convert.toQuaternion(props["rotation"]) {
-            self.orientation = rotation
-        }
-        
-        if let transform = Convert.toMatrix4(props["transform"]) {
-            self.transform = transform
+            self.rotation = rotation
         }
 
         if let scale = Convert.toVector3(props["scale"]) {
@@ -110,7 +120,7 @@ import SceneKit
         }
 
         if let anchorUuid = Convert.toString(props["anchorUuid"]) {
-            self.anchorUuid = anchorUuid
+            self.anchorUuid = anchorUuid;
         }
     }
 
@@ -129,6 +139,7 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
+        if let menuHitNode = prismMenu.hitTest(ray: ray) { return menuHitNode }
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }
@@ -167,6 +178,11 @@ import SceneKit
         debugNode?.scale = size
 #endif
         editNode?.size = size
+
+        prismMenu.position = SCNVector3(0.0, size.y / 2 + 0.25, 0.0)
+        prismMenu.setNeedsLayout()
+        prismMenu.layoutIfNeeded()
+        prismMenu.setDebugMode(true)
     }
     
     @objc func updateDebugMode() {
@@ -197,9 +213,13 @@ import SceneKit
 
             if editNode!.parent == nil {
                 addChildNode(editNode!)
+                let billboardConstraint = SCNBillboardConstraint()
+                billboardConstraint.freeAxes = [.Y]
+                constraints = [billboardConstraint]
             }
         } else {
             editNode?.removeFromParentNode()
+            constraints?.removeAll()
         }
     }
 }

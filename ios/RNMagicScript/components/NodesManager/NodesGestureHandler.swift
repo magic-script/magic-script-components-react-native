@@ -25,6 +25,7 @@ protocol NodesGestureHandling {
 
     func handleNodeTap(_ node: BaseNode?)
     func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State)
+    func handlePinchGesture(_ sender: UIPinchGestureRecognizer)
 }
 
 class NodesGestureHandler: NodesGestureHandling {
@@ -72,6 +73,15 @@ class NodesGestureHandler: NodesGestureHandling {
             longPressedNode = nil
         default:
             print("LongPressGesture unsupported state.")
+        }
+    }
+
+    func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
+        if let result = NodesManager.instance.scene?.prisms.filter({ $0.isPointed && $0.editMode }) {
+            if let prismScale = result.first?.scale {
+                result.first?.scale = prismScale * sender.scale
+                result.first?.updateClipping()
+            }
         }
     }
 }

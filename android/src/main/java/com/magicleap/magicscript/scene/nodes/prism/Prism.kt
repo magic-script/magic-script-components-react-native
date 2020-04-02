@@ -38,8 +38,6 @@ import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
-import kotlin.math.min
-import kotlin.math.pow
 
 class Prism(
     initProps: ReadableMap,
@@ -70,7 +68,7 @@ class Prism(
     private var container: PrismContentNode? = null
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
-    private var lastCameraPosition: Vector3? = null
+    private var lastCameraPose: Pose? = null
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -208,6 +206,12 @@ class Prism(
             return
         }
 
+        val cameraRotation = scene?.camera?.localRotation ?: Quaternion()
+        val cameraPose = createPose(position, cameraRotation)
+
+        adjustMenuVisibility(position)
+        adjustMenuRotation(position)
+
         requestedAnchorPose?.let {
             tryToAnchorAtPose(it)
         }
@@ -216,21 +220,12 @@ class Prism(
             tryToAnchorAtUuid(it)
         }
 
-        if (lastCameraPosition == null) {
-            lastCameraPosition = position
-            return
-        }
-
         if (beingTouched) {
-            lastCameraPosition?.let {
-                movePrism(position, it)
+            lastCameraPose?.let { lastPose ->
+                movePrism(cameraPose, lastPose)
             }
         }
-
-        adjustMenuVisibility(position)
-        adjustMenuRotation(position)
-
-        lastCameraPosition = position
+        lastCameraPose = cameraPose
     }
 
     override fun onPause() {
@@ -288,18 +283,14 @@ class Prism(
     }
 
     private fun adjustMenuVisibility(cameraPosition: Vector3) {
-        arResourcesProvider.getCamera()?.let { camera ->
+        scene?.camera?.let { camera ->
             val scale = container?.localScale ?: Vector3.one()
             val boxSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
             val box = BoundingBox(boxSize, worldPosition)
             box.rotation = container?.worldRotation ?: Quaternion()
             val rayDirection = Vector3.forward().rotatedBy(camera.worldRotation)
             val ray = Ray(cameraPosition, rayDirection)
-
-            // drawPoint(Vector3(cameraPosition + rayDirection))
-
-            val rayHit = RayHit()
-            val collided = box.getRayIntersection(ray, rayHit)
+            val collided = box.getRayIntersection(ray, RayHit())
 
             val onScreenPosition = camera.worldToScreenPoint(worldPosition)
             val prismCenterOnScreen = isInsideScreen(onScreenPosition)
@@ -314,17 +305,31 @@ class Prism(
         }
     }
 
-    private fun movePrism(cameraPos: Vector3, prevCameraPos: Vector3) {
-        val cameraToPrismDist = Vector3.subtract(localPosition, cameraPos).length()
-        val diff = Vector3.subtract(cameraPos, prevCameraPos)
-        val speed = min(1 + cameraToPrismDist, 2f).pow(2)
-        val cameraRot = scene?.camera?.worldRotation ?: Quaternion()
-        val rayDirection = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
-        localPosition = cameraPos + rayDirection + diff.scaled(speed)
+    private fun movePrism(cameraPose: Pose, prevCameraPose: Pose) {
+        val cameraPosition = cameraPose.getTranslationVector()
+        val prevCameraPosition = prevCameraPose.getTranslationVector()
+        val cameraRot = cameraPose.getRotation()
+        val cameraRotPrev = prevCameraPose.getRotation()
+
+        val distCurrent = (localPosition - cameraPosition).length()
+        val distPrev = (localPosition - prevCameraPosition).length()
+
+        val rayPrev = Vector3.forward().rotatedBy(cameraRotPrev).scaled(distPrev)
+        val rayCurrent = Vector3.forward().rotatedBy(cameraRot).scaled(distPrev)
+        val rayDiff = rayCurrent - rayPrev
+
+        val xyzDiff = Vector3.subtract(cameraPosition, prevCameraPosition)
+
+        // forward <-> backward movement
+        val zAxisMultiplier = 2f
+        val distDifference = (distCurrent - distPrev) * zAxisMultiplier
+        val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
+
+        localPosition += rayDiff + xyzDiff - zOffset
 
         // look at camera
         if (autoRotateInEditMode) {
-            container?.localRotation = getLookAtCameraRotation(cameraPos)
+            container?.localRotation = getLookAtCameraRotation(cameraPosition)
         }
     }
 

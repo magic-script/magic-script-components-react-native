@@ -104,11 +104,6 @@ abstract class ArResourcesProvider {
     abstract fun getArScene(): Scene?
 
     /**
-     * Returns current Camera if already initialized or null otherwise
-     */
-    abstract fun getCamera(): Camera?
-
-    /**
      * Returns true if ARCore native libraries are loaded (this is true after AR fragment
      * is created). Before ARCore is not loaded we cannot load a Renderable.
      */

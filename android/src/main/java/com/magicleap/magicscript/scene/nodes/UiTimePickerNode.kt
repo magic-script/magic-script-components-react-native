@@ -22,8 +22,8 @@ import android.os.BaseBundle
 import android.os.Bundle
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
@@ -59,6 +59,7 @@ open class UiTimePickerNode(
     var onTimeConfirmed: ((time: String) -> Unit)? = null
 
     private lateinit var timeFormat: VerySimpleDateFormat
+    private var defaultTimeFormat = VerySimpleDateFormat(TIME_FORMAT_DEFAULT, Locale.getDefault())
     private var defaultTime: Date? = null
     private var time: Date? = null
 
@@ -127,7 +128,8 @@ open class UiTimePickerNode(
     private fun applyDefaultTime(props: BaseBundle) {
         if (props.containsKey(PROP_DEFAULT_TIME)) {
             props.getString(PROP_DEFAULT_TIME)?.let {
-                time = timeFormat.parse(it)
+                time = defaultTimeFormat.parse(it)
+                view.value.setText(timeFormat.format(time), TextView.BufferType.EDITABLE)
             }
         }
     }
@@ -135,7 +137,8 @@ open class UiTimePickerNode(
     private fun applyTime(props: Bundle) {
         if (props.containsKey(PROP_TIME)) {
             props.getString(PROP_TIME)?.let {
-                time = timeFormat.parse(it)
+                time = defaultTimeFormat.parse(it)
+                view.value.setText(timeFormat.format(time), TextView.BufferType.EDITABLE)
             }
         }
     }
@@ -144,7 +147,7 @@ open class UiTimePickerNode(
         if (props.getBoolean(PROP_SHOW_HINT)) {
             view.value.hint = timeFormat.pattern
         } else {
-            if(defaultTime == null) {
+            if (defaultTime == null) {
                 defaultTime = Date()
             }
             view.value.hint = timeFormat.format(defaultTime)

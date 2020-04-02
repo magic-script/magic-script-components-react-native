@@ -21,17 +21,17 @@ import SceneKit
 protocol PrismInteracting { }
 
 struct PrismContextMenuBuilder {
-    static func build(for prism: Prism) -> PrismMenuNode? {
-        let prismContextMenu = PrismMenuNode()
+    static func build(for prism: Prism) -> PrismContextMenu? {
+        let prismContextMenu = PrismContextMenu()
         prismContextMenu.prism = prism
         return prismContextMenu
     }
 }
 
-class PrismMenuNode: UiNode {
+class PrismContextMenu: UiNode {
     var text: String = "" {
         didSet {
-            titleNode.text = text + "long long long"
+            titleNode.text = text
             setNeedsLayout()
             updateLayout()
         }
@@ -39,11 +39,11 @@ class PrismMenuNode: UiNode {
 
     weak var prism: Prism? {
         didSet {
-            if let prism = prism {
-                actionButton.onActivate = { _ in
-                    prism.editMode = prism.editMode ? false : true
+            if prism != nil {
+                actionButton.onActivate = { [weak self] _ in
+                    self?.prism?.editMode = self?.prism?.editMode ?? false ? false : true
                 #if targetEnvironment(simulator)
-                    RCTARView.instance.arView.allowsCameraControl = prism.editMode ? false : true
+                    RCTARView.instance.arView.allowsCameraControl = self?.prism?.editMode ?? false ? false : true
                 #endif
                 }
             } else {

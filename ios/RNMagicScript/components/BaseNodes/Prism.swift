@@ -66,7 +66,7 @@ import SceneKit
     @objc fileprivate var clippingPlanes: [Plane]?
     @objc fileprivate var clippingPlanesAsVector4: [SCNVector4]?
 
-    private var prismMenu: PrismMenuNode!
+    private var prismMenu: PrismContextMenu!
 
     @objc override init() {
         super.init()
@@ -96,6 +96,9 @@ import SceneKit
         addChildNode(rootNode)
         prismMenu = PrismContextMenuBuilder.build(for: self)
         prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
+        let billboardConstraint = SCNBillboardConstraint()
+        billboardConstraint.freeAxes = [.Y]
+        prismMenu.constraints = [billboardConstraint]
         addChildNode(prismMenu)
     }
 
@@ -216,13 +219,9 @@ import SceneKit
 
             if editNode!.parent == nil {
                 addChildNode(editNode!)
-                let billboardConstraint = SCNBillboardConstraint()
-                billboardConstraint.freeAxes = [.Y]
-                constraints = [billboardConstraint]
             }
         } else {
             editNode?.removeFromParentNode()
-            constraints?.removeAll()
         }
     }
 }

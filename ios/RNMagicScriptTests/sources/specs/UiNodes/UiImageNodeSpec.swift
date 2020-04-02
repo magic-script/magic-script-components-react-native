@@ -38,6 +38,7 @@ class UiImageNodeSpec: QuickSpec {
                     expect(node.useFrame).to(beFalse())
                     expect(node.color).to(beNil())
                     expect(node.fit).to(equal(ImageFitMode.aspectFill))
+                    expect(node.useDefaultIcon).to(beFalse())
                 }
             }
 
@@ -53,6 +54,9 @@ class UiImageNodeSpec: QuickSpec {
                     node.update(["filePath" : referenceFilePath])
                     expect(node.url).to(equal(URL(string: referenceFilePath)!))
                     expect(node.isLayoutNeeded).to(beFalse())
+                    
+                    node.url = nil
+                    expect(node.url).to(beNil())
                 }
 
                 it("should update 'width' prop") {
@@ -70,9 +74,12 @@ class UiImageNodeSpec: QuickSpec {
                 }
 
                 it("should update 'useFrame' prop") {
-                    let referenceUseFrame = true
-                    node.update(["useFrame" : referenceUseFrame])
+                    node.update(["useFrame" : true])
                     expect(node.useFrame).to(beTrue())
+                    expect(node.isLayoutNeeded).to(beTrue())
+                    
+                    node.update(["useFrame" : false])
+                    expect(node.useFrame).to(beFalse())
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -84,9 +91,23 @@ class UiImageNodeSpec: QuickSpec {
                 }
                 
                 it("should update 'fit' prop") {
-                    let referenceImageFitMode = ImageFitMode.stretch
-                    node.update(["fit" : referenceImageFitMode.rawValue])
-                    expect(node.fit).to(equal(referenceImageFitMode))
+                    let referenceValues: [ImageFitMode] = [
+                        ImageFitMode.stretch,
+                        ImageFitMode.aspectFit,
+                        ImageFitMode.aspectFill
+                    ]
+                    node.update(["icon": "close"])
+                    referenceValues.forEach { mode in
+                        node.update(["fit" : mode.rawValue])
+                        expect(node.fit).to(equal(mode))
+                        expect(node.isLayoutNeeded).to(beFalse())
+                    }
+                }
+                
+                it("should update 'useDefaultIcon' prop") {
+                    let referenceValue = true
+                    node.update(["useDefaultIcon" : referenceValue])
+                    expect(node.useDefaultIcon).to(equal(referenceValue))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
             }

@@ -37,6 +37,7 @@ class UiImageNodeSpec: QuickSpec {
                     expect(node.height).to(beCloseTo(0))
                     expect(node.useFrame).to(beFalse())
                     expect(node.color).to(beNil())
+                    expect(node.fit).to(equal(ImageFitMode.aspectFill))
                 }
             }
 
@@ -81,7 +82,13 @@ class UiImageNodeSpec: QuickSpec {
                     expect(node.color).to(beCloseTo(referenceIconColor))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
-
+                
+                it("should update 'fit' prop") {
+                    let referenceImageFitMode = ImageFitMode.stretch
+                    node.update(["fit" : referenceImageFitMode.rawValue])
+                    expect(node.fit).to(equal(referenceImageFitMode))
+                    expect(node.isLayoutNeeded).to(beTrue())
+                }
             }
         }
     }

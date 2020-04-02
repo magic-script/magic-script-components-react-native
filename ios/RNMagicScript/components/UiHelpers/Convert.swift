@@ -282,4 +282,9 @@ class Convert {
         }
         return itemPadding
     }
+    
+    static func toImageFitMode(_ value: Any?) -> ImageFitMode? {
+        guard let mode = value as? String else { return nil }
+        return ImageFitMode(rawValue: mode)
+    }
 }

@@ -46,6 +46,9 @@ import SceneKit
     @objc var color: UIColor? {
         didSet { updateDisplay(); setNeedsLayout() }
     }
+    @objc var fit: ImageFitMode = .aspectFill {
+        didSet { updateDisplay() }
+    }
     @objc var useDefaultIcon: Bool = false {
         didSet { updateDisplay(); setNeedsLayout() }
     }
@@ -99,6 +102,10 @@ import SceneKit
         if let color = Convert.toColor(props["color"]) {
             self.color = color
         }
+        
+        if let fit = Convert.toImageFitMode(props["fit"]) {
+            self.fit = fit
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {
@@ -133,6 +140,7 @@ import SceneKit
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
         planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        planeGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(1.0, 1.0, 1.0)
     }
 
     fileprivate func setFrame(visible: Bool) {

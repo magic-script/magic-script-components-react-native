@@ -63,6 +63,9 @@ class Prism(
         private const val MENU_MARGIN_BOTTOM = 0.05f
     }
 
+    var size: Vector3 = Vector3(2f, 2f, 0.3f)
+        private set
+
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var reactScene: ReactScene? = null
     private var container: PrismContentNode? = null
@@ -73,7 +76,6 @@ class Prism(
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var requestedEditMode: Boolean = false
-    private var size: Vector3 = Vector3(2f, 2f, 0.3f)
     private var requestedScale: Vector3? = null
     private var screenSizePx: Vector2
     private var autoRotateInEditMode = true
@@ -85,7 +87,7 @@ class Prism(
                 anchor = null // remove anchor, so we can change prism local position while moving
             } else {
                 // user has stopped moving the prism, so we anchor it to the final position
-                val pose = createPose(localPosition, localRotation)
+                val pose = createPose(localPosition, Quaternion())
                 tryToAnchorAtPose(pose)
             }
         }
@@ -250,6 +252,14 @@ class Prism(
         super.setAnchor(anchor)
         requestedAnchorPose = null
         requestedAnchorUuid = null
+
+        if (container?.editModeActive == true) {
+            scene?.camera?.let {
+                container?.worldRotation = getLookAtCameraRotation(it.localPosition)
+                adjustMenuRotation(it.localPosition)
+                adjustMenuPosition()
+            }
+        }
     }
 
     private fun buildMenu() {
@@ -268,7 +278,7 @@ class Prism(
     private fun adjustMenuPosition() {
         val scaleY = container?.localScale?.y ?: 1f
         val posY = (size.y * scaleY) / 2 + MENU_MARGIN_BOTTOM
-        menuNode.localPosition = Vector3(0f, posY, 0f)
+        menuNode.localPosition = Vector3(0f, posY, 0f).rotatedBy(worldRotation.inverted())
     }
 
     private fun adjustMenuRotation(cameraPosition: Vector3) {
@@ -329,7 +339,7 @@ class Prism(
 
         // look at camera
         if (autoRotateInEditMode) {
-            container?.localRotation = getLookAtCameraRotation(cameraPosition)
+            container?.worldRotation = getLookAtCameraRotation(cameraPosition)
         }
     }
 
@@ -384,7 +394,7 @@ class Prism(
         }
     }
 
-    private fun tryToAnchorAtPose(pose: Pose) {
+    fun tryToAnchorAtPose(pose: Pose) {
         requestedAnchorPose = pose
 
         anchorCreator.createAnchor(pose, result = {

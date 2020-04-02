@@ -21,10 +21,12 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
+import com.google.ar.core.Plane
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.Scene
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 
 class ReactScene(
     initProps: ReadableMap,
@@ -95,9 +97,22 @@ class ReactScene(
         if (arResourcesProvider.isPlaneDetectionEnabled() && prisms.isNotEmpty()) {
             // it's important to release unused anchors
             lastTapAnchor?.detach()
-            val anchor = hitResult.createAnchor()
-            prisms.firstOrNull()?.anchor = anchor
-            lastTapAnchor = anchor
+            val trackable = hitResult.trackable
+            val prism = prisms.firstOrNull()
+            if (prism != null) {
+                //prism.anchor = anchor
+                if (trackable is Plane && trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
+                    val y = prism.size.y / 2
+                    val pos = floatArrayOf(0f, y, 0f)
+                    val rot = floatArrayOf(0f, 0f, 0f, 1f)
+                    val pose = hitResult.hitPose.compose(Pose(pos, rot))
+                    prism.tryToAnchorAtPose(pose)
+                } else {
+                    val anchor = hitResult.createAnchor()
+                    prism.anchor = anchor
+                    lastTapAnchor = anchor
+                }
+            }
         }
     }
 

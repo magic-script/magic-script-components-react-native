@@ -913,6 +913,38 @@ class ConvertSpec: QuickSpec {
                     expect(Convert.toItemPaddingColumnRow(any_arrayOfInts)).to(beNil())
                 }
             }
+            
+            context("toImageFitMode") {
+                it("should convert to ImageFitMode value") {
+                    let aspectFill: ImageFitMode = .aspectFill
+                    let aspectFit: ImageFitMode = .aspectFit
+                    let stretch: ImageFitMode = .stretch
+
+                    let aspectFillImageFitModeString: String = "aspect-fill"
+                    let aspectFitImageFitModeString: String = "aspect-fit"
+                    let stretchImageFitModeString: String = "stretch"
+
+                    expect(Convert.toImageFitMode(aspectFillImageFitModeString)).to(equal(aspectFill))
+                    expect(Convert.toImageFitMode(aspectFitImageFitModeString)).to(equal(aspectFit))
+                    expect(Convert.toImageFitMode(stretchImageFitModeString)).to(equal(stretch))
+
+                    expect(Convert.toImageFitMode(aspectFillImageFitModeString)).notTo(equal(aspectFit))
+                    expect(Convert.toImageFitMode(aspectFillImageFitModeString)).notTo(equal(stretch))
+                    expect(Convert.toImageFitMode(aspectFitImageFitModeString)).notTo(equal(aspectFill))
+                    expect(Convert.toImageFitMode(aspectFitImageFitModeString)).notTo(equal(stretch))
+                    expect(Convert.toImageFitMode(stretchImageFitModeString)).notTo(equal(aspectFit))
+                    expect(Convert.toImageFitMode(stretchImageFitModeString)).notTo(equal(aspectFill))
+
+                    expect(Convert.toImageFitMode(nil)).to(beNil())
+                    expect(Convert.toImageFitMode(any_bool)).to(beNil())
+                    expect(Convert.toImageFitMode(any_int)).to(beNil())
+                    expect(Convert.toImageFitMode(any_cgFloat)).to(beNil())
+                    expect(Convert.toImageFitMode(any_float)).to(beNil())
+                    expect(Convert.toImageFitMode(any_double)).to(beNil())
+                    expect(Convert.toImageFitMode(any_vec3)).to(beNil())
+                    expect(Convert.toImageFitMode(any_arrayOfInts)).to(beNil())
+                }
+            }
         }
     }
 }

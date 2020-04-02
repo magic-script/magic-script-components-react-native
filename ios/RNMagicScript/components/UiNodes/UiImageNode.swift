@@ -46,6 +46,9 @@ import SceneKit
     @objc var color: UIColor? {
         didSet { updateDisplay(); setNeedsLayout() }
     }
+    @objc var fit: ImageFitMode = .aspectFill {
+        didSet { updateDisplay() }
+    }
     @objc var useDefaultIcon: Bool = false {
         didSet { updateDisplay(); setNeedsLayout() }
     }
@@ -66,6 +69,11 @@ import SceneKit
         planeGeometry = SCNPlane(width: 1.0, height: 1.0)
         planeGeometry.firstMaterial?.lightingModel = .constant
         planeGeometry.firstMaterial?.diffuse.contents = UIColor.init(white: 1, alpha: 0)
+        // Use .clampToBorder instead of .clamp if you want to remove visual "artifacts" that are
+        // visible on image's side for aspect-fit mode. But instead of "artifacts" you will get
+        // black or transparent area.
+        planeGeometry.firstMaterial?.diffuse.wrapS = .clamp
+        planeGeometry.firstMaterial?.diffuse.wrapT = .clamp
         planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         imageNode = SCNNode(geometry: planeGeometry)
         contentNode.addChildNode(imageNode)
@@ -99,27 +107,16 @@ import SceneKit
         if let color = Convert.toColor(props["color"]) {
             self.color = color
         }
+        
+        if let fit = Convert.toImageFitMode(props["fit"]) {
+            self.fit = fit
+        }
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let imageSize: CGSize
-        if let image = image {
-            imageSize = image.size
-        } else {
-            let w: CGFloat = (width > 0) ? width : UiImageNode.defaultSize
-            let h: CGFloat = (height > 0) ? height : UiImageNode.defaultSize
-            imageSize = CGSize(width: w, height: h)
-        }
-
-        let horizontalFactor: CGFloat = width / imageSize.width
-        let verticalFactor: CGFloat = height / imageSize.height
-        let factor: CGFloat
-        if horizontalFactor > 0 && verticalFactor > 0 {
-            factor = min(horizontalFactor, verticalFactor)
-        } else {
-            factor = max(horizontalFactor, verticalFactor)
-        }
-        return CGSize(width:factor * imageSize.width, height: factor * imageSize.height)
+        let w: CGFloat = (width > 0) ? width : UiImageNode.defaultSize
+        let h: CGFloat = (height > 0) ? height : UiImageNode.defaultSize
+        return CGSize(width: w, height: h)
     }
 
     @objc override func updateLayout() {
@@ -133,6 +130,25 @@ import SceneKit
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
         planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
+        planeGeometry.firstMaterial?.diffuse.contentsTransform = getTextureTransform(canvasSize: getSize())
+    }
+    
+    fileprivate func getTextureTransform(canvasSize: CGSize) -> SCNMatrix4 {
+        guard let imageSize = image?.size, fit != .stretch else {
+            return SCNMatrix4MakeScale(1.0, 1.0, 1.0)
+        }
+        
+        let ratioH: CGFloat = canvasSize.width / imageSize.width
+        let ratioV: CGFloat = canvasSize.height / imageSize.height
+        let factor: CGFloat = (fit == .aspectFill) ? max(ratioH, ratioV) : min(ratioH, ratioV)
+        
+        let targetSize = CGSize(width: factor * imageSize.width, height: factor * imageSize.height)
+        let sx: Float = Float(canvasSize.width / targetSize.width)
+        let sy: Float = Float(canvasSize.height / targetSize.height)
+        
+        let tx: Float = 0.5 * (1 - sx)
+        let ty: Float = 0.5 * (1 - sy)
+        return SCNMatrix4Mult(SCNMatrix4MakeScale(sx, sy, 1.0), SCNMatrix4MakeTranslation(tx, ty, 0))
     }
 
     fileprivate func setFrame(visible: Bool) {
@@ -140,6 +156,8 @@ import SceneKit
             if frameNode == nil {
                 frameNode = SCNNode(geometry: generateFrameGeometry())
                 frameNode?.renderingOrder = 1
+                frameNode?.applyClippingPlanesShaderModifiers()
+                frameNode?.forceUpdateClipping()
                 contentNode.addChildNode(frameNode!)
             }
         } else {
@@ -149,7 +167,6 @@ import SceneKit
     }
 
     fileprivate func generateFrameGeometry() -> SCNGeometry? {
-        guard useFrame else { return nil }
         let vertices: [SCNVector3] = [
             SCNVector3(-0.5, -0.5, 0),
             SCNVector3( 0.5, -0.5, 0),

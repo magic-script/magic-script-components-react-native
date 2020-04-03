@@ -199,7 +199,12 @@ import ARKit
     }
 
     @objc public func clear() {
-        nodesById.forEach { $0.value.removeFromParentNode() }
+        nodesById.forEach {
+            if let dialog = $0.value as? DialogDataProviding {
+                dialogPresenter?.dismiss(dialog)
+            }
+            $0.value.removeFromParentNode()
+        }
         nodesById.removeAll()
         
         prismsById.forEach { $0.value.removeFromParentNode() }

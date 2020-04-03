@@ -74,6 +74,7 @@ class Prism(
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
     private var lastCameraPose: Pose? = null
+    private var lastTouchY = 0f
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -190,9 +191,15 @@ class Prism(
                 when (motionEvent.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         beingTouched = true
+                        lastTouchY = motionEvent.rawY
                     }
                     MotionEvent.ACTION_UP -> {
                         beingTouched = false
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val diff = motionEvent.rawY - lastTouchY
+                        adjustPrismDistance(diff)
+                        lastTouchY = motionEvent.rawY
                     }
                 }
                 false
@@ -322,6 +329,7 @@ class Prism(
         }
     }
 
+    // "sphere" movement depending on camera moves
     private fun movePrism(cameraPose: Pose, prevCameraPose: Pose) {
         val cameraPosition = cameraPose.getTranslationVector()
         val prevCameraPosition = prevCameraPose.getTranslationVector()
@@ -337,17 +345,24 @@ class Prism(
 
         val xyzDiff = Vector3.subtract(cameraPosition, prevCameraPosition)
 
-        // forward <-> backward movement
-        val zAxisMultiplier = 2f
-        val distDifference = (distCurrent - distPrev) * zAxisMultiplier
-        val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
-
-        localPosition += rayDiff + xyzDiff - zOffset
+        localPosition += rayDiff + xyzDiff
 
         // look at camera
         if (autoRotateInEditMode) {
             adjustContainerRotation(cameraPosition)
         }
+    }
+
+    // forward <-> backward movement
+    private fun adjustPrismDistance(touchYOffsetPx: Float) {
+        val touchOffsetDp =
+            touchYOffsetPx * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
+
+        val cameraRot = scene?.camera?.localRotation ?: Quaternion()
+        val distDifference = -touchOffsetDp / 100
+        val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
+
+        localPosition += zOffset
     }
 
     private fun isInsideScreen(point: Vector3): Boolean {

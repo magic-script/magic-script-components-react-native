@@ -63,6 +63,8 @@ class Prism(
         private const val MENU_MARGIN_BOTTOM = 0.05f
     }
 
+    val scale: Vector3 get() = container?.localScale ?: Vector3.one()
+
     var size: Vector3 = Vector3(2f, 2f, 0.3f)
         private set
 
@@ -109,6 +111,10 @@ class Prism(
 
     override val reactChildren: List<ReactNode>
         get() = container?.children?.filterIsInstance<TransformNode>() ?: listOf()
+
+    fun anchorAtPose(pose: Pose) {
+        tryToAnchorAtPose(pose)
+    }
 
     fun setScene(scene: ReactScene) {
         this.reactScene = scene
@@ -253,12 +259,9 @@ class Prism(
         requestedAnchorPose = null
         requestedAnchorUuid = null
 
-        if (container?.editModeActive == true) {
-            scene?.camera?.let {
-                container?.worldRotation = getLookAtCameraRotation(it.localPosition)
-                adjustMenuRotation(it.localPosition)
-                adjustMenuPosition()
-            }
+        scene?.camera?.let {
+            adjustMenuRotation(it.localPosition)
+            adjustMenuPosition()
         }
     }
 
@@ -283,6 +286,10 @@ class Prism(
 
     private fun adjustMenuRotation(cameraPosition: Vector3) {
         menuNode.worldRotation = getLookAtCameraRotation(cameraPosition)
+    }
+
+    private fun adjustContainerRotation(cameraPosition: Vector3) {
+        container?.worldRotation = getLookAtCameraRotation(cameraPosition)
     }
 
     private fun getLookAtCameraRotation(cameraPosition: Vector3): Quaternion {
@@ -339,7 +346,7 @@ class Prism(
 
         // look at camera
         if (autoRotateInEditMode) {
-            container?.worldRotation = getLookAtCameraRotation(cameraPosition)
+            adjustContainerRotation(cameraPosition)
         }
     }
 
@@ -394,7 +401,7 @@ class Prism(
         }
     }
 
-    fun tryToAnchorAtPose(pose: Pose) {
+    private fun tryToAnchorAtPose(pose: Pose) {
         requestedAnchorPose = pose
 
         anchorCreator.createAnchor(pose, result = {
@@ -403,6 +410,10 @@ class Prism(
             anchor = it
             lastCreatedAnchor = it
             requestedAnchorPose = null
+
+            scene?.camera?.let { camera ->
+                adjustContainerRotation(camera.localPosition)
+            }
         })
     }
 

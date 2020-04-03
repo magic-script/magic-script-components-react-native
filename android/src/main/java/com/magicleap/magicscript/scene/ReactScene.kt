@@ -19,7 +19,6 @@ package com.magicleap.magicscript.scene
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
@@ -34,7 +33,6 @@ class ReactScene(
 ) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private val prisms = mutableListOf<Prism>()
-    private var lastTapAnchor: Anchor? = null
 
     private val arScene get() = arResourcesProvider.getArScene() // ar scene may change at runtime
 
@@ -96,21 +94,18 @@ class ReactScene(
     override fun onPlaneTap(hitResult: HitResult) {
         if (arResourcesProvider.isPlaneDetectionEnabled() && prisms.isNotEmpty()) {
             // it's important to release unused anchors
-            lastTapAnchor?.detach()
-            val trackable = hitResult.trackable
             val prism = prisms.firstOrNull()
             if (prism != null) {
-                //prism.anchor = anchor
+                val trackable = hitResult.trackable
                 if (trackable is Plane && trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                    val y = prism.size.y / 2
+                    // move anchor up so the bottom of Prism (not center) sticks to floor
+                    val y = prism.size.y / 2 * prism.scale.y
                     val pos = floatArrayOf(0f, y, 0f)
                     val rot = floatArrayOf(0f, 0f, 0f, 1f)
                     val pose = hitResult.hitPose.compose(Pose(pos, rot))
-                    prism.tryToAnchorAtPose(pose)
+                    prism.anchorAtPose(pose)
                 } else {
-                    val anchor = hitResult.createAnchor()
-                    prism.anchor = anchor
-                    lastTapAnchor = anchor
+                    prism.anchorAtPose(hitResult.hitPose)
                 }
             }
         }

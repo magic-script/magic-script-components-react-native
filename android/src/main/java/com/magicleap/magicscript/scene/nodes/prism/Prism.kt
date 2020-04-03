@@ -61,6 +61,7 @@ class Prism(
         const val MODE_EDIT = "edit"
 
         private const val MENU_MARGIN_BOTTOM = 0.05f
+        private const val MOVE_SENSITIVITY = 1f
     }
 
     val scale: Vector3 get() = container?.localScale ?: Vector3.one()
@@ -81,18 +82,11 @@ class Prism(
     private var requestedEditMode: Boolean = false
     private var requestedScale: Vector3? = null
     private var screenSizePx: Vector2
-    private var autoRotateInEditMode = true
 
-    private var beingTouched: Boolean = false
-        private set(value) {
+    private var editMode: Boolean = false
+        set(value) {
             field = value
-            if (value) {
-                anchor = null // remove anchor, so we can change prism local position while moving
-            } else {
-                // user has stopped moving the prism, so we anchor it to the final position
-                val pose = createPose(localPosition, Quaternion())
-                tryToAnchorAtPose(pose)
-            }
+            handleEditModeChange(value)
         }
 
     init {
@@ -159,11 +153,11 @@ class Prism(
     }
 
     private fun applyProperties(props: Bundle) {
+        setMode(props)
         setSize(props)
         setPose(props)
         setScale(props)
         setAnchorUuid(props)
-        setMode(props)
     }
 
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
@@ -190,16 +184,16 @@ class Prism(
                 // and process click events of the container node
                 when (motionEvent.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
-                        beingTouched = true
-                        lastTouchY = motionEvent.rawY
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        beingTouched = false
+                        if (motionEvent.pointerCount == 1) {
+                            lastTouchY = motionEvent.rawY
+                        }
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        val diff = motionEvent.rawY - lastTouchY
-                        adjustPrismDistance(diff)
-                        lastTouchY = motionEvent.rawY
+                        if (motionEvent.pointerCount == 1) {
+                            val diff = motionEvent.rawY - lastTouchY
+                            adjustPrismDistance(diff)
+                            lastTouchY = motionEvent.rawY
+                        }
                     }
                 }
                 false
@@ -235,11 +229,12 @@ class Prism(
             tryToAnchorAtUuid(it)
         }
 
-        if (beingTouched) {
+        if (container?.editModeActive == true) {
             lastCameraPose?.let { lastPose ->
                 movePrism(cameraPose, lastPose)
             }
         }
+
         lastCameraPose = cameraPose
     }
 
@@ -273,17 +268,14 @@ class Prism(
     }
 
     private fun buildMenu() {
-        menuNode.onButtonClickListener = {
-            container?.let {
-                it.editModeActive = !it.editModeActive
-            }
+        menuNode.onEditClickListener = {
+            editMode = !editMode
         }
 
         menuNode.build()
         addChild(menuNode)
         adjustMenuPosition()
     }
-
 
     private fun adjustMenuPosition() {
         val scaleY = container?.localScale?.y ?: 1f
@@ -334,23 +326,14 @@ class Prism(
         val cameraPosition = cameraPose.getTranslationVector()
         val prevCameraPosition = prevCameraPose.getTranslationVector()
         val cameraRot = cameraPose.getRotation()
-        val cameraRotPrev = prevCameraPose.getRotation()
 
-        val distCurrent = (localPosition - cameraPosition).length()
-        val distPrev = (localPosition - prevCameraPosition).length()
-
-        val rayPrev = Vector3.forward().rotatedBy(cameraRotPrev).scaled(distPrev)
-        val rayCurrent = Vector3.forward().rotatedBy(cameraRot).scaled(distPrev)
-        val rayDiff = rayCurrent - rayPrev
-
+        val cameraToPrismDist = Vector3.subtract(localPosition, cameraPosition).length()
         val xyzDiff = Vector3.subtract(cameraPosition, prevCameraPosition)
-
-        localPosition += rayDiff + xyzDiff
+        val rayDirection = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
+        localPosition = cameraPosition + rayDirection + xyzDiff
 
         // look at camera
-        if (autoRotateInEditMode) {
-            adjustContainerRotation(cameraPosition)
-        }
+        adjustContainerRotation(cameraPosition)
     }
 
     // forward <-> backward movement
@@ -359,7 +342,7 @@ class Prism(
             touchYOffsetPx * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
 
         val cameraRot = scene?.camera?.localRotation ?: Quaternion()
-        val distDifference = -touchOffsetDp / 100
+        val distDifference = -touchOffsetDp / 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
 
         localPosition += zOffset
@@ -384,8 +367,14 @@ class Prism(
         if (props.containsAny(PROP_POSITION, PROP_ROTATION)) {
             val position = properties.read(PROP_POSITION) ?: localPosition
             val rotation = properties.read(PROP_ROTATION) ?: localRotation
-            val pose = createPose(position, rotation)
-            tryToAnchorAtPose(pose)
+
+            if (editMode) {
+                localPosition = position
+                localRotation = localRotation
+            } else {
+                val pose = createPose(position, rotation)
+                tryToAnchorAtPose(pose)
+            }
         }
     }
 
@@ -407,11 +396,25 @@ class Prism(
     }
 
     private fun setMode(props: Bundle) {
-        val mode = props.read<String>(PROP_MODE) ?: return
+        props.read<String>(PROP_MODE)?.let { mode ->
+            editMode = (mode == MODE_EDIT)
+        }
+    }
+
+    private fun handleEditModeChange(value: Boolean) {
+        if (value) {
+            // remove anchor, so we can change prism's local position while moving
+            anchor = null
+        } else {
+            // user has stopped moving the prism, so we anchor it to the final position
+            val pose = createPose(localPosition, Quaternion())
+            tryToAnchorAtPose(pose)
+        }
+
         val container = this.container
         if (container != null) {
-            container.editModeActive = mode == MODE_EDIT
-        } else if (mode == MODE_EDIT) {
+            container.editModeActive = value
+        } else if (value) {
             requestedEditMode = true
         }
     }

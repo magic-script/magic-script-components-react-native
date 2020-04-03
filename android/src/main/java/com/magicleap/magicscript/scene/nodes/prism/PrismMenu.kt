@@ -49,7 +49,7 @@ class PrismMenu(
         private const val SHOW_ANIM_DURATION = 300L
     }
 
-    var onButtonClickListener: (() -> Unit)? = null
+    var onEditClickListener: (() -> Unit)? = null
 
     private val label: UiTextNode
     private val buttonEdit: UiButtonNode
@@ -112,7 +112,7 @@ class PrismMenu(
             val positionY = (ICON_SIZE / 2).toFloat()
             localPosition = Vector3(0f, positionY, 0f)
             onClickListener = {
-                onButtonClickListener?.invoke()
+                onEditClickListener?.invoke()
             }
         }
 

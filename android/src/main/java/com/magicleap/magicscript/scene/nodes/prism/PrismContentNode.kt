@@ -52,6 +52,9 @@ class PrismContentNode(
     var extendedScaleController: ExtendedScaleController
         private set
 
+    var observableDragController: ObservableDragController
+        private set
+
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
 
     private var lastScale = localScale
@@ -69,6 +72,10 @@ class PrismContentNode(
         val pinchRecognizer = transformationSystem.pinchRecognizer
         extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
         addTransformationController(extendedScaleController)
+
+        val dragRecognizer = transformationSystem.dragRecognizer
+        observableDragController = ObservableDragController(this, dragRecognizer)
+        addTransformationController(observableDragController)
 
         loadCube(initialSize)
     }

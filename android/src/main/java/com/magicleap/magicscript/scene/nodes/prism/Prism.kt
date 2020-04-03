@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.Anchor
@@ -179,29 +178,15 @@ class Prism(
             if (childNode != null) {
                 container.addChild(childNode)
             }
-            container.setOnTouchListener { _, motionEvent ->
-                // action up is for some reason not returned for AnchorNode, so we attach renderable
-                // and process click events of the container node
-                when (motionEvent.actionMasked) {
-                    MotionEvent.ACTION_DOWN -> {
-                        if (motionEvent.pointerCount == 1) {
-                            lastTouchY = motionEvent.rawY
-                        }
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        if (motionEvent.pointerCount == 1) {
-                            val diff = motionEvent.rawY - lastTouchY
-                            adjustPrismDistance(diff)
-                            lastTouchY = motionEvent.rawY
-                        }
-                    }
-                }
-                false
-            }
-
+            // container.setOnTouchListener
             container.scaleChangedListener = { _ ->
                 adjustMenuPosition()
             }
+
+            container.observableDragController.onDragListener = { deltaPx ->
+                adjustPrismDistance(deltaPx)
+            }
+
         }
         adjustMenuPosition()
     }
@@ -337,12 +322,12 @@ class Prism(
     }
 
     // forward <-> backward movement
-    private fun adjustPrismDistance(touchYOffsetPx: Float) {
-        val touchOffsetDp =
-            touchYOffsetPx * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
+    private fun adjustPrismDistance(touchDeltaPx: Vector3) {
+        val touchDeltaDp =
+            touchDeltaPx.y * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
 
         val cameraRot = scene?.camera?.localRotation ?: Quaternion()
-        val distDifference = -touchOffsetDp / 400 * MOVE_SENSITIVITY
+        val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
 
         localPosition += zOffset

@@ -155,7 +155,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)onTextChangedEventReceived:(UiNode *)sender text:(NSString *)text {
-    [self onEventWithName:@"onTextChanged" sender:sender body:@{ @"text": text }];
+    [self onEventWithName:@"onTextChanged" sender:sender body:@{ @"Text": text }];
 }
 
 - (void)onToggleChangedEventReceived:(UiNode *)sender value:(BOOL)value {

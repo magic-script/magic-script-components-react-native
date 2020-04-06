@@ -49,10 +49,13 @@ class PrismContentNode(
             }
         }
 
+    var observableDragController: ObservableDragController
+        private set
+
     var extendedScaleController: ExtendedScaleController
         private set
 
-    var observableDragController: ObservableDragController
+    var observableRotationController: ObservableRotationController
         private set
 
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
@@ -61,21 +64,20 @@ class PrismContentNode(
     private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
 
     init {
-        // disabling default translationController, because it only allows moving on planes
-        translationController.isEnabled = false
-
-        // disable default scale controller
-        scaleController.isEnabled = false
-
         transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
+        disableDefaultControllers()
+
+        val dragRecognizer = transformationSystem.dragRecognizer
+        observableDragController = ObservableDragController(this, dragRecognizer)
+        addTransformationController(observableDragController)
 
         val pinchRecognizer = transformationSystem.pinchRecognizer
         extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
         addTransformationController(extendedScaleController)
 
-        val dragRecognizer = transformationSystem.dragRecognizer
-        observableDragController = ObservableDragController(this, dragRecognizer)
-        addTransformationController(observableDragController)
+        val twistRecognizer = transformationSystem.twistRecognizer
+        observableRotationController = ObservableRotationController(this, twistRecognizer)
+        addTransformationController(rotationController)
 
         loadCube(initialSize)
     }
@@ -116,5 +118,17 @@ class PrismContentNode(
             cubeBuilder.buildRenderable(it)
         }
     }
+
+    private fun disableDefaultControllers() {
+        // disable default translation controller, because it only allows moving on planes
+        translationController.isEnabled = false
+
+        // disable default scale controller
+        scaleController.isEnabled = false
+
+        // disable default rotation controller
+        rotationController.isEnabled = false
+    }
+
 
 }

@@ -74,7 +74,7 @@ class Prism(
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
     private var lastCameraPose: Pose? = null
-    private var lastTouchY = 0f
+    private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
@@ -187,6 +187,12 @@ class Prism(
                 adjustPrismDistance(deltaPx)
             }
 
+            container.observableRotationController.onRotatedListener = { deltaRotation ->
+                manualRotationOffset = Quaternion.multiply(manualRotationOffset, deltaRotation)
+                val cameraPosition = scene?.camera?.localPosition ?: Vector3.zero()
+                adjustContainerRotation(cameraPosition)
+            }
+
         }
         adjustMenuPosition()
     }
@@ -273,7 +279,10 @@ class Prism(
     }
 
     private fun adjustContainerRotation(cameraPosition: Vector3) {
-        container?.worldRotation = getLookAtCameraRotation(cameraPosition)
+        container?.let {
+            val lookRotation = getLookAtCameraRotation(cameraPosition)
+            it.worldRotation = Quaternion.multiply(lookRotation, manualRotationOffset)
+        }
     }
 
     private fun getLookAtCameraRotation(cameraPosition: Vector3): Quaternion {

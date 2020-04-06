@@ -23,8 +23,7 @@ import com.google.ar.sceneform.ux.DragGesture
 import com.google.ar.sceneform.ux.DragGestureRecognizer
 
 /**
- * Controller that only notifies the [onDragListener]
- * and does not modify node position itself
+ * Controller that only notifies the [onDragListener] and does not modify node position itself
  */
 class ObservableDragController(
     transformableNode: BaseTransformableNode,
@@ -33,7 +32,7 @@ class ObservableDragController(
 
     var onDragListener: ((deltaPx: Vector3) -> Unit)? = null
 
-    override fun canStartTransformation(gesture: DragGesture?) = transformableNode.isSelected
+    override fun canStartTransformation(gesture: DragGesture) = transformableNode.isSelected
 
     override fun onContinueTransformation(gesture: DragGesture) {
         // val diff = gesture.delta

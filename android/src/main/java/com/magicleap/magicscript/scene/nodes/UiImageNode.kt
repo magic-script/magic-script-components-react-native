@@ -24,16 +24,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.read
-import com.magicleap.magicscript.utils.readColor
-import com.magicleap.magicscript.utils.readImagePath
+import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.image.view.*
 
 open class UiImageNode(
@@ -54,6 +52,15 @@ open class UiImageNode(
         const val PROP_FRAME = "useFrame"
         const val PROP_USE_DEFAULT_ICON = "useDefaultIcon"
         const val PROP_OPAQUE = "opaque"
+        const val PROP_CONTENT_MODE = "fit"
+
+        const val CONTENT_MODE_FILL = "aspect-fill"
+        const val CONTENT_MODE_FIT = "aspect-fit"
+        const val CONTENT_MODE_STRETCH = "stretch"
+    }
+
+    init {
+        properties.putDefault(PROP_CONTENT_MODE, CONTENT_MODE_STRETCH)
     }
 
     override fun provideView(context: Context): View {
@@ -82,6 +89,7 @@ open class UiImageNode(
         setColor(props)
         setUseFrame(props)
         setIsOpaque(props)
+        setContentMode(props)
     }
 
     private fun setImagePath(props: Bundle) {
@@ -89,6 +97,8 @@ open class UiImageNode(
         if (imageUri != null) {
             Glide.with(context)
                 .load(imageUri)
+                // use original size in order to aspect-fill work
+                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .into(view.image_view)
 
             val color = props.readColor(PROP_COLOR)
@@ -147,6 +157,16 @@ open class UiImageNode(
                 view.image_view.setBackgroundColor(color)
             } else {
                 view.image_view.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+    }
+
+    private fun setContentMode(props: Bundle) {
+        props.read<String>(PROP_CONTENT_MODE)?.let { mode ->
+            view.image_view.scaleType = when (mode) {
+                CONTENT_MODE_FILL -> ImageView.ScaleType.CENTER
+                CONTENT_MODE_FIT -> ImageView.ScaleType.FIT_CENTER
+                else -> ImageView.ScaleType.FIT_XY
             }
         }
     }

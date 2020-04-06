@@ -224,6 +224,21 @@ import SceneKit
             editNode?.removeFromParentNode()
         }
     }
+
+    @objc func updatePosition(withPosition position: SCNVector3, relativeTo referenceNode: SCNNode) {
+        let referenceNodeTransform = matrix_float4x4(referenceNode.transform)
+
+        // Setup a translation matrix with the desired position
+        var translationMatrix = matrix_identity_float4x4
+        translationMatrix.columns.3.x = 0.0 //position.x
+        translationMatrix.columns.3.y = 0.0 //position.y
+        translationMatrix.columns.3.z = position.z
+
+        // Combine the configured translation matrix with the referenceNode's transform to get the desired position AND orientation
+        let updatedTransform = matrix_multiply(referenceNodeTransform, translationMatrix)
+        transform = SCNMatrix4(updatedTransform)
+        updateClipping()
+    }
 }
 
 // MARK: - BoundsClipping

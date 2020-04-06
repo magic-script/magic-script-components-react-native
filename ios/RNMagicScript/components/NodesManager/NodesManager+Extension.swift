@@ -66,6 +66,11 @@ extension NodesManager: RCTARViewObserving {
                 }
                 
                 results.first!.prism.isPointed = true
+                if results.first!.prism.editMode == true {
+                    let intersectedPrismCenter = results.first!.prism.position
+                    let cameraToPrismCenterDistance = sqrt((intersectedPrismCenter - ray.begin).lengthSq())
+                    results.first!.prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -cameraToPrismCenterDistance), relativeTo: pointOfView)
+                }
             }
 #if targetEnvironment(simulator)
             if let position = results.first?.intersectionPoint {

@@ -31,6 +31,7 @@ import SceneKit
 #else
     static fileprivate var instance: RCTARView!
 #endif
+
     @objc static public var arSession: ARSession {
         return instance.arView.session
     }
@@ -147,7 +148,7 @@ import SceneKit
         view.defaultCameraController.interactionMode = SCNInteractionMode.orbitTurntable
         view.defaultCameraController.maximumVerticalAngle = 45
         view.defaultCameraController.inertiaEnabled = true
-        view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 2.5)
+        view.defaultCameraController.translateInCameraSpaceBy(x: 0.0, y: 0.0, z: 1.5)
     #endif
 
         // Set camera's range
@@ -203,11 +204,17 @@ import SceneKit
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
         addGestureRecognizer(longPressGestureRecogrnizer)
 
+
         // Add pinch gesture
         let pinchGestureRecogrnizer = UIPinchGestureRecognizer(target: gestureHandler,
-                                                                   action: #selector(GestureHandling.handlePinchGesture(_:)))
-
+                                                               action: #selector(GestureHandling.handlePinchGesture(_:)))
         addGestureRecognizer(pinchGestureRecogrnizer)
+
+
+        // Add pan gesture
+        let panGestureRecogrnizer = UIPanGestureRecognizer(target: gestureHandler,
+                                                           action: #selector(GestureHandling.handlePanGesture))
+        addGestureRecognizer(panGestureRecogrnizer)
     }
 
     fileprivate func presentInput(_ input: DataProviding) {

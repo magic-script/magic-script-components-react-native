@@ -22,7 +22,9 @@ import UIKit
     func handleTapGesture(_ sender: TapGestureRecognizing)
     func handleDragGesture(_ sender: DragGestureRecognizing)
     func handleLongPressGesture(_ sender: LongPressGestureRecognizing)
+
     func handlePinchGesture(_ sender: UIPinchGestureRecognizer)
+    func handlePanGesture(_ sender: UIPanGestureRecognizer)
 }
 
 class GestureHandler: GestureHandling {
@@ -50,5 +52,9 @@ class GestureHandler: GestureHandling {
 
     @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
         nodesGestureHandler.handlePinchGesture(sender)
+    }
+
+    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+        nodesGestureHandler.handlePanGesture(sender)
     }
 }

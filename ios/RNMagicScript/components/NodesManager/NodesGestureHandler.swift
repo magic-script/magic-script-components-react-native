@@ -25,7 +25,9 @@ protocol NodesGestureHandling {
 
     func handleNodeTap(_ node: BaseNode?)
     func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State)
+
     func handlePinchGesture(_ sender: UIPinchGestureRecognizer)
+    func handlePanGesture(_ sender: UIPanGestureRecognizer)
 }
 
 class NodesGestureHandler: NodesGestureHandling {
@@ -77,9 +79,51 @@ class NodesGestureHandler: NodesGestureHandling {
     }
 
     func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
-        if let result = NodesManager.instance.scene?.prisms.filter({ $0.isPointed && $0.editMode }) {
+        func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+            return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+        }
+
+        if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
             if let prismScale = result.first?.scale {
-                result.first?.scale = prismScale * sender.scale
+                if let size = sender.view?.frame {
+
+                    let numberOfPoints = sender.numberOfTouches
+                    var points: [CGPoint] = [CGPoint]()
+                    for index in 0..<numberOfPoints {
+                        points.append(sender.location(ofTouch: index, in: sender.view))
+                    }
+
+                    assert(points.count == 2, "Wrong numbers of touch points.")
+                    let distanceBetween = CGPointDistanceSquared(from: points[0], to: points[1])
+                    let percent = distanceBetween / (pow(size.width, 2) + pow(size.height, 2)) * 100
+
+
+                    switch sender.velocity.sign {
+                    case .minus:
+                        result.first?.scale = prismScale - (prismScale * percent / 1000)
+                    case .plus:
+                        result.first?.scale = prismScale + (prismScale * percent / 1000)
+                    }
+
+                    result.first?.updateClipping()
+                }
+            }
+        }
+    }
+
+    func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+        if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
+            if let prismPosition = result.first?.position {
+                let velocity = sender.velocity(in: sender.view)
+                if abs(velocity.y) > abs(velocity.x) { // vertical
+                    guard let view = sender.view else { return }
+                    let percent = velocity.y / view.frame.height
+                    if let prismNode = result.first {
+                        let position = prismNode.position
+                        prismNode.position = SCNVector3(x: position.x, y: position.y, z: position.z + (Float(percent)))
+
+                    }
+                }
                 result.first?.updateClipping()
             }
         }

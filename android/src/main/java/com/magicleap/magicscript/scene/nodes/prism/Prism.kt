@@ -281,7 +281,7 @@ class Prism(
     private fun adjustContainerRotation(cameraPosition: Vector3) {
         container?.let {
             val lookRotation = getLookAtCameraRotation(cameraPosition)
-            it.worldRotation = Quaternion.multiply(lookRotation, manualRotationOffset)
+            it.localRotation = Quaternion.multiply(lookRotation, manualRotationOffset)
         }
     }
 
@@ -364,7 +364,7 @@ class Prism(
 
             if (editMode) {
                 localPosition = position
-                localRotation = localRotation
+                localRotation = rotation
             } else {
                 val pose = createPose(position, rotation)
                 tryToAnchorAtPose(pose)

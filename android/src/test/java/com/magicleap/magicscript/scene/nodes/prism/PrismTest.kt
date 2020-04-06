@@ -21,6 +21,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.core.Pose
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
@@ -31,6 +32,8 @@ import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.utils.getRotation
+import com.magicleap.magicscript.utils.getTranslationVector
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
@@ -108,20 +111,64 @@ class PrismTest {
         verify(cubeBuilder).buildRenderable(any())
     }
 
-
     @Test
-    fun `should create anchor when position changed`() {
-        val prism = buildPrism(reactMapOf())
-        val position = JavaOnlyArray.of(2.0, 1.0, 0.0)
-        val anchorRotation = prism.localRotation
+    fun `should anchor the node at updated position if mode is normal`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
+        Mockito.reset(anchorCreator)
         val expectedPose = Pose(
-            floatArrayOf(2f, 1f, 0f),
-            floatArrayOf(anchorRotation.x, anchorRotation.y, anchorRotation.z, anchorRotation.w)
+            floatArrayOf(0.5f, 0.1f, 2.0f), // position
+            floatArrayOf(0f, 0f, 0f, 1f) // identity rotation
         )
 
-        prism.update(reactMapOf(Prism.PROP_POSITION, position))
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
+        )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        prism.localPosition shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should anchor the node at desired rotation if mode is normal`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_ROTATION, reactArrayOf(0.00, 0.42, 0.0, 0.9),
+                Prism.PROP_MODE, Prism.MODE_NORMAL
+            )
+        )
+        val expectedPose = Pose(
+            floatArrayOf(0f, 0f, 0f), // position
+            floatArrayOf(0f, 0.42f, 0f, 0.9f) // rotation
+        )
+
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        prism.localRotation shouldEqual Quaternion.identity()
+    }
+
+    @Test
+    fun `should update local position if position property updated in edit mode`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_EDIT))
+        Mockito.reset(anchorCreator)
+
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(-0.4, 0.2, -1.5))
+        )
+
+        prism.localPosition shouldEqualInexact Vector3(-0.4f, 0.2f, -1.5f)
+        verifyZeroInteractions(anchorCreator)
+    }
+
+    @Test
+    fun `should set local rotation if rotation property applied in edit mode`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_ROTATION, reactArrayOf(0.00, 0.42, 0.0, 0.9),
+                Prism.PROP_MODE, Prism.MODE_EDIT
+            )
+        )
+
+        prism.localRotation shouldEqual Quaternion(0.00f, 0.42f, 0.0f, 0.9f)
+        verifyZeroInteractions(anchorCreator)
     }
 
     @Test
@@ -144,33 +191,6 @@ class PrismTest {
         scene.addContent(prism)
 
         prism.reactParent shouldBe scene
-    }
-
-    @Test
-    fun `should change local position if position property updated and edit mode active`() {
-        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_EDIT))
-
-        prism.update(
-            reactMapOf(Prism.PROP_POSITION, reactArrayOf(-0.4, 0.2, -1.5))
-        )
-
-        prism.localPosition shouldEqualInexact Vector3(-0.4f, 0.2f, -1.5f)
-    }
-
-    @Test
-    fun `should anchor the node at updated position when edit mode inactive`() {
-        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
-        val expectedPose = Pose(
-            floatArrayOf(0.5f, 0.1f, 2.0f), // position
-            floatArrayOf(0f, 0f, 0f, 1f) //rotation
-        )
-
-        prism.update(
-            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
-        )
-
-        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
-        prism.localPosition shouldEqualInexact Vector3.zero()
     }
 
     // Because Prism's container is a TransformableNode, we have detach it explicitly.
@@ -215,8 +235,9 @@ class PrismTest {
 
     private class PoseMatcher(private val pose: Pose) : ArgumentMatcher<Pose> {
         override fun matches(argument: Pose): Boolean {
-            return pose.rotationQuaternion.contentEquals(argument.rotationQuaternion)
-                    && pose.translation.contentEquals(argument.translation)
+            return pose.getTranslationVector() == argument.getTranslationVector()
+                    && pose.getRotation().normalized() == argument.getRotation().normalized()
+
         }
     }
 

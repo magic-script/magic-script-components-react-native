@@ -96,17 +96,18 @@ class ReactScene(
             // it's important to release unused anchors
             val prism = prisms.firstOrNull()
             if (prism != null) {
+                val rot = floatArrayOf(0f, 0f, 0f, 1f) // no rotation
+                val x = hitResult.hitPose.tx()
+                var y = hitResult.hitPose.ty()
+                val z = hitResult.hitPose.tz()
                 val trackable = hitResult.trackable
                 if (trackable is Plane && trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                    // move anchor up so the bottom of Prism (not center) sticks to floor
-                    val y = prism.size.y / 2 * prism.scale.y
-                    val pos = floatArrayOf(0f, y, 0f)
-                    val rot = floatArrayOf(0f, 0f, 0f, 1f)
-                    val pose = hitResult.hitPose.compose(Pose(pos, rot))
-                    prism.anchorAtPose(pose)
-                } else {
-                    prism.anchorAtPose(hitResult.hitPose)
+                    // move anchor up so the bottom of Prism sticks to floor
+                    y += +prism.size.y / 2 * prism.scale.y
                 }
+                val pos = floatArrayOf(x, y, z)
+                val pose = Pose(pos, rot)
+                prism.anchorAtPose(pose)
             }
         }
     }

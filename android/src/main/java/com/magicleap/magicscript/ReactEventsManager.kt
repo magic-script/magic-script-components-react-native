@@ -70,7 +70,7 @@ class ReactEventsManager(
 
         // Supported events arguments
         const val EVENT_ARG_NODE_ID = "nodeId"
-        const val EVENT_ARG_TEXT = "text"
+        const val EVENT_ARG_TEXT = "Text"
         const val EVENT_ARG_TOGGLE_ACTIVE = "On"
         const val EVENT_ARG_SELECTED_ITEMS = "SelectedItems"
         const val EVENT_ARG_SELECTED_ITEM_ID = "id"

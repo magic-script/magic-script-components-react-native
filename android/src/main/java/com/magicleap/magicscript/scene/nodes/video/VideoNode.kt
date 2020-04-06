@@ -32,7 +32,6 @@ import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
-import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.UiTextNode.Companion.PROP_BOUNDS_SIZE
 import com.magicleap.magicscript.scene.nodes.UiTextNode.Companion.PROP_TEXT_ALIGNMENT
@@ -130,12 +129,12 @@ class VideoNode(
 
     override fun onPause() {
         super.onPause()
-        if (videoPlayer.isPlaying) {
-            try {
+        try {
+            if (videoPlayer.isPlaying) {
                 videoPlayer.pause()
-            } catch (exception: IllegalStateException) {
-                logMessage("onPause cannot pause video: $exception", warn = true)
             }
+        } catch (exception: IllegalStateException) {
+            logMessage("onPause cannot pause video: $exception", warn = true)
         }
     }
 

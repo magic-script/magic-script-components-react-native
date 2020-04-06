@@ -146,6 +146,33 @@ class PrismTest {
         prism.reactParent shouldBe scene
     }
 
+    @Test
+    fun `should change local position if position property updated and edit mode active`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_EDIT))
+
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(-0.4, 0.2, -1.5))
+        )
+
+        prism.localPosition shouldEqualInexact Vector3(-0.4f, 0.2f, -1.5f)
+    }
+
+    @Test
+    fun `should anchor the node at updated position when edit mode inactive`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
+        val expectedPose = Pose(
+            floatArrayOf(0.5f, 0.1f, 2.0f), // position
+            floatArrayOf(0f, 0f, 0f, 1f) //rotation
+        )
+
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
+        )
+
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        prism.localPosition shouldEqualInexact Vector3.zero()
+    }
+
     // Because Prism's container is a TransformableNode, we have detach it explicitly.
     // See https://github.com/magic-script/magic-script-components-react-native/issues/494
     @Test

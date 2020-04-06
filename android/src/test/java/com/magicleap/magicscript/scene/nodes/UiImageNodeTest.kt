@@ -119,6 +119,37 @@ class UiImageNodeTest {
         verify(imageViewSpy).setBackgroundColor(Color.TRANSPARENT)
     }
 
+    @Test
+    fun `should use stretch content mode by default`() {
+        val node = createNodeWithViewSpy(JavaOnlyMap())
+
+        node.build()
+
+        verify(imageViewSpy).scaleType = ImageView.ScaleType.FIT_XY
+    }
+
+    @Test
+    fun `should apply aspect-fit content mode if property present`() {
+        val node = createNodeWithViewSpy(
+            reactMapOf(UiImageNode.PROP_CONTENT_MODE, UiImageNode.CONTENT_MODE_FIT)
+        )
+
+        node.build()
+
+        verify(imageViewSpy).scaleType = ImageView.ScaleType.FIT_CENTER
+    }
+
+    @Test
+    fun `should apply aspect-fill content mode if property present`() {
+        val node = createNodeWithViewSpy(
+            reactMapOf(UiImageNode.PROP_CONTENT_MODE, UiImageNode.CONTENT_MODE_FILL)
+        )
+
+        node.build()
+
+        verify(imageViewSpy).scaleType = ImageView.ScaleType.CENTER
+    }
+
     private fun createNodeWithViewSpy(props: ReadableMap): UiImageNode {
         return object : UiImageNode(props, context, mock(), mock(), mock()) {
             override fun provideView(context: Context): View {

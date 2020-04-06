@@ -14,11 +14,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Prepare env
+      - name: Cache Pods
+        id: pods-cache
+        uses: actions/cache@v1
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Prepare env (install pods)
         run: |
-          pwd
           cd ios
           pod install
+      - name: Prepare env (install slather)
+        run: |
+          cd ios
           gem install slather
       - name: Build and test
         run: |

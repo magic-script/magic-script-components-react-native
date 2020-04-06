@@ -46,7 +46,7 @@ import SceneKit
     @objc var color: UIColor? {
         didSet { updateDisplay(); setNeedsLayout() }
     }
-    @objc var fit: ImageFitMode = .aspectFill {
+    @objc var fit: ImageFitMode = .stretch {
         didSet { updateDisplay() }
     }
     @objc var useDefaultIcon: Bool = false {

@@ -37,7 +37,7 @@ class UiImageNodeSpec: QuickSpec {
                     expect(node.height).to(beCloseTo(0))
                     expect(node.useFrame).to(beFalse())
                     expect(node.color).to(beNil())
-                    expect(node.fit).to(equal(ImageFitMode.aspectFill))
+                    expect(node.fit).to(equal(ImageFitMode.stretch))
                     expect(node.useDefaultIcon).to(beFalse())
                 }
             }

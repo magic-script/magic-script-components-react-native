@@ -150,7 +150,7 @@ class ArResourcesManagerTest {
         })
         val updatedPosition = Vector3(4f, 2f, -1f)
 
-        ArResourcesManager.updateCameraPosition(updatedPosition, TrackingState.TRACKING)
+        ArResourcesManager.updateCameraState(updatedPosition, TrackingState.TRACKING)
 
         cameraPosition shouldEqual updatedPosition
         ArResourcesManager.getCameraState() shouldEqual TrackingState.TRACKING
@@ -167,7 +167,7 @@ class ArResourcesManagerTest {
         manager.addCameraUpdatedListener(listener)
         manager.removeCameraUpdatedListener(listener)
 
-        ArResourcesManager.updateCameraPosition(Vector3.one(), TrackingState.TRACKING)
+        ArResourcesManager.updateCameraState(Vector3.one(), TrackingState.TRACKING)
 
         notified shouldBe false
     }

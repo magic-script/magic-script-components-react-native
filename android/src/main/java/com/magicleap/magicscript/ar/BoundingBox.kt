@@ -1,4 +1,4 @@
-package com.magicleap.magicscript.utils
+package com.magicleap.magicscript.ar
 
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.collision.Ray

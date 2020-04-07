@@ -17,9 +17,11 @@
 package com.magicleap.magicscript.ar
 
 import com.google.ar.core.HitResult
+import com.google.ar.core.Pose
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
 import java.lang.ref.WeakReference
@@ -56,9 +58,9 @@ object ArResourcesManager : ArResourcesProvider() {
         notifyArLoaded()
     }
 
-    fun updateCameraPosition(position: Vector3, trackingState: TrackingState) {
+    fun updateCameraState(cameraPose: Pose, trackingState: TrackingState) {
         this.cameraState = trackingState
-        notifyCameraUpdated(position, trackingState)
+        notifyCameraUpdated(cameraPose, trackingState)
     }
 
     fun onPlaneTapped(hitResult: HitResult) {

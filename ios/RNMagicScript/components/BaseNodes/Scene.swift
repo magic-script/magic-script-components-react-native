@@ -20,6 +20,11 @@ import SceneKit
     @objc fileprivate(set) var rootNode: SCNNode = SCNNode()
     @objc fileprivate(set) var prisms: [Prism] = []
 
+    @objc private(set) var prismInEditMode: Prism? {
+        get { return prisms.filter({ $0.editMode }).first }
+        set { }
+    }
+
     @objc override init() {
         super.init()
         setupScene()

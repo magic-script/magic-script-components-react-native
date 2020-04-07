@@ -17,13 +17,11 @@
 import UIKit
 import SceneKit
 
-//sourcery: AutoMockable
-protocol PrismInteracting { }
-
 struct PrismContextMenuBuilder {
-    static func build(for prism: Prism) -> PrismContextMenu? {
+    static func build(for prism: Prism, prismInteractor: PrismInteracting) -> PrismContextMenu? {
         let prismContextMenu = PrismContextMenu()
         prismContextMenu.prism = prism
+        prismContextMenu.prismInteractor = prismInteractor
         return prismContextMenu
     }
 }
@@ -37,17 +35,14 @@ class PrismContextMenu: UiNode {
         }
     }
 
-    weak var prism: Prism? {
+    weak var prism: Prism?
+
+    weak var prismInteractor: PrismInteracting? {
         didSet {
-            if prism != nil {
-                actionButton.onActivate = { [weak self] _ in
-                    self?.prism?.editMode = self?.prism?.editMode ?? false ? false : true
-                #if targetEnvironment(simulator)
-                    RCTARView.instance.arView.allowsCameraControl = self?.prism?.editMode ?? false ? false : true
-                #endif
+            actionButton.onActivate = { [weak self] _ in
+                if let relatedPrism = self?.prism {
+                    self?.prismInteractor?.toggleInteractions(for: relatedPrism)
                 }
-            } else {
-                actionButton.onActivate = nil
             }
         }
     }
@@ -80,6 +75,10 @@ class PrismContextMenu: UiNode {
         contentNode.resetClippingPlanesShaderModifiers(recursive: true)
 
         alignment = .centerCenter
+
+        let billboardConstraint = SCNBillboardConstraint()
+        billboardConstraint.freeAxes = [.Y]
+        constraints = [billboardConstraint]
     }
 
     @objc override func _calculateSize() -> CGSize {

@@ -210,6 +210,14 @@ import SceneKit
                                                                action: #selector(GestureHandling.handlePinchGesture(_:)))
         addGestureRecognizer(pinchGestureRecogrnizer)
 
+        // Add rotation gesture
+        let rotationGestureRecogrnizer = UIRotationGestureRecognizer(target: gestureHandler,
+                                                                     action: #selector(GestureHandling.handleRotationGesture(_:)))
+        addGestureRecognizer(rotationGestureRecogrnizer)
+
+
+        pinchGestureRecogrnizer.delegate = self
+        rotationGestureRecogrnizer.delegate = self
 
         // Add pan gesture
         let panGestureRecogrnizer = UIPanGestureRecognizer(target: gestureHandler,
@@ -263,5 +271,18 @@ import SceneKit
         if let configuration = self.configuration {
             arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
+    }
+}
+
+extension RCTARView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer is UIRotationGestureRecognizer && otherGestureRecognizer is UIPinchGestureRecognizer {
+            return true
+        }
+
+        if gestureRecognizer is UIPinchGestureRecognizer && otherGestureRecognizer is UIRotationGestureRecognizer {
+            return true
+        }
+        return false
     }
 }

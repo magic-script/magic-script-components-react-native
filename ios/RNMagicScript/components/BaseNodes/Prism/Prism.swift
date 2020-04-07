@@ -19,14 +19,14 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     @objc public var isPointed: Bool = false {
-       didSet {
-#if targetEnvironment(simulator)
-        let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
-        let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
-        debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
-#endif
-        prismMenu.isHidden = !isPointed
-       }
+        didSet {
+            #if targetEnvironment(simulator)
+            let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
+            let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
+            #endif
+            prismMenu.isHidden = !isPointed
+        }
     }
     @objc public var size: SCNVector3 = SCNVector3.zero {
         didSet {
@@ -57,10 +57,10 @@ import SceneKit
     }
 
     @objc fileprivate(set) var rootNode: TransformNode = TransformNode()
-#if targetEnvironment(simulator)
+    #if targetEnvironment(simulator)
     @objc fileprivate(set) var debugNode: SCNNode?
     @objc fileprivate(set) var debugClippedRayNode: SCNNode?
-#endif
+    #endif
     @objc fileprivate(set) var editNode: PrismOutlineNode?
     @objc fileprivate var clipNeeded: Bool = true
     @objc fileprivate var clippingPlanes: [Plane]?
@@ -94,11 +94,8 @@ import SceneKit
 
     @objc func setupPrism() {
         addChildNode(rootNode)
-        prismMenu = PrismContextMenuBuilder.build(for: self)
+        prismMenu = PrismContextMenuBuilder.build(for: self, prismInteractor: PrismInteractor.instance)
         prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
-        let billboardConstraint = SCNBillboardConstraint()
-        billboardConstraint.freeAxes = [.Y]
-        prismMenu.constraints = [billboardConstraint]
         addChildNode(prismMenu)
     }
 
@@ -147,8 +144,8 @@ import SceneKit
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }
-        
-#if targetEnvironment(simulator)
+
+        #if targetEnvironment(simulator)
         if debug {
             debugClippedRayNode?.removeFromParentNode()
             let begin = convertPosition(clippedRay.begin, from: nil)
@@ -178,9 +175,9 @@ import SceneKit
     }
 
     fileprivate func updateSize() {
-#if targetEnvironment(simulator)
+        #if targetEnvironment(simulator)
         debugNode?.scale = size
-#endif
+        #endif
         editNode?.size = size
 
         prismMenu.position = SCNVector3(0.0, size.y / 2 + 0.25, 0.0)
@@ -188,9 +185,9 @@ import SceneKit
         prismMenu.layoutIfNeeded()
         prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
     }
-    
+
     @objc func updateDebugMode() {
-#if targetEnvironment(simulator)
+        #if targetEnvironment(simulator)
         if debug {
             if debugNode == nil {
                 debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
@@ -206,7 +203,7 @@ import SceneKit
         }
         prismMenu.debug = debug
         prismMenu.resetClippingPlanesShaderModifiers(recursive: true)
-#endif
+        #endif
     }
 
     @objc func updateEditMode() {
@@ -226,17 +223,8 @@ import SceneKit
     }
 
     @objc func updatePosition(withPosition position: SCNVector3, relativeTo referenceNode: SCNNode) {
-        let referenceNodeTransform = matrix_float4x4(referenceNode.transform)
-
-        // Setup a translation matrix with the desired position
-        var translationMatrix = matrix_identity_float4x4
-        translationMatrix.columns.3.x = 0.0 //position.x
-        translationMatrix.columns.3.y = 0.0 //position.y
-        translationMatrix.columns.3.z = position.z
-
-        // Combine the configured translation matrix with the referenceNode's transform to get the desired position AND orientation
-        let updatedTransform = matrix_multiply(referenceNodeTransform, translationMatrix)
-        transform = SCNMatrix4(updatedTransform)
+        let refPosition = referenceNode.convertPosition(position, to: nil)
+        self.position = refPosition
         updateClipping()
     }
 }
@@ -248,7 +236,7 @@ extension Prism: BoundsClipping {
         clippingPlanesAsVector4 = nil
         invalidateClipping()
     }
-    
+
     @objc func getClippingPlanes() -> [Plane] {
         if clippingPlanes == nil {
             let min = -0.5 * size
@@ -261,13 +249,13 @@ extension Prism: BoundsClipping {
                 SCNVector4(0, 0, 1,-min.z),
                 SCNVector4(0, 0,-1, max.z),
             ]
-            
+
             clippingPlanes = planes.map { rootNode.convertPlane(Plane(vector: $0), to: nil) }
         }
 
         return clippingPlanes!
     }
-    
+
     @objc func getClippingPlanesAsVector4() -> [SCNVector4] {
         if clippingPlanesAsVector4 == nil {
             clippingPlanesAsVector4 = getClippingPlanes().map { $0.toVector4() }

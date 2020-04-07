@@ -27,6 +27,7 @@ protocol NodesGestureHandling {
     func handleNodeLongPress(_ node: BaseNode?, _ state: UIGestureRecognizer.State)
 
     func handlePinchGesture(_ sender: UIPinchGestureRecognizer)
+    func handleRotationGesture(_ sender: UIRotationGestureRecognizer)
     func handlePanGesture(_ sender: UIPanGestureRecognizer)
 }
 
@@ -93,18 +94,15 @@ class NodesGestureHandler: NodesGestureHandling {
                         points.append(sender.location(ofTouch: index, in: sender.view))
                     }
 
-                    assert(points.count == 2, "Wrong numbers of touch points.")
+//                    assert(points.count == 2, "Wrong numbers of touch points.")
                     let distanceBetween = CGPointDistanceSquared(from: points[0], to: points[1])
                     let percent = distanceBetween / (pow(size.width, 2) + pow(size.height, 2)) * 100
-
-
                     switch sender.velocity.sign {
                     case .minus:
                         result.first?.scale = prismScale - (prismScale * percent / 1000)
                     case .plus:
                         result.first?.scale = prismScale + (prismScale * percent / 1000)
                     }
-
                     result.first?.updateClipping()
                 }
             }
@@ -125,6 +123,20 @@ class NodesGestureHandler: NodesGestureHandling {
                     }
                 }
                 result.first?.updateClipping()
+            }
+        }
+    }
+
+    func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
+        if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
+            if let prismOrientation = result.first?.orientation {
+                var glQuaternion = GLKQuaternionMake(prismOrientation.x, prismOrientation.y, prismOrientation.z, prismOrientation.w)
+
+                // Rotate around Y axis
+                let multiplier = GLKQuaternionMakeWithAngleAndAxis(0.25, 0, 1, 0)
+                glQuaternion = GLKQuaternionMultiply(glQuaternion, multiplier)
+
+                result.first?.orientation = SCNQuaternion(x: glQuaternion.x, y: glQuaternion.y, z: glQuaternion.z, w: glQuaternion.w)
             }
         }
     }

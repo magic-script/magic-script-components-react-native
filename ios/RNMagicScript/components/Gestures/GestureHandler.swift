@@ -24,6 +24,7 @@ import UIKit
     func handleLongPressGesture(_ sender: LongPressGestureRecognizing)
 
     func handlePinchGesture(_ sender: UIPinchGestureRecognizer)
+    func handleRotationGesture(_ sender: UIRotationGestureRecognizer)
     func handlePanGesture(_ sender: UIPanGestureRecognizer)
 }
 
@@ -52,6 +53,10 @@ class GestureHandler: GestureHandling {
 
     @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
         nodesGestureHandler.handlePinchGesture(sender)
+    }
+
+    @objc func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
+        nodesGestureHandler.handleRotationGesture(sender)
     }
 
     @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {

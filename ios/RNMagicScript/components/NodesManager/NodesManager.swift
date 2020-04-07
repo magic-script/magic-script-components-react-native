@@ -48,6 +48,8 @@ import ARKit
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
 
+    var prismInteractor: PrismInteracting = PrismInteractor.instance
+
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
         self.nodesById = nodesById

@@ -43,7 +43,9 @@ extension NodesManager: RCTARViewObserving {
 
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
         if let pointOfView = renderer.pointOfView {
-            
+
+            prismInteractor.update(for: pointOfView)
+
             let begin = pointOfView.position
             let direction = pointOfView.worldFront
             let ray = Ray(begin: begin, direction: direction, length: 5.0)
@@ -65,12 +67,13 @@ extension NodesManager: RCTARViewObserving {
                     return distSq1 < distSq2
                 }
                 
-                results.first!.prism.isPointed = true
-                if results.first!.prism.editMode == true {
-                    let intersectedPrismCenter = results.first!.prism.position
-                    let cameraToPrismCenterDistance = sqrt((intersectedPrismCenter - ray.begin).lengthSq())
-                    results.first!.prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -cameraToPrismCenterDistance), relativeTo: pointOfView)
-                }
+                let pointedPrism = results.first!.prism
+                pointedPrism.isPointed = true
+//                if results.first!.prism.editMode == true {
+//                    let intersectedPrismCenter = results.first!.prism.position
+//                    let cameraToPrismCenterDistance = sqrt((intersectedPrismCenter - ray.begin).lengthSq())
+//                    results.first!.prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -cameraToPrismCenterDistance), relativeTo: pointOfView)
+//                }
             }
 #if targetEnvironment(simulator)
             if let position = results.first?.intersectionPoint {

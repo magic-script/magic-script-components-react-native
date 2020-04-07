@@ -166,7 +166,7 @@ class Prism(
             container.setParent(this)
 
             requestedScale?.let {
-                container.extendedScaleController.setScale(it)
+                container.prismScaleController.setScale(it)
                 requestedScale = null
             }
 
@@ -183,11 +183,11 @@ class Prism(
                 adjustMenuPosition()
             }
 
-            container.observableDragController.onDragListener = { deltaPx ->
+            container.prismDragController.onDragListener = { deltaPx ->
                 adjustPrismDistance(deltaPx)
             }
 
-            container.observableRotationController.onRotatedListener = { deltaRotation ->
+            container.prismRotationController.onRotatedListener = { deltaRotation ->
                 manualRotationOffset = Quaternion.multiply(manualRotationOffset, deltaRotation)
                 val cameraPosition = scene?.camera?.localPosition ?: Vector3.zero()
                 adjustContainerRotation(cameraPosition)
@@ -374,7 +374,7 @@ class Prism(
 
     private fun setScale(props: Bundle) {
         props.read<Vector3>(PROP_SCALE)?.let { scale ->
-            val scaleController = container?.extendedScaleController
+            val scaleController = container?.prismScaleController
             if (scaleController != null) {
                 scaleController.setScale(scale)
             } else {

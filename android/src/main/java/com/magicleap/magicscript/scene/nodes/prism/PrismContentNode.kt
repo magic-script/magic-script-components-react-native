@@ -39,23 +39,16 @@ class PrismContentNode(
     var editModeActive: Boolean = false
         set(value) {
             field = value
-            if (value) {
-                renderable = renderableCopy
-                transformationSystem.selectNode(this)
-            } else {
-                renderable = null
-                // deselect the node
-                transformationSystem.selectNode(null)
-            }
+            renderable = if (value) renderableCopy else null
         }
 
-    var observableDragController: ObservableDragController
+    var prismDragController: PrismDragController
         private set
 
-    var extendedScaleController: ExtendedScaleController
+    var prismScaleController: PrismScaleController
         private set
 
-    var observableRotationController: ObservableRotationController
+    var prismRotationController: PrismRotationController
         private set
 
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
@@ -68,15 +61,15 @@ class PrismContentNode(
         disableDefaultControllers()
 
         val dragRecognizer = transformationSystem.dragRecognizer
-        observableDragController = ObservableDragController(this, dragRecognizer)
-        addTransformationController(observableDragController)
+        prismDragController = PrismDragController(this, dragRecognizer)
+        addTransformationController(prismDragController)
 
         val pinchRecognizer = transformationSystem.pinchRecognizer
-        extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
-        addTransformationController(extendedScaleController)
+        prismScaleController = PrismScaleController(this, pinchRecognizer)
+        addTransformationController(prismScaleController)
 
         val twistRecognizer = transformationSystem.twistRecognizer
-        observableRotationController = ObservableRotationController(this, twistRecognizer)
+        prismRotationController = PrismRotationController(this, twistRecognizer)
         addTransformationController(rotationController)
 
         loadCube(initialSize)

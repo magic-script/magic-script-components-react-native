@@ -17,7 +17,6 @@
 package com.magicleap.magicscript.scene.nodes.prism
 
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.ux.BaseTransformableNode
 import com.google.ar.sceneform.ux.BaseTransformationController
 import com.google.ar.sceneform.ux.DragGesture
 import com.google.ar.sceneform.ux.DragGestureRecognizer
@@ -25,14 +24,15 @@ import com.google.ar.sceneform.ux.DragGestureRecognizer
 /**
  * Controller that only notifies the [onDragListener] and does not modify node position itself
  */
-class ObservableDragController(
-    transformableNode: BaseTransformableNode,
+class PrismDragController(
+    transformableNode: PrismContentNode,
     gestureRecognizer: DragGestureRecognizer
 ) : BaseTransformationController<DragGesture>(transformableNode, gestureRecognizer) {
 
     var onDragListener: ((deltaPx: Vector3) -> Unit)? = null
 
-    override fun canStartTransformation(gesture: DragGesture) = transformableNode.isSelected
+    override fun canStartTransformation(gesture: DragGesture) =
+        (transformableNode as PrismContentNode).editModeActive
 
     override fun onContinueTransformation(gesture: DragGesture) {
         // val diff = gesture.delta

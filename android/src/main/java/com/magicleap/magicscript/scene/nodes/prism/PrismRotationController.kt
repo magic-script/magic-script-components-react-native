@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene.nodes.prism
 
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.ux.BaseTransformableNode
 import com.google.ar.sceneform.ux.BaseTransformationController
 import com.google.ar.sceneform.ux.TwistGesture
 import com.google.ar.sceneform.ux.TwistGestureRecognizer
@@ -26,8 +25,8 @@ import com.google.ar.sceneform.ux.TwistGestureRecognizer
 /**
  * Controller that only notifies the [onRotatedListener] and does not modify node rotation itself
  */
-class ObservableRotationController(
-    transformableNode: BaseTransformableNode,
+class PrismRotationController(
+    transformableNode: PrismContentNode,
     gestureRecognizer: TwistGestureRecognizer
 ) : BaseTransformationController<TwistGesture>(transformableNode, gestureRecognizer) {
 
@@ -36,7 +35,8 @@ class ObservableRotationController(
     // Rate that the node rotates in degrees per degree of twisting.
     var rotationRateDegrees = 2.5f
 
-    override fun canStartTransformation(gesture: TwistGesture) = transformableNode.isSelected
+    override fun canStartTransformation(gesture: TwistGesture) =
+        (transformableNode as PrismContentNode).editModeActive
 
     override fun onContinueTransformation(gesture: TwistGesture) {
         val rotationAmount = -gesture.deltaRotationDegrees * rotationRateDegrees

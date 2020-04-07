@@ -18,7 +18,6 @@ package com.magicleap.magicscript.scene.nodes.prism
 
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
-import com.google.ar.sceneform.ux.BaseTransformableNode
 import com.google.ar.sceneform.ux.BaseTransformationController
 import com.google.ar.sceneform.ux.PinchGesture
 import com.google.ar.sceneform.ux.PinchGestureRecognizer
@@ -32,8 +31,8 @@ import kotlin.math.min
  * use the [setScale] function instead of [Node.setLocalScale] - this way the controller will
  * properly update the min and max scale limits.
  */
-class ExtendedScaleController(
-    transformableNode: BaseTransformableNode,
+class PrismScaleController(
+    transformableNode: PrismContentNode,
     gestureRecognizer: PinchGestureRecognizer
 ) : BaseTransformationController<PinchGesture>(transformableNode, gestureRecognizer) {
 
@@ -65,7 +64,8 @@ class ExtendedScaleController(
         setScale(transformableNode.localScale)
     }
 
-    override fun canStartTransformation(gesture: PinchGesture?) = transformableNode.isSelected
+    override fun canStartTransformation(gesture: PinchGesture) =
+        (transformableNode as PrismContentNode).editModeActive
 
     override fun onContinueTransformation(gesture: PinchGesture) {
         val diff = gesture.gapDeltaInches() * sensitivity

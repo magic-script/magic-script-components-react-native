@@ -44,7 +44,7 @@ class Prism(
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
     private val context: Context,
-    private val appInfoProvider: AppInfoProvider
+    appInfoProvider: AppInfoProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.TransformationSystemListener {
 
@@ -106,8 +106,9 @@ class Prism(
     override val reactChildren: List<ReactNode>
         get() = container?.children?.filterIsInstance<TransformNode>() ?: listOf()
 
-    fun anchorAtPose(pose: Pose) {
+    fun anchorAtPlane(pose: Pose) {
         tryToAnchorAtPose(pose)
+        adjustContainerRotation()
     }
 
     fun setScene(scene: ReactScene) {
@@ -178,7 +179,7 @@ class Prism(
             if (childNode != null) {
                 container.addChild(childNode)
             }
-            // container.setOnTouchListener
+
             container.scaleChangedListener = { _ ->
                 adjustMenuPosition()
             }
@@ -190,9 +191,8 @@ class Prism(
             container.prismRotationController.onRotatedListener = { deltaRotation ->
                 manualRotationOffset = Quaternion.multiply(manualRotationOffset, deltaRotation)
                 val cameraPosition = scene?.camera?.localPosition ?: Vector3.zero()
-                adjustContainerRotation(cameraPosition)
+                adjustContainerRotation()
             }
-
         }
         adjustMenuPosition()
     }
@@ -261,6 +261,10 @@ class Prism(
     private fun buildMenu() {
         menuNode.onEditClickListener = {
             editMode = !editMode
+
+            if (!editMode) {
+                adjustContainerRotation()
+            }
         }
 
         menuNode.build()
@@ -278,11 +282,10 @@ class Prism(
         menuNode.worldRotation = getLookAtCameraRotation(cameraPosition)
     }
 
-    private fun adjustContainerRotation(cameraPosition: Vector3) {
-        container?.let {
-            val lookRotation = getLookAtCameraRotation(cameraPosition)
-            it.localRotation = Quaternion.multiply(lookRotation, manualRotationOffset)
-        }
+    private fun adjustContainerRotation() {
+        val camera = scene?.camera ?: return
+        val lookRotation = getLookAtCameraRotation(camera.localPosition)
+        container?.worldRotation = Quaternion.multiply(lookRotation, manualRotationOffset)
     }
 
     private fun getLookAtCameraRotation(cameraPosition: Vector3): Quaternion {
@@ -327,7 +330,7 @@ class Prism(
         localPosition = cameraPosition + rayDirection + xyzDiff
 
         // look at camera
-        adjustContainerRotation(cameraPosition)
+        adjustContainerRotation()
     }
 
     // forward <-> backward movement
@@ -422,10 +425,6 @@ class Prism(
             anchor = it
             lastCreatedAnchor = it
             requestedAnchorPose = null
-
-            scene?.camera?.let { camera ->
-                adjustContainerRotation(camera.localPosition)
-            }
         })
     }
 

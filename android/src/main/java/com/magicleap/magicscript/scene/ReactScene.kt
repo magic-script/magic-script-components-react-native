@@ -107,7 +107,7 @@ class ReactScene(
                 }
                 val pos = floatArrayOf(x, y, z)
                 val pose = Pose(pos, rot)
-                prism.anchorAtPose(pose)
+                prism.anchorAtPlane(pose)
             }
         }
     }

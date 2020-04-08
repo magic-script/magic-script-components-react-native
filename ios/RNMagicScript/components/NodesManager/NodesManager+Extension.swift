@@ -44,7 +44,7 @@ extension NodesManager: RCTARViewObserving {
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
         if let pointOfView = renderer.pointOfView {
 
-            prismInteractor.update(for: pointOfView)
+            self.scene?.prismInteractor.update(for: pointOfView)
 
             let begin = pointOfView.position
             let direction = pointOfView.worldFront

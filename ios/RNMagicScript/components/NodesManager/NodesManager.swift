@@ -48,8 +48,6 @@ import ARKit
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
 
-    var prismInteractor: PrismInteracting = PrismInteractor.instance
-
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
         self.nodesById = nodesById
@@ -64,7 +62,6 @@ import ARKit
     }
 
     @objc fileprivate func onResourceDidLoad(_ notification: Notification) {
-//        print("onResourceDidLoad: \(notification)")
         if (notification.object is UiModelNode) {
             // We need to update tree hierarchy only for model nodes.
             // Audio, image? and video resources have predefined size.
@@ -73,7 +70,6 @@ import ARKit
     }
 
     @objc fileprivate func onLayoutDidChangeIndependently(_ notification: Notification) {
-//        print("onLayoutDidChangeIndependently: \(notification)")
         updateLayout()
     }
 
@@ -81,7 +77,6 @@ import ARKit
         ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
-        PrismInteractor.instance.arView = arView
         nodeSelector = UiNodeSelector(rootNode)
     }
 
@@ -102,10 +97,21 @@ import ARKit
         self.scene = scene
 
         // MARK: inject dependencies
+        assert(ARView != nil, "Sth went wrong - no ARView.")
+        if let arView = ARView {
+            scene.prismInteractor = PrismInteractor(with: arView)
+        }
     }
 
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
+
+        // MARK: inject dependencies
+        assert(scene != nil, "Sth went wrong - no scene.")
+        if let prismInteractor = scene?.prismInteractor {
+            prism.prismMenu = PrismContextMenuBuilder.build(for: prism, prismInteractor: prismInteractor)
+        }
+
         prismsById[prismId] = prism
         updatePrismAnchorUuid(prism, oldAnchorUuid: "")
     }

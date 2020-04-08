@@ -27,15 +27,15 @@ protocol PrismInteracting: class {
 }
 
 class PrismInteractor: NSObject, PrismInteracting {
-    static let instance: PrismInteractor = PrismInteractor()
-
-    weak var arView: RCTARView?
+    private weak var arView: RCTARView?
     var interactedPrism: Prism?
 
     private var gestureRecognizers: [UIGestureRecognizer] = [UIGestureRecognizer]()
 
-    override init() {
+    init(with arView: RCTARView) {
         super.init()
+
+        self.arView = arView
 
         let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
         pinchGestureRecogrnizer.delegate = self
@@ -88,14 +88,14 @@ class PrismInteractor: NSObject, PrismInteracting {
             let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
 
             if prism.editMode == true {
-                if getInitialDistance { initialDistance = sqrt((prism.position - ray.begin).lengthSq()) }
-                var cameraToPrismCenterDistance = initialDistance ?? sqrt((prism.position - ray.begin).lengthSq())
+                if getInitialDistance { initialDistance = (prism.position - ray.begin).length() }
+                var cameraToPrismCenterDistance = initialDistance ?? (prism.position - ray.begin).length()
                 if let distanceChange = localDistanceChange, let initialDistance = initialDistance {
                     cameraToPrismCenterDistance -= initialDistance * distanceChange
                     localDistanceChange = nil
                 }
 
-                let newCameraToPrismCenterDistance = Math.clamp(cameraToPrismCenterDistance, prism.maxRadius, getMaxDistance())
+                let newCameraToPrismCenterDistance = Math.clamp(cameraToPrismCenterDistance, prism.maxRadius, getMaxDistance()-prism.maxRadius)
                 prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -newCameraToPrismCenterDistance), relativeTo: pointOfView)
                 prism.updateClipping()
             }

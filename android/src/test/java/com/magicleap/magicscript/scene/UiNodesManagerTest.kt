@@ -26,14 +26,13 @@ import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.TestAppInfoProvider
+import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.magicleap.magicscript.utils.DataResult
+import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -232,7 +231,10 @@ class UiNodesManagerTest {
 
     private fun createPrism(props: JavaOnlyMap): Prism {
         val appInfoProvider = TestAppInfoProvider()
-        return Prism(props, mock(), mock(), arResourcesProvider, context, appInfoProvider)
+        val anchorCreator: AnchorCreator = mock()
+        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
+        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
+        return Prism(props, mock(), anchorCreator, arResourcesProvider, context, appInfoProvider)
     }
 
     private fun getTransformationSystem(): TransformationSystem {

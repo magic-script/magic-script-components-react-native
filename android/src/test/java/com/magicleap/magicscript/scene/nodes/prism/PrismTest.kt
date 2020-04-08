@@ -33,6 +33,7 @@ import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.getRotation
 import com.magicleap.magicscript.utils.getTranslationVector
@@ -67,6 +68,9 @@ class PrismTest {
 
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+
+        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
+        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
     }
 
     @Test
@@ -199,6 +203,44 @@ class PrismTest {
 
         menu shouldNotBe null
         menu!!.worldRotation shouldEqual expectedMenuRotation
+    }
+
+    @Test
+    fun `prism should not follow the camera if edit mode inactive`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+            )
+        )
+        val expectedPrismPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
+        val cameraPosition = Vector3(0.4f, -0.2f, 0.1f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        prism.localPosition shouldEqual Vector3.zero()
+        prism.worldPosition shouldEqual Vector3.zero()
+        verify(anchorCreator, atLeastOnce()).createAnchor(argThat(PoseMatcher(expectedPrismPose)))
+        verifyNoMoreInteractions(anchorCreator)
+    }
+
+    @Test
+    fun `content should not look at camera if edit mode inactive`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+            )
+        )
+        val contentNode = prism.children.filterIsInstance<PrismContentNode>().firstOrNull()
+        val cameraPosition = Vector3(0.6f, 0.4f, 1.4f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        contentNode shouldNotBe null
+        contentNode!!.worldRotation shouldEqual Quaternion.identity()
     }
 
     @Test

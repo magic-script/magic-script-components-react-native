@@ -208,7 +208,7 @@ class Prism(
             return
         }
 
-        if (container?.editModeActive == true) {
+        if (editMode) {
             movePrism(cameraPose, lastCameraPose)
         }
 
@@ -290,8 +290,7 @@ class Prism(
         scene?.camera?.let { camera ->
             val scale = container?.localScale ?: Vector3.one()
             val boxSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
-            val box =
-                BoundingBox(boxSize, worldPosition)
+            val box = BoundingBox(boxSize, worldPosition)
             box.rotation = container?.worldRotation ?: Quaternion()
             val cameraPosition = lastCameraPose.getTranslationVector()
             val cameraRotation = lastCameraPose.getRotation()
@@ -424,8 +423,6 @@ class Prism(
     }
 
     private fun tryToAnchorAtPose(pose: Pose) {
-        requestedAnchorPose = pose
-
         val anchorResult = anchorCreator.createAnchor(pose)
         if (anchorResult is DataResult.Success) {
             // it's important to release unused anchors
@@ -433,6 +430,9 @@ class Prism(
             anchor = anchorResult.data
             lastCreatedAnchor = anchorResult.data
             requestedAnchorPose = null
+        } else {
+            // try anchoring later
+            requestedAnchorPose = pose
         }
     }
 

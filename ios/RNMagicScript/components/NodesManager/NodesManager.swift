@@ -100,6 +100,8 @@ import ARKit
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
+
+        // MARK: inject dependencies
     }
 
     @objc public func registerPrism(_ prism: Prism, prismId: String) {

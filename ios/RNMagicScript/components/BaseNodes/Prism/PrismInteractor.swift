@@ -50,6 +50,9 @@ class PrismInteractor: NSObject, PrismInteracting {
         gestureRecognizers.append(panGestureRecogrnizer)
     }
 
+    // MARK: Prism interaction variables
+    private var localDistanceChange: Float?
+
     // MARK: PrismInteracting
     func toggleInteractions(for prism: Prism) {
         prism.editMode ? stopInteractions(for: prism) : startInteractions(for: prism)
@@ -75,8 +78,14 @@ class PrismInteractor: NSObject, PrismInteracting {
             let ray = Ray(begin: begin, direction: direction, length: 5.0)
 
             if prism.editMode == true {
-                let cameraToPrismCenterDistance = sqrt((prism.position - ray.begin).lengthSq())
+                var cameraToPrismCenterDistance = sqrt((prism.position - ray.begin).lengthSq())
+                if let distanceChange = localDistanceChange {
+                    cameraToPrismCenterDistance = cameraToPrismCenterDistance - cameraToPrismCenterDistance * distanceChange
+                    localDistanceChange = nil
+                }
                 prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -cameraToPrismCenterDistance), relativeTo: pointOfView)
+
+                prism.updateClipping()
             }
         }
     }
@@ -129,7 +138,7 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
     // MARK: gesture handlers
     @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
                 func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-                    return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+                    return pow((from.x - to.x), 2) + pow((from.y - to.y), 2)
                 }
 
                 if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
@@ -172,20 +181,10 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
     }
 
     @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
-        if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
-            if let prismPosition = result.first?.position {
-                let velocity = sender.velocity(in: sender.view)
-                if abs(velocity.y) > abs(velocity.x) { // vertical
-                    guard let view = sender.view else { return }
-                    let percent = velocity.y / view.frame.height
-                    if let prismNode = result.first {
-                        let position = prismNode.position
-                        prismNode.position = SCNVector3(x: position.x, y: position.y, z: position.z + (Float(percent)))
-
-                    }
-                }
-                result.first?.updateClipping()
-            }
+        let velocity = sender.velocity(in: sender.view)
+        if abs(velocity.y) > abs(velocity.x) { // vertical
+            guard let view = sender.view else { return }
+            localDistanceChange = Float(velocity.y / view.frame.height)
         }
     }
 }

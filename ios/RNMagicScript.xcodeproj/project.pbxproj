@@ -442,6 +442,12 @@
 		C4D5417F23338E05008D5124 /* VideoViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5417D23338E05008D5124 /* VideoViewMode.swift */; };
 		C4D5CB0A23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4D5CB0B23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
+		C4D68E99243D83AA005DD94A /* PinchGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E98243D83AA005DD94A /* PinchGestureRecognizer.swift */; };
+		C4D68E9A243D83AA005DD94A /* PinchGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E98243D83AA005DD94A /* PinchGestureRecognizer.swift */; };
+		C4D68E9C243D85A5005DD94A /* RotationGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E9B243D85A5005DD94A /* RotationGestureRecognizer.swift */; };
+		C4D68E9D243D85A5005DD94A /* RotationGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E9B243D85A5005DD94A /* RotationGestureRecognizer.swift */; };
+		C4D68E9F243D85FF005DD94A /* PanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E9E243D85FF005DD94A /* PanGestureRecognizer.swift */; };
+		C4D68EA0243D85FF005DD94A /* PanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D68E9E243D85FF005DD94A /* PanGestureRecognizer.swift */; };
 		C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */; };
 		C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */; };
 		C4ECC032232F77E10091FD21 /* NodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */; };
@@ -926,6 +932,9 @@
 		C4D5417A23338D20008D5124 /* VideoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAction.swift; sourceTree = "<group>"; };
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
 		C4D5CB0923A982790067209D /* PlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneDetector.swift; sourceTree = "<group>"; };
+		C4D68E98243D83AA005DD94A /* PinchGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinchGestureRecognizer.swift; sourceTree = "<group>"; };
+		C4D68E9B243D85A5005DD94A /* RotationGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationGestureRecognizer.swift; sourceTree = "<group>"; };
+		C4D68E9E243D85FF005DD94A /* PanGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanGestureRecognizer.swift; sourceTree = "<group>"; };
 		C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactorySpec.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
 		C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManagerSpec.swift; sourceTree = "<group>"; };
@@ -1821,6 +1830,9 @@
 		C49B120E243CA19000F7DAAB /* Gesstures */ = {
 			isa = PBXGroup;
 			children = (
+				C4D68E98243D83AA005DD94A /* PinchGestureRecognizer.swift */,
+				C4D68E9B243D85A5005DD94A /* RotationGestureRecognizer.swift */,
+				C4D68E9E243D85FF005DD94A /* PanGestureRecognizer.swift */,
 			);
 			path = Gesstures;
 			sourceTree = "<group>";
@@ -2340,12 +2352,14 @@
 				442261372334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
+				C4D68E9A243D83AA005DD94A /* PinchGestureRecognizer.swift in Sources */,
 				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
 				44890E1A2413EFB500903629 /* PrismOutlineNode.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
 				44D8FE812339194B007FD766 /* RCTARView.swift in Sources */,
 				44AFAD21232BCAE3005AC8EF /* UiTextEditNode.swift in Sources */,
 				C4B82C60236A3C2E0062B3D6 /* TimePickerInputView.swift in Sources */,
+				C4D68EA0243D85FF005DD94A /* PanGestureRecognizer.swift in Sources */,
 				44DF644D23951823005E0518 /* String+Random.swift in Sources */,
 				44F7402B2424B8BB005195F1 /* Prism+Intersection.swift in Sources */,
 				44D8FE692336B1A0007FD766 /* TextEntryMode.swift in Sources */,
@@ -2421,6 +2435,7 @@
 				44A5896A2382EF1A00934E5E /* UiWebViewNode.swift in Sources */,
 				448586FF235DF4D200D372CB /* SCNNode+Orientation.swift in Sources */,
 				44DF644A23951405005E0518 /* UiNodeAnimator.swift in Sources */,
+				C4D68E9D243D85A5005DD94A /* RotationGestureRecognizer.swift in Sources */,
 				4489DD5823C6F8000042C51B /* SCNNinePatch.swift in Sources */,
 				C4A07EF72409049700BDA262 /* NodesManager+Extension.swift in Sources */,
 				44AFAD0E232BCAE3005AC8EF /* RenderNode.swift in Sources */,
@@ -2620,6 +2635,7 @@
 				44C2511C2435E46C00BAA57F /* ImageFitMode.swift in Sources */,
 				C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */,
 				C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */,
+				C4D68E9F243D85FF005DD94A /* PanGestureRecognizer.swift in Sources */,
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,
 				44AFAC50232B9BCF005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
 				44AFAC5E232B9BCF005AC8EF /* AREventsManager.m in Sources */,
@@ -2655,6 +2671,7 @@
 				C4A12B122361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAC59232B9BCF005AC8EF /* Bundle.swift in Sources */,
 				44890E162413EF7500903629 /* NodesFactory.swift in Sources */,
+				C4D68E99243D83AA005DD94A /* PinchGestureRecognizer.swift in Sources */,
 				44444719236AFD5A00665D31 /* Dragging.swift in Sources */,
 				44F5965323574DB900C60F4C /* SCNNode+ClippingPlane.swift in Sources */,
 				C463D7BF242B6C0F00A96A57 /* Collection+Extension.swift in Sources */,
@@ -2671,6 +2688,7 @@
 				44AFAC3F232B9BCF005AC8EF /* UiGridLayoutNode.swift in Sources */,
 				C4A12B2A2361BD6F009B7083 /* TimePickerDataProviding.swift in Sources */,
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
+				C4D68E9C243D85A5005DD94A /* RotationGestureRecognizer.swift in Sources */,
 				C41CD53923E054B800F1738E /* Surface.swift in Sources */,
 				C4EFE262237ED74100C70001 /* DialogPresenting.swift in Sources */,
 				C43604212431BC0500E54BC3 /* PrismContextMenu.swift in Sources */,

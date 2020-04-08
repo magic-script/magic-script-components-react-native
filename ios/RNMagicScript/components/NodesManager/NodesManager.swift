@@ -81,6 +81,7 @@ import ARKit
         ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
+        PrismInteractor.instance.arView = arView
         nodeSelector = UiNodeSelector(rootNode)
     }
 

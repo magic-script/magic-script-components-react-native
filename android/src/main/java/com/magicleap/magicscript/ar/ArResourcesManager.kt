@@ -58,7 +58,7 @@ object ArResourcesManager : ArResourcesProvider() {
         notifyArLoaded()
     }
 
-    fun updateCameraState(cameraPose: Pose, trackingState: TrackingState) {
+    fun onCameraUpdated(cameraPose: Pose, trackingState: TrackingState) {
         this.cameraState = trackingState
         notifyCameraUpdated(cameraPose, trackingState)
     }

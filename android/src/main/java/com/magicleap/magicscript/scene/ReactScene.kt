@@ -21,11 +21,13 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
-import com.google.ar.core.Pose
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.magicleap.magicscript.utils.Utils
 
 class ReactScene(
     initProps: ReadableMap,
@@ -96,7 +98,6 @@ class ReactScene(
             // it's important to release unused anchors
             val prism = prisms.firstOrNull()
             if (prism != null) {
-                val rot = floatArrayOf(0f, 0f, 0f, 1f) // no rotation
                 val x = hitResult.hitPose.tx()
                 var y = hitResult.hitPose.ty()
                 val z = hitResult.hitPose.tz()
@@ -105,8 +106,9 @@ class ReactScene(
                     // move anchor up so the bottom of Prism sticks to floor
                     y += +prism.size.y / 2 * prism.scale.y
                 }
-                val pos = floatArrayOf(x, y, z)
-                val pose = Pose(pos, rot)
+                val position = Vector3(x, y, z)
+                val rotation = Quaternion.identity() // no rotation
+                val pose = Utils.createPose(position, rotation)
                 prism.anchorAtPlane(pose)
             }
         }

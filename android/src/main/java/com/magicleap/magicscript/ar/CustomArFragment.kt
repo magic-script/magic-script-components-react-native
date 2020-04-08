@@ -45,7 +45,7 @@ class CustomArFragment : ArFragment() {
                     onReadyCalled = true
                 }
 
-                ArResourcesManager.updateCameraState(camera.pose, camera.trackingState)
+                ArResourcesManager.onCameraUpdated(camera.pose, camera.trackingState)
             }
             if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
                 val newFrame = arSceneView.session?.update()

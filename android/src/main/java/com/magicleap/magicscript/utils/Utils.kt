@@ -19,6 +19,7 @@ package com.magicleap.magicscript.utils
 import android.content.Context
 import android.net.Uri
 import android.util.TypedValue
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
 import com.google.ar.sceneform.collision.CollisionShape
@@ -275,6 +276,12 @@ class Utils {
             parent.contentNode.children
                 .filterIsInstance<TransformNode>()
                 .forEach { it.clipBounds = localBounds }
+        }
+
+        fun createPose(position: Vector3, rotation: Quaternion): Pose {
+            val positionArray = floatArrayOf(position.x, position.y, position.z)
+            val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
+            return Pose(positionArray, rotationArray)
         }
 
     }

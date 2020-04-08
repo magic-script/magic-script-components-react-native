@@ -74,7 +74,7 @@ class Prism(
     private var container: PrismContentNode? = null
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
-    private var lastCameraPose = createPose(Vector3.zero(), Quaternion.identity())
+    private var lastCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
     private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
@@ -279,7 +279,7 @@ class Prism(
     }
 
     private fun getLookAtCameraRotation(): Quaternion {
-        val cameraPosition = lastCameraPose.getRotation()
+        val cameraPosition: Vector3 = lastCameraPose.getTranslationVector()
         val prismFlatPosition = Vector3(worldPosition.x, 0f, worldPosition.z)
         val cameraFlatPosition = Vector3(cameraPosition.x, 0f, cameraPosition.z)
         val direction = prismFlatPosition - cameraFlatPosition
@@ -363,7 +363,7 @@ class Prism(
                 localPosition = position
                 localRotation = rotation
             } else {
-                val pose = createPose(position, rotation)
+                val pose = Utils.createPose(position, rotation)
                 tryToAnchorAtPose(pose)
             }
         }
@@ -398,7 +398,7 @@ class Prism(
             anchor = null
         } else {
             // user has stopped moving the prism, so we anchor it to the final position
-            val pose = createPose(localPosition, Quaternion())
+            val pose = Utils.createPose(localPosition, Quaternion())
             tryToAnchorAtPose(pose)
 
             adjustContainerRotation()
@@ -447,11 +447,5 @@ class Prism(
                 removeChild(it)
             }
         }
-    }
-
-    private fun createPose(position: Vector3, rotation: Quaternion): Pose {
-        val positionArray = floatArrayOf(position.x, position.y, position.z)
-        val rotationArray = floatArrayOf(rotation.x, rotation.y, rotation.z, rotation.w)
-        return Pose(positionArray, rotationArray)
     }
 }

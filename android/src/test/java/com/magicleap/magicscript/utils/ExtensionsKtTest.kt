@@ -224,6 +224,7 @@ class ExtensionsKtTest {
     fun `should return correct translation vector of Pose`() {
         val positionArray = floatArrayOf(1f, 2f, -4f)
         val rotationArray = floatArrayOf(0.3f, 0.04f, 0.44f, 0.84f)
+
         val pose = Pose(positionArray, rotationArray)
 
         val translation = pose.getTranslationVector()

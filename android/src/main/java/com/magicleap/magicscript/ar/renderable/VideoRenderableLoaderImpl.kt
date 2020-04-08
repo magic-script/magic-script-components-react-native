@@ -20,6 +20,7 @@ import android.content.Context
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.logMessage
 
 class VideoRenderableLoaderImpl(
@@ -32,9 +33,9 @@ class VideoRenderableLoaderImpl(
         arResourcesProvider.addArLoadedListener(this)
     }
 
-    private val pendingRequests = mutableListOf<RenderableLoadRequest>()
+    private val pendingRequests = mutableListOf<RenderableLoadRequest<ModelRenderable>>()
 
-    override fun loadRenderable(request: RenderableLoadRequest) {
+    override fun loadRenderable(request: RenderableLoadRequest<ModelRenderable>) {
         if (arResourcesProvider.isArLoaded()) {
             load(request)
         } else {
@@ -50,12 +51,12 @@ class VideoRenderableLoaderImpl(
         }
     }
 
-    override fun cancel(request: RenderableLoadRequest) {
+    override fun cancel(request: RenderableLoadRequest<ModelRenderable>) {
         request.cancel()
         pendingRequests.remove(request)
     }
 
-    private fun load(request: RenderableLoadRequest) {
+    private fun load(request: RenderableLoadRequest<ModelRenderable>) {
         ModelRenderable.builder()
             .setSource(context, R.raw.chroma_key_video)
             .build()
@@ -64,12 +65,12 @@ class VideoRenderableLoaderImpl(
                     renderable.material.setBoolean("disableChromaKey", true)
                     renderable.isShadowCaster = false
                     renderable.isShadowReceiver = false
-                    request.listener.invoke(RenderableResult.Success(renderable))
+                    request.listener.invoke(DataResult.Success(renderable))
                 }
             }
             .exceptionally { throwable ->
                 logMessage("error loading video renderable: $throwable")
-                request.listener.invoke(RenderableResult.Error(throwable))
+                request.listener.invoke(DataResult.Error(throwable))
                 null
             }
     }

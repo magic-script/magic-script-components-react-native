@@ -17,7 +17,8 @@
 package com.magicleap.magicscript.ar.renderable
 
 import android.net.Uri
-import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ModelRenderable
+import com.magicleap.magicscript.utils.DataResult
 
 interface ModelRenderableLoader {
 
@@ -27,7 +28,7 @@ interface ModelRenderableLoader {
 
     class LoadRequest(
         val modelUri: Uri,
-        listener: ((result: RenderableResult<Renderable>) -> Unit)
-    ) : RenderableLoadRequest(listener)
+        listener: ((result: DataResult<ModelRenderable>) -> Unit)
+    ) : RenderableLoadRequest<ModelRenderable>(listener)
 
 }

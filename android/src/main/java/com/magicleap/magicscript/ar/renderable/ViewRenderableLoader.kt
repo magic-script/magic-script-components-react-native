@@ -17,8 +17,9 @@
 package com.magicleap.magicscript.ar.renderable
 
 import android.view.View
-import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.scene.nodes.props.Alignment
+import com.magicleap.magicscript.utils.DataResult
 
 interface ViewRenderableLoader {
 
@@ -30,7 +31,7 @@ interface ViewRenderableLoader {
         val view: View,
         val horizontalAlignment: Alignment.Horizontal,
         val verticalAlignment: Alignment.Vertical,
-        listener: ((result: RenderableResult<Renderable>) -> Unit)
-    ) : RenderableLoadRequest(listener)
+        listener: ((result: DataResult<ViewRenderable>) -> Unit)
+    ) : RenderableLoadRequest<ViewRenderable>(listener)
 
 }

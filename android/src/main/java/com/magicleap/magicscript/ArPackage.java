@@ -45,7 +45,7 @@ public class ArPackage implements ReactPackage {
     @NotNull
     @Override
     public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
-        NodesManager nodesManager = new UiNodesManager(ArResourcesManager.INSTANCE);
+        NodesManager nodesManager = new UiNodesManager();
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
         ArResourcesProvider arResourcesProvider = ArResourcesManager.INSTANCE;

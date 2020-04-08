@@ -16,10 +16,12 @@
 
 package com.magicleap.magicscript.ar.renderable
 
+import com.google.ar.sceneform.rendering.ModelRenderable
+
 interface VideoRenderableLoader {
 
-    fun loadRenderable(request: RenderableLoadRequest)
+    fun loadRenderable(request: RenderableLoadRequest<ModelRenderable>)
 
-    fun cancel(request: RenderableLoadRequest)
-    
+    fun cancel(request: RenderableLoadRequest<ModelRenderable>)
+
 }

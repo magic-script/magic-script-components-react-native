@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
+ * Copyright (c) 2020 Magic Leap, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.magicleap.magicscript.ar.renderable
+package com.magicleap.magicscript.utils
 
-import com.google.ar.sceneform.rendering.Renderable
-
-sealed class RenderableResult<out T : Renderable> {
-    data class Success<out T : Renderable>(val renderable: T) : RenderableResult<T>()
-    data class Error(val error: Throwable) : RenderableResult<Nothing>()
+sealed class DataResult<out T : Any> {
+    data class Success<out T : Any>(val data: T) : DataResult<T>()
+    data class Error(val error: Throwable) : DataResult<Nothing>()
 }

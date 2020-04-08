@@ -57,7 +57,7 @@ class UiNodesManagerTest {
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
-        nodesManager = UiNodesManager(arResourcesProvider)
+        nodesManager = UiNodesManager()
     }
 
     @Test

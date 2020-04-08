@@ -17,8 +17,9 @@
 package com.magicleap.magicscript.ar.renderable
 
 import com.google.ar.sceneform.rendering.Renderable
+import com.magicleap.magicscript.utils.DataResult
 
-open class RenderableLoadRequest(val listener: ((result: RenderableResult<Renderable>) -> Unit)) {
+open class RenderableLoadRequest<T : Renderable>(val listener: ((result: DataResult<T>) -> Unit)) {
     var isCancelled = false
         private set
 

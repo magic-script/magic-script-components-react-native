@@ -29,7 +29,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Alignment
@@ -313,8 +312,8 @@ abstract class UiNode(
             verticalAlignment = alignVertical
         ) { result ->
             loadingView = false
-            if (result is RenderableResult.Success) {
-                onViewLoaded(result.renderable)
+            if (result is DataResult.Success) {
+                onViewLoaded(result.data)
             }
         }.also {
             viewRenderableLoader.loadRenderable(it)

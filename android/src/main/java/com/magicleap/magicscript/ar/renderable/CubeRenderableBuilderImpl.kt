@@ -20,6 +20,7 @@ import android.content.Context
 import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ShapeFactory
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.logMessage
 
 class CubeRenderableBuilderImpl(
@@ -64,19 +65,11 @@ class CubeRenderableBuilderImpl(
                         ShapeFactory.makeCube(request.cubeSize, request.cubeCenter, material)
                     renderable.isShadowReceiver = false
                     renderable.isShadowCaster = false
-                    request.listener.invoke(
-                        RenderableResult.Success(
-                            renderable
-                        )
-                    )
+                    request.listener.invoke(DataResult.Success(renderable))
                 }
             }
             .exceptionally { throwable ->
-                request.listener.invoke(
-                    RenderableResult.Error(
-                        throwable
-                    )
-                )
+                request.listener.invoke(DataResult.Error(throwable))
                 logMessage("error building cube material: $throwable")
                 null
             }

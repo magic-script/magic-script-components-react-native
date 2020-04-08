@@ -18,16 +18,13 @@ package com.magicleap.magicscript.scene
 
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
-import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.utils.logMessage
 
 /**
  * It manages nodes registration and attaching them to scene
  */
-class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : NodesManager,
-    LifecycleEventListener {
+class UiNodesManager : NodesManager, LifecycleEventListener {
 
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
@@ -48,11 +45,6 @@ class UiNodesManager(private val arResourcesProvider: ArResourcesProvider) : Nod
         }
     }
 
-    /**
-     * This function should receive a nodeId of Scene object but
-     * for compatibility with XR client we temporarily allow adding nodes
-     * to Anchor Nodes.
-     */
     @Synchronized
     override fun addNodeToRoot(nodeId: String) {
         val node = nodesById[nodeId]

@@ -22,6 +22,7 @@ import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.ModelType
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.logMessage
 
@@ -68,11 +69,7 @@ class ModelRenderableLoaderImpl(
             ModelType.UNKNOWN -> {
                 val errorMessage = "Unresolved model type"
                 logMessage(errorMessage, true)
-                request.listener.invoke(
-                    RenderableResult.Error(
-                        Exception(errorMessage)
-                    )
-                )
+                request.listener.invoke(DataResult.Error(Exception(errorMessage)))
                 return
             }
         }
@@ -84,20 +81,12 @@ class ModelRenderableLoaderImpl(
                 if (!request.isCancelled) {
                     renderable.isShadowReceiver = false
                     renderable.isShadowCaster = false
-                    request.listener.invoke(
-                        RenderableResult.Success(
-                            renderable
-                        )
-                    )
+                    request.listener.invoke(DataResult.Success(renderable))
                 }
             }
             .exceptionally { throwable ->
                 logMessage("error loading ModelRenderable: $throwable")
-                request.listener.invoke(
-                    RenderableResult.Error(
-                        throwable
-                    )
-                )
+                request.listener.invoke(DataResult.Error(throwable))
                 null
             }
     }

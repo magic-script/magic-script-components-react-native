@@ -150,7 +150,7 @@ private class StubbedPrism: Prism {
     var wasIteratedByHitTest = false
     var hitNode: TransformNode?
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> BaseNode? {
         wasIteratedByHitTest = true
         return hitNode
     }

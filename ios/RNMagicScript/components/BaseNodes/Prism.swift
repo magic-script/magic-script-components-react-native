@@ -128,7 +128,7 @@ import SceneKit
         }
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> BaseNode? {
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }

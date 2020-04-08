@@ -62,7 +62,7 @@ import SceneKit
         contentNode.addChildNode(proxyNode)
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> BaseNode? {
         guard let _ = selfHitTest(ray: ray) else { return nil }
 
         let nodes: [TransformNode?] = [scrollContent, scrollBar]

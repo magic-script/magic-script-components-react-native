@@ -29,7 +29,7 @@ import SceneKit
 
     }
 
-    @objc func hitTest(ray: Ray) -> BaseNode? {
+    func hitTest(ray: Ray) -> BaseNode? {
         return selfHitTest(ray: ray)
     }
 

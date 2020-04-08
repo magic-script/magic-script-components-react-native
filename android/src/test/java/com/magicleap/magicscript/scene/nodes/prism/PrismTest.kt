@@ -127,7 +127,7 @@ class PrismTest {
             reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
         )
 
-        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
         prism.localPosition shouldEqualInexact Vector3.zero()
     }
 
@@ -144,7 +144,7 @@ class PrismTest {
             rotation = Quaternion(0f, 0.42f, 0f, 0.9f)
         )
 
-        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
         prism.localRotation shouldEqual Quaternion.identity()
     }
 

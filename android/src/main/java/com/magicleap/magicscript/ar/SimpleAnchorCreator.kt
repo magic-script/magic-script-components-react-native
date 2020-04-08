@@ -19,25 +19,31 @@ package com.magicleap.magicscript.ar
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.logMessage
 
 class SimpleAnchorCreator(private val arResourcesProvider: ArResourcesProvider) : AnchorCreator {
 
-    override fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit) {
+    override fun createAnchor(pose: Pose): DataResult<Anchor> {
         if (arResourcesProvider.getCameraState() != TrackingState.TRACKING) {
-            logMessage("Cannot create anchor, camera is not tracking", warn = true)
-            return
+            val errorMessage = "Cannot create anchor, camera is not tracking"
+            logMessage(errorMessage, warn = true)
+            return DataResult.Error(IllegalStateException(errorMessage))
         }
 
         val session = arResourcesProvider.getSession()
-        if (session == null) {
-            logMessage("Cannot create anchor, session not ready yet", warn = true)
+        return if (session == null) {
+            val errorMessage = "Cannot create anchor, session not ready yet"
+            logMessage(errorMessage, warn = true)
+            DataResult.Error(IllegalStateException(errorMessage))
         } else {
             try {
                 val anchor = session.createAnchor(pose)
-                result(anchor)
+                DataResult.Success(anchor)
             } catch (exception: Exception) {
-                logMessage("Create anchor exception:  $exception", warn = true)
+                val errorMessage = "Create anchor exception:  $exception"
+                logMessage(errorMessage, warn = true)
+                DataResult.Error(exception)
             }
         }
     }

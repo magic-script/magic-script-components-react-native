@@ -18,7 +18,8 @@ package com.magicleap.magicscript.ar.renderable
 
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
-import com.google.ar.sceneform.rendering.Renderable
+import com.google.ar.sceneform.rendering.ModelRenderable
+import com.magicleap.magicscript.utils.DataResult
 
 interface CubeRenderableBuilder {
 
@@ -33,6 +34,6 @@ interface CubeRenderableBuilder {
         val cubeSize: Vector3,
         val cubeCenter: Vector3,
         val color: Color,
-        listener: (result: RenderableResult<Renderable>) -> Unit
-    ) : RenderableLoadRequest(listener)
+        listener: (result: DataResult<ModelRenderable>) -> Unit
+    ) : RenderableLoadRequest<ModelRenderable>(listener)
 }

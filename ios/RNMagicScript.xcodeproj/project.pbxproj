@@ -235,6 +235,9 @@
 		44AFAD30232BCAE3005AC8EF /* FileDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */; };
 		44AFAD32232BCAE3005AC8EF /* SCNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC18232B9BCF005AC8EF /* SCNRectangle.swift */; };
 		44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFAC27232B9BCF005AC8EF /* NodesManager.swift */; };
+		44C2511C2435E46C00BAA57F /* ImageFitMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C2511B2435E46C00BAA57F /* ImageFitMode.swift */; };
+		44C2511D2435E46C00BAA57F /* ImageFitMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C2511B2435E46C00BAA57F /* ImageFitMode.swift */; };
+		44C2511F2435E57D00BAA57F /* ImageFitModeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C2511E2435E57D00BAA57F /* ImageFitModeSpec.swift */; };
 		44C5D71B235F3FE100AC0B6C /* RaySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71A235F3FE100AC0B6C /* RaySpec.swift */; };
 		44C5D71D235F3FED00AC0B6C /* PlaneSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */; };
 		44C5D7282360993600AC0B6C /* UiNodeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C5D7272360993600AC0B6C /* UiNodeSelector.swift */; };
@@ -756,6 +759,8 @@
 		44AFAC35232B9BCF005AC8EF /* RCTARViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTARViewManager.m; sourceTree = "<group>"; };
 		44AFAC37232B9BCF005AC8EF /* RNMagicScript-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNMagicScript-Bridging-Header.h"; sourceTree = "<group>"; };
 		44AFACBA232BBCB7005AC8EF /* CGSize+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extension.swift"; sourceTree = "<group>"; };
+		44C2511B2435E46C00BAA57F /* ImageFitMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFitMode.swift; sourceTree = "<group>"; };
+		44C2511E2435E57D00BAA57F /* ImageFitModeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFitModeSpec.swift; sourceTree = "<group>"; };
 		44C5D71A235F3FE100AC0B6C /* RaySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaySpec.swift; sourceTree = "<group>"; };
 		44C5D71C235F3FED00AC0B6C /* PlaneSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneSpec.swift; sourceTree = "<group>"; };
 		44C5D7272360993600AC0B6C /* UiNodeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiNodeSelector.swift; sourceTree = "<group>"; };
@@ -1355,6 +1360,7 @@
 				44AFAC13232B9BCF005AC8EF /* FontStyle.swift */,
 				44AFAC14232B9BCF005AC8EF /* FontWeight.swift */,
 				44AFAC16232B9BCF005AC8EF /* HorizontalTextAlignment.swift */,
+				44C2511B2435E46C00BAA57F /* ImageFitMode.swift */,
 				44F596412355C5B500C60F4C /* Orientation.swift */,
 				44D8FE6A2336B2C8007FD766 /* ScrollBarVisibility.swift */,
 				44556553234C9FF800301AB3 /* ScrollDirection.swift */,
@@ -1566,6 +1572,7 @@
 				44F09339232D9E2E0081FF14 /* FontStyleSpec.swift */,
 				44F0933B232D9E3B0081FF14 /* FontWeightSpec.swift */,
 				44F09337232D9BC20081FF14 /* HorizontalTextAlignmentSpec.swift */,
+				44C2511E2435E57D00BAA57F /* ImageFitModeSpec.swift */,
 				44F596442355C5FF00C60F4C /* OrientationSpec.swift */,
 				44D8FE8E233B8D1C007FD766 /* ScrollBarVisibilitySpec.swift */,
 				44F596462355C62700C60F4C /* ScrollDirectionSpec.swift */,
@@ -2337,6 +2344,7 @@
 				C4F8749023E157780044480F /* SurfaceNode.swift in Sources */,
 				442AED5823461BDF000B83AE /* SystemIcon.swift in Sources */,
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
+				44C2511D2435E46C00BAA57F /* ImageFitMode.swift in Sources */,
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				449B5484238524F400D839CC /* UiPanelNode.swift in Sources */,
 				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
@@ -2466,6 +2474,7 @@
 				44931E0F237D898C00E11972 /* UiVideoNodeSpec.swift in Sources */,
 				44F09322232D985A0081FF14 /* LabelNodeSpec.swift in Sources */,
 				44226121232F60C0006E2FBA /* SCNQuaternionExtensionSpec.swift in Sources */,
+				44C2511F2435E57D00BAA57F /* ImageFitModeSpec.swift in Sources */,
 				44F09330232D985A0081FF14 /* toArray.swift in Sources */,
 				C428C0AB237D562000771FBC /* UiDialogNodeSpec.swift in Sources */,
 				4422613A233415F5006E2FBA /* SCNSpinnerCircleSpec.swift in Sources */,
@@ -2571,6 +2580,7 @@
 				44AFAC55232B9BCF005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44890E1D2414F83000903629 /* Notification+Extension.swift in Sources */,
 				44AFAC49232B9BCF005AC8EF /* FontStyle.swift in Sources */,
+				44C2511C2435E46C00BAA57F /* ImageFitMode.swift in Sources */,
 				C4596A7B237420BB000E88C1 /* UiListViewNode.swift in Sources */,
 				C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */,
 				44AFACBB232BBCB7005AC8EF /* CGSize+Extension.swift in Sources */,

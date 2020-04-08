@@ -141,7 +141,7 @@ class UiScrollViewNodeSpec: QuickSpec {
                     expect(node.dragRange).to(beCloseTo(0))
 
                     let contentSize: CGFloat = 1.0
-                    let contentNode = UiImageNode(props: ["icon": "address-book", "height": contentSize])
+                    let contentNode = UiImageNode(props: ["icon": "address-book", "width": contentSize, "height": contentSize])
                     node.addChild(contentNode)
 
                     let boundsSize: CGFloat = 0.2

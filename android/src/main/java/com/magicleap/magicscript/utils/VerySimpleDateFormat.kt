@@ -43,7 +43,7 @@ class VerySimpleDateFormat(
 }
 
 private fun String?.simplify(): String? =
-    this?.replace("HH", if (is24hours(this)) "kk" else "HH", false)
+    this?.replace("HH", if (is24hours(this)) "HH" else "hh", false)
         ?.replace("D", "d", false)
         ?.replace("p", "a")
         ?.replace("SS", "ss", false)

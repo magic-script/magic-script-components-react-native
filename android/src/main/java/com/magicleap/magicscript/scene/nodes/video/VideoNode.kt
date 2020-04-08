@@ -24,15 +24,14 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ExternalTexture
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.renderable.RenderableLoadRequest
-import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
-import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.UiTextNode.Companion.PROP_BOUNDS_SIZE
 import com.magicleap.magicscript.scene.nodes.UiTextNode.Companion.PROP_TEXT_ALIGNMENT
@@ -81,7 +80,7 @@ class VideoNode(
             applyClipBounds()
         }
 
-    private var renderableLoadRequest: RenderableLoadRequest? = null
+    private var renderableLoadRequest: RenderableLoadRequest<ModelRenderable>? = null
     private var renderableCopy: Renderable? = null
     // width and height are determined by ExternalTexture size which is 1m x 1m
     // (video is stretched to fit the 1m x 1m square, no matter what resolution it has)
@@ -130,12 +129,12 @@ class VideoNode(
 
     override fun onPause() {
         super.onPause()
-        if (videoPlayer.isPlaying) {
-            try {
+        try {
+            if (videoPlayer.isPlaying) {
                 videoPlayer.pause()
-            } catch (exception: IllegalStateException) {
-                logMessage("onPause cannot pause video: $exception", warn = true)
             }
+        } catch (exception: IllegalStateException) {
+            logMessage("onPause cannot pause video: $exception", warn = true)
         }
     }
 
@@ -268,13 +267,13 @@ class VideoNode(
                 videoRenderableLoader.cancel(it)
             }
 
-            renderableLoadRequest = RenderableLoadRequest { result ->
-                if (result is RenderableResult.Success<Renderable>) {
-                    result.renderable.material.setExternalTexture("videoTexture", texture)
+            renderableLoadRequest = RenderableLoadRequest<ModelRenderable> { result ->
+                if (result is DataResult.Success) {
+                    result.data.material.setExternalTexture("videoTexture", texture)
                     if (isVisible) {
-                        contentNode.renderable = result.renderable
+                        contentNode.renderable = result.data
                     }
-                    renderableCopy = result.renderable
+                    renderableCopy = result.data
                     applyClipBounds()
                 }
             }.also {

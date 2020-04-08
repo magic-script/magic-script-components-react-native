@@ -45,11 +45,6 @@ class UiNodesManager : NodesManager, LifecycleEventListener {
         }
     }
 
-    /**
-     * This function should receive a nodeId of Scene object but
-     * for compatibility with XR client we temporarily allow adding nodes
-     * to Anchor Nodes.
-     */
     @Synchronized
     override fun addNodeToRoot(nodeId: String) {
         val node = nodesById[nodeId]

@@ -329,14 +329,25 @@ class Prism(
 
     // forward <-> backward movement
     private fun adjustPrismDistance(touchDeltaPx: Vector3) {
+        val camera = scene?.camera ?: return
+
         val touchDeltaDp =
             touchDeltaPx.y * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
 
-        val cameraRot = scene?.camera?.localRotation ?: Quaternion()
+        val cameraRotation = camera.worldRotation
         val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
-        val zOffset = Vector3.forward().rotatedBy(cameraRot).scaled(distDifference)
+        val zOffset = Vector3.forward().rotatedBy(cameraRotation).scaled(distDifference)
 
-        localPosition += zOffset
+        var newPosition = localPosition + zOffset
+
+        val farClipPlane = camera.farClipPlane
+        val prismSphereRadius = Vector3.dot(size, scale) / 2f
+        val maxDistance = farClipPlane - prismSphereRadius
+
+        if (newPosition.length() > maxDistance) {
+            newPosition = newPosition.normalized().scaled(maxDistance)
+        }
+        localPosition = newPosition
     }
 
     private fun isInsideScreen(point: Vector3): Boolean {

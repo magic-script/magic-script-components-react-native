@@ -18,7 +18,8 @@ package com.magicleap.magicscript.ar
 
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
+import com.magicleap.magicscript.utils.DataResult
 
 interface AnchorCreator {
-    fun createAnchor(pose: Pose, result: (anchor: Anchor) -> Unit)
+    fun createAnchor(pose: Pose): DataResult<Anchor>
 }

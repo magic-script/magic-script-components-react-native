@@ -351,13 +351,14 @@ class Prism(
     private fun tryToAnchorAtPose(pose: Pose) {
         requestedAnchorPose = pose
 
-        anchorCreator.createAnchor(pose, result = {
+        val anchorResult = anchorCreator.createAnchor(pose)
+        if (anchorResult is DataResult.Success) {
             // it's important to release unused anchors
             lastCreatedAnchor?.detach()
-            anchor = it
-            lastCreatedAnchor = it
+            anchor = anchorResult.data
+            lastCreatedAnchor = anchorResult.data
             requestedAnchorPose = null
-        })
+        }
     }
 
     private fun tryToAnchorAtUuid(anchorUuid: String) {

@@ -20,6 +20,7 @@ import android.content.Context
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.utils.DataResult
 
 class ViewRenderableLoaderImpl(
     private val context: Context,
@@ -67,11 +68,11 @@ class ViewRenderableLoaderImpl(
                 if (!request.isCancelled) {
                     renderable.isShadowReceiver = false
                     renderable.isShadowCaster = false
-                    request.listener.invoke(RenderableResult.Success(renderable))
+                    request.listener.invoke(DataResult.Success(renderable))
                 }
             }
             .exceptionally { throwable ->
-                request.listener.invoke(RenderableResult.Error(throwable))
+                request.listener.invoke(DataResult.Error(throwable))
                 null
             }
     }

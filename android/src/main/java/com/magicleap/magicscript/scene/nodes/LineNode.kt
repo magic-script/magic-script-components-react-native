@@ -26,7 +26,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Renderable
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.renderable.RenderableResult
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
@@ -187,8 +186,8 @@ class LineNode(
         val cubeSize = Vector3(LINE_THICKNESS, LINE_THICKNESS, LINE_THICKNESS)
         cubeLoadRequest =
             CubeRenderableBuilder.LoadRequest(cubeSize, Vector3.zero(), color) { result ->
-                if (result is RenderableResult.Success) {
-                    baseCube = result.renderable
+                if (result is DataResult.Success) {
+                    baseCube = result.data
                     if (isVisible) {
                         contentNode.children.forEach {
                             it.renderable = baseCube

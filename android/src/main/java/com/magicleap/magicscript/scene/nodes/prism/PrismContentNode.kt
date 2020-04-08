@@ -23,7 +23,7 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
-import com.magicleap.magicscript.ar.renderable.RenderableResult
+import com.magicleap.magicscript.utils.DataResult
 
 /**
  * Prism content that can be scaled and rotated manually.
@@ -99,10 +99,10 @@ class PrismContentNode(
 
         val color = Color(1f, 0f, 0f, 0.5f)
         renderableLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
-            if (it is RenderableResult.Success) {
-                renderableCopy = it.renderable
+            if (it is DataResult.Success) {
+                renderableCopy = it.data
                 if (editModeActive) {
-                    renderable = it.renderable
+                    renderable = it.data
                 }
             }
         }.also {

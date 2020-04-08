@@ -21,15 +21,11 @@ import android.os.Bundle
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.ar.RenderableAnimator
-import com.magicleap.magicscript.ar.renderable.RenderableResult
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.putDefault
-import com.magicleap.magicscript.utils.read
-import com.magicleap.magicscript.utils.readFilePath
+import com.magicleap.magicscript.utils.*
 
 class ModelNode(
     initProps: ReadableMap,
@@ -125,10 +121,9 @@ class ModelNode(
             }
 
             renderableLoadRequest = ModelRenderableLoader.LoadRequest(modelUri) { result ->
-                if (result is RenderableResult.Success) {
-                    result.renderable as ModelRenderable
-                    this.renderableCopy = result.renderable
-                    renderableAnimator.play(result.renderable)
+                if (result is DataResult.Success) {
+                    this.renderableCopy = result.data
+                    renderableAnimator.play(result.data)
                     if (isVisible) {
                         contentNode.renderable = renderableCopy
                     }

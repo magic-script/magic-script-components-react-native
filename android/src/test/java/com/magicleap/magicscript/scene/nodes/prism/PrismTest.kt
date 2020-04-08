@@ -121,7 +121,7 @@ class PrismTest {
 
         prism.update(reactMapOf(Prism.PROP_POSITION, position))
 
-        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)), any())
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
     }
 
     @Test

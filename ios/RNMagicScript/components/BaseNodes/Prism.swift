@@ -128,10 +128,10 @@ import SceneKit
         }
     }
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
         var outRay: Ray?
-        guard intersect(with: ray, clippedRay: &outRay) else { return nil }
-        guard let clippedRay = outRay else { return nil }
+        guard intersect(with: ray, clippedRay: &outRay) else { return (node: nil, point: nil) }
+        guard let clippedRay = outRay else { return (node: nil, point: nil) }
         
 #if targetEnvironment(simulator)
         if debug {
@@ -144,13 +144,13 @@ import SceneKit
 #endif
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
-                if let hitNode = transformNode.hitTest(ray: clippedRay) {
-                    return hitNode
+                if let result = transformNode.hitTest(ray: clippedRay) {
+                    return result
                 }
             }
         }
 
-        return self
+        return (node: self, point: getIntersectionPoints(ray: ray)?.begin)
     }
 
     fileprivate func updateSize() {

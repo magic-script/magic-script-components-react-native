@@ -54,7 +54,7 @@ import SceneKit
             let cameraNode = getCameraNode?(),
             let firstTouch = touches.first,
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
-            longPressedNode = nodeSelector.hitTest(ray: ray)
+            longPressedNode = nodeSelector.hitTest(ray: ray)?.node
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
 
             longpressTimer?.invalidate()

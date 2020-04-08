@@ -154,7 +154,7 @@ import SceneKit
         setNeedsLayout()
     }
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
         if isListExpanded {
             return listGridLayoutNode.hitTest(ray: ray) ?? selfHitTest(ray: ray)
         }

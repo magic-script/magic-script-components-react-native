@@ -84,7 +84,7 @@ import SceneKit
         super.removeChild(child)
     }
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)?  {
         guard let _ = selfHitTest(ray: ray) else { return nil }
         if let container = customNodeContainer, let result = container.hitTest(ray: ray) {
             return result
@@ -92,7 +92,7 @@ import SceneKit
             return result
         }
 
-        return self
+        return (node: self, point: getHitTestPoint(ray: ray))
     }
 
     @objc override func _calculateSize() -> CGSize {

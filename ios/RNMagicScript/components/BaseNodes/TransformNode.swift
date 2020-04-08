@@ -112,7 +112,7 @@ import SceneKit
         }
     }
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
         return selfHitTest(ray: ray)
     }
 
@@ -205,10 +205,10 @@ import SceneKit
         return nil
     }
 
-    override func selfHitTest(ray: Ray) -> BaseNode? {
-        guard !skipRaycast && visible else { return nil }
-        guard let _ = getHitTestPoint(ray: ray) else { return nil }
-        return self
+    override func selfHitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
+        guard !skipRaycast && visible else { return (node: nil, point: nil) }
+        guard let hitPoint = getHitTestPoint(ray: ray) else { return (node: nil, point: nil) }
+        return (node: self, point: hitPoint)
     }
 }
 

@@ -164,9 +164,9 @@ import SceneKit
         setNeedsLayout()
     }
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
         guard let _ = selfHitTest(ray: ray) else { return nil }
-        return scrollView.hitTest(ray: ray) ?? self
+        return scrollView.hitTest(ray: ray) ?? (node: self, point: getHitTestPoint(ray: ray))
     }
 
     fileprivate func updateLayoutOrientation(_ orientation: Orientation) {

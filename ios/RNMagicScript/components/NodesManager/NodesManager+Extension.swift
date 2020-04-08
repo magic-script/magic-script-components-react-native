@@ -48,7 +48,7 @@ extension NodesManager: RCTARViewObserving {
 
             let begin = pointOfView.position
             let direction = pointOfView.worldFront
-            let ray = Ray(begin: begin, direction: direction, length: 5.0)
+            let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
             
             var results: [(prism: Prism, intersectionPoint: SCNVector3)] = []
             prismsById.forEach {

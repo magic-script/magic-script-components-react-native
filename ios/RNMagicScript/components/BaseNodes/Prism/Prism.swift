@@ -18,6 +18,8 @@ import Foundation
 import SceneKit
 
 @objc open class Prism: BaseNode {
+    static let defaultRayLenght: CGFloat = 5.0
+
     @objc public var isPointed: Bool = false {
         didSet {
             #if targetEnvironment(simulator)

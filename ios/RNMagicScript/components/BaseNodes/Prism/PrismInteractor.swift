@@ -51,6 +51,8 @@ class PrismInteractor: NSObject, PrismInteracting {
     }
 
     // MARK: Prism interaction variables
+    private var getInitialDistance: Bool = false
+    private var initialDistance: Float?
     private var localDistanceChange: Float?
 
     // MARK: PrismInteracting
@@ -71,20 +73,30 @@ class PrismInteractor: NSObject, PrismInteracting {
 
     func update(for camera: SCNNode?) {
         guard let prism = self.interactedPrism else { return }
+
+        func getMaxDistance() -> Float {
+            if let zFar = camera?.camera?.zFar {
+                return Float(zFar)
+            }
+            return Float(Prism.defaultRayLenght)
+        }
+
         if let pointOfView = camera {
 
             let begin = pointOfView.position
             let direction = pointOfView.worldFront
-            let ray = Ray(begin: begin, direction: direction, length: 5.0)
+            let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
 
             if prism.editMode == true {
-                var cameraToPrismCenterDistance = sqrt((prism.position - ray.begin).lengthSq())
-                if let distanceChange = localDistanceChange {
-                    cameraToPrismCenterDistance = cameraToPrismCenterDistance - cameraToPrismCenterDistance * distanceChange
+                if getInitialDistance { initialDistance = sqrt((prism.position - ray.begin).lengthSq()) }
+                var cameraToPrismCenterDistance = initialDistance ?? sqrt((prism.position - ray.begin).lengthSq())
+                if let distanceChange = localDistanceChange, let initialDistance = initialDistance {
+                    cameraToPrismCenterDistance -= initialDistance * distanceChange
                     localDistanceChange = nil
                 }
-                prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -cameraToPrismCenterDistance), relativeTo: pointOfView)
 
+                let newCameraToPrismCenterDistance = Math.clamp(cameraToPrismCenterDistance, prism.maxRadius, getMaxDistance())
+                prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -newCameraToPrismCenterDistance), relativeTo: pointOfView)
                 prism.updateClipping()
             }
         }
@@ -136,7 +148,7 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
     }
 
     // MARK: gesture handlers
-    @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
+    @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
                 func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
                     return pow((from.x - to.x), 2) + pow((from.y - to.y), 2)
                 }
@@ -166,7 +178,7 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
                 }
     }
 
-    @objc func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
+    @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
         if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
             if let prismOrientation = result.first?.orientation {
                 var glQuaternion = GLKQuaternionMake(prismOrientation.x, prismOrientation.y, prismOrientation.z, prismOrientation.w)
@@ -180,11 +192,29 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
         }
     }
 
-    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
-        let velocity = sender.velocity(in: sender.view)
-        if abs(velocity.y) > abs(velocity.x) { // vertical
-            guard let view = sender.view else { return }
-            localDistanceChange = Float(velocity.y / view.frame.height)
+    @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
+        // MARK: handlePanGesture::internal
+        func getGestureDistance(_ sender: PanGestureRecognizer) -> Float {
+            let velocity = sender.velocity(in: sender.view)
+            if abs(velocity.y) > abs(velocity.x) { // vertical
+                guard let view = sender.view else { return 0.0 }
+                return Float(velocity.y / view.frame.height)
+            }
+            return 0.0
+        }
+
+        switch sender.state {
+        case .began:
+            getInitialDistance = true
+            localDistanceChange = getGestureDistance(sender)
+        case .changed:
+            localDistanceChange = getGestureDistance(sender)
+        case .cancelled, .ended, .failed:
+            getInitialDistance = false
+            initialDistance = nil
+            localDistanceChange = nil
+        default:
+            print()
         }
     }
 }

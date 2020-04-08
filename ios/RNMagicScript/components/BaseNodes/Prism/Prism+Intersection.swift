@@ -19,11 +19,15 @@ import SceneKit
 
 // MARK: - Intersection
 extension Prism {
+    var maxRadius: Float {
+        let maxSize = 0.5 * max(size.x, max(size.y, size.z))
+        return maxSize * 1.73205
+    }
+
     func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool {
         // Fast test: ray against outer sphere
         let sqDistanceToSpehere = ray.getSqDistanceToPoint(position)
-        let maxSize = 0.5 * max(size.x, max(size.y, size.z))
-        let maxRadius = maxSize * 1.73205
+        let maxRadius = self.maxRadius
         if sqDistanceToSpehere > maxRadius * maxRadius {
             return false
         }

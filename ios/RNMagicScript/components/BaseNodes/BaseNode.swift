@@ -34,7 +34,7 @@ import SceneKit
     }
 
     func selfHitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
-        return (node: nil, point: nil)
+        return nil
     }
 
     func convertRayToLocal(ray: Ray) -> Ray {

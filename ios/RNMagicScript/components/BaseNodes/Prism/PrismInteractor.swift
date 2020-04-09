@@ -60,6 +60,10 @@ class PrismInteractor: NSObject, PrismInteracting {
     private var initialScale: SCNVector3?
     private var localScaleChange: Float?
 
+    private var getInitialRotation: Bool = false
+    private var initialOrientation: SCNQuaternion?
+    private var localRotationChange: Float?
+
     // MARK: PrismInteracting
     func toggleInteractions(for prism: Prism) {
         prism.editMode ? stopInteractions(for: prism) : startInteractions(for: prism)
@@ -174,22 +178,34 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
             localScaleChange = nil
             pinchTouchesInitialDistance = nil
         default:
-            print("Default")
+            print("Default: \(#function)")
         }
     }
 
     @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
-        if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
-            if let prismOrientation = result.first?.orientation {
-                var glQuaternion = GLKQuaternionMake(prismOrientation.x, prismOrientation.y, prismOrientation.z, prismOrientation.w)
 
-                // Rotate around Y axis
-                let multiplier = GLKQuaternionMakeWithAngleAndAxis(0.25, 0, 1, 0)
-                glQuaternion = GLKQuaternionMultiply(glQuaternion, multiplier)
-
-                result.first?.orientation = SCNQuaternion(x: glQuaternion.x, y: glQuaternion.y, z: glQuaternion.z, w: glQuaternion.w)
-            }
+        switch sender.state {
+        case .began:
+            guard let prism = interactedPrism else { return }
+            initialOrientation = prism.orientation
+            localRotationChange = Float(sender.rotation)
+        case .changed:
+            localRotationChange = Float(sender.rotation)
+        case .cancelled, .ended, .failed:
+            initialOrientation = nil
+            localRotationChange = nil
+        default:
+            print("Default: \(#function)")
         }
+
+        guard let orientation = initialOrientation else { return }
+        var glQuaternion = GLKQuaternionMake(orientation.x, orientation.y, orientation.z, orientation.w)
+
+        // Rotate around Y axis
+        let multiplier = GLKQuaternionMakeWithAngleAndAxis(Float(sender.rotation), 0, 1, 0)
+        glQuaternion = GLKQuaternionMultiply(glQuaternion, multiplier)
+
+        interactedPrism?.orientation = SCNQuaternion(x: glQuaternion.x, y: glQuaternion.y, z: glQuaternion.z, w: glQuaternion.w)
     }
 
     @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
@@ -215,7 +231,7 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
             initialDistance = nil
             localDistanceChange = nil
         default:
-            print()
+            print("Default: \(#function)")
         }
     }
 }

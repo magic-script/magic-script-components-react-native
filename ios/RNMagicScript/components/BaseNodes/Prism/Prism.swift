@@ -19,6 +19,7 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     static let defaultRayLenght: CGFloat = 20.0
+    static let distanceToContextMenu: Float = 0.20
 
     @objc public var isPointed: Bool = false {
         didSet {
@@ -180,7 +181,7 @@ import SceneKit
         editNode?.size = size
 
         guard let menu = prismMenu else { return }
-        menu.position = SCNVector3(0.0, size.y / 2 + 0.25, 0.0)
+        menu.position = SCNVector3(0.0, size.y / 2 + Prism.distanceToContextMenu, 0.0)
         menu.setNeedsLayout()
         menu.layoutIfNeeded()
         menu.resetClippingPlanesShaderModifiers(recursive: true)

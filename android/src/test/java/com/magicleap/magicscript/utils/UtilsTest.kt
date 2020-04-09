@@ -22,6 +22,7 @@ import android.util.DisplayMetrics
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.UiNodeBuilder
 import com.magicleap.magicscript.ar.ModelType
@@ -310,6 +311,22 @@ class UtilsTest {
         Utils.applyContentNodeAlignment(node)
 
         node.contentNode.localPosition shouldEqualInexact Vector3(0f, -2.5f, 0f)
+    }
+
+    @Test
+    fun `should create correct Pose of provided position and rotation`() {
+        val position = Vector3(-2f, 1.5f, 0.8f)
+        val rotation = Quaternion(0f, 0.3826834f, 0f, 0.9238795f).normalized()
+
+        val pose = Utils.createPose(position, rotation)
+
+        pose.tx() shouldEqualInexact position.x
+        pose.ty() shouldEqualInexact position.y
+        pose.tz() shouldEqualInexact position.z
+        pose.qx() shouldEqualInexact rotation.x
+        pose.qy() shouldEqualInexact rotation.y
+        pose.qz() shouldEqualInexact rotation.z
+        pose.qw() shouldEqualInexact rotation.w
     }
 
 }

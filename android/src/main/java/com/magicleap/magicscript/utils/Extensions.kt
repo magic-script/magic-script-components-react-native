@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -92,7 +93,18 @@ operator fun Vector3.div(other: Float): Vector3 {
 }
 
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
-    return Utils.rotateVector(this, quaternion)
+    return Quaternion.rotateVector(quaternion, this)
+}
+
+/**
+ * com.google.ar.core.Pose
+ */
+fun Pose.getRotation(): Quaternion {
+    return Quaternion(qx(), qy(), qz(), qw())
+}
+
+fun Pose.getTranslationVector(): Vector3 {
+    return Vector3(tx(), ty(), tz())
 }
 
 fun Bounding.scaled(horizontalScale: Float, verticalScale: Float): Bounding {

@@ -19,14 +19,21 @@ package com.magicleap.magicscript.ar
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.core.HitResult
+import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.shouldEqualInexact
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.getRotation
+import com.magicleap.magicscript.utils.getTranslationVector
 import com.nhaarman.mockitokotlin2.spy
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -141,33 +148,36 @@ class ArResourcesManagerTest {
     }
 
     @Test
-    fun `should notify listener when camera position updated`() {
-        var cameraPosition = Vector3.zero()
+    fun `should notify listener when camera pose updated`() {
+        var poseFromListener: Pose? = null
         manager.addCameraUpdatedListener(object : ArResourcesProvider.CameraUpdatedListener {
-            override fun onCameraUpdated(position: Vector3, state: TrackingState) {
-                cameraPosition = position
+            override fun onCameraUpdated(cameraPose: Pose, state: TrackingState) {
+                poseFromListener = cameraPose
             }
         })
-        val updatedPosition = Vector3(4f, 2f, -1f)
+        val updatedPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
 
-        ArResourcesManager.updateCameraPosition(updatedPosition, TrackingState.TRACKING)
+        ArResourcesManager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
 
-        cameraPosition shouldEqual updatedPosition
         ArResourcesManager.getCameraState() shouldEqual TrackingState.TRACKING
+        poseFromListener shouldNotBe null
+        poseFromListener!!.getTranslationVector() shouldEqualInexact Vector3(4f, 2f, -1f)
+        poseFromListener!!.getRotation() shouldEqual Quaternion.identity()
     }
 
     @Test
-    fun `should not notify removed listener when camera position updated`() {
+    fun `should not notify removed listener when camera pose updated`() {
         var notified = false
         val listener = object : ArResourcesProvider.CameraUpdatedListener {
-            override fun onCameraUpdated(position: Vector3, state: TrackingState) {
+            override fun onCameraUpdated(cameraPose: Pose, state: TrackingState) {
                 notified = true
             }
         }
         manager.addCameraUpdatedListener(listener)
         manager.removeCameraUpdatedListener(listener)
+        val updatedPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
 
-        ArResourcesManager.updateCameraPosition(Vector3.one(), TrackingState.TRACKING)
+        ArResourcesManager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
 
         notified shouldBe false
     }

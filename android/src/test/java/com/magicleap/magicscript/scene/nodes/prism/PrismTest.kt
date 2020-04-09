@@ -21,6 +21,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.core.Pose
+import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformableNode
@@ -31,10 +33,15 @@ import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
+import com.magicleap.magicscript.utils.DataResult
+import com.magicleap.magicscript.utils.Utils
+import com.magicleap.magicscript.utils.getRotation
+import com.magicleap.magicscript.utils.getTranslationVector
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotBe
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,6 +68,9 @@ class PrismTest {
 
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+
+        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
+        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
     }
 
     @Test
@@ -108,20 +118,64 @@ class PrismTest {
         verify(cubeBuilder).buildRenderable(any())
     }
 
-
     @Test
-    fun `should create anchor when position changed`() {
-        val prism = buildPrism(reactMapOf())
-        val position = JavaOnlyArray.of(2.0, 1.0, 0.0)
-        val anchorRotation = prism.localRotation
-        val expectedPose = Pose(
-            floatArrayOf(2f, 1f, 0f),
-            floatArrayOf(anchorRotation.x, anchorRotation.y, anchorRotation.z, anchorRotation.w)
+    fun `should anchor the node at updated position if mode is normal`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
+        Mockito.reset(anchorCreator)
+        val expectedPose = Utils.createPose(
+            position = Vector3(0.5f, 0.1f, 2.0f),
+            rotation = Quaternion.identity()
         )
 
-        prism.update(reactMapOf(Prism.PROP_POSITION, position))
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
+        )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
+        prism.localPosition shouldEqualInexact Vector3.zero()
+    }
+
+    @Test
+    fun `should anchor the node at desired rotation if mode is normal`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_ROTATION, reactArrayOf(0.00, 0.42, 0.0, 0.9),
+                Prism.PROP_MODE, Prism.MODE_NORMAL
+            )
+        )
+        val expectedPose = Utils.createPose(
+            position = Vector3.zero(),
+            rotation = Quaternion(0f, 0.42f, 0f, 0.9f)
+        )
+
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
+        prism.localRotation shouldEqual Quaternion.identity()
+    }
+
+    @Test
+    fun `should update local position if position property updated in edit mode`() {
+        val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_EDIT))
+        Mockito.reset(anchorCreator)
+
+        prism.update(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(-0.4, 0.2, -1.5))
+        )
+
+        prism.localPosition shouldEqualInexact Vector3(-0.4f, 0.2f, -1.5f)
+        verifyZeroInteractions(anchorCreator)
+    }
+
+    @Test
+    fun `should set local rotation if rotation property applied in edit mode`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_ROTATION, reactArrayOf(0.00, 0.42, 0.0, 0.9),
+                Prism.PROP_MODE, Prism.MODE_EDIT
+            )
+        )
+
+        prism.localRotation shouldEqual Quaternion(0.00f, 0.42f, 0.0f, 0.9f)
+        verifyZeroInteractions(anchorCreator)
     }
 
     @Test
@@ -133,6 +187,60 @@ class PrismTest {
         prism.addContent(content)
 
         content.worldScale shouldEqualInexact Vector3(1.5f, 0.5f, 1f)
+    }
+
+    @Test
+    fun `should globally rotate menu around Y axis to look at camera`() {
+        val prism = buildPrism(
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0))
+        )
+        val menu = prism.children.filterIsInstance<PrismMenu>().firstOrNull()
+        val cameraPosition = Vector3(0.6f, 0.4f, 1.4f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+        val expectedMenuRotation = Quaternion(0f, 0.20106588f, 0f, 0.9795777f)
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        menu shouldNotBe null
+        menu!!.worldRotation shouldEqual expectedMenuRotation
+    }
+
+    @Test
+    fun `prism should not follow the camera if edit mode inactive`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+            )
+        )
+        val expectedPrismPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
+        val cameraPosition = Vector3(0.4f, -0.2f, 0.1f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        prism.localPosition shouldEqual Vector3.zero()
+        prism.worldPosition shouldEqual Vector3.zero()
+        verify(anchorCreator, atLeastOnce()).createAnchor(argThat(PoseMatcher(expectedPrismPose)))
+        verifyNoMoreInteractions(anchorCreator)
+    }
+
+    @Test
+    fun `content should not look at camera if edit mode inactive`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+            )
+        )
+        val contentNode = prism.children.filterIsInstance<PrismContentNode>().firstOrNull()
+        val cameraPosition = Vector3(0.6f, 0.4f, 1.4f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        contentNode shouldNotBe null
+        contentNode!!.worldRotation shouldEqual Quaternion.identity()
     }
 
     @Test
@@ -188,8 +296,9 @@ class PrismTest {
 
     private class PoseMatcher(private val pose: Pose) : ArgumentMatcher<Pose> {
         override fun matches(argument: Pose): Boolean {
-            return pose.rotationQuaternion.contentEquals(argument.rotationQuaternion)
-                    && pose.translation.contentEquals(argument.translation)
+            return pose.getTranslationVector() == argument.getTranslationVector()
+                    && pose.getRotation().normalized() == argument.getRotation().normalized()
+
         }
     }
 

@@ -39,17 +39,16 @@ class PrismContentNode(
     var editModeActive: Boolean = false
         set(value) {
             field = value
-            if (value) {
-                renderable = renderableCopy
-                transformationSystem.selectNode(this)
-            } else {
-                renderable = null
-                // deselect the node
-                transformationSystem.selectNode(null)
-            }
+            renderable = if (value) renderableCopy else null
         }
 
-    var extendedScaleController: ExtendedScaleController
+    var prismDragController: PrismDragController
+        private set
+
+    var prismScaleController: PrismScaleController
+        private set
+
+    var prismRotationController: PrismRotationController
         private set
 
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
@@ -58,17 +57,20 @@ class PrismContentNode(
     private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
 
     init {
-        // disabling default translationController, because it only allows moving on planes
-        translationController.isEnabled = false
-
-        // disable default scale controller
-        scaleController.isEnabled = false
-
         transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
+        disableDefaultControllers()
+
+        val dragRecognizer = transformationSystem.dragRecognizer
+        prismDragController = PrismDragController(this, dragRecognizer)
+        addTransformationController(prismDragController)
 
         val pinchRecognizer = transformationSystem.pinchRecognizer
-        extendedScaleController = ExtendedScaleController(this, pinchRecognizer)
-        addTransformationController(extendedScaleController)
+        prismScaleController = PrismScaleController(this, pinchRecognizer)
+        addTransformationController(prismScaleController)
+
+        val twistRecognizer = transformationSystem.twistRecognizer
+        prismRotationController = PrismRotationController(this, twistRecognizer)
+        addTransformationController(rotationController)
 
         loadCube(initialSize)
     }
@@ -109,5 +111,17 @@ class PrismContentNode(
             cubeBuilder.buildRenderable(it)
         }
     }
+
+    private fun disableDefaultControllers() {
+        // disable default translation controller, because it only allows moving on planes
+        translationController.isEnabled = false
+
+        // disable default scale controller
+        scaleController.isEnabled = false
+
+        // disable default rotation controller
+        rotationController.isEnabled = false
+    }
+
 
 }

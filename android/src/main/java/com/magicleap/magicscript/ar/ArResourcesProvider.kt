@@ -17,11 +17,10 @@
 package com.magicleap.magicscript.ar
 
 import com.google.ar.core.HitResult
+import com.google.ar.core.Pose
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
-import com.google.ar.sceneform.Camera
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
 
 abstract class ArResourcesProvider {
@@ -104,11 +103,6 @@ abstract class ArResourcesProvider {
     abstract fun getArScene(): Scene?
 
     /**
-     * Returns current Camera if already initialized or null otherwise
-     */
-    abstract fun getCamera(): Camera?
-
-    /**
      * Returns true if ARCore native libraries are loaded (this is true after AR fragment
      * is created). Before ARCore is not loaded we cannot load a Renderable.
      */
@@ -138,8 +132,8 @@ abstract class ArResourcesProvider {
         arSceneListeners.forEach { it.onSceneChanged(arScene) }
     }
 
-    protected fun notifyCameraUpdated(position: Vector3, state: TrackingState) {
-        cameraUpdatedListeners.forEach { it.onCameraUpdated(position, state) }
+    protected fun notifyCameraUpdated(cameraPose: Pose, state: TrackingState) {
+        cameraUpdatedListeners.forEach { it.onCameraUpdated(cameraPose, state) }
     }
 
     protected fun notifyTransformationSystemChanged(system: TransformationSystem) {
@@ -155,7 +149,7 @@ abstract class ArResourcesProvider {
     }
 
     interface CameraUpdatedListener {
-        fun onCameraUpdated(position: Vector3, state: TrackingState)
+        fun onCameraUpdated(cameraPose: Pose, state: TrackingState)
     }
 
     interface ArSceneChangedListener {

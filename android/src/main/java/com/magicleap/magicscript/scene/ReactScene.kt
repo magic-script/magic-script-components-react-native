@@ -19,12 +19,15 @@ package com.magicleap.magicscript.scene
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
-import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
+import com.google.ar.core.Plane
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
+import com.magicleap.magicscript.utils.Utils
 
 class ReactScene(
     initProps: ReadableMap,
@@ -32,7 +35,6 @@ class ReactScene(
 ) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private val prisms = mutableListOf<Prism>()
-    private var lastTapAnchor: Anchor? = null
 
     private val arScene get() = arResourcesProvider.getArScene() // ar scene may change at runtime
 
@@ -94,10 +96,21 @@ class ReactScene(
     override fun onPlaneTap(hitResult: HitResult) {
         if (arResourcesProvider.isPlaneDetectionEnabled() && prisms.isNotEmpty()) {
             // it's important to release unused anchors
-            lastTapAnchor?.detach()
-            val anchor = hitResult.createAnchor()
-            prisms.firstOrNull()?.anchor = anchor
-            lastTapAnchor = anchor
+            val prism = prisms.firstOrNull()
+            if (prism != null) {
+                val x = hitResult.hitPose.tx()
+                var y = hitResult.hitPose.ty()
+                val z = hitResult.hitPose.tz()
+                val trackable = hitResult.trackable
+                if (trackable is Plane && trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
+                    // move anchor up so the bottom of Prism sticks to floor
+                    y += +prism.size.y / 2 * prism.scale.y
+                }
+                val position = Vector3(x, y, z)
+                val rotation = Quaternion.identity() // no rotation
+                val pose = Utils.createPose(position, rotation)
+                prism.anchorAtPlane(pose)
+            }
         }
     }
 

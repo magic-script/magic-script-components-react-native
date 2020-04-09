@@ -20,6 +20,8 @@ import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.DatePicker
+import com.google.ar.core.Pose
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.shouldEqualInexact
 import com.nhaarman.mockitokotlin2.mock
@@ -216,6 +218,29 @@ class ExtensionsKtTest {
         val scale = 2f
 
         vector1 / scale shouldEqual Vector3(0.5f, 1f, 1.5f)
+    }
+
+    @Test
+    fun `should return correct translation vector of Pose`() {
+        val positionArray = floatArrayOf(1f, 2f, -4f)
+        val rotationArray = floatArrayOf(0.3f, 0.04f, 0.44f, 0.84f)
+
+        val pose = Pose(positionArray, rotationArray)
+
+        val translation = pose.getTranslationVector()
+
+        translation shouldEqual Vector3(1f, 2f, -4f)
+    }
+
+    @Test
+    fun `should return correct rotation of Pose`() {
+        val positionArray = floatArrayOf(1f, 2f, -4f)
+        val rotationArray = floatArrayOf(0.3f, 0.04f, 0.44f, 0.84f)
+        val pose = Pose(positionArray, rotationArray)
+
+        val rotation = pose.getRotation()
+
+        rotation shouldEqual Quaternion(0.3f, 0.04f, 0.44f, 0.84f)
     }
 
     @Test

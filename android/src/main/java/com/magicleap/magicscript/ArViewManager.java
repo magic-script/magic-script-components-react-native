@@ -18,7 +18,6 @@ package com.magicleap.magicscript;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
@@ -30,21 +29,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 
+import javax.annotation.Nonnull;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * View manager that is responsible for creating the AR Fragment
  */
-public class ArViewManager extends ViewGroupManager<FrameLayout> {
+public class ArViewManager extends ViewGroupManager<FragmentContainer> {
 
-    private static final String REACT_CLASS = "RCTARView";
-    private static final String LOG_TAG = "AR_LOG";
-    private static WeakReference<AppCompatActivity> activityRef = new WeakReference<>(null);
     public static Boolean showLayoutBounds = false;
 
     public static WeakReference<AppCompatActivity> getActivityRef() {
         return activityRef;
     }
+
+    private static final String REACT_CLASS = "RCTARView";
+    private static final String LOG_TAG = "AR_LOG";
+    private static WeakReference<AppCompatActivity> activityRef = new WeakReference<>(null);
+    private static String FRAGMENT_TAG = "arFragment";
 
     @NotNull
     @Override
@@ -54,19 +58,25 @@ public class ArViewManager extends ViewGroupManager<FrameLayout> {
 
     @NotNull
     @Override
-    protected FrameLayout createViewInstance(@NotNull final ThemedReactContext reactContext) {
+    protected FragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
         // view that contains AR fragment
-        FrameLayout mContainer = new FrameLayout(reactContext);
+        FragmentContainer container = new FragmentContainer(reactContext);
         CustomArFragment fragment = new CustomArFragment();
         AppCompatActivity currentActivity = (AppCompatActivity) reactContext.getCurrentActivity();
         activityRef = new WeakReference<>(currentActivity);
         if (currentActivity != null) {
-            currentActivity.getSupportFragmentManager().beginTransaction().add(fragment, "arFragment").commitNow();
-            addView(mContainer, fragment.getView(), 0); // same as mCointainer.addView
+            FragmentManager fragmentManager = currentActivity.getSupportFragmentManager();
+            container.setupFragment(fragment, FRAGMENT_TAG, fragmentManager);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
-        return mContainer;
+        return container;
+    }
+
+    @Override
+    public void onDropViewInstance(@Nonnull final FragmentContainer view) {
+        super.onDropViewInstance(view);
+        view.removeFragment(FRAGMENT_TAG);
     }
 
     @ReactProp(name = "planeDetection")

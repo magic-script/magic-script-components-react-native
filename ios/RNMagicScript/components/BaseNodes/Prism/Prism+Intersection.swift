@@ -20,7 +20,8 @@ import SceneKit
 // MARK: - Intersection
 extension Prism {
     var maxRadius: Float {
-        let maxSize = 0.5 * max(size.x, max(size.y, size.z))
+        let realSize = size * scale
+        let maxSize = 0.5 * max(realSize.x, max(realSize.y, realSize.z))
         return maxSize * 1.73205
     }
 

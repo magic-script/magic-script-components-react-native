@@ -78,6 +78,12 @@ import ARKit
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
+
+        let prismInteractor = PrismInteractor(with: arView)
+        scene?.prismInteractor = prismInteractor
+        prismsById.forEach {
+            $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
+        }
     }
 
     @objc public func findNodeWithId(_ nodeId: String) -> BaseNode? {
@@ -95,23 +101,10 @@ import ARKit
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
-
-        // MARK: inject dependencies
-        assert(ARView != nil, "Sth went wrong - no ARView.")
-        if let arView = ARView {
-            scene.prismInteractor = PrismInteractor(with: arView)
-        }
     }
 
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
-
-        // MARK: inject dependencies
-        assert(scene != nil, "Sth went wrong - no scene.")
-        if let prismInteractor = scene?.prismInteractor {
-            prism.prismMenu = PrismContextMenuBuilder.build(for: prism, prismInteractor: prismInteractor)
-        }
-
         prismsById[prismId] = prism
         updatePrismAnchorUuid(prism, oldAnchorUuid: "")
     }

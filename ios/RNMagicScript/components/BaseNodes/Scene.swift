@@ -57,13 +57,13 @@ import SceneKit
         }
     }
 
-    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
+    override func hitTest(ray: Ray) -> HitTestResult {
         for prism in prisms {
-            if let hitNode = prism.hitTest(ray: ray) {
-                return hitNode
+            if let hitResult = prism.hitTest(ray: ray) {
+                return hitResult
             }
         }
 
-        return (node: self, point: nil)
+        return nil
     }
 }

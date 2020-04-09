@@ -61,7 +61,7 @@ import SceneKit
         pageLayout.rows = 1
     }
 
-    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)?  {
+    override func hitTest(ray: Ray) -> HitTestResult  {
         return pageLayout.hitTest(ray: ray, node: self)
     }
 

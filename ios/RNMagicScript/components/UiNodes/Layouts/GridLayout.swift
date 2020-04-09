@@ -91,7 +91,7 @@ import SceneKit
         return false
     }
 
-    func hitTest(ray: Ray, node: UiNode) -> (node: BaseNode?, point: SCNVector3?)? {
+    func hitTest(ray: Ray, node: UiNode) -> HitTestResult {
         guard let gridDescriptor = gridDescriptor else { return nil }
         guard let hitPoint = node.getHitTestPoint(ray: ray) else { return nil }
         let gridBounds = node.getBounds()

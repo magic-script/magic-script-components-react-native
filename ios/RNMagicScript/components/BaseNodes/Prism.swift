@@ -128,7 +128,7 @@ import SceneKit
         }
     }
 
-    override func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
+    override func hitTest(ray: Ray) -> HitTestResult {
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }
@@ -150,7 +150,7 @@ import SceneKit
             }
         }
 
-        return (node: self, point: getIntersectionPoints(ray: ray)?.begin)
+        return (node: self, point: clippedRay.begin)
     }
 
     fileprivate func updateSize() {

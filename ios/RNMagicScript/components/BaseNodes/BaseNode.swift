@@ -16,6 +16,8 @@
 
 import SceneKit
 
+typealias HitTestResult = (node: BaseNode, point: SCNVector3)?
+
 @objc open class BaseNode: SCNNode {
     @objc func update(_ props: [String: Any]) {
 
@@ -29,11 +31,11 @@ import SceneKit
 
     }
 
-    func hitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
+    func hitTest(ray: Ray) -> HitTestResult {
         return selfHitTest(ray: ray)
     }
 
-    func selfHitTest(ray: Ray) -> (node: BaseNode?, point: SCNVector3?)? {
+    func selfHitTest(ray: Ray) -> HitTestResult {
         return nil
     }
 

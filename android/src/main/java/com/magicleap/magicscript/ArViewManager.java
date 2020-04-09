@@ -60,17 +60,17 @@ public class ArViewManager extends ViewGroupManager<FragmentContainer> {
     @Override
     protected FragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
         // view that contains AR fragment
-        FragmentContainer mContainer = new FragmentContainer(reactContext);
+        FragmentContainer container = new FragmentContainer(reactContext);
         CustomArFragment fragment = new CustomArFragment();
         AppCompatActivity currentActivity = (AppCompatActivity) reactContext.getCurrentActivity();
         activityRef = new WeakReference<>(currentActivity);
         if (currentActivity != null) {
             FragmentManager fragmentManager = currentActivity.getSupportFragmentManager();
-            mContainer.setupFragment(fragment, FRAGMENT_TAG, fragmentManager);
+            container.setupFragment(fragment, FRAGMENT_TAG, fragmentManager);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
-        return mContainer;
+        return container;
     }
 
     @Override

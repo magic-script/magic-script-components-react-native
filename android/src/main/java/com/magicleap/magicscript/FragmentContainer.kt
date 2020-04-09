@@ -21,7 +21,6 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.magicleap.magicscript.utils.logMessage
 
 class FragmentContainer @JvmOverloads constructor(
     context: Context,
@@ -42,7 +41,6 @@ class FragmentContainer @JvmOverloads constructor(
         val arFragment = fragmentManager.findFragmentByTag(tag)
         if (arFragment != null) {
             fragmentManager.beginTransaction().remove(arFragment).commitNowAllowingStateLoss()
-            logMessage("removed fragment")
         }
     }
 

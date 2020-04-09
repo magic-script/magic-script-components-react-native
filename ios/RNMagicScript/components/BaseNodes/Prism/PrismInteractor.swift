@@ -55,6 +55,11 @@ class PrismInteractor: NSObject, PrismInteracting {
     private var initialDistance: Float?
     private var localDistanceChange: Float?
 
+    private var pinchTouchesInitialDistance: Float?
+    private var getInitialScale: Bool = false
+    private var initialScale: SCNVector3?
+    private var localScaleChange: Float?
+
     // MARK: PrismInteracting
     func toggleInteractions(for prism: Prism) {
         prism.editMode ? stopInteractions(for: prism) : startInteractions(for: prism)
@@ -97,6 +102,10 @@ class PrismInteractor: NSObject, PrismInteracting {
 
                 let newCameraToPrismCenterDistance = Math.clamp(cameraToPrismCenterDistance, prism.maxRadius, getMaxDistance()-prism.maxRadius)
                 prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -newCameraToPrismCenterDistance), relativeTo: pointOfView)
+                if getInitialScale { initialScale = prism.scale; getInitialScale = false }
+                if let scaleChange = localScaleChange, let scale = initialScale {
+                    prism.scale = scale * scaleChange
+                }
                 prism.updateClipping()
             }
         }
@@ -136,46 +145,37 @@ class PrismInteractor: NSObject, PrismInteracting {
 
 
 extension PrismInteractor: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer is UIRotationGestureRecognizer && otherGestureRecognizer is UIPinchGestureRecognizer {
-            return true
-        }
-
-        if gestureRecognizer is UIPinchGestureRecognizer && otherGestureRecognizer is UIRotationGestureRecognizer {
-            return true
-        }
-        return false
-    }
-
     // MARK: gesture handlers
     @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
-                func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-                    return pow((from.x - to.x), 2) + pow((from.y - to.y), 2)
-                }
+        // MARK: handlePinchGesture::internal function
+        func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+            return pow((from.x - to.x), 2) + pow((from.y - to.y), 2)
+        }
 
-                if let result = NodesManager.instance.scene?.prisms.filter({ $0.editMode }) {
-                    if let prismScale = result.first?.scale {
-                        if let size = sender.view?.frame {
-
-                            let numberOfPoints = sender.numberOfTouches
-                            var points: [CGPoint] = [CGPoint]()
-                            for index in 0..<numberOfPoints {
-                                points.append(sender.location(ofTouch: index, in: sender.view))
-                            }
-
-        //                    assert(points.count == 2, "Wrong numbers of touch points.")
-                            let distanceBetween = CGPointDistanceSquared(from: points[0], to: points[1])
-                            let percent = distanceBetween / (pow(size.width, 2) + pow(size.height, 2)) * 100
-                            switch sender.velocity.sign {
-                            case .minus:
-                                result.first?.scale = prismScale - (prismScale * percent / 1000)
-                            case .plus:
-                                result.first?.scale = prismScale + (prismScale * percent / 1000)
-                            }
-                            result.first?.updateClipping()
-                        }
-                    }
-                }
+        switch sender.state {
+        case .began:
+            var points: [CGPoint] = [CGPoint]()
+            for index in 0..<sender.numberOfTouches {
+                points.append(sender.location(ofTouch: index, in: sender.view))
+            }
+            pinchTouchesInitialDistance = Float(CGPointDistanceSquared(from: points[0], to: points[1]))
+            getInitialScale = true
+        case .changed:
+            var points: [CGPoint] = [CGPoint]()
+            for index in 0..<sender.numberOfTouches {
+                points.append(sender.location(ofTouch: index, in: sender.view))
+            }
+            guard points.count > 1 else { localScaleChange = nil; pinchTouchesInitialDistance = nil; getInitialScale = false; return }
+            let distanceBetween = CGPointDistanceSquared(from: points[0], to: points[1])
+            guard let initialDistance = pinchTouchesInitialDistance else { return }
+            localScaleChange = Float(distanceBetween) / initialDistance
+        case .cancelled, .ended, .failed:
+            getInitialScale = false
+            localScaleChange = nil
+            pinchTouchesInitialDistance = nil
+        default:
+            print("Default")
+        }
     }
 
     @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
@@ -193,12 +193,13 @@ extension PrismInteractor: UIGestureRecognizerDelegate {
     }
 
     @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
-        // MARK: handlePanGesture::internal
+        // MARK: handlePanGesture::internal function
         func getGestureDistance(_ sender: PanGestureRecognizer) -> Float {
-            let velocity = sender.velocity(in: sender.view)
-            if abs(velocity.y) > abs(velocity.x) { // vertical
+            let _ = sender.velocity(in: sender.view) // we should make tests if velocity or translation fits here better
+            let translation = sender.translation(in: sender.view)
+            if abs(translation.y) > abs(translation.x) { // vertical
                 guard let view = sender.view else { return 0.0 }
-                return Float(velocity.y / view.frame.height)
+                return Float(translation.y / view.frame.height)
             }
             return 0.0
         }

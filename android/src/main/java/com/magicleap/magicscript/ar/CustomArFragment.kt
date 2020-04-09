@@ -22,22 +22,14 @@ import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
-import com.magicleap.magicscript.utils.logMessage
 
 class CustomArFragment : ArFragment() {
 
     private var onReadyCalled = false
     private var lastTimestamp: Long = 0L
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        logMessage("onCreate")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        logMessage("onViewCreated")
 
         ArResourcesManager.setupScene(arSceneView.scene)
 
@@ -54,7 +46,6 @@ class CustomArFragment : ArFragment() {
                 }
 
                 ArResourcesManager.onCameraUpdated(camera.pose, camera.trackingState)
-                logMessage("on camera updated")
             }
             if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
                 val newFrame = arSceneView.session?.update()
@@ -75,23 +66,4 @@ class CustomArFragment : ArFragment() {
         planeDiscoveryController.setInstructionView(null)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        logMessage("onActivityCreated")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        logMessage("onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        logMessage("onPause")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        logMessage("onDestroyView")
-    }
 }

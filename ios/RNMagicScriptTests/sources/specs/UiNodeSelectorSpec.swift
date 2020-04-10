@@ -71,7 +71,9 @@ class UiNodeSelectorSpec: QuickSpec {
                 it("should return the closest node (rotation)") {
                     rootNode.childNodes.forEach { $0.removeFromParentNode() }
                     let node1 = UiImageNode(props: ["localPosition": [0, 0, -0.1], "height": 0.1, "width": 0.3, "color": [1, 1, 0, 1]])
+                    node1.name = "node1"
                     let node2 = UiImageNode(props: ["localPosition": [0, 0,  0.1], "height": 0.1, "width": 0.1, "color": [1, 0, 1, 1]])
+                    node2.name = "node2"
                     rootNode.addChildNode(node1)
                     rootNode.addChildNode(node2)
                     

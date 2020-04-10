@@ -128,7 +128,7 @@ class SceneSpec: QuickSpec {
                         _ = scene.addNode(prism3)
 
                         let hitResult = scene.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
-                        expect(hitResult).to(equal(hitNode))
+                        expect(hitResult?.node).to(equal(hitNode))
                         expect(prism1.wasIteratedByHitTest).to(beTrue())
                         expect(prism2.wasIteratedByHitTest).to(beTrue())
                         expect(prism3.wasIteratedByHitTest).to(beTrue())
@@ -138,7 +138,7 @@ class SceneSpec: QuickSpec {
                 context("when doesn't contain Prisms") {
                     it("should return itself") {
                         let hitResult = scene.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
-                        expect(hitResult).to(equal(scene))
+                        expect(hitResult?.node).to(equal(scene))
                     }
                 }
             }
@@ -150,8 +150,11 @@ private class StubbedPrism: Prism {
     var wasIteratedByHitTest = false
     var hitNode: TransformNode?
 
-    override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         wasIteratedByHitTest = true
-        return hitNode
+        if let node = hitNode {
+            return (node: node, point: SCNVector3.zero)
+        }
+        return nil
     }
 }

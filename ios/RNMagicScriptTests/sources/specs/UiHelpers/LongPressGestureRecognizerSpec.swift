@@ -38,7 +38,7 @@ class LongPressGestureRecognizerSpec: QuickSpec {
 
             let setInitialState = {
                 let hitNode = TransformNode()
-                nodeSelectorMock.given(.hitTest(ray: .any, willReturn: hitNode))
+                nodeSelectorMock.given(.hitTest(ray: .any, willReturn: (node: hitNode, point: SCNVector3.zero)))
                 let ray = Ray(begin: SCNVector3(), direction: SCNVector3(), length: 1.0)
                 rayBuilderMock.given(.build(gesture: .any, cameraNode: .any, willReturn: ray))
                 sut.touchesBegan([UITouch()], with: UIEvent())

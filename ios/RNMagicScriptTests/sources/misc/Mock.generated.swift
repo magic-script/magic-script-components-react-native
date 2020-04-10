@@ -3,7 +3,7 @@
 
 
 
-// Generated with SwiftyMocky 3.4.0
+// Generated with SwiftyMocky 3.5.0
 
 import SwiftyMocky
 #if !MockyCustom
@@ -3413,11 +3413,11 @@ open class NodeSelectingMock: NodeSelecting, Mock {
 
 
 
-    open func hitTest(ray: Ray) -> BaseNode? {
+    open func hitTest(ray: Ray) -> HitTestResult? {
         addInvocation(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`)))
 		let perform = methodPerformValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))) as? (Ray) -> Void
 		perform?(`ray`)
-		var __value: BaseNode? = nil
+		var __value: HitTestResult? = nil
 		do {
 		    __value = try methodReturnValue(.m_hitTest__ray_ray(Parameter<Ray>.value(`ray`))).casted()
 		} catch {
@@ -3473,16 +3473,16 @@ open class NodeSelectingMock: NodeSelecting, Mock {
         }
 
 
-        public static func hitTest(ray: Parameter<Ray>, willReturn: BaseNode?...) -> MethodStub {
+        public static func hitTest(ray: Parameter<Ray>, willReturn: HitTestResult?...) -> MethodStub {
             return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
         }
         public static func draggingHitTest(ray: Parameter<Ray>, willReturn: Dragging?...) -> MethodStub {
             return Given(method: .m_draggingHitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) }))
         }
-        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<BaseNode?>) -> Void) -> MethodStub {
-            let willReturn: [BaseNode?] = []
+        public static func hitTest(ray: Parameter<Ray>, willProduce: (Stubber<HitTestResult?>) -> Void) -> MethodStub {
+            let willReturn: [HitTestResult?] = []
 			let given: Given = { return Given(method: .m_hitTest__ray_ray(`ray`), products: willReturn.map({ StubProduct.return($0 as Any) })) }()
-			let stubber = given.stub(for: (BaseNode?).self)
+			let stubber = given.stub(for: (HitTestResult?).self)
 			willProduce(stubber)
 			return given
         }

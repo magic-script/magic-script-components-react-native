@@ -35,7 +35,8 @@ class ViewController: UIViewController {
         setupARView()
         setupScene()
         
-        setupPrismWithModels()
+//        setupPrismWithModels()
+        setupPrismForHitTest()
 
         arView.register(self)
     }
@@ -49,6 +50,34 @@ class ViewController: UIViewController {
         let scene = Scene()
         NodesManager.instance.registerScene(scene, sceneId: sceneId)
         NodesManager.instance.addNodeToRoot(sceneId)
+    }
+    
+    fileprivate func setupPrismForHitTest() {
+        let prismId = "prism_hit_test"
+        let prism: Prism = Prism()
+        prism.size = SCNVector3(1.0, 1.0, 1.0)
+        prism.debug = true
+        
+        NodesManager.instance.registerPrism(prism, prismId: prismId)
+        NodesManager.instance.addNode(prismId, toParent: sceneId)
+        
+        let _ : UiButtonNode = createComponent([
+            "width": 1,
+            "height": 0.3,
+            "localPosition": [0, 0, -0.1],
+            "color": [1, 1, 0, 1],
+            "text": "Back button"
+        ], nodeId: "button_back", parentId: prismId)
+        
+        let _ : UiButtonNode = createComponent([
+            "width": 1,
+            "height": 0.3,
+            "localPosition": [0, 0, 0.1],
+            "color": [0, 1, 0, 1],
+            "text": "Front button"
+        ], nodeId: "button_front", parentId: prismId)
+        
+        NodesManager.instance.updateLayout()
     }
 
     fileprivate func setupPrismWithModels() {
@@ -88,7 +117,7 @@ class ViewController: UIViewController {
             "value": 1.0,
             "localPosition": [0, 0.6, 0]
         ], nodeId: "slider", parentId: groupId)
-        slider.onSliderChanged = { [weak self] (sender, value) in
+        slider.onSliderChanged = { (sender, value) in
             prism.size = SCNVector3(value, value, value)
 //            prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
 //            prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
@@ -103,7 +132,7 @@ class ViewController: UIViewController {
             "on": prism.debug,
             "type": "checkbox"
         ], nodeId: "checkbox1", parentId: groupId)
-        checkbox1.onChanged = { [weak self] (sender, on) in
+        checkbox1.onChanged = { (sender, on) in
             prism.debug = on
         }
 
@@ -115,7 +144,7 @@ class ViewController: UIViewController {
             "on": prism.editMode,
             "type": "checkbox"
         ], nodeId: "checkbox2", parentId: groupId)
-        checkbox2.onChanged = { [weak self] (sender, on) in
+        checkbox2.onChanged = { (sender, on) in
             prism.editMode = on
         }
         

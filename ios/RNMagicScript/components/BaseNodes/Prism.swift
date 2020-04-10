@@ -142,15 +142,24 @@ import SceneKit
             addChildNode(debugClippedRayNode!)
         }
 #endif
+        var hitResults: [HitTestResult] = []
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
-                if let result = transformNode.hitTest(ray: clippedRay) {
-                    return result
+                if let hitResult = transformNode.hitTest(ray: clippedRay) {
+                    hitResults.append(hitResult)
                 }
             }
         }
-
-        return (node: self, point: clippedRay.begin)
+        
+        hitResults.sort { (hitResult1, hitResult2) -> Bool in
+            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
+            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
+            let dist1 = (worldPosition1 - ray.begin).lengthSq()
+            let dist2 = (worldPosition2 - ray.begin).lengthSq()
+            return dist1 < dist2
+        }
+        
+        return hitResults.first
     }
 
     fileprivate func updateSize() {

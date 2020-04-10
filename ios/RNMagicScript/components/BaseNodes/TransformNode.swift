@@ -195,7 +195,7 @@ import SceneKit
 
     func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
-        let localPlane = getPlane()
+        let localPlane = BaseNode.plane
         guard let point = localPlane.intersectRay(localRay) else { return nil }
         let bounds = getBounds()
         if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {

@@ -89,7 +89,7 @@ import SceneKit
         backgroundNode.position = SCNVector3(0.0, 0.0, -0.005)
     }
 
-    override func hitTest(ray: Ray) -> HitTestResult  {
+    override func hitTest(ray: Ray) -> HitTestResult?  {
         guard let child = childNode else { return nil }
         guard let _ = selfHitTest(ray: ray) else { return nil }
         guard let hitPoint = getHitTestPoint(ray: ray) else { return nil }

@@ -57,7 +57,7 @@ import SceneKit
         }
     }
 
-    override func hitTest(ray: Ray) -> HitTestResult {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         for prism in prisms {
             if let hitResult = prism.hitTest(ray: ray) {
                 return hitResult

@@ -164,7 +164,7 @@ import SceneKit
         setNeedsLayout()
     }
 
-    override func hitTest(ray: Ray) -> HitTestResult {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         guard let _ = selfHitTest(ray: ray) else { return nil }
         return scrollView.hitTest(ray: ray)
     }

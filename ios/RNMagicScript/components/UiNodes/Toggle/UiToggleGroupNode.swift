@@ -84,7 +84,7 @@ import SceneKit
         super.removeChild(child)
     }
 
-    override func hitTest(ray: Ray) -> HitTestResult  {
+    override func hitTest(ray: Ray) -> HitTestResult?  {
         guard let result = selfHitTest(ray: ray) else { return nil }
         if let container = customNodeContainer, let result = container.hitTest(ray: ray) {
             return result

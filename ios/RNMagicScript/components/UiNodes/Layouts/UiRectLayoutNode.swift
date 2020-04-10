@@ -44,7 +44,7 @@ import SceneKit
         gridLayout.rows = 1
     }
 
-    override func hitTest(ray: Ray) -> HitTestResult {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         return gridLayout.hitTest(ray: ray, node: self)
     }
 

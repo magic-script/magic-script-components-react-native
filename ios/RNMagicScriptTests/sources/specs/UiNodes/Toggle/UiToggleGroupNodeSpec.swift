@@ -292,7 +292,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         node.layoutIfNeeded()
 
                         let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
-                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(toggleNode))
+                        expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(toggleNode))
                     }
 
                     it("should return toggle (with toggles container)") {
@@ -310,7 +310,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         node.layoutIfNeeded()
 
                         let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
-                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(toggleNode))
+                        expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(toggleNode))
                     }
 
                     it("should return toggle group") {
@@ -327,7 +327,7 @@ class UiToggleGroupNodeSpec: QuickSpec {
                         node.layoutIfNeeded()
 
                         let ray = Ray(begin: SCNVector3(0, 0, -1), direction: SCNVector3(0, 0, 1), length: 2)
-                        expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+                        expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(node))
                     }
                 }
             }

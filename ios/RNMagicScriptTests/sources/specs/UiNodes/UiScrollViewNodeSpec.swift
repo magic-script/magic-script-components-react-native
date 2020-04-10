@@ -244,7 +244,7 @@ class UiScrollViewNodeSpec: QuickSpec {
                     node.scrollBounds = (min: SCNVector3(-1, -1, -0.1), max: SCNVector3(1, 1, 0.1))
 
                     let ray = Ray(begin: SCNVector3(0,0,1), direction: SCNVector3(0,0,-1), length: 2)
-                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+                    expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(node))
                 }
 
                 it("should return content node") {
@@ -254,7 +254,7 @@ class UiScrollViewNodeSpec: QuickSpec {
                     node.addChild(contentNode)
                     
                     let ray = Ray(begin: SCNVector3(0,0,1), direction: SCNVector3(0,0,-1), length: 2)
-                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(contentNode))
+                    expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(contentNode))
                 }
             }
         }

@@ -136,9 +136,9 @@ class SceneSpec: QuickSpec {
                 }
 
                 context("when doesn't contain Prisms") {
-                    it("should return itself") {
+                    it("should return nil") {
                         let hitResult = scene.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
-                        expect(hitResult?.node).to(equal(scene))
+                        expect(hitResult).to(beNil())
                     }
                 }
             }

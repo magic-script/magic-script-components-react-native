@@ -380,11 +380,11 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.isListExpanded).to(beFalse())
 
                     let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 2)
-                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+                    expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(node))
 
                     node.enterFocus()
                     expect(node.isListExpanded).to(beTrue())
-                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(node))
+                    expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(node))
                 }
 
                 it("should return item node") {
@@ -395,7 +395,7 @@ class UiDropdownListNodeSpec: QuickSpec {
                     let x = -0.5 * size.width
                     let y = -0.5 * (size.height + textHeight)
                     let ray = Ray(begin: SCNVector3(x, y, 1), direction: SCNVector3(0, 0, -1), length: 2)
-                    expect(node.hitTest(ray: ray)).to(beIdenticalTo(items[0]))
+                    expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(items[0]))
                 }
             }
         }

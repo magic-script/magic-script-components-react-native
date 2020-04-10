@@ -60,7 +60,7 @@ class UiNodeSelectorSpec: QuickSpec {
                     let nodesInRayRange: [TransformNode] = referenceNodes.filter { (rayMinZ <= $0.position.z) && ($0.position.z <= rayMaxZ) }
                     for node in nodesInRayRange {
                         let result = nodeSelector.hitTest(ray: ray)
-                        expect(result).to(beIdenticalTo(node))
+                        expect(result!.node).to(beIdenticalTo(node))
                         node.skipRaycast = true
                     }
 

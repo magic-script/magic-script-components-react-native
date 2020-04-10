@@ -55,17 +55,10 @@ class BaseNodeSpec: QuickSpec {
                 }
             }
 
-            context("when asked for Plane") {
-                it("should return it according to configuration") {
-                    let referencePosition = SCNVector3(0.25, 0.5, 0.75)
-                    let referenceNormalVector = SCNVector3(0.15, 0.30, 0.45)
-
-                    node.position = referencePosition
-                    node.transform = SCNMatrix4(m11: 0.0, m12: 0.0, m13: 0.0, m14: 0.0, m21: 0.0, m22: 0.0, m23: 0.0, m24: 0.0, m31: 0.15, m32: 0.30, m33: 0.45, m34: 0.60, m41: 0.25, m42: 0.5, m43: 0.75, m44: 1.0)
-
-                    let plane = node.getPlane()
-                    expect(plane.center).to(beCloseTo(referencePosition))
-                    expect(plane.normal).to(beCloseTo(referenceNormalVector))
+            context("when asked for local plane") {
+                it("should always return the same plane") {
+                    expect(BaseNode.plane.center).to(beCloseTo(SCNVector3.zero))
+                    expect(BaseNode.plane.normal).to(beCloseTo(SCNVector3.forward))
                 }
             }
         }

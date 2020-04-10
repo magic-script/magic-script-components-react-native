@@ -169,7 +169,7 @@ class GridLayoutSpec: QuickSpec {
                     for i in 0..<4 {
                         let ray = Ray(begin: begins[i], direction: SCNVector3(0, 0, -1), length: 3)
                         let result = layout.hitTest(ray: ray, node: nodes[i])
-                        expect(result).to(beIdenticalTo(nodes[i]))
+                        expect(result!.node).to(beIdenticalTo(nodes[i]))
                     }
                 }
             }

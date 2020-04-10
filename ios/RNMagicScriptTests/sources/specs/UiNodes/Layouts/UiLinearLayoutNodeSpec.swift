@@ -164,7 +164,7 @@ class UiLinearLayoutNodeSpec: QuickSpec {
 
                     let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 3)
                     let result = node.hitTest(ray: ray)
-                    expect(result).to(beIdenticalTo(referenceNode))
+                    expect(result!.node).to(beIdenticalTo(referenceNode))
                 }
             }
 

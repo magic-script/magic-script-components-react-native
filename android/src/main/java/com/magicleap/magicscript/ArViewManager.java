@@ -23,7 +23,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.magicleap.magicscript.ar.ArResourcesManager;
-import com.magicleap.magicscript.ar.CustomArFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,7 @@ import androidx.fragment.app.FragmentManager;
 /**
  * View manager that is responsible for creating the AR Fragment
  */
-public class ArViewManager extends ViewGroupManager<FragmentContainer> {
+public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
 
     public static Boolean showLayoutBounds = false;
 
@@ -58,15 +57,14 @@ public class ArViewManager extends ViewGroupManager<FragmentContainer> {
 
     @NotNull
     @Override
-    protected FragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
+    protected ArFragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
         // view that contains AR fragment
-        FragmentContainer container = new FragmentContainer(reactContext);
-        CustomArFragment fragment = new CustomArFragment();
+        ArFragmentContainer container = new ArFragmentContainer(reactContext);
         AppCompatActivity currentActivity = (AppCompatActivity) reactContext.getCurrentActivity();
         activityRef = new WeakReference<>(currentActivity);
         if (currentActivity != null) {
             FragmentManager fragmentManager = currentActivity.getSupportFragmentManager();
-            container.setupFragment(fragment, FRAGMENT_TAG, fragmentManager);
+            container.setupFragment(FRAGMENT_TAG, fragmentManager);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
@@ -74,7 +72,7 @@ public class ArViewManager extends ViewGroupManager<FragmentContainer> {
     }
 
     @Override
-    public void onDropViewInstance(@Nonnull final FragmentContainer view) {
+    public void onDropViewInstance(@Nonnull final ArFragmentContainer view) {
         super.onDropViewInstance(view);
         view.removeFragment(FRAGMENT_TAG);
     }

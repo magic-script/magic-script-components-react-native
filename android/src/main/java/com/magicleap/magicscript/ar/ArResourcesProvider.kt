@@ -30,7 +30,7 @@ abstract class ArResourcesProvider {
     private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
     private val planeTapListeners = mutableListOf<PlaneTapListener>()
 
-    fun clearListeners() {
+    open fun clear() {
         arSceneListeners.clear()
         arLoadedListeners.clear()
         cameraUpdatedListeners.clear()

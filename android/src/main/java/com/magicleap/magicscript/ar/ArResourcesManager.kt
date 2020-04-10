@@ -21,8 +21,6 @@ import com.google.ar.core.Pose
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
 import java.lang.ref.WeakReference
 
@@ -35,6 +33,15 @@ object ArResourcesManager : ArResourcesProvider() {
     private var transformationSystemRef = WeakReference<TransformationSystem>(null)
     private var cameraState: TrackingState? = null
     private var arLoaded = false
+
+    override fun clear() {
+        super.clear()
+        sceneRef = WeakReference<Scene>(null)
+        sessionRef = WeakReference<Session>(null)
+        transformationSystemRef = WeakReference<TransformationSystem>(null)
+        cameraState = null
+        arLoaded = false
+    }
 
     /**
      * Scene is changed when fragment is recreated

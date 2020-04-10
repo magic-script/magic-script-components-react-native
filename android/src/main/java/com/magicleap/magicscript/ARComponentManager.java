@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -77,11 +78,9 @@ import com.magicleap.magicscript.scene.nodes.UiTabNode;
 import com.magicleap.magicscript.scene.nodes.UiTextEditNode;
 import com.magicleap.magicscript.scene.nodes.UiTextNode;
 import com.magicleap.magicscript.scene.nodes.UiTimePickerNode;
-import com.magicleap.magicscript.utils.FileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.AudioNode;
 import com.magicleap.magicscript.scene.nodes.audio.ExternalAudioEngine;
 import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
-import com.magicleap.magicscript.utils.UriFileProvider;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
@@ -110,6 +109,8 @@ import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+import com.magicleap.magicscript.utils.FileProvider;
+import com.magicleap.magicscript.utils.UriFileProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -271,7 +272,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> {
             FileProvider fileProvider = new UriFileProvider(context);
             VideoPlayer videoPlayer = new VideoPlayerImpl(context, fileProvider);
-            addNode(new VideoNode(props, context, videoPlayer, videoRenderableLoader, viewRenderableLoader, videoNodeClipper, fontProvider, arResourcesProvider), nodeId);
+            addNode(new VideoNode(props,
+                                  context,
+                                  videoPlayer,
+                                  videoRenderableLoader,
+                                  viewRenderableLoader,
+                                  videoNodeClipper,
+                                  fontProvider,
+                                  arResourcesProvider), nodeId);
         });
     }
 
@@ -706,5 +714,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @Override
     public void onNewIntent(final Intent intent) {
 
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        Log.d("ArComponentManager", "onCatalystInstanceDestroy");
+        nodesManager.clear();
+        arResourcesProvider.clear();
     }
 }

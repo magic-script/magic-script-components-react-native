@@ -90,9 +90,7 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult?  {
-        guard let child = childNode else { return nil }
-        guard let _ = selfHitTest(ray: ray) else { return nil }
-        guard let hitPoint = getHitTestPoint(ray: ray) else { return nil }
-        return (node: child, point: hitPoint)
+        guard let hitResult = selfHitTest(ray: ray) else { return nil }
+        return childNode?.hitTest(ray: ray) ?? hitResult
     }
 }

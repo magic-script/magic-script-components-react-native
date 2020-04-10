@@ -165,8 +165,8 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
-        guard let _ = selfHitTest(ray: ray) else { return nil }
-        return scrollView.hitTest(ray: ray)
+        guard let hitResult = selfHitTest(ray: ray) else { return nil }
+        return scrollView.hitTest(ray: ray) ?? hitResult
     }
 
     fileprivate func updateLayoutOrientation(_ orientation: Orientation) {

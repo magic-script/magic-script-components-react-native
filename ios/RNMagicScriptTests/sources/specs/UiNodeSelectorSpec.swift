@@ -65,7 +65,7 @@ class UiNodeSelectorSpec: QuickSpec {
                     }
 
                     let result = nodeSelector.hitTest(ray: ray)
-                    expect(result).to(beNil())
+                    expect(result!.node).to(beIdenticalTo(node3))
                 }
             }
         }

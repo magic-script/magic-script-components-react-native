@@ -81,9 +81,9 @@ class UiNodeSelectorSpec: QuickSpec {
                         (angle: 0.0.toRadians, hitNode: node2),
                         (angle: 45.0.toRadians, hitNode: node1),
                         (angle: 90.0.toRadians, hitNode: nil),
-                        (angle: 135.0.toRadians, hitNode: node1),
-                        (angle: 180.0.toRadians, hitNode: node1),
-                        (angle: 225.0.toRadians, hitNode: node1),
+                        (angle: 135.0.toRadians, hitNode: nil),
+                        (angle: 180.0.toRadians, hitNode: nil),
+                        (angle: 225.0.toRadians, hitNode: nil),
                         (angle: 270.0.toRadians, hitNode: nil),
                         (angle: 315.0.toRadians, hitNode: node1),
                     ]

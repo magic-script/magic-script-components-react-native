@@ -52,9 +52,9 @@ class UiNodeSelector: NodeSelecting  {
     }
 
     func draggingHitTest(ray: Ray) -> Dragging? {
-        guard let hitNode = hitTest(ray: ray) else { return nil }
+        guard let hitResult = hitTest(ray: ray) else { return nil }
 
-        var node: SCNNode? = hitNode.node
+        var node: SCNNode? = hitResult.node
         while node != nil {
             if node is Dragging {
                 break

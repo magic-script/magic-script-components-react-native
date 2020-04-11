@@ -195,8 +195,11 @@ private class StubbedTransformNode: TransformNode {
     var wasIteratedByHitTest = false
     var hitNode: TransformNode?
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         wasIteratedByHitTest = true
-        return hitNode
+        if let node = hitNode {
+            return (node: node, point: SCNVector3.zero)
+        }
+        return nil
     }
 }

@@ -47,7 +47,8 @@ import SceneKit
             let cameraNode = getCameraNode?(),
             let firstTouch = touches.first,
             let ray = rayBuilder.build(gesture: self, cameraNode: cameraNode) {
-            tappedNode = nodeSelector.hitTest(ray: ray)
+            let hitResult = nodeSelector.hitTest(ray: ray)
+            tappedNode = hitResult?.node
             initialTouchLocation = firstTouch.location(in: firstTouch.view)
         } else {
             state = .failed

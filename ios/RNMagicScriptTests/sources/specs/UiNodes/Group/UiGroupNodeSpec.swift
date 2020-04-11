@@ -70,7 +70,7 @@ class UiGroupNodeSpec: QuickSpec {
                         let pos = image.localPosition
                         let ray = Ray(begin: pos + beginOffset, direction: direction, length: 3)
                         let result = node.hitTest(ray: ray)
-                        expect(result).to(beIdenticalTo(image))
+                        expect(result!.node).to(beIdenticalTo(image))
                     }
                 }
             }

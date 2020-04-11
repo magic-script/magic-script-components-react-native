@@ -128,7 +128,7 @@ import SceneKit
         }
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }
@@ -142,15 +142,24 @@ import SceneKit
             addChildNode(debugClippedRayNode!)
         }
 #endif
+        var hitResults: [HitTestResult] = []
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {
-                if let hitNode = transformNode.hitTest(ray: clippedRay) {
-                    return hitNode
+                if let hitResult = transformNode.hitTest(ray: clippedRay) {
+                    hitResults.append(hitResult)
                 }
             }
         }
-
-        return self
+        
+        hitResults.sort { (hitResult1, hitResult2) -> Bool in
+            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
+            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
+            let dist1 = (worldPosition1 - ray.begin).lengthSq()
+            let dist2 = (worldPosition2 - ray.begin).lengthSq()
+            return dist1 < dist2
+        }
+        
+        return hitResults.first
     }
 
     fileprivate func updateSize() {

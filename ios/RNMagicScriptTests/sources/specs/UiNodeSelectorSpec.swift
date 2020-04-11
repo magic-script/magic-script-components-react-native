@@ -60,12 +60,77 @@ class UiNodeSelectorSpec: QuickSpec {
                     let nodesInRayRange: [TransformNode] = referenceNodes.filter { (rayMinZ <= $0.position.z) && ($0.position.z <= rayMaxZ) }
                     for node in nodesInRayRange {
                         let result = nodeSelector.hitTest(ray: ray)
-                        expect(result).to(beIdenticalTo(node))
+                        expect(result!.node).to(beIdenticalTo(node))
                         node.skipRaycast = true
                     }
 
                     let result = nodeSelector.hitTest(ray: ray)
-                    expect(result).to(beNil())
+                    expect(result!.node).to(beIdenticalTo(node3))
+                }
+                
+                it("should return the closest node (rotation)") {
+                    rootNode.childNodes.forEach { $0.removeFromParentNode() }
+                    let node1 = UiImageNode(props: ["localPosition": [0, 0, -0.1], "height": 0.1, "width": 0.3, "color": [1, 1, 0, 1]])
+                    node1.name = "node1"
+                    let node2 = UiImageNode(props: ["localPosition": [0, 0,  0.1], "height": 0.1, "width": 0.1, "color": [1, 0, 1, 1]])
+                    node2.name = "node2"
+                    rootNode.addChildNode(node1)
+                    rootNode.addChildNode(node2)
+                    
+                    let input: [(angle: Double, hitNode: BaseNode?)] = [
+                        (angle: 0.0.toRadians, hitNode: node2),
+                        (angle: 45.0.toRadians, hitNode: node1),
+                        (angle: 90.0.toRadians, hitNode: nil),
+                        (angle: 135.0.toRadians, hitNode: nil),
+                        (angle: 180.0.toRadians, hitNode: nil),
+                        (angle: 225.0.toRadians, hitNode: nil),
+                        (angle: 270.0.toRadians, hitNode: nil),
+                        (angle: 315.0.toRadians, hitNode: node1),
+                    ]
+                    
+                    input.forEach {
+                        let radius: Double = 0.35355
+                        let x: Double = radius * sin($0.angle)
+                        let z: Double = radius * cos($0.angle)
+                        let position = SCNVector3(x, 0, z)
+                        let direction = (SCNVector3.zero - position).normalized()
+                        let ray = Ray(begin: position, direction: direction, length: 1.0)
+                        let result = nodeSelector.hitTest(ray: ray)
+                        if let hitNode = $0.hitNode {
+                            expect(result).notTo(beNil())
+                            expect(result?.node).to(beIdenticalTo(hitNode))
+                        } else {
+                            expect(result).to(beNil())
+                        }
+                    }
+                }
+                
+                it("should return the closest node based on hitPoint (not node's center)") {
+                    rootNode.childNodes.forEach { $0.removeFromParentNode() }
+                    let node1 = UiImageNode(props: ["localPosition": [0, 0, 0], "height": 0.1, "width": 0.8, "color": [1, 1, 0, 1]])
+                    let node2 = UiImageNode(props: ["localPosition": [0.2, 0, 0.05], "height": 0.1, "width": 0.1, "color": [1, 0, 1, 1]])
+                    rootNode.addChildNode(node1)
+                    rootNode.addChildNode(node2)
+                    
+                    // A ray that points at node1.center
+                    let ray1 = Ray(begin: SCNVector3(0, 0, 0.15), direction: SCNVector3(0, 0, -1), length: 1.0)
+                    let result1 = nodeSelector.hitTest(ray: ray1)
+                    expect(result1).notTo(beNil())
+                    expect(result1!.node).to(beIdenticalTo(node1))
+                    expect(result1!.point).to(beCloseTo(SCNVector3(0, 0, 0)))
+                    
+                    // A ray that points at node2.center
+                    let ray2 = Ray(begin: SCNVector3(0, 0, 0.15), direction: SCNVector3(0.3, 0, -0.15).normalized(), length: 1.0)
+                    
+                    // Make sure the node1.position is closer to the ray2 than the node2.position
+                    let rayToNode1Dist = node1.position.distance(ray2.begin)
+                    let rayToNode2Dist = node2.position.distance(ray2.begin)
+                    expect(rayToNode1Dist < rayToNode2Dist).to(beTrue())
+                    
+                    let result2 = nodeSelector.hitTest(ray: ray2)
+                    expect(result2).notTo(beNil())
+                    expect(result2!.node).to(beIdenticalTo(node2))
+                    expect(result2!.point).to(beCloseTo(SCNVector3(0, 0, 0)))
                 }
             }
         }

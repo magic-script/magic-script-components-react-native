@@ -136,12 +136,12 @@ class GroupContainerSpec: QuickSpec {
                     items.forEach { group.addItem($0) }
                     group.recalculateIfNeeded()
 
-                    let direction = SCNVector3(0, 0, 1)
-                    let result1 = group.hitTest(ray: Ray(begin: SCNVector3(1.45, 0.8, -1), direction: direction, length: 3))
-                    expect(result1).to(beIdenticalTo(items[1]))
+                    let direction = SCNVector3(0, 0, -1)
+                    let result1 = group.hitTest(ray: Ray(begin: SCNVector3(1.45, 0.8, 1), direction: direction, length: 3))
+                    expect(result1?.node).to(beIdenticalTo(items[1]))
 
-                    let result2 = group.hitTest(ray: Ray(begin: SCNVector3(2.55, 0.05, -1), direction: direction, length: 3))
-                    expect(result2).to(beIdenticalTo(items[2]))
+                    let result2 = group.hitTest(ray: Ray(begin: SCNVector3(2.55, 0.05, 1), direction: direction, length: 3))
+                    expect(result2?.node).to(beIdenticalTo(items[2]))
                 }
 
                 it("should return nil if no child node is hit") {

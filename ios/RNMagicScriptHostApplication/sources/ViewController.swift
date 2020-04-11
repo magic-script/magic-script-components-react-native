@@ -33,49 +33,64 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupARView()
+        setupScene()
         
-        let scene = Scene()
-        NodesManager.instance.registerScene(scene, sceneId: sceneId)
-        NodesManager.instance.addNodeToRoot(sceneId)
-        
-        for i in 0..<1 {
-            setupScene(index: i)
-        }
+//        setupPrismWithModels()
+        setupPrismForHitTest()
+
         arView.register(self)
     }
 
     deinit {
         arView.unregister(self)
     }
-
-    let groupId: String = "group"
+    
     let sceneId = "scene"
-    var slider: UiSliderNode!
-    var prism: Prism!
-    fileprivate func setupScene(index: Int) {
-        let columns: Int = 10
-        let rows: Int = 10
-        let origin = SCNVector3(0, 0, 0)
-        let size = SCNVector3(1.0, 1.0, 1.0)
-        let gap: Float = 0.05
-        let column: Int = index % columns
-        let row: Int = (index % (columns * rows)) / columns
-        let layer: Int = index / (columns * rows)
-
-        let x: Float = origin.x + Float(column) * (size.x + gap)
-        let y: Float = origin.y + Float(row) * (size.y + gap)
-        let z: Float = origin.z - Float(layer) * (size.z + gap)
+    fileprivate func setupScene() {
+        let scene = Scene()
+        NodesManager.instance.registerScene(scene, sceneId: sceneId)
+        NodesManager.instance.addNodeToRoot(sceneId)
+    }
+    
+    fileprivate func setupPrismForHitTest() {
+        let prismId = "prism_hit_test"
+        let prism: Prism = Prism()
+        prism.size = SCNVector3(1.0, 1.0, 1.0)
+        prism.debug = true
         
-        let prismId = "prism\(index)"
-        prism = Prism()
-        prism.size = size
+        NodesManager.instance.registerPrism(prism, prismId: prismId)
+        NodesManager.instance.addNode(prismId, toParent: sceneId)
+        
+        let _ : UiButtonNode = createComponent([
+            "width": 1,
+            "height": 0.3,
+            "localPosition": [0, 0, -0.1],
+            "color": [1, 1, 0, 1],
+            "text": "Back button"
+        ], nodeId: "button_back", parentId: prismId)
+        
+        let _ : UiButtonNode = createComponent([
+            "width": 1,
+            "height": 0.3,
+            "localPosition": [0, 0, 0.1],
+            "color": [0, 1, 0, 1],
+            "text": "Front button"
+        ], nodeId: "button_front", parentId: prismId)
+        
+        NodesManager.instance.updateLayout()
+    }
+
+    fileprivate func setupPrismWithModels() {
+        let prismId = "prism_models"
+        let prism: Prism = Prism()
+        prism.size = SCNVector3(1.0, 1.0, 1.0)
         prism.debug = true
 //        prism.editMode = true
-        prism.position = SCNVector3(x, y, z)
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)
         NodesManager.instance.addNode(prismId, toParent: sceneId)
 
+        let groupId: String = "group"
         let _: UiGroupNode = createComponent(["localScale": [0.5, 0.5, 0.5]], nodeId: groupId, parentId: prismId)
 
         let filenames = [
@@ -89,23 +104,23 @@ class ViewController: UIViewController {
         for (index, filename) in filenames.enumerated() {
             if let path = Bundle.main.path(forResource: filename, ofType: nil),
                 FileManager.default.fileExists(atPath: path) {
-                loadModel(path, index: index)
+                loadModel(path, index: index, parentId: groupId)
             } else {
                 debugPrint("Unable to load \(filename) model.")
             }
         }
 
         // Slider
-        slider = createComponent([
+        let slider: UiSliderNode = createComponent([
             "min": 0.1,
             "max": 1.0,
             "value": 1.0,
             "localPosition": [0, 0.6, 0]
         ], nodeId: "slider", parentId: groupId)
-        slider.onSliderChanged = { [weak self] (sender, value) in
-            self?.prism.size = SCNVector3(value, value, value)
-//            self?.prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
-//            self?.prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
+        slider.onSliderChanged = { (sender, value) in
+            prism.size = SCNVector3(value, value, value)
+//            prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
+//            prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
             NodesManager.instance.updateLayout()
         }
 
@@ -117,8 +132,8 @@ class ViewController: UIViewController {
             "on": prism.debug,
             "type": "checkbox"
         ], nodeId: "checkbox1", parentId: groupId)
-        checkbox1.onChanged = { [weak self] (sender, on) in
-            self?.prism.debug = on
+        checkbox1.onChanged = { (sender, on) in
+            prism.debug = on
         }
 
         let checkbox2: UiToggleNode = createComponent([
@@ -129,8 +144,8 @@ class ViewController: UIViewController {
             "on": prism.editMode,
             "type": "checkbox"
         ], nodeId: "checkbox2", parentId: groupId)
-        checkbox2.onChanged = { [weak self] (sender, on) in
-            self?.prism.editMode = on
+        checkbox2.onChanged = { (sender, on) in
+            prism.editMode = on
         }
         
         // ScrollView
@@ -165,7 +180,7 @@ class ViewController: UIViewController {
         NodesManager.instance.updateLayout()
     }
 
-    fileprivate func loadModel(_ filePath: String, index: Int) {
+    fileprivate func loadModel(_ filePath: String, index: Int, parentId: String) {
         let columns: Int = 2
         let x: CGFloat = -0.3 + CGFloat(index % columns) * 0.3
         let y: CGFloat = 0.3 - CGFloat(index / columns) * 0.3
@@ -176,7 +191,7 @@ class ViewController: UIViewController {
             "debug": true,
             "localPosition": [x, y, 0],
             "localScale": [scale, scale, scale]
-        ], nodeId: nodeId, parentId: groupId)
+        ], nodeId: nodeId, parentId: parentId)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -203,39 +218,6 @@ class ViewController: UIViewController {
         ])
     }
 
-    fileprivate func setupDropdownListTest() {
-        // Rect layout
-        let dropdownListId: String = "dropdown_list_id"
-        let dropdown: UiDropdownListNode = createComponent([
-            "alignment": "top-center",
-            "debug": true,
-            "localPosition": [0, 0.7, 0],
-            "text": "DropDownList",
-//            "textSize": 0.015,
-            "multiSelect": true,
-//            "maxCharacterLimit": 4
-        ], nodeId: dropdownListId, parentId: groupId)
-
-        for i in 0..<10 {
-            let _: UiDropdownListItemNode = createComponent([
-                "id": i,
-                "label": "item \(i + 1)",
-                "selected": i % 2 == 0
-            ], nodeId: "item_\(i)", parentId: dropdownListId)
-        }
-
-        let toggle: UiToggleNode = createComponent([
-            "localPosition": [0, -0.4, 0],
-            "text": "Multi select mode",
-            "textSize": 0.08,
-            "height": 0.1,
-            "debug": true
-        ], nodeId: "toggle_id", parentId: groupId)
-        toggle.onChanged = { sender, on in
-            dropdown.multiSelect = on
-        }
-    }
-
     @discardableResult
     fileprivate func createComponent<T: TransformNode>(_ props: [String: Any], nodeId: String, parentId: String? = nil) -> T {
         let node = T.init(props: props)
@@ -254,17 +236,5 @@ extension ViewController: RCTARViewObserving {
         let deltaTime = time - lastTime
         lastTime = time
         guard deltaTime < 0.5 else { return }
-
-//        tmpValue += deltaTime
-//        if tmpValue > 1.0 {
-//            tmpValue = 0.3
-//        }
-//
-//        let value = tmpValue
-//
-//        DispatchQueue.main.async() { [weak self] in
-//            self?.prism.size = SCNVector3(value, value, value)
-//            NodesManager.instance.updateLayout()
-//        }
     }
 }

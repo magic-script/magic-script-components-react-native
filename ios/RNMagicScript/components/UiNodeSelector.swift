@@ -19,7 +19,7 @@ import SceneKit
 
 //sourcery: AutoMockable
 protocol NodeSelecting {
-    func hitTest(ray: Ray) -> BaseNode?
+    func hitTest(ray: Ray) -> HitTestResult?
     func draggingHitTest(ray: Ray) -> Dragging?
 }
 
@@ -30,31 +30,31 @@ class UiNodeSelector: NodeSelecting  {
         self.rootNode = rootNode
     }
 
-    func hitTest(ray: Ray) -> BaseNode? {
+    func hitTest(ray: Ray) -> HitTestResult? {
         let topNodes: [BaseNode] = rootNode.childNodes.filter { $0 is BaseNode }.map { $0 as! BaseNode }
-        var hitNodes: [BaseNode] = []
+        var hitResults: [HitTestResult] = []
 
         for node in topNodes {
-            if let hitNode = node.hitTest(ray: ray) {
-                hitNodes.append(hitNode)
+            if let hitResult = node.hitTest(ray: ray) {
+                hitResults.append(hitResult)
             }
         }
 
-        hitNodes.sort { (node1, node2) -> Bool in
-            let worldPosition1 = node1.convertPosition(node1.position, to: nil)
-            let worldPosition2 = node2.convertPosition(node2.position, to: nil)
+        hitResults.sort { (hitResult1, hitResult2) -> Bool in
+            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
+            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
             let dist1 = (worldPosition1 - ray.begin).lengthSq()
             let dist2 = (worldPosition2 - ray.begin).lengthSq()
             return dist1 < dist2
         }
 
-        return hitNodes.first
+        return hitResults.first
     }
 
     func draggingHitTest(ray: Ray) -> Dragging? {
-        guard let hitNode = hitTest(ray: ray) else { return nil }
+        guard let hitResult = hitTest(ray: ray) else { return nil }
 
-        var node: SCNNode? = hitNode
+        var node: SCNNode? = hitResult.node
         while node != nil {
             if node is Dragging {
                 break

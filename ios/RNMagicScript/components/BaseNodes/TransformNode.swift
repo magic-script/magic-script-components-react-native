@@ -112,7 +112,7 @@ import SceneKit
         }
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         return selfHitTest(ray: ray)
     }
 
@@ -195,7 +195,8 @@ import SceneKit
 
     func getHitTestPoint(ray: Ray) -> SCNVector3? {
         let localRay = convertRayToLocal(ray: ray)
-        let localPlane = getPlane()
+        let localPlane = BaseNode.plane
+        guard localPlane.isPointInFront(localRay.begin) else { return nil }
         guard let point = localPlane.intersectRay(localRay) else { return nil }
         let bounds = getBounds()
         if bounds.contains(CGPoint(x: CGFloat(point.x), y: CGFloat(point.y))) {
@@ -205,10 +206,10 @@ import SceneKit
         return nil
     }
 
-    @objc override func selfHitTest(ray: Ray) -> BaseNode? {
+    override func selfHitTest(ray: Ray) -> HitTestResult? {
         guard !skipRaycast && visible else { return nil }
-        guard let _ = getHitTestPoint(ray: ray) else { return nil }
-        return self
+        guard let hitPoint = getHitTestPoint(ray: ray) else { return nil }
+        return (node: self, point: hitPoint)
     }
 }
 

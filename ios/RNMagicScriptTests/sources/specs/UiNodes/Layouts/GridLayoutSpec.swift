@@ -161,15 +161,15 @@ class GridLayoutSpec: QuickSpec {
                     (nodes.last as? UiImageNode)?.height = 0.5 * referenceSize
 
                     let begins: [SCNVector3] = [
-                        SCNVector3(-0.5 * referenceSize, 0.5 * referenceSize, 0),
-                        SCNVector3( 0.5 * referenceSize, 0.5 * referenceSize, 0),
-                        SCNVector3(-0.5 * referenceSize, -0.5 * referenceSize, 0),
-                        SCNVector3( 0.5 * referenceSize, -0.5 * referenceSize, 0)
+                        SCNVector3(-0.5 * referenceSize, 0.5 * referenceSize, 1),
+                        SCNVector3( 0.5 * referenceSize, 0.5 * referenceSize, 1),
+                        SCNVector3(-0.5 * referenceSize, -0.5 * referenceSize, 1),
+                        SCNVector3( 0.5 * referenceSize, -0.5 * referenceSize, 1)
                     ]
                     for i in 0..<4 {
                         let ray = Ray(begin: begins[i], direction: SCNVector3(0, 0, -1), length: 3)
                         let result = layout.hitTest(ray: ray, node: nodes[i])
-                        expect(result).to(beIdenticalTo(nodes[i]))
+                        expect(result?.node).to(beIdenticalTo(nodes[i]))
                     }
                 }
             }

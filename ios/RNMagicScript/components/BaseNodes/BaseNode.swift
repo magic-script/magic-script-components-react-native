@@ -16,7 +16,11 @@
 
 import SceneKit
 
+typealias HitTestResult = (node: BaseNode, point: SCNVector3)
+
 @objc open class BaseNode: SCNNode {
+    static let plane: Plane = Plane(center: SCNVector3.zero, normal: SCNVector3.forward)
+    
     @objc func update(_ props: [String: Any]) {
 
     }
@@ -29,11 +33,11 @@ import SceneKit
 
     }
 
-    @objc func hitTest(ray: Ray) -> BaseNode? {
+    func hitTest(ray: Ray) -> HitTestResult? {
         return selfHitTest(ray: ray)
     }
 
-    func selfHitTest(ray: Ray) -> BaseNode? {
+    func selfHitTest(ray: Ray) -> HitTestResult? {
         return nil
     }
 
@@ -41,9 +45,5 @@ import SceneKit
        let localRayBegin = convertPosition(ray.begin, from: nil)
        let localRayDirection = convertVector(ray.direction, from: nil)
        return Ray(begin: localRayBegin, direction: localRayDirection, length: ray.length)
-    }
-
-    func getPlane() -> Plane {
-        return Plane(center: position, normal: transform.forward)
     }
 }

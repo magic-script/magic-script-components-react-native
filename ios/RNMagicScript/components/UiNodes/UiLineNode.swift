@@ -30,7 +30,7 @@ import SceneKit
         contentNode.addChildNode(linesNode)
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         return nil
     }
 

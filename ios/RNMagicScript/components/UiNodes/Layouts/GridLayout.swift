@@ -91,7 +91,7 @@ import SceneKit
         return false
     }
 
-    @objc func hitTest(ray: Ray, node: UiNode) -> BaseNode? {
+    func hitTest(ray: Ray, node: UiNode) -> HitTestResult? {
         guard let gridDescriptor = gridDescriptor else { return nil }
         guard let hitPoint = node.getHitTestPoint(ray: ray) else { return nil }
         let gridBounds = node.getBounds()
@@ -119,9 +119,9 @@ import SceneKit
         }
 
         let elementIndex = rowIndex * gridDescriptor.columns + columnIndex
-        guard elementIndex < gridDescriptor.children.count else { return node }
+        guard elementIndex < gridDescriptor.children.count else { return (node: node, point: hitPoint) }
         let hitNode = gridDescriptor.children[elementIndex].childNodes[0] as? TransformNode
-        return hitNode?.hitTest(ray: ray) ?? node
+        return hitNode?.hitTest(ray: ray) ?? (node: node, point: hitPoint)
     }
 
     @objc func recalculateIfNeeded() {

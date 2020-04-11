@@ -57,13 +57,13 @@ import SceneKit
         }
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         for prism in prisms {
-            if let hitNode = prism.hitTest(ray: ray) {
-                return hitNode
+            if let hitResult = prism.hitTest(ray: ray) {
+                return hitResult
             }
         }
 
-        return self
+        return nil
     }
 }

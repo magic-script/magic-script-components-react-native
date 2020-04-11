@@ -60,7 +60,7 @@ import SceneKit
         contentNode.addChildNode(gridLayout.container)
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         return gridLayout.hitTest(ray: ray, node: self)
     }
 

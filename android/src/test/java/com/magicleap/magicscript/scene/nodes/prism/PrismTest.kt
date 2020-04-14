@@ -95,6 +95,20 @@ class PrismTest {
     }
 
     @Test
+    fun `should be possible to replace content`() {
+        val prism = buildPrism(reactMapOf())
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
+        prism.addContent(child1)
+
+        prism.removeContent(child1)
+        prism.addContent(child2)
+
+        prism.reactChildren.first() shouldBe child2
+        prism.reactChildren.size shouldEqual 1
+    }
+
+    @Test
     fun `should clip child according to prism size when new child added`() {
         val size = JavaOnlyArray.of(0.4f, 0.6f, 0.2f)
         val expectedClip = AABB(min = Vector3(-0.2f, -0.3f, -0.1f), max = Vector3(0.2f, 0.3f, 0.1f))

@@ -144,6 +144,10 @@ class Prism(
         if (child is TransformNode) {
             container?.removeChild(child)
         }
+
+        if (child == childNode) {
+            childNode = null
+        }
     }
 
     override fun build() {

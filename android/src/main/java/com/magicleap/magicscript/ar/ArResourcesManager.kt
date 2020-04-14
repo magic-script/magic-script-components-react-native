@@ -22,9 +22,10 @@ import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.utils.logMessage
 import java.lang.ref.WeakReference
 
-object ArResourcesManager : ArResourcesProvider() {
+class ArResourcesManager : ArResourcesProvider() {
 
     var planeDetection = false
 
@@ -34,13 +35,8 @@ object ArResourcesManager : ArResourcesProvider() {
     private var cameraState: TrackingState? = null
     private var arLoaded = false
 
-    override fun clear() {
-        super.clear()
-        sceneRef = WeakReference<Scene>(null)
-        sessionRef = WeakReference<Session>(null)
-        transformationSystemRef = WeakReference<TransformationSystem>(null)
-        cameraState = null
-        arLoaded = false
+    init {
+        INSTANCE = this
     }
 
     /**
@@ -96,5 +92,9 @@ object ArResourcesManager : ArResourcesProvider() {
 
     override fun isPlaneDetectionEnabled(): Boolean {
         return planeDetection
+    }
+
+    companion object {
+        var INSTANCE: ArResourcesManager? = null
     }
 }

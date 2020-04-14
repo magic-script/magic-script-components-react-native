@@ -79,7 +79,10 @@ public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
 
     @ReactProp(name = "planeDetection")
     public void setPlaneDetection(View view, boolean planeDetection) {
-        ArResourcesManager.INSTANCE.setPlaneDetection(planeDetection);
+        ArResourcesManager arResourcesManager = ArResourcesManager.Companion.getINSTANCE();
+        if (arResourcesManager != null) {
+            arResourcesManager.setPlaneDetection(planeDetection);
+        }
     }
 
     @ReactProp(name = "showLayoutBounds")

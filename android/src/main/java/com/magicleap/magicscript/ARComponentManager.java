@@ -103,6 +103,7 @@ import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode;
+import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
@@ -722,5 +723,6 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         Log.d("ArComponentManager", "onCatalystInstanceDestroy");
         nodesManager.clear();
         arResourcesProvider.clear();
+        GlobalMediaPlayerPool.INSTANCE.destroy();
     }
 }

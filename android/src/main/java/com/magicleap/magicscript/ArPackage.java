@@ -48,7 +48,7 @@ public class ArPackage implements ReactPackage {
         NodesManager nodesManager = new UiNodesManager();
         EventsManager eventsManager = new ReactEventsManager(new ReactEventsEmitter(reactContext), nodesManager);
         MediaPlayerPool mediaPlayerPool = GlobalMediaPlayerPool.INSTANCE;
-        ArResourcesProvider arResourcesProvider = ArResourcesManager.INSTANCE;
+        ArResourcesProvider arResourcesProvider = new ArResourcesManager();
         AppInfoProvider appInfoProvider = new ReactAppInfoProvider(reactContext);
         ARComponentManager arComponentManager = new ARComponentManager(reactContext,
                                                                        nodesManager,

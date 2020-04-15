@@ -22,7 +22,6 @@ import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.utils.logMessage
 import java.lang.ref.WeakReference
 
 class ArResourcesManager : ArResourcesProvider() {
@@ -37,6 +36,14 @@ class ArResourcesManager : ArResourcesProvider() {
 
     init {
         INSTANCE = this
+    }
+
+    fun clearArReferences() {
+        sceneRef = WeakReference<Scene>(null)
+        sessionRef = WeakReference<Session>(null)
+        transformationSystemRef = WeakReference<TransformationSystem>(null)
+        cameraState = null
+        arLoaded = false
     }
 
     /**
@@ -58,7 +65,8 @@ class ArResourcesManager : ArResourcesProvider() {
 
     fun onArCoreLoaded() {
         arLoaded = true
-        notifyArLoaded()
+        notifyArLoaded(firstTime = arLoadCounter == 0)
+        arLoadCounter++
     }
 
     fun onCameraUpdated(cameraPose: Pose, trackingState: TrackingState) {
@@ -95,6 +103,7 @@ class ArResourcesManager : ArResourcesProvider() {
     }
 
     companion object {
+        private var arLoadCounter = 0
         var INSTANCE: ArResourcesManager? = null
     }
 }

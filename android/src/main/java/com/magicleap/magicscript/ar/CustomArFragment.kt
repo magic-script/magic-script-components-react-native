@@ -69,4 +69,8 @@ class CustomArFragment : ArFragment() {
         planeDiscoveryController.setInstructionView(null)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        ArResourcesManager.INSTANCE?.clearArReferences()
+    }
 }

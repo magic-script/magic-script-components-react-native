@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -103,7 +102,6 @@ import com.magicleap.magicscript.scene.nodes.toggle.LinearToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleGroupNode;
 import com.magicleap.magicscript.scene.nodes.toggle.ToggleViewManager;
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode;
-import com.magicleap.magicscript.scene.nodes.video.GlobalMediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
@@ -717,12 +715,12 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     }
 
+    // Called on React "Reload" button click.
+    // Resources should be disposed here
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
-        Log.d("ArComponentManager", "onCatalystInstanceDestroy");
         nodesManager.clear();
-        arResourcesProvider.clear();
-        GlobalMediaPlayerPool.INSTANCE.destroy();
+        mediaPlayerPool.destroy();
     }
 }

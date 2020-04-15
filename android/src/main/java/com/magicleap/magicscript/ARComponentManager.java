@@ -716,7 +716,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     // Called on React "Reload" button click.
-    // Resources should be disposed here
+    // External resources and connections should be released here
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();

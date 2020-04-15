@@ -82,7 +82,7 @@ class ArResourcesManagerTest {
     fun `should notify listener after ARCore has been loaded`() {
         var notified = false
         manager.addArLoadedListener(object : ArResourcesProvider.ArLoadedListener {
-            override fun onArLoaded() {
+            override fun onArLoaded(firstTime: Boolean) {
                 notified = true
             }
         })
@@ -97,7 +97,7 @@ class ArResourcesManagerTest {
     fun `should not notify removed listener after ARCore has been loaded`() {
         var notified = false
         val listener = object : ArResourcesProvider.ArLoadedListener {
-            override fun onArLoaded() {
+            override fun onArLoaded(firstTime: Boolean) {
                 notified = true
             }
         }
@@ -213,6 +213,22 @@ class ArResourcesManagerTest {
         manager.onPlaneTapped(hitResult)
 
         notified shouldBe false
+    }
+
+    @Test
+    fun `should clear AR Core references`() {
+        manager.setupScene(arScene)
+        manager.setupTransformationSystem(transformationSystem)
+        val cameraPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
+        manager.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+        manager.onArCoreLoaded()
+
+        manager.clearArReferences()
+
+        manager.getArScene() shouldBe null
+        manager.getTransformationSystem() shouldBe null
+        manager.getCameraState() shouldBe null
+        manager.isArLoaded() shouldBe false
     }
 
     private fun getTransformationSystem(): TransformationSystem {

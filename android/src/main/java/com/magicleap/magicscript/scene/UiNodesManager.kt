@@ -31,10 +31,6 @@ class UiNodesManager : NodesManager, LifecycleEventListener {
     private var reactScene: ReactScene? = null
     private val nodesById = HashMap<String, ReactNode>()
 
-    init {
-        logMessage("init, hash=${this.hashCode()}")
-    }
-
     @Synchronized
     override fun findNodeWithId(nodeId: String): ReactNode? {
         return nodesById[nodeId]

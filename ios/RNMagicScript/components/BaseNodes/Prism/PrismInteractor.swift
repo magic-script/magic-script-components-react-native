@@ -164,7 +164,6 @@ extension PrismInteractor {
     @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
         switch sender.state {
         case .began:
-            interactedPrism?.size = SCNVector3(0.8, 0.7, 0.5)
             prismInitialScale = interactedPrism?.scale
         case .changed:
             if let prism = interactedPrism, let initialScale = prismInitialScale {

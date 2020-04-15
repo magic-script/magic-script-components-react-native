@@ -32,10 +32,7 @@ import SceneKit
         }
     }
     @objc public var size: SCNVector3 = SCNVector3.zero {
-        didSet {
-            updateSize()
-            invalidateClippingPlanes()
-        }
+        didSet { updateSize(); invalidateClippingPlanes() }
     }
     override open var position: SCNVector3 {
         didSet { invalidateClippingPlanes() }
@@ -44,7 +41,7 @@ import SceneKit
         didSet { invalidateClippingPlanes() }
     }
     override open var scale: SCNVector3 {
-        didSet { invalidateClippingPlanes() }
+        didSet { updateSize(); invalidateClippingPlanes() }
     }
     override open var transform: SCNMatrix4 {
         didSet { invalidateClippingPlanes() }
@@ -178,7 +175,8 @@ import SceneKit
         #if targetEnvironment(simulator)
         debugNode?.scale = size
         #endif
-        editNode?.size = size
+        editNode?.size = size * scale
+        editNode?.scale = 1.0 / scale
 
         guard let menu = prismMenu else { return }
         menu.position = SCNVector3(0.0, size.y / 2 + Prism.distanceToContextMenu, 0.0)

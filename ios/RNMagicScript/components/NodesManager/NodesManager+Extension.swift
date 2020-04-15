@@ -43,7 +43,7 @@ extension NodesManager: RCTARViewObserving {
 
     @objc internal func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         if let pointOfView = renderer.pointOfView {
-            self.scene?.prismInteractor.update(cameraNode: pointOfView, time: time)
+            DispatchQueue.main.async { self.scene?.prismInteractor.update(cameraNode: pointOfView, time: time) }
         }
     }
 

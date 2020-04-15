@@ -71,6 +71,7 @@ class PrismInteractor: NSObject, PrismInteracting {
     }
 
     func update(cameraNode: SCNNode, time: TimeInterval) {
+        assert(Thread.isMainThread, "PrismInteractor.update must be called in main thread!")
         guard let camera = cameraNode.camera else { return }
         guard let prism = interactedPrism, prism.editMode else { return }
 

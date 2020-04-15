@@ -34,9 +34,10 @@ class PrismInteractor: NSObject, PrismInteracting {
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
     private var startInteractionPosition: SCNVector3 = SCNVector3.zero
+    private var startDifferenceYaw: Float = 0.0
+    private var prismYawChange: Float = 0.0
     private var prismDistanceChange: Float = 0.0
     private var prismInitialScale: SCNVector3? = nil
-    private var prismInitialOrientation: SCNQuaternion? = nil
     private var gestureRecognizers: [UIGestureRecognizer] = []
 
     init(with arView: RCTARView) {
@@ -80,6 +81,8 @@ class PrismInteractor: NSObject, PrismInteracting {
         guard deltaTime < 0.1 else {
             startInteractionTime = time
             startInteractionPosition = prism.position
+            startDifferenceYaw = cameraNode.angleToWorldFront() - prism.angleToWorldFront() - Float.pi
+            prismYawChange = 0.0
             return
         }
 
@@ -111,6 +114,9 @@ class PrismInteractor: NSObject, PrismInteracting {
         } else {
             prism.position = targetPosition
         }
+        
+        let prismYaw = (cameraNode.angleToWorldFront() - startDifferenceYaw) - prismYawChange
+        prism.orientation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: prismYaw)
         prism.updateClipping()
     }
 
@@ -187,15 +193,11 @@ extension PrismInteractor {
 
     @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
         switch sender.state {
-        case .began:
-            prismInitialOrientation = interactedPrism?.orientation
-        case .changed:
-            if let prism = interactedPrism, let initialOrientation = prismInitialOrientation {
-                prism.orientation = initialOrientation * SCNQuaternion.fromAxis(SCNVector3.up, andAngle: -Float(sender.rotation))
-                prism.updateClipping()
-            }
+        case .began, .changed:
+            prismYawChange = Float(sender.rotation)
         case .cancelled, .ended, .failed:
-            prismInitialOrientation = nil
+            startDifferenceYaw += prismYawChange
+            prismYawChange = 0.0
         default:
             print("Default: \(#function)")
         }

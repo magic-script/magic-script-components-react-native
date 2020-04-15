@@ -92,17 +92,16 @@ class PrismInteractor: NSObject, PrismInteracting {
         var prismDistanceToCamera = prism.position.distance(cameraPosition)
 
         // Update prism distance to camera change
+        let cameraViewDistance = CGFloat(camera.zFar)
+        let minDistance = Float(prism.maxRadius)
+        let maxDistance = Float(cameraViewDistance) - prism.maxRadius
         if prismDistanceChange != 0.0 {
-            let cameraViewDistance = CGFloat(camera.zFar)
-            let minDistance = Float(prism.maxRadius)
-            let maxDistance = Float(cameraViewDistance) - prism.maxRadius
             let speedFactor: Float = prismDistanceToCamera / maxDistance
-
-            let newDistance = prismDistanceToCamera + speedFactor * prismDistanceChange * deltaTime
-            prismDistanceToCamera = Math.clamp(newDistance, minDistance, maxDistance)
-
+            prismDistanceToCamera += speedFactor * prismDistanceChange * deltaTime
             prismDistanceChange = 0.0
         }
+        
+        prismDistanceToCamera = Math.clamp(prismDistanceToCamera, minDistance, maxDistance)
 
         // Keep prism in front of camera
         let targetPosition = cameraPosition + prismDistanceToCamera * cameraDirection

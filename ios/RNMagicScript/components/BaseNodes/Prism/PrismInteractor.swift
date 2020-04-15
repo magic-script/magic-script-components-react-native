@@ -22,45 +22,37 @@ import SceneKit
 protocol PrismInteracting: class {
     func toggleInteractions(for prism: Prism)
     func startInteractions(for prism: Prism)
-    func update(for camera: SCNNode?)
+    func update(cameraNode: SCNNode, time: TimeInterval)
     func stopInteractions(for prism: Prism)
 }
 
 class PrismInteractor: NSObject, PrismInteracting {
-    private weak var arView: RCTARView?
-    var interactedPrism: Prism?
 
-    private var gestureRecognizers: [UIGestureRecognizer] = [UIGestureRecognizer]()
+    // MARK: Prism interaction variables
+    var interactedPrism: Prism?
+    private weak var arView: RCTARView?
+    private var prevTime: TimeInterval = 0
+    private var startInteractionTime: TimeInterval = 0
+    private var startInteractionPosition: SCNVector3 = SCNVector3.zero
+    private var prismDistanceChange: Float = 0.0
+    private var prismInitialScale: SCNVector3? = nil
+    private var prismInitialOrientation: SCNQuaternion? = nil
+    private var gestureRecognizers: [UIGestureRecognizer] = []
 
     init(with arView: RCTARView) {
         super.init()
 
         self.arView = arView
 
+        let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        gestureRecognizers.append(panGestureRecogrnizer)
+
         let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
-        pinchGestureRecogrnizer.delegate = self
         gestureRecognizers.append(pinchGestureRecogrnizer)
 
         let rotationGestureRecogrnizer = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
-        rotationGestureRecogrnizer.delegate = self
         gestureRecognizers.append(rotationGestureRecogrnizer)
-
-        let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        panGestureRecogrnizer.delegate = self
-        gestureRecognizers.append(panGestureRecogrnizer)
     }
-
-    // MARK: Prism interaction variables
-    private var getInitialDistance: Bool = false
-    private var initialDistance: Float?
-    private var localDistanceChange: Float?
-
-    private var pinchTouchesInitialDistance: Float?
-    private var initialScale: SCNVector3?
-    private var localScaleChange: Float?
-
-    private var initialOrientation: SCNQuaternion?
-    private var localRotationChange: Float?
 
     // MARK: PrismInteracting
     func toggleInteractions(for prism: Prism) {
@@ -78,38 +70,47 @@ class PrismInteractor: NSObject, PrismInteracting {
         #endif
     }
 
-    func update(for camera: SCNNode?) {
-        guard let prism = self.interactedPrism else { return }
+    func update(cameraNode: SCNNode, time: TimeInterval) {
+        guard let camera = cameraNode.camera else { return }
+        guard let prism = interactedPrism, prism.editMode else { return }
 
-        func getMaxDistance() -> Float {
-            if let zFar = camera?.camera?.zFar {
-                return Float(zFar)
-            }
-            return Float(Prism.defaultRayLenght)
+        let deltaTime: Float = Float(time - prevTime)
+        prevTime = time
+        guard deltaTime < 0.1 else {
+            startInteractionTime = time
+            startInteractionPosition = prism.position
+            return
         }
 
-        if let pointOfView = camera {
+        let cameraPosition = cameraNode.position
+        let cameraDirection = cameraNode.worldFront
 
-            let begin = pointOfView.position
-            let direction = pointOfView.worldFront
-            let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
+        var prismDistanceToCamera = prism.position.distance(cameraPosition)
 
-            if prism.editMode == true {
-                if getInitialDistance { initialDistance = (prism.position - ray.begin).length() }
-                var cameraToPrismCenterDistance = initialDistance ?? (prism.position - ray.begin).length()
-                if let distanceChange = localDistanceChange, let initialDistance = initialDistance {
-                    cameraToPrismCenterDistance -= initialDistance * distanceChange
-                    localDistanceChange = nil
-                }
+        // Update prism distance to camera change
+        if prismDistanceChange != 0.0 {
+            let cameraViewDistance = CGFloat(camera.zFar)
+            let minDistance = Float(prism.maxRadius)
+            let maxDistance = Float(cameraViewDistance) - prism.maxRadius
+            let speedFactor: Float = prismDistanceToCamera / maxDistance
 
-                let newCameraToPrismCenterDistance = Math.clamp(cameraToPrismCenterDistance, prism.maxRadius, getMaxDistance()-prism.maxRadius)
-                prism.updatePosition(withPosition: SCNVector3(0.0, 0.0, -newCameraToPrismCenterDistance), relativeTo: pointOfView)
-                if let scaleChange = localScaleChange, let scale = initialScale {
-                    prism.scale = scale * scaleChange
-                }
-                prism.updateClipping()
-            }
+            let newDistance = prismDistanceToCamera + speedFactor * prismDistanceChange * deltaTime
+            prismDistanceToCamera = Math.clamp(newDistance, minDistance, maxDistance)
+
+            prismDistanceChange = 0.0
         }
+
+        // Keep prism in front of camera
+        let targetPosition = cameraPosition + prismDistanceToCamera * cameraDirection
+        let animationDuration: Float = 0.3
+        let t = Float(time - startInteractionTime) / animationDuration
+        if t >= 0 && t < 1.0 {
+            // Animate centering prism
+            prism.position = startInteractionPosition.lerp(targetPosition, t)
+        } else {
+            prism.position = targetPosition
+        }
+        prism.updateClipping()
     }
 
     func stopInteractions(for prism: Prism) {
@@ -144,89 +145,57 @@ class PrismInteractor: NSObject, PrismInteracting {
     }
 }
 
+// MARK: gesture handlers
+extension PrismInteractor {
 
-extension PrismInteractor: UIGestureRecognizerDelegate {
-    // MARK: gesture handlers
-    @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
-        // MARK: handlePinchGesture::internal function
-        func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-            return pow((from.x - to.x), 2) + pow((from.y - to.y), 2)
+    @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
+        switch sender.state {
+        case .began, .changed:
+            let speedFactor: Float = 40.0
+            prismDistanceChange = speedFactor * Float(-sender.velocity(in: sender.view).y / sender.view!.frame.height)
+        case .cancelled, .ended, .failed:
+            prismDistanceChange = 0.0
+        default:
+            print("Default: \(#function)")
         }
+    }
 
+    @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
         switch sender.state {
         case .began:
-            guard let prism = interactedPrism else { return }
-            initialScale = prism.scale
-            var points: [CGPoint] = [CGPoint]()
-            for index in 0..<sender.numberOfTouches {
-                points.append(sender.location(ofTouch: index, in: sender.view))
-            }
-            pinchTouchesInitialDistance = Float(CGPointDistanceSquared(from: points[0], to: points[1]))
+            interactedPrism?.size = SCNVector3(0.8, 0.7, 0.5)
+            prismInitialScale = interactedPrism?.scale
         case .changed:
-            var points: [CGPoint] = [CGPoint]()
-            for index in 0..<sender.numberOfTouches {
-                points.append(sender.location(ofTouch: index, in: sender.view))
+            if let prism = interactedPrism, let initialScale = prismInitialScale {
+                let minRealSize: Float = 0.3
+                let maxRealSize: Float = 2.0
+                let minScale = minRealSize / (prism.size * initialScale)
+                let maxScale = maxRealSize / (prism.size * initialScale)
+                var scaleFactor: Float = Float(sender.scale)
+                scaleFactor = Math.clamp(scaleFactor, minScale.x, maxScale.x)
+                scaleFactor = Math.clamp(scaleFactor, minScale.y, maxScale.y)
+                scaleFactor = Math.clamp(scaleFactor, minScale.z, maxScale.z)
+                prism.scale = initialScale * scaleFactor
+                prism.updateClipping()
             }
-            guard points.count > 1 else { localScaleChange = nil; pinchTouchesInitialDistance = nil; return }
-            let distanceBetween = CGPointDistanceSquared(from: points[0], to: points[1])
-            guard let initialDistance = pinchTouchesInitialDistance else { return }
-            localScaleChange = Float(distanceBetween) / initialDistance
         case .cancelled, .ended, .failed:
-            localScaleChange = nil
-            pinchTouchesInitialDistance = nil
+            prismInitialScale = nil
         default:
             print("Default: \(#function)")
         }
     }
 
     @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
-
         switch sender.state {
         case .began:
-            guard let prism = interactedPrism else { return }
-            initialOrientation = prism.orientation
-            localRotationChange = Float(sender.rotation)
+            prismInitialOrientation = interactedPrism?.orientation
         case .changed:
-            localRotationChange = Float(sender.rotation)
-        case .cancelled, .ended, .failed:
-            initialOrientation = nil
-            localRotationChange = nil
-        default:
-            print("Default: \(#function)")
-        }
-
-        guard let orientation = initialOrientation else { return }
-        var glQuaternion = GLKQuaternionMake(orientation.x, orientation.y, orientation.z, orientation.w)
-
-        // Rotate around Y axis
-        let multiplier = GLKQuaternionMakeWithAngleAndAxis(Float(sender.rotation), 0, 1, 0)
-        glQuaternion = GLKQuaternionMultiply(glQuaternion, multiplier)
-
-        interactedPrism?.orientation = SCNQuaternion(x: glQuaternion.x, y: glQuaternion.y, z: glQuaternion.z, w: glQuaternion.w)
-    }
-
-    @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
-        // MARK: handlePanGesture::internal function
-        func getGestureDistance(_ sender: PanGestureRecognizer) -> Float {
-            let _ = sender.velocity(in: sender.view) // we should test if velocity or translation fits here better
-            let translation = sender.translation(in: sender.view)
-            if abs(translation.y) > abs(translation.x) { // vertical
-                guard let view = sender.view else { return 0.0 }
-                return Float(translation.y / view.frame.height)
+            if let prism = interactedPrism, let initialOrientation = prismInitialOrientation {
+                prism.orientation = initialOrientation * SCNQuaternion.fromAxis(SCNVector3.up, andAngle: -Float(sender.rotation))
+                prism.updateClipping()
             }
-            return 0.0
-        }
-
-        switch sender.state {
-        case .began:
-            getInitialDistance = true
-            localDistanceChange = getGestureDistance(sender)
-        case .changed:
-            localDistanceChange = getGestureDistance(sender)
         case .cancelled, .ended, .failed:
-            getInitialDistance = false
-            initialDistance = nil
-            localDistanceChange = nil
+            prismInitialOrientation = nil
         default:
             print("Default: \(#function)")
         }

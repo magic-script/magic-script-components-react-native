@@ -222,12 +222,6 @@ import SceneKit
             editNode?.removeFromParentNode()
         }
     }
-
-    @objc func updatePosition(withPosition position: SCNVector3, relativeTo referenceNode: SCNNode) {
-        let refPosition = referenceNode.convertPosition(position, to: nil)
-        self.position = refPosition
-        updateClipping()
-    }
 }
 
 // MARK: - BoundsClipping

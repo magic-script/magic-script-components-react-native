@@ -26,3 +26,14 @@ extension SCNQuaternion {
         return SCNQuaternion(axis.x * s, axis.y * s, axis.z * s, cos(0.5 * angle))
     }
 }
+
+func * (left: SCNQuaternion, right: SCNQuaternion) -> SCNQuaternion {
+    let leftQuat = GLKQuaternionMake(left.x, left.y, left.z, left.w)
+    let rightQuat = GLKQuaternionMake(right.x, right.y, right.z, right.w)
+    let result = GLKQuaternionMultiply(leftQuat, rightQuat)
+    return SCNQuaternion(result.x, result.y, result.z, result.w)
+}
+
+func *= ( left: inout SCNQuaternion, right: SCNQuaternion) {
+    left = left * right
+}

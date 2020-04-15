@@ -98,7 +98,7 @@ class PrismContextMenu: UiNode {
         actionButton.setNeedsLayout()
     }
 
-    @objc override func hitTest(ray: Ray) -> BaseNode? {
+    override func hitTest(ray: Ray) -> HitTestResult? {
         return linearLayout.hitTest(ray: ray)
     }
 

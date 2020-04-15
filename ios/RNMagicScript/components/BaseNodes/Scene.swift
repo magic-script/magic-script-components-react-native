@@ -20,7 +20,7 @@ import SceneKit
     @objc fileprivate(set) var rootNode: SCNNode = SCNNode()
     @objc fileprivate(set) var prisms: [Prism] = []
 
-    var prismInteractor: PrismInteracting!
+    var prismInteractor: PrismInteracting?
 
     @objc private(set) var prismInEditMode: Prism? {
         get { return prisms.filter({ $0.editMode }).first }

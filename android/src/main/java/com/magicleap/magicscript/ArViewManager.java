@@ -71,10 +71,13 @@ public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
         return container;
     }
 
+    /**
+     * Called when the view is no longer rendered in React's render() function
+     */
     @Override
     public void onDropViewInstance(@Nonnull final ArFragmentContainer view) {
         super.onDropViewInstance(view);
-        view.removeFragment(FRAGMENT_TAG);
+        view.dropFragment(FRAGMENT_TAG);
     }
 
     @ReactProp(name = "planeDetection")

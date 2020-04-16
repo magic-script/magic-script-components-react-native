@@ -231,7 +231,9 @@ class Prism(
         adjustMenuRotation()
 
         requestedAnchorPose?.let {
-            tryToAnchorAtPose(it)
+            if (!editMode) {
+                tryToAnchorAtPose(it)
+            }
         }
 
         requestedAnchorUuid?.let {

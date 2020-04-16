@@ -19,11 +19,11 @@ package com.magicleap.magicscript
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.magicleap.magicscript.ar.CustomArFragment
-import com.magicleap.magicscript.utils.logMessage
 import java.util.*
 
 class ArFragmentContainer @JvmOverloads constructor(
@@ -45,28 +45,45 @@ class ArFragmentContainer @JvmOverloads constructor(
             return
         }
 
-        removeAllViews()
-
-        // fragment already exists
         val hasCorrectId = fragment.arguments?.getString(KEY_FRAGMENT_ID) == fragmentId
         val hasCorrectParent = fragment.view?.parent == this
 
+        // Fragment already exists, but has incorrect id (it was recreated by Android Framework):
+        // when using React's reload option or when app config changes, the fragment
+        // may be duplicated, because new instance is created by [ViewGroupManager.createViewInstance]
+        // and also the old instance is automatically re-created by the Android framework.
+        // So we have to get rid of the auto created fragment and create a new with correct id.
         if (!hasCorrectId) {
-            logMessage("incorrect id, removing")
-            // when using React's reload option the fragment may be duplicated,
-            // so we get rid of it and create new
-            fragmentManager.beginTransaction().remove(fragment).commitNow()
-            addFragment(CustomArFragment(), tag)
+            // here only commit() works
+            fragmentManager.beginTransaction().remove(fragment).commit()
+            // since we use commit to remove, we have to add new fragment on next thread frame
+            post {
+                addFragment(CustomArFragment(), tag)
+                // since we wait until next frame, we have to layout view manually
+                layoutFragmentView()
+            }
             return
         }
 
+        // Fragment already exists, but has incorrect parent
         if (!hasCorrectParent) {
-            logMessage("incorrect parent, removing")
             // set correct parent
-            fragmentManager.beginTransaction().remove(fragment).commitNow()
-            addFragment(fragment, tag)
+            fragmentManager.beginTransaction().remove(fragment).commit()
+            post {
+                addFragment(fragment, tag)
+                // since we wait until next frame, we have to layout view manually
+                layoutFragmentView()
+            }
         }
 
+    }
+
+    fun dropFragment(tag: String) {
+        val fragmentManager = this.fragmentManager
+        val arFragment = fragmentManager.findFragmentByTag(tag)
+        if (arFragment != null) {
+            fragmentManager.beginTransaction().remove(arFragment).commitNowAllowingStateLoss()
+        }
     }
 
     private fun addFragment(fragment: Fragment, tag: String) {
@@ -78,20 +95,15 @@ class ArFragmentContainer @JvmOverloads constructor(
 
         fragmentManager.beginTransaction().add(fragment, tag).commitNow()
         addView(fragment.view, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-
-        logMessage("added fragment, views count = $childCount")
-
-        val fragmentCount = fragmentManager.fragments.filterIsInstance<CustomArFragment>().count()
-        logMessage("fragmentCount= $fragmentCount")
     }
 
-    fun removeFragment(tag: String) {
-        val fragmentManager = this.fragmentManager ?: return
-        val arFragment = fragmentManager.findFragmentByTag(tag)
-        if (arFragment != null) {
-            fragmentManager.beginTransaction().remove(arFragment).commitNowAllowingStateLoss()
-            logMessage("removed fragment CustomArFragment")
-        }
+    private fun layoutFragmentView() {
+        val child: View = getChildAt(0)
+        child.measure(
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+        )
+        child.layout(0, 0, child.measuredWidth, child.measuredHeight)
     }
 
     companion object {

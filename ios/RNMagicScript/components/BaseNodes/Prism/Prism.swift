@@ -44,7 +44,7 @@ import SceneKit
         didSet { updateSize(); invalidateClippingPlanes() }
     }
     override open var transform: SCNMatrix4 {
-        didSet { invalidateClippingPlanes() }
+        didSet { updateSize(); invalidateClippingPlanes() }
     }
     @objc var debug: Bool = false {
         didSet { updateDebugMode() }

@@ -40,7 +40,7 @@ class PrismInteractor: NSObject, PrismInteracting {
     private var prismInitialScale: SCNVector3? = nil
     private var gestureRecognizers: [UIGestureRecognizer] = []
 
-    init(with arView: RCTARView) {
+    init(with arView: RCTARView?) {
         super.init()
 
         self.arView = arView
@@ -73,10 +73,9 @@ class PrismInteractor: NSObject, PrismInteracting {
 
     func update(cameraNode: SCNNode, time: TimeInterval) {
         assert(Thread.isMainThread, "PrismInteractor.update must be called in main thread!")
-        guard let camera = cameraNode.camera else { return }
-        guard let prism = interactedPrism, prism.editMode else { return }
+        guard let camera = cameraNode.camera, let prism = interactedPrism, prism.editMode else { return }
 
-        let deltaTime: Float = Float(time - prevTime)
+        let deltaTime = Float(time - prevTime)
         prevTime = time
         guard deltaTime < 0.1 else {
             startInteractionTime = time

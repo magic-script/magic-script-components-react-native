@@ -38,7 +38,7 @@ class PrismOutlineNodeSpec: QuickSpec {
                 it("should have default values set") {
                     let node = PrismOutlineNode()
                     expect(node.size).to(beCloseTo(SCNVector3(1, 1, 1)))
-                    expect(node.color).to(beCloseTo(UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)))
+                    expect(node.color).to(beCloseTo(UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.3)))
                 }
             }
             

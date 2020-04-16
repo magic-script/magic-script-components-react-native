@@ -30,6 +30,7 @@ class PrismContextMenu: UiNode {
     var text: String = "" {
         didSet {
             titleNode.text = text
+            titleNode.layoutIfNeeded()
             setNeedsLayout()
             updateLayout()
         }
@@ -82,8 +83,7 @@ class PrismContextMenu: UiNode {
     }
 
     @objc override func _calculateSize() -> CGSize {
-        let size = linearLayout.getSize()
-        return size
+        return linearLayout.getSize()
     }
 
     @objc override func updateLayout() {

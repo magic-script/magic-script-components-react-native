@@ -4028,6 +4028,201 @@ open class NodesManagingMock: NSObject, NodesManaging, Mock {
     }
 }
 
+// MARK: - PrismInteracting
+open class PrismInteractingMock: PrismInteracting, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+
+
+
+
+    open func toggleInteractions(for prism: Prism) {
+        addInvocation(.m_toggleInteractions__for_prism(Parameter<Prism>.value(`prism`)))
+		let perform = methodPerformValue(.m_toggleInteractions__for_prism(Parameter<Prism>.value(`prism`))) as? (Prism) -> Void
+		perform?(`prism`)
+    }
+
+    open func startInteractions(for prism: Prism) {
+        addInvocation(.m_startInteractions__for_prism(Parameter<Prism>.value(`prism`)))
+		let perform = methodPerformValue(.m_startInteractions__for_prism(Parameter<Prism>.value(`prism`))) as? (Prism) -> Void
+		perform?(`prism`)
+    }
+
+    open func update(cameraNode: SCNNode, time: TimeInterval) {
+        addInvocation(.m_update__cameraNode_cameraNodetime_time(Parameter<SCNNode>.value(`cameraNode`), Parameter<TimeInterval>.value(`time`)))
+		let perform = methodPerformValue(.m_update__cameraNode_cameraNodetime_time(Parameter<SCNNode>.value(`cameraNode`), Parameter<TimeInterval>.value(`time`))) as? (SCNNode, TimeInterval) -> Void
+		perform?(`cameraNode`, `time`)
+    }
+
+    open func stopInteractions(for prism: Prism) {
+        addInvocation(.m_stopInteractions__for_prism(Parameter<Prism>.value(`prism`)))
+		let perform = methodPerformValue(.m_stopInteractions__for_prism(Parameter<Prism>.value(`prism`))) as? (Prism) -> Void
+		perform?(`prism`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_toggleInteractions__for_prism(Parameter<Prism>)
+        case m_startInteractions__for_prism(Parameter<Prism>)
+        case m_update__cameraNode_cameraNodetime_time(Parameter<SCNNode>, Parameter<TimeInterval>)
+        case m_stopInteractions__for_prism(Parameter<Prism>)
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_toggleInteractions__for_prism(let lhsPrism), .m_toggleInteractions__for_prism(let rhsPrism)):
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
+            case (.m_startInteractions__for_prism(let lhsPrism), .m_startInteractions__for_prism(let rhsPrism)):
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
+            case (.m_update__cameraNode_cameraNodetime_time(let lhsCameranode, let lhsTime), .m_update__cameraNode_cameraNodetime_time(let rhsCameranode, let rhsTime)):
+                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
+            case (.m_stopInteractions__for_prism(let lhsPrism), .m_stopInteractions__for_prism(let rhsPrism)):
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_toggleInteractions__for_prism(p0): return p0.intValue
+            case let .m_startInteractions__for_prism(p0): return p0.intValue
+            case let .m_update__cameraNode_cameraNodetime_time(p0, p1): return p0.intValue + p1.intValue
+            case let .m_stopInteractions__for_prism(p0): return p0.intValue
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func toggleInteractions(for prism: Parameter<Prism>) -> Verify { return Verify(method: .m_toggleInteractions__for_prism(`prism`))}
+        public static func startInteractions(for prism: Parameter<Prism>) -> Verify { return Verify(method: .m_startInteractions__for_prism(`prism`))}
+        public static func update(cameraNode: Parameter<SCNNode>, time: Parameter<TimeInterval>) -> Verify { return Verify(method: .m_update__cameraNode_cameraNodetime_time(`cameraNode`, `time`))}
+        public static func stopInteractions(for prism: Parameter<Prism>) -> Verify { return Verify(method: .m_stopInteractions__for_prism(`prism`))}
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func toggleInteractions(for prism: Parameter<Prism>, perform: @escaping (Prism) -> Void) -> Perform {
+            return Perform(method: .m_toggleInteractions__for_prism(`prism`), performs: perform)
+        }
+        public static func startInteractions(for prism: Parameter<Prism>, perform: @escaping (Prism) -> Void) -> Perform {
+            return Perform(method: .m_startInteractions__for_prism(`prism`), performs: perform)
+        }
+        public static func update(cameraNode: Parameter<SCNNode>, time: Parameter<TimeInterval>, perform: @escaping (SCNNode, TimeInterval) -> Void) -> Perform {
+            return Perform(method: .m_update__cameraNode_cameraNodetime_time(`cameraNode`, `time`), performs: perform)
+        }
+        public static func stopInteractions(for prism: Parameter<Prism>, perform: @escaping (Prism) -> Void) -> Perform {
+            return Perform(method: .m_stopInteractions__for_prism(`prism`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
 // MARK: - RCTARViewObserving
 open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {

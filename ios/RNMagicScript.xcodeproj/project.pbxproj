@@ -443,6 +443,8 @@
 		C4D5CB0A23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4D5CB0B23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */; };
+		C4E7BE3624483C5300C62F76 /* PrismContextMenuSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */; };
+		C4E7BE382448591400C62F76 /* PrismInteractorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */; };
 		C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */; };
 		C4ECC032232F77E10091FD21 /* NodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */; };
 		C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFE25D237ED71000C70001 /* DialogPresenter.swift */; };
@@ -927,6 +929,8 @@
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
 		C4D5CB0923A982790067209D /* PlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneDetector.swift; sourceTree = "<group>"; };
 		C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactorySpec.swift; sourceTree = "<group>"; };
+		C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismContextMenuSpec.swift; sourceTree = "<group>"; };
+		C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismInteractorSpec.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
 		C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManagerSpec.swift; sourceTree = "<group>"; };
 		C4EFE25D237ED71000C70001 /* DialogPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenter.swift; sourceTree = "<group>"; };
@@ -1545,6 +1549,8 @@
 				441FE355242B66C2008C1BE1 /* PrismIntersectionSpec.swift */,
 				C4278B33240CD05500CB9250 /* SceneSpec.swift */,
 				C4278B35240CD13900CB9250 /* BaseNodeSpec.swift */,
+				C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */,
+				C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -2491,6 +2497,7 @@
 				C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */,
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
 				441FE34D242A5C5D008C1BE1 /* SCNCircleSpec.swift in Sources */,
+				C4E7BE3624483C5300C62F76 /* PrismContextMenuSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */,
 				C47E419923C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift in Sources */,
@@ -2519,6 +2526,7 @@
 				441FE34F242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift in Sources */,
 				44DF644F23952AC7005E0518 /* StringRandomSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
+				C4E7BE382448591400C62F76 /* PrismInteractorSpec.swift in Sources */,
 				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
 				C47E419D23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift in Sources */,

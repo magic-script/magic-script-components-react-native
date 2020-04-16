@@ -29,8 +29,9 @@
     "react-test-renderer": "16.8.6"
   },
   "peerDependencies": {
+    "react-native": "0.60.5",
     "react": "^16.9.0",
-    "react-native": "0.60.5"
+    "react-native-fs": "^2.16.6"
   },
   "jest": {
     "preset": "react-native",

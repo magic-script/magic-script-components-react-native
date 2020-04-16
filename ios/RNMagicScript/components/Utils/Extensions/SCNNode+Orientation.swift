@@ -17,11 +17,25 @@
 import SceneKit
 
 extension SCNNode {
-    func orientUpVectorAlong(_ vector: SCNVector3) {
+    public func orientUpVectorAlong(_ vector: SCNVector3) {
         let up = SCNVector3(0, 1, 0)
         let rotationAxis: SCNVector3 = vector.cross(up).normalized()
         let angle: Float = -vector.angleToVector(up)
         orientation = SCNQuaternion.fromAxis(rotationAxis, andAngle: angle)
+    }
+    
+    public func angleToWorldFront() -> Float {
+        let globalFront = SCNVector3.forward
+        var front = worldFront
+        front.y = 0.0
+        front.normalize()
+        let angle = acos(front.dot(globalFront))
+        
+        var right = self.worldRight
+        right.y = 0.0
+        right.normalize()
+        
+        return right.dot(globalFront) >= 0.0 ? angle : (2 * Float.pi - angle)
     }
 }
 

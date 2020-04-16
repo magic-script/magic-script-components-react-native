@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		272FE9888C2A3646A0ED2AF1 /* Pods_RNMagicScriptTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */; };
+		3DEF99B5FD3ABA197D66C4F6 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D90B77C03B61C2B979129A93 /* Pods_RNMagicScriptHostApplication.framework */; };
+		3FDF269A199C97F94F40505D /* Pods_RNMagicScriptTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A28791FDC1824D1E2A2F18 /* Pods_RNMagicScriptTests.framework */; };
 		4415977C23C8868C008EDD3C /* SCNNinePatchSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */; };
 		4415DA3023A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
 		4415DA3123A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
@@ -304,7 +305,6 @@
 		44F7402A2424B8BB005195F1 /* Prism+Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F740292424B8BB005195F1 /* Prism+Intersection.swift */; };
 		44F7402B2424B8BB005195F1 /* Prism+Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F740292424B8BB005195F1 /* Prism+Intersection.swift */; };
 		44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */; };
-		70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */; };
 		C400D4422387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */; };
 		C400D4432387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */; };
 		C400D4462387F57A002A38CB /* UiToggleGroupNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */; };
@@ -341,6 +341,8 @@
 		C435F90823829F050060F956 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90623829F050060F956 /* UIButton+Extension.swift */; };
 		C435F90E2382FA630060F956 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90D2382FA630060F956 /* DialogView.swift */; };
 		C435F90F2382FA630060F956 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90D2382FA630060F956 /* DialogView.swift */; };
+		C43604212431BC0500E54BC3 /* PrismContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43604202431BC0500E54BC3 /* PrismContextMenu.swift */; };
+		C43604222431BC0500E54BC3 /* PrismContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43604202431BC0500E54BC3 /* PrismContextMenu.swift */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445A23323EC55DE00168596 /* SurfaceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445A23223EC55DE00168596 /* SurfaceSpec.swift */; };
@@ -380,6 +382,8 @@
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4914ABF23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */; };
+		C49B120C243CA10100F7DAAB /* PrismInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49B120B243CA10100F7DAAB /* PrismInteractor.swift */; };
+		C49B120D243CA10100F7DAAB /* PrismInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49B120B243CA10100F7DAAB /* PrismInteractor.swift */; };
 		C4A07EF62409049700BDA262 /* NodesManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */; };
 		C4A07EF72409049700BDA262 /* NodesManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */; };
 		C4A12B0C2361AD2A009B7083 /* UiColorPickerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */; };
@@ -439,6 +443,8 @@
 		C4D5CB0A23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4D5CB0B23A982790067209D /* PlaneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5CB0923A982790067209D /* PlaneDetector.swift */; };
 		C4E65112235EE0C40042960B /* InputViewFactorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */; };
+		C4E7BE3624483C5300C62F76 /* PrismContextMenuSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */; };
+		C4E7BE382448591400C62F76 /* PrismInteractorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */; };
 		C4ECC030232F5E270091FD21 /* MeasuresSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */; };
 		C4ECC032232F77E10091FD21 /* NodesManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */; };
 		C4EFE25E237ED71000C70001 /* DialogPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFE25D237ED71000C70001 /* DialogPresenter.swift */; };
@@ -603,13 +609,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C40749AF243C7A8A00C9BA08 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A61E7861901EBA64142B714 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.debug.xcconfig"; sourceTree = "<group>"; };
-		35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DB5B657C16E1BE134F81C5A /* Pods-RNMagicScriptTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1E12ED9B0BE34039931966BA /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
 		4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNinePatchSpec.swift; sourceTree = "<group>"; };
 		4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Enumerate.swift"; sourceTree = "<group>"; };
 		441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemIcon+Names.swift"; sourceTree = "<group>"; };
@@ -824,8 +838,7 @@
 		44F740292424B8BB005195F1 /* Prism+Intersection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Prism+Intersection.swift"; sourceTree = "<group>"; };
 		44F77DD4233CB6880078B85C /* ImageAssetsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAssetsSpec.swift; sourceTree = "<group>"; };
 		7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
-		8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.release.xcconfig"; sourceTree = "<group>"; };
+		C377E73841FBF7BEBBC38447 /* Pods-RNMagicScriptTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C400D4412387F4E4002A38CB /* UiToggleGroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNode.swift; sourceTree = "<group>"; };
 		C400D4452387F57A002A38CB /* UiToggleGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiToggleGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesGestureHandler.swift; sourceTree = "<group>"; };
@@ -847,6 +860,7 @@
 		C435F90323829C000060F956 /* DialogFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogFactory.swift; sourceTree = "<group>"; };
 		C435F90623829F050060F956 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		C435F90D2382FA630060F956 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
+		C43604202431BC0500E54BC3 /* PrismContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismContextMenu.swift; sourceTree = "<group>"; };
 		C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownListItemTapHandling.swift; sourceTree = "<group>"; };
 		C445A23223EC55DE00168596 /* SurfaceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceSpec.swift; sourceTree = "<group>"; };
 		C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizer.swift; sourceTree = "<group>"; };
@@ -878,6 +892,7 @@
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
 		C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizerSpec.swift; sourceTree = "<group>"; };
+		C49B120B243CA10100F7DAAB /* PrismInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismInteractor.swift; sourceTree = "<group>"; };
 		C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NodesManager+Extension.swift"; sourceTree = "<group>"; };
 		C4A12B0B2361AD2A009B7083 /* UiColorPickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiColorPickerNode.swift; sourceTree = "<group>"; };
 		C4A12B0E2361AD38009B7083 /* UiDatePickerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDatePickerNode.swift; sourceTree = "<group>"; };
@@ -914,6 +929,8 @@
 		C4D5417D23338E05008D5124 /* VideoViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewMode.swift; sourceTree = "<group>"; };
 		C4D5CB0923A982790067209D /* PlaneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneDetector.swift; sourceTree = "<group>"; };
 		C4E65111235EE0C40042960B /* InputViewFactorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactorySpec.swift; sourceTree = "<group>"; };
+		C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismContextMenuSpec.swift; sourceTree = "<group>"; };
+		C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismInteractorSpec.swift; sourceTree = "<group>"; };
 		C4ECC02F232F5E270091FD21 /* MeasuresSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuresSpec.swift; sourceTree = "<group>"; };
 		C4ECC031232F77E10091FD21 /* NodesManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesManagerSpec.swift; sourceTree = "<group>"; };
 		C4EFE25D237ED71000C70001 /* DialogPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogPresenter.swift; sourceTree = "<group>"; };
@@ -923,7 +940,10 @@
 		C4FB4759234A8E7300E552F5 /* InputViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewFactory.swift; sourceTree = "<group>"; };
 		C4FEFF852398E87B00EA1663 /* RCTARViewObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewObserving.swift; sourceTree = "<group>"; };
 		C4FEFF8D2398EFB600EA1663 /* RCTARView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RCTARView+Extension.swift"; sourceTree = "<group>"; };
-		E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptHostApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D90B77C03B61C2B979129A93 /* Pods_RNMagicScriptHostApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptHostApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9A28791FDC1824D1E2A2F18 /* Pods_RNMagicScriptTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNMagicScriptTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F20FF265538FBD25D780FBD0 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.debug.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.debug.xcconfig"; sourceTree = "<group>"; };
+		FEF2525203156F10B1E610D0 /* Pods-RNMagicScriptHostApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptHostApplication.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -938,7 +958,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70E47A1EF9911EE44935E7D4 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */,
+				3DEF99B5FD3ABA197D66C4F6 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,7 +966,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				272FE9888C2A3646A0ED2AF1 /* Pods_RNMagicScriptTests.framework in Frameworks */,
+				3FDF269A199C97F94F40505D /* Pods_RNMagicScriptTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1044,8 +1064,8 @@
 			isa = PBXGroup;
 			children = (
 				7D4DF2EC22FCA7D700407B0B /* React.xcodeproj */,
-				E067651A17E2DF3C8808681A /* Pods_RNMagicScriptHostApplication.framework */,
-				35E686E1163C6B450996E632 /* Pods_RNMagicScriptTests.framework */,
+				D90B77C03B61C2B979129A93 /* Pods_RNMagicScriptHostApplication.framework */,
+				E9A28791FDC1824D1E2A2F18 /* Pods_RNMagicScriptTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1301,6 +1321,7 @@
 		44AFABFF232B9BCE005AC8EF /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
+				C49B120A243CA0DB00F7DAAB /* Prism */,
 				44890E1F2417AD9700903629 /* Clipping.swift */,
 				44AFAC00232B9BCE005AC8EF /* LabelNode.swift */,
 				44AFAC01232B9BCE005AC8EF /* RenderNode.swift */,
@@ -1313,8 +1334,6 @@
 				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
-				C411CC2C240505E0004C7063 /* Prism.swift */,
-				44F740292424B8BB005195F1 /* Prism+Intersection.swift */,
 				C411CC2E240505F0004C7063 /* Scene.swift */,
 				C42C1F812406ABE40012B40E /* BaseNode.swift */,
 			);
@@ -1530,6 +1549,8 @@
 				441FE355242B66C2008C1BE1 /* PrismIntersectionSpec.swift */,
 				C4278B33240CD05500CB9250 /* SceneSpec.swift */,
 				C4278B35240CD13900CB9250 /* BaseNodeSpec.swift */,
+				C4E7BE3524483C5300C62F76 /* PrismContextMenuSpec.swift */,
+				C4E7BE372448591400C62F76 /* PrismInteractorSpec.swift */,
 			);
 			path = BaseNodes;
 			sourceTree = "<group>";
@@ -1791,6 +1812,17 @@
 			path = PlaneDetector;
 			sourceTree = "<group>";
 		};
+		C49B120A243CA0DB00F7DAAB /* Prism */ = {
+			isa = PBXGroup;
+			children = (
+				C411CC2C240505E0004C7063 /* Prism.swift */,
+				44F740292424B8BB005195F1 /* Prism+Intersection.swift */,
+				C43604202431BC0500E54BC3 /* PrismContextMenu.swift */,
+				C49B120B243CA10100F7DAAB /* PrismInteractor.swift */,
+			);
+			path = Prism;
+			sourceTree = "<group>";
+		};
 		C4A07EF42409045100BDA262 /* NodesManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -1867,10 +1899,10 @@
 		D8B27415C6DE5796422D46F7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1A61E7861901EBA64142B714 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */,
-				8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */,
-				3DB5B657C16E1BE134F81C5A /* Pods-RNMagicScriptTests.debug.xcconfig */,
-				7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */,
+				F20FF265538FBD25D780FBD0 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */,
+				FEF2525203156F10B1E610D0 /* Pods-RNMagicScriptHostApplication.release.xcconfig */,
+				C377E73841FBF7BEBBC38447 /* Pods-RNMagicScriptTests.debug.xcconfig */,
+				1E12ED9B0BE34039931966BA /* Pods-RNMagicScriptTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1899,11 +1931,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 44AFAAC1232B950D005AC8EF /* Build configuration list for PBXNativeTarget "RNMagicScriptHostApplication" */;
 			buildPhases = (
-				C1F806458B4EA26E24E752FD /* [CP] Check Pods Manifest.lock */,
+				9C9A91702FA917D2915A35FD /* [CP] Check Pods Manifest.lock */,
 				44AFAAA3232B950A005AC8EF /* Sources */,
 				44AFAAA4232B950A005AC8EF /* Frameworks */,
 				44AFAAA5232B950A005AC8EF /* Resources */,
-				2FADF69F9FECBE22E1F9425A /* [CP] Embed Pods Frameworks */,
+				C40749AF243C7A8A00C9BA08 /* Embed Frameworks */,
+				4E1D1E423CE346E7C813E66C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1919,11 +1952,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 44AFAAD2232B9533005AC8EF /* Build configuration list for PBXNativeTarget "RNMagicScriptTests" */;
 			buildPhases = (
-				E4AB72BA945E5DBAF0FE0BD5 /* [CP] Check Pods Manifest.lock */,
+				23BB3C92DD7655EFDEDDC391 /* [CP] Check Pods Manifest.lock */,
 				44AFAAC7232B9533005AC8EF /* Sources */,
 				44AFAAC8232B9533005AC8EF /* Frameworks */,
 				44AFAAC9232B9533005AC8EF /* Resources */,
-				A94609031C4B9CA4F995DF42 /* [CP] Embed Pods Frameworks */,
+				1D416C4FAAF8A3A619276A2B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1971,7 +2004,7 @@
 					};
 					44AFAAA6232B950A005AC8EF = {
 						CreatedOnToolsVersion = 10.3;
-						DevelopmentTeam = D2L5MHYLSX;
+						DevelopmentTeam = JHVW8HYZ3K;
 						ProvisioningStyle = Automatic;
 					};
 					44AFAACA232B9533005AC8EF = {
@@ -2194,29 +2227,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2FADF69F9FECBE22E1F9425A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ChromaColorPicker/ChromaColorPicker.framework",
-				"${BUILT_PRODUCTS_DIR}/GLTFSceneKit/GLTFSceneKit.framework",
-				"${BUILT_PRODUCTS_DIR}/GrowingTextView/GrowingTextView.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChromaColorPicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GLTFSceneKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GrowingTextView.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A94609031C4B9CA4F995DF42 /* [CP] Embed Pods Frameworks */ = {
+		1D416C4FAAF8A3A619276A2B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2238,29 +2249,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C1F806458B4EA26E24E752FD /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RNMagicScriptHostApplication-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E4AB72BA945E5DBAF0FE0BD5 /* [CP] Check Pods Manifest.lock */ = {
+		23BB3C92DD7655EFDEDDC391 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2276,6 +2265,50 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-RNMagicScriptTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4E1D1E423CE346E7C813E66C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChromaColorPicker/ChromaColorPicker.framework",
+				"${BUILT_PRODUCTS_DIR}/GLTFSceneKit/GLTFSceneKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GrowingTextView/GrowingTextView.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChromaColorPicker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GLTFSceneKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GrowingTextView.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNMagicScriptHostApplication/Pods-RNMagicScriptHostApplication-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9C9A91702FA917D2915A35FD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RNMagicScriptHostApplication-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2332,6 +2365,7 @@
 				44890E172413EF7500903629 /* NodesFactory.swift in Sources */,
 				44AFAD20232BCAE3005AC8EF /* UiTextNode.swift in Sources */,
 				C4596A7F237420CA000E88C1 /* UiListViewItemNode.swift in Sources */,
+				C49B120D243CA10100F7DAAB /* PrismInteractor.swift in Sources */,
 				C400D4432387F4E4002A38CB /* UiToggleGroupNode.swift in Sources */,
 				C435F90523829C000060F956 /* DialogFactory.swift in Sources */,
 				C419CF942359A7B2000094C3 /* NodeConfiguration.swift in Sources */,
@@ -2346,6 +2380,7 @@
 				44AFAD2C232BCAE3005AC8EF /* SCNVector3+Extension.swift in Sources */,
 				44C2511D2435E46C00BAA57F /* ImageFitMode.swift in Sources */,
 				C4A12B212361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
+				C43604222431BC0500E54BC3 /* PrismContextMenu.swift in Sources */,
 				449B5484238524F400D839CC /* UiPanelNode.swift in Sources */,
 				447755392374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				44AFAD24232BCAE3005AC8EF /* CGSize+Extension.swift in Sources */,
@@ -2462,6 +2497,7 @@
 				C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */,
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
 				441FE34D242A5C5D008C1BE1 /* SCNCircleSpec.swift in Sources */,
+				C4E7BE3624483C5300C62F76 /* PrismContextMenuSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,
 				44931E05237D898C00E11972 /* UiImageNodeSpec.swift in Sources */,
 				C47E419923C4945F00AB81C9 /* LongPressGestureRecognizerSpec.swift in Sources */,
@@ -2490,6 +2526,7 @@
 				441FE34F242A5C6B008C1BE1 /* PrismOutlineNodeSpec.swift in Sources */,
 				44DF644F23952AC7005E0518 /* StringRandomSpec.swift in Sources */,
 				C419CF962359AE9A000094C3 /* NodeConfigurationSpec.swift in Sources */,
+				C4E7BE382448591400C62F76 /* PrismInteractorSpec.swift in Sources */,
 				44AB397A238C0D3F0002DF14 /* UiPageViewSpec.swift in Sources */,
 				44A5893D237EB34B00934E5E /* AudioActionSpec.swift in Sources */,
 				C47E419D23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift in Sources */,
@@ -2590,6 +2627,7 @@
 				C418822024126DC000EB84EE /* ButtonType.swift in Sources */,
 				44AB3970238BCD130002DF14 /* UiContentNode.swift in Sources */,
 				C4F8749223E15E7C0044480F /* SCNVector4+Extension.swift in Sources */,
+				C49B120C243CA10100F7DAAB /* PrismInteractor.swift in Sources */,
 				44739B8A239695ED00EC31A0 /* Numeric+Extension.swift in Sources */,
 				C4D5417E23338E05008D5124 /* VideoViewMode.swift in Sources */,
 				44E949362370337900BD0F32 /* DragGestureRecognizer.swift in Sources */,
@@ -2635,6 +2673,7 @@
 				44AFAC4A232B9BCF005AC8EF /* FontWeight.swift in Sources */,
 				C41CD53923E054B800F1738E /* Surface.swift in Sources */,
 				C4EFE262237ED74100C70001 /* DialogPresenting.swift in Sources */,
+				C43604212431BC0500E54BC3 /* PrismContextMenu.swift in Sources */,
 				4474A06123896AC2001BE61E /* UIColor+Extension.swift in Sources */,
 				C4A12B202361B9F2009B7083 /* DatePickerInputView.swift in Sources */,
 				44AFAC5D232B9BCF005AC8EF /* Measures.swift in Sources */,
@@ -2825,7 +2864,7 @@
 		};
 		44AFAAC2232B950D005AC8EF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A61E7861901EBA64142B714 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */;
+			baseConfigurationReference = F20FF265538FBD25D780FBD0 /* Pods-RNMagicScriptHostApplication.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2836,7 +2875,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = D2L5MHYLSX;
+				DEVELOPMENT_TEAM = JHVW8HYZ3K;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";
@@ -2853,7 +2892,7 @@
 		};
 		44AFAAC3232B950D005AC8EF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8C3CDB0E496B8E9138B91C2D /* Pods-RNMagicScriptHostApplication.release.xcconfig */;
+			baseConfigurationReference = FEF2525203156F10B1E610D0 /* Pods-RNMagicScriptHostApplication.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2865,7 +2904,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D2L5MHYLSX;
+				DEVELOPMENT_TEAM = JHVW8HYZ3K;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/RNMagicScriptHostApplication/resources/Info.plist";
@@ -2880,7 +2919,7 @@
 		};
 		44AFAAD3232B9533005AC8EF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DB5B657C16E1BE134F81C5A /* Pods-RNMagicScriptTests.debug.xcconfig */;
+			baseConfigurationReference = C377E73841FBF7BEBBC38447 /* Pods-RNMagicScriptTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2910,7 +2949,7 @@
 		};
 		44AFAAD4232B9533005AC8EF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7D6B2B9B26511FFCD081D1E8 /* Pods-RNMagicScriptTests.release.xcconfig */;
+			baseConfigurationReference = 1E12ED9B0BE34039931966BA /* Pods-RNMagicScriptTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

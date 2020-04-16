@@ -26,7 +26,12 @@ import SceneKit
     fileprivate var rayCastNode: SCNNode?
 #endif
 
-    static fileprivate var instance: RCTARView!
+#if targetEnvironment(simulator)
+    static private(set) var instance: RCTARView!
+#else
+    static private var instance: RCTARView!
+#endif
+
     @objc static public var arSession: ARSession {
         return instance.arView.session
     }

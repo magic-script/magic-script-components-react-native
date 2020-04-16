@@ -47,6 +47,7 @@ import ARKit
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
+    private(set) var prismInteractor: PrismInteractor!
 
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
@@ -62,7 +63,6 @@ import ARKit
     }
 
     @objc fileprivate func onResourceDidLoad(_ notification: Notification) {
-//        print("onResourceDidLoad: \(notification)")
         if (notification.object is UiModelNode) {
             // We need to update tree hierarchy only for model nodes.
             // Audio, image? and video resources have predefined size.
@@ -71,7 +71,6 @@ import ARKit
     }
 
     @objc fileprivate func onLayoutDidChangeIndependently(_ notification: Notification) {
-//        print("onLayoutDidChangeIndependently: \(notification)")
         updateLayout()
     }
 
@@ -80,6 +79,11 @@ import ARKit
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
+        prismInteractor = PrismInteractor(with: arView)
+        scene?.prismInteractor = prismInteractor
+        prismsById.forEach {
+            $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
+        }
     }
 
     @objc public func findNodeWithId(_ nodeId: String) -> BaseNode? {
@@ -97,12 +101,18 @@ import ARKit
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
+        if let prismInteractor = prismInteractor {
+            scene.prismInteractor = prismInteractor
+        }
     }
 
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
         updatePrismAnchorUuid(prism, oldAnchorUuid: "")
+        if let prismInteractor = prismInteractor {
+            prism.prismMenu = PrismContextMenuBuilder.build(for: prism, prismInteractor: prismInteractor)
+        }
     }
 
     @objc public func updatePrismAnchorUuid(_ prism: Prism, oldAnchorUuid: String) {
@@ -162,6 +172,11 @@ import ARKit
     @objc public func addNodeToRoot(_ nodeId: String) {
         if let scene = self.scene, scene.name == nodeId {
             rootNode.addChildNode(scene)
+        }
+        if let prismInteractor = prismInteractor {
+            prismsById.forEach {
+                $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
+            }
         }
     }
 

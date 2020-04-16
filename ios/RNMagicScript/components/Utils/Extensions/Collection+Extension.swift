@@ -21,3 +21,9 @@ extension Collection {
         return isEmpty == false
     }
 }
+
+extension Collection where Self.Element : Equatable {
+    @inlinable public func doesNotContain(_ element: Element) -> Bool {
+        return !contains(element)
+    }
+}

@@ -96,6 +96,10 @@ extension SCNVector3
         let cosineAngle = dot(vector) / (length() * vector.length())
         return acos(cosineAngle)
     }
+
+    func lerp(_ vector: SCNVector3, _ s: Float) -> SCNVector3 {
+        return self + s * (vector - self)
+    }
 }
 
 /**
@@ -203,6 +207,14 @@ func /= ( left: inout SCNVector3, right: SCNVector3) {
  */
 func / (vector: SCNVector3, scalar: Float) -> SCNVector3 {
     return SCNVector3Make(vector.x / scalar, vector.y / scalar, vector.z / scalar)
+}
+
+/**
+ * Divides the scalar value by the x, y and z fields of a SCNVector3 and
+ * returns the result as a new SCNVector3.
+ */
+func / (scalar: Float, vector: SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(scalar / vector.x, scalar / vector.y, scalar / vector.z)
 }
 
 /**

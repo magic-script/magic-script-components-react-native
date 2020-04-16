@@ -26,7 +26,7 @@ class PrismOutlineNode : SCNNode {
         didSet { updateSize() }
     }
 
-    var color: UIColor = UIColor.white.withAlphaComponent(0.25){
+    var color: UIColor = UIColor.white.withAlphaComponent(0.3){
         didSet {
             self.boxNode.geometry?.firstMaterial?.diffuse.contents = color
         }
@@ -34,7 +34,7 @@ class PrismOutlineNode : SCNNode {
 
     override init() {
         let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0)
-        box.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0.15)
+        box.firstMaterial?.diffuse.contents = UIColor.white.withAlphaComponent(0.3)
         box.firstMaterial?.lightingModel = .constant
         self.boxNode = SCNNode(geometry: box)
         self.cornersNode = SCNNode()

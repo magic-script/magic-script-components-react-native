@@ -19,15 +19,20 @@ import SceneKit
 
 // MARK: - Intersection
 extension Prism {
+    var maxRadius: Float {
+        let realSize = size * scale
+        let maxSize = 0.5 * max(realSize.x, max(realSize.y, realSize.z))
+        return maxSize * 1.73205
+    }
+
     func intersect(with ray: Ray, clippedRay: UnsafeMutablePointer<Ray?>?) -> Bool {
         // Fast test: ray against outer sphere
         let sqDistanceToSpehere = ray.getSqDistanceToPoint(position)
-        let maxSize = 0.5 * max(size.x, max(size.y, size.z))
-        let maxRadius = maxSize * 1.73205
+        let maxRadius = self.maxRadius
         if sqDistanceToSpehere > maxRadius * maxRadius {
             return false
         }
-        
+
         // Fast test: ray against inner sphere
         let minRadius = 0.5 * min(size.x, min(size.y, size.z))
         if sqDistanceToSpehere < minRadius * minRadius {
@@ -36,7 +41,7 @@ extension Prism {
             }
             return true
         }
-    
+
         // Fast test: ray inside prism
         let beginPoint = ray.begin
         let endPoint = ray.end
@@ -46,49 +51,49 @@ extension Prism {
             }
             return true
         }
-        
+
         // Exhaustive test: ray against all planes
         let result = getClippedRay(ray: ray)
         if clippedRay != nil {
             clippedRay?.pointee = result
         }
-        
+
         return result != nil
     }
-    
+
     func getIntersectionPoints(ray: Ray) -> (begin: SCNVector3?, end: SCNVector3?)? {
         let worldSpacePlanes = getClippingPlanes()
-        
+
         let beginDir = ray.direction
         let backPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) > 0 }
         let frontPlanes: [Plane] = worldSpacePlanes.filter { $0.normal.dot(beginDir) < 0 }
-        
+
         // begin of clipped ray
         let clippedBegin: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: backPlanes, allPlanes: worldSpacePlanes)
         let clippedEnd: SCNVector3? = intersectPlanes(ray: ray, inputPlanes: frontPlanes, allPlanes: worldSpacePlanes)
-        
+
         if clippedBegin == nil && clippedEnd == nil {
             return nil
         }
-        
+
         return (begin: clippedBegin, end: clippedEnd)
     }
-    
+
     func getClippedRay(ray: Ray) -> Ray? {
         if isPointInside(ray.begin) && isPointInside(ray.end) {
             return ray
         }
-        
+
         guard let points = getIntersectionPoints(ray: ray) else {
             return nil
         }
-        
+
         let newBegin: SCNVector3 = points.begin ?? ray.begin
         let newEnd: SCNVector3 = points.end ?? ray.end
         let direction = newEnd - newBegin
         return Ray(begin: newBegin, direction: direction.normalized(), length: CGFloat(direction.length()))
     }
-    
+
     func isPointInside(_ point: SCNVector3) -> Bool {
         let worldSpacePlanes = getClippingPlanes()
         for plane in worldSpacePlanes {
@@ -96,14 +101,14 @@ extension Prism {
                 return false
             }
         }
-        
+
         return true
     }
-    
+
     fileprivate func intersectPlanes(ray: Ray, inputPlanes: [Plane], allPlanes: [Plane]) -> SCNVector3? {
         for plane1 in inputPlanes {
             guard let intersection = plane1.intersectRay(ray) else { continue }
-            
+
             var edgeCounter: Int = 0
             for j in 0..<allPlanes.count {
                 let plane2: Plane = allPlanes[j]
@@ -113,13 +118,13 @@ extension Prism {
                 }
                 edgeCounter += 1
             }
-            
+
             assert(edgeCounter <= 4, "Logic error: point must not be bounded by more than 4 planes!")
             if edgeCounter == 4 {
                 return intersection
             }
         }
-        
+
         return nil
     }
 }

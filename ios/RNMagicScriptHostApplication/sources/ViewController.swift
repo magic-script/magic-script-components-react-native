@@ -32,12 +32,12 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupARView()
         setupScene()
         
 //        setupPrismWithModels()
         setupPrismForHitTest()
 
+        setupARView()
         arView.register(self)
     }
 

@@ -41,12 +41,18 @@ extension NodesManager: RCTARViewObserving {
         }
     }
 
+    @objc internal func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        if let pointOfView = renderer.pointOfView {
+            DispatchQueue.main.async { self.scene?.prismInteractor?.update(cameraNode: pointOfView, time: time) }
+        }
+    }
+
     @objc internal func renderer(_ renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
         if let pointOfView = renderer.pointOfView {
-            
+
             let begin = pointOfView.position
             let direction = pointOfView.worldFront
-            let ray = Ray(begin: begin, direction: direction, length: 5.0)
+            let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
             
             var results: [(prism: Prism, intersectionPoint: SCNVector3)] = []
             prismsById.forEach {
@@ -65,7 +71,8 @@ extension NodesManager: RCTARViewObserving {
                     return distSq1 < distSq2
                 }
                 
-                results.first!.prism.isPointed = true
+                let pointedPrism = results.first!.prism
+                pointedPrism.isPointed = true
             }
 #if targetEnvironment(simulator)
             if let position = results.first?.intersectionPoint {

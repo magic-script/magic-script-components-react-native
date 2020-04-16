@@ -26,12 +26,12 @@
     "react-native": "0.60.5",
     "babel-jest": "24.9.0",
     "jest": "24.9.0",
-    "react-test-renderer": "16.8.6"
+    "react-test-renderer": "16.8.6",
+    "react-native-fs": "^2.16.6"
   },
   "peerDependencies": {
     "react-native": "0.60.5",
-    "react": "^16.9.0",
-    "react-native-fs": "^2.16.6"
+    "react": "^16.9.0"
   },
   "jest": {
     "preset": "react-native",

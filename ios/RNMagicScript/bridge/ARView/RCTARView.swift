@@ -27,9 +27,9 @@ import SceneKit
 #endif
 
 #if targetEnvironment(simulator)
-    static var instance: RCTARView!
+    static private(set) var instance: RCTARView!
 #else
-    static fileprivate var instance: RCTARView!
+    static private var instance: RCTARView!
 #endif
 
     @objc static public var arSession: ARSession {

@@ -47,6 +47,7 @@ import ARKit
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
+    private(set) var prismInteractor: PrismInteractor!
 
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
@@ -78,8 +79,7 @@ import ARKit
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
         nodeSelector = UiNodeSelector(rootNode)
-
-        let prismInteractor = PrismInteractor(with: arView)
+        prismInteractor = PrismInteractor(with: arView)
         scene?.prismInteractor = prismInteractor
         prismsById.forEach {
             $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
@@ -107,6 +107,9 @@ import ARKit
         prism.name = prismId
         prismsById[prismId] = prism
         updatePrismAnchorUuid(prism, oldAnchorUuid: "")
+        if let prismInteractor = prismInteractor {
+            prism.prismMenu = PrismContextMenuBuilder.build(for: prism, prismInteractor: prismInteractor)
+        }
     }
 
     @objc public func updatePrismAnchorUuid(_ prism: Prism, oldAnchorUuid: String) {
@@ -166,6 +169,11 @@ import ARKit
     @objc public func addNodeToRoot(_ nodeId: String) {
         if let scene = self.scene, scene.name == nodeId {
             rootNode.addChildNode(scene)
+        }
+        if let prismInteractor = prismInteractor {
+            prismsById.forEach {
+                $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
+            }
         }
     }
 

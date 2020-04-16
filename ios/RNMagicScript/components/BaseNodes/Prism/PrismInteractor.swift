@@ -45,13 +45,13 @@ class PrismInteractor: NSObject, PrismInteracting {
 
         self.arView = arView
 
-        let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        let panGestureRecogrnizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         gestureRecognizers.append(panGestureRecogrnizer)
 
-        let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        let pinchGestureRecogrnizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
         gestureRecognizers.append(pinchGestureRecogrnizer)
 
-        let rotationGestureRecogrnizer = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
+        let rotationGestureRecogrnizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
         gestureRecognizers.append(rotationGestureRecogrnizer)
     }
 
@@ -92,16 +92,17 @@ class PrismInteractor: NSObject, PrismInteracting {
         var prismDistanceToCamera = prism.position.distance(cameraPosition)
 
         // Update prism distance to camera change
-        let cameraViewDistance = CGFloat(camera.zFar)
-        let minDistance = Float(prism.maxRadius)
-        let maxDistance = Float(cameraViewDistance) - prism.maxRadius
         if prismDistanceChange != 0.0 {
+            let cameraViewDistance = CGFloat(camera.zFar)
+            let minDistance = Float(prism.maxRadius)
+            let maxDistance = Float(cameraViewDistance) - prism.maxRadius
             let speedFactor: Float = prismDistanceToCamera / maxDistance
-            prismDistanceToCamera += speedFactor * prismDistanceChange * deltaTime
+
+            let newDistance = prismDistanceToCamera + speedFactor * prismDistanceChange * deltaTime
+            prismDistanceToCamera = Math.clamp(newDistance, minDistance, maxDistance)
+
             prismDistanceChange = 0.0
         }
-        
-        prismDistanceToCamera = Math.clamp(prismDistanceToCamera, minDistance, maxDistance)
 
         // Keep prism in front of camera
         let targetPosition = cameraPosition + prismDistanceToCamera * cameraDirection
@@ -154,7 +155,7 @@ class PrismInteractor: NSObject, PrismInteracting {
 // MARK: gesture handlers
 extension PrismInteractor {
 
-    @objc func handlePanGesture(_ sender: PanGestureRecognizer) {
+    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began, .changed:
             let speedFactor: Float = 40.0
@@ -166,7 +167,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handlePinchGesture(_ sender: PinchGestureRecognizer) {
+    @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
         switch sender.state {
         case .began:
             prismInitialScale = interactedPrism?.scale
@@ -190,7 +191,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handleRotationGesture(_ sender: RotationGestureRecognizer) {
+    @objc func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
         switch sender.state {
         case .began, .changed:
             prismYawChange = Float(sender.rotation)

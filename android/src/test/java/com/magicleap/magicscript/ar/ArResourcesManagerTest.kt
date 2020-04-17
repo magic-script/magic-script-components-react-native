@@ -79,17 +79,36 @@ class ArResourcesManagerTest {
     }
 
     @Test
-    fun `should notify listener after ARCore has been loaded`() {
-        var notified = false
+    fun `should notify listener after ARCore has been loaded first time`() {
+        var firstTimeFlag = false
         manager.addArLoadedListener(object : ArResourcesProvider.ArLoadedListener {
             override fun onArLoaded(firstTime: Boolean) {
-                notified = true
+                firstTimeFlag = firstTime
             }
         })
 
         manager.onArCoreLoaded()
 
-        notified shouldBe true
+        firstTimeFlag shouldBe true
+        manager.isArLoaded() shouldBe true
+    }
+
+    @Test
+    fun `should notify listener each time ARCore core is loaded`() {
+        var notifyCount = 0
+        var firstTimeFlag = true
+        manager.addArLoadedListener(object : ArResourcesProvider.ArLoadedListener {
+            override fun onArLoaded(firstTime: Boolean) {
+                notifyCount++
+                firstTimeFlag = firstTime
+            }
+        })
+
+        manager.onArCoreLoaded()
+        manager.onArCoreLoaded()
+
+        notifyCount shouldEqual 2
+        firstTimeFlag shouldBe false
         manager.isArLoaded() shouldBe true
     }
 

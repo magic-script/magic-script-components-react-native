@@ -90,7 +90,6 @@ abstract class UiNode(
     private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
     private var loadingView = false
-    private var rebuildLoopRunning = false
     private var renderableCopy: Renderable? = null
 
     private var touching = false

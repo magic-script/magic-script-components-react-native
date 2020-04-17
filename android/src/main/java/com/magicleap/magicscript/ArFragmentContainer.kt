@@ -24,6 +24,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.magicleap.magicscript.ar.CustomArFragment
+import com.magicleap.magicscript.utils.logMessage
 import java.util.*
 
 class ArFragmentContainer @JvmOverloads constructor(
@@ -79,10 +80,13 @@ class ArFragmentContainer @JvmOverloads constructor(
     }
 
     fun dropFragment(tag: String) {
+        logMessage("dropFragment")
         val fragmentManager = this.fragmentManager
         val arFragment = fragmentManager.findFragmentByTag(tag)
         if (arFragment != null) {
-            fragmentManager.beginTransaction().remove(arFragment).commitNowAllowingStateLoss()
+            // Here we should use commit(), because commitNow() may return internal
+            // ARCore exception, like SessionPausedException (it's possible the ARCore bug)
+            fragmentManager.beginTransaction().remove(arFragment).commit()
         }
     }
 

@@ -73,6 +73,11 @@ public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
 
     /**
      * Called when the view is no longer rendered in React's render() function
+     * <p>
+     * This is for some reason called with some delay, so e.g. when the user navigates
+     * back from ARView screen to another screen that uses camera, the camera may not be
+     * released on time (adding some delay in React before displaying the first screen
+     * may be necessary)
      */
     @Override
     public void onDropViewInstance(@Nonnull final ArFragmentContainer view) {

@@ -24,7 +24,6 @@ import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.utils.logMessage
 import com.magicleap.magicscript.utils.read
 
 // Base class for layouts (grid, linear, rect)
@@ -130,7 +129,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
-        logMessage("layout delta = $deltaSeconds")
 
         // measure the children (their size may have changed) and layout if needed
         measureChildren()

@@ -77,8 +77,6 @@ class Prism(
     private var lastCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
     private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
-    /** Pose set by a property or manual prism manipulation, null if anchored at UUID anchor */
-    private var nonUUIDPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var requestedScale: Vector3? = null
@@ -206,9 +204,8 @@ class Prism(
         if (!firstTime && !editMode) {
             // we have to re-create anchor, since session have changed
             // and old anchors are no longer valid
-            nonUUIDPose?.let {
-                tryToAnchorAtPose(it)
-            }
+            setPose(properties)
+            setAnchorUuid(properties)
         }
     }
 
@@ -427,7 +424,6 @@ class Prism(
             // user has stopped moving the prism, so we anchor it to the final position
             val pose = Utils.createPose(localPosition, Quaternion())
             tryToAnchorAtPose(pose)
-
             adjustContainerRotation()
         }
 
@@ -445,7 +441,6 @@ class Prism(
             anchor = anchorResult.data
             lastCreatedAnchor = anchorResult.data
             requestedAnchorPose = null
-            nonUUIDPose = pose
         } else {
             // try anchoring later
             requestedAnchorPose = pose
@@ -459,7 +454,6 @@ class Prism(
         anchorNode?.anchor?.let {
             anchor = it
             requestedAnchorUuid = null
-            nonUUIDPose = null
         }
     }
 

@@ -48,7 +48,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatcher
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import java.util.*
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which

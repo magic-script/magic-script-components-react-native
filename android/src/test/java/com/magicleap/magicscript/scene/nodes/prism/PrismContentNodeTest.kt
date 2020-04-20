@@ -60,7 +60,7 @@ class PrismContentNodeTest {
         val tested = buildNode(size = Vector3.one())
         val sizeToUpdate = Vector3(2.4f, 1.2f, 0.5f)
 
-        tested.setSize(sizeToUpdate)
+        tested.size = sizeToUpdate
 
         verify(cubeBuilder).buildRenderable(argThat {
             cubeSize == sizeToUpdate

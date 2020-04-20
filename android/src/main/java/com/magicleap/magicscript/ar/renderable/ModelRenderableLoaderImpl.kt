@@ -64,7 +64,7 @@ class ModelRenderableLoaderImpl(
         val builder = ModelRenderable.builder()
         val modelType = Utils.detectModelType(modelUri, context)
         when (modelType) {
-            ModelType.GLB -> setGLBSource(builder, modelUri)
+            ModelType.GLB -> setGLBSource(builder, modelUri, request.glbRecenterMode)
             ModelType.SFB -> setSFBSource(builder, modelUri)
             ModelType.UNKNOWN -> {
                 val errorMessage = "Unresolved model type"
@@ -91,10 +91,14 @@ class ModelRenderableLoaderImpl(
             }
     }
 
-    private fun setGLBSource(builder: ModelRenderable.Builder, uri: Uri) {
+    private fun setGLBSource(
+        builder: ModelRenderable.Builder,
+        uri: Uri,
+        recenterMode: RenderableSource.RecenterMode
+    ) {
         val source = RenderableSource.builder()
             .setSource(context, uri, RenderableSource.SourceType.GLB)
-            .setRecenterMode(RenderableSource.RecenterMode.CENTER)
+            .setRecenterMode(recenterMode)
             .build()
         builder.setSource(context, source)
     }

@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene.nodes.prism
 
 import android.net.Uri
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
@@ -28,7 +29,6 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.utils.DataResult
-import com.magicleap.magicscript.utils.minus
 
 /**
  * Prism content that can be scaled and rotated manually.
@@ -45,9 +45,12 @@ class PrismContentNode(
     private var cornerModel: ModelRenderable? = null
     private val cornerNodes = mutableListOf<Node>()
 
-    companion object {
-        private const val CORNER_MODEL_SIZE = 0.25f // in meters
-    }
+    var size: Vector3 = initialSize
+        set(value) {
+            field = value
+            loadCube(value)
+            layoutCornerNodes()
+        }
 
     var editModeActive: Boolean = false
         set(value) {
@@ -91,13 +94,8 @@ class PrismContentNode(
 
         createCornerNodes()
         loadCornerModel()
-        layoutCornerNodes(initialSize)
+        layoutCornerNodes()
         loadCube(initialSize)
-    }
-
-    fun setSize(size: Vector3) {
-        loadCube(size)
-        layoutCornerNodes(size)
     }
 
     fun onDestroy() {
@@ -115,6 +113,7 @@ class PrismContentNode(
         if (localScale != lastScale) {
             scaleChangedListener?.invoke(localScale)
             lastScale = localScale
+            adjustCornersScale()
         }
     }
 
@@ -125,7 +124,7 @@ class PrismContentNode(
             cubeBuilder.cancel(it)
         }
 
-        val color = Color(1f, 0f, 0f, 0.5f)
+        val color = Color(1f, 1f, 1f, 0.15f)
         cubeLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
             if (it is DataResult.Success) {
                 renderableCopy = it.data
@@ -145,7 +144,8 @@ class PrismContentNode(
         }
 
         val modelUri = Uri.parse("android.resource://$packageName/raw/prism_corner")
-        modelLoadRequest = ModelRenderableLoader.LoadRequest(modelUri) { result ->
+        val recenterMode = RenderableSource.RecenterMode.NONE
+        modelLoadRequest = ModelRenderableLoader.LoadRequest(modelUri, recenterMode) { result ->
             if (result is DataResult.Success) {
                 cornerModel = result.data
                 if (editModeActive) {
@@ -178,9 +178,10 @@ class PrismContentNode(
         }
     }
 
-    private fun layoutCornerNodes(prismSize: Vector3) {
-        val cornerModelSize = Vector3(CORNER_MODEL_SIZE, CORNER_MODEL_SIZE, CORNER_MODEL_SIZE)
-        val move: Vector3 = prismSize - cornerModelSize
+    private fun layoutCornerNodes() {
+        // start at bottom-left-far
+        val startPos = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
+        val currentPosition = Vector3(startPos.x, startPos.y, startPos.z)
 
         val rotations = listOf<Quaternion>(
             Quaternion.eulerAngles(Vector3(0f, 90f, 0f)),
@@ -193,13 +194,9 @@ class PrismContentNode(
             Quaternion.eulerAngles(Vector3(180f, 0f, 0f))
         )
 
-        // start at bottom-left-far
-        val startPos = Vector3(-move.x / 2, -move.y / 2, -move.z / 2)
-        val currentPos = Vector3(startPos.x, startPos.y, startPos.z)
-
         var idx = 0
         do {
-            cornerNodes[idx].localPosition = currentPos
+            cornerNodes[idx].localPosition = currentPosition
             cornerNodes[idx].localRotation = rotations[idx]
 
             idx++
@@ -207,12 +204,20 @@ class PrismContentNode(
             val y = idx.and(2)
             val z = idx.and(4)
 
-            currentPos.x = if (x > 0) startPos.x + move.x else startPos.x
-            currentPos.y = if (y > 0) startPos.y + move.y else startPos.y
-            currentPos.z = if (z > 0) startPos.z + move.z else startPos.z
+            currentPosition.x = if (x > 0) startPos.x + size.x else startPos.x
+            currentPosition.y = if (y > 0) startPos.y + size.y else startPos.y
+            currentPosition.z = if (z > 0) startPos.z + size.z else startPos.z
 
         } while (idx < 8)
 
+    }
+
+    // assigning world scale to corners,
+    // because they should be independent of content scale
+    private fun adjustCornersScale() {
+        cornerNodes.forEach {
+            it.worldScale = Vector3.one()
+        }
     }
 
 }

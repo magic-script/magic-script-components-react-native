@@ -329,6 +329,7 @@ class PrismTest {
 
         verify(arResourcesProvider).removeCameraUpdatedListener(eq(prism))
         verify(arResourcesProvider).removeTransformationSystemListener(eq(prism))
+        verify(arResourcesProvider).removeArLoadedListener(eq(prism))
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {

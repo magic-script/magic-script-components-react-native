@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.ar.renderable
 
 import android.net.Uri
+import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.magicleap.magicscript.utils.DataResult
 
@@ -28,6 +29,7 @@ interface ModelRenderableLoader {
 
     class LoadRequest(
         val modelUri: Uri,
+        val glbRecenterMode: RenderableSource.RecenterMode = RenderableSource.RecenterMode.CENTER,
         listener: ((result: DataResult<ModelRenderable>) -> Unit)
     ) : RenderableLoadRequest<ModelRenderable>(listener)
 

@@ -262,6 +262,7 @@ class Prism(
         detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
+        arResourcesProvider.removeArLoadedListener(this)
     }
 
     // Prism can also be anchored through this function when initial placement is active
@@ -379,7 +380,7 @@ class Prism(
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             if (size != this.size) {
                 this.size = size
-                container?.setSize(size)
+                container?.size = size
                 adjustMenuPosition()
                 clipContent()
             }

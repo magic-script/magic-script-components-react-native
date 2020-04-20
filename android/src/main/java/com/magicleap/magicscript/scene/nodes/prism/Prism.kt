@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
@@ -42,12 +43,12 @@ import com.magicleap.magicscript.utils.*
 
 class Prism(
     initProps: ReadableMap,
-    private val modelRenderableLoader: ModelRenderableLoader,
+    context: Context,
+    private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
-    private val context: Context,
-    appInfoProvider: AppInfoProvider
+    private val appInfoProvider: AppInfoProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.TransformationSystemListener, ArResourcesProvider.ArLoadedListener {
 
@@ -71,6 +72,9 @@ class Prism(
     var size: Vector3 = Vector3(2f, 2f, 0.3f)
         private set
 
+    private val screenSizePx = appInfoProvider.getScreenSizePx()
+    private val screenDensity = appInfoProvider.getScreenDpi()
+
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var reactScene: ReactScene? = null
     private var container: PrismContentNode? = null
@@ -82,7 +86,6 @@ class Prism(
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var requestedScale: Vector3? = null
-    private var screenSizePx: Vector2
 
     private var editMode: Boolean = false
         set(value) {
@@ -93,10 +96,6 @@ class Prism(
         }
 
     init {
-        val screenWidthPx = context.resources.displayMetrics.widthPixels
-        val screenHeightPx = context.resources.displayMetrics.heightPixels
-        screenSizePx = Vector2(screenWidthPx.toFloat(), screenHeightPx.toFloat())
-
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
         arResourcesProvider.addArLoadedListener(this)
@@ -172,12 +171,16 @@ class Prism(
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
         // detach old container if exists
         detachContainer()
+
+        val packageName = appInfoProvider.getPackageName()
+        val cornerModelPath = Uri.parse("android.resource://$packageName/raw/prism_corner")
+
         container = PrismContentNode(
-            transformationSystem,
-            modelRenderableLoader,
-            cubeBuilder,
-            size,
-            context.packageName
+            transformationSystem = transformationSystem,
+            modelLoader = modelLoader,
+            cubeBuilder = cubeBuilder,
+            initialSize = size,
+            cornerModelPath = cornerModelPath
         ).also { container ->
             container.setParent(this)
 
@@ -353,9 +356,7 @@ class Prism(
     private fun adjustPrismDistance(touchDeltaPx: Vector3) {
         val camera = scene?.camera ?: return
 
-        val touchDeltaDp =
-            touchDeltaPx.y * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
-
+        val touchDeltaDp = touchDeltaPx.y * screenDensity.y / Utils.BASELINE_DENSITY
         val cameraRotation = camera.worldRotation
         val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRotation).scaled(distDifference)

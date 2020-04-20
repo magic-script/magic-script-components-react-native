@@ -24,21 +24,27 @@ import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
+import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.clip.TextureClipper
 import com.magicleap.magicscript.ar.clip.UiNodeClipper
 import com.magicleap.magicscript.ar.clip.UiNodeColliderClipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.layouts.LayoutManager
 import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
+import com.magicleap.magicscript.utils.DataResult
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.equalInexact
 import com.magicleap.magicscript.utils.isCloseTo
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import kotlin.test.assertTrue
 
 private const val EPSILON = 1e-5f
@@ -113,6 +119,32 @@ class UiNodeBuilder(
         node.build()
         return node
     }
+}
+
+class PrismBuilder(
+    private val props: JavaOnlyMap,
+    private val context: Context,
+    private val arResourcesProvider: ArResourcesProvider
+) {
+    fun build(): Prism {
+        val appInfoProvider = TestAppInfoProvider()
+        val anchorCreator: AnchorCreator = mock()
+        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
+        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
+
+        return Prism(
+            initProps = props,
+            context = context,
+            modelLoader = mock(),
+            cubeBuilder = mock(),
+            anchorCreator = anchorCreator,
+            arResourcesProvider = arResourcesProvider,
+            appInfoProvider = appInfoProvider
+        ).apply {
+            build()
+        }
+    }
+
 }
 
 fun JavaOnlyMap.toBundle(): Bundle {

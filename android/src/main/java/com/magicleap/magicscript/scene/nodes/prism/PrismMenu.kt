@@ -35,8 +35,8 @@ import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
 import com.magicleap.magicscript.utils.SimpleAnimatorListener
 
 class PrismMenu(
-    private val context: Context,
-    private val arResourcesProvider: ArResourcesProvider,
+    context: Context,
+    arResourcesProvider: ArResourcesProvider,
     private val title: String
 ) : GroupNode(JavaOnlyMap()) {
 
@@ -56,6 +56,7 @@ class PrismMenu(
     private val animator = ValueAnimator.ofFloat(0f, 1.2f, 1f)
 
     init {
+
         label = UiTextNode(
             initProps = getLabelProps(),
             context = context,

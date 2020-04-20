@@ -39,23 +39,23 @@ class PrismContentNode(
     private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     initialSize: Vector3,
-    private val packageName: String
+    private val cornerModelPath: Uri
 ) : TransformableNode(transformationSystem) {
-    private var renderableCopy: Renderable? = null // for debug purposes
+    private var boxModelCopy: Renderable? = null
     private var cornerModel: ModelRenderable? = null
     private val cornerNodes = mutableListOf<Node>()
 
     var size: Vector3 = initialSize
         set(value) {
             field = value
-            loadCube(value)
+            loadBoxModel(value)
             layoutCornerNodes()
         }
 
     var editModeActive: Boolean = false
         set(value) {
             field = value
-            renderable = if (value) renderableCopy else null
+            renderable = if (value) boxModelCopy else null
             cornerNodes.forEach {
                 it.renderable = if (value) cornerModel else null
             }
@@ -95,7 +95,7 @@ class PrismContentNode(
         createCornerNodes()
         loadCornerModel()
         layoutCornerNodes()
-        loadCube(initialSize)
+        loadBoxModel(initialSize)
     }
 
     fun onDestroy() {
@@ -117,8 +117,7 @@ class PrismContentNode(
         }
     }
 
-    // for debug only
-    private fun loadCube(size: Vector3) {
+    private fun loadBoxModel(size: Vector3) {
         // cancel previous load task if exists
         cubeLoadRequest?.let {
             cubeBuilder.cancel(it)
@@ -127,7 +126,7 @@ class PrismContentNode(
         val color = Color(1f, 1f, 1f, 0.15f)
         cubeLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
             if (it is DataResult.Success) {
-                renderableCopy = it.data
+                boxModelCopy = it.data
                 if (editModeActive) {
                     renderable = it.data
                 }
@@ -143,20 +142,20 @@ class PrismContentNode(
             modelLoader.cancel(it)
         }
 
-        val modelUri = Uri.parse("android.resource://$packageName/raw/prism_corner")
         val recenterMode = RenderableSource.RecenterMode.NONE
-        modelLoadRequest = ModelRenderableLoader.LoadRequest(modelUri, recenterMode) { result ->
-            if (result is DataResult.Success) {
-                cornerModel = result.data
-                if (editModeActive) {
-                    cornerNodes.forEach {
-                        it.renderable = result.data
+        modelLoadRequest =
+            ModelRenderableLoader.LoadRequest(cornerModelPath, recenterMode) { result ->
+                if (result is DataResult.Success) {
+                    cornerModel = result.data
+                    if (editModeActive) {
+                        cornerNodes.forEach {
+                            it.renderable = result.data
+                        }
                     }
                 }
+            }.also {
+                modelLoader.loadRenderable(it)
             }
-        }.also {
-            modelLoader.loadRenderable(it)
-        }
     }
 
     private fun disableDefaultControllers() {
@@ -179,7 +178,7 @@ class PrismContentNode(
     }
 
     private fun layoutCornerNodes() {
-        // start at bottom-left-far
+        // start at left-bottom-far
         val startPos = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
         val currentPosition = Vector3(startPos.x, startPos.y, startPos.z)
 

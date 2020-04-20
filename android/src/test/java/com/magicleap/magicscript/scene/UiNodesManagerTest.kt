@@ -25,14 +25,15 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
-import com.magicleap.magicscript.TestAppInfoProvider
-import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.PrismBuilder
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
-import com.magicleap.magicscript.utils.DataResult
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -141,8 +142,8 @@ class UiNodesManagerTest {
     @Test
     fun `should attach Prisms to AR scene when ReactScene registered`() {
         val reactScene = ReactScene(reactMapOf(), arResourcesProvider)
-        val prism1 = createPrism(reactMapOf())
-        val prism2 = createPrism(reactMapOf())
+        val prism1 = buildPrism(reactMapOf())
+        val prism2 = buildPrism(reactMapOf())
         nodesManager.registerNode(reactScene, nodeId = "0")
         nodesManager.registerNode(prism1, nodeId = "1")
         nodesManager.registerNode(prism2, nodeId = "2")
@@ -175,7 +176,7 @@ class UiNodesManagerTest {
         anchorNode.anchor = anchor
         arScene.addChild(anchorNode)
 
-        val prism = createPrism(reactMapOf(Prism.PROP_ANCHOR_UUID, uuid))
+        val prism = buildPrism(reactMapOf(Prism.PROP_ANCHOR_UUID, uuid))
         nodesManager.registerNode(reactScene, nodeId = "0")
         nodesManager.registerNode(prism, nodeId = "1")
         nodesManager.addNodeToParent(nodeId = "1", parentId = "0")
@@ -229,12 +230,8 @@ class UiNodesManagerTest {
         verify(node3).onPause()
     }
 
-    private fun createPrism(props: JavaOnlyMap): Prism {
-        val appInfoProvider = TestAppInfoProvider()
-        val anchorCreator: AnchorCreator = mock()
-        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
-        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
-        return Prism(props, mock(), anchorCreator, arResourcesProvider, context, appInfoProvider)
+    private fun buildPrism(props: JavaOnlyMap): Prism {
+        return PrismBuilder(props, context, arResourcesProvider).build()
     }
 
     private fun getTransformationSystem(): TransformationSystem {

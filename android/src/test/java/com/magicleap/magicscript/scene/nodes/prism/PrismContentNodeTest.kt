@@ -17,11 +17,13 @@
 package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argThat
 import com.nhaarman.mockitokotlin2.mock
@@ -36,6 +38,7 @@ class PrismContentNodeTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val modelLoader: ModelRenderableLoader = mock()
 
     @Test
     fun `edit mode should be inactive by default`() {
@@ -88,7 +91,13 @@ class PrismContentNodeTest {
     private fun buildNode(size: Vector3): PrismContentNode {
         val displayMetrics = context.resources.displayMetrics
         val transformSystem = TransformationSystem(displayMetrics, FootprintSelectionVisualizer())
-        return PrismContentNode(transformSystem, cubeBuilder, size)
+        return PrismContentNode(
+            transformationSystem = transformSystem,
+            modelLoader = modelLoader,
+            cubeBuilder = cubeBuilder,
+            initialSize = size,
+            cornerModelPath = Uri.EMPTY
+        )
     }
 
 }

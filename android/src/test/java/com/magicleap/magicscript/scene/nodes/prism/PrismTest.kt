@@ -31,6 +31,7 @@ import com.magicleap.magicscript.*
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.DataResult
@@ -58,6 +59,7 @@ class PrismTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val modelLoader: ModelRenderableLoader = mock()
     private val anchorCreator: AnchorCreator = mock()
     private val arResourcesProvider: ArResourcesProvider = mock()
 
@@ -336,10 +338,11 @@ class PrismTest {
         val appInfoProvider = TestAppInfoProvider()
         return Prism(
             props,
+            context,
+            modelLoader,
             cubeBuilder,
             anchorCreator,
             arResourcesProvider,
-            context,
             appInfoProvider
         ).apply {
             build()

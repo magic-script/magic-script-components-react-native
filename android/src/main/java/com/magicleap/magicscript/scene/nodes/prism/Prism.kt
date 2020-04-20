@@ -33,6 +33,7 @@ import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.BoundingBox
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -41,6 +42,7 @@ import com.magicleap.magicscript.utils.*
 
 class Prism(
     initProps: ReadableMap,
+    private val modelRenderableLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
@@ -166,7 +168,13 @@ class Prism(
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
         // detach old container if exists
         detachContainer()
-        container = PrismContentNode(transformationSystem, cubeBuilder, size).also { container ->
+        container = PrismContentNode(
+            transformationSystem,
+            modelRenderableLoader,
+            cubeBuilder,
+            size,
+            context.packageName
+        ).also { container ->
             container.setParent(this)
 
             requestedScale?.let {

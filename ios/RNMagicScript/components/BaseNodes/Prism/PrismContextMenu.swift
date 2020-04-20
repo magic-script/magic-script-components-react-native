@@ -99,6 +99,7 @@ class PrismContextMenu: UiNode {
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
+        transform = presentation.transform
         return linearLayout.hitTest(ray: ray)
     }
 

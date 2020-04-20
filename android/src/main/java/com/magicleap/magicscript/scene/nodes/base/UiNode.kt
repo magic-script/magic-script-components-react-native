@@ -53,7 +53,6 @@ abstract class UiNode(
 
         const val WRAP_CONTENT_DIMENSION = 0.0F // width or height that grow to fit content
         const val LONG_PRESS_TIME = 0.5f // in seconds
-        private const val REBUILD_CHECK_DELAY = 30L
     }
 
     /**
@@ -91,7 +90,6 @@ abstract class UiNode(
     private val handler = Handler(Looper.getMainLooper())
     private var shouldRebuild = false
     private var loadingView = false
-    private var rebuildLoopStarted = false
     private var renderableCopy: Renderable? = null
 
     private var touching = false
@@ -141,17 +139,12 @@ abstract class UiNode(
         if (useContentNodeAlignment) {
             applyAlignment()
         }
-        if (!rebuildLoopStarted) {
-            rebuildLoop()
-            rebuildLoopStarted = true
-        }
     }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
         setEnabled(props)
     }
-
 
     /**
      * Should return the node bounds based on a measured native view size.
@@ -200,6 +193,13 @@ abstract class UiNode(
 
     override fun onUpdate(deltaSeconds: Float) {
         super.onUpdate(deltaSeconds)
+
+        if (shouldRebuild && !loadingView) {
+            build()
+            shouldRebuild = false
+            logMessage("node rebuild, hash:{${this.hashCode()}}")
+        }
+
         if (touching) {
             touchTime += deltaSeconds
             if (touchTime >= LONG_PRESS_TIME) {
@@ -318,21 +318,6 @@ abstract class UiNode(
         }.also {
             viewRenderableLoader.loadRenderable(it)
         }
-    }
-
-    /**
-     * Using a handler loop instead of onUpdate to allow for node rebuild,
-     * even if it's not attached to the scene yet (e.g. dropdown list items
-     * that are attached only after click).
-     */
-    private fun rebuildLoop() {
-        if (shouldRebuild && !loadingView) {
-            build()
-            shouldRebuild = false
-            logMessage("node rebuild, hash:{${this.hashCode()}}")
-        }
-
-        handler.postDelayed({ rebuildLoop() }, REBUILD_CHECK_DELAY)
     }
 
     private fun applyClipBounds() {

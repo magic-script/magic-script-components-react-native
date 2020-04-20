@@ -31,21 +31,24 @@ class CustomArFragment : ArFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ArResourcesManager.setupScene(arSceneView.scene)
+        val arResourcesManager = ArResourcesManager.INSTANCE
+            ?: throw RuntimeException("ArResourcesManager not initialized")
+
+        arResourcesManager.setupScene(arSceneView.scene)
 
         arSceneView.scene.addOnUpdateListener {
             arSceneView.arFrame?.camera?.let { camera ->
                 if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
                     // We can add AR objects after session is ready and camera is in tracking mode
                     arSceneView.session?.let {
-                        ArResourcesManager.setupSession(it)
+                        arResourcesManager.setupSession(it)
                     }
-                    ArResourcesManager.setupTransformationSystem(transformationSystem)
-                    ArResourcesManager.onArCoreLoaded()
+                    arResourcesManager.setupTransformationSystem(transformationSystem)
+                    arResourcesManager.onArCoreLoaded()
                     onReadyCalled = true
                 }
 
-                ArResourcesManager.onCameraUpdated(camera.pose, camera.trackingState)
+                arResourcesManager.onCameraUpdated(camera.pose, camera.trackingState)
             }
             if (onReadyCalled && ARPlaneDetectorBridge.INSTANCE.isDetecting()) {
                 val newFrame = arSceneView.session?.update()
@@ -58,7 +61,7 @@ class CustomArFragment : ArFragment() {
 
         setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             ARPlaneDetectorBridge.INSTANCE.onPlaneTapped(plane, hitResult)
-            ArResourcesManager.onPlaneTapped(hitResult)
+            arResourcesManager.onPlaneTapped(hitResult)
         }
 
         // Hide the instructions
@@ -66,4 +69,8 @@ class CustomArFragment : ArFragment() {
         planeDiscoveryController.setInstructionView(null)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        ArResourcesManager.INSTANCE?.clearArReferences()
+    }
 }

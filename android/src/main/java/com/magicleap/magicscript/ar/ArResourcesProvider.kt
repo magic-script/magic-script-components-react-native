@@ -30,14 +30,6 @@ abstract class ArResourcesProvider {
     private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
     private val planeTapListeners = mutableListOf<PlaneTapListener>()
 
-    fun clearListeners() {
-        arSceneListeners.clear()
-        arLoadedListeners.clear()
-        cameraUpdatedListeners.clear()
-        transformationSystemListeners.clear()
-        planeTapListeners.clear()
-    }
-
     /**
      * Registers a listener that will be called when ARCore's scene is loaded first time or changed.
      * (Scene is changed e.g. when user exits the app with back button and opens it again)
@@ -144,8 +136,8 @@ abstract class ArResourcesProvider {
         planeTapListeners.forEach { it.onPlaneTap(hitResult) }
     }
 
-    protected fun notifyArLoaded() {
-        arLoadedListeners.forEach { it.onArLoaded() }
+    protected fun notifyArLoaded(firstTime: Boolean) {
+        arLoadedListeners.forEach { it.onArLoaded(firstTime) }
     }
 
     interface CameraUpdatedListener {
@@ -165,6 +157,6 @@ abstract class ArResourcesProvider {
     }
 
     interface ArLoadedListener {
-        fun onArLoaded()
+        fun onArLoaded(firstTime: Boolean)
     }
 }

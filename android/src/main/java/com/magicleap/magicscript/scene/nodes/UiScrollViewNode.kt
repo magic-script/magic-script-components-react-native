@@ -26,8 +26,8 @@ import android.view.View
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -72,7 +72,6 @@ open class UiScrollViewNode(
         const val BAR_MINIMUM_THICKNESS = 0.05F // in meters
         const val HIDDEN_BAR_THICKNESS = 0
 
-        const val LAYOUT_LOOP_DELAY = 50L
         const val Z_OFFSET = 1e-5F
     }
 
@@ -95,7 +94,6 @@ open class UiScrollViewNode(
 
     init {
         properties.putDefault(PROP_SCROLL_DIRECTION, SCROLL_DIRECTION_VERTICAL)
-        layoutLoop()
     }
 
     // Function by which ViewWrapper delivers intercepted motion events.
@@ -212,6 +210,19 @@ open class UiScrollViewNode(
         applyContentClipping()
     }
 
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
+        content?.let { it ->
+            // check if content bounds changed
+            val newContentBounds = it.getContentBounding()
+            if (!contentBounds.equalInexact(newContentBounds)) {
+                this.contentBounds = newContentBounds
+                onContentSizeChangedListener?.invoke(newContentBounds.size())
+            }
+            layout()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // stop the layout loop
@@ -242,21 +253,6 @@ open class UiScrollViewNode(
                 applyContentClipping()
             }
         }
-    }
-
-    private fun layoutLoop() {
-        looperHandler.postDelayed({
-            content?.let { it ->
-                // check if content bounds changed
-                val newContentBounds = it.getContentBounding()
-                if (!contentBounds.equalInexact(newContentBounds)) {
-                    this.contentBounds = newContentBounds
-                    onContentSizeChangedListener?.invoke(newContentBounds.size())
-                }
-                layout()
-            }
-            layoutLoop()
-        }, LAYOUT_LOOP_DELAY)
     }
 
     private fun layout() {

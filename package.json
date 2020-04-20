@@ -16,8 +16,7 @@
   "author": "Magic Leap",
   "license": "Apache-2.0",
   "dependencies": {
-    "react": "16.8.6",
-    "react-reconciler": "0.20.4",
+    "react-reconciler": "^0.21.0",
     "chroma-js": "^2.1.0",
     "lodash": "4.17.15"
   },
@@ -29,6 +28,7 @@
     "react-test-renderer": "16.8.6"
   },
   "peerDependencies": {
+    "react": "^16.9.0",
     "react-native": "0.60.5"
   },
   "jest": {

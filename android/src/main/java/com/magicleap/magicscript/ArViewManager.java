@@ -23,7 +23,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.magicleap.magicscript.ar.ArResourcesManager;
-import com.magicleap.magicscript.ar.CustomArFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,7 @@ import androidx.fragment.app.FragmentManager;
 /**
  * View manager that is responsible for creating the AR Fragment
  */
-public class ArViewManager extends ViewGroupManager<FragmentContainer> {
+public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
 
     public static Boolean showLayoutBounds = false;
 
@@ -58,30 +57,40 @@ public class ArViewManager extends ViewGroupManager<FragmentContainer> {
 
     @NotNull
     @Override
-    protected FragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
+    protected ArFragmentContainer createViewInstance(@NotNull final ThemedReactContext reactContext) {
         // view that contains AR fragment
-        FragmentContainer container = new FragmentContainer(reactContext);
-        CustomArFragment fragment = new CustomArFragment();
+        ArFragmentContainer container = new ArFragmentContainer(reactContext);
         AppCompatActivity currentActivity = (AppCompatActivity) reactContext.getCurrentActivity();
         activityRef = new WeakReference<>(currentActivity);
         if (currentActivity != null) {
             FragmentManager fragmentManager = currentActivity.getSupportFragmentManager();
-            container.setupFragment(fragment, FRAGMENT_TAG, fragmentManager);
+            container.setupFragment(FRAGMENT_TAG, fragmentManager);
         } else {
             Log.e(LOG_TAG, "createViewInstance: activity is null");
         }
         return container;
     }
 
+    /**
+     * Called when the view is no longer rendered in React's render() function
+     * <p>
+     * This is for some reason called with some delay, so e.g. when the user navigates
+     * back from ARView screen to another screen that uses camera, the camera may not be
+     * released on time (adding some delay in React before displaying the first screen
+     * may be necessary)
+     */
     @Override
-    public void onDropViewInstance(@Nonnull final FragmentContainer view) {
+    public void onDropViewInstance(@Nonnull final ArFragmentContainer view) {
         super.onDropViewInstance(view);
-        view.removeFragment(FRAGMENT_TAG);
+        view.dropFragment(FRAGMENT_TAG);
     }
 
     @ReactProp(name = "planeDetection")
     public void setPlaneDetection(View view, boolean planeDetection) {
-        ArResourcesManager.INSTANCE.setPlaneDetection(planeDetection);
+        ArResourcesManager arResourcesManager = ArResourcesManager.Companion.getINSTANCE();
+        if (arResourcesManager != null) {
+            arResourcesManager.setPlaneDetection(planeDetection);
+        }
     }
 
     @ReactProp(name = "showLayoutBounds")

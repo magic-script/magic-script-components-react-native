@@ -49,7 +49,7 @@ class Prism(
     private val context: Context,
     appInfoProvider: AppInfoProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
-    ArResourcesProvider.TransformationSystemListener {
+    ArResourcesProvider.TransformationSystemListener, ArResourcesProvider.ArLoadedListener {
 
     companion object {
         const val PROP_SIZE = "size"
@@ -81,7 +81,6 @@ class Prism(
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
-    private var requestedEditMode: Boolean = false
     private var requestedScale: Vector3? = null
     private var screenSizePx: Vector2
 
@@ -100,6 +99,7 @@ class Prism(
 
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
+        arResourcesProvider.addArLoadedListener(this)
 
         val title = appInfoProvider.getAppName()
         menuNode = PrismMenu(context, arResourcesProvider, title)
@@ -146,6 +146,10 @@ class Prism(
         if (child is TransformNode) {
             container?.removeChild(child)
         }
+
+        if (child == childNode) {
+            childNode = null
+        }
     }
 
     override fun build() {
@@ -182,10 +186,7 @@ class Prism(
                 requestedScale = null
             }
 
-            if (requestedEditMode) {
-                container.editModeActive = requestedEditMode
-                requestedEditMode = false
-            }
+            container.editModeActive = editMode
 
             if (childNode != null) {
                 container.addChild(childNode)
@@ -207,6 +208,15 @@ class Prism(
         adjustMenuPosition()
     }
 
+    override fun onArLoaded(firstTime: Boolean) {
+        if (!firstTime && !editMode) {
+            // we have to re-create anchor, since session have changed
+            // and old anchors are no longer valid
+            setPose(properties)
+            setAnchorUuid(properties)
+        }
+    }
+
     override fun onTransformationSystemChanged(transformationSystem: TransformationSystem) {
         buildContainer(transformationSystem, size)
     }
@@ -226,12 +236,15 @@ class Prism(
         adjustMenuRotation()
 
         requestedAnchorPose?.let {
-            tryToAnchorAtPose(it)
+            if (!editMode) {
+                tryToAnchorAtPose(it)
+            }
         }
 
         requestedAnchorUuid?.let {
             tryToAnchorAtUuid(it)
         }
+
     }
 
     override fun onPause() {
@@ -254,6 +267,7 @@ class Prism(
     // Prism can also be anchored through this function when initial placement is active
     override fun setAnchor(anchor: Anchor?) {
         super.setAnchor(anchor)
+
         requestedAnchorPose = null
         requestedAnchorUuid = null
 
@@ -418,15 +432,12 @@ class Prism(
             // user has stopped moving the prism, so we anchor it to the final position
             val pose = Utils.createPose(localPosition, Quaternion())
             tryToAnchorAtPose(pose)
-
             adjustContainerRotation()
         }
 
         val container = this.container
         if (container != null) {
             container.editModeActive = value
-        } else if (value) {
-            requestedEditMode = true
         }
     }
 

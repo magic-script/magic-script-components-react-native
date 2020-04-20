@@ -43,7 +43,7 @@ class VideoRenderableLoaderImpl(
         }
     }
 
-    override fun onArLoaded() {
+    override fun onArLoaded(firstTime: Boolean) {
         val requestIterator = pendingRequests.iterator()
         while (requestIterator.hasNext()) {
             load(requestIterator.next())

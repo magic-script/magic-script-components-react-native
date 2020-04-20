@@ -84,7 +84,9 @@ class PrismMenu(
 
         animator.addListener(object : SimpleAnimatorListener() {
             override fun onAnimationStart(animation: Animator?) {
-                isVisible = true
+                if (isActive) {
+                    isVisible = true
+                }
             }
         })
 

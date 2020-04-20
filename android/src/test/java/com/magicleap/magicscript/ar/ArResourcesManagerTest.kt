@@ -42,15 +42,9 @@ import org.robolectric.RobolectricTestRunner
 class ArResourcesManagerTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val manager = ArResourcesManager
+    private val manager = ArResourcesManager()
     private val arScene = spy<Scene>()
     private val transformationSystem = getTransformationSystem()
-
-    @Test
-    fun srtUp() {
-        // since it's a singleton, we have to clear it
-        manager.clearListeners()
-    }
 
     @Test
     fun `should notify listener every time scene is setup`() {
@@ -61,11 +55,11 @@ class ArResourcesManagerTest {
             }
         })
 
-        ArResourcesManager.setupScene(arScene)
-        ArResourcesManager.setupScene(arScene)
+        manager.setupScene(arScene)
+        manager.setupScene(arScene)
 
         counter shouldEqual 2
-        ArResourcesManager.getArScene() shouldBe arScene
+        manager.getArScene() shouldBe arScene
     }
 
     @Test
@@ -79,38 +73,57 @@ class ArResourcesManagerTest {
         manager.addArSceneChangedListener(listener)
         manager.removeArSceneChangedListener(listener)
 
-        ArResourcesManager.setupScene(arScene)
+        manager.setupScene(arScene)
 
         notified shouldBe false
     }
 
     @Test
-    fun `should notify listener after ARCore has been loaded`() {
-        var notified = false
+    fun `should notify listener after ARCore has been loaded first time`() {
+        var firstTimeFlag = false
         manager.addArLoadedListener(object : ArResourcesProvider.ArLoadedListener {
-            override fun onArLoaded() {
-                notified = true
+            override fun onArLoaded(firstTime: Boolean) {
+                firstTimeFlag = firstTime
             }
         })
 
-        ArResourcesManager.onArCoreLoaded()
+        manager.onArCoreLoaded()
 
-        notified shouldBe true
-        ArResourcesManager.isArLoaded() shouldBe true
+        firstTimeFlag shouldBe true
+        manager.isArLoaded() shouldBe true
+    }
+
+    @Test
+    fun `should notify listener each time ARCore core is loaded`() {
+        var notifyCount = 0
+        var firstTimeFlag = true
+        manager.addArLoadedListener(object : ArResourcesProvider.ArLoadedListener {
+            override fun onArLoaded(firstTime: Boolean) {
+                notifyCount++
+                firstTimeFlag = firstTime
+            }
+        })
+
+        manager.onArCoreLoaded()
+        manager.onArCoreLoaded()
+
+        notifyCount shouldEqual 2
+        firstTimeFlag shouldBe false
+        manager.isArLoaded() shouldBe true
     }
 
     @Test
     fun `should not notify removed listener after ARCore has been loaded`() {
         var notified = false
         val listener = object : ArResourcesProvider.ArLoadedListener {
-            override fun onArLoaded() {
+            override fun onArLoaded(firstTime: Boolean) {
                 notified = true
             }
         }
         manager.addArLoadedListener(listener)
         manager.removeArLoadedListener(listener)
 
-        ArResourcesManager.onArCoreLoaded()
+        manager.onArCoreLoaded()
 
         notified shouldBe false
     }
@@ -125,10 +138,10 @@ class ArResourcesManagerTest {
             }
         })
 
-        ArResourcesManager.setupTransformationSystem(transformationSystem)
+        manager.setupTransformationSystem(transformationSystem)
 
         notified shouldBe true
-        ArResourcesManager.getTransformationSystem() shouldBe transformationSystem
+        manager.getTransformationSystem() shouldBe transformationSystem
     }
 
     @Test
@@ -142,7 +155,7 @@ class ArResourcesManagerTest {
         manager.addTransformationSystemListener(listener)
         manager.removeTransformationSystemListener(listener)
 
-        ArResourcesManager.setupTransformationSystem(transformationSystem)
+        manager.setupTransformationSystem(transformationSystem)
 
         notified shouldBe false
     }
@@ -157,9 +170,9 @@ class ArResourcesManagerTest {
         })
         val updatedPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
 
-        ArResourcesManager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
+        manager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
 
-        ArResourcesManager.getCameraState() shouldEqual TrackingState.TRACKING
+        manager.getCameraState() shouldEqual TrackingState.TRACKING
         poseFromListener shouldNotBe null
         poseFromListener!!.getTranslationVector() shouldEqualInexact Vector3(4f, 2f, -1f)
         poseFromListener!!.getRotation() shouldEqual Quaternion.identity()
@@ -177,16 +190,16 @@ class ArResourcesManagerTest {
         manager.removeCameraUpdatedListener(listener)
         val updatedPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
 
-        ArResourcesManager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
+        manager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
 
         notified shouldBe false
     }
 
     @Test
     fun `isPlaneDetectionEnabled should return true if plane detection enabled`() {
-        ArResourcesManager.planeDetection = true
+        manager.planeDetection = true
 
-        ArResourcesManager.isPlaneDetectionEnabled() shouldBe true
+        manager.isPlaneDetectionEnabled() shouldBe true
     }
 
     @Test
@@ -199,7 +212,7 @@ class ArResourcesManagerTest {
         })
         val tapResult = spy<HitResult>()
 
-        ArResourcesManager.onPlaneTapped(tapResult)
+        manager.onPlaneTapped(tapResult)
 
         listenerHitResult shouldEqual tapResult
     }
@@ -216,9 +229,25 @@ class ArResourcesManagerTest {
         manager.removePlaneTapListener(listener)
         val hitResult = spy<HitResult>()
 
-        ArResourcesManager.onPlaneTapped(hitResult)
+        manager.onPlaneTapped(hitResult)
 
         notified shouldBe false
+    }
+
+    @Test
+    fun `should clear AR Core references`() {
+        manager.setupScene(arScene)
+        manager.setupTransformationSystem(transformationSystem)
+        val cameraPose = Utils.createPose(Vector3(4f, 2f, -1f), Quaternion.identity())
+        manager.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+        manager.onArCoreLoaded()
+
+        manager.clearArReferences()
+
+        manager.getArScene() shouldBe null
+        manager.getTransformationSystem() shouldBe null
+        manager.getCameraState() shouldBe null
+        manager.isArLoaded() shouldBe false
     }
 
     private fun getTransformationSystem(): TransformationSystem {

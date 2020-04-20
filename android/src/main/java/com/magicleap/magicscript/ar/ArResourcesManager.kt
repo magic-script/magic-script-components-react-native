@@ -21,12 +21,10 @@ import com.google.ar.core.Pose
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.Scene
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.TransformationSystem
 import java.lang.ref.WeakReference
 
-object ArResourcesManager : ArResourcesProvider() {
+class ArResourcesManager : ArResourcesProvider() {
 
     var planeDetection = false
 
@@ -35,6 +33,18 @@ object ArResourcesManager : ArResourcesProvider() {
     private var transformationSystemRef = WeakReference<TransformationSystem>(null)
     private var cameraState: TrackingState? = null
     private var arLoaded = false
+
+    init {
+        INSTANCE = this
+    }
+
+    fun clearArReferences() {
+        sceneRef = WeakReference<Scene>(null)
+        sessionRef = WeakReference<Session>(null)
+        transformationSystemRef = WeakReference<TransformationSystem>(null)
+        cameraState = null
+        arLoaded = false
+    }
 
     /**
      * Scene is changed when fragment is recreated
@@ -55,7 +65,8 @@ object ArResourcesManager : ArResourcesProvider() {
 
     fun onArCoreLoaded() {
         arLoaded = true
-        notifyArLoaded()
+        notifyArLoaded(firstTime = arLoadCounter == 0)
+        arLoadCounter++
     }
 
     fun onCameraUpdated(cameraPose: Pose, trackingState: TrackingState) {
@@ -89,5 +100,10 @@ object ArResourcesManager : ArResourcesProvider() {
 
     override fun isPlaneDetectionEnabled(): Boolean {
         return planeDetection
+    }
+
+    companion object {
+        private var arLoadCounter = 0
+        var INSTANCE: ArResourcesManager? = null
     }
 }

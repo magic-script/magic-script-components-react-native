@@ -69,8 +69,7 @@ class PrismTest {
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
 
-        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
-        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
+        whenever(anchorCreator.createAnchor(any())).thenReturn(DataResult.Success(mock()))
     }
 
     @Test
@@ -92,6 +91,20 @@ class PrismTest {
         prism.addContent(child)
 
         prism.reactChildren.shouldBeEmpty()
+    }
+
+    @Test
+    fun `should be possible to replace content`() {
+        val prism = buildPrism(reactMapOf())
+        val child1 = NodeBuilder().build()
+        val child2 = NodeBuilder().build()
+        prism.addContent(child1)
+
+        prism.removeContent(child1)
+        prism.addContent(child2)
+
+        prism.reactChildren.first() shouldBe child2
+        prism.reactChildren.size shouldEqual 1
     }
 
     @Test
@@ -176,6 +189,49 @@ class PrismTest {
 
         prism.localRotation shouldEqual Quaternion(0.00f, 0.42f, 0.0f, 0.9f)
         verifyZeroInteractions(anchorCreator)
+    }
+
+    @Test
+    fun `should recreate anchor after AR Core reload`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0)
+            )
+        )
+
+        prism.onArLoaded(firstTime = false)
+
+        verify(anchorCreator, times(2)).createAnchor(any())
+    }
+
+    @Test
+    fun `should not recreate anchor after AR Core reload if edit mode active`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(0.2, 1.4, -0.6)
+            )
+        )
+
+        prism.onArLoaded(firstTime = false)
+
+        verify(anchorCreator, never()).createAnchor(any())
+    }
+
+    @Test
+    fun `should not recreate anchor if AR Core loaded first time`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(0.2, 1.4, -0.6)
+            )
+        )
+
+        prism.onArLoaded(firstTime = true)
+
+        // should create anchor only one time at build
+        verify(anchorCreator, times(1)).createAnchor(any())
     }
 
     @Test

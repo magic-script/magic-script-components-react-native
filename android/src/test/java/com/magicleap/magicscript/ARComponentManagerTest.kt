@@ -108,6 +108,22 @@ class ARComponentManagerTest {
         verify(mediaPlayerPool).destroy()
     }
 
+    @Test
+    fun `should destroy nodes on reload`() {
+        manager.onCatalystInstanceDestroy()
+
+        // required only in case when nodes use e.g. internet connection
+        // or any external resources that should be released
+        verify(nodesManager).clear()
+    }
+
+    @Test
+    fun `should destroy media player on reload`() {
+        manager.onCatalystInstanceDestroy()
+
+        verify(mediaPlayerPool).destroy()
+    }
+
     // region Nodes
 
     @Test

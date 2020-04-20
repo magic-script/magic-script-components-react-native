@@ -16,6 +16,8 @@
 
 package com.magicleap.magicscript.scene
 
+import android.os.Handler
+import android.os.Looper
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
@@ -97,12 +99,14 @@ class UiNodesManager : NodesManager, LifecycleEventListener {
 
     @Synchronized
     override fun clear() {
-        logMessage("clear")
-        nodesById.forEach { (_, node) ->
-            detachNode(node)
-            node.onDestroy()
+        Handler(Looper.getMainLooper()).post {
+            logMessage("clear, nodeCount = ${nodesById.size}")
+            nodesById.forEach { (_, node) ->
+                detachNode(node)
+                node.onDestroy()
+            }
+            nodesById.clear()
         }
-        nodesById.clear()
     }
 
     override fun onHostResume() {

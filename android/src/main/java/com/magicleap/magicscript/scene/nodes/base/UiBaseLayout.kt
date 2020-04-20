@@ -35,7 +35,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
     companion object {
         const val WRAP_CONTENT_DIMENSION = 0F
 
-        private const val MEASURE_INTERVAL = 50L // in milliseconds
         const val PROP_WIDTH = "width"
         const val PROP_HEIGHT = "height"
         const val PROP_SKIP_INVISIBLE_ITEMS = "skipInvisibleItems"
@@ -64,14 +63,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     private var handler = Handler(Looper.getMainLooper())
     private var loopStarted = false
-
-    override fun build() {
-        super.build()
-        if (!loopStarted) {
-            loopStarted = true
-            layoutLoop()
-        }
-    }
 
     override fun applyProperties(props: Bundle) {
         super.applyProperties(props)
@@ -136,6 +127,16 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     abstract fun getLayoutParams(): T
 
+    override fun onUpdate(deltaSeconds: Float) {
+        super.onUpdate(deltaSeconds)
+
+        // measure the children (their size may have changed) and layout if needed
+        measureChildren()
+        if (redrawRequested) {
+            layout()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
@@ -143,22 +144,6 @@ abstract class UiBaseLayout<T : LayoutParams>(
 
     protected fun requestLayout() {
         redrawRequested = true
-    }
-
-    /**
-     * Loop that requests re-drawing the layout if needed.
-     * It measures the children, because a client may change the layout's (or child) size
-     * at any time: we need to re-draw the layout in such case.
-     */
-    private fun layoutLoop() {
-        measureChildren()
-        if (redrawRequested) {
-            layout()
-        }
-
-        handler.postDelayed({
-            layoutLoop()
-        }, MEASURE_INTERVAL)
     }
 
     private fun layout() {

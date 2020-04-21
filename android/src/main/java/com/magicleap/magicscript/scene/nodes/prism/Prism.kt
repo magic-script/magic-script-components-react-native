@@ -80,7 +80,7 @@ class Prism(
     private var container: PrismContentNode? = null
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
-    private var lastCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
+    private var latestCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
     private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
@@ -103,6 +103,8 @@ class Prism(
         val title = appInfoProvider.getAppName()
         menuNode = PrismMenu(context, arResourcesProvider, title)
         menuNode.isVisible = false
+
+        properties.putDefault(PROP_POSITION, arrayListOf(0.0, 0.0, 0.0))
     }
 
     override val reactParent: ReactNode? get() = reactScene
@@ -229,11 +231,12 @@ class Prism(
             return
         }
 
-        if (editMode) {
-            movePrism(cameraPose, lastCameraPose)
-        }
+        val oldCameraPose = latestCameraPose
+        latestCameraPose = cameraPose
 
-        lastCameraPose = cameraPose
+        if (editMode) {
+            movePrism(cameraPose, oldCameraPose)
+        }
 
         adjustMenuVisibility()
         adjustMenuRotation()
@@ -305,7 +308,7 @@ class Prism(
     }
 
     private fun getLookAtCameraRotation(): Quaternion {
-        val cameraPosition: Vector3 = lastCameraPose.getTranslationVector()
+        val cameraPosition: Vector3 = latestCameraPose.getTranslationVector()
         val prismFlatPosition = Vector3(worldPosition.x, 0f, worldPosition.z)
         val cameraFlatPosition = Vector3(cameraPosition.x, 0f, cameraPosition.z)
         val direction = prismFlatPosition - cameraFlatPosition
@@ -318,8 +321,8 @@ class Prism(
             val boxSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
             val box = BoundingBox(boxSize, worldPosition)
             box.rotation = container?.worldRotation ?: Quaternion()
-            val cameraPosition = lastCameraPose.getTranslationVector()
-            val cameraRotation = lastCameraPose.getRotation()
+            val cameraPosition = latestCameraPose.getTranslationVector()
+            val cameraRotation = latestCameraPose.getRotation()
             val rayDirection = Vector3.forward().rotatedBy(cameraRotation)
             val ray = Ray(cameraPosition, rayDirection)
             val collided = box.getRayIntersection(ray, RayHit())
@@ -343,10 +346,9 @@ class Prism(
         val prevCameraPosition = prevCameraPose.getTranslationVector()
         val cameraRot = cameraPose.getRotation()
 
-        val cameraToPrismDist = Vector3.subtract(localPosition, cameraPosition).length()
-        val xyzDiff = Vector3.subtract(cameraPosition, prevCameraPosition)
-        val rayDirection = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
-        localPosition = cameraPosition + rayDirection + xyzDiff
+        val cameraToPrismDist = Vector3.subtract(localPosition, prevCameraPosition).length()
+        val offset = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
+        localPosition = cameraPosition + offset
 
         // look at camera
         adjustContainerRotation()
@@ -396,7 +398,7 @@ class Prism(
             if (editMode) {
                 localPosition = position
                 localRotation = rotation
-            } else {
+            } else if (!hasAnchorUUID()) { // XR client anchor has a priority
                 val pose = Utils.createPose(position, rotation)
                 tryToAnchorAtPose(pose)
             }
@@ -482,4 +484,6 @@ class Prism(
             }
         }
     }
+
+    private fun hasAnchorUUID() = properties.getString(PROP_ANCHOR_UUID, "").isNotEmpty()
 }

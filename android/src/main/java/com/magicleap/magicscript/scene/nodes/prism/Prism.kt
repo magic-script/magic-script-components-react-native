@@ -430,6 +430,7 @@ class Prism(
         if (value) {
             // remove anchor, so we can change prism's local position while moving
             anchor = null
+            requestedAnchorPose = null
         } else {
             // user has stopped moving the prism, so we anchor it to the final position
             val pose = Utils.createPose(localPosition, Quaternion())

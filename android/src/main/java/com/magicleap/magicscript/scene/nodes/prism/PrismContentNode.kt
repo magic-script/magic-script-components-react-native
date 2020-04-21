@@ -123,12 +123,18 @@ class PrismContentNode(
             cubeBuilder.cancel(it)
         }
 
-        val color = Color(1f, 1f, 1f, 0.15f)
-        cubeLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
-            if (it is DataResult.Success) {
-                boxModelCopy = it.data
+        val color = Color(0.5f, 0.5f, 0.5f, 0.1f)
+        cubeLoadRequest = CubeRenderableBuilder.LoadRequest(
+            cubeSize = size,
+            cubeCenter = Vector3.zero(),
+            color = color,
+            roughness = 1f,
+            reflectance = 0f
+        ) { result ->
+            if (result is DataResult.Success) {
+                boxModelCopy = result.data
                 if (editModeActive) {
-                    renderable = it.data
+                    renderable = result.data
                 }
             }
         }.also {

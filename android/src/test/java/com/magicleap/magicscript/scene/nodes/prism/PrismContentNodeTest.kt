@@ -19,6 +19,7 @@ package com.magicleap.magicscript.scene.nodes.prism
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
@@ -50,11 +51,11 @@ class PrismContentNodeTest {
     @Test
     fun `should build cube renderable with initial size`() {
         val size = Vector3(0.8f, 0.4f, 0.2f)
+
         buildNode(size)
 
         verify(cubeBuilder).buildRenderable(argThat {
-            cubeSize == size
-            cubeCenter == Vector3.zero()
+            cubeSize == size && cubeCenter == Vector3.zero()
         })
     }
 
@@ -70,6 +71,19 @@ class PrismContentNodeTest {
         })
     }
 
+    /**
+     * For easier positioning, the corner's model pivot is located
+     * at corner's sphere center, so we don't want to center the pivot
+     */
+    @Test
+    fun `should load corner model without changing pivot location`() {
+        buildNode(size = Vector3.one())
+
+        verify(modelLoader).loadRenderable(argThat {
+            glbRecenterMode == RenderableSource.RecenterMode.NONE
+        })
+    }
+
     @Test
     fun `should have disabled default transformation controllers`() {
         val tested = buildNode(size = Vector3.one())
@@ -80,12 +94,13 @@ class PrismContentNodeTest {
     }
 
     @Test
-    fun `should cancel cube load request on destroy`() {
+    fun `should cancel models load requests on destroy`() {
         val tested = buildNode(size = Vector3.one())
 
         tested.onDestroy()
 
         verify(cubeBuilder).cancel(any())
+        verify(modelLoader).cancel(any())
     }
 
     private fun buildNode(size: Vector3): PrismContentNode {
@@ -96,7 +111,7 @@ class PrismContentNodeTest {
             modelLoader = modelLoader,
             cubeBuilder = cubeBuilder,
             initialSize = size,
-            cornerModelPath = Uri.EMPTY
+            cornerModelPath = Uri.parse("android.resource://com.fake.resource/raw/model")
         )
     }
 

@@ -30,10 +30,16 @@ interface CubeRenderableBuilder {
 
     fun cancel(request: LoadRequest)
 
+    /**
+     * @param roughness material roughness in range 0 - 1
+     * @param reflectance material reflectance in range 0 - 1
+     */
     class LoadRequest(
         val cubeSize: Vector3,
         val cubeCenter: Vector3,
         val color: Color,
+        val roughness: Float = 0.4f,
+        val reflectance: Float = 0.5f,
         listener: (result: DataResult<ModelRenderable>) -> Unit
     ) : RenderableLoadRequest<ModelRenderable>(listener)
 }

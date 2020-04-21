@@ -41,7 +41,7 @@ class PrismMenu(
 ) : GroupNode(JavaOnlyMap()) {
 
     companion object {
-        private const val ICON_SIZE = 0.1
+        private const val ICON_SIZE = 0.2
         private const val TEXT_SIZE = 0.1
         private const val ICON_TYPE = "generic_three_dimensional"
 
@@ -112,6 +112,8 @@ class PrismMenu(
 
         buttonEdit.apply {
             build()
+            // sale down for better quality
+            localScale = Vector3(0.5f, 0.5f, 0.5f)
             val positionY = (ICON_SIZE / 2).toFloat()
             localPosition = Vector3(0f, positionY, 0f)
             onClickListener = {

@@ -143,7 +143,7 @@ import SceneKit
             node.on = !node.on
         } else if allowMultipleOn == false && allowAllOff {
             let filteredItems = itemsList.filter { $0.on }
-            if filteredItems.count >= 1 && filteredItems.contains { $0 != node }  { filteredItems.forEach { $0.on = false } }
+            if filteredItems.count >= 1 && filteredItems.contains(where: { $0 != node }) { filteredItems.forEach { $0.on = false } }
             node.on = !node.on
         } else {
             let filteredItems = itemsList.filter { $0 != node }

@@ -20,11 +20,16 @@ import SceneKit
     @objc fileprivate(set) var rootNode: SCNNode = SCNNode()
     @objc fileprivate(set) var prisms: [Prism] = []
 
-    var prismInteractor: PrismInteracting?
 
     @objc private(set) var prismInEditMode: Prism? {
         get { return prisms.filter({ $0.editMode }).first }
         set { }
+    }
+
+    @objc var prismContextMenu: PrismContextMenu! {
+        didSet {
+            addChildNode(prismContextMenu)
+        }
     }
 
     @objc override init() {
@@ -65,6 +70,10 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
+        if prismInEditMode != nil {
+            return prismContextMenu.hitTest(ray: ray)
+        }
+        if let menuHit = prismContextMenu?.hitTest(ray: ray) { return menuHit }
         for prism in prisms {
             if let hitResult = prism.hitTest(ray: ray) {
                 return hitResult

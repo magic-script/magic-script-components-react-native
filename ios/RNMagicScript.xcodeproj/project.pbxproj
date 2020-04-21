@@ -343,6 +343,8 @@
 		C435F90F2382FA630060F956 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C435F90D2382FA630060F956 /* DialogView.swift */; };
 		C43604212431BC0500E54BC3 /* PrismContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43604202431BC0500E54BC3 /* PrismContextMenu.swift */; };
 		C43604222431BC0500E54BC3 /* PrismContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43604202431BC0500E54BC3 /* PrismContextMenu.swift */; };
+		C444871B2440B6A10006F43B /* SceneInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C444871A2440B6A10006F43B /* SceneInteractor.swift */; };
+		C444871C2440B6A10006F43B /* SceneInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C444871A2440B6A10006F43B /* SceneInteractor.swift */; };
 		C445284F23543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445285023543B6100C01782 /* DropdownListItemTapHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */; };
 		C445A23323EC55DE00168596 /* SurfaceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C445A23223EC55DE00168596 /* SurfaceSpec.swift */; };
@@ -861,6 +863,7 @@
 		C435F90623829F050060F956 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		C435F90D2382FA630060F956 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		C43604202431BC0500E54BC3 /* PrismContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismContextMenu.swift; sourceTree = "<group>"; };
+		C444871A2440B6A10006F43B /* SceneInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneInteractor.swift; sourceTree = "<group>"; };
 		C445284E23543B6100C01782 /* DropdownListItemTapHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownListItemTapHandling.swift; sourceTree = "<group>"; };
 		C445A23223EC55DE00168596 /* SurfaceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceSpec.swift; sourceTree = "<group>"; };
 		C450CD5A23A2A9A200CA97AB /* TapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizer.swift; sourceTree = "<group>"; };
@@ -1321,6 +1324,7 @@
 		44AFABFF232B9BCE005AC8EF /* BaseNodes */ = {
 			isa = PBXGroup;
 			children = (
+				C44487192440B6890006F43B /* Scene */,
 				C49B120A243CA0DB00F7DAAB /* Prism */,
 				44890E1F2417AD9700903629 /* Clipping.swift */,
 				44AFAC00232B9BCE005AC8EF /* LabelNode.swift */,
@@ -1334,7 +1338,6 @@
 				C4A12B262361BC84009B7083 /* DatePickerDataProviding.swift */,
 				C4A12B292361BD6F009B7083 /* TimePickerDataProviding.swift */,
 				C4BE7BCD234C4AEA00BC8775 /* SliderDataProviding.swift */,
-				C411CC2E240505F0004C7063 /* Scene.swift */,
 				C42C1F812406ABE40012B40E /* BaseNode.swift */,
 			);
 			path = BaseNodes;
@@ -1734,6 +1737,15 @@
 				C428C0AD237D5FB100771FBC /* DialogDataProviding.swift */,
 			);
 			path = UiDialog;
+			sourceTree = "<group>";
+		};
+		C44487192440B6890006F43B /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				C411CC2E240505F0004C7063 /* Scene.swift */,
+				C444871A2440B6A10006F43B /* SceneInteractor.swift */,
+			);
+			path = Scene;
 			sourceTree = "<group>";
 		};
 		C4596A692374209D000E88C1 /* UiListView */ = {
@@ -2462,6 +2474,7 @@
 				44AFAD2F232BCAE3005AC8EF /* ImageAssets.swift in Sources */,
 				44AFAD1D232BCAE3005AC8EF /* UiProgressBarNode.swift in Sources */,
 				C47B32CA239A829A005B59BE /* WeakReference.swift in Sources */,
+				C444871C2440B6A10006F43B /* SceneInteractor.swift in Sources */,
 				4455654F234C996600301AB3 /* UiScrollBarNode.swift in Sources */,
 				C4A12B312361C85C009B7083 /* Side.swift in Sources */,
 				44AB3977238BCD290002DF14 /* UiPageViewNode.swift in Sources */,
@@ -2691,6 +2704,7 @@
 				447755382374C15600E98F03 /* UiAudioNode.swift in Sources */,
 				C4D5CB0A23A982790067209D /* PlaneDetector.swift in Sources */,
 				44AFAC41232B9BCF005AC8EF /* UiToggleNode.swift in Sources */,
+				C444871B2440B6A10006F43B /* SceneInteractor.swift in Sources */,
 				44A589692382EF1A00934E5E /* UiWebViewNode.swift in Sources */,
 				44D8FE682336B1A0007FD766 /* TextEntryMode.swift in Sources */,
 				C4D5417B23338D20008D5124 /* VideoAction.swift in Sources */,

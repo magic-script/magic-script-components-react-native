@@ -16,6 +16,16 @@
 
 package com.magicleap.magicscript.scene.nodes.prism
 
+import com.magicleap.magicscript.utils.Vector2
+
 interface AppInfoProvider {
+
     fun getAppName(): String
+
+    fun getPackageName(): String
+
+    fun getScreenSizePx(): Vector2
+
+    fun getScreenDpi(): Vector2
+
 }

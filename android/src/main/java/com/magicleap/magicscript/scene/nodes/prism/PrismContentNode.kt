@@ -16,13 +16,18 @@
 
 package com.magicleap.magicscript.scene.nodes.prism
 
+import android.net.Uri
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.assets.RenderableSource
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.utils.DataResult
 
 /**
@@ -31,15 +36,29 @@ import com.magicleap.magicscript.utils.DataResult
  */
 class PrismContentNode(
     transformationSystem: TransformationSystem,
+    private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
-    initialSize: Vector3
+    initialSize: Vector3,
+    private val cornerModelPath: Uri
 ) : TransformableNode(transformationSystem) {
-    private var renderableCopy: Renderable? = null
+    private var boxModelCopy: Renderable? = null
+    private var cornerModel: ModelRenderable? = null
+    private val cornerNodes = mutableListOf<Node>()
+
+    var size: Vector3 = initialSize
+        set(value) {
+            field = value
+            loadBoxModel(value)
+            layoutCornerNodes()
+        }
 
     var editModeActive: Boolean = false
         set(value) {
             field = value
-            renderable = if (value) renderableCopy else null
+            renderable = if (value) boxModelCopy else null
+            cornerNodes.forEach {
+                it.renderable = if (value) cornerModel else null
+            }
         }
 
     var prismDragController: PrismDragController
@@ -54,7 +73,8 @@ class PrismContentNode(
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
 
     private var lastScale = localScale
-    private var renderableLoadRequest: CubeRenderableBuilder.LoadRequest? = null
+    private var cubeLoadRequest: CubeRenderableBuilder.LoadRequest? = null
+    private var modelLoadRequest: ModelRenderableLoader.LoadRequest? = null
 
     init {
         transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
@@ -72,16 +92,19 @@ class PrismContentNode(
         prismRotationController = PrismRotationController(this, twistRecognizer)
         addTransformationController(rotationController)
 
-        loadCube(initialSize)
-    }
-
-    fun setSize(size: Vector3) {
-        loadCube(size)
+        createCornerNodes()
+        loadCornerModel()
+        layoutCornerNodes()
+        loadBoxModel(initialSize)
     }
 
     fun onDestroy() {
-        renderableLoadRequest?.let {
+        cubeLoadRequest?.let {
             cubeBuilder.cancel(it)
+        }
+
+        modelLoadRequest?.let {
+            modelLoader.cancel(it)
         }
     }
 
@@ -90,26 +113,55 @@ class PrismContentNode(
         if (localScale != lastScale) {
             scaleChangedListener?.invoke(localScale)
             lastScale = localScale
+            adjustCornersScale()
         }
     }
 
-    private fun loadCube(size: Vector3) {
+    private fun loadBoxModel(size: Vector3) {
         // cancel previous load task if exists
-        renderableLoadRequest?.let {
+        cubeLoadRequest?.let {
             cubeBuilder.cancel(it)
         }
 
-        val color = Color(1f, 0f, 0f, 0.5f)
-        renderableLoadRequest = CubeRenderableBuilder.LoadRequest(size, Vector3.zero(), color) {
-            if (it is DataResult.Success) {
-                renderableCopy = it.data
+        val color = Color(0.5f, 0.5f, 0.5f, 0.1f)
+        cubeLoadRequest = CubeRenderableBuilder.LoadRequest(
+            cubeSize = size,
+            cubeCenter = Vector3.zero(),
+            color = color,
+            roughness = 1f,
+            reflectance = 0f
+        ) { result ->
+            if (result is DataResult.Success) {
+                boxModelCopy = result.data
                 if (editModeActive) {
-                    renderable = it.data
+                    renderable = result.data
                 }
             }
         }.also {
             cubeBuilder.buildRenderable(it)
         }
+    }
+
+    private fun loadCornerModel() {
+        // cancel previous load task if exists
+        modelLoadRequest?.let {
+            modelLoader.cancel(it)
+        }
+
+        val recenterMode = RenderableSource.RecenterMode.NONE
+        modelLoadRequest =
+            ModelRenderableLoader.LoadRequest(cornerModelPath, recenterMode) { result ->
+                if (result is DataResult.Success) {
+                    cornerModel = result.data
+                    if (editModeActive) {
+                        cornerNodes.forEach {
+                            it.renderable = result.data
+                        }
+                    }
+                }
+            }.also {
+                modelLoader.loadRenderable(it)
+            }
     }
 
     private fun disableDefaultControllers() {
@@ -123,5 +175,54 @@ class PrismContentNode(
         rotationController.isEnabled = false
     }
 
+    private fun createCornerNodes() {
+        for (i in 0 until 8) {
+            val cornerNode = Node()
+            cornerNodes.add(cornerNode)
+            addChild(cornerNode)
+        }
+    }
+
+    private fun layoutCornerNodes() {
+        // start at left-bottom-far
+        val startPos = Vector3(-size.x / 2, -size.y / 2, -size.z / 2)
+        val currentPosition = Vector3(startPos.x, startPos.y, startPos.z)
+
+        val rotations = listOf<Quaternion>(
+            Quaternion.eulerAngles(Vector3(0f, 90f, 0f)),
+            Quaternion.eulerAngles(Vector3(0f, 0f, 0f)),
+            Quaternion.eulerAngles(Vector3(0f, 0f, 180f)),
+            Quaternion.eulerAngles(Vector3(0f, 0f, 90f)),
+            Quaternion.eulerAngles(Vector3(0f, 180f, 0f)),
+            Quaternion.eulerAngles(Vector3(0f, -90f, 0f)),
+            Quaternion.eulerAngles(Vector3(-180f, 0f, -90f)),
+            Quaternion.eulerAngles(Vector3(180f, 0f, 0f))
+        )
+
+        var idx = 0
+        do {
+            cornerNodes[idx].localPosition = currentPosition
+            cornerNodes[idx].localRotation = rotations[idx]
+
+            idx++
+            val x = idx.and(1)
+            val y = idx.and(2)
+            val z = idx.and(4)
+
+            currentPosition.x = if (x > 0) startPos.x + size.x else startPos.x
+            currentPosition.y = if (y > 0) startPos.y + size.y else startPos.y
+            currentPosition.z = if (z > 0) startPos.z + size.z else startPos.z
+
+        } while (idx < 8)
+
+    }
+
+    // assigning world scale to corners,
+    // because they should be independent of content scale
+    private fun adjustCornersScale() {
+        cornerNodes.forEach {
+            it.worldScale = Vector3.one()
+        }
+    }
 
 }

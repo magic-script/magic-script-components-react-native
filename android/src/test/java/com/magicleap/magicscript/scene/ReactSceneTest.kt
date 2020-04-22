@@ -22,12 +22,10 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer
 import com.google.ar.sceneform.ux.TransformationSystem
-import com.magicleap.magicscript.TestAppInfoProvider
-import com.magicleap.magicscript.ar.AnchorCreator
+import com.magicleap.magicscript.PrismBuilder
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.prism.Prism
-import com.magicleap.magicscript.utils.DataResult
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldEqual
 import org.junit.Before
@@ -93,15 +91,7 @@ class ReactSceneTest {
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
-        val appInfoProvider = TestAppInfoProvider()
-        val anchorCreator: AnchorCreator = mock()
-        val anchorResult = DataResult.Error(Exception("cannot create anchor in tests"))
-        whenever(anchorCreator.createAnchor(any())).thenReturn(anchorResult)
-
-        return Prism(props, mock(), anchorCreator, arResourcesProvider, context, appInfoProvider)
-            .apply {
-                build()
-            }
+        return PrismBuilder(props, context, arResourcesProvider).build()
     }
 
     private fun getTransformationSystem(): TransformationSystem {

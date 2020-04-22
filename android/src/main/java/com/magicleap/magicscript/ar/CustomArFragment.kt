@@ -36,6 +36,8 @@ class CustomArFragment : ArFragment() {
 
         arResourcesManager.setupScene(arSceneView.scene)
 
+        arSceneView.scene.camera.farClipPlane = FAR_CLIP_PLANE
+
         arSceneView.scene.addOnUpdateListener {
             arSceneView.arFrame?.camera?.let { camera ->
                 if (!onReadyCalled && camera.trackingState == TrackingState.TRACKING) {
@@ -72,5 +74,9 @@ class CustomArFragment : ArFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         ArResourcesManager.INSTANCE?.clearArReferences()
+    }
+
+    companion object {
+        const val FAR_CLIP_PLANE = 15f // in meters
     }
 }

@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.prism
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
@@ -32,20 +33,25 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.BoundingBox
+import com.magicleap.magicscript.ar.CustomArFragment
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
+import kotlin.math.max
+import kotlin.math.sqrt
 
 class Prism(
     initProps: ReadableMap,
+    private val context: Context,
+    private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
     private val arResourcesProvider: ArResourcesProvider,
-    private val context: Context,
-    appInfoProvider: AppInfoProvider
+    private val appInfoProvider: AppInfoProvider
 ) : AnchorNode(), ReactNode, ArResourcesProvider.CameraUpdatedListener,
     ArResourcesProvider.TransformationSystemListener, ArResourcesProvider.ArLoadedListener {
 
@@ -69,18 +75,20 @@ class Prism(
     var size: Vector3 = Vector3(2f, 2f, 0.3f)
         private set
 
+    private val screenSizePx = appInfoProvider.getScreenSizePx()
+    private val screenDensity = appInfoProvider.getScreenDpi()
+
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var reactScene: ReactScene? = null
     private var container: PrismContentNode? = null
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
-    private var lastCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
+    private var latestCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
     private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var requestedScale: Vector3? = null
-    private var screenSizePx: Vector2
 
     private var editMode: Boolean = false
         set(value) {
@@ -91,10 +99,6 @@ class Prism(
         }
 
     init {
-        val screenWidthPx = context.resources.displayMetrics.widthPixels
-        val screenHeightPx = context.resources.displayMetrics.heightPixels
-        screenSizePx = Vector2(screenWidthPx.toFloat(), screenHeightPx.toFloat())
-
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
         arResourcesProvider.addArLoadedListener(this)
@@ -102,6 +106,8 @@ class Prism(
         val title = appInfoProvider.getAppName()
         menuNode = PrismMenu(context, arResourcesProvider, title)
         menuNode.isVisible = false
+
+        properties.putDefault(PROP_POSITION, arrayListOf(0.0, 0.0, 0.0))
     }
 
     override val reactParent: ReactNode? get() = reactScene
@@ -170,7 +176,17 @@ class Prism(
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
         // detach old container if exists
         detachContainer()
-        container = PrismContentNode(transformationSystem, cubeBuilder, size).also { container ->
+
+        val packageName = appInfoProvider.getPackageName()
+        val cornerModelPath = Uri.parse("android.resource://$packageName/raw/prism_corner")
+
+        container = PrismContentNode(
+            transformationSystem = transformationSystem,
+            modelLoader = modelLoader,
+            cubeBuilder = cubeBuilder,
+            initialSize = size,
+            cornerModelPath = cornerModelPath
+        ).also { container ->
             container.setParent(this)
 
             requestedScale?.let {
@@ -218,11 +234,12 @@ class Prism(
             return
         }
 
-        if (editMode) {
-            movePrism(cameraPose, lastCameraPose)
-        }
+        val oldCameraPose = latestCameraPose
+        latestCameraPose = cameraPose
 
-        lastCameraPose = cameraPose
+        if (editMode) {
+            movePrism(cameraPose, oldCameraPose)
+        }
 
         adjustMenuVisibility()
         adjustMenuRotation()
@@ -254,6 +271,7 @@ class Prism(
         detachContainer()
         arResourcesProvider.removeCameraUpdatedListener(this)
         arResourcesProvider.removeTransformationSystemListener(this)
+        arResourcesProvider.removeArLoadedListener(this)
     }
 
     // Prism can also be anchored through this function when initial placement is active
@@ -293,7 +311,7 @@ class Prism(
     }
 
     private fun getLookAtCameraRotation(): Quaternion {
-        val cameraPosition: Vector3 = lastCameraPose.getTranslationVector()
+        val cameraPosition: Vector3 = latestCameraPose.getTranslationVector()
         val prismFlatPosition = Vector3(worldPosition.x, 0f, worldPosition.z)
         val cameraFlatPosition = Vector3(cameraPosition.x, 0f, cameraPosition.z)
         val direction = prismFlatPosition - cameraFlatPosition
@@ -306,8 +324,8 @@ class Prism(
             val boxSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
             val box = BoundingBox(boxSize, worldPosition)
             box.rotation = container?.worldRotation ?: Quaternion()
-            val cameraPosition = lastCameraPose.getTranslationVector()
-            val cameraRotation = lastCameraPose.getRotation()
+            val cameraPosition = latestCameraPose.getTranslationVector()
+            val cameraRotation = latestCameraPose.getRotation()
             val rayDirection = Vector3.forward().rotatedBy(cameraRotation)
             val ray = Ray(cameraPosition, rayDirection)
             val collided = box.getRayIntersection(ray, RayHit())
@@ -331,10 +349,11 @@ class Prism(
         val prevCameraPosition = prevCameraPose.getTranslationVector()
         val cameraRot = cameraPose.getRotation()
 
-        val cameraToPrismDist = Vector3.subtract(localPosition, cameraPosition).length()
-        val xyzDiff = Vector3.subtract(cameraPosition, prevCameraPosition)
-        val rayDirection = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
-        localPosition = cameraPosition + rayDirection + xyzDiff
+        val cameraToPrismDist = Vector3.subtract(localPosition, prevCameraPosition).length()
+        val limitedDistance = getLimitedDistanceFromCamera(cameraToPrismDist)
+        val offset = Vector3.forward().rotatedBy(cameraRot).scaled(limitedDistance)
+
+        localPosition = cameraPosition + offset
 
         // look at camera
         adjustContainerRotation()
@@ -342,25 +361,18 @@ class Prism(
 
     // forward <-> backward movement
     private fun adjustPrismDistance(touchDeltaPx: Vector3) {
-        val camera = scene?.camera ?: return
-
-        val touchDeltaDp =
-            touchDeltaPx.y * context.resources.displayMetrics.ydpi / Utils.BASELINE_DENSITY
-
-        val cameraRotation = camera.worldRotation
+        val touchDeltaDp = touchDeltaPx.y * screenDensity.y / Utils.BASELINE_DENSITY
+        val cameraPosition = latestCameraPose.getTranslationVector()
+        val cameraRotation = latestCameraPose.getRotation()
         val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRotation).scaled(distDifference)
 
-        var newPosition = localPosition + zOffset
+        val desiredPosition = localPosition + zOffset
+        val desiredDistanceFromCamera = (desiredPosition - cameraPosition).length()
+        val limitedDistanceFromCamera = getLimitedDistanceFromCamera(desiredDistanceFromCamera)
 
-        val farClipPlane = camera.farClipPlane
-        val prismSphereRadius = Vector3.dot(size, scale) / 2f
-        val maxDistance = farClipPlane - prismSphereRadius
-
-        if (newPosition.length() > maxDistance) {
-            newPosition = newPosition.normalized().scaled(maxDistance)
-        }
-        localPosition = newPosition
+        val direction = (desiredPosition - cameraPosition).normalized()
+        localPosition = cameraPosition + direction.scaled(limitedDistanceFromCamera)
     }
 
     private fun isInsideScreen(point: Vector3): Boolean {
@@ -371,7 +383,7 @@ class Prism(
         props.read<Vector3>(PROP_SIZE)?.let { size ->
             if (size != this.size) {
                 this.size = size
-                container?.setSize(size)
+                container?.size = size
                 adjustMenuPosition()
                 clipContent()
             }
@@ -386,7 +398,7 @@ class Prism(
             if (editMode) {
                 localPosition = position
                 localRotation = rotation
-            } else {
+            } else if (!hasAnchorUUID()) { // XR client anchor has a priority
                 val pose = Utils.createPose(position, rotation)
                 tryToAnchorAtPose(pose)
             }
@@ -420,6 +432,7 @@ class Prism(
         if (value) {
             // remove anchor, so we can change prism's local position while moving
             anchor = null
+            requestedAnchorPose = null
         } else {
             // user has stopped moving the prism, so we anchor it to the final position
             val pose = Utils.createPose(localPosition, Quaternion())
@@ -471,4 +484,21 @@ class Prism(
             }
         }
     }
+
+    private fun hasAnchorUUID() = properties.getString(PROP_ANCHOR_UUID, "").isNotEmpty()
+
+    // in edit mode prism cannot be too close or too far from camera
+    private fun getLimitedDistanceFromCamera(desiredDistance: Float): Float {
+        val sphereRadius = getSphereRadius()
+        val maxDistance = CustomArFragment.FAR_CLIP_PLANE - sphereRadius
+        return desiredDistance.coerceIn(sphereRadius, maxDistance)
+    }
+
+    // returns radius of a sphere that includes the prism
+    private fun getSphereRadius(): Float {
+        val actualSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
+        val longestEdge = max(actualSize.x, max(actualSize.y, actualSize.z))
+        return sqrt(3f) * longestEdge / 2f
+    }
+
 }

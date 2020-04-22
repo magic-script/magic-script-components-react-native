@@ -30,7 +30,9 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.ar.CustomArFragment
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
+import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.DataResult
@@ -48,6 +50,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatcher
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
+import java.util.*
 
 /**
  * To represent node's properties map in tests we use [JavaOnlyMap] which
@@ -58,6 +61,7 @@ class PrismTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val cubeBuilder: CubeRenderableBuilder = mock()
+    private val modelLoader: ModelRenderableLoader = mock()
     private val anchorCreator: AnchorCreator = mock()
     private val arResourcesProvider: ArResourcesProvider = mock()
 
@@ -132,6 +136,30 @@ class PrismTest {
     }
 
     @Test
+    fun `should anchor the prism at zero position and no rotation by default`() {
+        buildPrism(reactMapOf())
+        val expectedPose = Utils.createPose(
+            position = Vector3.zero(),
+            rotation = Quaternion.identity()
+        )
+
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
+    }
+
+    @Test
+    fun `should not anchor to position if anchor UUID property also present`() {
+        buildPrism(
+            reactMapOf(
+                Prism.PROP_POSITION, reactArrayOf(1.2f, 1.4f, -1f),
+                Prism.PROP_ANCHOR_UUID, UUID.randomUUID().toString()
+            )
+        )
+
+        // anchor assigned by XR client has a priority over "position" property
+        verifyZeroInteractions(anchorCreator)
+    }
+
+    @Test
     fun `should anchor the node at updated position if mode is normal`() {
         val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
         Mockito.reset(anchorCreator)
@@ -145,7 +173,6 @@ class PrismTest {
         )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
-        prism.localPosition shouldEqualInexact Vector3.zero()
     }
 
     @Test
@@ -162,7 +189,6 @@ class PrismTest {
         )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
-        prism.localRotation shouldEqual Quaternion.identity()
     }
 
     @Test
@@ -175,6 +201,7 @@ class PrismTest {
         )
 
         prism.localPosition shouldEqualInexact Vector3(-0.4f, 0.2f, -1.5f)
+        prism.localPosition shouldEqual prism.worldPosition
         verifyZeroInteractions(anchorCreator)
     }
 
@@ -248,7 +275,7 @@ class PrismTest {
     @Test
     fun `should globally rotate menu around Y axis to look at camera`() {
         val prism = buildPrism(
-            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0))
+            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0))
         )
         val menu = prism.children.filterIsInstance<PrismMenu>().firstOrNull()
         val cameraPosition = Vector3(0.6f, 0.4f, 1.4f)
@@ -262,39 +289,84 @@ class PrismTest {
     }
 
     @Test
-    fun `prism should not follow the camera if edit mode inactive`() {
+    fun `should coerce min distance from camera if edit mode active`() {
         val prism = buildPrism(
             reactMapOf(
-                Prism.PROP_MODE, Prism.MODE_NORMAL,
-                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0),
+                Prism.PROP_SIZE, reactArrayOf(1.0, 1.0, 1.0)
             )
         )
-        val expectedPrismPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
-        val cameraPosition = Vector3(0.4f, -0.2f, 0.1f)
+        val cameraPosition = Vector3(0f, 0f, 0.2f)
         val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+        // should be at a distance equal to the radius of a sphere that includes the prism
+        val expectedPrismPosition = Vector3(0f, 0f, -0.6660254f) // camera z - prism sphere radius
 
         prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
 
-        prism.localPosition shouldEqual Vector3.zero()
-        prism.worldPosition shouldEqual Vector3.zero()
-        verify(anchorCreator, atLeastOnce()).createAnchor(argThat(PoseMatcher(expectedPrismPose)))
-        verifyNoMoreInteractions(anchorCreator)
+        prism.worldPosition shouldEqualInexact expectedPrismPosition
     }
 
     @Test
-    fun `content should not look at camera if edit mode inactive`() {
+    fun `should limit max distance from camera if edit mode active`() {
         val prism = buildPrism(
             reactMapOf(
-                Prism.PROP_MODE, Prism.MODE_NORMAL,
-                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0, 0.0)
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, -100f),
+                Prism.PROP_SIZE, reactArrayOf(1.0, 1.0, 1.0)
             )
         )
-        val contentNode = prism.children.filterIsInstance<PrismContentNode>().firstOrNull()
-        val cameraPosition = Vector3(0.6f, 0.4f, 1.4f)
+        val cameraPosition = Vector3(0f, 0f, 0f)
         val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+        // far clip plane minus radius of a sphere that includes the prism
+        val limitedZDistance = CustomArFragment.FAR_CLIP_PLANE - 0.8660254f
+        val expectedPrismPosition = Vector3(0f, 0f, -limitedZDistance)
 
         prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
 
+        prism.worldPosition shouldEqualInexact expectedPrismPosition
+    }
+
+    @Test
+    fun `should follow camera if edit mode active`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(-0.4, 0.0, -0.2),
+                Prism.PROP_SIZE, reactArrayOf(0.1, 0.1, 0.1)
+            )
+        )
+        val cameraPosition = Vector3(0.5f, 0.25f, 0.8f)
+        val cameraRotation = Quaternion.eulerAngles(Vector3(30f, 60f, 0f))
+        val cameraPose = Utils.createPose(cameraPosition, cameraRotation)
+        val contentNode = prism.children.filterIsInstance<PrismContentNode>().firstOrNull()
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        prism.worldPosition shouldEqualInexact Vector3(0.16458982f, 0.47360682f, 0.60635084f)
+        contentNode shouldNotBe null
+        // content should rotate only around Y
+        contentNode!!.worldRotation shouldEqual Quaternion.eulerAngles(Vector3(0f, 60f, 0f))
+    }
+
+    @Test
+    fun `should not follow camera if edit mode inactive`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_NORMAL,
+                Prism.PROP_POSITION, reactArrayOf(1.0, 2.0, 0.0)
+            )
+        )
+        val expectedPrismPose = Utils.createPose(Vector3(1f, 2f, 0f), Quaternion.identity())
+        val cameraPosition = Vector3(0.4f, -0.2f, 0.1f)
+        val cameraRotation = Quaternion.eulerAngles(Vector3(-20f, 45f, 0f))
+        val cameraPose = Utils.createPose(cameraPosition, cameraRotation)
+        val contentNode = prism.children.filterIsInstance<PrismContentNode>().firstOrNull()
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        verify(anchorCreator, atLeastOnce()).createAnchor(argThat(PoseMatcher(expectedPrismPose)))
+        verifyNoMoreInteractions(anchorCreator)
         contentNode shouldNotBe null
         contentNode!!.worldRotation shouldEqual Quaternion.identity()
     }
@@ -329,16 +401,18 @@ class PrismTest {
 
         verify(arResourcesProvider).removeCameraUpdatedListener(eq(prism))
         verify(arResourcesProvider).removeTransformationSystemListener(eq(prism))
+        verify(arResourcesProvider).removeArLoadedListener(eq(prism))
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {
         val appInfoProvider = TestAppInfoProvider()
         return Prism(
             props,
+            context,
+            modelLoader,
             cubeBuilder,
             anchorCreator,
             arResourcesProvider,
-            context,
             appInfoProvider
         ).apply {
             build()

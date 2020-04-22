@@ -17,9 +17,23 @@
 package com.magicleap.magicscript
 
 import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider
+import com.magicleap.magicscript.utils.Vector2
 
-class TestAppInfoProvider : AppInfoProvider {
+class TestAppInfoProvider() : AppInfoProvider {
+
     override fun getAppName(): String {
         return "Test app"
+    }
+
+    override fun getPackageName(): String {
+        return "com.magicleap.magicscript"
+    }
+
+    override fun getScreenSizePx(): Vector2 {
+        return Vector2(800f, 1280f)
+    }
+
+    override fun getScreenDpi(): Vector2 {
+        return Vector2(320f, 320f)
     }
 }

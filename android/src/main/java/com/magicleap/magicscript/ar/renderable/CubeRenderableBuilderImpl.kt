@@ -60,6 +60,9 @@ class CubeRenderableBuilderImpl(
         MaterialFactory
             .makeTransparentWithColor(context, request.color)
             .thenAccept { material ->
+                material.setFloat(MaterialFactory.MATERIAL_REFLECTANCE, request.reflectance)
+                material.setFloat(MaterialFactory.MATERIAL_ROUGHNESS, request.roughness)
+
                 if (!request.isCancelled) {
                     val renderable =
                         ShapeFactory.makeCube(request.cubeSize, request.cubeCenter, material)

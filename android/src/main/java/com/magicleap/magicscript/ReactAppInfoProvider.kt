@@ -18,6 +18,7 @@ package com.magicleap.magicscript
 
 import android.content.Context
 import com.magicleap.magicscript.scene.nodes.prism.AppInfoProvider
+import com.magicleap.magicscript.utils.Vector2
 
 class ReactAppInfoProvider(private val context: Context) : AppInfoProvider {
 
@@ -29,6 +30,22 @@ class ReactAppInfoProvider(private val context: Context) : AppInfoProvider {
         } else {
             context.getString(labelId)
         }
+    }
+
+    override fun getPackageName(): String {
+        return context.packageName
+    }
+
+    override fun getScreenSizePx(): Vector2 {
+        val screenWidthPx = context.resources.displayMetrics.widthPixels
+        val screenHeightPx = context.resources.displayMetrics.heightPixels
+        return Vector2(screenWidthPx.toFloat(), screenHeightPx.toFloat())
+    }
+
+    override fun getScreenDpi(): Vector2 {
+        val xDpi = context.resources.displayMetrics.xdpi
+        val yDpi = context.resources.displayMetrics.ydpi
+        return Vector2(xDpi, yDpi)
     }
 
 }

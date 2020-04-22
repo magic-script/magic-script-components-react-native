@@ -20,13 +20,13 @@ import SceneKit
 @objc open class Prism: BaseNode {
     static let defaultRayLenght: CGFloat = 20.0
     static let distanceToContextMenu: Float = 0.10
+    static let debugBoxInactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+    static let debugBoxActiveColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
 
     @objc public var isPointed: Bool = false {
         didSet {
             #if targetEnvironment(simulator)
-            let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
-            let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
-            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
+            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? Prism.debugBoxActiveColor : Prism.debugBoxInactiveColor
             #endif
         }
     }
@@ -174,7 +174,7 @@ import SceneKit
         #if targetEnvironment(simulator)
         if debug {
             if debugNode == nil {
-                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
+                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: Prism.debugBoxInactiveColor)
                 debugNode!.scale = size
                 debugNode!.renderingOrder = 990
             }

@@ -32,33 +32,31 @@ protocol PrismInteracting: class {
 }
 
 class PrismInteractor: NSObject, PrismInteracting {
-
-    weak var arView: RCTARView?
-
     weak var delegate: PrismInteractingDelegate?
 
-    var interactedPrism: Prism?
-
     // MARK: Prism interaction variables
+    weak var gesturable: Gesturable?
+    var interactedPrism: Prism?
+    var gestureRecognizers: [Gesturizing] = []
+
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
     private var startInteractionPosition: SCNVector3 = SCNVector3.zero
-    private var startDifferenceYaw: Float = 0.0
-    private var prismYawChange: Float = 0.0
-    private var prismDistanceChange: Float = 0.0
-    private var prismInitialScale: SCNVector3? = nil
-    private var gestureRecognizers: [UIGestureRecognizer] = []
+    private(set) var startDifferenceYaw: Float = 0.0
+    private(set) var prismYawChange: Float = 0.0
+    private(set) var prismDistanceChange: Float = 0.0
+    private(set) var prismInitialScale: SCNVector3? = nil
 
     override init() {
         super.init()
 
-        let panGestureRecogrnizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         gestureRecognizers.append(panGestureRecogrnizer)
 
-        let pinchGestureRecogrnizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
         gestureRecognizers.append(pinchGestureRecogrnizer)
 
-        let rotationGestureRecogrnizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
+        let rotationGestureRecogrnizer = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
         gestureRecognizers.append(rotationGestureRecogrnizer)
     }
 
@@ -74,7 +72,7 @@ class PrismInteractor: NSObject, PrismInteracting {
         attacheGestureRecognizers()
 
         #if targetEnvironment(simulator)
-        RCTARView.instance.arView.allowsCameraControl = false
+        gesturable?.allowsCameraControl = false
         #endif
     }
 
@@ -135,26 +133,20 @@ class PrismInteractor: NSObject, PrismInteracting {
             detachGestureRecognizers()
 
             #if targetEnvironment(simulator)
-            RCTARView.instance.arView.allowsCameraControl = true
+            gesturable?.allowsCameraControl = true
             #endif
         }
     }
 
     private func attacheGestureRecognizers() {
-        guard let arViewGestures = arView?.gestureRecognizers else { return }
         gestureRecognizers.forEach { gestureRecognizer in
-            if arViewGestures.doesNotContain(gestureRecognizer) {
-                arView?.addGestureRecognizer(gestureRecognizer)
-            }
+            gesturable?.addGestureRecognizer(gestureRecognizer)
         }
     }
 
     private func detachGestureRecognizers() {
-        guard let arViewGestures = arView?.gestureRecognizers else { return }
         gestureRecognizers.forEach { gestureRecognizer in
-            if arViewGestures.contains(gestureRecognizer) {
-                arView?.removeGestureRecognizer(gestureRecognizer)
-            }
+            gesturable?.removeGestureRecognizer(gestureRecognizer)
         }
     }
 }
@@ -162,7 +154,7 @@ class PrismInteractor: NSObject, PrismInteracting {
 // MARK: gesture handlers
 extension PrismInteractor {
 
-    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ sender: PanGesturizing) {
         switch sender.state {
         case .began, .changed:
             let speedFactor: Float = 40.0
@@ -174,7 +166,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
+    @objc func handlePinchGesture(_ sender: PinchGesturizing) {
         switch sender.state {
         case .began:
             prismInitialScale = interactedPrism?.scale
@@ -199,7 +191,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
+    @objc func handleRotationGesture(_ sender: RotationGesturizing) {
         switch sender.state {
         case .began, .changed:
             prismYawChange = Float(sender.rotation)
@@ -208,6 +200,74 @@ extension PrismInteractor {
             prismYawChange = 0.0
         default:
             print("Default: \(#function)")
+        }
+    }
+}
+
+
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol Gesturizing: NSObjectProtocol {
+    var view: UIView? { get }
+    var state: UIGestureRecognizer.State { get }
+}
+
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol PanGesturizing: Gesturizing {
+    @objc(velocityInView:) func velocity(in view: UIView?) -> CGPoint
+    @objc(translationInView:) func translation(in view: UIView?) -> CGPoint
+}
+
+class PanGestureRecognizer: UIPanGestureRecognizer, PanGesturizing { }
+
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol PinchGesturizing: Gesturizing {
+    var scale: CGFloat { get }
+    var velocity: CGFloat { get }
+}
+
+class PinchGestureRecognizer: UIPinchGestureRecognizer, PinchGesturizing { }
+
+//sourcery: AutoMockable
+//sourcery: ObjcProtocol
+@objc protocol RotationGesturizing: Gesturizing {
+    var rotation: CGFloat { get }
+    var velocity: CGFloat { get }
+}
+
+class RotationGestureRecognizer: UIRotationGestureRecognizer, RotationGesturizing { }
+
+//sourcery: AutoMockable
+protocol Gesturable: class {
+    var allowsCameraControl: Bool { get set }
+
+    var recognizers: [Gesturizing]? { get set }
+    func addGestureRecognizer(_ gestureRecognizer: Gesturizing)
+    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing)
+}
+
+extension RCTARView: Gesturable {
+    var allowsCameraControl: Bool {
+        set { arView.allowsCameraControl = newValue }
+        get { return arView.allowsCameraControl }
+    }
+
+    var recognizers: [Gesturizing]? {
+        get { return gestureRecognizers?.filter { $0 is Gesturizing }.map { $0 as! Gesturizing } }
+        set { }
+    }
+
+    func addGestureRecognizer(_ gestureRecognizer: Gesturizing) {
+        if let gr = gestureRecognizer as? UIGestureRecognizer {
+            addGestureRecognizer(gr)
+        }
+    }
+
+    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing) {
+        if let gr = gestureRecognizer as? UIGestureRecognizer {
+            removeGestureRecognizer(gr)
         }
     }
 }

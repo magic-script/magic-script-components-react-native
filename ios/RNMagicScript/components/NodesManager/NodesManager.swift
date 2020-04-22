@@ -23,7 +23,7 @@ import ARKit
 @objc protocol NodesManaging: NSObjectProtocol {
     @objc var scene: Scene? { get }
     @objc var prismsById: [String: Prism] { get }
-//    @objc var nodesById: [String: BaseNode] { get }
+    @objc var nodesById: [String: BaseNode] { get }
 
     @objc func registerScene(_ scene: Scene, sceneId: String)
     @objc func registerPrism(_ prism: Prism, prismId: String)
@@ -48,15 +48,13 @@ import ARKit
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
     private(set) var sceneInteractor: SceneInteractor!
-    private(set) var prismInteractor: PrismInteractor!
 
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.prismsByAnchorUuid = prismsByAnchorUuid
         super.init()
-        prismInteractor = PrismInteractor()
-        sceneInteractor = SceneInteractor(with: prismInteractor)
+        sceneInteractor = SceneInteractor(with: PrismInteractor())
         NotificationCenter.default.addObserver(self, selector: #selector(onResourceDidLoad(_:)), name: .didLoadResource, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onLayoutDidChangeIndependently(_:)), name: .didChangeLayoutIndependently, object: nil)
     }
@@ -81,7 +79,7 @@ import ARKit
         ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
-        prismInteractor.arView = arView
+        sceneInteractor.arView = arView
         nodeSelector = UiNodeSelector(rootNode)
     }
 

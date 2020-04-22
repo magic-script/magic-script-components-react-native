@@ -31,7 +31,17 @@ protocol SceneInteracting: class {
 class SceneInteractor {
     weak var scene: Scene? {
         didSet {
-            scene?.prismContextMenu = PrismContextMenuBuilder.build(prismInteractor: prismInteractor)
+            if let scene = scene {
+                scene.prismContextMenu = PrismContextMenuBuilder.build(prismInteractor: prismInteractor)
+            } else {
+                scene?.prismContextMenu = nil
+            }
+        }
+    }
+
+    weak var arView: RCTARView? {
+        didSet {
+            prismInteractor.gesturable = arView
         }
     }
 
@@ -48,8 +58,8 @@ class SceneInteractor {
         let ray = Ray(begin: begin, direction: direction, length: Prism.defaultRayLenght)
 
         var results: [(prism: Prism, intersectionPoint: SCNVector3)] = []
+        let lastPointedPrims = prismInteractor.interactedPrism
         if let prisms = scene?.prisms {
-            let lastPointedPrims = prismInteractor.interactedPrism
             prisms.forEach {
                 var outRay: Ray? = nil
                 if $0.intersect(with: ray, clippedRay: &outRay),
@@ -68,16 +78,17 @@ class SceneInteractor {
 
                 let pointedPrism = results.first!.prism
                 if pointedPrism != lastPointedPrims {
-                    lastPointedPrims?.isPointed = false
                     pointedPrism.isPointed = true
+                    lastPointedPrims?.isPointed = false
                     prismInteractor.interactedPrism = pointedPrism
                 }
                 updatePrismMenu(for: pointedPrism)
-                self.prismInteractor.update(cameraNode: pointOfView, time: atTime)
+                prismInteractor.update(cameraNode: pointOfView, time: atTime)
             } else {
                 scene?.prismContextMenu.isHidden = true
+                prismInteractor.interactedPrism = nil
+                lastPointedPrims?.isPointed = false
             }
-
 
             #if targetEnvironment(simulator)
             if let position = results.first?.intersectionPoint {

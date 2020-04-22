@@ -314,6 +314,7 @@
 		C411CC2F240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC30240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC31240505F6004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
+		C41603CA24501F70005A7784 /* prism_corner.glb in Resources */ = {isa = PBXBuildFile; fileRef = C41603C924501F70005A7784 /* prism_corner.glb */; };
 		C418822024126DC000EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
 		C41882212412703F00EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
 		C419CF932359A7B2000094C3 /* NodeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C419CF922359A7B2000094C3 /* NodeConfiguration.swift */; };
@@ -846,6 +847,7 @@
 		C401821023EC11E400BE8D04 /* NodesGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesGestureHandler.swift; sourceTree = "<group>"; };
 		C411CC2C240505E0004C7063 /* Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prism.swift; sourceTree = "<group>"; };
 		C411CC2E240505F0004C7063 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		C41603C924501F70005A7784 /* prism_corner.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = prism_corner.glb; sourceTree = "<group>"; };
 		C418821F24126DC000EB84EE /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
 		C419CF952359AE9A000094C3 /* NodeConfigurationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfigurationSpec.swift; sourceTree = "<group>"; };
@@ -1056,6 +1058,7 @@
 		44318E9022CB4E0C0060575D /* RNMagicScriptResources */ = {
 			isa = PBXGroup;
 			children = (
+				C41603C824501F4C005A7784 /* Models */,
 				441FC1722362F2910004DBF1 /* Shaders */,
 				44AFAAA1232B949D005AC8EF /* Images.xcassets */,
 				44318E9122CB4E0C0060575D /* Info.plist */,
@@ -1730,6 +1733,14 @@
 			path = Toggle;
 			sourceTree = "<group>";
 		};
+		C41603C824501F4C005A7784 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C41603C924501F70005A7784 /* prism_corner.glb */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		C428C0AC237D5F9400771FBC /* UiDialog */ = {
 			isa = PBXGroup;
 			children = (
@@ -2187,6 +2198,7 @@
 			files = (
 				441FC1732362F3C60004DBF1 /* ClippingPlane.geometry.txt in Resources */,
 				441FC1742362F3C60004DBF1 /* ClippingPlane.fragment.txt in Resources */,
+				C41603CA24501F70005A7784 /* prism_corner.glb in Resources */,
 				44AFAAA2232B949D005AC8EF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

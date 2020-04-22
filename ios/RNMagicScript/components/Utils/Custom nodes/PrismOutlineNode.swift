@@ -16,6 +16,7 @@
 
 import Foundation
 import SceneKit
+import GLTFSceneKit
 
 class PrismOutlineNode : SCNNode {
     fileprivate let boxNode: SCNNode
@@ -60,6 +61,9 @@ class PrismOutlineNode : SCNNode {
     }
 
     fileprivate func setupCornerNodes() {
+        guard let bundle = Bundle.resourcesBundle,
+            let modelURL = bundle.url(forResource: "prism_corner", withExtension: "glb") else { return }
+
         let transforms: [(position: SCNVector3, rotation: SCNQuaternion)] = [
             (position: SCNVector3(-0.5, -0.5, -0.5), rotation: SCNQuaternionIdentity),
             (position: SCNVector3( 0.5, -0.5, -0.5), rotation: SCNQuaternion.fromAxis(SCNVector3.up, andAngle: 1.5 * Float.pi)),
@@ -71,7 +75,23 @@ class PrismOutlineNode : SCNNode {
             (position: SCNVector3( 0.5,  0.5,  0.5), rotation: SCNQuaternion.fromAxis(SCNVector3(0.707, 0, -0.707), andAngle: Float.pi)),
             (position: SCNVector3(-0.5,  0.5,  0.5), rotation: SCNQuaternion.fromAxis(SCNVector3.right, andAngle: Float.pi)),
         ]
-        transforms.forEach { cornersNode.addChildNode(createCornerNode(position: $0.position, rotation: $0.rotation)) }
+        transforms.forEach { cornersNode.addChildNode(loadCornerNode(url: modelURL, position: $0.position, rotation: $0.rotation)) }
+    }
+
+    fileprivate func loadCornerNode(url: URL, position: SCNVector3, rotation: SCNQuaternion) -> SCNNode {
+        let cornerNode = SCNNode()
+        cornerNode.position = position
+        cornerNode.orientation = rotation * SCNQuaternion.fromAxis(SCNVector3.up, andAngle: 0.5 * Float.pi)
+        do {
+            let sceneSource = try GLTFSceneSource(path: url.path, options: nil, extensions: nil)
+            let scene = try sceneSource.scene(options: nil)
+            scene.rootNode.childNodes.forEach { cornerNode.addChildNode($0) }
+            cornerNode.enumerateChildNodes { (node, stop) in node.geometry?.firstMaterial?.lightingModel = .constant }
+        } catch {
+            print("[\(self.classForCoder)] \(error.localizedDescription) Path: \(url.path)")
+        }
+
+        return cornerNode
     }
 
     fileprivate func createCornerNode(position: SCNVector3, rotation: SCNQuaternion) -> SCNNode {

@@ -16,17 +16,18 @@
 
 package com.magicleap.magicscript.scene.nodes
 
+//import androidx.test.core.app.ApplicationProvider
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.test.core.app.ApplicationProvider
+import com.magicleap.magicscript.icons.IconsRepository
+import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.dialog.DialogNode
+import com.magicleap.magicscript.scene.nodes.views.CustomAlertDialogBuilder
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.magicleap.magicscript.icons.IconsRepository
-import com.magicleap.magicscript.reactMapOf
-import com.magicleap.magicscript.scene.nodes.views.CustomAlertDialogBuilder
-import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +48,7 @@ class DialogNodeTest {
         mockDialogBuilder = mock()
         iconsRepository = mock()
         testDialogProvider = mock()
-        context = ApplicationProvider.getApplicationContext()
+//        context = ApplicationProvider.getApplicationContext()
         whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(
             mockDialogBuilder
         )
@@ -59,7 +60,11 @@ class DialogNodeTest {
             DialogNode.PROP_CONFIRM_ICON, "icon",
             DialogNode.PROP_CONFIRM_TEXT, "text"
         )
-        val node = DialogNode(props, context, iconsRepository, testDialogProvider)
+        val node = DialogNode(
+            props,
+            iconsRepository,
+            testDialogProvider
+        )
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -75,7 +80,11 @@ class DialogNodeTest {
             DialogNode.PROP_CANCEL_ICON, "icon",
             DialogNode.PROP_CANCEL_TEXT, "text"
         )
-        val node = DialogNode(props, context, iconsRepository, testDialogProvider)
+        val node = DialogNode(
+            props,
+            iconsRepository,
+            testDialogProvider
+        )
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -91,7 +100,11 @@ class DialogNodeTest {
             DialogNode.PROP_TITLE, "title",
             DialogNode.PROP_TEXT, "text"
         )
-        val node = DialogNode(props, context, iconsRepository, testDialogProvider)
+        val node = DialogNode(
+            props,
+            iconsRepository,
+            testDialogProvider
+        )
 
         node.build()
 

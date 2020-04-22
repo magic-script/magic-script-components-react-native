@@ -33,6 +33,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
 import com.magicleap.magicscript.ar.BoundingBox
+import com.magicleap.magicscript.ar.CustomArFragment
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
@@ -40,10 +41,12 @@ import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
+import kotlin.math.max
+import kotlin.math.sqrt
 
 class Prism(
     initProps: ReadableMap,
-    context: Context,
+    private val context: Context,
     private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
@@ -347,7 +350,9 @@ class Prism(
         val cameraRot = cameraPose.getRotation()
 
         val cameraToPrismDist = Vector3.subtract(localPosition, prevCameraPosition).length()
-        val offset = Vector3.forward().rotatedBy(cameraRot).scaled(cameraToPrismDist)
+        val limitedDistance = getLimitedDistanceFromCamera(cameraToPrismDist)
+        val offset = Vector3.forward().rotatedBy(cameraRot).scaled(limitedDistance)
+
         localPosition = cameraPosition + offset
 
         // look at camera
@@ -356,23 +361,18 @@ class Prism(
 
     // forward <-> backward movement
     private fun adjustPrismDistance(touchDeltaPx: Vector3) {
-        val camera = scene?.camera ?: return
-
         val touchDeltaDp = touchDeltaPx.y * screenDensity.y / Utils.BASELINE_DENSITY
-        val cameraRotation = camera.worldRotation
+        val cameraPosition = latestCameraPose.getTranslationVector()
+        val cameraRotation = latestCameraPose.getRotation()
         val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRotation).scaled(distDifference)
 
-        var newPosition = localPosition + zOffset
+        val desiredPosition = localPosition + zOffset
+        val desiredDistanceFromCamera = (desiredPosition - cameraPosition).length()
+        val limitedDistanceFromCamera = getLimitedDistanceFromCamera(desiredDistanceFromCamera)
 
-        val farClipPlane = camera.farClipPlane
-        val prismSphereRadius = Vector3.dot(size, scale) / 2f
-        val maxDistance = farClipPlane - prismSphereRadius
-
-        if (newPosition.length() > maxDistance) {
-            newPosition = newPosition.normalized().scaled(maxDistance)
-        }
-        localPosition = newPosition
+        val direction = (desiredPosition - cameraPosition).normalized()
+        localPosition = cameraPosition + direction.scaled(limitedDistanceFromCamera)
     }
 
     private fun isInsideScreen(point: Vector3): Boolean {
@@ -486,4 +486,19 @@ class Prism(
     }
 
     private fun hasAnchorUUID() = properties.getString(PROP_ANCHOR_UUID, "").isNotEmpty()
+
+    // in edit mode prism cannot be too close or too far from camera
+    private fun getLimitedDistanceFromCamera(desiredDistance: Float): Float {
+        val sphereRadius = getSphereRadius()
+        val maxDistance = CustomArFragment.FAR_CLIP_PLANE - sphereRadius
+        return desiredDistance.coerceIn(sphereRadius, maxDistance)
+    }
+
+    // returns radius of a sphere that includes the prism
+    private fun getSphereRadius(): Float {
+        val actualSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
+        val longestEdge = max(actualSize.x, max(actualSize.y, actualSize.z))
+        return sqrt(3f) * longestEdge / 2f
+    }
+
 }

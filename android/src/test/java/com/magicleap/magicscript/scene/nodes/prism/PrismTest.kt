@@ -30,6 +30,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.*
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.ar.CustomArFragment
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
@@ -288,11 +289,51 @@ class PrismTest {
     }
 
     @Test
+    fun `should coerce min distance from camera if edit mode active`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0),
+                Prism.PROP_SIZE, reactArrayOf(1.0, 1.0, 1.0)
+            )
+        )
+        val cameraPosition = Vector3(0f, 0f, 0.2f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+        // should be at a distance equal to the radius of a sphere that includes the prism
+        val expectedPrismPosition = Vector3(0f, 0f, -0.6660254f) // camera z - prism sphere radius
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        prism.worldPosition shouldEqualInexact expectedPrismPosition
+    }
+
+    @Test
+    fun `should limit max distance from camera if edit mode active`() {
+        val prism = buildPrism(
+            reactMapOf(
+                Prism.PROP_MODE, Prism.MODE_EDIT,
+                Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, -100f),
+                Prism.PROP_SIZE, reactArrayOf(1.0, 1.0, 1.0)
+            )
+        )
+        val cameraPosition = Vector3(0f, 0f, 0f)
+        val cameraPose = Utils.createPose(cameraPosition, Quaternion.identity())
+        // far clip plane minus radius of a sphere that includes the prism
+        val limitedZDistance = CustomArFragment.FAR_CLIP_PLANE - 0.8660254f
+        val expectedPrismPosition = Vector3(0f, 0f, -limitedZDistance)
+
+        prism.onCameraUpdated(cameraPose, TrackingState.TRACKING)
+
+        prism.worldPosition shouldEqualInexact expectedPrismPosition
+    }
+
+    @Test
     fun `should follow camera if edit mode active`() {
         val prism = buildPrism(
             reactMapOf(
                 Prism.PROP_MODE, Prism.MODE_EDIT,
-                Prism.PROP_POSITION, reactArrayOf(-0.4, 0.0, -0.2)
+                Prism.PROP_POSITION, reactArrayOf(-0.4, 0.0, -0.2),
+                Prism.PROP_SIZE, reactArrayOf(0.1, 0.1, 0.1)
             )
         )
         val cameraPosition = Vector3(0.5f, 0.25f, 0.8f)
@@ -305,7 +346,7 @@ class PrismTest {
         prism.worldPosition shouldEqualInexact Vector3(0.16458982f, 0.47360682f, 0.60635084f)
         contentNode shouldNotBe null
         // content should rotate only around Y
-        contentNode!!.worldRotation shouldEqual Quaternion(0f, 0.4999f, 0.0f, 0.8660f)
+        contentNode!!.worldRotation shouldEqual Quaternion.eulerAngles(Vector3(0f, 60f, 0f))
     }
 
     @Test

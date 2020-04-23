@@ -14,29 +14,33 @@
  *   limitations under the License.
  */
 
-package com.magicleap.magicscript.scene.nodes
+package com.magicleap.magicscript.scene.nodes.dialog
 
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.os.Message
 import android.view.View
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.views.CustomAlertDialogBuilder
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 import java.lang.ref.WeakReference
 
-class DialogNode(
+
+class DialogNode @JvmOverloads constructor(
     initProps: ReadableMap,
-    private val context: Context,
     private val iconsRepository: IconsRepository,
-    private val dialogProvider: DialogProvider
+    private val dialogProvider: DialogProvider,
+    private val context: Context = ArViewManager.getActivityRef().get() as Context
 ) : TransformNode(initProps, false) {
+
 
     companion object {
         const val PROP_TITLE = "title"
@@ -48,11 +52,12 @@ class DialogNode(
         const val PROP_EXPIRATION_TIME = "expireTime"
         const val TIMER_HANDLER_EVENT = 1
         const val PROP_BUTTON_TYPE = "buttonType"
+        const val PROP_DIALOG_TYPE = "type"
     }
 
     var onDialogConfirmListener: (() -> Unit)? = null
         set(value) {
-            dialog?.findViewById<LinearLayout>(R.id.confirm_layout)?.setOnClickListener {
+            dialog?.findViewById<ConstraintLayout>(R.id.confirm_layout)?.setOnClickListener {
                 value?.invoke()
                 dialog?.dismiss()
             }
@@ -61,7 +66,7 @@ class DialogNode(
 
     var onDialogCancelListener: (() -> Unit)? = null
         set(value) {
-            dialog?.findViewById<LinearLayout>(R.id.cancel_layout)?.setOnClickListener {
+            dialog?.findViewById<ConstraintLayout>(R.id.cancel_layout)?.setOnClickListener {
                 value?.invoke()
                 dialog?.dismiss()
             }
@@ -72,12 +77,14 @@ class DialogNode(
 
     private var dialog: AlertDialog? = null
 
-    private val timerHandler = TimerHandler(WeakReference(this))
+    private val timerHandler =
+        TimerHandler(WeakReference(this))
 
     init {
         properties.apply {
-            putDefault(PROP_CONFIRM_TEXT, context.getString(R.string.confirm))
-            putDefault(PROP_CANCEL_TEXT, context.getString(R.string.cancel))
+            putDefault(PROP_CONFIRM_TEXT, context?.getString(R.string.confirm))
+            putDefault(PROP_CANCEL_TEXT, context?.getString(R.string.cancel))
+            putDefault(PROP_BUTTON_TYPE, CustomAlertDialogBuilder.BUTTON_TYPE_TEXT)
         }
     }
 
@@ -92,6 +99,9 @@ class DialogNode(
     }
 
     private fun showDialog() {
+        if (context == null) {
+            return
+        }
         val dialogBuilder = dialogProvider.provideCustomAlertDialogBuilder(context)
         dialogBuilder.apply {
             properties.read<String>(PROP_TITLE)?.let { title ->
@@ -119,6 +129,9 @@ class DialogNode(
             properties.read<String>(PROP_BUTTON_TYPE)?.let { buttonType ->
                 setButtonType(buttonType)
             }
+            properties.read<String>(PROP_DIALOG_TYPE)?.let { dialogType ->
+                setDialogType(dialogType)
+            }
         }
         this.dialog = dialogBuilder.create()
         this.dialog?.show()
@@ -126,9 +139,11 @@ class DialogNode(
         this.dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         properties.read<Double>(PROP_EXPIRATION_TIME)?.let { time ->
-            val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
-            val timeInMillis = (time * 1000).toLong()
-            timerHandler.sendMessageDelayed(msg, timeInMillis)
+            if (properties.read<String>(PROP_DIALOG_TYPE) == DialogType.TIMED) {
+                val msg = timerHandler.obtainMessage(TIMER_HANDLER_EVENT)
+                val timeInMillis = (time * 1000).toLong()
+                timerHandler.sendMessageDelayed(msg, timeInMillis)
+            }
         }
     }
 

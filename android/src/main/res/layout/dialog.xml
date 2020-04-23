@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2019-2020 Magic Leap, Inc. All Rights Reserved
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,107 +14,177 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dialog_background"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/dialog_title_padding"
         android:textColor="@color/text_color_default"
         android:textSize="@dimen/dialog_title"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="title" />
 
     <com.magicleap.magicscript.scene.nodes.views.MaxHeightScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/maxHeightScrollView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:scrollbarThumbVertical="@color/text_color_default"
         android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
         app:maxHeight="126dp"
-        android:scrollbarThumbVertical="@color/text_color_default">
+        tools:layout_conversion_absoluteHeight="35dp"
+        tools:layout_conversion_absoluteWidth="16dp">
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="@dimen/dialog_title_padding"
             android:textColor="@color/text_color_default"
             android:textSize="@dimen/dialog_description"
-            android:gravity="center" />
+            tools:text="test test test" />
 
     </com.magicleap.magicscript.scene.nodes.views.MaxHeightScrollView>
 
-    <FrameLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/confirm_label"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dialog_title_padding">
+        android:layout_marginBottom="4dp"
+        android:text="confirm label"
+        android:textColor="@color/text_color_default"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_layout"
+        app:layout_constraintEnd_toEndOf="@+id/confirm_layout"
+        app:layout_constraintStart_toStartOf="@+id/confirm_layout" />
 
-        <LinearLayout
-            android:id="@+id/confirm_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/confirm_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/dialog_button_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maxHeightScrollView"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/confirm_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_button_background"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:layout_margin="4dp"
+            android:adjustViewBounds="true"
+            android:maxWidth="16dp"
+            android:maxHeight="16dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/confirm_text"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/close" />
 
-            <ImageView
-                android:id="@+id/confirm_icon"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:scaleType="fitCenter" />
-
-            <TextView
-                android:id="@+id/confirm_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:gravity="center|start"
-                android:textColor="@color/text_color_default" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cancel_layout"
+        <TextView
+            android:id="@+id/confirm_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_button_background"
-            android:orientation="horizontal"
-            android:layout_gravity="end"
+            android:layout_margin="4dp"
             android:gravity="center"
-            android:minWidth="64dp"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:textColor="@color/text_color_default"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/confirm_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/confirm" />
 
-            <ImageView
-                android:id="@+id/cancel_icon"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="fitCenter" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/cancel_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:textColor="@color/text_color_default" />
+    <TextView
+        android:id="@+id/cancel_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="cancel label"
+        android:textColor="@color/text_color_default"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cancel_layout"
+        app:layout_constraintEnd_toEndOf="@+id/cancel_layout"
+        app:layout_constraintStart_toStartOf="@+id/cancel_layout" />
 
-        </LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cancel_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/dialog_button_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/confirm_layout"
+        app:layout_constraintTop_toBottomOf="@+id/maxHeightScrollView"
+        tools:visibility="visible">
 
-    </FrameLayout>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/cancel_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:adjustViewBounds="true"
+            android:maxWidth="16dp"
+            android:maxHeight="16dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cancel_text"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/close" />
+
+        <TextView
+            android:id="@+id/cancel_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:textColor="@color/text_color_default"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cancel_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="cancel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

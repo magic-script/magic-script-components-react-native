@@ -15,16 +15,19 @@
  */
 package com.magicleap.magicscript.scene.nodes.views
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.magicleap.magicscript.R
+import com.magicleap.magicscript.scene.nodes.dialog.DialogType
 import kotlinx.android.synthetic.main.dialog.view.*
 
 class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) {
@@ -32,19 +35,21 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
 
     companion object {
         const val BUTTON_TYPE_ICON = "icon"
-        const val BUTTON_TYPE_ICON_WITH_TEXT = "icon-with-label"
+        const val BUTTON_TYPE_ICON_WITH_LABEL = "icon-with-label"
         const val BUTTON_TYPE_TEXT = "text"
         const val BUTTON_TYPE_TEXT_WITH_ICON = "text-with-icon"
     }
 
     private var cancelIconView: ImageView?
     private var cancelTextView: TextView?
-    private var cancelLayout: LinearLayout?
+    private var cancelLayout: ConstraintLayout?
     private var confirmIconView: ImageView?
     private var confirmTextView: TextView?
-    private var confirmLayout: LinearLayout?
+    private var confirmLayout: ConstraintLayout?
     private var descriptionView: TextView?
     private var titleView: TextView?
+    private var confirmLabelView: TextView?
+    private var cancelLabelView: TextView?
 
     private var onDialogConfirmListener: (() -> Unit)? = null
     private var onDialogCancelListener: (() -> Unit)? = null
@@ -59,6 +64,8 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             cancelLayout = cancel_layout
             cancelTextView = cancel_text
             cancelIconView = cancel_icon
+            confirmLabelView = confirm_label
+            cancelLabelView = cancel_label
         }
         setView(contentView)
         setCancelable(false)
@@ -79,6 +86,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             confirmLayout?.visibility = View.VISIBLE
         }
         confirmTextView?.text = text
+        confirmLabelView?.text = text
         return this
     }
 
@@ -97,6 +105,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             cancelLayout?.visibility = View.VISIBLE
         }
         cancelTextView?.text = text
+        cancelLabelView?.text = text
         return this
     }
 
@@ -110,21 +119,55 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
         return this
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun setButtonType(buttonType: String) {
         when (buttonType) {
             BUTTON_TYPE_TEXT_WITH_ICON -> {
                 showIcon()
                 showText()
-                changeOrder()
             }
             BUTTON_TYPE_ICON -> {
                 showIcon()
                 hideText()
             }
 
-            BUTTON_TYPE_ICON_WITH_TEXT -> {
+            BUTTON_TYPE_ICON_WITH_LABEL -> {
                 showIcon()
-                showText()
+                hideText()
+                confirmLayout?.setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            confirmLabelView?.visibility = View.VISIBLE
+                            false
+                        }
+                        MotionEvent.ACTION_CANCEL -> {
+                            confirmLabelView?.visibility = View.GONE
+                            false
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            confirmLabelView?.visibility = View.GONE
+                            false
+                        }
+                        else -> false
+                    }
+                }
+                cancelLayout?.setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            cancelLabelView?.visibility = View.VISIBLE
+                            false
+                        }
+                        MotionEvent.ACTION_CANCEL -> {
+                            cancelLabelView?.visibility = View.GONE
+                            false
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            cancelLabelView?.visibility = View.GONE
+                            false
+                        }
+                        else -> false
+                    }
+                }
             }
 
             BUTTON_TYPE_TEXT -> {
@@ -134,17 +177,21 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
         }
     }
 
-    private fun changeOrder() {
-        confirmLayout?.let {
-            val icon = it.getChildAt(0)
-            it.removeView(icon)
-            it.addView(icon, 1)
-        }
 
-        cancelLayout?.let {
-            val icon = it.getChildAt(0)
-            it.removeView(icon)
-            it.addView(icon, 1)
+    fun setDialogType(dialogType: String) {
+        when (dialogType) {
+            DialogType.DUAL_ACTION -> {
+                confirmLayout?.visibility = View.VISIBLE
+                cancelLayout?.visibility = View.VISIBLE
+            }
+            DialogType.SINGLE_ACTION -> {
+                confirmLayout?.visibility = View.VISIBLE
+                cancelLayout?.visibility = View.GONE
+            }
+            DialogType.NO_ACTION -> {
+                confirmLayout?.visibility = View.GONE
+                cancelLayout?.visibility = View.GONE
+            }
         }
     }
 

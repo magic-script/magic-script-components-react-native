@@ -22,6 +22,7 @@ import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
+import com.magicleap.magicscript.scene.nodes.dialog.DialogNode
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode

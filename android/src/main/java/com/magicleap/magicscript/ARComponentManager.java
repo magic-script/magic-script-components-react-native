@@ -56,7 +56,6 @@ import com.magicleap.magicscript.icons.ToggleIconsProviderImpl;
 import com.magicleap.magicscript.scene.NodesManager;
 import com.magicleap.magicscript.scene.ReactScene;
 import com.magicleap.magicscript.scene.nodes.ContentNode;
-import com.magicleap.magicscript.scene.nodes.DialogNode;
 import com.magicleap.magicscript.scene.nodes.GroupNode;
 import com.magicleap.magicscript.scene.nodes.LineNode;
 import com.magicleap.magicscript.scene.nodes.ModelNode;
@@ -83,6 +82,7 @@ import com.magicleap.magicscript.scene.nodes.audio.GvrAudioEngineWrapper;
 import com.magicleap.magicscript.scene.nodes.audio.VrAudioEngine;
 import com.magicleap.magicscript.scene.nodes.base.ReactNode;
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode;
+import com.magicleap.magicscript.scene.nodes.dialog.DialogNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListItemNode;
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode;
 import com.magicleap.magicscript.scene.nodes.layouts.PageViewNode;
@@ -106,7 +106,6 @@ import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
-import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
 import com.magicleap.magicscript.utils.FileProvider;
 import com.magicleap.magicscript.utils.UriFileProvider;
@@ -373,14 +372,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            ColorPickerDialog dialog = new ColorPickerDialog(context.getCurrentActivity());
             UiColorPickerNode node = new UiColorPickerNode(props,
                                                            context,
                                                            viewRenderableLoader,
                                                            uiNodeClipper,
-                                                           fontProvider,
-                                                           iconsRepo,
-                                                           dialog);
+                                                           fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -438,7 +434,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDialogNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            DialogNode node = new DialogNode(props, ArViewManager.getActivityRef().get(), iconsRepo, new DialogProviderImpl());
+            DialogNode node = new DialogNode(props, iconsRepo, new DialogProviderImpl());
             addNode(node, nodeId);
         });
     }

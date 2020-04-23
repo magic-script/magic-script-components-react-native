@@ -24,7 +24,7 @@ import com.larswerkman.holocolorpicker.ColorPicker
 import com.magicleap.magicscript.R
 import kotlinx.android.synthetic.main.color_picker_dialog.*
 
-open class ColorPickerDialog(context: Context) : Dialog(context) {
+open class ColorPickerDialog constructor(context: Context) : Dialog(context) {
 
     companion object {
         const val ALPHA_FORMAT = "%.2f"

@@ -13,18 +13,18 @@ export default class NativeFileSystem {
     }
     
     writeFile(path, content, encoding) {
-        return this.RNFS.writeFile(_getFilePath(path), content, encoding);
+        return this.RNFS.writeFile(this._getFilePath(path), content, encoding);
     }
 
     readFile(path, encoding) {
-        return this.RNFS.readFile(_getFilePath(path), encoding);
+        return this.RNFS.readFile(this._getFilePath(path), encoding);
     }
 
     deleteFile(path) {
-        return this.RNFS.unlink(_getFilePath(path));
+        return this.RNFS.unlink(this._getFilePath(path));
     }
 
     moveFile(srcPath, dstPath) {
-        return this.RNFS.moveFile(_getFilePath(srcPath), _getFilePath(dstPath));
+        return this.RNFS.moveFile(this._getFilePath(srcPath), this._getFilePath(dstPath));
     }
 }

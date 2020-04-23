@@ -24,22 +24,22 @@ import com.google.ar.sceneform.Scene
 import com.google.ar.sceneform.ux.TransformationSystem
 
 abstract class ArResourcesProvider {
-    private val arSceneListeners = mutableListOf<ArSceneChangedListener>()
-    private val arLoadedListeners = mutableListOf<ArLoadedListener>()
-    private val cameraUpdatedListeners = mutableListOf<CameraUpdatedListener>()
-    private val transformationSystemListeners = mutableListOf<TransformationSystemListener>()
-    private val planeTapListeners = mutableListOf<PlaneTapListener>()
+    private var arSceneListeners = listOf<ArSceneChangedListener>()
+    private var arLoadedListeners = listOf<ArLoadedListener>()
+    private var cameraUpdatedListeners = listOf<CameraUpdatedListener>()
+    private var transformationSystemListeners = listOf<TransformationSystemListener>()
+    private var planeTapListeners = listOf<PlaneTapListener>()
 
     /**
      * Registers a listener that will be called when ARCore's scene is loaded first time or changed.
      * (Scene is changed e.g. when user exits the app with back button and opens it again)
      */
     fun addArSceneChangedListener(listener: ArSceneChangedListener) {
-        arSceneListeners.add(listener)
+        arSceneListeners = listOf(*arSceneListeners.toTypedArray(), listener)
     }
 
     fun removeArSceneChangedListener(listener: ArSceneChangedListener) {
-        arSceneListeners.remove(listener)
+        arSceneListeners = arSceneListeners.filter { it != listener }
     }
 
     /**
@@ -48,22 +48,22 @@ abstract class ArResourcesProvider {
      * @see isArLoaded
      */
     fun addArLoadedListener(listener: ArLoadedListener) {
-        arLoadedListeners.add(listener)
+        arLoadedListeners = listOf(*arLoadedListeners.toTypedArray(), listener)
     }
 
     fun removeArLoadedListener(listener: ArLoadedListener) {
-        arLoadedListeners.remove(listener)
+        arLoadedListeners = arLoadedListeners.filter { it != listener }
     }
 
     /**
      * Registers a listener that will be called when camera position or state has changed.
      */
     fun addCameraUpdatedListener(listener: CameraUpdatedListener) {
-        cameraUpdatedListeners.add(listener)
+        cameraUpdatedListeners = listOf(*cameraUpdatedListeners.toTypedArray(), listener)
     }
 
     fun removeCameraUpdatedListener(listener: CameraUpdatedListener) {
-        cameraUpdatedListeners.remove(listener)
+        cameraUpdatedListeners = cameraUpdatedListeners.filter { it != listener }
     }
 
     /**
@@ -71,22 +71,23 @@ abstract class ArResourcesProvider {
      * (this happens when AR Fragment is recreated)
      */
     fun addTransformationSystemListener(listener: TransformationSystemListener) {
-        transformationSystemListeners.add(listener)
+        transformationSystemListeners =
+            listOf(*transformationSystemListeners.toTypedArray(), listener)
     }
 
     fun removeTransformationSystemListener(listener: TransformationSystemListener) {
-        transformationSystemListeners.remove(listener)
+        transformationSystemListeners = transformationSystemListeners.filter { it != listener }
     }
 
     /**
      * Registers a plane tap event listener which is called after user taps a detected plane
      */
     fun addPlaneTapListener(listener: PlaneTapListener) {
-        planeTapListeners.add(listener)
+        planeTapListeners = listOf(*planeTapListeners.toTypedArray(), listener)
     }
 
     fun removePlaneTapListener(listener: PlaneTapListener) {
-        planeTapListeners.remove(listener)
+        planeTapListeners = planeTapListeners.filter { it != listener }
     }
 
     /**

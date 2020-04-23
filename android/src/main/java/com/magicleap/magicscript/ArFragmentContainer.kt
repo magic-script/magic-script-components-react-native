@@ -102,7 +102,7 @@ class ArFragmentContainer @JvmOverloads constructor(
     }
 
     private fun layoutFragmentView() {
-        val child: View = getChildAt(0)
+        val child: View = getChildAt(0) ?: return
         child.measure(
             MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)

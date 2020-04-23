@@ -2618,232 +2618,6 @@ open class GLTFSceneSourceProtocolMock: GLTFSceneSourceProtocol, Mock {
     }
 }
 
-// MARK: - Gesturable
-open class GesturableMock: Gesturable, Mock {
-    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
-        SwiftyMockyTestObserver.setup()
-        self.sequencingPolicy = sequencingPolicy
-        self.stubbingPolicy = stubbingPolicy
-        self.file = file
-        self.line = line
-    }
-
-    var matcher: Matcher = Matcher.default
-    var stubbingPolicy: StubbingPolicy = .wrap
-    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
-    private var invocations: [MethodType] = []
-    private var methodReturnValues: [Given] = []
-    private var methodPerformValues: [Perform] = []
-    private var file: StaticString?
-    private var line: UInt?
-
-    public typealias PropertyStub = Given
-    public typealias MethodStub = Given
-    public typealias SubscriptStub = Given
-
-    /// Convenience method - call setupMock() to extend debug information when failure occurs
-    public func setupMock(file: StaticString = #file, line: UInt = #line) {
-        self.file = file
-        self.line = line
-    }
-
-    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
-    public func resetMock(_ scopes: MockScope...) {
-        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
-        if scopes.contains(.invocation) { invocations = [] }
-        if scopes.contains(.given) { methodReturnValues = [] }
-        if scopes.contains(.perform) { methodPerformValues = [] }
-    }
-
-    public var allowsCameraControl: Bool {
-		get {	invocations.append(.p_allowsCameraControl_get); return __p_allowsCameraControl ?? givenGetterValue(.p_allowsCameraControl_get, "GesturableMock - stub value for allowsCameraControl was not defined") }
-		set {	invocations.append(.p_allowsCameraControl_set(.value(newValue))); __p_allowsCameraControl = newValue }
-	}
-	private var __p_allowsCameraControl: (Bool)?
-
-    public var recognizers: [Gesturizing]? {
-		get {	invocations.append(.p_recognizers_get); return __p_recognizers ?? optionalGivenGetterValue(.p_recognizers_get, "GesturableMock - stub value for recognizers was not defined") }
-		set {	invocations.append(.p_recognizers_set(.value(newValue))); __p_recognizers = newValue }
-	}
-	private var __p_recognizers: ([Gesturizing])?
-
-
-
-
-
-    open func addGestureRecognizer(_ gestureRecognizer: Gesturizing) {
-        addInvocation(.m_addGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>.value(`gestureRecognizer`)))
-		let perform = methodPerformValue(.m_addGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>.value(`gestureRecognizer`))) as? (Gesturizing) -> Void
-		perform?(`gestureRecognizer`)
-    }
-
-    open func removeGestureRecognizer(_ gestureRecognizer: Gesturizing) {
-        addInvocation(.m_removeGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>.value(`gestureRecognizer`)))
-		let perform = methodPerformValue(.m_removeGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>.value(`gestureRecognizer`))) as? (Gesturizing) -> Void
-		perform?(`gestureRecognizer`)
-    }
-
-    open func enableNodeGestures() {
-        addInvocation(.m_enableNodeGestures)
-		let perform = methodPerformValue(.m_enableNodeGestures) as? () -> Void
-		perform?()
-    }
-
-    open func disableNodeGestures() {
-        addInvocation(.m_disableNodeGestures)
-		let perform = methodPerformValue(.m_disableNodeGestures) as? () -> Void
-		perform?()
-    }
-
-
-    fileprivate enum MethodType {
-        case m_addGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>)
-        case m_removeGestureRecognizer__gestureRecognizer(Parameter<Gesturizing>)
-        case m_enableNodeGestures
-        case m_disableNodeGestures
-        case p_allowsCameraControl_get
-		case p_allowsCameraControl_set(Parameter<Bool>)
-        case p_recognizers_get
-		case p_recognizers_set(Parameter<[Gesturizing]?>)
-
-        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
-            switch (lhs, rhs) {
-            case (.m_addGestureRecognizer__gestureRecognizer(let lhsGesturerecognizer), .m_addGestureRecognizer__gestureRecognizer(let rhsGesturerecognizer)):
-                guard Parameter.compare(lhs: lhsGesturerecognizer, rhs: rhsGesturerecognizer, with: matcher) else { return false }
-                return true 
-            case (.m_removeGestureRecognizer__gestureRecognizer(let lhsGesturerecognizer), .m_removeGestureRecognizer__gestureRecognizer(let rhsGesturerecognizer)):
-                guard Parameter.compare(lhs: lhsGesturerecognizer, rhs: rhsGesturerecognizer, with: matcher) else { return false }
-                return true 
-            case (.m_enableNodeGestures, .m_enableNodeGestures):
-                return true
-            case (.m_disableNodeGestures, .m_disableNodeGestures):
-                return true 
-            case (.p_allowsCameraControl_get,.p_allowsCameraControl_get): return true
-			case (.p_allowsCameraControl_set(let left),.p_allowsCameraControl_set(let right)): return Parameter<Bool>.compare(lhs: left, rhs: right, with: matcher)
-            case (.p_recognizers_get,.p_recognizers_get): return true
-			case (.p_recognizers_set(let left),.p_recognizers_set(let right)): return Parameter<[Gesturizing]?>.compare(lhs: left, rhs: right, with: matcher)
-            default: return false
-            }
-        }
-
-        func intValue() -> Int {
-            switch self {
-            case let .m_addGestureRecognizer__gestureRecognizer(p0): return p0.intValue
-            case let .m_removeGestureRecognizer__gestureRecognizer(p0): return p0.intValue
-            case .m_enableNodeGestures: return 0
-            case .m_disableNodeGestures: return 0
-            case .p_allowsCameraControl_get: return 0
-			case .p_allowsCameraControl_set(let newValue): return newValue.intValue
-            case .p_recognizers_get: return 0
-			case .p_recognizers_set(let newValue): return newValue.intValue
-            }
-        }
-    }
-
-    open class Given: StubbedMethod {
-        fileprivate var method: MethodType
-
-        private init(method: MethodType, products: [StubProduct]) {
-            self.method = method
-            super.init(products)
-        }
-
-        public static func allowsCameraControl(getter defaultValue: Bool...) -> PropertyStub {
-            return Given(method: .p_allowsCameraControl_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
-        }
-        public static func recognizers(getter defaultValue: [Gesturizing]?...) -> PropertyStub {
-            return Given(method: .p_recognizers_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
-        }
-
-    }
-
-    public struct Verify {
-        fileprivate var method: MethodType
-
-        public static func addGestureRecognizer(_ gestureRecognizer: Parameter<Gesturizing>) -> Verify { return Verify(method: .m_addGestureRecognizer__gestureRecognizer(`gestureRecognizer`))}
-        public static func removeGestureRecognizer(_ gestureRecognizer: Parameter<Gesturizing>) -> Verify { return Verify(method: .m_removeGestureRecognizer__gestureRecognizer(`gestureRecognizer`))}
-        public static func enableNodeGestures() -> Verify { return Verify(method: .m_enableNodeGestures)}
-        public static func disableNodeGestures() -> Verify { return Verify(method: .m_disableNodeGestures)}
-        public static var allowsCameraControl: Verify { return Verify(method: .p_allowsCameraControl_get) }
-		public static func allowsCameraControl(set newValue: Parameter<Bool>) -> Verify { return Verify(method: .p_allowsCameraControl_set(newValue)) }
-        public static var recognizers: Verify { return Verify(method: .p_recognizers_get) }
-		public static func recognizers(set newValue: Parameter<[Gesturizing]?>) -> Verify { return Verify(method: .p_recognizers_set(newValue)) }
-    }
-
-    public struct Perform {
-        fileprivate var method: MethodType
-        var performs: Any
-
-        public static func addGestureRecognizer(_ gestureRecognizer: Parameter<Gesturizing>, perform: @escaping (Gesturizing) -> Void) -> Perform {
-            return Perform(method: .m_addGestureRecognizer__gestureRecognizer(`gestureRecognizer`), performs: perform)
-        }
-        public static func removeGestureRecognizer(_ gestureRecognizer: Parameter<Gesturizing>, perform: @escaping (Gesturizing) -> Void) -> Perform {
-            return Perform(method: .m_removeGestureRecognizer__gestureRecognizer(`gestureRecognizer`), performs: perform)
-        }
-        public static func enableNodeGestures(perform: @escaping () -> Void) -> Perform {
-            return Perform(method: .m_enableNodeGestures, performs: perform)
-        }
-        public static func disableNodeGestures(perform: @escaping () -> Void) -> Perform {
-            return Perform(method: .m_disableNodeGestures, performs: perform)
-        }
-    }
-
-    public func given(_ method: Given) {
-        methodReturnValues.append(method)
-    }
-
-    public func perform(_ method: Perform) {
-        methodPerformValues.append(method)
-        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
-    }
-
-    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
-        let invocations = matchingCalls(method.method)
-        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
-    }
-
-    private func addInvocation(_ call: MethodType) {
-        invocations.append(call)
-    }
-    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
-        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
-        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
-        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
-        return product
-    }
-    private func methodPerformValue(_ method: MethodType) -> Any? {
-        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
-        return matched?.performs
-    }
-    private func matchingCalls(_ method: MethodType) -> [MethodType] {
-        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
-    }
-    private func matchingCalls(_ method: Verify) -> Int {
-        return matchingCalls(method.method).count
-    }
-    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
-        do {
-            return try methodReturnValue(method).casted()
-        } catch {
-            onFatalFailure(message)
-            Failure(message)
-        }
-    }
-    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
-        do {
-            return try methodReturnValue(method).casted()
-        } catch {
-            return nil
-        }
-    }
-    private func onFatalFailure(_ message: String) {
-        #if Mocky
-        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
-        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
-        #endif
-    }
-}
-
 // MARK: - GestureHandling
 open class GestureHandlingMock: NSObject, GestureHandling, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
@@ -2912,14 +2686,14 @@ open class GestureHandlingMock: NSObject, GestureHandling, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_handleTapGesture__sender(let lhsSender), .m_handleTapGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
             case (.m_handleDragGesture__sender(let lhsSender), .m_handleDragGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
             case (.m_handleLongPressGesture__sender(let lhsSender), .m_handleLongPressGesture__sender(let rhsSender)):
-                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSender, rhs: rhsSender, with: matcher) else { return false } 
+                return true 
             default: return false
             }
         }
@@ -3023,8 +2797,203 @@ open class GestureHandlingMock: NSObject, GestureHandling, Mock {
     }
 }
 
-// MARK: - Gesturizing
-open class GesturizingMock: NSObject, Gesturizing, Mock {
+// MARK: - GestureManaging
+open class GestureManagingMock: GestureManaging, Mock {
+    init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
+        SwiftyMockyTestObserver.setup()
+        self.sequencingPolicy = sequencingPolicy
+        self.stubbingPolicy = stubbingPolicy
+        self.file = file
+        self.line = line
+    }
+
+    var matcher: Matcher = Matcher.default
+    var stubbingPolicy: StubbingPolicy = .wrap
+    var sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst
+    private var invocations: [MethodType] = []
+    private var methodReturnValues: [Given] = []
+    private var methodPerformValues: [Perform] = []
+    private var file: StaticString?
+    private var line: UInt?
+
+    public typealias PropertyStub = Given
+    public typealias MethodStub = Given
+    public typealias SubscriptStub = Given
+
+    /// Convenience method - call setupMock() to extend debug information when failure occurs
+    public func setupMock(file: StaticString = #file, line: UInt = #line) {
+        self.file = file
+        self.line = line
+    }
+
+    /// Clear mock internals. You can specify what to reset (invocations aka verify, givens or performs) or leave it empty to clear all mock internals
+    public func resetMock(_ scopes: MockScope...) {
+        let scopes: [MockScope] = scopes.isEmpty ? [.invocation, .given, .perform] : scopes
+        if scopes.contains(.invocation) { invocations = [] }
+        if scopes.contains(.given) { methodReturnValues = [] }
+        if scopes.contains(.perform) { methodPerformValues = [] }
+    }
+
+    public var allowsCameraGestures: Bool {
+		get {	invocations.append(.p_allowsCameraGestures_get); return __p_allowsCameraGestures ?? givenGetterValue(.p_allowsCameraGestures_get, "GestureManagingMock - stub value for allowsCameraGestures was not defined") }
+		set {	invocations.append(.p_allowsCameraGestures_set(.value(newValue))); __p_allowsCameraGestures = newValue }
+	}
+	private var __p_allowsCameraGestures: (Bool)?
+
+    public var recognizers: [GestureRecognizing]? {
+		get {	invocations.append(.p_recognizers_get); return __p_recognizers ?? optionalGivenGetterValue(.p_recognizers_get, "GestureManagingMock - stub value for recognizers was not defined") }
+		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
+		set {	__p_recognizers = newValue }
+	}
+	private var __p_recognizers: ([GestureRecognizing])?
+
+
+
+
+
+    open func addGestureRecognizer(_ gestureRecognizer: GestureRecognizing) {
+        addInvocation(.m_addGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>.value(`gestureRecognizer`)))
+		let perform = methodPerformValue(.m_addGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>.value(`gestureRecognizer`))) as? (GestureRecognizing) -> Void
+		perform?(`gestureRecognizer`)
+    }
+
+    open func removeGestureRecognizer(_ gestureRecognizer: GestureRecognizing) {
+        addInvocation(.m_removeGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>.value(`gestureRecognizer`)))
+		let perform = methodPerformValue(.m_removeGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>.value(`gestureRecognizer`))) as? (GestureRecognizing) -> Void
+		perform?(`gestureRecognizer`)
+    }
+
+
+    fileprivate enum MethodType {
+        case m_addGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>)
+        case m_removeGestureRecognizer__gestureRecognizer(Parameter<GestureRecognizing>)
+        case p_allowsCameraGestures_get
+		case p_allowsCameraGestures_set(Parameter<Bool>)
+        case p_recognizers_get
+
+        static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
+            switch (lhs, rhs) {
+            case (.m_addGestureRecognizer__gestureRecognizer(let lhsGesturerecognizer), .m_addGestureRecognizer__gestureRecognizer(let rhsGesturerecognizer)):
+                guard Parameter.compare(lhs: lhsGesturerecognizer, rhs: rhsGesturerecognizer, with: matcher) else { return false } 
+                return true 
+            case (.m_removeGestureRecognizer__gestureRecognizer(let lhsGesturerecognizer), .m_removeGestureRecognizer__gestureRecognizer(let rhsGesturerecognizer)):
+                guard Parameter.compare(lhs: lhsGesturerecognizer, rhs: rhsGesturerecognizer, with: matcher) else { return false } 
+                return true 
+            case (.p_allowsCameraGestures_get,.p_allowsCameraGestures_get): return true
+			case (.p_allowsCameraGestures_set(let left),.p_allowsCameraGestures_set(let right)): return Parameter<Bool>.compare(lhs: left, rhs: right, with: matcher)
+            case (.p_recognizers_get,.p_recognizers_get): return true
+            default: return false
+            }
+        }
+
+        func intValue() -> Int {
+            switch self {
+            case let .m_addGestureRecognizer__gestureRecognizer(p0): return p0.intValue
+            case let .m_removeGestureRecognizer__gestureRecognizer(p0): return p0.intValue
+            case .p_allowsCameraGestures_get: return 0
+			case .p_allowsCameraGestures_set(let newValue): return newValue.intValue
+            case .p_recognizers_get: return 0
+            }
+        }
+    }
+
+    open class Given: StubbedMethod {
+        fileprivate var method: MethodType
+
+        private init(method: MethodType, products: [StubProduct]) {
+            self.method = method
+            super.init(products)
+        }
+
+        public static func allowsCameraGestures(getter defaultValue: Bool...) -> PropertyStub {
+            return Given(method: .p_allowsCameraGestures_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+        public static func recognizers(getter defaultValue: [GestureRecognizing]?...) -> PropertyStub {
+            return Given(method: .p_recognizers_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
+        }
+
+    }
+
+    public struct Verify {
+        fileprivate var method: MethodType
+
+        public static func addGestureRecognizer(_ gestureRecognizer: Parameter<GestureRecognizing>) -> Verify { return Verify(method: .m_addGestureRecognizer__gestureRecognizer(`gestureRecognizer`))}
+        public static func removeGestureRecognizer(_ gestureRecognizer: Parameter<GestureRecognizing>) -> Verify { return Verify(method: .m_removeGestureRecognizer__gestureRecognizer(`gestureRecognizer`))}
+        public static var allowsCameraGestures: Verify { return Verify(method: .p_allowsCameraGestures_get) }
+		public static func allowsCameraGestures(set newValue: Parameter<Bool>) -> Verify { return Verify(method: .p_allowsCameraGestures_set(newValue)) }
+        public static var recognizers: Verify { return Verify(method: .p_recognizers_get) }
+    }
+
+    public struct Perform {
+        fileprivate var method: MethodType
+        var performs: Any
+
+        public static func addGestureRecognizer(_ gestureRecognizer: Parameter<GestureRecognizing>, perform: @escaping (GestureRecognizing) -> Void) -> Perform {
+            return Perform(method: .m_addGestureRecognizer__gestureRecognizer(`gestureRecognizer`), performs: perform)
+        }
+        public static func removeGestureRecognizer(_ gestureRecognizer: Parameter<GestureRecognizing>, perform: @escaping (GestureRecognizing) -> Void) -> Perform {
+            return Perform(method: .m_removeGestureRecognizer__gestureRecognizer(`gestureRecognizer`), performs: perform)
+        }
+    }
+
+    public func given(_ method: Given) {
+        methodReturnValues.append(method)
+    }
+
+    public func perform(_ method: Perform) {
+        methodPerformValues.append(method)
+        methodPerformValues.sort { $0.method.intValue() < $1.method.intValue() }
+    }
+
+    public func verify(_ method: Verify, count: Count = Count.moreOrEqual(to: 1), file: StaticString = #file, line: UInt = #line) {
+        let invocations = matchingCalls(method.method)
+        MockyAssert(count.matches(invocations.count), "Expected: \(count) invocations of `\(method.method)`, but was: \(invocations.count)", file: file, line: line)
+    }
+
+    private func addInvocation(_ call: MethodType) {
+        invocations.append(call)
+    }
+    private func methodReturnValue(_ method: MethodType) throws -> StubProduct {
+        let candidates = sequencingPolicy.sorted(methodReturnValues, by: { $0.method.intValue() > $1.method.intValue() })
+        let matched = candidates.first(where: { $0.isValid && MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) })
+        guard let product = matched?.getProduct(policy: self.stubbingPolicy) else { throw MockError.notStubed }
+        return product
+    }
+    private func methodPerformValue(_ method: MethodType) -> Any? {
+        let matched = methodPerformValues.reversed().first { MethodType.compareParameters(lhs: $0.method, rhs: method, matcher: matcher) }
+        return matched?.performs
+    }
+    private func matchingCalls(_ method: MethodType) -> [MethodType] {
+        return invocations.filter { MethodType.compareParameters(lhs: $0, rhs: method, matcher: matcher) }
+    }
+    private func matchingCalls(_ method: Verify) -> Int {
+        return matchingCalls(method.method).count
+    }
+    private func givenGetterValue<T>(_ method: MethodType, _ message: String) -> T {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            onFatalFailure(message)
+            Failure(message)
+        }
+    }
+    private func optionalGivenGetterValue<T>(_ method: MethodType, _ message: String) -> T? {
+        do {
+            return try methodReturnValue(method).casted()
+        } catch {
+            return nil
+        }
+    }
+    private func onFatalFailure(_ message: String) {
+        #if Mocky
+        guard let file = self.file, let line = self.line else { return } // Let if fail if cannot handle gratefully
+        SwiftyMockyTestObserver.handleMissingStubError(message: message, file: file, line: line)
+        #endif
+    }
+}
+
+// MARK: - GestureRecognizing
+open class GestureRecognizingMock: NSObject, GestureRecognizing, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy
@@ -3061,14 +3030,14 @@ open class GesturizingMock: NSObject, Gesturizing, Mock {
     }
 
     public var view: UIView? {
-		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "GesturizingMock - stub value for view was not defined") }
+		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "GestureRecognizingMock - stub value for view was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_view = newValue }
 	}
 	private var __p_view: (UIView)?
 
     public var state: UIGestureRecognizer.State {
-		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "GesturizingMock - stub value for state was not defined") }
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "GestureRecognizingMock - stub value for state was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_state = newValue }
 	}
@@ -3657,8 +3626,8 @@ open class NodeAnimatingMock: NodeAnimating, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_startAnimation__duration_durationupdate_update(let lhsDuration, let lhsUpdate), .m_startAnimation__duration_durationupdate_update(let rhsDuration, let rhsUpdate)):
-                guard Parameter.compare(lhs: lhsDuration, rhs: rhsDuration, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsUpdate, rhs: rhsUpdate, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsDuration, rhs: rhsDuration, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsUpdate, rhs: rhsUpdate, with: matcher) else { return false } 
                 return true 
             case (.m_stopAnimation, .m_stopAnimation):
                 return true 
@@ -3835,10 +3804,10 @@ open class NodeSelectingMock: NodeSelecting, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_hitTest__ray_ray(let lhsRay), .m_hitTest__ray_ray(let rhsRay)):
-                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
                 return true 
             case (.m_draggingHitTest__ray_ray(let lhsRay), .m_draggingHitTest__ray_ray(let rhsRay)):
-                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsRay, rhs: rhsRay, with: matcher) else { return false } 
                 return true 
             default: return false
             }
@@ -4035,11 +4004,11 @@ open class NodesGestureHandlingMock: NodesGestureHandling, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_handleNodeTap__node(let lhsNode), .m_handleNodeTap__node(let rhsNode)):
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
                 return true 
             case (.m_handleNodeLongPress__node_state(let lhsNode, let lhsState), .m_handleNodeLongPress__node_state(let rhsNode, let rhsState)):
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsState, rhs: rhsState, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsState, rhs: rhsState, with: matcher) else { return false } 
                 return true 
             case (.p_onInputFocused_get,.p_onInputFocused_get): return true
 			case (.p_onInputFocused_set(let left),.p_onInputFocused_set(let right)): return Parameter<((_ input: DataProviding) -> (Void))?>.compare(lhs: left, rhs: right, with: matcher)
@@ -4271,24 +4240,24 @@ open class NodesManagingMock: NSObject, NodesManaging, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_registerScene__scenesceneId_sceneId(let lhsScene, let lhsSceneid), .m_registerScene__scenesceneId_sceneId(let rhsScene, let rhsSceneid)):
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsSceneid, rhs: rhsSceneid, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsSceneid, rhs: rhsSceneid, with: matcher) else { return false } 
+                return true 
             case (.m_registerPrism__prismprismId_prismId(let lhsPrism, let lhsPrismid), .m_registerPrism__prismprismId_prismId(let rhsPrism, let rhsPrismid)):
-                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsPrismid, rhs: rhsPrismid, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsPrismid, rhs: rhsPrismid, with: matcher) else { return false } 
+                return true 
             case (.m_registerNode__nodenodeId_nodeId(let lhsNode, let lhsNodeid), .m_registerNode__nodenodeId_nodeId(let rhsNode, let rhsNodeid)):
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                return true 
             case (.m_unregisterNode__nodeId(let lhsNodeid), .m_unregisterNode__nodeId(let rhsNodeid)):
-                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                return true 
             case (.m_updateNode__nodeIdproperties_properties(let lhsNodeid, let lhsProperties), .m_updateNode__nodeIdproperties_properties(let rhsNodeid, let rhsProperties)):
-                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsProperties, rhs: rhsProperties, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsNodeid, rhs: rhsNodeid, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsProperties, rhs: rhsProperties, with: matcher) else { return false } 
+                return true 
             case (.p_scene_get,.p_scene_get): return true
             case (.p_prismsById_get,.p_prismsById_get): return true
             case (.p_nodesById_get,.p_nodesById_get): return true
@@ -4430,8 +4399,8 @@ open class NodesManagingMock: NSObject, NodesManaging, Mock {
     }
 }
 
-// MARK: - PanGesturizing
-open class PanGesturizingMock: NSObject, PanGesturizing, Mock {
+// MARK: - PanGestureRecognizing
+open class PanGestureRecognizingMock: NSObject, PanGestureRecognizing, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy
@@ -4468,14 +4437,14 @@ open class PanGesturizingMock: NSObject, PanGesturizing, Mock {
     }
 
     public var view: UIView? {
-		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "PanGesturizingMock - stub value for view was not defined") }
+		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "PanGestureRecognizingMock - stub value for view was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_view = newValue }
 	}
 	private var __p_view: (UIView)?
 
     public var state: UIGestureRecognizer.State {
-		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "PanGesturizingMock - stub value for state was not defined") }
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "PanGestureRecognizingMock - stub value for state was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_state = newValue }
 	}
@@ -4523,11 +4492,11 @@ open class PanGesturizingMock: NSObject, PanGesturizing, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_velocity__in_view(let lhsView), .m_velocity__in_view(let rhsView)):
-                guard Parameter.compare(lhs: lhsView, rhs: rhsView, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsView, rhs: rhsView, with: matcher) else { return false } 
+                return true 
             case (.m_translation__in_view(let lhsView), .m_translation__in_view(let rhsView)):
-                guard Parameter.compare(lhs: lhsView, rhs: rhsView, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsView, rhs: rhsView, with: matcher) else { return false } 
+                return true 
             case (.p_view_get,.p_view_get): return true
             case (.p_state_get,.p_state_get): return true
             default: return false
@@ -4658,8 +4627,8 @@ open class PanGesturizingMock: NSObject, PanGesturizing, Mock {
     }
 }
 
-// MARK: - PinchGesturizing
-open class PinchGesturizingMock: NSObject, PinchGesturizing, Mock {
+// MARK: - PinchGestureRecognizing
+open class PinchGestureRecognizingMock: NSObject, PinchGestureRecognizing, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy
@@ -4696,28 +4665,28 @@ open class PinchGesturizingMock: NSObject, PinchGesturizing, Mock {
     }
 
     public var scale: CGFloat {
-		get {	invocations.append(.p_scale_get); return __p_scale ?? givenGetterValue(.p_scale_get, "PinchGesturizingMock - stub value for scale was not defined") }
+		get {	invocations.append(.p_scale_get); return __p_scale ?? givenGetterValue(.p_scale_get, "PinchGestureRecognizingMock - stub value for scale was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_scale = newValue }
 	}
 	private var __p_scale: (CGFloat)?
 
     public var velocity: CGFloat {
-		get {	invocations.append(.p_velocity_get); return __p_velocity ?? givenGetterValue(.p_velocity_get, "PinchGesturizingMock - stub value for velocity was not defined") }
+		get {	invocations.append(.p_velocity_get); return __p_velocity ?? givenGetterValue(.p_velocity_get, "PinchGestureRecognizingMock - stub value for velocity was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_velocity = newValue }
 	}
 	private var __p_velocity: (CGFloat)?
 
     public var view: UIView? {
-		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "PinchGesturizingMock - stub value for view was not defined") }
+		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "PinchGestureRecognizingMock - stub value for view was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_view = newValue }
 	}
 	private var __p_view: (UIView)?
 
     public var state: UIGestureRecognizer.State {
-		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "PinchGesturizingMock - stub value for state was not defined") }
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "PinchGestureRecognizingMock - stub value for state was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_state = newValue }
 	}
@@ -4923,18 +4892,18 @@ open class PrismInteractingMock: PrismInteracting, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_toggleInteractions__for_prism(let lhsPrism), .m_toggleInteractions__for_prism(let rhsPrism)):
-                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
             case (.m_startInteractions__for_prism(let lhsPrism), .m_startInteractions__for_prism(let rhsPrism)):
-                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
             case (.m_update__cameraNode_cameraNodetime_time(let lhsCameranode, let lhsTime), .m_update__cameraNode_cameraNodetime_time(let rhsCameranode, let rhsTime)):
-                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_stopInteractions__for_prism(let lhsPrism), .m_stopInteractions__for_prism(let rhsPrism)):
-                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
             default: return false
             }
         }
@@ -5097,8 +5066,8 @@ open class PrismInteractingDelegateMock: PrismInteractingDelegate, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_onPrismUpdated__prism_prism(let lhsPrism), .m_onPrismUpdated__prism_prism(let rhsPrism)):
-                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsPrism, rhs: rhsPrism, with: matcher) else { return false } 
+                return true 
             }
         }
 
@@ -5336,65 +5305,65 @@ open class RCTARViewObservingMock: NSObject, RCTARViewObserving, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_renderer__rendererdidAdd_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidAdd_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererwillUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererwillUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidUpdate_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidUpdate_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidRemove_nodefor_anchor(let lhsRenderer, let lhsNode, let lhsAnchor), .m_renderer__rendererdidRemove_nodefor_anchor(let rhsRenderer, let rhsNode, let rhsAnchor)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsNode, rhs: rhsNode, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAnchor, rhs: rhsAnchor, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessiondidFailWithError_error(let lhsSession, let lhsError), .m_session__sessiondidFailWithError_error(let rhsSession, let rhsError)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsError, rhs: rhsError, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsError, rhs: rhsError, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessioncameraDidChangeTrackingState_camera(let lhsSession, let lhsCamera), .m_session__sessioncameraDidChangeTrackingState_camera(let rhsSession, let rhsCamera)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsCamera, rhs: rhsCamera, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsCamera, rhs: rhsCamera, with: matcher) else { return false } 
+                return true 
             case (.m_sessionWasInterrupted__session(let lhsSession), .m_sessionWasInterrupted__session(let rhsSession)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                return true 
             case (.m_sessionInterruptionEnded__session(let lhsSession), .m_sessionInterruptionEnded__session(let rhsSession)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                return true 
             case (.m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let lhsSession, let lhsAudiosamplebuffer), .m_session__sessiondidOutputAudioSampleBuffer_audioSampleBuffer(let rhsSession, let rhsAudiosamplebuffer)):
-                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAudiosamplebuffer, rhs: rhsAudiosamplebuffer, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsSession, rhs: rhsSession, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAudiosamplebuffer, rhs: rhsAudiosamplebuffer, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererupdateAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererupdateAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidApplyAnimationsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidApplyAnimationsAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidSimulatePhysicsAtTime_time(let lhsRenderer, let lhsTime), .m_renderer__rendererdidSimulatePhysicsAtTime_time(let rhsRenderer, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererwillRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererwillRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             case (.m_renderer__rendererdidRenderScene_sceneatTime_time(let lhsRenderer, let lhsScene, let lhsTime), .m_renderer__rendererdidRenderScene_sceneatTime_time(let rhsRenderer, let rhsScene, let rhsTime)):
-                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsRenderer, rhs: rhsRenderer, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsTime, rhs: rhsTime, with: matcher) else { return false } 
+                return true 
             default: return false
             }
         }
@@ -5614,9 +5583,9 @@ open class RayBuildingMock: RayBuilding, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_build__gesture_gesturecameraNode_cameraNode(let lhsGesture, let lhsCameranode), .m_build__gesture_gesturecameraNode_cameraNode(let rhsGesture, let rhsCameranode)):
-                guard Parameter.compare(lhs: lhsGesture, rhs: rhsGesture, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false }
-                return true
+                guard Parameter.compare(lhs: lhsGesture, rhs: rhsGesture, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsCameranode, rhs: rhsCameranode, with: matcher) else { return false } 
+                return true 
             }
         }
 
@@ -5719,8 +5688,8 @@ open class RayBuildingMock: RayBuilding, Mock {
     }
 }
 
-// MARK: - RotationGesturizing
-open class RotationGesturizingMock: NSObject, RotationGesturizing, Mock {
+// MARK: - RotationGestureRecognizing
+open class RotationGestureRecognizingMock: NSObject, RotationGestureRecognizing, Mock {
     init(sequencing sequencingPolicy: SequencingPolicy = .lastWrittenResolvedFirst, stubbing stubbingPolicy: StubbingPolicy = .wrap, file: StaticString = #file, line: UInt = #line) {
         SwiftyMockyTestObserver.setup()
         self.sequencingPolicy = sequencingPolicy
@@ -5757,28 +5726,28 @@ open class RotationGesturizingMock: NSObject, RotationGesturizing, Mock {
     }
 
     public var rotation: CGFloat {
-		get {	invocations.append(.p_rotation_get); return __p_rotation ?? givenGetterValue(.p_rotation_get, "RotationGesturizingMock - stub value for rotation was not defined") }
+		get {	invocations.append(.p_rotation_get); return __p_rotation ?? givenGetterValue(.p_rotation_get, "RotationGestureRecognizingMock - stub value for rotation was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_rotation = newValue }
 	}
 	private var __p_rotation: (CGFloat)?
 
     public var velocity: CGFloat {
-		get {	invocations.append(.p_velocity_get); return __p_velocity ?? givenGetterValue(.p_velocity_get, "RotationGesturizingMock - stub value for velocity was not defined") }
+		get {	invocations.append(.p_velocity_get); return __p_velocity ?? givenGetterValue(.p_velocity_get, "RotationGestureRecognizingMock - stub value for velocity was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_velocity = newValue }
 	}
 	private var __p_velocity: (CGFloat)?
 
     public var view: UIView? {
-		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "RotationGesturizingMock - stub value for view was not defined") }
+		get {	invocations.append(.p_view_get); return __p_view ?? optionalGivenGetterValue(.p_view_get, "RotationGestureRecognizingMock - stub value for view was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_view = newValue }
 	}
 	private var __p_view: (UIView)?
 
     public var state: UIGestureRecognizer.State {
-		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "RotationGesturizingMock - stub value for state was not defined") }
+		get {	invocations.append(.p_state_get); return __p_state ?? givenGetterValue(.p_state_get, "RotationGestureRecognizingMock - stub value for state was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_state = newValue }
 	}
@@ -5963,8 +5932,8 @@ open class SceneInteractingMock: SceneInteracting, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_onUpdate__pointOfView_pointOfViewatTime_atTime(let lhsPointofview, let lhsAttime), .m_onUpdate__pointOfView_pointOfViewatTime_atTime(let rhsPointofview, let rhsAttime)):
-                guard Parameter.compare(lhs: lhsPointofview, rhs: rhsPointofview, with: matcher) else { return false }
-                guard Parameter.compare(lhs: lhsAttime, rhs: rhsAttime, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsPointofview, rhs: rhsPointofview, with: matcher) else { return false } 
+                guard Parameter.compare(lhs: lhsAttime, rhs: rhsAttime, with: matcher) else { return false } 
                 return true 
             }
         }
@@ -6112,7 +6081,7 @@ open class SceneInteractingDelegateMock: SceneInteractingDelegate, Mock {
         static func compareParameters(lhs: MethodType, rhs: MethodType, matcher: Matcher) -> Bool {
             switch (lhs, rhs) {
             case (.m_onSceneUpdate__scene_scene(let lhsScene), .m_onSceneUpdate__scene_scene(let rhsScene)):
-                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false }
+                guard Parameter.compare(lhs: lhsScene, rhs: rhsScene, with: matcher) else { return false } 
                 return true 
             }
         }

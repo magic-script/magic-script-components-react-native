@@ -37,11 +37,7 @@ class PrismContextMenu: UiNode {
 
     weak var prism: Prism? {
         didSet {
-            if let prism = prism, let prismTitle = prism.name {
-                text = prismTitle
-            } else {
-                text = ""
-            }
+            text = prism?.name ?? ""
         }
     }
 
@@ -66,13 +62,13 @@ class PrismContextMenu: UiNode {
         linearLayout.alignment = .centerCenter
         linearLayout.layoutOrientation = .vertical
         linearLayout.defaultItemAlignment = .centerCenter
-        linearLayout.defaultItemPadding = UIEdgeInsets(top: 0.0075, left: 0.0, bottom: 0.0075, right: 0.0)
+        linearLayout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.0, bottom: 0.02, right: 0.0)
 
         titleNode = UiTextNode()
-        titleNode.textSize = 0.055
+        titleNode.textSize = 0.15
 
         actionButton = UiButtonNode()
-        actionButton.height = 0.11
+        actionButton.height = 0.15
         actionButton.buttonType = .icon
         actionButton.iconType = "genericThreeDimensional"
 

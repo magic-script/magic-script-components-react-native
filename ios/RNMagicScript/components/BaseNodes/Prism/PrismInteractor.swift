@@ -35,9 +35,9 @@ class PrismInteractor: NSObject, PrismInteracting {
     weak var delegate: PrismInteractingDelegate?
 
     // MARK: Prism interaction variables
-    weak var gesturable: Gesturable?
+    weak var gesturable: GestureManaging?
     var interactedPrism: Prism?
-    var gestureRecognizers: [Gesturizing] = []
+    var gestureRecognizers: [GestureRecognizing] = []
 
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
@@ -72,7 +72,7 @@ class PrismInteractor: NSObject, PrismInteracting {
         attacheGestureRecognizers()
 
         #if targetEnvironment(simulator)
-        gesturable?.allowsCameraControl = false
+        gesturable?.allowsCameraGestures = false
         #endif
     }
 
@@ -133,7 +133,7 @@ class PrismInteractor: NSObject, PrismInteracting {
             detachGestureRecognizers()
 
             #if targetEnvironment(simulator)
-            gesturable?.allowsCameraControl = true
+            gesturable?.allowsCameraGestures = true
             #endif
         }
     }
@@ -153,7 +153,7 @@ class PrismInteractor: NSObject, PrismInteracting {
 
 // MARK: gesture handlers
 extension PrismInteractor {
-    @objc func handlePanGesture(_ sender: PanGesturizing) {
+    @objc func handlePanGesture(_ sender: PanGestureRecognizing) {
         switch sender.state {
         case .began, .changed:
             let speedFactor: Float = 40.0
@@ -165,7 +165,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handlePinchGesture(_ sender: PinchGesturizing) {
+    @objc func handlePinchGesture(_ sender: PinchGestureRecognizing) {
         switch sender.state {
         case .began:
             prismInitialScale = interactedPrism?.scale
@@ -190,7 +190,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handleRotationGesture(_ sender: RotationGesturizing) {
+    @objc func handleRotationGesture(_ sender: RotationGestureRecognizing) {
         switch sender.state {
         case .began, .changed:
             prismYawChange = Float(sender.rotation)

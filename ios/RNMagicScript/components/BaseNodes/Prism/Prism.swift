@@ -19,9 +19,12 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     static let defaultRayLenght: CGFloat = 20.0
-    static let distanceToContextMenu: Float = 0.10
+    static let distanceToContextMenu: Float = 0.3
+
+    #if targetEnvironment(simulator)
     static let debugBoxInactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
     static let debugBoxActiveColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
+    #endif
 
     @objc public var isPointed: Bool = false {
         didSet {

@@ -21,9 +21,8 @@ import SceneKit
     @objc fileprivate(set) var prisms: [Prism] = []
 
 
-    @objc private(set) var prismInEditMode: Prism? {
-        get { return prisms.filter({ $0.editMode }).first }
-        set { }
+    @objc var editingPrism: Prism? {
+        return prisms.filter{ $0.editMode }.first
     }
 
     @objc var prismContextMenu: PrismContextMenu! {
@@ -70,9 +69,7 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
-        if prismInEditMode != nil {
-            return prismContextMenu.hitTest(ray: ray)
-        }
+        if editingPrism != nil { return prismContextMenu?.hitTest(ray: ray) }
         if let menuHit = prismContextMenu?.hitTest(ray: ray) { return menuHit }
         for prism in prisms {
             if let hitResult = prism.hitTest(ray: ray) {

@@ -18,34 +18,34 @@ import UIKit
 
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
-@objc protocol Gesturizing: NSObjectProtocol {
+@objc protocol GestureRecognizing: NSObjectProtocol {
     var view: UIView? { get }
     var state: UIGestureRecognizer.State { get }
 }
 
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
-@objc protocol PanGesturizing: Gesturizing {
+@objc protocol PanGestureRecognizing: GestureRecognizing {
     @objc(velocityInView:) func velocity(in view: UIView?) -> CGPoint
     @objc(translationInView:) func translation(in view: UIView?) -> CGPoint
 }
 
-class PanGestureRecognizer: UIPanGestureRecognizer, PanGesturizing { }
+class PanGestureRecognizer: UIPanGestureRecognizer, PanGestureRecognizing { }
 
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
-@objc protocol PinchGesturizing: Gesturizing {
+@objc protocol PinchGestureRecognizing: GestureRecognizing {
     var scale: CGFloat { get }
     var velocity: CGFloat { get }
 }
 
-class PinchGestureRecognizer: UIPinchGestureRecognizer, PinchGesturizing { }
+class PinchGestureRecognizer: UIPinchGestureRecognizer, PinchGestureRecognizing { }
 
 //sourcery: AutoMockable
 //sourcery: ObjcProtocol
-@objc protocol RotationGesturizing: Gesturizing {
+@objc protocol RotationGestureRecognizing: GestureRecognizing {
     var rotation: CGFloat { get }
     var velocity: CGFloat { get }
 }
 
-class RotationGestureRecognizer: UIRotationGestureRecognizer, RotationGesturizing { }
+class RotationGestureRecognizer: UIRotationGestureRecognizer, RotationGestureRecognizing { }

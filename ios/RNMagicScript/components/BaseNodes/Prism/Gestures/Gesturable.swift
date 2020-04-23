@@ -17,32 +17,31 @@
 import UIKit
 
 //sourcery: AutoMockable
-protocol Gesturable: class {
-    var allowsCameraControl: Bool { get set }
+protocol GestureManaging: class {
+    var allowsCameraGestures: Bool { get set }
 
-    var recognizers: [Gesturizing]? { get set }
-    func addGestureRecognizer(_ gestureRecognizer: Gesturizing)
-    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing)
+    var recognizers: [GestureRecognizing]? { get }
+    func addGestureRecognizer(_ gestureRecognizer: GestureRecognizing)
+    func removeGestureRecognizer(_ gestureRecognizer: GestureRecognizing)
 }
 
-extension RCTARView: Gesturable {
-    var allowsCameraControl: Bool {
+extension RCTARView: GestureManaging {
+    var allowsCameraGestures: Bool {
         set { arView.allowsCameraControl = newValue }
         get { return arView.allowsCameraControl }
     }
 
-    var recognizers: [Gesturizing]? {
-        get { return gestureRecognizers?.filter { $0 is Gesturizing }.map { $0 as! Gesturizing } }
-        set { }
+    var recognizers: [GestureRecognizing]? {
+        return gestureRecognizers?.filter { $0 is GestureRecognizing }.map { $0 as! GestureRecognizing }
     }
 
-    func addGestureRecognizer(_ gestureRecognizer: Gesturizing) {
+    func addGestureRecognizer(_ gestureRecognizer: GestureRecognizing) {
         if let gr = gestureRecognizer as? UIGestureRecognizer {
             addGestureRecognizer(gr)
         }
     }
 
-    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing) {
+    func removeGestureRecognizer(_ gestureRecognizer: GestureRecognizing) {
         if let gr = gestureRecognizer as? UIGestureRecognizer {
             removeGestureRecognizer(gr)
         }

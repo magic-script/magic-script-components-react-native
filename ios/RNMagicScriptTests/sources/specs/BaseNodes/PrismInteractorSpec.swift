@@ -24,22 +24,22 @@ import SceneKit
 class PrismInteractorSpec: QuickSpec {
     override func spec() {
         describe("PrismInteractor") {
-            var gesturableMock: GesturableMock!
+            var gesturableMock: GestureManagingMock!
             var prismInteractor: PrismInteractor!
-            var panGestureRecognizerMock: PanGesturizingMock!
-            var pinchGestureRecognizerMock: PinchGesturizingMock!
-            var rotationGestureRecognizerMock: RotationGesturizingMock!
-            var gestureRecognizerMocks: [Gesturizing]!
+            var panGestureRecognizerMock: PanGestureRecognizingMock!
+            var pinchGestureRecognizerMock: PinchGestureRecognizingMock!
+            var rotationGestureRecognizerMock: RotationGestureRecognizingMock!
+            var gestureRecognizerMocks: [GestureRecognizing]!
             var relatedPrism: Prism!
 
             beforeEach {
                 prismInteractor = PrismInteractor()
-                gesturableMock = GesturableMock()
+                gesturableMock = GestureManagingMock()
                 prismInteractor.gesturable = gesturableMock
-                gestureRecognizerMocks = [Gesturizing]()
-                panGestureRecognizerMock = PanGesturizingMock()
-                pinchGestureRecognizerMock = PinchGesturizingMock()
-                rotationGestureRecognizerMock = RotationGesturizingMock()
+                gestureRecognizerMocks = [GestureRecognizingMock]()
+                panGestureRecognizerMock = PanGestureRecognizingMock()
+                pinchGestureRecognizerMock = PinchGestureRecognizingMock()
+                rotationGestureRecognizerMock = RotationGestureRecognizingMock()
                 gestureRecognizerMocks.append(panGestureRecognizerMock)
                 gestureRecognizerMocks.append(pinchGestureRecognizerMock)
                 gestureRecognizerMocks.append(rotationGestureRecognizerMock)

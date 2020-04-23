@@ -19,16 +19,18 @@ import SceneKit
 
 @objc open class Prism: BaseNode {
     static let defaultRayLenght: CGFloat = 20.0
-    static let distanceToContextMenu: Float = 0.20
+    static let distanceToContextMenu: Float = 0.3
+
+    #if targetEnvironment(simulator)
+    static let debugBoxInactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
+    static let debugBoxActiveColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
+    #endif
 
     @objc public var isPointed: Bool = false {
         didSet {
             #if targetEnvironment(simulator)
-            let activeColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
-            let inactiveColor = UIColor(red: 0, green: 0.5, blue: 0, alpha: 1)
-            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? activeColor : inactiveColor
+            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? Prism.debugBoxActiveColor : Prism.debugBoxInactiveColor
             #endif
-            prismMenu?.isHidden = !isPointed
         }
     }
     @objc public var size: SCNVector3 = SCNVector3.zero {
@@ -65,17 +67,6 @@ import SceneKit
     @objc fileprivate var clipNeeded: Bool = true
     @objc fileprivate var clippingPlanes: [Plane]?
     @objc fileprivate var clippingPlanesAsVector4: [SCNVector4]?
-
-    var prismMenu: PrismContextMenu? {
-        willSet { prismMenu?.removeFromParentNode() }
-        didSet {
-            guard let menu = prismMenu else { return }
-            menu.text = name ?? ""
-            menu.resetClippingPlanesShaderModifiers(recursive: true)
-            addChildNode(menu)
-            updateSize()
-        }
-    }
 
     @objc override init() {
         super.init()
@@ -141,7 +132,6 @@ import SceneKit
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
-        if let menuHitNode = prismMenu?.hitTest(ray: ray) { return menuHitNode }
         var outRay: Ray?
         guard intersect(with: ray, clippedRay: &outRay) else { return nil }
         guard let clippedRay = outRay else { return nil }
@@ -181,19 +171,13 @@ import SceneKit
         #endif
         editNode?.size = size * scale
         editNode?.scale = 1.0 / scale
-
-        guard let menu = prismMenu else { return }
-        menu.position = SCNVector3(0.0, size.y / 2 + Prism.distanceToContextMenu, 0.0)
-        menu.setNeedsLayout()
-        menu.layoutIfNeeded()
-        menu.resetClippingPlanesShaderModifiers(recursive: true)
     }
 
     @objc func updateDebugMode() {
         #if targetEnvironment(simulator)
         if debug {
             if debugNode == nil {
-                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: UIColor.green)
+                debugNode = NodesFactory.createWireBoxNode(width: 1.0, height: 1.0, depth: 1.0, color: Prism.debugBoxInactiveColor)
                 debugNode!.scale = size
                 debugNode!.renderingOrder = 990
             }
@@ -204,8 +188,6 @@ import SceneKit
         } else {
             debugNode?.removeFromParentNode()
         }
-        prismMenu?.debug = debug
-        prismMenu?.resetClippingPlanesShaderModifiers(recursive: true)
         #endif
     }
 

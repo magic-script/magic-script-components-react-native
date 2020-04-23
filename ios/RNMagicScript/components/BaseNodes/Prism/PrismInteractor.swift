@@ -19,6 +19,11 @@ import ARKit
 import SceneKit
 
 //sourcery: AutoMockable
+protocol PrismInteractingDelegate: class {
+    func onPrismUpdated(prism: Prism)
+}
+
+//sourcery: AutoMockable
 protocol PrismInteracting: class {
     func toggleInteractions(for prism: Prism)
     func startInteractions(for prism: Prism)
@@ -27,31 +32,31 @@ protocol PrismInteracting: class {
 }
 
 class PrismInteractor: NSObject, PrismInteracting {
+    weak var delegate: PrismInteractingDelegate?
 
     // MARK: Prism interaction variables
+    weak var gesturable: GestureManaging?
     var interactedPrism: Prism?
-    private weak var arView: RCTARView?
+    var gestureRecognizers: [GestureRecognizing] = []
+
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
     private var startInteractionPosition: SCNVector3 = SCNVector3.zero
-    private var startDifferenceYaw: Float = 0.0
-    private var prismYawChange: Float = 0.0
-    private var prismDistanceChange: Float = 0.0
-    private var prismInitialScale: SCNVector3? = nil
-    private var gestureRecognizers: [UIGestureRecognizer] = []
+    private(set) var startDifferenceYaw: Float = 0.0
+    private(set) var prismYawChange: Float = 0.0
+    private(set) var prismDistanceChange: Float = 0.0
+    private(set) var prismInitialScale: SCNVector3? = nil
 
-    init(with arView: RCTARView?) {
+    override init() {
         super.init()
 
-        self.arView = arView
-
-        let panGestureRecogrnizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         gestureRecognizers.append(panGestureRecogrnizer)
 
-        let pinchGestureRecogrnizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
         gestureRecognizers.append(pinchGestureRecogrnizer)
 
-        let rotationGestureRecogrnizer = UIRotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
+        let rotationGestureRecogrnizer = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
         gestureRecognizers.append(rotationGestureRecogrnizer)
     }
 
@@ -67,7 +72,7 @@ class PrismInteractor: NSObject, PrismInteracting {
         attacheGestureRecognizers()
 
         #if targetEnvironment(simulator)
-        RCTARView.instance.arView.allowsCameraControl = false
+        gesturable?.allowsCameraGestures = false
         #endif
     }
 
@@ -117,6 +122,7 @@ class PrismInteractor: NSObject, PrismInteracting {
         let prismYaw = (cameraNode.angleToWorldFront() - startDifferenceYaw) - prismYawChange
         prism.orientation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: prismYaw)
         prism.updateClipping()
+        delegate?.onPrismUpdated(prism: prism)
     }
 
     func stopInteractions(for prism: Prism) {
@@ -127,34 +133,27 @@ class PrismInteractor: NSObject, PrismInteracting {
             detachGestureRecognizers()
 
             #if targetEnvironment(simulator)
-            RCTARView.instance.arView.allowsCameraControl = true
+            gesturable?.allowsCameraGestures = true
             #endif
         }
     }
 
     private func attacheGestureRecognizers() {
-        guard let arViewGestures = arView?.gestureRecognizers else { return }
         gestureRecognizers.forEach { gestureRecognizer in
-            if arViewGestures.doesNotContain(gestureRecognizer) {
-                arView?.addGestureRecognizer(gestureRecognizer)
-            }
+            gesturable?.addGestureRecognizer(gestureRecognizer)
         }
     }
 
     private func detachGestureRecognizers() {
-        guard let arViewGestures = arView?.gestureRecognizers else { return }
         gestureRecognizers.forEach { gestureRecognizer in
-            if arViewGestures.contains(gestureRecognizer) {
-                arView?.removeGestureRecognizer(gestureRecognizer)
-            }
+            gesturable?.removeGestureRecognizer(gestureRecognizer)
         }
     }
 }
 
 // MARK: gesture handlers
 extension PrismInteractor {
-
-    @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ sender: PanGestureRecognizing) {
         switch sender.state {
         case .began, .changed:
             let speedFactor: Float = 40.0
@@ -166,7 +165,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handlePinchGesture(_ sender: UIPinchGestureRecognizer) {
+    @objc func handlePinchGesture(_ sender: PinchGestureRecognizing) {
         switch sender.state {
         case .began:
             prismInitialScale = interactedPrism?.scale
@@ -182,6 +181,7 @@ extension PrismInteractor {
                 scaleFactor = Math.clamp(scaleFactor, minScale.z, maxScale.z)
                 prism.scale = initialScale * scaleFactor
                 prism.updateClipping()
+                delegate?.onPrismUpdated(prism: prism)
             }
         case .cancelled, .ended, .failed:
             prismInitialScale = nil
@@ -190,7 +190,7 @@ extension PrismInteractor {
         }
     }
 
-    @objc func handleRotationGesture(_ sender: UIRotationGestureRecognizer) {
+    @objc func handleRotationGesture(_ sender: RotationGestureRecognizing) {
         switch sender.state {
         case .began, .changed:
             prismYawChange = Float(sender.rotation)

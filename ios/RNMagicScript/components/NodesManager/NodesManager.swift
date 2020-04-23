@@ -23,7 +23,7 @@ import ARKit
 @objc protocol NodesManaging: NSObjectProtocol {
     @objc var scene: Scene? { get }
     @objc var prismsById: [String: Prism] { get }
-//    @objc var nodesById: [String: BaseNode] { get }
+    @objc var nodesById: [String: BaseNode] { get }
 
     @objc func registerScene(_ scene: Scene, sceneId: String)
     @objc func registerPrism(_ prism: Prism, prismId: String)
@@ -47,13 +47,14 @@ import ARKit
     fileprivate(set) var nodeSelector: UiNodeSelector!
     fileprivate weak var ARView: RCTARView?
     var dialogPresenter: DialogPresenting?
-    private(set) var prismInteractor: PrismInteractor!
+    private(set) var sceneInteractor: SceneInteractor!
 
     init(rootNode: BaseNode, nodesById: [String: TransformNode], prismsByAnchorUuid: [String: Prism]) {
         self.rootNode = rootNode
         self.nodesById = nodesById
         self.prismsByAnchorUuid = prismsByAnchorUuid
         super.init()
+        sceneInteractor = SceneInteractor(with: PrismInteractor())
         NotificationCenter.default.addObserver(self, selector: #selector(onResourceDidLoad(_:)), name: .didLoadResource, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onLayoutDidChangeIndependently(_:)), name: .didChangeLayoutIndependently, object: nil)
     }
@@ -78,12 +79,8 @@ import ARKit
         ARView = arView
         arView.scene.rootNode.addChildNode(rootNode)
         arView.register(self)
+        sceneInteractor.arView = arView
         nodeSelector = UiNodeSelector(rootNode)
-        prismInteractor = PrismInteractor(with: arView)
-        scene?.prismInteractor = prismInteractor
-        prismsById.forEach {
-            $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
-        }
     }
 
     @objc public func findNodeWithId(_ nodeId: String) -> BaseNode? {
@@ -101,18 +98,12 @@ import ARKit
     @objc public func registerScene(_ scene: Scene, sceneId: String) {
         scene.name = sceneId
         self.scene = scene
-        if let prismInteractor = prismInteractor {
-            scene.prismInteractor = prismInteractor
-        }
     }
 
     @objc public func registerPrism(_ prism: Prism, prismId: String) {
         prism.name = prismId
         prismsById[prismId] = prism
         updatePrismAnchorUuid(prism, oldAnchorUuid: "")
-        if let prismInteractor = prismInteractor {
-            prism.prismMenu = PrismContextMenuBuilder.build(for: prism, prismInteractor: prismInteractor)
-        }
     }
 
     @objc public func updatePrismAnchorUuid(_ prism: Prism, oldAnchorUuid: String) {
@@ -172,11 +163,7 @@ import ARKit
     @objc public func addNodeToRoot(_ nodeId: String) {
         if let scene = self.scene, scene.name == nodeId {
             rootNode.addChildNode(scene)
-        }
-        if let prismInteractor = prismInteractor {
-            prismsById.forEach {
-                $0.value.prismMenu = PrismContextMenuBuilder.build(for: $0.value, prismInteractor: prismInteractor)
-            }
+            sceneInteractor.scene = scene
         }
     }
 

@@ -18,9 +18,8 @@ import UIKit
 import SceneKit
 
 struct PrismContextMenuBuilder {
-    static func build(for prism: Prism, prismInteractor: PrismInteracting) -> PrismContextMenu? {
+    static func build(prismInteractor: PrismInteracting) -> PrismContextMenu? {
         let prismContextMenu = PrismContextMenu()
-        prismContextMenu.prism = prism
         prismContextMenu.prismInteractor = prismInteractor
         return prismContextMenu
     }
@@ -36,7 +35,11 @@ class PrismContextMenu: UiNode {
         }
     }
 
-    weak var prism: Prism?
+    weak var prism: Prism? {
+        didSet {
+            text = prism?.name ?? ""
+        }
+    }
 
     weak var prismInteractor: PrismInteracting? {
         didSet {
@@ -59,13 +62,13 @@ class PrismContextMenu: UiNode {
         linearLayout.alignment = .centerCenter
         linearLayout.layoutOrientation = .vertical
         linearLayout.defaultItemAlignment = .centerCenter
-        linearLayout.defaultItemPadding = UIEdgeInsets(top: 0.005, left: 0.0, bottom: 0.005, right: 0.0)
+        linearLayout.defaultItemPadding = UIEdgeInsets(top: 0.02, left: 0.0, bottom: 0.02, right: 0.0)
 
         titleNode = UiTextNode()
-        titleNode.textSize = 0.055
+        titleNode.textSize = 0.15
 
         actionButton = UiButtonNode()
-        actionButton.height = 0.11
+        actionButton.height = 0.15
         actionButton.buttonType = .icon
         actionButton.iconType = "genericThreeDimensional"
 
@@ -99,6 +102,7 @@ class PrismContextMenu: UiNode {
     }
 
     override func hitTest(ray: Ray) -> HitTestResult? {
+        transform = presentation.transform
         return linearLayout.hitTest(ray: ray)
     }
 

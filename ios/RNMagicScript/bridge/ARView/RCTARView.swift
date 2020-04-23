@@ -177,6 +177,7 @@ import SceneKit
         }
     }
 
+    private var nodeGestureRecognizers: [UIGestureRecognizer] = []
     fileprivate func setupGestureRecognizers(_ view: ARSCNView) {
         let rayBuilder = RayBuilder()
 
@@ -186,7 +187,6 @@ import SceneKit
                                                         target: gestureHandler,
                                                         action: #selector(GestureHandling.handleTapGesture(_:)))
         tapGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
-        addGestureRecognizer(tapGestureRecognizer)
 
         // Add drag gesture
         let dragGestureRecognizer = DragGestureRecognizer(nodeSelector: NodesManager.instance.nodeSelector,
@@ -194,7 +194,6 @@ import SceneKit
                                                           target: gestureHandler,
                                                           action: #selector(GestureHandling.handleDragGesture(_:)))
         dragGestureRecognizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
-        addGestureRecognizer(dragGestureRecognizer)
 
         // Add long press gesture
         let longPressGestureRecogrnizer = LongPressGestureRecognizer(nodeSelector: NodesManager.instance.nodeSelector,
@@ -202,6 +201,11 @@ import SceneKit
                                                                      target: gestureHandler,
                                                                      action: #selector(GestureHandling.handleLongPressGesture(_:)))
         longPressGestureRecogrnizer.getCameraNode = { [weak self] in return self?.arView.pointOfView }
+
+        nodeGestureRecognizers.append(contentsOf: [tapGestureRecognizer, dragGestureRecognizer, longPressGestureRecogrnizer])
+
+        addGestureRecognizer(tapGestureRecognizer)
+        addGestureRecognizer(dragGestureRecognizer)
         addGestureRecognizer(longPressGestureRecogrnizer)
     }
 

@@ -199,7 +199,7 @@ class UiNodesManagerTest {
     }
 
     @Test
-    fun `should resume all nodes when host resumed`() {
+    fun `should notify all nodes when Activity resumed`() {
         val node1 = mock<TransformNode>()
         val node2 = mock<TransformNode>()
         val node3 = mock<TransformNode>()
@@ -209,13 +209,13 @@ class UiNodesManagerTest {
 
         nodesManager.onHostResume()
 
-        verify(node1).onResume()
-        verify(node2).onResume()
-        verify(node3).onResume()
+        verify(node1).onHostResume()
+        verify(node2).onHostResume()
+        verify(node3).onHostResume()
     }
 
     @Test
-    fun `should pause all nodes when host paused`() {
+    fun `should notify all nodes when Activity paused`() {
         val node1 = mock<TransformNode>()
         val node2 = mock<TransformNode>()
         val node3 = mock<TransformNode>()
@@ -225,9 +225,25 @@ class UiNodesManagerTest {
 
         nodesManager.onHostPause()
 
-        verify(node1).onPause()
-        verify(node2).onPause()
-        verify(node3).onPause()
+        verify(node1).onHostPause()
+        verify(node2).onHostPause()
+        verify(node3).onHostPause()
+    }
+
+    @Test
+    fun `should notify all nodes when Activity destroyed`() {
+        val node1 = mock<TransformNode>()
+        val node2 = mock<TransformNode>()
+        val node3 = mock<TransformNode>()
+        nodesManager.registerNode(node1, "1")
+        nodesManager.registerNode(node2, "2")
+        nodesManager.registerNode(node3, "3")
+
+        nodesManager.onHostDestroy()
+
+        verify(node1).onHostDestroy()
+        verify(node2).onHostDestroy()
+        verify(node3).onHostDestroy()
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {

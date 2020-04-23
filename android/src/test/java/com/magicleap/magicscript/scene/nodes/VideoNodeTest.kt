@@ -21,8 +21,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.ArResourcesProvider
-import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.VideoRenderableLoader
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.reactArrayOf
@@ -76,8 +76,8 @@ class VideoNodeTest {
             videoRenderableLoader = videoReadableLoader,
             nodeClipper = clipper,
             arResourcesProvider = arResourcesProvider,
-                viewRenderableLoader = viewRenderableLoader,
-                fontProvider = fontProvider
+            viewRenderableLoader = viewRenderableLoader,
+            fontProvider = fontProvider
         )
 
         videoNode.build()
@@ -155,7 +155,7 @@ class VideoNodeTest {
     fun `should pause player when node is paused`() {
         whenever(videoPlayer.isPlaying).thenReturn(true)
 
-        videoNode.onPause()
+        videoNode.onHostPause()
 
         verify(videoPlayer).pause()
     }
@@ -167,8 +167,8 @@ class VideoNodeTest {
         val props = reactMapOf(VideoNode.PROP_ACTION, VideoNode.ACTION_START)
         videoNode.update(props)
 
-        videoNode.onPause()
-        videoNode.onResume()
+        videoNode.onHostPause()
+        videoNode.onHostResume()
 
         verify(videoPlayer, times(2)).start()
     }

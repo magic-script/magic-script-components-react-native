@@ -239,25 +239,30 @@ abstract class TransformNode(
         return properties.get(propertyName)
     }
 
-    /**
-     * Should clear all node's resources (if any)
-     */
     override fun onDestroy() {
         onDeletedListener?.invoke()
     }
 
     /**
-     * Should pause any media related to the node
+     * Called when the Activity is paused.
      */
-    override fun onPause() {
-
+    override fun onHostPause() {
+        // no-op
     }
 
     /**
-     * Should resume any media related to the node
+     * Called when the Activity is resumed.
      */
-    override fun onResume() {
+    override fun onHostResume() {
+        // no-op
+    }
 
+    /**
+     * Called when the Activity is destroyed (the node instance will survive).
+     * Here any resources bound with Activity should be disposed.
+     */
+    override fun onHostDestroy() {
+        // no-op
     }
 
     /**

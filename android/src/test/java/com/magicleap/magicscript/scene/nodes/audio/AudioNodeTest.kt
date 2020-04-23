@@ -133,7 +133,7 @@ class AudioNodeTest {
 
     @Test
     fun `should pause audio when node is paused`() {
-        tested.onPause()
+        tested.onHostPause()
 
         verify(audioEngine).pause()
     }
@@ -145,8 +145,8 @@ class AudioNodeTest {
                 .action(AudioAction.START)
         )
 
-        tested.onPause()
-        tested.onResume()
+        tested.onHostPause()
+        tested.onHostResume()
 
         verify(audioEngine).resume()
     }
@@ -163,8 +163,8 @@ class AudioNodeTest {
                 .action(AudioAction.RESUME)
         )
 
-        tested.onPause()
-        tested.onResume()
+        tested.onHostPause()
+        tested.onHostResume()
 
         verify(audioEngine, times(2)).resume()
     }
@@ -181,8 +181,8 @@ class AudioNodeTest {
                 .action(AudioAction.PAUSE)
         )
 
-        tested.onPause()
-        tested.onResume()
+        tested.onHostPause()
+        tested.onHostResume()
 
         verify(audioEngine, never()).resume()
     }

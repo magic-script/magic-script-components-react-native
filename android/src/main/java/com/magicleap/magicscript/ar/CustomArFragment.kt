@@ -71,6 +71,12 @@ class CustomArFragment : ArFragment() {
         planeDiscoveryController.setInstructionView(null)
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        // overridden to do nothing, because the default implementation of BaseArFragment
+        // changes the app mode to full screen causing artifacts e.g. when displaying
+        // overlay view on top of ArView in React
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         ArResourcesManager.INSTANCE?.clearArReferences()

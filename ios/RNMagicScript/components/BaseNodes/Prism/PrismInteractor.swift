@@ -153,7 +153,6 @@ class PrismInteractor: NSObject, PrismInteracting {
 
 // MARK: gesture handlers
 extension PrismInteractor {
-
     @objc func handlePanGesture(_ sender: PanGesturizing) {
         switch sender.state {
         case .began, .changed:
@@ -200,74 +199,6 @@ extension PrismInteractor {
             prismYawChange = 0.0
         default:
             print("Default: \(#function)")
-        }
-    }
-}
-
-
-//sourcery: AutoMockable
-//sourcery: ObjcProtocol
-@objc protocol Gesturizing: NSObjectProtocol {
-    var view: UIView? { get }
-    var state: UIGestureRecognizer.State { get }
-}
-
-//sourcery: AutoMockable
-//sourcery: ObjcProtocol
-@objc protocol PanGesturizing: Gesturizing {
-    @objc(velocityInView:) func velocity(in view: UIView?) -> CGPoint
-    @objc(translationInView:) func translation(in view: UIView?) -> CGPoint
-}
-
-class PanGestureRecognizer: UIPanGestureRecognizer, PanGesturizing { }
-
-//sourcery: AutoMockable
-//sourcery: ObjcProtocol
-@objc protocol PinchGesturizing: Gesturizing {
-    var scale: CGFloat { get }
-    var velocity: CGFloat { get }
-}
-
-class PinchGestureRecognizer: UIPinchGestureRecognizer, PinchGesturizing { }
-
-//sourcery: AutoMockable
-//sourcery: ObjcProtocol
-@objc protocol RotationGesturizing: Gesturizing {
-    var rotation: CGFloat { get }
-    var velocity: CGFloat { get }
-}
-
-class RotationGestureRecognizer: UIRotationGestureRecognizer, RotationGesturizing { }
-
-//sourcery: AutoMockable
-protocol Gesturable: class {
-    var allowsCameraControl: Bool { get set }
-
-    var recognizers: [Gesturizing]? { get set }
-    func addGestureRecognizer(_ gestureRecognizer: Gesturizing)
-    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing)
-}
-
-extension RCTARView: Gesturable {
-    var allowsCameraControl: Bool {
-        set { arView.allowsCameraControl = newValue }
-        get { return arView.allowsCameraControl }
-    }
-
-    var recognizers: [Gesturizing]? {
-        get { return gestureRecognizers?.filter { $0 is Gesturizing }.map { $0 as! Gesturizing } }
-        set { }
-    }
-
-    func addGestureRecognizer(_ gestureRecognizer: Gesturizing) {
-        if let gr = gestureRecognizer as? UIGestureRecognizer {
-            addGestureRecognizer(gr)
-        }
-    }
-
-    func removeGestureRecognizer(_ gestureRecognizer: Gesturizing) {
-        if let gr = gestureRecognizer as? UIGestureRecognizer {
-            removeGestureRecognizer(gr)
         }
     }
 }

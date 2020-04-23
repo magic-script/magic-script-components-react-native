@@ -49,7 +49,7 @@ class UiColorPickerNodeTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         containerSpy = spy(CustomButton(context))
-        colorPickerDialog = ColorPickerDialog()
+        colorPickerDialog = ColorPickerDialog(context)
         tested = createNodeWithViewSpy()
     }
 

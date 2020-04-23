@@ -106,7 +106,6 @@ import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
-import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
 import com.magicleap.magicscript.utils.FileProvider;
 import com.magicleap.magicscript.utils.UriFileProvider;
@@ -373,14 +372,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            ColorPickerDialog dialog = new ColorPickerDialog();
             UiColorPickerNode node = new UiColorPickerNode(props,
                                                            context,
                                                            viewRenderableLoader,
                                                            uiNodeClipper,
-                                                           fontProvider,
-                                                           iconsRepo,
-                                                           dialog);
+                                                           fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }

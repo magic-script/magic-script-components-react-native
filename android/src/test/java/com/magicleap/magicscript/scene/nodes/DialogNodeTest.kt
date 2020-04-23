@@ -16,12 +16,13 @@
 
 package com.magicleap.magicscript.scene.nodes
 
-//import androidx.test.core.app.ApplicationProvider
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.test.core.app.ApplicationProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.dialog.DialogNode
+import com.magicleap.magicscript.scene.nodes.dialog.DialogType
 import com.magicleap.magicscript.scene.nodes.views.CustomAlertDialogBuilder
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.nhaarman.mockitokotlin2.any
@@ -48,7 +49,7 @@ class DialogNodeTest {
         mockDialogBuilder = mock()
         iconsRepository = mock()
         testDialogProvider = mock()
-//        context = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         whenever(testDialogProvider.provideCustomAlertDialogBuilder(any())).thenReturn(
             mockDialogBuilder
         )
@@ -60,11 +61,7 @@ class DialogNodeTest {
             DialogNode.PROP_CONFIRM_ICON, "icon",
             DialogNode.PROP_CONFIRM_TEXT, "text"
         )
-        val node = DialogNode(
-            props,
-            iconsRepository,
-            testDialogProvider
-        )
+        val node = DialogNode(props, iconsRepository, testDialogProvider, context)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -80,11 +77,7 @@ class DialogNodeTest {
             DialogNode.PROP_CANCEL_ICON, "icon",
             DialogNode.PROP_CANCEL_TEXT, "text"
         )
-        val node = DialogNode(
-            props,
-            iconsRepository,
-            testDialogProvider
-        )
+        val node = DialogNode(props, iconsRepository, testDialogProvider, context)
         whenever(iconsRepository.getIcon("icon", false)).thenReturn(dummyDrawable)
 
         node.build()
@@ -100,15 +93,35 @@ class DialogNodeTest {
             DialogNode.PROP_TITLE, "title",
             DialogNode.PROP_TEXT, "text"
         )
-        val node = DialogNode(
-            props,
-            iconsRepository,
-            testDialogProvider
-        )
+        val node = DialogNode(props, iconsRepository, testDialogProvider, context)
 
         node.build()
 
         verify(mockDialogBuilder).setTitle("title")
         verify(mockDialogBuilder).setDescription("text")
+    }
+
+    @Test
+    fun `should set buttonType`() {
+        val props = reactMapOf(
+            DialogNode.PROP_BUTTON_TYPE, CustomAlertDialogBuilder.BUTTON_TYPE_ICON_WITH_LABEL
+        )
+        val node = DialogNode(props, iconsRepository, testDialogProvider, context)
+
+        node.build()
+
+        verify(mockDialogBuilder).setButtonType(CustomAlertDialogBuilder.BUTTON_TYPE_ICON_WITH_LABEL)
+    }
+
+    @Test
+    fun `should set dialog type`() {
+        val props = reactMapOf(
+            DialogNode.PROP_DIALOG_TYPE, DialogType.SINGLE_ACTION
+        )
+        val node = DialogNode(props, iconsRepository, testDialogProvider, context)
+
+        node.build()
+
+        verify(mockDialogBuilder).setDialogType(DialogType.SINGLE_ACTION)
     }
 }

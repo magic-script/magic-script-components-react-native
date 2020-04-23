@@ -17,6 +17,7 @@
 package com.magicleap.magicscript.scene.nodes.dialog
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Handler
 import android.os.Message
 import android.view.View
@@ -32,13 +33,14 @@ import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.read
 import java.lang.ref.WeakReference
 
-class DialogNode(
+
+class DialogNode @JvmOverloads constructor(
     initProps: ReadableMap,
     private val iconsRepository: IconsRepository,
-    private val dialogProvider: DialogProvider
+    private val dialogProvider: DialogProvider,
+    private val context: Context = ArViewManager.getActivityRef().get() as Context
 ) : TransformNode(initProps, false) {
 
-    val context = ArViewManager.getActivityRef().get()
 
     companion object {
         const val PROP_TITLE = "title"

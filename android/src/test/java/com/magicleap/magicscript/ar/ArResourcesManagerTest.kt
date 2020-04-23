@@ -235,6 +235,23 @@ class ArResourcesManagerTest {
     }
 
     @Test
+    fun `should be possible to unsubscribe from within callback`() {
+        var notifyCount = 0
+        val listener = object : ArResourcesProvider.ArLoadedListener {
+            override fun onArLoaded(firstTime: Boolean) {
+                manager.removeArLoadedListener(this)
+                notifyCount++
+            }
+        }
+        manager.addArLoadedListener(listener)
+
+        manager.onArCoreLoaded()
+        manager.onArCoreLoaded()
+
+        notifyCount shouldEqual 1
+    }
+
+    @Test
     fun `should clear AR Core references`() {
         manager.setupScene(arScene)
         manager.setupTransformationSystem(transformationSystem)

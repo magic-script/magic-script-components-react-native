@@ -144,7 +144,24 @@ class VideoNode(
             try {
                 videoPlayer.start()
             } catch (exception: IllegalStateException) {
-                logMessage("onResume cannot resume video: $exception", warn = true)
+                logMessage("onResume cannot resume video, trying reload: $exception", warn = true)
+                try {
+                    if (arResourcesProvider.isArLoaded()) {
+                        loadVideo()
+                        videoPlayer.start()
+                    } else {
+                        arResourcesProvider.addArLoadedListener(object :
+                            ArResourcesProvider.ArLoadedListener {
+                            override fun onArLoaded(firstTime: Boolean) {
+                                loadVideo()
+                                videoPlayer.start()
+                                arResourcesProvider.removeArLoadedListener(this)
+                            }
+                        })
+                    }
+                } catch (exception: IllegalStateException) {
+                    logMessage("reload onResume Failed: $exception", warn = true)
+                }
             }
         }
     }

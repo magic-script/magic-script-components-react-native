@@ -20,7 +20,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -125,54 +124,24 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             BUTTON_TYPE_TEXT_WITH_ICON -> {
                 showIcon()
                 showText()
+                hideLabel()
             }
             BUTTON_TYPE_ICON -> {
                 showIcon()
                 hideText()
+                hideLabel()
             }
 
             BUTTON_TYPE_ICON_WITH_LABEL -> {
                 showIcon()
                 hideText()
-                confirmLayout?.setOnTouchListener { _, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            confirmLabelView?.visibility = View.VISIBLE
-                            false
-                        }
-                        MotionEvent.ACTION_CANCEL -> {
-                            confirmLabelView?.visibility = View.GONE
-                            false
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            confirmLabelView?.visibility = View.GONE
-                            false
-                        }
-                        else -> false
-                    }
-                }
-                cancelLayout?.setOnTouchListener { _, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            cancelLabelView?.visibility = View.VISIBLE
-                            false
-                        }
-                        MotionEvent.ACTION_CANCEL -> {
-                            cancelLabelView?.visibility = View.GONE
-                            false
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            cancelLabelView?.visibility = View.GONE
-                            false
-                        }
-                        else -> false
-                    }
-                }
+                showLabel()
             }
 
             BUTTON_TYPE_TEXT -> {
                 hideIcon()
                 showText()
+                hideLabel()
             }
         }
     }
@@ -215,6 +184,15 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
         cancelIconView?.visibility = View.GONE
     }
 
+    private fun showLabel() {
+        confirmLabelView?.visibility = View.VISIBLE
+        cancelLabelView?.visibility = View.VISIBLE
+    }
+
+    private fun hideLabel() {
+        confirmLabelView?.visibility = View.GONE
+        cancelLabelView?.visibility = View.GONE
+    }
 
     fun setOnDialogConfirmClick(onDialogConfirmListener: (() -> Unit)? = null): AlertDialog.Builder {
         this.onDialogConfirmListener = onDialogConfirmListener

@@ -67,11 +67,10 @@
         android:id="@+id/confirm_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="confirm label"
+        android:layout_marginTop="4dp"
         android:textColor="@color/text_color_default"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_layout"
+        app:layout_constraintTop_toBottomOf="@+id/confirm_layout"
         app:layout_constraintEnd_toEndOf="@+id/confirm_layout"
         app:layout_constraintStart_toStartOf="@+id/confirm_layout" />
 
@@ -129,11 +128,10 @@
         android:id="@+id/cancel_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="cancel label"
+        android:layout_marginTop="4dp"
         android:textColor="@color/text_color_default"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/cancel_layout"
+        app:layout_constraintTop_toBottomOf="@+id/cancel_layout"
         app:layout_constraintEnd_toEndOf="@+id/cancel_layout"
         app:layout_constraintStart_toStartOf="@+id/cancel_layout" />
 

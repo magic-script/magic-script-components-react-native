@@ -44,7 +44,6 @@ interface ReactNode : LifecycleEventListener {
 
     /**
      * Called when the node is destroyed and will no longer be displayed.
-     * It should clear all node's external resources (if any)
      */
     fun onDestroy()
 

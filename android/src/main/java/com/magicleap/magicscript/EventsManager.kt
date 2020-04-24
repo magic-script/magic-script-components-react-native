@@ -17,9 +17,9 @@
 package com.magicleap.magicscript
 
 interface EventsManager {
-    // = onClick
-    fun addOnActivateEventHandler(nodeId: String)
+    fun addOnAppStartEventHandler(nodeId: String)
 
+    fun addOnActivateEventHandler(nodeId: String) // = onClick
     fun addOnPressEventHandler(nodeId: String)
     fun addOnLongPressEventHandler(nodeId: String)
     fun addOnReleaseEventHandler(nodeId: String)

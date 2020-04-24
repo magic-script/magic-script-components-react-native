@@ -89,7 +89,6 @@ open class UiScrollViewNode(
     private var contentBounds = AABB()
 
     private var requestedContentPosition = Vector2()
-    private var looperHandler = Handler(Looper.getMainLooper())
     private var scrollOffset = Vector3.zero()
 
     init {
@@ -221,12 +220,6 @@ open class UiScrollViewNode(
             }
             layout()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // stop the layout loop
-        looperHandler.removeCallbacksAndMessages(null)
     }
 
     protected fun calculateBarThickness(containerWidth: Float, containerHeight: Float): Float {

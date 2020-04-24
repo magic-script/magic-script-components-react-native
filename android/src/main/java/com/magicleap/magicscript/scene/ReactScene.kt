@@ -33,8 +33,20 @@ class ReactScene(
     initProps: ReadableMap,
     private val arResourcesProvider: ArResourcesProvider
 ) : ReactNode, ArResourcesProvider.ArSceneChangedListener, ArResourcesProvider.PlaneTapListener {
+
+    var deepLink: String? = null
+
+    var onCreatedListener: ((deepLink: String?) -> Unit)? = null
+        set(value) {
+            field = value
+            if (value != null && built) {
+                value.invoke(deepLink)
+            }
+        }
+
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private val prisms = mutableListOf<Prism>()
+    private var built = false
 
     private val arScene get() = arResourcesProvider.getArScene() // ar scene may change at runtime
 
@@ -50,7 +62,12 @@ class ReactScene(
         get() = prisms
 
     override fun build() {
+        if (built) {
+            return
+        }
         applyProperties(properties)
+        onCreatedListener?.invoke(deepLink)
+        built = true
     }
 
     override fun onSceneChanged(arScene: Scene) {

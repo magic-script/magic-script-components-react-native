@@ -1,4 +1,10 @@
 export const Events = [
+  // Scene events
+  {
+    name: "onAppStart",
+    handler: (componentManager, elementId) => componentManager.addOnAppStartEventHandler(elementId)
+  },
+
   // UiNode events
   {
     name: "onActivate",
@@ -8,7 +14,6 @@ export const Events = [
     name: "onClick",
     handler: (componentManager, elementId) => componentManager.addOnActivateEventHandler(elementId)
   },
-  /*
   {
     name: "onPress",
     handler: (componentManager, elementId) => componentManager.addOnPressEventHandler(elementId)
@@ -45,7 +50,7 @@ export const Events = [
     name: "onDelete",
     handler: (componentManager, elementId) => componentManager.addOnDeleteEventHandler(elementId)
   },
-*/
+
   // Other events
   {
     name: "onDialogConfirmed",

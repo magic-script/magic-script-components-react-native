@@ -57,11 +57,12 @@ RCT_EXPORT_MODULE();
 - (NSArray<NSString *> *)supportedEvents {
     return @[
         // UiNode
+        @"onAppStart",
         @"onActivate",
         @"onClick",
-        //@"onPress",
-        //@"onLongPress",
-        //@"onRelease",
+        @"onPress",
+        @"onLongPress",
+        @"onRelease",
         @"onEnabled",
         @"onDisabled",
         @"onFocusGained",

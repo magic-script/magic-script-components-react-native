@@ -81,18 +81,12 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setConfirmationText(text: String?): AlertDialog.Builder {
-        if (confirmLayout?.visibility == View.GONE) {
-            confirmLayout?.visibility = View.VISIBLE
-        }
         confirmTextView?.text = text
         confirmLabelView?.text = text
         return this
     }
 
     fun setConfirmationIcon(icon: Drawable?): AlertDialog.Builder {
-        if (confirmLayout?.visibility == View.GONE) {
-            confirmLayout?.visibility = View.VISIBLE
-        }
         confirmIconView?.let {
             Glide.with(context).load(icon).into(it)
         }
@@ -100,18 +94,12 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
     }
 
     fun setCancelText(text: String?): AlertDialog.Builder {
-        if (cancelLayout?.visibility == View.GONE) {
-            cancelLayout?.visibility = View.VISIBLE
-        }
         cancelTextView?.text = text
         cancelLabelView?.text = text
         return this
     }
 
     fun setCancelIcon(icon: Drawable?): AlertDialog.Builder {
-        if (cancelLayout?.visibility == View.GONE) {
-            cancelLayout?.visibility = View.VISIBLE
-        }
         cancelIconView?.let {
             Glide.with(context).load(icon).into(it)
         }
@@ -152,14 +140,23 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             DialogType.DUAL_ACTION -> {
                 confirmLayout?.visibility = View.VISIBLE
                 cancelLayout?.visibility = View.VISIBLE
+                showLabel()
             }
             DialogType.SINGLE_ACTION -> {
                 confirmLayout?.visibility = View.VISIBLE
+                confirmLabelView?.visibility = View.VISIBLE
                 cancelLayout?.visibility = View.GONE
+                cancelLabelView?.visibility = View.GONE
             }
             DialogType.NO_ACTION -> {
                 confirmLayout?.visibility = View.GONE
                 cancelLayout?.visibility = View.GONE
+                hideLabel()
+            }
+            DialogType.TIMED -> {
+                confirmLayout?.visibility = View.GONE
+                cancelLayout?.visibility = View.GONE
+                hideLabel()
             }
         }
     }

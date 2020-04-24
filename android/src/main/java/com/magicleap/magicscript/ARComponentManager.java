@@ -747,6 +747,10 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
             return null;
         }
 
-        return intent.getData();
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            return intent.getData();
+        }
+
+        return null;
     }
 }

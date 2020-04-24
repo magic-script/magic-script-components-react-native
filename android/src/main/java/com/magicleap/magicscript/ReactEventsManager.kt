@@ -28,7 +28,6 @@ import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
-import com.magicleap.magicscript.utils.logMessage
 
 class ReactEventsManager(
     private val eventsEmitter: EventsEmitter,
@@ -92,7 +91,6 @@ class ReactEventsManager(
 
     override fun addOnAppStartEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
-        logMessage("registered addOnAppStartEventHandler, node= $node")
         if (node is ReactScene) {
             node.onCreatedListener = { deepLink: String? ->
                 val params = Bundle()
@@ -101,7 +99,6 @@ class ReactEventsManager(
                     params.putString(EVENT_ARG_URI, deepLink)
                 }
                 sendEvent(EVENT_APP_START, params)
-                logMessage("event sent")
             }
         }
     }

@@ -25,6 +25,7 @@ typealias Image = NSImage
 public enum ImageAsset: String {
     case circleConfirmation = "circle_confirmation"
     case dropdownListBackground = "dropdown_list_background"
+    case dialogBackground = "dialog_background"
     case spinner = "spinner"
     case spinnerProgressBegin = "spinner_begin"
     case spinnerProgressEnd = "spinner_end"

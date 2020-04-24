@@ -287,4 +287,9 @@ class Convert {
         guard let mode = value as? String else { return nil }
         return ImageFitMode(rawValue: mode)
     }
+
+    static func toDialogType(_ value: Any?) -> DialogType? {
+        guard let type = value as? String else { return nil }
+        return DialogType(rawValue: type)
+    }
 }

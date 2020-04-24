@@ -17,7 +17,9 @@
 import SceneKit
 
 @objc open class UiDialogNode: UiNode {
-//    DialogType dialogType;
+    @objc var dialogType: DialogType = .dualAction
+    @objc var buttonType: ButtonType = .textWithIcon
+
 //    DialogLayout dialogLayout;
 
     @objc var title: String?
@@ -42,6 +44,14 @@ import SceneKit
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
+
+        if let dialogType = Convert.toDialogType(props["dialogType"]) {
+            self.dialogType = dialogType
+        }
+
+        if let buttonType = Convert.toButtonType(props["buttonType"]) {
+            self.buttonType = buttonType
+        }
 
         if let title = Convert.toString(props["title"]) {
             self.title = title

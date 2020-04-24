@@ -22,22 +22,32 @@ extension UIButton {
         button.setTitle(text, for: UIControl.State.normal)
         button.update(image: image)
         button.addTarget(target, action: action, for: .touchUpInside)
-        button.backgroundColor = .white
-        button.setTitleColor(.black, for: .normal)
-        button.tintColor = .black
-        button.layer.borderWidth = 1.0
-        button.layer.cornerRadius = 10;
+        button.backgroundColor = .clear
+        button.setTitleColor(.white, for: .normal)
+        button.tintColor = .white
+        button.layer.borderColor = UIColor.white.cgColor
         button.clipsToBounds = true
-        button.titleEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setNeedsLayout()
         return button
     }
 
     func update(image: UIImage?) {
         if let buttonImage = image {
-            self.setImage(UIImage.image(with: buttonImage, scaledToSize: CGSize(width: 32.0, height: 32.0)), for: UIControl.State.normal)
+            self.setImage(UIImage.image(with: buttonImage, scaledToSize: CGSize(width: 28.0, height: 28.0)), for: UIControl.State.normal)
             self.imageView?.contentMode = .scaleAspectFit
-            self.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+            self.setNeedsLayout()
         }
+    }
+
+
+    func centerVertically() {
+        guard let imageViewSize = imageView?.frame.size, let titleLabelSize = titleLabel?.frame.size else { return }
+
+        let padding: CGFloat = 22.0
+        let totalHeight = imageViewSize.height + titleLabelSize.height + padding
+        imageEdgeInsets = UIEdgeInsets(top: max(0, -(totalHeight - imageViewSize.height)), left: 0.0, bottom: 0.0, right: -titleLabelSize.width)
+        titleEdgeInsets = UIEdgeInsets(top: 0.0, left: -imageViewSize.width, bottom: -(totalHeight - titleLabelSize.height), right: 0.0)
+        contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: titleLabelSize.height, right: 0.0)
     }
 }

@@ -18,6 +18,7 @@ package com.magicleap.magicscript;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -111,6 +112,7 @@ import com.magicleap.magicscript.utils.FileProvider;
 import com.magicleap.magicscript.utils.UriFileProvider;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -197,7 +199,14 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
 
     @ReactMethod
     public void createScene(final ReadableMap props, final String nodeId) {
-        mainHandler.post(() -> addNode(new ReactScene(props, arResourcesProvider), nodeId));
+        ReactScene scene = new ReactScene(props, arResourcesProvider);
+
+        Uri deepLink = readDeepLink();
+        if (deepLink != null) {
+            scene.setDeepLink(deepLink.toString());
+        }
+
+        mainHandler.post(() -> addNode(scene, nodeId));
     }
 
     @ReactMethod
@@ -372,11 +381,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiColorPickerNode node = new UiColorPickerNode(props,
-                                                           context,
-                                                           viewRenderableLoader,
-                                                           uiNodeClipper,
-                                                           fontProvider, iconsRepo);
+            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
             addNode(node, nodeId);
         });
     }
@@ -519,6 +524,11 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     }
 
     // region Events
+
+    @ReactMethod
+    public void addOnAppStartEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnAppStartEventHandler(nodeId));
+    }
 
     // activate = click
     @ReactMethod
@@ -724,5 +734,23 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         super.onCatalystInstanceDestroy();
         nodesManager.clear();
         mediaPlayerPool.destroy();
+    }
+
+    @Nullable
+    private Uri readDeepLink() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return null;
+        }
+        Intent intent = activity.getIntent();
+        if (intent == null) {
+            return null;
+        }
+
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            return intent.getData();
+        }
+
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package com.magicleap.magicscript
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.scene.NodesManager
+import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.dialog.DialogNode
@@ -36,6 +37,22 @@ class ReactEventsManagerTest {
         eventsManager = ReactEventsManager(eventsEmitter, nodesManager)
         uiNode = UiTextEditNode(JavaOnlyMap(), mock(), mock(), mock(), mock())
         whenever(nodesManager.findNodeWithId(uiNodeId)).thenReturn(uiNode)
+    }
+
+    @Test
+    fun `should emit app start event when registered listener after scene was built`() {
+        val sceneId = "12132"
+        val scene = ReactScene(reactMapOf(), mock())
+        scene.deepLink = "catalog://scene/5"
+        scene.build()
+        whenever(nodesManager.findNodeWithId(sceneId)).thenReturn(scene)
+
+        eventsManager.addOnAppStartEventHandler(sceneId)
+
+        verify(eventsEmitter).sendEvent(
+            eventName = eq(ReactEventsManager.EVENT_APP_START),
+            params = argThat { getString(ReactEventsManager.EVENT_ARG_URI) == scene.deepLink }
+        )
     }
 
     @Test

@@ -348,6 +348,13 @@ class ARComponentManagerTest {
     // region Events
 
     @Test
+    fun `should add on app start event handler`() {
+        manager.addOnAppStartEventHandler("123")
+
+        verify(eventsManager).addOnAppStartEventHandler("123")
+    }
+
+    @Test
     fun `should add on activate event handler`() {
         manager.addOnActivateEventHandler("123")
 

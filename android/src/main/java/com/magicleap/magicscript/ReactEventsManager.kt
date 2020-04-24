@@ -18,6 +18,7 @@ package com.magicleap.magicscript
 
 import android.os.Bundle
 import com.magicleap.magicscript.scene.NodesManager
+import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.*
 import com.magicleap.magicscript.scene.nodes.base.ReactNode
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -36,6 +37,8 @@ class ReactEventsManager(
     companion object {
 
         // Supported event names
+        const val EVENT_APP_START = "onAppStart"
+
         const val EVENT_CLICK = "onClick"
         const val EVENT_ACTIVATE = "onActivate" // = onClick
         const val EVENT_PRESS = "onPress"
@@ -70,6 +73,7 @@ class ReactEventsManager(
         const val EVENT_FILE_SELECTED = "onFileSelected"
 
         // Supported events arguments
+        const val EVENT_ARG_URI = "uri"
         const val EVENT_ARG_NODE_ID = "nodeId"
         const val EVENT_ARG_TEXT = "Text"
         const val EVENT_ARG_TOGGLE_ACTIVE = "On"
@@ -83,6 +87,20 @@ class ReactEventsManager(
         const val EVENT_ARG_SCROLL_VALUE = "ScrollValue"
         const val EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle"
         const val EVENT_ARG_FILE_PATH = "filePath"
+    }
+
+    override fun addOnAppStartEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is ReactScene) {
+            node.onCreatedListener = { deepLink: String? ->
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                if (deepLink != null) {
+                    params.putString(EVENT_ARG_URI, deepLink)
+                }
+                sendEvent(EVENT_APP_START, params)
+            }
+        }
     }
 
     // = onClick

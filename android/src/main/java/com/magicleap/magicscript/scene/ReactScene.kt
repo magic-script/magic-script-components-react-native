@@ -114,11 +114,15 @@ class ReactScene(
         }
     }
 
-    override fun onPause() {
+    override fun onHostPause() {
         // no-op
     }
 
-    override fun onResume() {
+    override fun onHostResume() {
+        // no-op
+    }
+
+    override fun onHostDestroy() {
         // no-op
     }
 

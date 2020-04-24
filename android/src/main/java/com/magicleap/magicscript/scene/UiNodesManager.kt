@@ -110,15 +110,15 @@ class UiNodesManager : NodesManager, LifecycleEventListener {
     }
 
     override fun onHostResume() {
-        nodesById.forEach { it.value.onResume() }
+        nodesById.forEach { it.value.onHostResume() }
     }
 
     override fun onHostPause() {
-        nodesById.forEach { it.value.onPause() }
+        nodesById.forEach { it.value.onHostPause() }
     }
 
     override fun onHostDestroy() {
-        // no-op
+        nodesById.forEach { it.value.onHostDestroy() }
     }
 
     // removes node with descendants from the nodes map

@@ -127,8 +127,8 @@ class VideoNode(
         applyClipBounds()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onHostPause() {
+        super.onHostPause()
         try {
             if (videoPlayer.isPlaying) {
                 videoPlayer.pause()
@@ -138,8 +138,8 @@ class VideoNode(
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onHostResume() {
+        super.onHostResume()
         if (lastUserAction == ACTION_START) {
             try {
                 videoPlayer.start()

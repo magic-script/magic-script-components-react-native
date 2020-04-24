@@ -78,13 +78,13 @@ open class AudioNode(
         super.onDestroy()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onHostPause() {
+        super.onHostPause()
         audioEngine.pause()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onHostResume() {
+        super.onHostResume()
         if (lastUserAction == AudioAction.START || lastUserAction == AudioAction.RESUME) {
             audioEngine.resume()
         }

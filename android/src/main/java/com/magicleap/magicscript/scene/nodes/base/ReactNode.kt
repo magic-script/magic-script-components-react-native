@@ -16,9 +16,10 @@
 
 package com.magicleap.magicscript.scene.nodes.base
 
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReadableMap
 
-interface ReactNode {
+interface ReactNode : LifecycleEventListener {
 
     /**
      * Parent defined in React code
@@ -41,10 +42,9 @@ interface ReactNode {
 
     fun removeContent(child: ReactNode)
 
-    fun onPause()
-
-    fun onResume()
-
+    /**
+     * Called when the node is destroyed and will no longer be displayed.
+     */
     fun onDestroy()
 
 }

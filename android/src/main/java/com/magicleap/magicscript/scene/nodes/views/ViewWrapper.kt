@@ -27,16 +27,24 @@ import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
+import com.magicleap.magicscript.utils.logMessage
 
 class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(context) {
 
     companion object {
         const val TOUCH_RADIUS_DP = 16F
+        const val LONG_PRESS_TIME = 0.5f // in seconds
     }
+
+    var onClickCallback: (() -> Unit)? = null
+    var onPressChangedCallback: ((pressed: Boolean) -> Unit)? = null
 
     private val touchRadiusPx = context.resources.displayMetrics.density * TOUCH_RADIUS_DP
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+
+    private var touching = false
+    private var touchTime = 0f
 
     init {
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -71,6 +79,43 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
 
     override fun shouldDelayChildPressedState(): Boolean {
         return findScrollAncestor() != null
+    }
+
+    /**
+     * Detecting callback events from this "top" events function,
+     * in case the ViewWrapper contains e.g a ScrollView, or other event
+     * that is consumed by child view. We want be sure that onClick / press events
+     * are always called.
+     */
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        logMessage("dispatchTouchEvent: $event")
+
+        when (event.actionMasked) {
+            MotionEvent.ACTION_UP -> {
+                if (touching) {
+                    onClickCallback?.invoke()
+                    logMessage("on click")
+                }
+
+                touching = false
+                touchTime = 0f
+                onPressChangedCallback?.invoke(false)
+            }
+
+            MotionEvent.ACTION_DOWN -> {
+                touching = true
+                onPressChangedCallback?.invoke(true)
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (!isInViewBounds(event.x.toInt(), event.y.toInt())) {
+                    touching = false
+                    onPressChangedCallback?.invoke(false)
+                }
+            }
+        }
+
+        return super.dispatchTouchEvent(event)
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -112,7 +157,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
             positionMeters.x + translation.x,
             positionMeters.y + translation.y
         )
-        return findScrollAncestor()?.onTouchEvent(event) ?: false
+        return findScrollAncestor()?.onTouchEvent(event) ?: true
     }
 
     private fun findScrollAncestor(): UiScrollViewNode? {
@@ -146,6 +191,10 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
             p = p.parent
         }
         return translation
+    }
+
+    private fun isInViewBounds(touchX: Int, touchY: Int): Boolean {
+        return touchX in left..right && touchY in top..bottom
     }
 
 }

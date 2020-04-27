@@ -22,8 +22,8 @@ import android.view.View
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.UiNode
@@ -128,17 +128,16 @@ open class UiButtonNode(
             setTextPadding(textPaddingHorizontal, textPaddingVertical)
 
             setCharactersSpacing(charactersSpacing)
-            onPressedChangeListener = { pressed ->
-                val z =
-                    if (pressed) {
-                        ANIMATED_Z
-                    } else {
-                        0f
-                    }
-                contentNode.localPosition =
-                    Vector3(contentNode.localPosition.x, contentNode.localPosition.y, z)
-            }
         }
+    }
+
+    override fun onPressChanged(pressed: Boolean) {
+        super.onPressChanged(pressed)
+
+        val z = if (pressed) ANIMATED_Z else 0f
+
+        contentNode.localPosition =
+            Vector3(contentNode.localPosition.x, contentNode.localPosition.y, z)
     }
 
     override fun applyProperties(props: Bundle) {

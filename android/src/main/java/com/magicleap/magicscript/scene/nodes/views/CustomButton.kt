@@ -121,8 +121,6 @@ class CustomButton @JvmOverloads constructor(
             requestLayout()
         }
 
-    var onPressedChangeListener: ((Boolean) -> Unit)? = null
-
     // border width = shorter button dimension * borderWidthFactor
     private val borderWidthFactor = 0.07F
     private val iconSpacingFactor = 0.3F // spacing offset from text (relative to icon width)
@@ -232,11 +230,6 @@ class CustomButton @JvmOverloads constructor(
                 iconSize.x + iconPadding
             }
         }
-
-    override fun dispatchSetPressed(pressed: Boolean) {
-        invalidate()
-        onPressedChangeListener?.invoke(pressed)
-    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

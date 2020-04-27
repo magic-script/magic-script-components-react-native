@@ -295,24 +295,26 @@ open class UiTextEditNode(
         }
     }
 
-    private fun setupViewListeners() {
-        view.text_edit.setOnClickListener {
-            // disabling parent view is not sufficient
-            if (!properties.getBoolean(PROP_ENABLED)) {
-                return@setOnClickListener
-            }
-            val activity = ArViewManager.getActivityRef().get()
-            if (activity != null) {
-                isSelected = true
-                startCursorAnimation()
-                showBorder()
-                view.text_edit_underline.visibility = View.INVISIBLE
-                view.text_edit.setTextColor(textColor)
-                showInputDialog(activity)
-                onFocusGainedListener?.invoke()
-            }
-        }
+    override fun onViewClick() {
+        super.onViewClick()
 
+        // disabling parent view is not sufficient
+        if (!properties.getBoolean(PROP_ENABLED)) {
+            return
+        }
+        val activity = ArViewManager.getActivityRef().get()
+        if (activity != null) {
+            isSelected = true
+            startCursorAnimation()
+            showBorder()
+            view.text_edit_underline.visibility = View.INVISIBLE
+            view.text_edit.setTextColor(textColor)
+            showInputDialog(activity)
+            onFocusGainedListener?.invoke()
+        }
+    }
+
+    private fun setupViewListeners() {
         // override touch event to disable scroll if needed
         view.sv_text_edit.setOnTouchListener { _, _ ->
             return@setOnTouchListener !properties.getBoolean(PROP_SCROLLING, DEFAULT_SCROLLING)

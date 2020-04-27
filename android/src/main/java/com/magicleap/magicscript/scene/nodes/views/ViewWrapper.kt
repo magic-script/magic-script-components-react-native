@@ -18,6 +18,7 @@ package com.magicleap.magicscript.scene.nodes.views
 
 import android.content.Context
 import android.view.MotionEvent
+import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import com.google.ar.sceneform.Node
 import com.magicleap.magicscript.ArViewManager
@@ -31,7 +32,6 @@ import com.magicleap.magicscript.utils.Vector2
 class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(context) {
 
     companion object {
-        const val TOUCH_RADIUS_DP = 16F
         const val LONG_PRESS_TIME = 500L // in ms
     }
 
@@ -39,10 +39,10 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
     var onPressChangedCallback: ((pressed: Boolean) -> Unit)? = null
     var onLongPressCallback: (() -> Unit)? = null
 
-    private val touchRadiusPx = context.resources.displayMetrics.density * TOUCH_RADIUS_DP
+    private val acceptedTouchOffset = ViewConfiguration.get(context).scaledTouchSlop
+
     private var isBeingDragged = false
     private var previousTouch = Vector2()
-
     private var touching = false
 
     private var longPressDetector = Runnable {
@@ -136,7 +136,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         if (action == MotionEvent.ACTION_MOVE && !isBeingDragged) {
             val dist = pos - previousTouch
             val radiusSqr = dist.x * dist.x + dist.y * dist.y
-            if (radiusSqr >= touchRadiusPx * touchRadiusPx) {
+            if (radiusSqr >= acceptedTouchOffset * acceptedTouchOffset) {
                 isBeingDragged = true
             }
         }
@@ -203,6 +203,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
     }
 
     private fun isInViewBounds(touchX: Int, touchY: Int): Boolean {
-        return touchX in left..right && touchY in top..bottom
+        return touchX in left - acceptedTouchOffset..right + acceptedTouchOffset
+                && touchY in top - acceptedTouchOffset..bottom + acceptedTouchOffset
     }
 }

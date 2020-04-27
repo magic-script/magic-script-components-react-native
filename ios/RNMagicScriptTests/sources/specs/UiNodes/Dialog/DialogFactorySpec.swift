@@ -36,6 +36,8 @@ fileprivate class SimpleDialogDataProvider: DialogDataProviding {
     var id: String {
         return "fakeID"
     }
+    var dialogType: DialogType = .dualAction
+    var buttonType: ButtonType = .textWithIcon
     var title: String?
     var message: String?
     var confirmText: String?

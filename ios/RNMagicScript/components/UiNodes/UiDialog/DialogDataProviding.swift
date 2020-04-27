@@ -18,6 +18,8 @@ import UIKit
 
 protocol DialogDataProviding {
     var id: String { get }
+    var dialogType: DialogType { get }
+    var buttonType: ButtonType { get }
     var title: String? { get }
     var message: String? { get }
     var confirmText: String? { get }

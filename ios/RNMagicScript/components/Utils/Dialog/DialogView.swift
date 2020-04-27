@@ -36,8 +36,10 @@ class DialogView: UIView {
             messageTextView.text = dialogData?.message
             messageTextView.isScrollEnabled = dialogData?.scrolling ?? false
             confirmButton.setTitle(dialogData?.confirmText, for: UIControl.State.normal)
+            confirmButton.sizeToFit()
             confirmButton.update(image: dialogData?.confirmIcon?.image)
             cancelButton.setTitle(dialogData?.cancelText, for: UIControl.State.normal)
+            cancelButton.sizeToFit()
             cancelButton.update(image: dialogData?.cancelIcon?.image)
             toggleButtonsVisibility()
             setExpirationTimer()
@@ -65,11 +67,24 @@ class DialogView: UIView {
     }
 
     fileprivate func setupView() {
-        backgroundColor = .white
+        let backgroundImage = UIImageView(frame: frame)
+        backgroundImage.image = ImageAsset.dialogBackground.image
+        backgroundImage.contentMode = .scaleToFill
+        backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+        insertSubview(backgroundImage, at: 0)
+
+        let imageMargin: CGFloat = 100
+        NSLayoutConstraint.activate([
+            backgroundImage.topAnchor.constraint(equalTo: topAnchor, constant: -imageMargin),
+            backgroundImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: imageMargin),
+            backgroundImage.leftAnchor.constraint(equalTo: leftAnchor, constant: -imageMargin),
+            backgroundImage.rightAnchor.constraint(equalTo: rightAnchor, constant: imageMargin),
+        ])
 
         titleLabel = UILabel()
         titleLabel.text = dialogData?.title
-        titleLabel.textColor = .black
+        titleLabel.textColor = .white
+        titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: DialogView.titleFontSize, weight: .semibold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
@@ -78,9 +93,12 @@ class DialogView: UIView {
         messageTextView.isEditable = false
         messageTextView.isSelectable = false
         messageTextView.isScrollEnabled = dialogData?.scrolling ?? false
+        messageTextView.indicatorStyle = .white
         messageTextView.maxHeight = 140.0
         messageTextView.text = dialogData?.message
-        messageTextView.textColor = .black
+        messageTextView.textColor = .white
+        messageTextView.textAlignment = .center
+        messageTextView.backgroundColor = .clear
         messageTextView.font = UIFont.systemFont(ofSize: DialogView.messageFontSize, weight: .regular)
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(messageTextView)
@@ -95,24 +113,36 @@ class DialogView: UIView {
                                                    target: self,
                                                    action: #selector(cancelButtonAction(_:)))
 
-        let stackView = UIStackView(arrangedSubviews: [cancelButton, confirmButton])
-        stackView.distribution = .fillEqually
-        stackView.spacing = 8.0
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stackView)
+        let buttonsContainer = UIView()
+        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
+        buttonsContainer.addSubview(cancelButton)
+        buttonsContainer.addSubview(confirmButton)
 
         let margin: CGFloat = 16.0
+
+        NSLayoutConstraint.activate([
+            cancelButton.topAnchor.constraint(equalTo: buttonsContainer.topAnchor, constant: 0),
+            cancelButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor, constant: 0),
+            cancelButton.leftAnchor.constraint(equalTo: buttonsContainer.leftAnchor, constant: margin),
+            cancelButton.rightAnchor.constraint(equalTo: confirmButton.leftAnchor, constant: -margin),
+            confirmButton.topAnchor.constraint(equalTo: buttonsContainer.topAnchor, constant: 0),
+            confirmButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor, constant: 0),
+            confirmButton.rightAnchor.constraint(equalTo: buttonsContainer.rightAnchor, constant: -margin),
+        ])
+
+        addSubview(buttonsContainer)
+
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: margin),
             titleLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: margin),
             titleLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -margin),
+            titleLabel.heightAnchor.constraint(equalToConstant: 16.0),
             messageTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: margin),
             messageTextView.rightAnchor.constraint(equalTo: rightAnchor, constant: -margin),
             messageTextView.leftAnchor.constraint(equalTo: leftAnchor, constant: margin),
-            stackView.topAnchor.constraint(equalTo: messageTextView.bottomAnchor, constant: margin),
-            stackView.leftAnchor.constraint(equalTo: leftAnchor, constant: margin),
-            stackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -margin),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -margin)
+            buttonsContainer.topAnchor.constraint(equalTo: messageTextView.bottomAnchor, constant: margin),
+            buttonsContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -margin),
+            buttonsContainer.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
 
         setExpirationTimer()
@@ -138,7 +168,48 @@ class DialogView: UIView {
         if dialogData?.cancelIcon == nil && dialogData?.cancelText == nil {
             cancelButton.isHidden = true
         } else {
-            cancelButton.isHidden = true
+            cancelButton.isHidden = false
+        }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        switch dialogData?.buttonType {
+        case .textWithIcon:
+            confirmButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 24.0)
+            confirmButton.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: -8.0)
+            cancelButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 24.0)
+            cancelButton.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: -8.0)
+            confirmButton.layer.cornerRadius = confirmButton.bounds.height / 2
+            confirmButton.layer.borderWidth = 2
+            cancelButton.layer.cornerRadius = cancelButton.bounds.height / 2
+            cancelButton.layer.borderWidth = 2
+        case .text:
+            confirmButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 16.0)
+            cancelButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 16.0)
+            confirmButton.layer.cornerRadius = confirmButton.bounds.height / 2
+            confirmButton.layer.borderWidth = 2
+            cancelButton.layer.cornerRadius = cancelButton.bounds.height / 2
+            cancelButton.layer.borderWidth = 2
+            // reset images
+            cancelButton.setImage(nil, for: .normal)
+            confirmButton.setImage(nil, for: .normal)
+        case .iconWithLabel:
+            cancelButton.layer.borderWidth = 0
+            confirmButton.layer.borderWidth = 0
+            confirmButton.centerVertically()
+            cancelButton.centerVertically()
+        case .icon:
+            cancelButton.layer.borderWidth = 0
+            confirmButton.layer.borderWidth = 0
+            confirmButton.centerVertically()
+            cancelButton.centerVertically()
+            // reset labels
+            cancelButton.setTitle(nil, for: .normal)
+            confirmButton.setTitle(nil, for: .normal)
+        default:
+            print("Default: \(#function)")
         }
     }
 }

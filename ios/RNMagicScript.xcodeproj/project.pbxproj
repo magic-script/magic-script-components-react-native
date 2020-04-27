@@ -318,6 +318,8 @@
 		C411CC2F240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC30240505F0004C7063 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2E240505F0004C7063 /* Scene.swift */; };
 		C411CC31240505F6004C7063 /* Prism.swift in Sources */ = {isa = PBXBuildFile; fileRef = C411CC2C240505E0004C7063 /* Prism.swift */; };
+		C414575B2451A76C00D2D97C /* DialogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C414575A2451A76C00D2D97C /* DialogType.swift */; };
+		C414575C2451A76C00D2D97C /* DialogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C414575A2451A76C00D2D97C /* DialogType.swift */; };
 		C41603CA24501F70005A7784 /* prism_corner.glb in Resources */ = {isa = PBXBuildFile; fileRef = C41603C924501F70005A7784 /* prism_corner.glb */; };
 		C418822024126DC000EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
 		C41882212412703F00EB84EE /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C418821F24126DC000EB84EE /* ButtonType.swift */; };
@@ -853,6 +855,7 @@
 		C40947302451565F00DFF608 /* Gesturable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gesturable.swift; sourceTree = "<group>"; };
 		C411CC2C240505E0004C7063 /* Prism.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prism.swift; sourceTree = "<group>"; };
 		C411CC2E240505F0004C7063 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		C414575A2451A76C00D2D97C /* DialogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogType.swift; sourceTree = "<group>"; };
 		C41603C924501F70005A7784 /* prism_corner.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = prism_corner.glb; sourceTree = "<group>"; };
 		C418821F24126DC000EB84EE /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
 		C419CF922359A7B2000094C3 /* NodeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeConfiguration.swift; sourceTree = "<group>"; };
@@ -1404,6 +1407,7 @@
 				C4A12B2F2361C85C009B7083 /* Side.swift */,
 				C4B91AC22386B8A6002A24D6 /* ToggleType.swift */,
 				C418821F24126DC000EB84EE /* ButtonType.swift */,
+				C414575A2451A76C00D2D97C /* DialogType.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -2467,6 +2471,7 @@
 				4425EDFF2366056D0064A2EA /* UiLayoutNode.swift in Sources */,
 				C4A12B382361D95B009B7083 /* NSRegularExpression+Extension.swift in Sources */,
 				4474A06223896AC2001BE61E /* UIColor+Extension.swift in Sources */,
+				C414575C2451A76C00D2D97C /* DialogType.swift in Sources */,
 				C4B73CA4238AEA5C0080D3F3 /* TestsAppDelegate.swift in Sources */,
 				4415DA3123A146F00096072B /* SCNNode+Enumerate.swift in Sources */,
 				44AFAD26232BCAE3005AC8EF /* GLTFSceneKit+Extension.swift in Sources */,
@@ -2777,6 +2782,7 @@
 				C4FB475A234A8E7300E552F5 /* InputViewFactory.swift in Sources */,
 				44AFAC43232B9BCF005AC8EF /* UiButtonNode.swift in Sources */,
 				4425EE07236605A60064A2EA /* GridLayout.swift in Sources */,
+				C414575B2451A76C00D2D97C /* DialogType.swift in Sources */,
 				C450CD5E23A2A9BB00CA97AB /* LongPressGestureRecognizer.swift in Sources */,
 				C450CD5B23A2A9A200CA97AB /* TapGestureRecognizer.swift in Sources */,
 				44DF5A6023BE30750024778E /* UIGestureRecognizer+Extension.swift in Sources */,

@@ -376,6 +376,8 @@ class NodesManagerSpec: QuickSpec {
 
 private class SimpleDialogDataProvidingNode: TransformNode, DialogDataProviding {
     var id: String = "simpleDialogDataProvidingTypeId"
+    var dialogType: DialogType = .dualAction
+    var buttonType: ButtonType = .textWithIcon
     var title: String?
     var message: String?
     var confirmText: String?

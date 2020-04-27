@@ -34,8 +34,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupScene()
         
-//        setupPrismWithModels()
-        setupPrismForHitTest()
+        //        setupPrismWithModels()
+        //        setupPrismForHitTest()
+        setupPrismForDialog()
 
         setupARView()
         arView.register(self)
@@ -51,7 +52,45 @@ class ViewController: UIViewController {
         NodesManager.instance.registerScene(scene, sceneId: sceneId)
         NodesManager.instance.addNodeToRoot(sceneId)
     }
-    
+
+    var dialogNodeId = "dialogNodeId"
+    var dialogNode: UiDialogNode?
+    private func setupPrismForDialog() {
+        let prismId = "prism_dialog"
+        let prism: Prism = Prism()
+        prism.size = SCNVector3(1.0, 1.0, 1.0)
+        prism.debug = true
+
+        NodesManager.instance.registerPrism(prism, prismId: prismId)
+        NodesManager.instance.addNode(prismId, toParent: sceneId)
+
+        let dialogButton : UiButtonNode = createComponent([
+            "width": 0.75,
+            "height": 0.25,
+            "localPosition": [0, 0, 0],
+            "color": [1, 1, 0, 1],
+            "text": "Dialog"
+        ], nodeId: "button_dialog", parentId: prismId)
+
+        dialogNode = UiDialogNode(props: ["buttonType": "text-with-icon", "title": "Dialog title", "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", "confirmText": "Confirm", "confirmIcon": "check", "cancelText": "Confirm", "cancelIcon": "close", "scrolling": true	])
+        dialogNode?.onDialogConfirmed = { [weak self] dialog in
+            if let dialogId = self?.dialogNodeId { NodesManager.instance.removeNode(dialogId, fromParent: prismId) }
+        }
+        dialogNode?.onDialogCanceled = { [weak self] dialog in
+            if let dialogId = self?.dialogNodeId { NodesManager.instance.removeNode(dialogId, fromParent: prismId) }
+        }
+
+        dialogButton.onActivate = { [weak self] button in
+            if let dialogId = self?.dialogNodeId, let dialog = self?.dialogNode {
+                NodesManager.instance.registerNode(dialog, nodeId: dialogId)
+                NodesManager.instance.addNode(dialogId, toParent: prismId)
+            }
+        }
+
+        NodesManager.instance.updateLayout()
+    }
+
+
     fileprivate func setupPrismForHitTest() {
         let prismId = "prism_hit_test"
         let prism: Prism = Prism()
@@ -85,7 +124,7 @@ class ViewController: UIViewController {
         let prism: Prism = Prism()
         prism.size = SCNVector3(1.0, 1.0, 1.0)
         prism.debug = true
-//        prism.editMode = true
+        //        prism.editMode = true
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)
         NodesManager.instance.addNode(prismId, toParent: sceneId)
@@ -119,8 +158,8 @@ class ViewController: UIViewController {
         ], nodeId: "slider", parentId: groupId)
         slider.onSliderChanged = { (sender, value) in
             prism.size = SCNVector3(value, value, value)
-//            prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
-//            prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
+            //            prism.position = SCNVector3(0.5 * (value - 1), 0, 0)
+            //            prism.rotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: Float(5 * value))
             NodesManager.instance.updateLayout()
         }
 
@@ -159,7 +198,7 @@ class ViewController: UIViewController {
             "localPosition": [0.3, 0, 0],
             "scrollDirection": "vertical"
         ], nodeId: scrollViewId, parentId: groupId)
-//        scrollView.localRotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: 0.5 * Float.pi)
+        //        scrollView.localRotation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: 0.5 * Float.pi)
         let linearLayoutId = "linear_layout"
         let _: UiLinearLayoutNode = createComponent([:], nodeId: linearLayoutId, parentId: scrollViewId)
         let colors = [

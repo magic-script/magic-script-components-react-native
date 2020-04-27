@@ -326,6 +326,10 @@ abstract class UiNode(
                 onReleaseListener?.invoke()
             }
         }
+
+        viewWrapper.onLongPressCallback = {
+            onLongPressListener?.invoke()
+        }
     }
 
     private fun setEnabled(props: Bundle) {

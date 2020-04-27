@@ -35,7 +35,7 @@ abstract class ArResourcesProvider {
      * (Scene is changed e.g. when user exits the app with back button and opens it again)
      */
     fun addArSceneChangedListener(listener: ArSceneChangedListener) {
-        arSceneListeners = listOf(*arSceneListeners.toTypedArray(), listener)
+        arSceneListeners = arSceneListeners + listener
     }
 
     fun removeArSceneChangedListener(listener: ArSceneChangedListener) {
@@ -48,7 +48,7 @@ abstract class ArResourcesProvider {
      * @see isArLoaded
      */
     fun addArLoadedListener(listener: ArLoadedListener) {
-        arLoadedListeners = listOf(*arLoadedListeners.toTypedArray(), listener)
+        arLoadedListeners = arLoadedListeners + listener
     }
 
     fun removeArLoadedListener(listener: ArLoadedListener) {
@@ -59,7 +59,7 @@ abstract class ArResourcesProvider {
      * Registers a listener that will be called when camera position or state has changed.
      */
     fun addCameraUpdatedListener(listener: CameraUpdatedListener) {
-        cameraUpdatedListeners = listOf(*cameraUpdatedListeners.toTypedArray(), listener)
+        cameraUpdatedListeners = cameraUpdatedListeners + listener
     }
 
     fun removeCameraUpdatedListener(listener: CameraUpdatedListener) {
@@ -71,8 +71,7 @@ abstract class ArResourcesProvider {
      * (this happens when AR Fragment is recreated)
      */
     fun addTransformationSystemListener(listener: TransformationSystemListener) {
-        transformationSystemListeners =
-            listOf(*transformationSystemListeners.toTypedArray(), listener)
+        transformationSystemListeners = transformationSystemListeners + listener
     }
 
     fun removeTransformationSystemListener(listener: TransformationSystemListener) {
@@ -83,7 +82,7 @@ abstract class ArResourcesProvider {
      * Registers a plane tap event listener which is called after user taps a detected plane
      */
     fun addPlaneTapListener(listener: PlaneTapListener) {
-        planeTapListeners = listOf(*planeTapListeners.toTypedArray(), listener)
+        planeTapListeners = planeTapListeners + listener
     }
 
     fun removePlaneTapListener(listener: PlaneTapListener) {

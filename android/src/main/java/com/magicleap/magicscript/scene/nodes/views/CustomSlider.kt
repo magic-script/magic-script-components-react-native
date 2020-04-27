@@ -92,6 +92,12 @@ class CustomSlider @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
+
+        if (action == MotionEvent.ACTION_UP) {
+            performClick()
+            return true
+        }
+
         if (action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_MOVE) {
             return false
         }

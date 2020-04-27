@@ -32,11 +32,22 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
 
     companion object {
         const val TOUCH_RADIUS_DP = 16F
+        const val LONG_PRESS_TIME = 500L // in ms
     }
+
+    var onClickCallback: (() -> Unit)? = null
+    var onPressChangedCallback: ((pressed: Boolean) -> Unit)? = null
+    var onLongPressCallback: (() -> Unit)? = null
 
     private val touchRadiusPx = context.resources.displayMetrics.density * TOUCH_RADIUS_DP
     private var isBeingDragged = false
     private var previousTouch = Vector2()
+
+    private var touching = false
+
+    private var longPressDetector = Runnable {
+        onLongPressCallback?.invoke()
+    }
 
     init {
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -71,6 +82,44 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
 
     override fun shouldDelayChildPressedState(): Boolean {
         return findScrollAncestor() != null
+    }
+
+    /**
+     * Detecting events using this "top" events function, so events callbacks will fire even in
+     * case when the ViewWrapper contains a ScrollView or when child view event has been
+     * already consumed.
+     */
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_UP -> {
+                if (touching) {
+                    onClickCallback?.invoke()
+                }
+
+                handlePressEnd()
+            }
+
+            MotionEvent.ACTION_DOWN -> {
+                touching = true
+                postDelayed(longPressDetector, LONG_PRESS_TIME)
+
+                onPressChangedCallback?.invoke(true)
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (!isInViewBounds(event.x.toInt(), event.y.toInt())) {
+                    handlePressEnd()
+                }
+            }
+        }
+
+        return super.dispatchTouchEvent(event)
+    }
+
+    private fun handlePressEnd() {
+        touching = false
+        onPressChangedCallback?.invoke(false)
+        removeCallbacks(longPressDetector)
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -112,7 +161,12 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
             positionMeters.x + translation.x,
             positionMeters.y + translation.y
         )
-        return findScrollAncestor()?.onTouchEvent(event) ?: false
+        return findScrollAncestor()?.onTouchEvent(event) ?: true
+    }
+
+    override fun onDetachedFromWindow() {
+        removeCallbacks(longPressDetector)
+        super.onDetachedFromWindow()
     }
 
     private fun findScrollAncestor(): UiScrollViewNode? {
@@ -148,4 +202,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
         return translation
     }
 
+    private fun isInViewBounds(touchX: Int, touchY: Int): Boolean {
+        return touchX in left..right && touchY in top..bottom
+    }
 }

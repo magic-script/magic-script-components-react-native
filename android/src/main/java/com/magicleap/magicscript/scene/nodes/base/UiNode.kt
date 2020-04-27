@@ -20,10 +20,8 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import com.facebook.react.bridge.ReadableMap
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Renderable
@@ -52,7 +50,6 @@ abstract class UiNode(
         const val PROP_ENABLED = "enabled"
 
         const val WRAP_CONTENT_DIMENSION = 0.0F // width or height that grow to fit content
-        const val LONG_PRESS_TIME = 0.5f // in seconds
     }
 
     /**
@@ -91,10 +88,6 @@ abstract class UiNode(
     private var shouldRebuild = false
     private var loadingView = false
     private var renderableCopy: Renderable? = null
-
-    private var touching = false
-    private var touchTime = 0f
-
     private var renderableLoadRequest: ViewRenderableLoader.LoadRequest? = null
 
     /**
@@ -199,14 +192,6 @@ abstract class UiNode(
             shouldRebuild = false
             logMessage("node rebuild, hash:{${this.hashCode()}}")
         }
-
-        if (touching) {
-            touchTime += deltaSeconds
-            if (touchTime >= LONG_PRESS_TIME) {
-                onLongPressListener?.invoke()
-                touchTime = 0f
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -222,6 +207,8 @@ abstract class UiNode(
     protected abstract fun provideDesiredSize(): Vector2
 
     protected open fun onViewClick() {}
+
+    protected open fun onPressChanged(pressed: Boolean) {}
 
     /**
      * Should setup the [view] instance (e.g. register listeners) before it gets
@@ -325,35 +312,23 @@ abstract class UiNode(
     }
 
     private fun setupViewListeners() {
-        if (view is AdapterView<*>) {
-            return
-        }
-        view.setOnClickListener {
+        viewWrapper.onClickCallback = {
             onViewClick()
             onClickListener?.invoke()
         }
 
-        view.setOnTouchListener { _, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    touching = true
-                    if (onPressListener == null) {
-                        return@setOnTouchListener false
-                    }
-                    onPressListener?.invoke()
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    touching = false
-                    touchTime = 0f
-                    if (onReleaseListener == null) {
-                        return@setOnTouchListener false
-                    }
-                    onReleaseListener?.invoke()
-                    true
-                }
-                else -> false
+        viewWrapper.onPressChangedCallback = { pressed ->
+            if (pressed) {
+                onPressChanged(true)
+                onPressListener?.invoke()
+            } else {
+                onPressChanged(false)
+                onReleaseListener?.invoke()
             }
+        }
+
+        viewWrapper.onLongPressCallback = {
+            onLongPressListener?.invoke()
         }
     }
 

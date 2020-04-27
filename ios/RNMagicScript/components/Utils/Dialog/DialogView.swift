@@ -69,13 +69,16 @@ class DialogView: UIView {
     fileprivate func setupView() {
         let backgroundImage = UIImageView(frame: frame)
         backgroundImage.image = ImageAsset.dialogBackground.image
-        backgroundImage.contentMode = .scaleAspectFill
+        backgroundImage.contentMode = .scaleToFill
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
         insertSubview(backgroundImage, at: 0)
 
+        let imageMargin: CGFloat = 100
         NSLayoutConstraint.activate([
-            backgroundImage.centerXAnchor.constraint(equalTo: centerXAnchor),
-            backgroundImage.centerYAnchor.constraint(equalTo: centerYAnchor)
+            backgroundImage.topAnchor.constraint(equalTo: topAnchor, constant: -imageMargin),
+            backgroundImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: imageMargin),
+            backgroundImage.leftAnchor.constraint(equalTo: leftAnchor, constant: -imageMargin),
+            backgroundImage.rightAnchor.constraint(equalTo: rightAnchor, constant: imageMargin),
         ])
 
         titleLabel = UILabel()
@@ -90,6 +93,7 @@ class DialogView: UIView {
         messageTextView.isEditable = false
         messageTextView.isSelectable = false
         messageTextView.isScrollEnabled = dialogData?.scrolling ?? false
+        messageTextView.indicatorStyle = .white
         messageTextView.maxHeight = 140.0
         messageTextView.text = dialogData?.message
         messageTextView.textColor = .white

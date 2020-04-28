@@ -39,6 +39,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
         const val BUTTON_TYPE_TEXT_WITH_ICON = "text-with-icon"
     }
 
+    private var buttonType: String = BUTTON_TYPE_TEXT
     private var cancelIconView: ImageView?
     private var cancelTextView: TextView?
     private var cancelLayout: ConstraintLayout?
@@ -108,6 +109,7 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
 
     @SuppressLint("ClickableViewAccessibility")
     fun setButtonType(buttonType: String) {
+        this.buttonType = buttonType
         when (buttonType) {
             BUTTON_TYPE_TEXT_WITH_ICON -> {
                 showIcon()
@@ -140,13 +142,19 @@ class CustomAlertDialogBuilder(context: Context) : AlertDialog.Builder(context) 
             DialogType.DUAL_ACTION -> {
                 confirmLayout?.visibility = View.VISIBLE
                 cancelLayout?.visibility = View.VISIBLE
-                showLabel()
+
+                if (buttonType == BUTTON_TYPE_ICON_WITH_LABEL) {
+                    showLabel()
+                }
             }
             DialogType.SINGLE_ACTION -> {
                 confirmLayout?.visibility = View.VISIBLE
-                confirmLabelView?.visibility = View.VISIBLE
                 cancelLayout?.visibility = View.GONE
                 cancelLabelView?.visibility = View.GONE
+
+                if (buttonType == BUTTON_TYPE_ICON_WITH_LABEL) {
+                    confirmLabelView?.visibility = View.VISIBLE
+                }
             }
             DialogType.NO_ACTION -> {
                 confirmLayout?.visibility = View.GONE

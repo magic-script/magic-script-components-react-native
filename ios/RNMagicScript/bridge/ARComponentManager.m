@@ -210,7 +210,7 @@ RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)paren
 RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId) {
     ARLog(@"addChildNodeToContainer: %@", nodeId);
     [NodesManager.instance addNodeToRoot:nodeId];
-    self.shouldSendInitialURI = true;
+    self.shouldSendInitialURI = YES;
 }
 
 RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId) {
@@ -249,7 +249,7 @@ RCT_EXPORT_METHOD(updateLayout) {
         }
         Scene *scene = NodesManager.instance.scene;
         [[AREventsManager instance] onAppStartEventReceived:scene initialUri:initialUri];
-        self.shouldSendInitialURI = false;
+        self.shouldSendInitialURI = NO;
     }
 }
 

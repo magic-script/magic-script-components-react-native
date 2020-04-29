@@ -56,6 +56,7 @@ open class UiTextNode(
 
         const val DEFAULT_TEXT_SIZE = 0.025 // in meters
         const val DEFAULT_ALIGNMENT = "bottom-left" // view alignment (pivot)
+        const val DEFAULT_WRAP = true
     }
 
     init {
@@ -74,8 +75,9 @@ open class UiTextNode(
 
     override fun setupView() {
         super.setupView()
-        val bounds = readBoundsSize()
-        if (bounds.x == WRAP_CONTENT_DIMENSION) {
+
+        val wrap = readWrapProperty(properties)
+        if (!wrap) {
             (view as TextView).setSingleLine(true)
         }
 
@@ -99,7 +101,6 @@ open class UiTextNode(
         setTextColor(props)
         setCharactersSpacing(props)
         setLineSpacing(props)
-        setWrap(props)
         setFontParams(props)
     }
 
@@ -113,6 +114,14 @@ open class UiTextNode(
         } else {
             return Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
         }
+    }
+
+    private fun readWrapProperty(props: Bundle): Boolean {
+        if (props.containsKey(PROP_BOUNDS_SIZE)) {
+            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
+            return boundsData.getBoolean(PROP_WRAP, DEFAULT_WRAP)
+        }
+        return DEFAULT_WRAP
     }
 
     private fun canResizeOnContentChange(): Boolean {
@@ -190,17 +199,6 @@ open class UiTextNode(
         if (props.containsKey(PROP_LINE_SPACING)) {
             val spacingMultiplier = props.getDouble(PROP_LINE_SPACING).toFloat()
             (view as TextView).setLineSpacing(0F, spacingMultiplier)
-        }
-    }
-
-    private fun setWrap(props: Bundle) {
-        if (readBoundsSize().x == WRAP_CONTENT_DIMENSION) {
-            return
-        }
-        if (props.containsKey(PROP_BOUNDS_SIZE)) {
-            val boundsData = props.get(PROP_BOUNDS_SIZE) as Bundle
-            val wrap = boundsData.getBoolean(PROP_WRAP)
-            (view as TextView).setSingleLine(!wrap)
         }
     }
 

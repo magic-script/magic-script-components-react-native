@@ -30,9 +30,15 @@ void ARLog(NSString *format, ...) {
 }
 
 @interface ARComponentManager ()
+@property (assign, nonatomic) BOOL shouldSendInitialURI;
+@property (strong, nonatomic) NSDictionary *launchOptions;
 @end
 
 @implementation ARComponentManager
+
+- (void)setBridge:(RCTBridge *)bridge {
+    self.launchOptions = [bridge.launchOptions copy];
+}
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
@@ -204,6 +210,7 @@ RCT_EXPORT_METHOD(addChildNode:(NSString *)nodeId toParentNode:(NSString *)paren
 RCT_EXPORT_METHOD(addChildNodeToContainer:(NSString *)nodeId) {
     ARLog(@"addChildNodeToContainer: %@", nodeId);
     [NodesManager.instance addNodeToRoot:nodeId];
+    self.shouldSendInitialURI = YES;
 }
 
 RCT_EXPORT_METHOD(removeChildNode:(NSString *)nodeId fromParentNode:(NSString *)parentId) {
@@ -234,6 +241,16 @@ RCT_EXPORT_METHOD(updateNode:(NSString *)nodeId properties:(NSDictionary *)prope
 RCT_EXPORT_METHOD(updateLayout) {
     ARLog(@"updateLayout");
     [NodesManager.instance updateLayout];
+
+    if (self.shouldSendInitialURI) {
+        NSString *initialUri = @"";
+        if (self.launchOptions[UIApplicationLaunchOptionsURLKey] != nil) {
+            initialUri = [self.launchOptions[UIApplicationLaunchOptionsURLKey] absoluteString];
+        }
+        Scene *scene = NodesManager.instance.scene;
+        [[AREventsManager instance] onAppStartEventReceived:scene initialUri:initialUri];
+        self.shouldSendInitialURI = NO;
+    }
 }
 
 // MARK: - UiNode event handlers
@@ -521,6 +538,11 @@ RCT_EXPORT_METHOD(addOnConfirmationCanceledEventHandler:(NSString *)nodeId) {
             [[AREventsManager instance] onConfirmationCanceledEventReceived:sender];
         };
     }
+}
+
+// MARK: - Scene event handlers
+RCT_EXPORT_METHOD(addOnAppStartEventHandler:(NSString *)sceneId) {
+    NSLog(@"addOnAppStartEventHandler");
 }
 
 @end

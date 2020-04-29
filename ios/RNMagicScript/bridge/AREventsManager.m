@@ -104,7 +104,7 @@ RCT_EXPORT_MODULE();
      ];
 }
 
-- (void)onEventWithName:(NSString *)name sender:(TransformNode *)sender body:(NSDictionary *)body {
+- (void)onEventWithName:(NSString *)name sender:(BaseNode *)sender body:(NSDictionary *)body {
     if (hasListeners) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSMutableDictionary *fullBody = NULL;
@@ -121,6 +121,10 @@ RCT_EXPORT_MODULE();
 
 - (void)onActivateEventReceived:(UiNode *)sender {
     [self onEventWithName:@"onActivate" sender:sender body:NULL];
+}
+
+- (void)onAppStartEventReceived:(Scene *)sender initialUri:(NSString *)initialUri {
+    [self onEventWithName:@"onAppStart" sender:sender body:@{ @"uri": initialUri }];
 }
 
 - (void)onClickEventReceived:(UiNode *)sender {

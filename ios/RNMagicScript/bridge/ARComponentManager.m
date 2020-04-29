@@ -36,9 +36,7 @@ void ARLog(NSString *format, ...) {
 
 @implementation ARComponentManager
 
-- (void)setBridge:(RCTBridge *)bridge {
-    self.launchOptions = [bridge.launchOptions copy];
-}
+@synthesize bridge = _bridge;
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
@@ -243,10 +241,8 @@ RCT_EXPORT_METHOD(updateLayout) {
     [NodesManager.instance updateLayout];
 
     if (self.shouldSendInitialURI) {
-        NSString *initialUri = @"";
-        if (self.launchOptions[UIApplicationLaunchOptionsURLKey] != nil) {
-            initialUri = [self.launchOptions[UIApplicationLaunchOptionsURLKey] absoluteString];
-        }
+        NSURL *url = self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey];
+        NSString *initialUri = (url != nil) ? [url absoluteString] : @"";
         Scene *scene = NodesManager.instance.scene;
         [[AREventsManager instance] onAppStartEventReceived:scene initialUri:initialUri];
         self.shouldSendInitialURI = NO;

@@ -73,10 +73,9 @@ open class UiTimePickerNode(
             showing = false
         }
 
-    protected val onTimeChangeListener: (Int, Int) -> Unit = { hourOfDay: Int, minute: Int ->
+    private val onTimeChangeListener: (Int, Int) -> Unit = { hourOfDay: Int, minute: Int ->
         onTimeChanged?.invoke("$hourOfDay:$minute")
     }
-
 
     init {
         properties.putDefault(PROP_TIME_FORMAT, TIME_FORMAT_DEFAULT)
@@ -128,8 +127,7 @@ open class UiTimePickerNode(
     private fun applyDefaultTime(props: BaseBundle) {
         if (props.containsKey(PROP_DEFAULT_TIME)) {
             props.getString(PROP_DEFAULT_TIME)?.let {
-                time = defaultTimeFormat.parse(it)
-                view.value.setText(timeFormat.format(time), TextView.BufferType.EDITABLE)
+                defaultTime = defaultTimeFormat.parse(it)
             }
         }
     }

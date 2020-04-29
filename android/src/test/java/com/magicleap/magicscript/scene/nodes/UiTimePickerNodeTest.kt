@@ -41,11 +41,13 @@ import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 class UiTimePickerNodeTest {
-    val timePickerDialog = mock<NotifiableTimePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS)
-    val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
+    private val timePickerDialog =
+        mock<NotifiableTimePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS)
+    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
         whenever(provideTimePickerDialog(any(), any(), any())).doReturn(timePickerDialog)
     }
-    var tested: TestableUiTimePickerNode = TestableUiTimePickerNode(datePickerDialogProvider)
+    private val tested: TestableUiTimePickerNode =
+        TestableUiTimePickerNode(datePickerDialogProvider)
 
     @After
     fun validate() {
@@ -59,14 +61,30 @@ class UiTimePickerNodeTest {
     }
 
     @Test
+    fun `should apply date property`() {
+        val textTime = "12:40:58"
+
+        tested.update(
+            reactMapOf(
+                UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT,
+                UiTimePickerNode.PROP_TIME, textTime
+            )
+        )
+
+        verify(tested.dateText).setText(eq(textTime), any())
+    }
+
+    @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.update(reactMapOf(
-            UiDateTimePickerBaseNode.PROP_LABEL,
-            label,
-            UiTimePickerNode.PROP_TIME_FORMAT,
-            UiTimePickerNode.TIME_FORMAT_DEFAULT
-        ))
+        tested.update(
+            reactMapOf(
+                UiDateTimePickerBaseNode.PROP_LABEL,
+                label,
+                UiTimePickerNode.PROP_TIME_FORMAT,
+                UiTimePickerNode.TIME_FORMAT_DEFAULT
+            )
+        )
 
         verify(tested.titleText).text = label
     }
@@ -102,10 +120,12 @@ class UiTimePickerNodeTest {
     @Test
     fun `time should update hint on date text`() {
         val timeFormat = "HH:MM"
-        tested.update(reactMapOf(
-            UiTimePickerNode.PROP_TIME_FORMAT, timeFormat,
-            UiDateTimePickerBaseNode.PROP_SHOW_HINT, true
-        ))
+        tested.update(
+            reactMapOf(
+                UiTimePickerNode.PROP_TIME_FORMAT, timeFormat,
+                UiDateTimePickerBaseNode.PROP_SHOW_HINT, true
+            )
+        )
 
         verify(tested.dateText).hint = timeFormat
     }
@@ -122,6 +142,7 @@ class UiTimePickerNodeTest {
         tested.performClick()
 
         verify(datePickerDialogProvider).provideTimePickerDialog(any(), any(), any())
+        verify(timePickerDialog).updateTime(14, 10)
     }
 
     @Test
@@ -174,22 +195,19 @@ class UiTimePickerNodeTest {
     }
 
     @Test
-    fun `should update timeValue when date set`() {
+    fun `should set time text selected from picker`() {
         tested.update(
             reactMapOf(
                 UiTimePickerNode.PROP_DEFAULT_TIME, "14:15:00",
                 UiTimePickerNode.PROP_TIME_FORMAT, UiTimePickerNode.TIME_FORMAT_DEFAULT
             )
         )
+        val dateFormat =
+            VerySimpleDateFormat(UiTimePickerNode.TIME_FORMAT_DEFAULT, Locale.getDefault())
 
         tested.performClick()
         tested.onTimeChanged = mock()
         tested.provideDialogOnTimeSetListener().onTimeSet(mock(), 15, 16)
-        val dateFormat =
-            VerySimpleDateFormat(
-                UiTimePickerNode.TIME_FORMAT_DEFAULT,
-                Locale.getDefault()
-            )
 
         verify(tested.dateText).setText(eq(dateFormat.format(15, 16)), any())
     }

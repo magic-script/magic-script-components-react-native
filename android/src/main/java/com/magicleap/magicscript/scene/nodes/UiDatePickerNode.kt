@@ -23,8 +23,8 @@ import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
@@ -147,6 +147,7 @@ open class UiDatePickerNode(
     private fun applyDate(props: Bundle) {
         if (props.containsKey(PROP_DATE)) {
             date = dateFormat.parse(props.getString(PROP_DATE))
+            view.value.setText(dateFormat.format(date), TextView.BufferType.EDITABLE)
         }
     }
 
@@ -159,7 +160,7 @@ open class UiDatePickerNode(
         if (props.getBoolean(PROP_SHOW_HINT)) {
             view.value.hint = dateFormat.pattern
         } else {
-            if(defaultDate == null) {
+            if (defaultDate == null) {
                 defaultDate = Date()
             }
             view.value.hint = dateFormat.format(defaultDate)

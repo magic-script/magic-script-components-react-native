@@ -18,6 +18,7 @@
 #import <React/RCTEventEmitter.h>
 #import <SceneKit/SceneKit.h>
 
+@class Scene;
 @class UiNode;
 @class UiVideoNode;
 @class UiSliderNode;
@@ -33,6 +34,7 @@
 
 + (instancetype)instance;
 - (void)onActivateEventReceived:(UiNode *)sender;
+- (void)onAppStartEventReceived:(Scene *)sender initialUri:(NSString *)initialUri;
 - (void)onClickEventReceived:(UiNode *)sender;
 - (void)onEnabledEventReceived:(UiNode *)sender;
 - (void)onDisabledEventReceived:(UiNode *)sender;

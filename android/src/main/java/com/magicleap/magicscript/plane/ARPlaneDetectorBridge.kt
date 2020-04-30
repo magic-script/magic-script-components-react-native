@@ -16,7 +16,9 @@
 
 package com.magicleap.magicscript.plane
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.magicleap.magicscript.utils.NativeReactObjectsProvider
@@ -137,7 +139,7 @@ class ARPlaneDetectorBridge private constructor() {
     }
 
     private fun getPlaneTypes(configuration: ReadableMap?): List<Plane.Type> {
-        return if(configuration == null || configuration.isNull(PLANE_TYPE)) {
+        return if (configuration == null || !configuration.hasKey(PLANE_TYPE)) {
             listOf(Plane.Type.VERTICAL, Plane.Type.HORIZONTAL_UPWARD_FACING, Plane.Type.HORIZONTAL_DOWNWARD_FACING)
         } else {
             val planeTypes = arrayListOf<Plane.Type>()

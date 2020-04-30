@@ -37,7 +37,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Compa
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_SHOW_HINT
-import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.utils.updateDate
 import com.nhaarman.mockitokotlin2.*
@@ -60,8 +60,8 @@ class UiDatePickerNodeTest {
     private val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
-        whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
+    private val datePickerDialogProvider = mock<DialogProvider>().apply {
+        whenever(provideDatePickerDialog()).doReturn(datePickerDialog)
     }
     private val tested: TestableUiDatePickerNode =
         TestableUiDatePickerNode(datePickerDialogProvider)
@@ -152,7 +152,7 @@ class UiDatePickerNodeTest {
 
         tested.performClick()
 
-        verify(datePickerDialogProvider).provideDatePickerDialog(any())
+        verify(datePickerDialogProvider).provideDatePickerDialog()
         verify(datePickerDialog).updateDate(date)
     }
 
@@ -251,7 +251,7 @@ class UiDatePickerNodeTest {
     }
 
     class TestableUiDatePickerNode(
-        datePickerDialogProvider: DialogProviderImpl
+        datePickerDialogProvider: DialogProvider
     ) : UiDatePickerNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
@@ -272,7 +272,5 @@ class UiDatePickerNodeTest {
         }
 
         fun provideDialogOnDateSetListener() = onDateSetListener
-
-        override fun provideActivityContext() = context
     }
 }

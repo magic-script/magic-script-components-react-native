@@ -44,7 +44,7 @@ class UiTimePickerNodeTest {
     private val timePickerDialog =
         mock<NotifiableTimePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS)
     private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
-        whenever(provideTimePickerDialog(any(), any(), any())).doReturn(timePickerDialog)
+        whenever(provideTimePickerDialog(any(), any())).doReturn(timePickerDialog)
     }
     private val tested: TestableUiTimePickerNode =
         TestableUiTimePickerNode(datePickerDialogProvider)
@@ -141,7 +141,7 @@ class UiTimePickerNodeTest {
 
         tested.performClick()
 
-        verify(datePickerDialogProvider).provideTimePickerDialog(any(), any(), any())
+        verify(datePickerDialogProvider).provideTimePickerDialog(any(), any())
         verify(timePickerDialog).updateTime(14, 10)
     }
 
@@ -237,7 +237,5 @@ class UiTimePickerNodeTest {
         fun provideDialogOnTimeSetListener(): TimePickerDialog.OnTimeSetListener {
             return onTimeSetListener
         }
-
-        override fun provideActivityContext() = context
     }
 }

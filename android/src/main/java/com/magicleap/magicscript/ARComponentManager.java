@@ -107,7 +107,9 @@ import com.magicleap.magicscript.scene.nodes.video.MediaPlayerPool;
 import com.magicleap.magicscript.scene.nodes.video.VideoNode;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayer;
 import com.magicleap.magicscript.scene.nodes.video.VideoPlayerImpl;
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider;
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl;
+import com.magicleap.magicscript.utils.ArActivityProvider;
 import com.magicleap.magicscript.utils.FileProvider;
 import com.magicleap.magicscript.utils.UriFileProvider;
 
@@ -147,6 +149,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     // Other resources providers
     private FontProvider fontProvider;
     private IconsRepository iconsRepo;
+    private DialogProvider dialogProvider;
 
     private MediaPlayerPool mediaPlayerPool;
     private List<ActivityResultObserver> activityResultObservers = new ArrayList<>();
@@ -175,6 +178,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         DefaultIconsProvider defaultIconsProvider = new DefaultIconsProvider(context);
         ExternalIconsProvider externalIconsProvider = new ExternalIconsProvider(context);
         this.iconsRepo = new IconsRepositoryImpl(defaultIconsProvider, externalIconsProvider);
+        this.dialogProvider = new DialogProviderImpl(new ArActivityProvider());
 
         Clipper textureClipper = new TextureClipper();
         Clipper uiColliderClipper = new UiNodeColliderClipper();
@@ -381,7 +385,13 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createColorPickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiColorPickerNode node = new UiColorPickerNode(props, context, viewRenderableLoader, uiNodeClipper, fontProvider, iconsRepo);
+            UiColorPickerNode node = new UiColorPickerNode(props,
+                                                           context,
+                                                           viewRenderableLoader,
+                                                           uiNodeClipper,
+                                                           fontProvider,
+                                                           iconsRepo,
+                                                           dialogProvider);
             addNode(node, nodeId);
         });
     }
@@ -415,11 +425,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDatePickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiDatePickerNode datePickerNode = new UiDatePickerNode(props,
-                                                                   context,
-                                                                   viewRenderableLoader,
-                                                                   uiNodeClipper,
-                                                                   new DialogProviderImpl());
+            UiDatePickerNode datePickerNode = new UiDatePickerNode(props, context, viewRenderableLoader, uiNodeClipper, dialogProvider);
             addNode(datePickerNode, nodeId);
         });
     }
@@ -427,11 +433,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createTimePickerNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            UiTimePickerNode datePickerNode = new UiTimePickerNode(props,
-                                                                   context,
-                                                                   viewRenderableLoader,
-                                                                   uiNodeClipper,
-                                                                   new DialogProviderImpl());
+            UiTimePickerNode datePickerNode = new UiTimePickerNode(props, context, viewRenderableLoader, uiNodeClipper, dialogProvider);
             addNode(datePickerNode, nodeId);
         });
     }
@@ -439,7 +441,7 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
     @ReactMethod
     public void createDialogNode(final ReadableMap props, final String nodeId) {
         mainHandler.post(() -> {
-            DialogNode node = new DialogNode(props, iconsRepo, new DialogProviderImpl());
+            DialogNode node = new DialogNode(props, context, iconsRepo, dialogProvider);
             addNode(node, nodeId);
         });
     }

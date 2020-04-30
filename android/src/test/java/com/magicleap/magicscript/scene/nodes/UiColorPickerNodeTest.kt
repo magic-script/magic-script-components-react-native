@@ -27,8 +27,10 @@ import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_HE
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_STARTING_COLOR
 import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.Before
@@ -44,12 +46,15 @@ class UiColorPickerNodeTest {
     lateinit var tested: UiColorPickerNode
     lateinit var context: Context
     lateinit var colorPickerDialog: ColorPickerDialog
+    lateinit var dialogProvider: DialogProvider
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         containerSpy = spy(CustomButton(context))
         colorPickerDialog = ColorPickerDialog(context)
+        dialogProvider = mock()
+        whenever(dialogProvider.provideColorPickerDialog()).thenReturn(colorPickerDialog)
         tested = createNodeWithViewSpy()
     }
 
@@ -75,12 +80,9 @@ class UiColorPickerNodeTest {
         colorPickerDialog.onConfirm.shouldNotBeNull()
     }
 
-    fun createNodeWithViewSpy(
-        props: ReadableMap = JavaOnlyMap()
-    ): UiColorPickerNode {
-        return object : UiColorPickerNode(
-            props, context, mock(), mock(), mock(), mock(), colorPickerDialog
-        ) {
+    private fun createNodeWithViewSpy(props: ReadableMap = JavaOnlyMap()): UiColorPickerNode {
+        return object :
+            UiColorPickerNode(props, context, mock(), mock(), mock(), mock(), dialogProvider) {
             override fun provideView(context: Context): View {
                 return containerSpy
             }

@@ -38,13 +38,12 @@ open class UiTimePickerNode(
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
-    dialogProvider: DialogProvider
+    private val dialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(
     initProps,
     context,
     viewRenderableLoader,
-    nodeClipper,
-    dialogProvider
+    nodeClipper
 ) {
 
     companion object {
@@ -92,24 +91,28 @@ open class UiTimePickerNode(
 
     override fun onViewClick() {
         if (!showing) {
-            showing = true
-            val initTime = when {
-                time != null -> time!!
-                defaultTime != null -> defaultTime!!
-                else -> Date()
-            }
-
-            dialogProvider.provideTimePickerDialog(
-                provideActivityContext(),
-                onTimeSetListener,
-                timeFormat.is24h
-            ).apply {
-                time = initTime
-                onTimeChange = onTimeChangeListener
-                updateTime(initTime.getHour(), initTime.getMinute())
-                setOnDismissListener { showing = false }
-            }.show()
+            showDialog()
         }
+    }
+
+    private fun showDialog() {
+        val dialog =
+            dialogProvider.provideTimePickerDialog(onTimeSetListener, timeFormat.is24h) ?: return
+
+        val initTime = when {
+            time != null -> time!!
+            defaultTime != null -> defaultTime!!
+            else -> Date()
+        }
+
+        dialog.apply {
+            time = initTime
+            onTimeChange = onTimeChangeListener
+            updateTime(initTime.getHour(), initTime.getMinute())
+            setOnDismissListener { showing = false }
+        }.show()
+
+        showing = true
     }
 
     private fun applyTimeFormat(props: Bundle) {

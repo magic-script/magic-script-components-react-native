@@ -21,6 +21,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
+import com.magicleap.magicscript.performClick
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_COLOR
 import com.magicleap.magicscript.scene.nodes.UiColorPickerNode.Companion.PROP_HEIGHT
@@ -30,6 +31,7 @@ import com.magicleap.magicscript.scene.nodes.views.CustomButton
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
@@ -77,6 +79,8 @@ class UiColorPickerNodeTest {
 
     @Test
     fun `should attach listeners into dialog`() {
+        tested.performClick()
+
         colorPickerDialog.onConfirm.shouldNotBeNull()
     }
 

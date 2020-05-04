@@ -24,6 +24,7 @@ import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.magicleap.magicscript.reactMapOf
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
@@ -41,11 +42,10 @@ class UiDateTimePickerBaseNodeTest {
         mock<DatePickerDialog>(defaultAnswer = Mockito.RETURNS_MOCKS).also {
             whenever(it.datePicker).thenReturn(datePicker)
         }
-    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
-        whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
+    private val datePickerDialogProvider = mock<DialogProvider>().apply {
+        whenever(provideDatePickerDialog()).doReturn(datePickerDialog)
     }
-    var tested: TestableUiDateTimePickerBaseNode =
-        TestableUiDateTimePickerBaseNode(datePickerDialogProvider)
+    var tested: TestableUiDateTimePickerBaseNode = TestableUiDateTimePickerBaseNode()
 
     @After
     fun validate() {
@@ -89,14 +89,11 @@ class UiDateTimePickerBaseNodeTest {
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL
     }
 
-    class TestableUiDateTimePickerBaseNode(
-        datePickerDialogProvider: DialogProviderImpl
-    ) : UiDateTimePickerBaseNode(
+    class TestableUiDateTimePickerBaseNode() : UiDateTimePickerBaseNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
         mock(),
-        mock(),
-        datePickerDialogProvider
+        mock()
     ) {
 
         val titleText: TextView = mock()
@@ -108,7 +105,5 @@ class UiDateTimePickerBaseNodeTest {
         override fun provideView(context: Context): View {
             return mainView
         }
-
-        override fun provideActivityContext() = context
     }
 }

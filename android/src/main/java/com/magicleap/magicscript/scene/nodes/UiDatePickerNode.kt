@@ -16,15 +16,14 @@
 
 package com.magicleap.magicscript.scene.nodes
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode
 import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
@@ -34,19 +33,17 @@ import com.magicleap.magicscript.utils.updateMinMaxYear
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import java.util.*
 
-
 open class UiDatePickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
-    datePickerDialogProvider: DialogProvider
+    private val dialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(
     initProps,
     context,
     viewRenderableLoader,
-    nodeClipper,
-    datePickerDialogProvider
+    nodeClipper
 ) {
 
     companion object {
@@ -102,29 +99,32 @@ open class UiDatePickerNode(
 
     override fun onViewClick() {
         if (!showing) {
-            showing = true
-            val initDate = when {
-                date != null -> date!!
-                defaultDate != null -> defaultDate!!
-                else -> Date()
-            }
-
-            createDatePickerDialog().apply {
-                updateMinMaxYear(minYear, maxYear)
-                updateDate(initDate)
-            }.show()
+            showDialog()
         }
     }
 
-    private fun createDatePickerDialog(): DatePickerDialog =
-        dialogProvider.provideDatePickerDialog(provideActivityContext())
-            .apply {
-                setOnDateSetListener(onDateSetListener)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    datePicker.setOnDateChangedListener(onDateChangedListener)
-                }
-                setOnDismissListener { showing = false }
+    private fun showDialog() {
+        val dialog = dialogProvider.provideDatePickerDialog() ?: return
+
+        val initDate = when {
+            date != null -> date!!
+            defaultDate != null -> defaultDate!!
+            else -> Date()
+        }
+
+        dialog.apply {
+            setOnDateSetListener(onDateSetListener)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                datePicker.setOnDateChangedListener(onDateChangedListener)
             }
+            setOnDismissListener { showing = false }
+
+            updateMinMaxYear(minYear, maxYear)
+            updateDate(initDate)
+        }.show()
+
+        showing = true
+    }
 
     private fun applyDateFormat(props: Bundle) {
         if (props.containsKey(PROP_DATE_FORMAT)) {
@@ -147,6 +147,7 @@ open class UiDatePickerNode(
     private fun applyDate(props: Bundle) {
         if (props.containsKey(PROP_DATE)) {
             date = dateFormat.parse(props.getString(PROP_DATE))
+            view.value.setText(dateFormat.format(date), TextView.BufferType.EDITABLE)
         }
     }
 
@@ -159,7 +160,7 @@ open class UiDatePickerNode(
         if (props.getBoolean(PROP_SHOW_HINT)) {
             view.value.hint = dateFormat.pattern
         } else {
-            if(defaultDate == null) {
+            if (defaultDate == null) {
                 defaultDate = Date()
             }
             view.value.hint = dateFormat.format(defaultDate)

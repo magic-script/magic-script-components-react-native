@@ -16,6 +16,7 @@
 
 package com.magicleap.magicscript;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
@@ -40,13 +41,13 @@ public class ArViewManager extends ViewGroupManager<ArFragmentContainer> {
 
     public static Boolean showLayoutBounds = false;
 
-    public static WeakReference<AppCompatActivity> getActivityRef() {
+    public static WeakReference<Activity> getActivityRef() {
         return activityRef;
     }
 
     private static final String REACT_CLASS = "RCTARView";
     private static final String LOG_TAG = "AR_LOG";
-    private static WeakReference<AppCompatActivity> activityRef = new WeakReference<>(null);
+    private static WeakReference<Activity> activityRef = new WeakReference<>(null);
     private static String FRAGMENT_TAG = "arFragment";
 
     @NotNull

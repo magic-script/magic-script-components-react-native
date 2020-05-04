@@ -22,28 +22,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.ar.clip.Clipper
 import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.button.UiButtonNode
-import com.magicleap.magicscript.scene.nodes.views.ColorPickerDialog
 import com.magicleap.magicscript.scene.nodes.views.CustomButton
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.putDefault
 import com.magicleap.magicscript.utils.readColor
 import com.magicleap.magicscript.utils.toJsColorArray
 
 
-open class UiColorPickerNode @JvmOverloads constructor(
+open class UiColorPickerNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
     fontProvider: FontProvider,
     iconsRepo: IconsRepository,
-    private val colorPickerDialog: ColorPickerDialog = ColorPickerDialog(ArViewManager.getActivityRef().get() as Context)
+    private val dialogProvider: DialogProvider
 ) : UiButtonNode(
     initProps,
     context,
@@ -63,20 +62,6 @@ open class UiColorPickerNode @JvmOverloads constructor(
     init {
         properties.apply {
             putDefault(PROP_STARTING_COLOR, "[1.0, 1.0, 1.0, 1.0]")
-        }
-
-        colorPickerDialog.apply {
-            onConfirm = { color ->
-                selectedColor = color
-                setNeedsRebuild(force = true)
-                this@UiColorPickerNode.onColorConfirmed?.invoke(color.toJsColorArray())
-            }
-            onCanceled = {
-                this@UiColorPickerNode.onColorCanceled?.invoke()
-            }
-            onChanged = { color ->
-                this@UiColorPickerNode.onColorChanged?.invoke(color.toJsColorArray())
-            }
         }
     }
 
@@ -118,12 +103,31 @@ open class UiColorPickerNode @JvmOverloads constructor(
 
     override fun onViewClick() {
         super.onViewClick()
+        showDialog()
+    }
+
+    private fun readColor(props: Bundle): Int {
+        return props.readColor(PROP_COLOR) ?: (props.readColor(PROP_STARTING_COLOR) ?: Color.WHITE)
+    }
+
+    private fun showDialog() {
+        val colorPickerDialog = dialogProvider.provideColorPickerDialog() ?: return
+
+        colorPickerDialog.apply {
+            onConfirm = { color ->
+                selectedColor = color
+                setNeedsRebuild(force = true)
+                this@UiColorPickerNode.onColorConfirmed?.invoke(color.toJsColorArray())
+            }
+            onCanceled = {
+                this@UiColorPickerNode.onColorCanceled?.invoke()
+            }
+            onChanged = { color ->
+                this@UiColorPickerNode.onColorChanged?.invoke(color.toJsColorArray())
+            }
+        }
         colorPickerDialog.initialColor = selectedColor
         colorPickerDialog.show()
     }
 
-    private fun readColor(props: Bundle): Int {
-        return props.readColor(PROP_COLOR)
-            ?: (props.readColor(PROP_STARTING_COLOR) ?: Color.WHITE)
-    }
 }

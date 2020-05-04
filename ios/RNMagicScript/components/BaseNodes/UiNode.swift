@@ -33,9 +33,9 @@ import SceneKit
     //var gravityWellProperties: GravityWellProperties
 
     @objc public var onActivate: ((_ sender: UiNode) -> Void)?
-    //@objc public var onPress: ((_ sender: UiNode) -> Void)?
-    //@objc public var onLongPress: ((_ sender: UiNode) -> Void)?
-    //@objc public var onRelease: ((_ sender: UiNode) -> Void)?
+    @objc public var onPress: ((_ sender: UiNode) -> Void)?
+    @objc public var onLongPress: ((_ sender: UiNode) -> Void)?
+    @objc public var onRelease: ((_ sender: UiNode) -> Void)?
     ///@objc public var onHoverEnter: ((_ sender: UiNode) -> Void)?
     ///@objc public var onHoverExit: ((_ sender: UiNode) -> Void)?
     ///@objc public var onHoverMove: ((_ sender: UiNode) -> Void)?

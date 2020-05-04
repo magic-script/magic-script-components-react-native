@@ -23,7 +23,6 @@ import android.os.Message
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
 import com.magicleap.magicscript.icons.IconsRepository
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
@@ -34,13 +33,12 @@ import com.magicleap.magicscript.utils.read
 import java.lang.ref.WeakReference
 
 
-class DialogNode @JvmOverloads constructor(
+class DialogNode(
     initProps: ReadableMap,
+    context: Context,
     private val iconsRepository: IconsRepository,
-    private val dialogProvider: DialogProvider,
-    private val context: Context = ArViewManager.getActivityRef().get() as Context
+    private val dialogProvider: DialogProvider
 ) : TransformNode(initProps, false) {
-
 
     companion object {
         const val PROP_TITLE = "title"
@@ -82,8 +80,9 @@ class DialogNode @JvmOverloads constructor(
 
     init {
         properties.apply {
-            putDefault(PROP_CONFIRM_TEXT, context?.getString(R.string.confirm))
-            putDefault(PROP_CANCEL_TEXT, context?.getString(R.string.cancel))
+            putDefault(PROP_DIALOG_TYPE, DialogType.DUAL_ACTION)
+            putDefault(PROP_CONFIRM_TEXT, context.getString(R.string.confirm))
+            putDefault(PROP_CANCEL_TEXT, context.getString(R.string.cancel))
             putDefault(PROP_BUTTON_TYPE, CustomAlertDialogBuilder.BUTTON_TYPE_TEXT)
         }
     }
@@ -99,10 +98,8 @@ class DialogNode @JvmOverloads constructor(
     }
 
     private fun showDialog() {
-        if (context == null) {
-            return
-        }
-        val dialogBuilder = dialogProvider.provideCustomAlertDialogBuilder(context)
+        val dialogBuilder = dialogProvider.provideCustomAlertDialogBuilder() ?: return
+
         dialogBuilder.apply {
             properties.read<String>(PROP_TITLE)?.let { title ->
                 setTitle(title)
@@ -133,10 +130,13 @@ class DialogNode @JvmOverloads constructor(
                 setDialogType(dialogType)
             }
         }
-        this.dialog = dialogBuilder.create()
-        this.dialog?.show()
-        this.dialog?.window?.setBackgroundDrawable(null)
-        this.dialog?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        val alertDialog: AlertDialog? = dialogBuilder.create()
+        alertDialog?.let {
+            it.show()
+            it.window?.setBackgroundDrawable(null)
+            it.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        }
+        this.dialog = alertDialog
 
         properties.read<Double>(PROP_EXPIRATION_TIME)?.let { time ->
             if (properties.read<String>(PROP_DIALOG_TYPE) == DialogType.TIMED) {

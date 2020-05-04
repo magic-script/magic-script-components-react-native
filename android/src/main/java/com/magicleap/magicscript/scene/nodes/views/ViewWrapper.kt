@@ -39,7 +39,7 @@ class ViewWrapper(context: Context, private val parent: UiNode) : LinearLayout(c
     var onPressChangedCallback: ((pressed: Boolean) -> Unit)? = null
     var onLongPressCallback: (() -> Unit)? = null
 
-    private val acceptedTouchOffset = ViewConfiguration.get(context).scaledTouchSlop
+    private val acceptedTouchOffset = (1.5 * ViewConfiguration.get(context).scaledTouchSlop).toInt()
 
     private var isBeingDragged = false
     private var previousTouch = Vector2()

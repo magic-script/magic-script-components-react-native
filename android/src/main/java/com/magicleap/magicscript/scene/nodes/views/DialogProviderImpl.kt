@@ -18,21 +18,30 @@ package com.magicleap.magicscript.scene.nodes.views
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
+import com.magicleap.magicscript.utils.ActivityProvider
 
-class DialogProviderImpl :
-    DialogProvider {
-    override fun provideDatePickerDialog(
-        context: Context
-    ) = DatePickerDialog(context)
+class DialogProviderImpl(private val activityProvider: ActivityProvider) : DialogProvider {
+
+    override fun provideDatePickerDialog(): DatePickerDialog? {
+        val activity = activityProvider.provideCurrentActivity() ?: return null
+        return DatePickerDialog(activity)
+    }
 
     override fun provideTimePickerDialog(
-        context: Context,
         onTimeSetListener: TimePickerDialog.OnTimeSetListener,
         is24HourView: Boolean
-    ) = NotifiableTimePickerDialog(context, onTimeSetListener, is24HourView)
+    ): NotifiableTimePickerDialog? {
+        val activity = activityProvider.provideCurrentActivity() ?: return null
+        return NotifiableTimePickerDialog(activity, onTimeSetListener, is24HourView)
+    }
 
-    override fun provideCustomAlertDialogBuilder(
-        context: Context
-    ) = CustomAlertDialogBuilder(context)
+    override fun provideColorPickerDialog(): ColorPickerDialog? {
+        val activity = activityProvider.provideCurrentActivity() ?: return null
+        return ColorPickerDialog(activity)
+    }
+
+    override fun provideCustomAlertDialogBuilder(): CustomAlertDialogBuilder? {
+        val activity = activityProvider.provideCurrentActivity() ?: return null
+        return CustomAlertDialogBuilder(activity)
+    }
 }

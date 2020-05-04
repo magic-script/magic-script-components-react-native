@@ -34,10 +34,7 @@ import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.shouldEqualInexact
 import com.magicleap.magicscript.utils.Utils
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.Assert.assertEquals
@@ -135,17 +132,14 @@ class UiTextNodeTest {
     }
 
     @Test
-    fun `should apply single line when width is dynamic`() {
-        val boundsData = reactMapOf(
-            UiTextNode.PROP_BOUNDS_SIZE, reactArrayOf(0.0, 0.2),
-            UiTextNode.PROP_WRAP, true // wrap has no effect when size is 0 (dynamic)
-        )
-        val props = reactMapOf(UiTextNode.PROP_BOUNDS_SIZE, boundsData)
+    fun `should not set single line when bounds size not specified`() {
+        val props = reactMapOf(UiTextNode.PROP_TEXT, "abc")
         val node = createNodeWithViewSpy(props)
 
         node.build()
 
-        verify(viewSpy).setSingleLine(true)
+        verify(viewSpy, never()).setSingleLine()
+        verify(viewSpy, never()).setSingleLine(true)
     }
 
     @Test

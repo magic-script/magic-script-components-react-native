@@ -16,7 +16,9 @@
 
 package com.magicleap.magicscript.plane
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.magicleap.magicscript.utils.NativeReactObjectsProvider
@@ -24,6 +26,9 @@ import com.magicleap.magicscript.utils.ReactObjectsProvider
 import kotlin.math.abs
 
 class ARPlaneDetectorBridge private constructor() {
+
+    var objectsProvider: ReactObjectsProvider = NativeReactObjectsProvider.INSTANCE
+
     private var onUpdateListener: OnPlanesUpdated? = null
     private var onAddedListener: OnPlanesAdded? = null
     private var onRemovedListener: OnPlanesRemoved? = null
@@ -31,19 +36,19 @@ class ARPlaneDetectorBridge private constructor() {
     private var lastPlanes: List<Plane>? = null
     private var isDetecting: Boolean = false
     private var detectionConfiguration: List<Plane.Type>? = null
-    var objectsProvider: ReactObjectsProvider = NativeReactObjectsProvider.INSTANCE
 
     companion object {
-        private val ID = "id"
-        private val CENTER = "center"
-        private val VERTICES = "vertices"
-        private val TYPE = "type"
-        private val ERROR = "error"
-        private val POINT = "point"
-        val PLANE_TYPE = "planeType"
-        val PLANE_TYPE_VERTICAL = "vertical"
-        val PLANE_TYPE_HORIZONTAL = "horizontal"
         val INSTANCE = ARPlaneDetectorBridge()
+
+        private const val ID = "id"
+        private const val CENTER = "center"
+        private const val VERTICES = "vertices"
+        private const val TYPE = "type"
+        private const val ERROR = "error"
+        private const val POINT = "point"
+        private const val PLANE_TYPE = "planeType"
+        private const val PLANE_TYPE_VERTICAL = "vertical"
+        private const val PLANE_TYPE_HORIZONTAL = "horizontal"
     }
 
     fun mapPlanesToWritableMap(plane: Plane): WritableMap {
@@ -70,7 +75,7 @@ class ARPlaneDetectorBridge private constructor() {
         return planeMap
     }
 
-    fun mapToError(errorMessage: String): WritableMap {
+    private fun mapToError(errorMessage: String): WritableMap {
         return objectsProvider.createMap().apply {
             putString(ERROR, errorMessage)
         }
@@ -123,26 +128,33 @@ class ARPlaneDetectorBridge private constructor() {
 
     fun getAllPlanes(configuration: ReadableMap?, callback: Callback) {
         val type = getPlaneTypes(configuration)
-        if(!isDetecting) {
-            callback.invoke(mapToError("You have to enable planes detection with startDetecting method!"), null)
-        } else if(lastPlanes.isNullOrEmpty()) {
+        if (!isDetecting) {
+            callback.invoke(
+                mapToError("You have to enable planes detection with startDetecting method!"),
+                null
+            )
+        } else if (lastPlanes.isNullOrEmpty()) {
             callback.invoke(mapToError("The are no planes detected yet"), null)
         } else {
             val planes = objectsProvider.createArray()
             lastPlanes!!
-                    .filter { type.contains(it.type) }
-                    .forEach { planes.pushMap(mapPlanesToWritableMap(it)) }
-                    .also { callback.invoke(null, planes) }
+                .filter { type.contains(it.type) }
+                .forEach { planes.pushMap(mapPlanesToWritableMap(it)) }
+                .also { callback.invoke(null, planes) }
         }
     }
 
     private fun getPlaneTypes(configuration: ReadableMap?): List<Plane.Type> {
-        return if(configuration == null || configuration.isNull(PLANE_TYPE)) {
-            listOf(Plane.Type.VERTICAL, Plane.Type.HORIZONTAL_UPWARD_FACING, Plane.Type.HORIZONTAL_DOWNWARD_FACING)
+        return if (configuration == null || !hasPlaneType(configuration)) {
+            listOf(
+                Plane.Type.VERTICAL,
+                Plane.Type.HORIZONTAL_UPWARD_FACING,
+                Plane.Type.HORIZONTAL_DOWNWARD_FACING
+            )
         } else {
             val planeTypes = arrayListOf<Plane.Type>()
             val planeArray = configuration.getArray(PLANE_TYPE)
-            if(planeArray != null) {
+            if (planeArray != null) {
                 for (i in 0 until planeArray.size()) {
                     when (planeArray.getString(i)) {
                         PLANE_TYPE_HORIZONTAL -> {
@@ -157,6 +169,10 @@ class ARPlaneDetectorBridge private constructor() {
             }
             planeTypes
         }
+    }
+
+    private fun hasPlaneType(configuration: ReadableMap): Boolean {
+        return configuration.hasKey(PLANE_TYPE) && !configuration.isNull(PLANE_TYPE)
     }
 
     fun destroy() {

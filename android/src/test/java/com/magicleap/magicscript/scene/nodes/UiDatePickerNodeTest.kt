@@ -37,7 +37,7 @@ import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Compa
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_LABEL_SIDE
 import com.magicleap.magicscript.scene.nodes.base.UiDateTimePickerBaseNode.Companion.PROP_SHOW_HINT
-import com.magicleap.magicscript.scene.nodes.views.DialogProviderImpl
+import com.magicleap.magicscript.scene.nodes.views.DialogProvider
 import com.magicleap.magicscript.utils.VerySimpleDateFormat
 import com.magicleap.magicscript.utils.updateDate
 import com.nhaarman.mockitokotlin2.*
@@ -60,10 +60,11 @@ class UiDatePickerNodeTest {
     private val datePickerDialog = mock<DatePickerDialog>(defaultAnswer = RETURNS_MOCKS).also {
         whenever(it.datePicker).thenReturn(datePicker)
     }
-    private val datePickerDialogProvider = mock<DialogProviderImpl>().apply {
-        whenever(provideDatePickerDialog(any())).doReturn(datePickerDialog)
+    private val datePickerDialogProvider = mock<DialogProvider>().apply {
+        whenever(provideDatePickerDialog()).doReturn(datePickerDialog)
     }
-    var tested: TestableUiDatePickerNode = TestableUiDatePickerNode(datePickerDialogProvider)
+    private val tested: TestableUiDatePickerNode =
+        TestableUiDatePickerNode(datePickerDialogProvider)
 
     @After
     fun validate() {
@@ -79,29 +80,48 @@ class UiDatePickerNodeTest {
     }
 
     @Test
+    fun `should apply date property`() {
+        val dateText = "01/05/2011"
+
+        tested.update(
+            reactMapOf(
+                PROP_DATE, dateText,
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
+        )
+
+        verify(tested.dateText).setText(eq(dateText), any())
+    }
+
+    @Test
     fun `should apply label text`() {
         val label = "test test test"
-        tested.update(reactMapOf(
-            PROP_LABEL, label,
-            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
+
+        tested.update(reactMapOf(PROP_LABEL, label, PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
 
         verify(tested.titleText).text = label
     }
 
     @Test
     fun `should set vertical orientation when label side is top`() {
-        tested.update(reactMapOf(
-            PROP_LABEL_SIDE, LABEL_SIDE_TOP,
-            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
+        tested.update(
+            reactMapOf(
+                PROP_LABEL_SIDE, LABEL_SIDE_TOP,
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
+        )
 
         verify(tested.mainView).orientation = LinearLayout.VERTICAL
     }
 
     @Test
     fun `should set horizontal orientation when label side is left`() {
-        tested.update(reactMapOf(
-            PROP_LABEL_SIDE, LABEL_SIDE_LEFT,
-            PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT))
+        tested.update(
+            reactMapOf(
+                PROP_LABEL_SIDE, LABEL_SIDE_LEFT,
+                PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
+            )
+        )
 
         verify(tested.mainView).orientation = LinearLayout.HORIZONTAL
     }
@@ -109,25 +129,31 @@ class UiDatePickerNodeTest {
     @Test
     fun `dateFormat should update hint on date text`() {
         val dateFormat = "DD/YYYY"
-        tested.update(reactMapOf(
-            PROP_DATE_FORMAT, dateFormat,
-            PROP_SHOW_HINT, true))
+        tested.update(
+            reactMapOf(
+                PROP_DATE_FORMAT, dateFormat,
+                PROP_SHOW_HINT, true
+            )
+        )
 
         verify(tested.dateText).hint = dateFormat
     }
 
     @Test
     fun `on view click should create dialog with default date`() {
+        val dateText = "01/08/2150"
         tested.update(
             reactMapOf(
-                PROP_DEFAULT_DATE, "13/12/2011",
+                PROP_DEFAULT_DATE, dateText,
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
+        val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(dateText)
 
         tested.performClick()
 
-        verify(datePickerDialogProvider).provideDatePickerDialog(any())
+        verify(datePickerDialogProvider).provideDatePickerDialog()
+        verify(datePickerDialog).updateDate(date)
     }
 
     @Test
@@ -163,7 +189,6 @@ class UiDatePickerNodeTest {
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
-
         val date = SimpleDateFormat(DATE_FORMAT_DEFAULT).parse(textDate)
 
         tested.performClick()
@@ -209,27 +234,24 @@ class UiDatePickerNodeTest {
     }
 
     @Test
-    fun `should update dateValue when date set`() {
+    fun `should set date text selected from picker`() {
         tested.update(
             reactMapOf(
                 PROP_DEFAULT_DATE, "13/12/2011",
                 PROP_DATE_FORMAT, DATE_FORMAT_DEFAULT
             )
         )
+        val dateFormat = VerySimpleDateFormat(DATE_FORMAT_DEFAULT, Locale.getDefault())
 
         tested.performClick()
         tested.onDateConfirmed = mock()
         tested.provideDialogOnDateSetListener().invoke(datePicker, 2019, Calendar.NOVEMBER, 12)
-        val dateFormat = VerySimpleDateFormat(
-            DATE_FORMAT_DEFAULT,
-            Locale.getDefault()
-        )
 
         verify(tested.dateText).setText(eq(dateFormat.format(2019, 11, 12)), any())
     }
 
     class TestableUiDatePickerNode(
-        datePickerDialogProvider: DialogProviderImpl
+        datePickerDialogProvider: DialogProvider
     ) : UiDatePickerNode(
         JavaOnlyMap(),
         ApplicationProvider.getApplicationContext(),
@@ -250,7 +272,5 @@ class UiDatePickerNodeTest {
         }
 
         fun provideDialogOnDateSetListener() = onDateSetListener
-
-        override fun provideActivityContext() = context
     }
 }

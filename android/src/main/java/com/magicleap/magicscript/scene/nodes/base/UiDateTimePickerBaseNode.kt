@@ -22,11 +22,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
-import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.ar.clip.Clipper
-import com.magicleap.magicscript.scene.nodes.views.DialogProvider
+import com.magicleap.magicscript.ar.renderable.ViewRenderableLoader
 import com.magicleap.magicscript.utils.Utils
 import com.magicleap.magicscript.utils.Vector2
 import com.magicleap.magicscript.utils.putDefault
@@ -37,8 +35,7 @@ open class UiDateTimePickerBaseNode(
     initProps: ReadableMap,
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
-    nodeClipper: Clipper,
-    protected val dialogProvider: DialogProvider
+    nodeClipper: Clipper
 ) : UiNode(initProps, context, viewRenderableLoader, nodeClipper) {
 
     protected var showing = false
@@ -89,8 +86,6 @@ open class UiDateTimePickerBaseNode(
 
     override fun provideDesiredSize(): Vector2 =
         Vector2(WRAP_CONTENT_DIMENSION, WRAP_CONTENT_DIMENSION)
-
-    protected open fun provideActivityContext() = ArViewManager.getActivityRef().get() as Context
 
     private fun applyLabel(props: Bundle) {
         if (props.containsKey(PROP_LABEL)) {

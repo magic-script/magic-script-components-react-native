@@ -38,13 +38,12 @@ open class UiTimePickerNode(
     context: Context,
     viewRenderableLoader: ViewRenderableLoader,
     nodeClipper: Clipper,
-    dialogProvider: DialogProvider
+    private val dialogProvider: DialogProvider
 ) : UiDateTimePickerBaseNode(
     initProps,
     context,
     viewRenderableLoader,
-    nodeClipper,
-    dialogProvider
+    nodeClipper
 ) {
 
     companion object {
@@ -73,10 +72,9 @@ open class UiTimePickerNode(
             showing = false
         }
 
-    protected val onTimeChangeListener: (Int, Int) -> Unit = { hourOfDay: Int, minute: Int ->
+    private val onTimeChangeListener: (Int, Int) -> Unit = { hourOfDay: Int, minute: Int ->
         onTimeChanged?.invoke("$hourOfDay:$minute")
     }
-
 
     init {
         properties.putDefault(PROP_TIME_FORMAT, TIME_FORMAT_DEFAULT)
@@ -93,24 +91,28 @@ open class UiTimePickerNode(
 
     override fun onViewClick() {
         if (!showing) {
-            showing = true
-            val initTime = when {
-                time != null -> time!!
-                defaultTime != null -> defaultTime!!
-                else -> Date()
-            }
-
-            dialogProvider.provideTimePickerDialog(
-                provideActivityContext(),
-                onTimeSetListener,
-                timeFormat.is24h
-            ).apply {
-                time = initTime
-                onTimeChange = onTimeChangeListener
-                updateTime(initTime.getHour(), initTime.getMinute())
-                setOnDismissListener { showing = false }
-            }.show()
+            showDialog()
         }
+    }
+
+    private fun showDialog() {
+        val dialog =
+            dialogProvider.provideTimePickerDialog(onTimeSetListener, timeFormat.is24h) ?: return
+
+        val initTime = when {
+            time != null -> time!!
+            defaultTime != null -> defaultTime!!
+            else -> Date()
+        }
+
+        dialog.apply {
+            time = initTime
+            onTimeChange = onTimeChangeListener
+            updateTime(initTime.getHour(), initTime.getMinute())
+            setOnDismissListener { showing = false }
+        }.show()
+
+        showing = true
     }
 
     private fun applyTimeFormat(props: Bundle) {
@@ -128,8 +130,7 @@ open class UiTimePickerNode(
     private fun applyDefaultTime(props: BaseBundle) {
         if (props.containsKey(PROP_DEFAULT_TIME)) {
             props.getString(PROP_DEFAULT_TIME)?.let {
-                time = defaultTimeFormat.parse(it)
-                view.value.setText(timeFormat.format(time), TextView.BufferType.EDITABLE)
+                defaultTime = defaultTimeFormat.parse(it)
             }
         }
     }

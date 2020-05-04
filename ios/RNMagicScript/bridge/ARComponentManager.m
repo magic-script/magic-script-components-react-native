@@ -263,6 +263,36 @@ RCT_EXPORT_METHOD(removeOnActivateEventHandler:(NSString *)nodeId) {
     node.onActivate = NULL;
 }
 
+RCT_EXPORT_METHOD(addOnPressEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onPress = ^(UiNode *sender) { };
+}
+
+RCT_EXPORT_METHOD(removeOnPressEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onPress = NULL;
+}
+
+RCT_EXPORT_METHOD(addOnLongPressEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onLongPress = ^(UiNode *sender) { };
+}
+
+RCT_EXPORT_METHOD(removeOnLongPressEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onLongPress = NULL;
+}
+
+RCT_EXPORT_METHOD(addOnReleaseEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onRelease = ^(UiNode *sender) { };
+}
+
+RCT_EXPORT_METHOD(removeOnReleaseEventHandler:(NSString *)nodeId) {
+    UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
+    node.onRelease = NULL;
+}
+
 RCT_EXPORT_METHOD(addOnEnabledEventHandler:(NSString *)nodeId) {
     UiNode *node = [NodesManager.instance findUiNodeWithId:nodeId];
     node.onEnabled = ^(UiNode *sender) {

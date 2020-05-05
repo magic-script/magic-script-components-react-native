@@ -21,6 +21,7 @@ import android.view.View
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.ux.DragGestureRecognizer
 import com.magicleap.magicscript.plane.ARPlaneDetectorBridge
 
 class CustomArFragment : ArFragment() {

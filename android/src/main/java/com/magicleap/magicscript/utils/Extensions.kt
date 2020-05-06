@@ -24,11 +24,13 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import com.google.ar.core.Pose
+import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.props.Bounding
 import java.io.Serializable
+import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
 
@@ -70,10 +72,9 @@ fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
  * com.google.ar.sceneform.math.Vector3
  */
 fun Vector3.equalInexact(other: Vector3, epsilon: Float): Boolean {
-    return x.isCloseTo(other.x, epsilon) && y.isCloseTo(other.y, epsilon) && z.isCloseTo(
-        other.z,
-        epsilon
-    )
+    return x.isCloseTo(other.x, epsilon)
+            && y.isCloseTo(other.y, epsilon)
+            && z.isCloseTo(other.z, epsilon)
 }
 
 operator fun Vector3.plus(other: Vector3): Vector3 {
@@ -94,6 +95,58 @@ operator fun Vector3.div(other: Float): Vector3 {
 
 fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
     return Quaternion.rotateVector(quaternion, this)
+}
+
+/**
+ * com.google.ar.sceneform.math.Matrix
+ */
+
+/**
+ * Converts the matrix to a pure rotation matrix (no scale or translation).
+ * It removes the scale with a high precision using BigDecimal class.
+ *
+ * It should be used before extracting a rotation when the matrix contains
+ * also a scale transformation, else the standard decompose functions
+ * (decomposeRotation or extractRotation) will return a very low precision quaternion.
+ *
+ * @param decomposedScale previously decomposed scale from the matrix
+ *
+ * Based on com.google.ar.sceneform.math.Matrix.java
+ */
+fun Matrix.toPureRotationMatrix(decomposedScale: Vector3) {
+    // Remove x scale.
+    val scaleX = decomposedScale.x.toBigDecimal()
+    if (scaleX != BigDecimal.ZERO) {
+        for (i in 0..2) {
+            data[i] = (data[i].toBigDecimal() / scaleX).toFloat()
+        }
+    }
+
+    data[3] = 0.0f
+
+    // Remove y scale.
+    val scaleY = decomposedScale.y.toBigDecimal()
+    if (scaleY != BigDecimal.ZERO) {
+        for (i in 4..6) {
+            data[i] = (data[i].toBigDecimal() / scaleY).toFloat()
+        }
+    }
+
+    data[7] = 0.0f
+
+    // Remove z scale.
+    val scaleZ = decomposedScale.z.toBigDecimal()
+    if (scaleZ != BigDecimal.ZERO) {
+        for (i in 8..10) {
+            data[i] = (data[i].toBigDecimal() / scaleZ).toFloat()
+        }
+    }
+
+    for (i in 11..14) {
+        data[i] = 0.0f
+    }
+
+    data[15] = 1.0f
 }
 
 /**

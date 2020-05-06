@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.DatePicker
 import com.google.ar.core.Pose
+import com.google.ar.sceneform.math.Matrix
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.shouldEqualInexact
@@ -353,6 +354,32 @@ class ExtensionsKtTest {
         }
 
         bundle.containsAll("key", "key2") shouldEqual true
+    }
+
+    @Test
+    fun `should convert transformation matrix to pure rotation matrix`() {
+        val matrix = Matrix(
+            floatArrayOf(
+                0.3535534f, 0.0f, -0.35355334f, 0.0f,
+                0.0f, 0.5f, 0.0f, 0.0f,
+                0.35355334f, 0.0f, 0.3535534f, 0.0f,
+                0.0f, 0.2f, -0.2f, 1.0f
+            )
+        )
+        val decomposedScale = Vector3()
+        matrix.decomposeScale(decomposedScale)
+
+        matrix.toPureRotationMatrix(decomposedScale)
+
+        val resultScale = Vector3()
+        matrix.decomposeScale(resultScale)
+        resultScale shouldEqual Vector3.one()
+        val resultTranslation = Vector3()
+        matrix.decomposeTranslation(resultTranslation)
+        resultTranslation shouldEqual Vector3.zero()
+        val rotation = Quaternion()
+        matrix.extractQuaternion(rotation)
+        rotation shouldEqual Quaternion(0.0f, 0.38268346f, 0.0f, 0.9238795f)
     }
 
 }

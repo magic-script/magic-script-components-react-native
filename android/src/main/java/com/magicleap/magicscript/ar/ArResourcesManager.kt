@@ -32,6 +32,7 @@ class ArResourcesManager : ArResourcesProvider() {
     private var sessionRef = WeakReference<Session>(null)
     private var transformationSystemRef = WeakReference<TransformationSystem>(null)
     private var cameraState: TrackingState? = null
+    private var cameraPose: Pose? = null
     private var arLoaded = false
 
     init {
@@ -43,6 +44,7 @@ class ArResourcesManager : ArResourcesProvider() {
         sessionRef = WeakReference<Session>(null)
         transformationSystemRef = WeakReference<TransformationSystem>(null)
         cameraState = null
+        cameraPose = null
         arLoaded = false
     }
 
@@ -71,6 +73,7 @@ class ArResourcesManager : ArResourcesProvider() {
 
     fun onCameraUpdated(cameraPose: Pose, trackingState: TrackingState) {
         this.cameraState = trackingState
+        this.cameraPose = cameraPose
         notifyCameraUpdated(cameraPose, trackingState)
     }
 
@@ -94,8 +97,8 @@ class ArResourcesManager : ArResourcesProvider() {
         return transformationSystemRef.get()
     }
 
-    override fun getCameraState(): TrackingState? {
-        return cameraState
+    override fun getCameraInfo(): CameraInfo {
+        return CameraInfo(cameraState, cameraPose)
     }
 
     override fun isPlaneDetectionEnabled(): Boolean {

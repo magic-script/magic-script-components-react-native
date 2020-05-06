@@ -23,6 +23,8 @@ import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyMap
+import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.ar.AnchorCreator
 import com.magicleap.magicscript.ar.ArResourcesProvider
@@ -38,10 +40,7 @@ import com.magicleap.magicscript.scene.nodes.layouts.params.LayoutParams
 import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.scene.nodes.props.Bounding
-import com.magicleap.magicscript.utils.DataResult
-import com.magicleap.magicscript.utils.Vector2
-import com.magicleap.magicscript.utils.equalInexact
-import com.magicleap.magicscript.utils.isCloseTo
+import com.magicleap.magicscript.utils.*
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -145,6 +144,15 @@ class PrismBuilder(
         }
     }
 
+}
+
+fun createCameraInfo(
+    position: Vector3 = Vector3.zero(),
+    rotation: Quaternion = Quaternion.identity(),
+    state: TrackingState = TrackingState.TRACKING
+): ArResourcesProvider.CameraInfo {
+    val pose = Utils.createPose(position, rotation)
+    return ArResourcesProvider.CameraInfo(state, pose)
 }
 
 fun JavaOnlyMap.toBundle(): Bundle {

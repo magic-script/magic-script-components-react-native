@@ -35,10 +35,7 @@ import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.props.AABB
-import com.magicleap.magicscript.utils.DataResult
-import com.magicleap.magicscript.utils.Utils
-import com.magicleap.magicscript.utils.getRotation
-import com.magicleap.magicscript.utils.getTranslationVector
+import com.magicleap.magicscript.utils.*
 import com.nhaarman.mockitokotlin2.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEmpty
@@ -72,6 +69,7 @@ class PrismTest {
 
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+        whenever(arResourcesProvider.getCameraInfo()).thenReturn(createCameraInfo())
 
         whenever(anchorCreator.createAnchor(any())).thenReturn(DataResult.Success(mock()))
     }
@@ -163,13 +161,33 @@ class PrismTest {
     fun `should anchor the node at updated position if mode is normal`() {
         val prism = buildPrism(reactMapOf(Prism.PROP_MODE, Prism.MODE_NORMAL))
         Mockito.reset(anchorCreator)
+        val updatedPosition = reactArrayOf(0.5, 0.1, 2.0)
         val expectedPose = Utils.createPose(
             position = Vector3(0.5f, 0.1f, 2.0f),
             rotation = Quaternion.identity()
         )
 
-        prism.update(
-            reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.5, 0.1, 2.0))
+        prism.update(reactMapOf(Prism.PROP_POSITION, updatedPosition))
+
+        verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
+    }
+
+    @Test
+    fun `should position the node relative to camera if positionRelativeToCamera true`() {
+        val cameraPosition = Vector3(2.5f, 0.4f, 1.2f)
+        whenever(arResourcesProvider.getCameraInfo()).thenReturn(createCameraInfo(position = cameraPosition))
+        val requestedPosition = reactArrayOf(1.0, 1.0, 1.0)
+        val expectedPose = Utils.createPose(
+            position = Vector3(3.5f, 1.4f, 2.2f),
+            rotation = Quaternion.identity()
+        )
+
+        buildPrism(
+            reactMapOf(
+                Prism.PROP_POSITION, requestedPosition,
+                Prism.PROP_POSITION_RELATIVE, true,
+                Prism.PROP_MODE, Prism.MODE_NORMAL
+            )
         )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))
@@ -177,15 +195,16 @@ class PrismTest {
 
     @Test
     fun `should anchor the node at desired rotation if mode is normal`() {
-        val prism = buildPrism(
+        val expectedPose = Utils.createPose(
+            position = Vector3.zero(),
+            rotation = Quaternion(0f, 0.42f, 0f, 0.9f)
+        )
+
+        buildPrism(
             reactMapOf(
                 Prism.PROP_ROTATION, reactArrayOf(0.00, 0.42, 0.0, 0.9),
                 Prism.PROP_MODE, Prism.MODE_NORMAL
             )
-        )
-        val expectedPose = Utils.createPose(
-            position = Vector3.zero(),
-            rotation = Quaternion(0f, 0.42f, 0f, 0.9f)
         )
 
         verify(anchorCreator).createAnchor(argThat(PoseMatcher(expectedPose)))

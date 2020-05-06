@@ -29,6 +29,7 @@ import com.magicleap.magicscript.scene.nodes.props.Alignment
 import com.magicleap.magicscript.utils.*
 import kotlin.properties.Delegates
 
+
 /**
  * Base node.
  * It's characterised by [properties] bundle based on initial properties.
@@ -384,12 +385,13 @@ abstract class TransformNode(
         if (transformMatrix != null) {
             val translation = Vector3()
             val scale = Vector3()
-            val quaternion = Quaternion()
-            val rotationVector = Vector3()
 
             transformMatrix.decomposeTranslation(translation)
             transformMatrix.decomposeScale(scale)
-            transformMatrix.decomposeRotation(rotationVector, quaternion)
+
+            transformMatrix.toPureRotationMatrix(decomposedScale = scale)
+            val quaternion = Quaternion()
+            transformMatrix.extractQuaternion(quaternion)
 
             this.localPosition = translation
             this.localScale = scale

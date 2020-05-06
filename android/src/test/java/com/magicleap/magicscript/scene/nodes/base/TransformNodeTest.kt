@@ -101,6 +101,24 @@ class TransformNodeTest {
     }
 
     @Test
+    fun `should apply transformation matrix`() {
+        val props = JavaOnlyMap.of(
+            TransformNode.PROP_LOCAL_TRANSFORM, reactArrayOf(
+                0.3535534, 0.0, -0.35355334, 0.0,
+                0.0, 0.5, 0.0, 0.0,
+                0.35355334, 0.0, 0.3535534, 0.0,
+                0.0, 0.2, -0.2, 1.0
+            )
+        )
+
+        val node = NodeBuilder().withProps(props).build()
+
+        assertEquals(Vector3(0f, 0.2f, -0.2f), node.localPosition)
+        assertEquals(Vector3(0.5f, 0.5f, 0.5f), node.localScale)
+        assertEquals(Quaternion(0.0f, 0.38268346f, 0.0f, 0.9238795f), node.localRotation)
+    }
+
+    @Test
     fun `should apply new properties on update`() {
         val node = NodeBuilder().build()
         val alignment = "bottom-right"

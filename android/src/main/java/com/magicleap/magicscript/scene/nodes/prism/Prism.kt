@@ -25,6 +25,7 @@ import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.Camera
 import com.google.ar.sceneform.collision.Ray
 import com.google.ar.sceneform.collision.RayHit
 import com.google.ar.sceneform.math.Quaternion
@@ -76,7 +77,6 @@ class Prism(
         private set
 
     private val screenSizePx = appInfoProvider.getScreenSizePx()
-    private val screenDensity = appInfoProvider.getScreenDpi()
 
     private var properties = Arguments.toBundle(initProps) ?: Bundle()
     private var reactScene: ReactScene? = null
@@ -205,7 +205,10 @@ class Prism(
             }
 
             container.prismDragController.onDragListener = { deltaPx ->
-                adjustPrismDistance(deltaPx)
+                scene?.camera?.let { camera ->
+                    val worldDelta = getWorldTouchDelta(deltaPx, camera)
+                    adjustPrismDistance(worldDelta)
+                }
             }
 
             container.prismRotationController.onRotatedListener = { deltaRotation ->
@@ -364,11 +367,10 @@ class Prism(
     }
 
     // forward <-> backward movement
-    private fun adjustPrismDistance(touchDeltaPx: Vector3) {
-        val touchDeltaDp = touchDeltaPx.y * screenDensity.y / Utils.BASELINE_DENSITY
+    private fun adjustPrismDistance(touchDelta: Vector3) {
         val cameraPosition = latestCameraPose.getTranslationVector()
         val cameraRotation = latestCameraPose.getRotation()
-        val distDifference = -touchDeltaDp / 400 * MOVE_SENSITIVITY
+        val distDifference = touchDelta.y * 400 * MOVE_SENSITIVITY
         val zOffset = Vector3.forward().rotatedBy(cameraRotation).scaled(distDifference)
 
         val desiredPosition = localPosition + zOffset
@@ -503,6 +505,13 @@ class Prism(
         val actualSize = Vector3(size.x * scale.x, size.y * scale.y, size.z * scale.z)
         val longestEdge = max(actualSize.x, max(actualSize.y, actualSize.z))
         return sqrt(3f) * longestEdge / 2f
+    }
+
+    // converts screen touch delta in pixels to world delta in meters
+    private fun getWorldTouchDelta(deltaPx: Vector3, camera: Camera): Vector3 {
+        val startRay = camera.screenPointToRay(0f, 0f)
+        val endRay = camera.screenPointToRay(deltaPx.x, deltaPx.y)
+        return endRay.origin - startRay.origin
     }
 
 }

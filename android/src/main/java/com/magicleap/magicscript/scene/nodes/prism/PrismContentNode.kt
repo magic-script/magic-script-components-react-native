@@ -26,6 +26,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.TransformationSystem
+import com.magicleap.magicscript.ar.RenderPriority
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.utils.DataResult
@@ -41,9 +42,6 @@ class PrismContentNode(
     initialSize: Vector3,
     private val cornerModelPath: Uri
 ) : TransformableNode(transformationSystem) {
-    private var boxModelCopy: Renderable? = null
-    private var cornerModel: ModelRenderable? = null
-    private val cornerNodes = mutableListOf<Node>()
 
     var size: Vector3 = initialSize
         set(value) {
@@ -75,6 +73,9 @@ class PrismContentNode(
     private var lastScale = localScale
     private var cubeLoadRequest: CubeRenderableBuilder.LoadRequest? = null
     private var modelLoadRequest: ModelRenderableLoader.LoadRequest? = null
+    private var boxModelCopy: Renderable? = null
+    private var cornerModel: ModelRenderable? = null
+    private val cornerNodes = mutableListOf<Node>()
 
     init {
         transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
@@ -132,9 +133,12 @@ class PrismContentNode(
             reflectance = 0f
         ) { result ->
             if (result is DataResult.Success) {
-                boxModelCopy = result.data
+                val cube = result.data
+                cube.renderPriority = RenderPriority.ABOVE_DEFAULT
+                boxModelCopy = cube
+
                 if (editModeActive) {
-                    renderable = result.data
+                    renderable = cube
                 }
             }
         }.also {

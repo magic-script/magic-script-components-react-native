@@ -35,7 +35,6 @@ class PrismDragController(
         (transformableNode as PrismContentNode).editModeActive
 
     override fun onContinueTransformation(gesture: DragGesture) {
-        // val diff = gesture.delta
         onDragListener?.invoke(gesture.delta)
     }
 

@@ -67,6 +67,7 @@ class ARComponentManagerTest {
 
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+        whenever(arResourcesProvider.getCameraInfo()).thenReturn(createCameraInfo())
 
         val context = ReactApplicationContext(ApplicationProvider.getApplicationContext())
         val appInfoProvider = TestAppInfoProvider()

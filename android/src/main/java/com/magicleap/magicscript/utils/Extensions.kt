@@ -109,9 +109,9 @@ fun Vector3.rotatedBy(quaternion: Quaternion): Vector3 {
  * also a scale transformation, else the standard decompose functions
  * (decomposeRotation or extractRotation) will return a very low precision quaternion.
  *
- * @param decomposedScale decomposed scale from the matrix
+ * @param decomposedScale previously decomposed scale from the matrix
  *
- * Based on https://github.com/google-ar/sceneform-android-sdk/blob/master/sceneformsrc/sceneform/src/main/java/com/google/ar/sceneform/math/Matrix.java
+ * Based on com.google.ar.sceneform.math.Matrix.java
  */
 fun Matrix.toPureRotationMatrix(decomposedScale: Vector3) {
     // Remove x scale.

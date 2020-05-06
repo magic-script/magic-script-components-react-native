@@ -113,7 +113,7 @@ abstract class ArResourcesProvider {
     /**
      * Returns current camera state or null if state has not been updated yet
      */
-    abstract fun getCameraState(): TrackingState?
+    abstract fun getCameraInfo(): CameraInfo
 
     /**
      * Returns true if plane detection mode is active.
@@ -159,4 +159,10 @@ abstract class ArResourcesProvider {
     interface ArLoadedListener {
         fun onArLoaded(firstTime: Boolean)
     }
+
+    data class CameraInfo(
+        val state: TrackingState?,
+        val pose: Pose?
+    )
+
 }

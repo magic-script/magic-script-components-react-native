@@ -27,6 +27,7 @@ import com.google.ar.sceneform.ux.TransformationSystem
 import com.magicleap.magicscript.NodeBuilder
 import com.magicleap.magicscript.PrismBuilder
 import com.magicleap.magicscript.ar.ArResourcesProvider
+import com.magicleap.magicscript.createCameraInfo
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
@@ -56,6 +57,7 @@ class UiNodesManagerTest {
         whenever(arResourcesProvider.getTransformationSystem()).thenReturn(getTransformationSystem())
         // we have to prevent renderable loading in tests, because ARCore is not initialized
         whenever(arResourcesProvider.isArLoaded()).thenReturn(false)
+        whenever(arResourcesProvider.getCameraInfo()).thenReturn(createCameraInfo())
 
         nodesManager = UiNodesManager()
     }

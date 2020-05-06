@@ -172,7 +172,7 @@ class ArResourcesManagerTest {
 
         manager.onCameraUpdated(updatedPose, TrackingState.TRACKING)
 
-        manager.getCameraState() shouldEqual TrackingState.TRACKING
+        manager.getCameraInfo().state shouldEqual TrackingState.TRACKING
         poseFromListener shouldNotBe null
         poseFromListener!!.getTranslationVector() shouldEqualInexact Vector3(4f, 2f, -1f)
         poseFromListener!!.getRotation() shouldEqual Quaternion.identity()
@@ -263,7 +263,7 @@ class ArResourcesManagerTest {
 
         manager.getArScene() shouldBe null
         manager.getTransformationSystem() shouldBe null
-        manager.getCameraState() shouldBe null
+        manager.getCameraInfo().state shouldBe null
         manager.isArLoaded() shouldBe false
     }
 

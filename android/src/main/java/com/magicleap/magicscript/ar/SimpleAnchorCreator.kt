@@ -25,7 +25,7 @@ import com.magicleap.magicscript.utils.logMessage
 class SimpleAnchorCreator(private val arResourcesProvider: ArResourcesProvider) : AnchorCreator {
 
     override fun createAnchor(pose: Pose): DataResult<Anchor> {
-        if (arResourcesProvider.getCameraState() != TrackingState.TRACKING) {
+        if (arResourcesProvider.getCameraInfo().state != TrackingState.TRACKING) {
             val errorMessage = "Cannot create anchor, camera is not tracking"
             logMessage(errorMessage, warn = true)
             return DataResult.Error(IllegalStateException(errorMessage))

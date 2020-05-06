@@ -60,7 +60,9 @@ class Prism(
         const val PROP_SIZE = "size"
         const val PROP_SCALE = "scale"
         const val PROP_POSITION = "position"
-        const val PROP_ROTATION = "rotation"
+        const val PROP_ROTATION = "orientation"
+        const val PROP_POSITION_RELATIVE = "positionRelativeToCamera"
+        const val PROP_ROTATION_RELATIVE = "orientationRelativeToCamera"
         const val PROP_MODE = "mode"
         const val PROP_ANCHOR_UUID = "anchorUuid"
 
@@ -83,7 +85,7 @@ class Prism(
     private var container: PrismContentNode? = null
     private var childNode: TransformNode? = null
     private val menuNode: PrismMenu
-    private var latestCameraPose = Utils.createPose(Vector3.zero(), Quaternion.identity())
+    private var latestCameraPose: Pose
     private var manualRotationOffset = Quaternion.identity()
     private var requestedAnchorPose: Pose? = null
     private var requestedAnchorUuid: String? = null
@@ -102,6 +104,9 @@ class Prism(
         arResourcesProvider.addCameraUpdatedListener(this)
         arResourcesProvider.addTransformationSystemListener(this)
         arResourcesProvider.addArLoadedListener(this)
+
+        latestCameraPose = arResourcesProvider.getCameraInfo().pose
+            ?: Utils.createPose(Vector3.zero(), Quaternion.identity())
 
         val title = appInfoProvider.getAppName()
         menuNode = PrismMenu(context, arResourcesProvider, title)
@@ -398,8 +403,19 @@ class Prism(
 
     private fun setPose(props: Bundle) {
         if (props.containsAny(PROP_POSITION, PROP_ROTATION)) {
-            val position = properties.read(PROP_POSITION) ?: localPosition
-            val rotation = properties.read(PROP_ROTATION) ?: localRotation
+            var position = properties.read(PROP_POSITION) ?: localPosition
+            var rotation = properties.read(PROP_ROTATION) ?: localRotation
+
+            val positionRelative = properties.read(PROP_POSITION_RELATIVE) ?: false
+            val rotationRelative = properties.read(PROP_ROTATION_RELATIVE) ?: false
+
+            if (positionRelative) {
+                position += latestCameraPose.getTranslationVector()
+            }
+
+            if (rotationRelative) {
+                rotation = Quaternion.multiply(rotation, latestCameraPose.getRotation())
+            }
 
             if (editMode) {
                 localPosition = position

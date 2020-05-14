@@ -60,6 +60,7 @@ class ViewController: UIViewController {
         let prism: Prism = Prism()
         prism.size = SCNVector3(1.0, 1.0, 1.0)
         prism.debug = true
+        prism.interactions = [.scale, .position, .rotation]
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)
         NodesManager.instance.addNode(prismId, toParent: sceneId)

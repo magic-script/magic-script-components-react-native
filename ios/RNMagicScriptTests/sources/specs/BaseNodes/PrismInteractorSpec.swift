@@ -29,20 +29,20 @@ class PrismInteractorSpec: QuickSpec {
             var panGestureRecognizerMock: PanGestureRecognizingMock!
             var pinchGestureRecognizerMock: PinchGestureRecognizingMock!
             var rotationGestureRecognizerMock: RotationGestureRecognizingMock!
-            var gestureRecognizerMocks: [GestureRecognizing]!
+            var gestureRecognizerMocks: [Interaction: GestureRecognizing]!
             var relatedPrism: Prism!
 
             beforeEach {
                 prismInteractor = PrismInteractor()
                 gesturableMock = GestureManagingMock()
                 prismInteractor.gesturable = gesturableMock
-                gestureRecognizerMocks = [GestureRecognizingMock]()
+                gestureRecognizerMocks = [Interaction: GestureRecognizingMock]()
                 panGestureRecognizerMock = PanGestureRecognizingMock()
                 pinchGestureRecognizerMock = PinchGestureRecognizingMock()
                 rotationGestureRecognizerMock = RotationGestureRecognizingMock()
-                gestureRecognizerMocks.append(panGestureRecognizerMock)
-                gestureRecognizerMocks.append(pinchGestureRecognizerMock)
-                gestureRecognizerMocks.append(rotationGestureRecognizerMock)
+                gestureRecognizerMocks[.position] = panGestureRecognizerMock
+                gestureRecognizerMocks[.scale] = pinchGestureRecognizerMock
+                gestureRecognizerMocks[.rotation] = rotationGestureRecognizerMock
                 prismInteractor.gestureRecognizers = gestureRecognizerMocks
                 relatedPrism = Prism()
             }
@@ -50,6 +50,7 @@ class PrismInteractorSpec: QuickSpec {
             context("when asked for toggle interaction") {
                 it("should toggle it based on editMode") {
                     relatedPrism.editMode = true
+                    relatedPrism.interactions = [.scale, .position, .rotation]
                     prismInteractor.interactedPrism = relatedPrism
                     prismInteractor.toggleInteractions(for: relatedPrism)
                     expect(relatedPrism.editMode).to(beFalse())
@@ -67,6 +68,7 @@ class PrismInteractorSpec: QuickSpec {
             context("when asked to start interaction") {
                 it("should set editMode to true & attach gestures") {
                     relatedPrism.editMode = false
+                    relatedPrism.interactions = [.scale, .position, .rotation]
                     prismInteractor.interactedPrism = relatedPrism
                     prismInteractor.startInteractions(for: relatedPrism)
                     expect(relatedPrism.editMode).to(beTrue())

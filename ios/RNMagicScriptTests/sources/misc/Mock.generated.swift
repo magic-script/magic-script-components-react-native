@@ -2840,12 +2840,12 @@ open class GestureManagingMock: GestureManaging, Mock {
 	}
 	private var __p_allowsCameraGestures: (Bool)?
 
-    public var recognizers: [GestureRecognizing]? {
+    public var recognizers: [Interaction: GestureRecognizing]? {
 		get {	invocations.append(.p_recognizers_get); return __p_recognizers ?? optionalGivenGetterValue(.p_recognizers_get, "GestureManagingMock - stub value for recognizers was not defined") }
 		@available(*, deprecated, message: "Using setters on readonly variables is deprecated, and will be removed in 3.1. Use Given to define stubbed property return value.")
 		set {	__p_recognizers = newValue }
 	}
-	private var __p_recognizers: ([GestureRecognizing])?
+	private var __p_recognizers: ([Interaction: GestureRecognizing])?
 
 
 
@@ -2908,7 +2908,7 @@ open class GestureManagingMock: GestureManaging, Mock {
         public static func allowsCameraGestures(getter defaultValue: Bool...) -> PropertyStub {
             return Given(method: .p_allowsCameraGestures_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
         }
-        public static func recognizers(getter defaultValue: [GestureRecognizing]?...) -> PropertyStub {
+        public static func recognizers(getter defaultValue: [Interaction: GestureRecognizing]?...) -> PropertyStub {
             return Given(method: .p_recognizers_get, products: defaultValue.map({ StubProduct.return($0 as Any) }))
         }
 

@@ -37,7 +37,7 @@ class PrismInteractor: NSObject, PrismInteracting {
     // MARK: Prism interaction variables
     weak var gesturable: GestureManaging?
     var interactedPrism: Prism?
-    var gestureRecognizers: [GestureRecognizing] = []
+    var gestureRecognizers: [Interaction: GestureRecognizing] = [:]
 
     private var prevTime: TimeInterval = 0
     private var startInteractionTime: TimeInterval = 0
@@ -51,13 +51,13 @@ class PrismInteractor: NSObject, PrismInteracting {
         super.init()
 
         let panGestureRecogrnizer = PanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        gestureRecognizers.append(panGestureRecogrnizer)
+        gestureRecognizers[.position] = panGestureRecogrnizer
 
         let pinchGestureRecogrnizer = PinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
-        gestureRecognizers.append(pinchGestureRecogrnizer)
+        gestureRecognizers[.scale] = pinchGestureRecogrnizer
 
         let rotationGestureRecogrnizer = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)))
-        gestureRecognizers.append(rotationGestureRecogrnizer)
+        gestureRecognizers[.rotation] = rotationGestureRecogrnizer
     }
 
     // MARK: PrismInteracting
@@ -90,33 +90,35 @@ class PrismInteractor: NSObject, PrismInteracting {
             return
         }
 
-        let cameraPosition = cameraNode.position
-        let cameraDirection = cameraNode.worldFront
+        if prism.isInteractionEnabled(.position) {
+            let cameraPosition = cameraNode.position
+            let cameraDirection = cameraNode.worldFront
 
-        var prismDistanceToCamera = prism.position.distance(cameraPosition)
+            var prismDistanceToCamera = prism.position.distance(cameraPosition)
 
-        // Update prism distance to camera change
-        if prismDistanceChange != 0.0 {
-            let cameraViewDistance = CGFloat(camera.zFar)
-            let minDistance = Float(prism.maxRadius)
-            let maxDistance = Float(cameraViewDistance) - prism.maxRadius
-            let speedFactor: Float = prismDistanceToCamera / maxDistance
+            // Update prism distance to camera change
+            if prismDistanceChange != 0.0 {
+                let cameraViewDistance = CGFloat(camera.zFar)
+                let minDistance = Float(prism.maxRadius)
+                let maxDistance = Float(cameraViewDistance) - prism.maxRadius
+                let speedFactor: Float = prismDistanceToCamera / maxDistance
 
-            let newDistance = prismDistanceToCamera + speedFactor * prismDistanceChange * deltaTime
-            prismDistanceToCamera = Math.clamp(newDistance, minDistance, maxDistance)
+                let newDistance = prismDistanceToCamera + speedFactor * prismDistanceChange * deltaTime
+                prismDistanceToCamera = Math.clamp(newDistance, minDistance, maxDistance)
 
-            prismDistanceChange = 0.0
-        }
+                prismDistanceChange = 0.0
+            }
 
-        // Keep prism in front of camera
-        let targetPosition = cameraPosition + prismDistanceToCamera * cameraDirection
-        let animationDuration: Float = 0.3
-        let t = Float(time - startInteractionTime) / animationDuration
-        if t >= 0 && t < 1.0 {
-            // Animate centering prism
-            prism.position = startInteractionPosition.lerp(targetPosition, t)
-        } else {
-            prism.position = targetPosition
+            // Keep prism in front of camera
+            let targetPosition = cameraPosition + prismDistanceToCamera * cameraDirection
+            let animationDuration: Float = 0.3
+            let t = Float(time - startInteractionTime) / animationDuration
+            if t >= 0 && t < 1.0 {
+                // Animate centering prism
+                prism.position = startInteractionPosition.lerp(targetPosition, t)
+            } else {
+                prism.position = targetPosition
+            }
         }
         
         let prismYaw = (cameraNode.angleToWorldFront() - startDifferenceYaw) - prismYawChange
@@ -139,13 +141,15 @@ class PrismInteractor: NSObject, PrismInteracting {
     }
 
     private func attacheGestureRecognizers() {
-        gestureRecognizers.forEach { gestureRecognizer in
-            gesturable?.addGestureRecognizer(gestureRecognizer)
+        gestureRecognizers.forEach { (interaction, gestureRecognizer) in
+            if let prism = interactedPrism, prism.isInteractionEnabled(interaction) {
+                gesturable?.addGestureRecognizer(gestureRecognizer)
+            }
         }
     }
 
     private func detachGestureRecognizers() {
-        gestureRecognizers.forEach { gestureRecognizer in
+        gestureRecognizers.forEach { (_, gestureRecognizer) in
             gesturable?.removeGestureRecognizer(gestureRecognizer)
         }
     }

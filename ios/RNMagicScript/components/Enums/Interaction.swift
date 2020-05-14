@@ -16,7 +16,7 @@
 
 import Foundation
 
-@objc enum Interaction: Int {
+@objc public enum Interaction: Int, RawRepresentable {
     case scale, position, rotation
 
     public typealias RawValue = String

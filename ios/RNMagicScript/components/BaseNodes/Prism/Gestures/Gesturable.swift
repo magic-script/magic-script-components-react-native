@@ -20,7 +20,7 @@ import UIKit
 protocol GestureManaging: class {
     var allowsCameraGestures: Bool { get set }
 
-    var recognizers: [GestureRecognizing]? { get }
+    var recognizers: [Interaction: GestureRecognizing]? { get }
     func addGestureRecognizer(_ gestureRecognizer: GestureRecognizing)
     func removeGestureRecognizer(_ gestureRecognizer: GestureRecognizing)
 }
@@ -31,8 +31,24 @@ extension RCTARView: GestureManaging {
         get { return arView.allowsCameraControl }
     }
 
-    var recognizers: [GestureRecognizing]? {
-        return gestureRecognizers?.filter { $0 is GestureRecognizing }.map { $0 as! GestureRecognizing }
+    var recognizers: [Interaction: GestureRecognizing]? {
+        guard let recognizers = gestureRecognizers else { return nil }
+        var result = [Interaction: GestureRecognizing]()
+        for recognizer in recognizers {
+            if recognizer is PanGestureRecognizing {
+                result[.position] = recognizer as! PanGestureRecognizer
+            }
+
+            if recognizer is PinchGestureRecognizing {
+                result[.scale] = recognizer as! PinchGestureRecognizer
+            }
+
+            if recognizer is RotationGestureRecognizer {
+                result[.rotation] = recognizer as! RotationGestureRecognizer
+            }
+        }
+
+        return result
     }
 
     func addGestureRecognizer(_ gestureRecognizer: GestureRecognizing) {

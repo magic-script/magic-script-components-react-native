@@ -38,6 +38,7 @@ class PrismContextMenu: UiNode {
     weak var prism: Prism? {
         didSet {
             text = prism?.name ?? ""
+            actionButton.isHidden = prism?.interactions.count == 0 ? true : false
         }
     }
 

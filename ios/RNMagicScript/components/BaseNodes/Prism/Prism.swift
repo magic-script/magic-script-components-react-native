@@ -33,6 +33,12 @@ import SceneKit
             #endif
         }
     }
+
+    var interactions: [Interaction] = [Interaction]()
+    func isInteractionEnabled(_ interaction: Interaction) -> Bool {
+        return interactions.contains(interaction)
+    }
+
     @objc public var size: SCNVector3 = SCNVector3.zero {
         didSet { updateSize(); invalidateClippingPlanes() }
     }
@@ -88,6 +94,10 @@ import SceneKit
     }
 
     @objc override func update(_ props: [String: Any]) {
+        if let interactions = Convert.toInteraction(props["interactions"]) {
+            self.interactions = interactions
+        }
+
         if let size = Convert.toVector3(props["size"]) {
             self.size = size
         }

@@ -37,7 +37,7 @@ import com.magicleap.magicscript.utils.SimpleAnimatorListener
 class PrismMenu(
     context: Context,
     arResourcesProvider: ArResourcesProvider,
-    private val title: String
+    private var title: String
 ) : GroupNode(JavaOnlyMap()) {
 
     companion object {
@@ -135,6 +135,11 @@ class PrismMenu(
     override fun onDestroy() {
         super.onDestroy()
         stopShowAnimation()
+    }
+
+    fun updateTitle(title: String) {
+        this.title = title
+        label.update(getLabelProps())
     }
 
     private fun getLabelProps(): JavaOnlyMap {

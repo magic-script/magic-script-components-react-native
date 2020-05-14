@@ -34,6 +34,7 @@ import com.magicleap.magicscript.ar.CustomArFragment
 import com.magicleap.magicscript.ar.renderable.CubeRenderableBuilder
 import com.magicleap.magicscript.ar.renderable.ModelRenderableLoader
 import com.magicleap.magicscript.scene.ReactScene
+import com.magicleap.magicscript.scene.nodes.UiTextNode
 import com.magicleap.magicscript.scene.nodes.props.AABB
 import com.magicleap.magicscript.utils.*
 import com.nhaarman.mockitokotlin2.*
@@ -421,6 +422,17 @@ class PrismTest {
         verify(arResourcesProvider).removeCameraUpdatedListener(eq(prism))
         verify(arResourcesProvider).removeTransformationSystemListener(eq(prism))
         verify(arResourcesProvider).removeArLoadedListener(eq(prism))
+    }
+
+    @Test
+    fun `should update title`() {
+        val testTitle = "title"
+        val prism = buildPrism(reactMapOf(Prism.PROP_TITLE, testTitle))
+
+        val menu = prism.children.filterIsInstance<PrismMenu>().first().apply { build() }
+        val title = menu.children.first().children.filterIsInstance<UiTextNode>().first()
+
+        title.getProperty(UiTextNode.PROP_TEXT) shouldEqual testTitle
     }
 
     private fun buildPrism(props: JavaOnlyMap): Prism {

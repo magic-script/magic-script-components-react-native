@@ -46,7 +46,7 @@ import kotlin.math.sqrt
 
 class Prism(
     initProps: ReadableMap,
-    private val context: Context,
+    context: Context,
     private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     private val anchorCreator: AnchorCreator,
@@ -62,6 +62,7 @@ class Prism(
         const val PROP_ROTATION = "rotation"
         const val PROP_MODE = "mode"
         const val PROP_ANCHOR_UUID = "anchorUuid"
+        const val PROP_TITLE = "title"
 
         const val MODE_NORMAL = "normal"
         const val MODE_EDIT = "edit"
@@ -171,6 +172,7 @@ class Prism(
         setPose(props)
         setScale(props)
         setAnchorUuid(props)
+        setTitle(props)
     }
 
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
@@ -429,6 +431,13 @@ class Prism(
     private fun setMode(props: Bundle) {
         props.read<String>(PROP_MODE)?.let { mode ->
             editMode = (mode == MODE_EDIT)
+        }
+    }
+
+
+    private fun setTitle(props: Bundle) {
+        props.read<String>(PROP_TITLE)?.let { title ->
+            menuNode.updateTitle(title)
         }
     }
 

@@ -292,4 +292,15 @@ class Convert {
         guard let type = value as? String else { return nil }
         return DialogType(rawValue: type)
     }
+
+    static func toInteraction(_ value: Any?) -> [Interaction]? {
+        guard let interactionsArray = value as? [String] else { return nil }
+        var result: [Interaction] = []
+        for index in 0..<interactionsArray.count {
+            if let element = Interaction(rawValue: interactionsArray[index]) {
+                result.append(element)
+            }
+        }
+        return result
+    }
 }

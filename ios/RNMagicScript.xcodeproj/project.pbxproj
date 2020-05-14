@@ -378,6 +378,8 @@
 		C465C266234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */; };
 		C465C268234DE34600157AA6 /* UiDropdownListNodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */; };
 		C470ED05238C74A8002B8D91 /* ToggleTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C470ED04238C74A8002B8D91 /* ToggleTypeSpec.swift */; };
+		C472C92F246BFCD1001F35E7 /* Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C472C92E246BFCD1001F35E7 /* Interaction.swift */; };
+		C472C930246BFCD1001F35E7 /* Interaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C472C92E246BFCD1001F35E7 /* Interaction.swift */; };
 		C47AD19B23EC173A00E4C73B /* GestureHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47AD19A23EC173A00E4C73B /* GestureHandlerSpec.swift */; };
 		C47AD19E23EC3AA400E4C73B /* PlaneDetectorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47AD19D23EC3AA400E4C73B /* PlaneDetectorSpec.swift */; };
 		C47B32BB239A5677005B59BE /* RCTARViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */; };
@@ -894,6 +896,7 @@
 		C465C265234DE33800157AA6 /* UiDropdownListItemNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListItemNodeSpec.swift; sourceTree = "<group>"; };
 		C465C267234DE34600157AA6 /* UiDropdownListNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDropdownListNodeSpec.swift; sourceTree = "<group>"; };
 		C470ED04238C74A8002B8D91 /* ToggleTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTypeSpec.swift; sourceTree = "<group>"; };
+		C472C92E246BFCD1001F35E7 /* Interaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interaction.swift; sourceTree = "<group>"; };
 		C47AD19A23EC173A00E4C73B /* GestureHandlerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHandlerSpec.swift; sourceTree = "<group>"; };
 		C47AD19D23EC3AA400E4C73B /* PlaneDetectorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneDetectorSpec.swift; sourceTree = "<group>"; };
 		C47B32BA239A5677005B59BE /* RCTARViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTARViewSpec.swift; sourceTree = "<group>"; };
@@ -1408,6 +1411,7 @@
 				C4B91AC22386B8A6002A24D6 /* ToggleType.swift */,
 				C418821F24126DC000EB84EE /* ButtonType.swift */,
 				C414575A2451A76C00D2D97C /* DialogType.swift */,
+				C472C92E246BFCD1001F35E7 /* Interaction.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -2527,6 +2531,7 @@
 				44AFAD0D232BCAE3005AC8EF /* LabelNode.swift in Sources */,
 				C4A12B132361AD46009B7083 /* UiTimePickerNode.swift in Sources */,
 				44AFAD25232BCAE3005AC8EF /* FileManager+Extension.swift in Sources */,
+				C472C930246BFCD1001F35E7 /* Interaction.swift in Sources */,
 				44301CC323AC165C001A1766 /* GroupContainer.swift in Sources */,
 				44739B9A2398034300EC31A0 /* NumberFormatter+Extension.swift in Sources */,
 				C46014B423C73618002A63D4 /* GestureHandler.swift in Sources */,
@@ -2730,6 +2735,7 @@
 				44AFAC3E232B9BCF005AC8EF /* UiModelNode.swift in Sources */,
 				442261362334059A006E2FBA /* SCNSpinnerCircle.swift in Sources */,
 				C40947312451565F00DFF608 /* Gesturable.swift in Sources */,
+				C472C92F246BFCD1001F35E7 /* Interaction.swift in Sources */,
 				44AFAC53232B9BCF005AC8EF /* URLSession+Extension.swift in Sources */,
 				C4BE7BCE234C4AEA00BC8775 /* SliderDataProviding.swift in Sources */,
 				441FE343242A5A8C008C1BE1 /* SCNMatrix4+Extension.swift in Sources */,

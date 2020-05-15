@@ -62,19 +62,19 @@ class ViewController: UIViewController {
         prism.debug = true
         prism.interactions = [.scale, .position, .rotation]
         prism.onModeChanged = { sender, mode in
-            print("BUKA onModeChanged \(sender) \(mode)")
+            print("INFO onModeChanged \(sender) \(mode)")
         }
 
         prism.onRotationChanged = { sender, rotation in
-            print("BUKA onRotationChanged  \(sender) \(rotation)")
+            print("INFO onRotationChanged  \(sender) \(rotation)")
         }
 
         prism.onPositionChanged = { sender, position in
-            print("BUKA onPositionChanged \(sender) \(position)")
+            print("INFO onPositionChanged \(sender) \(position)")
         }
 
         prism.onScaleChanged = { sender, scale in
-            print("BUKA onScaleChanged \(sender) \(scale)")
+            print("INFO onScaleChanged \(sender) \(scale)")
         }
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)

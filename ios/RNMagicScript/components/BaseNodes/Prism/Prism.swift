@@ -46,6 +46,8 @@ import SceneKit
     @objc public var onScaleChanged: ((_ sender: Prism, _ scale: [CGFloat]) -> (Void))?
     @objc public var onPositionChanged: ((_ sender: Prism, _ position: [CGFloat]) -> (Void))?
 
+    @objc public var title: String? = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+
     @objc public var size: SCNVector3 = SCNVector3.zero {
         didSet { updateSize(); invalidateClippingPlanes() }
     }
@@ -100,6 +102,10 @@ import SceneKit
     @objc override func update(_ props: [String: Any]) {
         if let interactions = Convert.toInteraction(props["interactions"]) {
             self.interactions = interactions
+        }
+
+        if let title = Convert.toString(props["title"]) {
+            self.title = title
         }
 
         if let size = Convert.toVector3(props["size"]) {

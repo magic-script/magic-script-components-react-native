@@ -100,7 +100,12 @@ RCT_EXPORT_MODULE();
         @"onConfirmationUpdated",
         @"onConfirmationCanceled",
         // FilePicker
-        @"onFileSelected"
+        @"onFileSelected",
+        // Prism
+        @"onModeChanged",
+        @"onRotationChanged",
+        @"onScaleChanged",
+        @"onPositionChanged"
      ];
 }
 
@@ -237,6 +242,22 @@ RCT_EXPORT_MODULE();
 
 - (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender {
     [self onEventWithName:@"onConfirmationCanceled" sender:sender body:NULL];
+}
+
+- (void)onPrismModeChangedEventReceived:(Prism *)sender value:(NSString *)value;{
+    [self onEventWithName:@"onModeChanged" sender:sender body:@{ @"mode": value }];
+}
+
+- (void)onPrismRotationChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value {
+    [self onEventWithName:@"onRotationChanged" sender:sender body:@{ @"rotation": value }];
+}
+
+- (void)onPrismScaleChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value {
+    [self onEventWithName:@"onScaleChanged" sender:sender body:@{ @"scale": value }];
+}
+
+- (void)onPrismPositionChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value {
+    [self onEventWithName:@"onPositionChanged" sender:sender body:@{ @"position": value }];
 }
 
 @end

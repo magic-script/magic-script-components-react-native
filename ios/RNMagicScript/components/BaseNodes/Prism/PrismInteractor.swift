@@ -62,12 +62,12 @@ class PrismInteractor: NSObject, PrismInteracting {
 
     // MARK: PrismInteracting
     func toggleInteractions(for prism: Prism) {
-        prism.editMode ? stopInteractions(for: prism) : startInteractions(for: prism)
+        prism.operationMode == .edit ? stopInteractions(for: prism) : startInteractions(for: prism)
     }
 
     func startInteractions(for prism: Prism) {
         self.interactedPrism = prism
-        prism.editMode = true
+        prism.operationMode = .edit
 
         attacheGestureRecognizers()
 
@@ -78,7 +78,7 @@ class PrismInteractor: NSObject, PrismInteracting {
 
     func update(cameraNode: SCNNode, time: TimeInterval) {
         assert(Thread.isMainThread, "PrismInteractor.update must be called in main thread!")
-        guard let camera = cameraNode.camera, let prism = interactedPrism, prism.editMode else { return }
+        guard let camera = cameraNode.camera, let prism = interactedPrism, prism.operationMode == .edit else { return }
 
         let deltaTime = Float(time - prevTime)
         prevTime = time
@@ -115,14 +115,25 @@ class PrismInteractor: NSObject, PrismInteracting {
             let t = Float(time - startInteractionTime) / animationDuration
             if t >= 0 && t < 1.0 {
                 // Animate centering prism
-                prism.position = startInteractionPosition.lerp(targetPosition, t)
+                let updatedPosition = startInteractionPosition.lerp(targetPosition, t)
+                if SCNVector3NOTEqualToVector3(prism.position, updatedPosition) {
+                    prism.position = updatedPosition
+                    prism.onPositionChanged?(prism, prism.position.toArrayOfCGFloat)
+                }
             } else {
-                prism.position = targetPosition
+                if SCNVector3NOTEqualToVector3(prism.position, targetPosition) {
+                    prism.position = targetPosition
+                    prism.onPositionChanged?(prism, prism.position.toArrayOfCGFloat)
+                }
             }
         }
         
         let prismYaw = (cameraNode.angleToWorldFront() - startDifferenceYaw) - prismYawChange
-        prism.orientation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: prismYaw)
+        let updatedOrientation = SCNQuaternion.fromAxis(SCNVector3.up, andAngle: prismYaw)
+        if SCNVector4NOTEqualToVector4(prism.orientation, updatedOrientation) {
+            prism.orientation = updatedOrientation
+            prism.onRotationChanged?(prism, prism.orientation.toArrayOfCGFloat)
+        }
         prism.updateClipping()
         delegate?.onPrismUpdated(prism: prism)
     }
@@ -130,7 +141,7 @@ class PrismInteractor: NSObject, PrismInteracting {
     func stopInteractions(for prism: Prism) {
         if self.interactedPrism == prism {
             self.interactedPrism = nil
-            prism.editMode = false
+            prism.operationMode = .highlighted
 
             detachGestureRecognizers()
 
@@ -183,7 +194,11 @@ extension PrismInteractor {
                 scaleFactor = Math.clamp(scaleFactor, minScale.x, maxScale.x)
                 scaleFactor = Math.clamp(scaleFactor, minScale.y, maxScale.y)
                 scaleFactor = Math.clamp(scaleFactor, minScale.z, maxScale.z)
-                prism.scale = initialScale * scaleFactor
+                let newScale = initialScale * scaleFactor
+                if prism.scale !== newScale {
+                    prism.scale = newScale
+                }
+                prism.onScaleChanged?(prism, prism.scale.toArrayOfCGFloat)
                 prism.updateClipping()
                 delegate?.onPrismUpdated(prism: prism)
             }
@@ -205,4 +220,8 @@ extension PrismInteractor {
             print("Default: \(#function)")
         }
     }
+}
+
+func !== (lhs: SCNVector3, rhs: SCNVector3) -> Bool {
+    return !(lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z)
 }

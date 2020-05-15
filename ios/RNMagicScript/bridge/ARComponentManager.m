@@ -571,4 +571,33 @@ RCT_EXPORT_METHOD(addOnAppStartEventHandler:(NSString *)sceneId) {
     NSLog(@"addOnAppStartEventHandler");
 }
 
+// MARK: - Prism event handlers
+RCT_EXPORT_METHOD(addOnPrismModeChangedEventHandler:(NSString *)prismId) {
+    Prism *prism = [NodesManager.instance.prismsById valueForKey:prismId];
+    prism.onModeChanged = ^(Prism *sender, NSString *value) {
+        [[AREventsManager instance] onPrismModeChangedEventReceived:sender value:value];
+    };
+}
+
+RCT_EXPORT_METHOD(addOnPrismRotationChangedEventHandler:(NSString *)prismId) {
+    Prism *prism = [NodesManager.instance.prismsById valueForKey:prismId];
+    prism.onRotationChanged = ^(Prism *sender, NSArray<NSNumber *> *value) {
+        [[AREventsManager instance] onPrismRotationChangedEventReceived:sender value:value];
+    };
+}
+
+RCT_EXPORT_METHOD(addOnPrismScaleChangedEventHandler:(NSString *)prismId) {
+    Prism *prism = [NodesManager.instance.prismsById valueForKey:prismId];
+    prism.onScaleChanged = ^(Prism *sender, NSArray<NSNumber *> *value) {
+        [[AREventsManager instance] onPrismScaleChangedEventReceived:sender value:value];
+    };
+}
+
+RCT_EXPORT_METHOD(addOnPrismPositionChangedEventHandler:(NSString *)prismId) {
+    Prism *prism = [NodesManager.instance.prismsById valueForKey:prismId];
+    prism.onPositionChanged = ^(Prism *sender, NSArray<NSNumber *> *value) {
+        [[AREventsManager instance] onPrismPositionChangedEventReceived:sender value:value];
+    };
+}
+
 @end

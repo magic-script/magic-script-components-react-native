@@ -22,7 +22,7 @@ import SceneKit
 
 
     @objc var editingPrism: Prism? {
-        return prisms.filter{ $0.editMode }.first
+        return prisms.filter{ $0.operationMode == .edit }.first
     }
 
     @objc var prismContextMenu: PrismContextMenu! {

@@ -78,8 +78,8 @@ class SceneInteractor {
 
                 let pointedPrism = results.first!.prism
                 if pointedPrism != lastPointedPrims {
-                    pointedPrism.isPointed = true
-                    lastPointedPrims?.isPointed = false
+                    pointedPrism.operationMode = .highlighted
+                    lastPointedPrims?.operationMode = .normal
                     prismInteractor.interactedPrism = pointedPrism
                 }
                 updatePrismMenu(for: pointedPrism)
@@ -87,7 +87,7 @@ class SceneInteractor {
             } else {
                 scene?.prismContextMenu.isHidden = true
                 prismInteractor.interactedPrism = nil
-                lastPointedPrims?.isPointed = false
+                lastPointedPrims?.operationMode = .normal
             }
 
             #if targetEnvironment(simulator)

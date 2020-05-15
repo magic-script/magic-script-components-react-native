@@ -251,3 +251,7 @@ extension SCNVector3 {
     static var up: SCNVector3 = SCNVector3(0, 1, 0)
     static var forward: SCNVector3 = SCNVector3(0, 0, 1)
 }
+
+public func SCNVector3NOTEqualToVector3(_ a: SCNVector3, _ b: SCNVector3) -> Bool {
+    return !SCNVector3EqualToVector3(a, b)
+}

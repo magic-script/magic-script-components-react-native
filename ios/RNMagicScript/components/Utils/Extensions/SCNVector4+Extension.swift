@@ -41,3 +41,7 @@ extension SCNVector4 {
 extension SCNVector4 {
     static var zero: SCNVector4 = SCNVector4Zero
 }
+
+public func SCNVector4NOTEqualToVector4(_ a: SCNVector4, _ b: SCNVector4) -> Bool {
+    return !SCNVector4EqualToVector4(a, b)
+}

@@ -685,6 +685,26 @@ public class ARComponentManager extends ReactContextBaseJavaModule implements Li
         mainHandler.post(() -> eventsManager.addOnFileSelectedEventHandler(nodeId));
     }
 
+    @ReactMethod
+    public void addOnPrismModeChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnModeChangedEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnPrismRotationChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnRotationChangedEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnPrismScaleChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnScaleChangedEventHandler(nodeId));
+    }
+
+    @ReactMethod
+    public void addOnPrismPositionChangedEventHandler(final String nodeId) {
+        mainHandler.post(() -> eventsManager.addOnPositionChangedNodeHandler(nodeId));
+    }
+
     // endregion
 
     @ReactMethod

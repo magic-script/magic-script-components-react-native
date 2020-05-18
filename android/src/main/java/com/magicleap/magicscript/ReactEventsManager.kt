@@ -17,6 +17,8 @@
 package com.magicleap.magicscript
 
 import android.os.Bundle
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.*
@@ -26,8 +28,10 @@ import com.magicleap.magicscript.scene.nodes.base.UiNode
 import com.magicleap.magicscript.scene.nodes.dialog.DialogNode
 import com.magicleap.magicscript.scene.nodes.dropdown.UiDropdownListNode
 import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
+import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
+import com.magicleap.magicscript.utils.logMessage
 
 class ReactEventsManager(
     private val eventsEmitter: EventsEmitter,
@@ -72,6 +76,12 @@ class ReactEventsManager(
         const val EVENT_CONFIRMATION_CANCELED = "onConfirmationCanceled"
         const val EVENT_FILE_SELECTED = "onFileSelected"
 
+        // Prism events
+        const val EVENT_MODE_CHANGED = "onModeChanged"
+        const val EVENT_ROTATION_CHANGED = "onRotationChanged"
+        const val EVENT_SCALE_CHANGED = "onScaleChanged"
+        const val EVENT_POSITION_CHANGED = "onPositionChanged"
+
         // Supported events arguments
         const val EVENT_ARG_URI = "uri"
         const val EVENT_ARG_NODE_ID = "nodeId"
@@ -87,6 +97,11 @@ class ReactEventsManager(
         const val EVENT_ARG_SCROLL_VALUE = "ScrollValue"
         const val EVENT_ARG_CONFIRMATION_UPDATED_VALUE = "Angle"
         const val EVENT_ARG_FILE_PATH = "filePath"
+
+        const val EVENT_ARG_MODE = "mode"
+        const val EVENT_ARG_ROTATION = "rotation"
+        const val EVENT_ARG_POSITION = "position"
+        const val EVENT_ARG_SCALE = "scale"
     }
 
     override fun addOnAppStartEventHandler(nodeId: String) {
@@ -464,6 +479,62 @@ class ReactEventsManager(
         }
     }
 
+    override fun addOnModeChangedEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        logMessage("PRISM EVENT, $EVENT_ARG_MODE")
+        if (node is Prism) {
+            node.onModeChanged = { mode ->
+                logMessage("PRISM EVENT, $EVENT_ARG_MODE, $mode")
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                params.putString(EVENT_ARG_MODE, mode)
+                sendEvent(EVENT_MODE_CHANGED, params)
+            }
+        }
+    }
+
+    override fun addOnRotationChangedEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        logMessage("PRISM EVENT, $EVENT_ARG_ROTATION")
+        if (node is Prism) {
+            node.onRotationChanged = { rotation ->
+                logMessage("PRISM EVENT, $EVENT_ARG_ROTATION, $rotation")
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                params.putSerializable(EVENT_ARG_ROTATION, rotation.toArrayList())
+                sendEvent(EVENT_ROTATION_CHANGED, params)
+            }
+        }
+    }
+
+    override fun addOnScaleChangedEventHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        logMessage("PRISM EVENT, $EVENT_ARG_SCALE")
+        if (node is Prism) {
+            node.onScaleChanged = { scale ->
+                logMessage("PRISM EVENT, $EVENT_ARG_SCALE, $scale")
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                params.putSerializable(EVENT_ARG_SCALE, scale.toArrayList())
+                sendEvent(EVENT_SCALE_CHANGED, params)
+            }
+        }
+    }
+
+    override fun addOnPositionChangedNodeHandler(nodeId: String) {
+        val node = findNodeWithId(nodeId)
+        if (node is Prism) {
+            logMessage("PRISM EVENT, $EVENT_ARG_POSITION")
+            node.onPositionChanged = { position ->
+                logMessage("PRISM EVENT, $EVENT_ARG_POSITION, $position")
+                val params = Bundle()
+                params.putString(EVENT_ARG_NODE_ID, nodeId)
+                params.putSerializable(EVENT_ARG_POSITION, position.toArrayList())
+                sendEvent(EVENT_POSITION_CHANGED, params)
+            }
+        }
+    }
+
     private fun sendEvent(eventName: String, params: Bundle) {
         eventsEmitter.sendEvent(eventName, params)
     }
@@ -472,3 +543,8 @@ class ReactEventsManager(
         return nodesManager.findNodeWithId(id)
     }
 }
+
+private fun Quaternion.toArrayList() =
+    arrayListOf(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+
+private fun Vector3.toArrayList() = arrayListOf(x.toDouble(), y.toDouble(), z.toDouble())

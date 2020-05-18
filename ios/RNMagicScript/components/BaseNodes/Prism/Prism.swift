@@ -26,13 +26,28 @@ import SceneKit
     static let debugBoxActiveColor = UIColor(red: 0.2, green: 1, blue: 0.2, alpha: 1)
     #endif
 
-    @objc public var isPointed: Bool = false {
+    @objc public var operationMode: OperationMode = .normal {
         didSet {
             #if targetEnvironment(simulator)
-            debugNode?.geometry?.firstMaterial?.diffuse.contents = isPointed ? Prism.debugBoxActiveColor : Prism.debugBoxInactiveColor
+            debugNode?.geometry?.firstMaterial?.diffuse.contents = operationMode == .highlighted ? Prism.debugBoxActiveColor : Prism.debugBoxInactiveColor
             #endif
+            updateEditMode()
+            onModeChanged?(self, operationMode.rawValue)
         }
     }
+
+    var interactions: [Interaction] = [Interaction]()
+    func isInteractionEnabled(_ interaction: Interaction) -> Bool {
+        return interactions.contains(interaction)
+    }
+
+    @objc public var onModeChanged: ((_ sender: Prism, _ mode: String) -> (Void))?
+    @objc public var onRotationChanged: ((_ sender: Prism, _ rotation: [CGFloat]) -> (Void))?
+    @objc public var onScaleChanged: ((_ sender: Prism, _ scale: [CGFloat]) -> (Void))?
+    @objc public var onPositionChanged: ((_ sender: Prism, _ position: [CGFloat]) -> (Void))?
+
+    @objc public var title: String? = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+
     @objc public var size: SCNVector3 = SCNVector3.zero {
         didSet { updateSize(); invalidateClippingPlanes() }
     }
@@ -50,9 +65,6 @@ import SceneKit
     }
     @objc var debug: Bool = false {
         didSet { updateDebugMode() }
-    }
-    @objc public var editMode: Bool = false {
-        didSet { updateEditMode() }
     }
     @objc var anchorUuid: String = "" {
         didSet { NodesManager.instance.updatePrismAnchorUuid(self, oldAnchorUuid: oldValue) }
@@ -88,6 +100,14 @@ import SceneKit
     }
 
     @objc override func update(_ props: [String: Any]) {
+        if let interactions = Convert.toInteraction(props["interactions"]) {
+            self.interactions = interactions
+        }
+
+        if let title = Convert.toString(props["title"]) {
+            self.title = title
+        }
+
         if let size = Convert.toVector3(props["size"]) {
             self.size = size
         }
@@ -192,7 +212,7 @@ import SceneKit
     }
 
     @objc func updateEditMode() {
-        if editMode {
+        if operationMode == .edit {
             if editNode == nil {
                 editNode = PrismOutlineNode()
                 editNode!.size = size

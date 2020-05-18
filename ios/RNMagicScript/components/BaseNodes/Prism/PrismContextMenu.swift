@@ -37,7 +37,8 @@ class PrismContextMenu: UiNode {
 
     weak var prism: Prism? {
         didSet {
-            text = prism?.name ?? ""
+            text = prism?.title ?? "MXSAppName"
+            actionButton.isHidden = prism?.interactions.count == 0 ? true : false
         }
     }
 

@@ -792,7 +792,7 @@ class ConvertSpec: QuickSpec {
                     expect(validOutput![9]).to(equal(Alignment.topCenter))
                     expect(validOutput![12]).to(beNil())
                     expect(validOutput![15]).to(beNil())
-                        
+
                     expect(Convert.toItemAlignment(nil)).to(beNil())
                     expect(Convert.toItemAlignment(any_bool)).to(beNil())
                     expect(Convert.toItemAlignment(any_int)).to(beNil())
@@ -824,7 +824,7 @@ class ConvertSpec: QuickSpec {
                     expect(validOutput![9]).to(beCloseTo(getUIEdgeInsets(0.4)))
                     expect(validOutput![12]).to(beNil())
                     expect(validOutput![15]).to(beNil())
-                        
+
                     expect(Convert.toItemPadding(nil)).to(beNil())
                     expect(Convert.toItemPadding(any_bool)).to(beNil())
                     expect(Convert.toItemPadding(any_int)).to(beNil())
@@ -862,7 +862,7 @@ class ConvertSpec: QuickSpec {
                     expect(validOutput![3].column).to(equal(2))
                     expect(validOutput![3].row).to(equal(3))
                     expect(validOutput![3].alignment).to(equal(Alignment.topCenter))
-                        
+
                     expect(Convert.toItemAlignmentColumnRow(nil)).to(beNil())
                     expect(Convert.toItemAlignmentColumnRow(any_bool)).to(beNil())
                     expect(Convert.toItemAlignmentColumnRow(any_int)).to(beNil())
@@ -902,7 +902,7 @@ class ConvertSpec: QuickSpec {
                     expect(validOutput![3].column).to(equal(2))
                     expect(validOutput![3].row).to(equal(3))
                     expect(validOutput![3].padding).to(beCloseTo(getUIEdgeInsets(0.4)))
-                        
+
                     expect(Convert.toItemPaddingColumnRow(nil)).to(beNil())
                     expect(Convert.toItemPaddingColumnRow(any_bool)).to(beNil())
                     expect(Convert.toItemPaddingColumnRow(any_int)).to(beNil())
@@ -943,6 +943,76 @@ class ConvertSpec: QuickSpec {
                     expect(Convert.toImageFitMode(any_double)).to(beNil())
                     expect(Convert.toImageFitMode(any_vec3)).to(beNil())
                     expect(Convert.toImageFitMode(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toDialogType") {
+                it("should convert to DialogType value") {
+                    let singleAction: DialogType = .singleAction
+                    let dualAction: DialogType = .dualAction
+                    let custom: DialogType = .custom
+                    let timed: DialogType = .timed
+                    let noAction: DialogType = .noAction
+
+                    let singleActionString: String = "single-action"
+                    let dualActionString: String = "dual-action"
+                    let customString: String = "custom"
+                    let timedString: String = "timed"
+                    let noActionString: String = "no-action"
+
+                    expect(Convert.toDialogType(singleActionString)).to(equal(singleAction))
+                    expect(Convert.toDialogType(dualActionString)).to(equal(dualAction))
+                    expect(Convert.toDialogType(customString)).to(equal(custom))
+                    expect(Convert.toDialogType(timedString)).to(equal(timed))
+                    expect(Convert.toDialogType(noActionString)).to(equal(noAction))
+
+                    expect(Convert.toDialogType(nil)).to(beNil())
+                    expect(Convert.toDialogType(any_bool)).to(beNil())
+                    expect(Convert.toDialogType(any_int)).to(beNil())
+                    expect(Convert.toDialogType(any_cgFloat)).to(beNil())
+                    expect(Convert.toDialogType(any_float)).to(beNil())
+                    expect(Convert.toDialogType(any_double)).to(beNil())
+                    expect(Convert.toDialogType(any_vec3)).to(beNil())
+                    expect(Convert.toDialogType(any_arrayOfInts)).to(beNil())
+                }
+            }
+
+            context("toInteraction") {
+                it("should convert to Interaction value - single") {
+                    let scale: [Interaction] = [.scale]
+                    let position: [Interaction] = [.position]
+                    let rotation: [Interaction] = [.rotation]
+
+                    let scaleInteractionString: [String] = ["scale"]
+                    let positionInteractionString: [String] = ["position"]
+                    let rotationInteractionString: [String] = ["rotation"]
+
+                    expect(Convert.toInteraction(scaleInteractionString)).to(equal(scale))
+                    expect(Convert.toInteraction(positionInteractionString)).to(equal(position))
+                    expect(Convert.toInteraction(rotationInteractionString)).to(equal(rotation))
+
+                    expect(Convert.toInteraction(nil)).to(beNil())
+                    expect(Convert.toInteraction(any_bool)).to(beNil())
+                    expect(Convert.toInteraction(any_int)).to(beNil())
+                    expect(Convert.toInteraction(any_cgFloat)).to(beNil())
+                    expect(Convert.toInteraction(any_float)).to(beNil())
+                    expect(Convert.toInteraction(any_double)).to(beNil())
+                    expect(Convert.toInteraction(any_vec3)).to(beNil())
+                    expect(Convert.toInteraction(any_arrayOfInts)).to(beNil())
+                }
+
+                it("should convert to Interaction value - multiple") {
+                    let scaleAndPosition: [Interaction] = [.scale, .position]
+                    let positionAndRotation: [Interaction] = [.position, .rotation]
+                    let scaleAndRotationAndPosition: [Interaction] = [.scale, .rotation, .position]
+
+                    let scaleAndPositionInteractionString: [String] = ["scale", "position"]
+                    let positionAndRotationInteractionString: [String] = ["position", "rotation"]
+                    let scaleAndRotationAndPositionInteractionString: [String] = ["scale", "rotation", "position"]
+
+                    expect(Convert.toInteraction(scaleAndPositionInteractionString)).to(equal(scaleAndPosition))
+                    expect(Convert.toInteraction(positionAndRotationInteractionString)).to(equal(positionAndRotation))
+                    expect(Convert.toInteraction(scaleAndRotationAndPositionInteractionString)).to(equal(scaleAndRotationAndPosition))
                 }
             }
         }

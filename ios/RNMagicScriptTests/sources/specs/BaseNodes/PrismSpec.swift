@@ -37,14 +37,13 @@ class PrismSpec: QuickSpec {
 
             context("when initialized") {
                 it("should have set default values") {
-                    expect(prism.isPointed).to(beFalse())
+                    expect(prism.operationMode).to(equal(.normal))
                     expect(prism.size).to(beCloseTo(SCNVector3.zero))
                     expect(prism.position).to(beCloseTo(SCNVector3.zero))
                     expect(prism.orientation).to(beCloseTo(SCNQuaternion.identity))
                     expect(prism.scale).to(beCloseTo(SCNVector3(1, 1, 1)))
                     expect(prism.transform).to(beCloseTo(SCNMatrix4Identity))    
                     expect(prism.debug).to(beFalse())
-                    expect(prism.editMode).to(beFalse())
                     expect(prism.anchorUuid).to(equal(""))
                 }
 
@@ -57,10 +56,10 @@ class PrismSpec: QuickSpec {
 
             context("update properties") {
                 it("should update 'isPointed' prop") {
-                    prism.isPointed = true
-                    expect(prism.isPointed).to(beTrue())
-                    prism.isPointed = false
-                    expect(prism.isPointed).to(beFalse())
+                    prism.operationMode = .highlighted
+                    expect(prism.operationMode).to(equal(.highlighted))
+                    prism.operationMode = .edit
+                    expect(prism.operationMode).to(equal(.edit))
                 }
                 
                 it("should update 'size' prop") {
@@ -112,14 +111,6 @@ class PrismSpec: QuickSpec {
                     expect(prism.debug).to(beTrue())
                     prism.update(["debug": false])
                     expect(prism.debug).to(beFalse())
-                }
-                
-                it("should update 'editMode' prop") {
-                    prism = Prism()
-                    prism.editMode = true
-                    expect(prism.editMode).to(beTrue())
-                    prism.editMode = false
-                    expect(prism.editMode).to(beFalse())
                 }
                 
                 it("should update 'anchorUuid' prop") {

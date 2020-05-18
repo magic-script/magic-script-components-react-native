@@ -56,10 +56,26 @@ class ViewController: UIViewController {
     var dialogNodeId = "dialogNodeId"
     var dialogNode: UiDialogNode?
     private func setupPrismForDialog() {
-        let prismId = "prism_dialog"
+        let prismId = "AppName"
         let prism: Prism = Prism()
         prism.size = SCNVector3(1.0, 1.0, 1.0)
         prism.debug = true
+        prism.interactions = [.scale, .position, .rotation]
+        prism.onModeChanged = { sender, mode in
+            print("INFO onModeChanged \(sender) \(mode)")
+        }
+
+        prism.onRotationChanged = { sender, rotation in
+            print("INFO onRotationChanged  \(sender) \(rotation)")
+        }
+
+        prism.onPositionChanged = { sender, position in
+            print("INFO onPositionChanged \(sender) \(position)")
+        }
+
+        prism.onScaleChanged = { sender, scale in
+            print("INFO onScaleChanged \(sender) \(scale)")
+        }
 
         NodesManager.instance.registerPrism(prism, prismId: prismId)
         NodesManager.instance.addNode(prismId, toParent: sceneId)
@@ -180,11 +196,11 @@ class ViewController: UIViewController {
             "text": "Edit mode",
             "textSize": 0.06,
             "localPosition": [-0.2, 0.8, 0],
-            "on": prism.editMode,
+            "on": prism.operationMode == .edit,
             "type": "checkbox"
         ], nodeId: "checkbox2", parentId: groupId)
         checkbox2.onChanged = { (sender, on) in
-            prism.editMode = on
+            prism.operationMode = .edit
         }
         
         // ScrollView

@@ -19,6 +19,7 @@
 #import <SceneKit/SceneKit.h>
 
 @class Scene;
+@class Prism;
 @class UiNode;
 @class UiVideoNode;
 @class UiSliderNode;
@@ -61,4 +62,8 @@
 - (void)onConfirmationCompletedEventReceived:(UiCircleConfirmationNode *)sender;
 - (void)onConfirmationUpdatedEventReceived:(UiCircleConfirmationNode *)sender value:(CGFloat)value;
 - (void)onConfirmationCanceledEventReceived:(UiCircleConfirmationNode *)sender;
+- (void)onPrismModeChangedEventReceived:(Prism *)sender value:(NSString *)value;
+- (void)onPrismRotationChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onPrismScaleChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value;
+- (void)onPrismPositionChangedEventReceived:(Prism *)sender value:(NSArray<NSNumber *> *)value;
 @end

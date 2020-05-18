@@ -29,33 +29,34 @@ class PrismInteractorSpec: QuickSpec {
             var panGestureRecognizerMock: PanGestureRecognizingMock!
             var pinchGestureRecognizerMock: PinchGestureRecognizingMock!
             var rotationGestureRecognizerMock: RotationGestureRecognizingMock!
-            var gestureRecognizerMocks: [GestureRecognizing]!
+            var gestureRecognizerMocks: [Interaction: GestureRecognizing]!
             var relatedPrism: Prism!
 
             beforeEach {
                 prismInteractor = PrismInteractor()
                 gesturableMock = GestureManagingMock()
                 prismInteractor.gesturable = gesturableMock
-                gestureRecognizerMocks = [GestureRecognizingMock]()
+                gestureRecognizerMocks = [Interaction: GestureRecognizingMock]()
                 panGestureRecognizerMock = PanGestureRecognizingMock()
                 pinchGestureRecognizerMock = PinchGestureRecognizingMock()
                 rotationGestureRecognizerMock = RotationGestureRecognizingMock()
-                gestureRecognizerMocks.append(panGestureRecognizerMock)
-                gestureRecognizerMocks.append(pinchGestureRecognizerMock)
-                gestureRecognizerMocks.append(rotationGestureRecognizerMock)
+                gestureRecognizerMocks[.position] = panGestureRecognizerMock
+                gestureRecognizerMocks[.scale] = pinchGestureRecognizerMock
+                gestureRecognizerMocks[.rotation] = rotationGestureRecognizerMock
                 prismInteractor.gestureRecognizers = gestureRecognizerMocks
                 relatedPrism = Prism()
             }
 
             context("when asked for toggle interaction") {
                 it("should toggle it based on editMode") {
-                    relatedPrism.editMode = true
+                    relatedPrism.operationMode = .highlighted
+                    relatedPrism.interactions = [.scale, .position, .rotation]
                     prismInteractor.interactedPrism = relatedPrism
                     prismInteractor.toggleInteractions(for: relatedPrism)
-                    expect(relatedPrism.editMode).to(beFalse())
+                    expect(relatedPrism.operationMode).to(equal(.edit))
 
                     prismInteractor.toggleInteractions(for: relatedPrism)
-                    expect(relatedPrism.editMode).to(beTrue())
+                    expect(relatedPrism.operationMode).to(equal(.highlighted))
 
                     gestureRecognizerMocks.forEach { _ in
                         gesturableMock.verify(.removeGestureRecognizer(.any))
@@ -66,10 +67,11 @@ class PrismInteractorSpec: QuickSpec {
 
             context("when asked to start interaction") {
                 it("should set editMode to true & attach gestures") {
-                    relatedPrism.editMode = false
+                    relatedPrism.operationMode = .highlighted
+                    relatedPrism.interactions = [.scale, .position, .rotation]
                     prismInteractor.interactedPrism = relatedPrism
                     prismInteractor.startInteractions(for: relatedPrism)
-                    expect(relatedPrism.editMode).to(beTrue())
+                    expect(relatedPrism.operationMode).to(equal(.edit))
                     gestureRecognizerMocks.forEach { _ in
                         gesturableMock.verify(.addGestureRecognizer(.any))
                     }
@@ -78,11 +80,11 @@ class PrismInteractorSpec: QuickSpec {
 
             context("when asked to stop interaction") {
                 it("should set editMode to false & detach gestures") {
-                    relatedPrism.editMode = true
+                    relatedPrism.operationMode = .edit
                     prismInteractor.interactedPrism = relatedPrism
                     gesturableMock.given(.recognizers(getter: gestureRecognizerMocks))
                     prismInteractor.stopInteractions(for: relatedPrism)
-                    expect(relatedPrism.editMode).to(beFalse())
+                    expect(relatedPrism.operationMode).to(equal(.highlighted))
                     gestureRecognizerMocks.forEach { _ in
                         gesturableMock.verify(.removeGestureRecognizer(.any))
                     }
@@ -107,7 +109,7 @@ class PrismInteractorSpec: QuickSpec {
 
                 context("when isn't in editMode") {
                     it("should skip update") {
-                        relatedPrism.editMode = false
+                        relatedPrism.operationMode = .normal
                         prismInteractor.interactedPrism = relatedPrism
                         let cameraNode = SCNNode()
                         cameraNode.camera = SCNCamera()
@@ -117,7 +119,7 @@ class PrismInteractorSpec: QuickSpec {
 
                 context("when elapsed time is more than 0.1 seconds") {
                     it("should skip update") {
-                        relatedPrism.editMode = true
+                        relatedPrism.operationMode = .edit
                         prismInteractor.interactedPrism = relatedPrism
                         let cameraNode = SCNNode()
                         cameraNode.camera = SCNCamera()
@@ -127,7 +129,7 @@ class PrismInteractorSpec: QuickSpec {
 
                 context("when elapsed time is less than 0.1 seconds") {
                     it("shouldn't skip update") {
-                        relatedPrism.editMode = true
+                        relatedPrism.operationMode = .edit
                         prismInteractor.interactedPrism = relatedPrism
                         let cameraNode = SCNNode()
                         cameraNode.position = SCNVector3.zero

@@ -31,7 +31,6 @@ import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
-import com.magicleap.magicscript.utils.logMessage
 
 class ReactEventsManager(
     private val eventsEmitter: EventsEmitter,
@@ -481,10 +480,8 @@ class ReactEventsManager(
 
     override fun addOnModeChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
-        logMessage("PRISM EVENT, $EVENT_ARG_MODE")
         if (node is Prism) {
             node.onModeChanged = { mode ->
-                logMessage("PRISM EVENT, $EVENT_ARG_MODE, $mode")
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putString(EVENT_ARG_MODE, mode)
@@ -495,10 +492,8 @@ class ReactEventsManager(
 
     override fun addOnRotationChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
-        logMessage("PRISM EVENT, $EVENT_ARG_ROTATION")
         if (node is Prism) {
             node.onRotationChanged = { rotation ->
-                logMessage("PRISM EVENT, $EVENT_ARG_ROTATION, $rotation")
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putSerializable(EVENT_ARG_ROTATION, rotation.toArrayList())
@@ -509,10 +504,8 @@ class ReactEventsManager(
 
     override fun addOnScaleChangedEventHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
-        logMessage("PRISM EVENT, $EVENT_ARG_SCALE")
         if (node is Prism) {
             node.onScaleChanged = { scale ->
-                logMessage("PRISM EVENT, $EVENT_ARG_SCALE, $scale")
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putSerializable(EVENT_ARG_SCALE, scale.toArrayList())
@@ -524,9 +517,7 @@ class ReactEventsManager(
     override fun addOnPositionChangedNodeHandler(nodeId: String) {
         val node = findNodeWithId(nodeId)
         if (node is Prism) {
-            logMessage("PRISM EVENT, $EVENT_ARG_POSITION")
             node.onPositionChanged = { position ->
-                logMessage("PRISM EVENT, $EVENT_ARG_POSITION, $position")
                 val params = Bundle()
                 params.putString(EVENT_ARG_NODE_ID, nodeId)
                 params.putSerializable(EVENT_ARG_POSITION, position.toArrayList())

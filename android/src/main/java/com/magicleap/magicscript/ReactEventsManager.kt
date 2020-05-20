@@ -17,8 +17,6 @@
 package com.magicleap.magicscript
 
 import android.os.Bundle
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.NodesManager
 import com.magicleap.magicscript.scene.ReactScene
 import com.magicleap.magicscript.scene.nodes.*
@@ -31,6 +29,7 @@ import com.magicleap.magicscript.scene.nodes.picker.NativeFilePickerNode
 import com.magicleap.magicscript.scene.nodes.prism.Prism
 import com.magicleap.magicscript.scene.nodes.toggle.UiToggleNode
 import com.magicleap.magicscript.scene.nodes.video.VideoNode
+import com.magicleap.magicscript.utils.toArrayList
 
 class ReactEventsManager(
     private val eventsEmitter: EventsEmitter,
@@ -534,8 +533,3 @@ class ReactEventsManager(
         return nodesManager.findNodeWithId(id)
     }
 }
-
-private fun Quaternion.toArrayList() =
-    arrayListOf(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
-
-private fun Vector3.toArrayList() = arrayListOf(x.toDouble(), y.toDouble(), z.toDouble())

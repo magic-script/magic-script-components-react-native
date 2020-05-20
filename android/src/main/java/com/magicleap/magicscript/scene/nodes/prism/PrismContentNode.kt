@@ -40,7 +40,8 @@ class PrismContentNode(
     private val modelLoader: ModelRenderableLoader,
     private val cubeBuilder: CubeRenderableBuilder,
     initialSize: Vector3,
-    private val cornerModelPath: Uri
+    private val cornerModelPath: Uri,
+    interactions: Interactions
 ) : TransformableNode(transformationSystem) {
 
     var size: Vector3 = initialSize
@@ -59,13 +60,13 @@ class PrismContentNode(
             }
         }
 
-    var prismDragController: PrismDragController
+    var prismDragController: PrismDragController?
         private set
 
-    var prismScaleController: PrismScaleController
+    var prismScaleController: PrismScaleController?
         private set
 
-    var prismRotationController: PrismRotationController
+    var prismRotationController: PrismRotationController?
         private set
 
     var scaleChangedListener: ((scale: Vector3) -> Unit)? = null
@@ -81,17 +82,29 @@ class PrismContentNode(
         transformationSystem.selectionVisualizer = EmptySelectionVisualizer()
         disableDefaultControllers()
 
-        val dragRecognizer = transformationSystem.dragRecognizer
-        prismDragController = PrismDragController(this, dragRecognizer)
-        addTransformationController(prismDragController)
+        if (interactions.position) {
+            val dragRecognizer = transformationSystem.dragRecognizer
+            prismDragController = PrismDragController(this, dragRecognizer)
+            addTransformationController(prismDragController)
+        } else {
+            prismDragController = null
+        }
 
-        val pinchRecognizer = transformationSystem.pinchRecognizer
-        prismScaleController = PrismScaleController(this, pinchRecognizer)
-        addTransformationController(prismScaleController)
+        if (interactions.scale) {
+            val pinchRecognizer = transformationSystem.pinchRecognizer
+            prismScaleController = PrismScaleController(this, pinchRecognizer)
+            addTransformationController(prismScaleController)
+        } else {
+            prismScaleController = null
+        }
 
-        val twistRecognizer = transformationSystem.twistRecognizer
-        prismRotationController = PrismRotationController(this, twistRecognizer)
-        addTransformationController(rotationController)
+        if (interactions.rotation) {
+            val twistRecognizer = transformationSystem.twistRecognizer
+            prismRotationController = PrismRotationController(this, twistRecognizer)
+            addTransformationController(rotationController)
+        } else {
+            prismRotationController = null
+        }
 
         createCornerNodes()
         loadCornerModel()

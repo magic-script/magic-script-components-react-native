@@ -111,7 +111,8 @@ class PrismContentNodeTest {
             modelLoader = modelLoader,
             cubeBuilder = cubeBuilder,
             initialSize = size,
-            cornerModelPath = Uri.parse("android.resource://com.fake.resource/raw/model")
+            cornerModelPath = Uri.parse("android.resource://com.fake.resource/raw/model"),
+            interactions = Interactions(scale = true, position = true, rotation = true)
         )
     }
 

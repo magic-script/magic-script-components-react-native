@@ -26,6 +26,7 @@ import com.google.ar.sceneform.math.Vector3
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundDistance
 import com.magicleap.magicscript.scene.nodes.audio.model.SpatialSoundPosition
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.scene.nodes.prism.Interactions
 import com.magicleap.magicscript.scene.nodes.props.*
 
 /**
@@ -39,6 +40,9 @@ private const val PROP_PADDING = "padding"
 private const val PROP_ALIGNMENT = "alignment"
 private const val PROP_COLUMN = "column"
 private const val PROP_ROW = "row"
+private const val INTERACTIONS_SCALE = "scale"
+private const val INTERACTIONS_ROTATION = "rotation"
+private const val INTERACTIONS_POSITION = "position"
 
 
 inline fun <reified T : Any> Bundle.read(key: String): T? =
@@ -61,6 +65,7 @@ inline fun <reified T : Any> Bundle.read(key: String): T? =
             ItemAlignmentMap::class -> readItemAlignmentMap(this, key) as T?
             ItemGridPaddingMap::class -> readItemGridPaddingMap(this, key) as T?
             ItemGridAlignmentMap::class -> readItemGridAlignmentMap(this, key) as T?
+            Interactions::class -> readInteractions(this, key) as T
             else -> {
                 logMessage("Unknown class ${T::class.java.name}", true)
                 null
@@ -282,6 +287,27 @@ fun readItemGridAlignmentMap(props: Bundle, propertyName: String): ItemGridAlign
         }
 
     return ItemGridAlignmentMap(paddings)
+}
+
+fun readInteractions(props: Bundle, propertyName: String): Interactions {
+    val interactions = props.getSerializable(propertyName) as? ArrayList<String>
+    var scale = false
+    var rotation = false
+    var position = false
+
+    if (interactions != null) {
+        if (interactions.contains(INTERACTIONS_SCALE)) {
+            scale = true
+        }
+        if (interactions.contains(INTERACTIONS_ROTATION)) {
+            rotation = true
+        }
+        if (interactions.contains(INTERACTIONS_POSITION)) {
+            position = true
+        }
+    }
+
+    return Interactions(scale = scale, rotation = rotation, position = position)
 }
 
 private fun getFileUri(

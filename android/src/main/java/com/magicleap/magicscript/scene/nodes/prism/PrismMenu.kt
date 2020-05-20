@@ -51,6 +51,8 @@ class PrismMenu(
 
     var onEditClickListener: (() -> Unit)? = null
 
+    var hardInvisible = false
+
     private val label: UiTextNode
     private val buttonEdit: UiButtonNode
     private val animator = ValueAnimator.ofFloat(0f, 1.2f, 1f)
@@ -85,7 +87,7 @@ class PrismMenu(
 
         animator.addListener(object : SimpleAnimatorListener() {
             override fun onAnimationStart(animation: Animator?) {
-                if (isActive) {
+                if (isActive && !hardInvisible) {
                     isVisible = true
                 }
             }

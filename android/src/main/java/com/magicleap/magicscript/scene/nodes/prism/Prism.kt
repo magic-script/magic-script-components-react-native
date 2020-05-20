@@ -66,6 +66,7 @@ class Prism(
         const val PROP_MODE = "mode"
         const val PROP_ANCHOR_UUID = "anchorUuid"
         const val PROP_TITLE = "title"
+        const val PROP_INTERACTIONS = "interactions"
 
         const val MODE_NORMAL = "normal"
         const val MODE_EDIT = "edit"
@@ -78,6 +79,11 @@ class Prism(
 
     var size: Vector3 = Vector3(2f, 2f, 0.3f)
         private set
+
+    var onModeChanged: ((String) -> Unit)? = null
+    var onScaleChanged: ((Vector3) -> Unit)? = null
+    var onRotationChanged: ((Quaternion) -> Unit)? = null
+    var onPositionChanged: ((Vector3) -> Unit)? = null
 
     private val screenSizePx = appInfoProvider.getScreenSizePx()
 
@@ -92,6 +98,7 @@ class Prism(
     private var requestedAnchorUuid: String? = null
     private var lastCreatedAnchor: Anchor? = null
     private var requestedScale: Vector3? = null
+    private var interactions = Interactions()
 
     private var editMode: Boolean = false
         set(value) {
@@ -163,21 +170,35 @@ class Prism(
     }
 
     override fun build() {
+        applyProperties(properties)
+
         val size = properties.read(PROP_SIZE) ?: size
         arResourcesProvider.getTransformationSystem()?.let {
             buildContainer(it, size)
         }
         buildMenu()
-        applyProperties(properties)
     }
 
     private fun applyProperties(props: Bundle) {
+        setInteractions(props)
         setMode(props)
         setSize(props)
         setPose(props)
         setScale(props)
         setAnchorUuid(props)
         setTitle(props)
+    }
+
+    private fun setInteractions(props: Bundle) {
+        if (props.containsKey(PROP_INTERACTIONS)) {
+            interactions = props.read(PROP_INTERACTIONS) ?: Interactions()
+            if (interactions.isEmpty) {
+                menuNode.hardInvisible = true
+                menuNode.hide()
+            } else {
+                menuNode.hardInvisible = false
+            }
+        }
     }
 
     private fun buildContainer(transformationSystem: TransformationSystem, size: Vector3) {
@@ -192,12 +213,13 @@ class Prism(
             modelLoader = modelLoader,
             cubeBuilder = cubeBuilder,
             initialSize = size,
-            cornerModelPath = cornerModelPath
+            cornerModelPath = cornerModelPath,
+            interactions = interactions
         ).also { container ->
             container.setParent(this)
 
             requestedScale?.let {
-                container.prismScaleController.setScale(it)
+                container.prismScaleController?.setScale(it)
                 requestedScale = null
             }
 
@@ -207,20 +229,23 @@ class Prism(
                 container.addChild(childNode)
             }
 
-            container.scaleChangedListener = { _ ->
+            container.scaleChangedListener = { scale ->
                 adjustMenuPosition()
+                onScaleChanged?.invoke(scale)
             }
 
-            container.prismDragController.onDragListener = { deltaPx ->
+            container.prismDragController?.onDragListener = { deltaPx ->
                 scene?.camera?.let { camera ->
                     val worldDelta = getWorldTouchDelta(deltaPx, camera)
                     adjustPrismDistance(worldDelta)
+                    onPositionChanged?.invoke(localPosition)
                 }
             }
 
-            container.prismRotationController.onRotatedListener = { deltaRotation ->
+            container.prismRotationController?.onRotatedListener = { deltaRotation ->
                 manualRotationOffset = Quaternion.multiply(manualRotationOffset, deltaRotation)
                 adjustContainerRotation()
+                onRotationChanged?.invoke(deltaRotation)
             }
         }
         adjustMenuPosition()
@@ -247,7 +272,7 @@ class Prism(
         val oldCameraPose = latestCameraPose
         latestCameraPose = cameraPose
 
-        if (editMode) {
+        if (editMode && interactions.position) {
             movePrism(cameraPose, oldCameraPose)
         }
 
@@ -307,6 +332,13 @@ class Prism(
         menuNode.build()
         addChild(menuNode)
         adjustMenuPosition()
+
+        if (interactions.isEmpty) {
+            menuNode.hardInvisible = true
+            menuNode.hide()
+        } else {
+            menuNode.hardInvisible = false
+        }
     }
 
     private fun adjustMenuPosition() {
@@ -475,6 +507,7 @@ class Prism(
         if (container != null) {
             container.editModeActive = value
         }
+        onModeChanged?.invoke(if (value) MODE_EDIT else MODE_NORMAL)
     }
 
     private fun tryToAnchorAtPose(pose: Pose) {

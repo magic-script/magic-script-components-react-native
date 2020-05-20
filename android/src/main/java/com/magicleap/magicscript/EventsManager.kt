@@ -49,4 +49,8 @@ interface EventsManager {
     fun addOnConfirmationUpdatedEventHandler(nodeId: String)
     fun addOnConfirmationCanceledEventHandler(nodeId: String)
     fun addOnFileSelectedEventHandler(nodeId: String)
+    fun addOnModeChangedEventHandler(nodeId: String)
+    fun addOnRotationChangedEventHandler(nodeId: String)
+    fun addOnScaleChangedEventHandler(nodeId: String)
+    fun addOnPositionChangedNodeHandler(nodeId: String)
 }

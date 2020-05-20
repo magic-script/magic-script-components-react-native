@@ -282,3 +282,8 @@ fun Date.getHour() = Calendar.getInstance().also {
 fun Date.getMinute() = Calendar.getInstance().also {
     it.time = this
 }.get(Calendar.MINUTE)
+
+fun Quaternion.toArrayList() =
+    arrayListOf(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+
+fun Vector3.toArrayList() = arrayListOf(x.toDouble(), y.toDouble(), z.toDouble())

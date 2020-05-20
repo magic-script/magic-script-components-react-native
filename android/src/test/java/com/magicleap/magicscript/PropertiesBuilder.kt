@@ -301,3 +301,30 @@ fun JavaOnlyMap.spatialSoundDistance(
     )
     return this
 }
+
+fun JavaOnlyMap.scale(x: Double, y: Double, z: Double): JavaOnlyMap {
+    putArray("scale", JavaOnlyArray.of(x, y, z))
+    return this
+}
+
+fun JavaOnlyMap.interactions(
+    scale: Boolean = false,
+    position: Boolean = false,
+    rotation: Boolean = false
+): JavaOnlyMap {
+    val list = mutableListOf<String>().apply {
+        if (scale) {
+            add("scale")
+        }
+        if (position) {
+            add("position")
+        }
+        if (rotation) {
+            add("rotation")
+        }
+    }
+
+    putArray("interactions", JavaOnlyArray.from(list))
+    return this
+}
+

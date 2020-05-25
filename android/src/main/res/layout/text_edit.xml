@@ -26,12 +26,14 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <!-- Not using EditText, because it has some bugs in ArCore -->
-        <TextView
+        <EditText
             android:id="@+id/text_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left|center"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:gravity="start|top"
+            android:textColorHint="@color/text_color_hint"
             android:textColor="@color/text_color_default" />
 
     </ScrollView>

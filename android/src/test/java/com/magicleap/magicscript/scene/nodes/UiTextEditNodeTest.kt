@@ -21,13 +21,12 @@ import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
-import com.magicleap.magicscript.R
 import com.magicleap.magicscript.font.FontProvider
 import com.magicleap.magicscript.font.FontStyle
 import com.magicleap.magicscript.font.FontWeight
@@ -56,7 +55,7 @@ class UiTextEditNodeTest {
     private lateinit var context: Context
     private lateinit var containerSpy: LinearLayout
     private lateinit var scrollViewSpy: ScrollView
-    private lateinit var textViewSpy: TextView
+    private lateinit var editTextViewSpy: EditText
     private lateinit var fontProvider: FontProvider
     private lateinit var providerTypeface: Typeface
 
@@ -65,7 +64,7 @@ class UiTextEditNodeTest {
         this.context = ApplicationProvider.getApplicationContext()
         this.containerSpy = spy(LinearLayout(context))
         this.scrollViewSpy = spy(ScrollView(context))
-        this.textViewSpy = spy(TextView(context))
+        this.editTextViewSpy = spy(EditText(context))
         this.providerTypeface = Typeface.DEFAULT_BOLD
         this.fontProvider = object : FontProvider {
             override fun provideFont(fontStyle: FontStyle?, fontWeight: FontWeight?): Typeface {
@@ -73,7 +72,7 @@ class UiTextEditNodeTest {
             }
         }
         whenever(containerSpy.sv_text_edit).thenReturn(scrollViewSpy)
-        whenever(containerSpy.text_edit).thenReturn(textViewSpy)
+        whenever(containerSpy.text_edit).thenReturn(editTextViewSpy)
     }
 
     @Test
@@ -82,7 +81,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).typeface = providerTypeface
+        verify(editTextViewSpy).typeface = providerTypeface
     }
 
     @Test
@@ -133,7 +132,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).text = text
+        verify(editTextViewSpy).setText(eq(text), anyOrNull())
     }
 
     @Test
@@ -145,12 +144,10 @@ class UiTextEditNodeTest {
 
         )
         val node = createNodeWithViewSpy(props)
-        val hintColor = context.getColor(R.color.text_color_hint)
 
         node.build()
 
-        verify(textViewSpy, atLeastOnce()).text = hint
-        verify(textViewSpy, atLeastOnce()).setTextColor(hintColor)
+        verify(editTextViewSpy, atLeastOnce()).hint = hint
     }
 
     @Test
@@ -162,7 +159,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeInPixels)
+        verify(editTextViewSpy).setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeInPixels)
     }
 
     @Test
@@ -173,7 +170,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        val gravity = textViewSpy.gravity
+        val gravity = editTextViewSpy.gravity
         assertTrue(gravity and Gravity.HORIZONTAL_GRAVITY_MASK == Gravity.CENTER_HORIZONTAL)
     }
 
@@ -189,7 +186,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).setTextColor(0xFF7FFFFF.toInt())
+        verify(editTextViewSpy).setTextColor(0xFF7FFFFF.toInt())
     }
 
     @Test
@@ -200,7 +197,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).letterSpacing = spacing.toFloat()
+        verify(editTextViewSpy).letterSpacing = spacing.toFloat()
     }
 
     @Test
@@ -211,7 +208,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        textViewSpy.lineSpacingMultiplier shouldEqual spacing.toFloat()
+        editTextViewSpy.lineSpacingMultiplier shouldEqual spacing.toFloat()
     }
 
     @Test
@@ -221,7 +218,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).setSingleLine(false)
+        verify(editTextViewSpy).setSingleLine(false)
     }
 
     @Test
@@ -232,7 +229,7 @@ class UiTextEditNodeTest {
 
         node.build()
 
-        verify(textViewSpy).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
+        verify(editTextViewSpy).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
     }
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {

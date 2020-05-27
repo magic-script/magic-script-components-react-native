@@ -33,6 +33,8 @@ import com.magicleap.magicscript.font.FontWeight
 import com.magicleap.magicscript.reactArrayOf
 import com.magicleap.magicscript.reactMapOf
 import com.magicleap.magicscript.scene.nodes.base.TransformNode
+import com.magicleap.magicscript.selected
+import com.magicleap.magicscript.text
 import com.magicleap.magicscript.utils.Utils
 import com.nhaarman.mockitokotlin2.*
 import kotlinx.android.synthetic.main.text_edit.view.*
@@ -231,6 +233,33 @@ class UiTextEditNodeTest {
 
         verify(editTextViewSpy).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
     }
+
+    @Test
+    fun `should read selected begin and end`() {
+        val node = createNodeWithViewSpy(
+            JavaOnlyMap.of()
+                .text("longText")
+                .selected(1, 3)
+        )
+
+        node.build()
+
+        verify(editTextViewSpy, atLeastOnce()).setSelection(1, 3)
+    }
+
+    @Test
+    fun `should set selected begin and end in min-max text lenght`() {
+        val node = createNodeWithViewSpy(
+            JavaOnlyMap.of()
+                .text("text")
+                .selected(-1, 5)
+        )
+
+        node.build()
+
+        verify(editTextViewSpy, atLeastOnce()).setSelection(0, 4)
+    }
+
 
     private fun createNodeWithViewSpy(props: ReadableMap): UiTextEditNode {
         return object : UiTextEditNode(props, context, mock(), mock(), fontProvider) {

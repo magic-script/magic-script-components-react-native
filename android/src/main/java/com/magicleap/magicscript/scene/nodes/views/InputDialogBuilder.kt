@@ -29,6 +29,7 @@ import com.magicleap.magicscript.R
 import com.magicleap.magicscript.utils.setTextAndMoveCursor
 import kotlinx.android.synthetic.main.edit_text_2d.view.*
 
+
 class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boolean) :
     AlertDialog.Builder(context, R.style.InputDialogTheme) {
 
@@ -116,6 +117,19 @@ class InputDialogBuilder(context: Context, multiline: Boolean, passwordMode: Boo
     fun setOnCloseListener(callback: () -> Unit): AlertDialog.Builder {
         this.onCloseListener = callback
         return this
+    }
+
+    fun setSelection(selectionBegin: Int, selectionEnd: Int): AlertDialog.Builder {
+        val begin = Integer.min(Integer.max(0, selectionBegin), editText.text.length)
+        val end = Integer.min(Integer.max(0, selectionEnd), editText.text.length)
+
+        editText.setSelection(begin, end)
+        return this
+    }
+
+    override fun show(): AlertDialog {
+        editText.requestFocus()
+        return super.show()
     }
 
     enum class EntryMode { NORMAL, EMAIL, NUMERIC }

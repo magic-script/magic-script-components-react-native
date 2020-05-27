@@ -300,6 +300,20 @@ class PrismTest {
     }
 
     @Test
+    fun `should not apply the scale when interaction scale is disabled`() {
+        val content = NodeBuilder().withScale(1.0, 1.0, 1.0).build()
+
+        val prism = buildPrism(
+            reactMapOf()
+                .scale(1.5, 0.5, 1.0)
+                .interactions(scale = false)
+        )
+        prism.addContent(content)
+
+        content.worldScale shouldEqualInexact Vector3(1.0f, 1.0f, 1.0f)
+    }
+
+    @Test
     fun `should globally rotate menu around Y axis to look at camera`() {
         val prism = buildPrism(
             reactMapOf(Prism.PROP_POSITION, reactArrayOf(0.0, 0.0, 0.0))
@@ -382,7 +396,7 @@ class PrismTest {
             reactMapOf(
                 Prism.PROP_MODE, Prism.MODE_NORMAL,
                 Prism.PROP_POSITION, reactArrayOf(1.0, 2.0, 0.0)
-            )
+            ).interactions(scale = true, position = true, rotation = true)
         )
         val expectedPrismPose = Utils.createPose(Vector3(1f, 2f, 0f), Quaternion.identity())
         val cameraPosition = Vector3(0.4f, -0.2f, 0.1f)

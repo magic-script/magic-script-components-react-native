@@ -328,3 +328,9 @@ fun JavaOnlyMap.interactions(
     return this
 }
 
+fun JavaOnlyMap.selected(begin: Int = 0, end: Int = 0): JavaOnlyMap {
+    putInt("selectedBegin", begin)
+    putInt("selectedEnd", end)
+
+    return this
+}

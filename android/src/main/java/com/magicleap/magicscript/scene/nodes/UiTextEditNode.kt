@@ -28,6 +28,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import com.facebook.react.bridge.ReadableMap
 import com.magicleap.magicscript.ArViewManager
 import com.magicleap.magicscript.R
@@ -41,6 +42,8 @@ import com.magicleap.magicscript.scene.nodes.props.ScrollBarVisibility
 import com.magicleap.magicscript.scene.nodes.views.InputDialogBuilder
 import com.magicleap.magicscript.utils.*
 import kotlinx.android.synthetic.main.text_edit.view.*
+import java.lang.Integer.max
+import java.lang.Integer.min
 
 open class UiTextEditNode(
     initProps: ReadableMap,
@@ -69,6 +72,8 @@ open class UiTextEditNode(
         const val PROP_SCROLLING = "scrolling"
         const val PROP_TEXT_ENTRY_MODE = "textEntry"
         const val PROP_SCROLLBAR_VISIBILITY = "scrollBarVisibility"
+        const val PROP_SELECTED_BEGIN = "selectedBegin"
+        const val PROP_SELECTED_END = "selectedEnd"
 
         const val ENTRY_MODE_NORMAL = "normal"
         const val ENTRY_MODE_EMAIL = "email"
@@ -151,6 +156,7 @@ open class UiTextEditNode(
         setTextPadding(props)
         setFontParams(props)
         setScrollBarVisibility(props)
+        setSelection(props)
     }
 
     private fun setText(props: Bundle) {
@@ -173,7 +179,7 @@ open class UiTextEditNode(
         val color = props.readColor(PROP_HINT_COLOR)
         if (color != null) {
             this.hintColor = color
-            refreshVisibleText()
+            view.text_edit.setHintTextColor(hintColor)
         }
     }
 
@@ -307,7 +313,6 @@ open class UiTextEditNode(
             isSelected = true
             startCursorAnimation()
             showBorder()
-            view.text_edit_underline.visibility = View.INVISIBLE
             view.text_edit.setTextColor(textColor)
             showInputDialog(activity)
             onFocusGainedListener?.invoke()
@@ -358,13 +363,17 @@ open class UiTextEditNode(
                 onTextChangedListener?.invoke(input)
             }
         }
+        val begin = properties.read(PROP_SELECTED_BEGIN) ?: 0
+        val end = properties.read(PROP_SELECTED_END) ?: 0
+        if (begin != end) {
+            builder.setSelection(begin, end)
+        }
 
         builder.setOnCloseListener {
             isSelected = false
             stopCursorAnimation()
             refreshVisibleText()
             hideBorder()
-            view.text_edit_underline.visibility = View.VISIBLE
             onFocusLostListener?.invoke()
         }
 
@@ -417,19 +426,20 @@ open class UiTextEditNode(
                 textWithCursor.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            view.text_edit.text = spannable
+            view.text_edit.setText(spannable, TextView.BufferType.EDITABLE)
             view.text_edit.setTextColor(textColor) // clear hint color
             return
         }
 
         if (text.isEmpty()) { // display hint
-            view.text_edit.text = hint
-            view.text_edit.setTextColor(hintColor)
+            view.text_edit.hint = hint
             return
         }
 
-        view.text_edit.text = getMaskedText()
-        view.text_edit.setTextColor(textColor) // clear hint color
+        view.text_edit.setText(getMaskedText(), TextView.BufferType.EDITABLE)
+        view.text_edit.setTextColor(textColor)
+
+        setSelection(properties)
     }
 
     private fun getMaskedText(): String {
@@ -442,6 +452,18 @@ open class UiTextEditNode(
 
     private fun isPassword(): Boolean {
         return properties.getBoolean(PROP_PASSWORD, false)
+    }
+
+    private fun setSelection(props: Bundle) {
+        if (props.containsAll(PROP_SELECTED_BEGIN, PROP_SELECTED_END)) {
+            var begin = props.read(PROP_SELECTED_BEGIN) ?: 0
+            var end = props.read(PROP_SELECTED_END) ?: 0
+
+            begin = min(max(0, begin), text.length)
+            end = min(max(0, end), text.length)
+
+            view.text_edit.setSelection(begin, end)
+        }
     }
 
 }

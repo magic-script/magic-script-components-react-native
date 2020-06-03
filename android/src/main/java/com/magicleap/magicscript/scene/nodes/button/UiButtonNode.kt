@@ -138,6 +138,11 @@ open class UiButtonNode(
 
         contentNode.localPosition =
             Vector3(contentNode.localPosition.x, contentNode.localPosition.y, z)
+
+        (view as CustomButton).apply {
+            isPressed = pressed
+            invalidate()
+        }
     }
 
     override fun applyProperties(props: Bundle) {

@@ -394,6 +394,7 @@
 		C47E419D23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E419C23C4A30B00AB81C9 /* DragGestureRecognizerSpec.swift */; };
 		C4816BF2234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
 		C4816BF3234C9082001CCBDD /* DataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4816BF1234C9082001CCBDD /* DataProviding.swift */; };
+		C489C1C724934DBF00534CF6 /* NodesGestureHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C489C1C624934DBF00534CF6 /* NodesGestureHandlerSpec.swift */; };
 		C4914ABF23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */; };
 		C49B120C243CA10100F7DAAB /* PrismInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49B120B243CA10100F7DAAB /* PrismInteractor.swift */; };
 		C49B120D243CA10100F7DAAB /* PrismInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49B120B243CA10100F7DAAB /* PrismInteractor.swift */; };
@@ -911,6 +912,7 @@
 		C4816BF1234C9082001CCBDD /* DataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviding.swift; sourceTree = "<group>"; };
 		C487A5B323309990002B4D36 /* UiGroupNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiGroupNodeSpec.swift; sourceTree = "<group>"; };
 		C487A5B72330CD8F002B4D36 /* UiVideoNodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiVideoNodeSpec.swift; sourceTree = "<group>"; };
+		C489C1C624934DBF00534CF6 /* NodesGestureHandlerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesGestureHandlerSpec.swift; sourceTree = "<group>"; };
 		C4914ABE23C30B2E00ABB297 /* TapGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureRecognizerSpec.swift; sourceTree = "<group>"; };
 		C49B120B243CA10100F7DAAB /* PrismInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismInteractor.swift; sourceTree = "<group>"; };
 		C4A07EF52409049700BDA262 /* NodesManager+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NodesManager+Extension.swift"; sourceTree = "<group>"; };
@@ -1557,6 +1559,7 @@
 				44F09316232D985A0081FF14 /* Utils */,
 				44A3FD0A2366421700402912 /* UiNodeSelectorSpec.swift */,
 				C47AD19A23EC173A00E4C73B /* GestureHandlerSpec.swift */,
+				C489C1C624934DBF00534CF6 /* NodesGestureHandlerSpec.swift */,
 			);
 			path = specs;
 			sourceTree = "<group>";
@@ -2554,6 +2557,7 @@
 				44F0933A232D9E2E0081FF14 /* FontStyleSpec.swift in Sources */,
 				C4596A83237421A4000E88C1 /* UiListViewNodeSpec.swift in Sources */,
 				44F77DD5233CB6880078B85C /* ImageAssetsSpec.swift in Sources */,
+				C489C1C724934DBF00534CF6 /* NodesGestureHandlerSpec.swift in Sources */,
 				441FE34D242A5C5D008C1BE1 /* SCNCircleSpec.swift in Sources */,
 				C4E7BE3624483C5300C62F76 /* PrismContextMenuSpec.swift in Sources */,
 				44226127232F9173006E2FBA /* MathsExtensionSpec.swift in Sources */,

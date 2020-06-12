@@ -162,6 +162,13 @@ class UiButtonNodeSpec: QuickSpec {
                     expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
                 }
             }
+
+            context("when simulateTap called") {
+                it("should add correct animation contentNode") {
+                    node.simulateTap()
+                    expect(node.contentNode.animationKeys.contains("UiButtonNode")).to(beTrue())
+                }
+            }
         }
     }
 }

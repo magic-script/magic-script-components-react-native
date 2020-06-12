@@ -164,7 +164,7 @@ import SceneKit
             debugClippedRayNode = NodesFactory.createSegmentNode(vertices: [begin, end])
             addChildNode(debugClippedRayNode!)
         }
-#endif
+        #endif
         var hitResults: [HitTestResult] = []
         for child in rootNode.childNodes {
             if let transformNode = child as? TransformNode {

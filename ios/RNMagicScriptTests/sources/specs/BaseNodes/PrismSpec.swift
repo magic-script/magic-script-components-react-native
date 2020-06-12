@@ -37,6 +37,8 @@ class PrismSpec: QuickSpec {
 
             context("when initialized") {
                 it("should have set default values") {
+                    expect(prism.title).to(equal("RNMagicScriptHostApplication"))
+                    expect(prism.interactions).to(equal([]))
                     expect(prism.operationMode).to(equal(.normal))
                     expect(prism.size).to(beCloseTo(SCNVector3.zero))
                     expect(prism.position).to(beCloseTo(SCNVector3.zero))
@@ -55,6 +57,18 @@ class PrismSpec: QuickSpec {
             }
 
             context("update properties") {
+                it("should update 'title' prop") {
+                    let referencePrismTitle = "newPrismTitle"
+                    prism.update(["title": referencePrismTitle])
+                    expect(prism.title).to(equal(referencePrismTitle))
+                }
+
+                it("should update 'interactions' prop") {
+                    let referencePrismInteractions = ["scale", "position"]
+                    prism.update(["interactions": referencePrismInteractions])
+                    expect(prism.interactions).to(equal([Interaction.scale, Interaction.position]))
+                }
+
                 it("should update 'isPointed' prop") {
                     prism.operationMode = .highlighted
                     expect(prism.operationMode).to(equal(.highlighted))
@@ -175,6 +189,49 @@ class PrismSpec: QuickSpec {
                         expect(prism.rootNode.childNodes.count).to(equal(2))
                         expect(prism.rootNode.childNodes[1]).to(equal(childNode))
                     }
+                }
+            }
+
+            context("when hitTest requested") {
+                it("should iterate all child nodes") {
+                    let transformNode1 = StubbedTransformNode()
+                    let transformNode2 = StubbedTransformNode()
+                    let transformNode3 = StubbedTransformNode()
+                    let hitNode = TransformNode()
+                    transformNode3.hitNode = hitNode
+
+                    _ = prism.addNode(transformNode1)
+                    _ = prism.addNode(transformNode2)
+                    _ = prism.addNode(transformNode3)
+
+                    let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 0.0))
+                    expect(hitResult?.node).to(equal(hitNode))
+                    expect(transformNode1.wasIteratedByHitTest).to(beTrue())
+                    expect(transformNode2.wasIteratedByHitTest).to(beTrue())
+                    expect(transformNode3.wasIteratedByHitTest).to(beTrue())
+                }
+
+                it("should sort results by distance to viewPoint ") {
+                    let transformNode1 = StubbedTransformNode()
+                    let transformNode2 = StubbedTransformNode()
+                    let transformNode3 = StubbedTransformNode()
+                    let hitNode1 = TransformNode()
+                    hitNode1.position = SCNVector3(0.1, 0.1, 0.1)
+                    transformNode1.hitNode = hitNode1
+
+                    let hitNode3 = TransformNode()
+                    hitNode3.position = SCNVector3(0.75, 0.75, 0.75)
+                    transformNode3.hitNode = hitNode3
+
+                    _ = prism.addNode(transformNode1)
+                    _ = prism.addNode(transformNode2)
+                    _ = prism.addNode(transformNode3)
+
+                    let hitResult = prism.hitTest(ray: Ray(begin: SCNVector3.zero, direction: SCNVector3.zero, length: 10.0))
+                    expect(hitResult?.node).to(equal(hitNode1))
+                    expect(transformNode1.wasIteratedByHitTest).to(beTrue())
+                    expect(transformNode2.wasIteratedByHitTest).to(beTrue())
+                    expect(transformNode3.wasIteratedByHitTest).to(beTrue())
                 }
             }
         }

@@ -53,7 +53,7 @@ class VideoNode(
 
     companion object {
         const val PROP_VIDEO_PATH = "videoPath"
-        const val PROP_SIZE = "size" // width and height in meters
+        const val PROP_SIZE = "screenSize" // width and height in meters
         const val PROP_WIDTH = "width" // horizontal resolution
         const val PROP_HEIGHT = "height" // vertical resolution
         const val PROP_LOOPING = "looping"

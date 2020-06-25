@@ -79,7 +79,7 @@ class VideoPlayerImpl(
         }
         this.onLoadedListener = onLoadedListener
         mediaPlayer.setSurface(surface)
-        if (subtitlesPath == null) {
+        if (subtitlesPath == null || subtitlesPath.toString().isEmpty()) {
             prepareMediaPlayer()
         } else {
             addSubtitles(subtitlesPath, onSubtitleChangeListener)

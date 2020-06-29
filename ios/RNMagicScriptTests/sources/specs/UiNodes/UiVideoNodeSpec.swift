@@ -36,7 +36,7 @@ class UiVideoNodeSpec: QuickSpec {
                     expect(node.looping).to(beTrue())
                     expect(node.width).to(beCloseTo(512.0))
                     expect(node.height).to(beCloseTo(512.0))
-                    expect(node.size).to(beCloseTo(CGSize(width: 1.0, height: 1.0)))
+                    expect(node.screenSize).to(beCloseTo(CGSize(width: 1.0, height: 1.0)))
                     expect(node.videoPath).to(beNil())
                     expect(node.viewMode).to(equal(VideoViewMode.fullArea))
                     expect(node.volume).to(beCloseTo(0.5))
@@ -52,10 +52,10 @@ class UiVideoNodeSpec: QuickSpec {
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
-                it("should update 'size' prop") {
+                it("should update 'screenSize' prop") {
                     let referenceSize = CGSize(width: 1.25, height: 0.95)
-                    node.update(["size" : referenceSize.toArrayOfCGFloat])
-                    expect(node.size).to(beCloseTo(referenceSize))
+                    node.update(["screenSize" : referenceSize.toArrayOfCGFloat])
+                    expect(node.screenSize).to(beCloseTo(referenceSize))
                     expect(node.isLayoutNeeded).to(beTrue())
                 }
 
@@ -159,9 +159,9 @@ class UiVideoNodeSpec: QuickSpec {
 
             context("when asked for size") {
                 it("should calculate it") {
-                    node = UiVideoNode(props: ["size": [0.75, 0.45]])
+                    node = UiVideoNode(props: ["screenSize": [0.75, 0.45]])
                     expect(node.getSize()).to(beCloseTo(CGSize(width: 0.75, height: 0.45)))
-                    node = UiVideoNode(props: ["size": [1.25, 0.15]])
+                    node = UiVideoNode(props: ["screenSize": [1.25, 0.15]])
                     expect(node.getSize()).to(beCloseTo(CGSize(width: 1.25, height: 0.15)))
                 }
             }

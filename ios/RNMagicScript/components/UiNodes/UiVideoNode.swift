@@ -60,10 +60,10 @@ import AVKit
         }
     }
 
-    @objc var size: CGSize = CGSize(width: 1.0, height: 1.0) {
+    @objc var screenSize: CGSize = CGSize(width: 1.0, height: 1.0) {
         didSet {
-            plane?.width = size.width
-            plane?.height = size.height
+            plane?.width = screenSize.width
+            plane?.height = screenSize.height
             setNeedsLayout()
         }
     }
@@ -133,7 +133,7 @@ import AVKit
     }
 
     @objc func setupInitialState() {
-        plane = SCNPlane(width: size.width, height: size.height)
+        plane = SCNPlane(width: screenSize.width, height: screenSize.height)
         plane.firstMaterial?.lightingModel = .constant
         plane.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
         planeNode = SCNNode(geometry: plane)
@@ -194,8 +194,8 @@ import AVKit
             self.alignment = alignment
         }
 
-        if let size = Convert.toCGSize(props["size"]) {
-            self.size = size
+        if let screenSize = Convert.toCGSize(props["screenSize"]) {
+            self.screenSize = screenSize
         }
 
         if let width = Convert.toCGFloat(props["width"]) {
@@ -228,6 +228,6 @@ import AVKit
     }
 
     @objc override func _calculateSize() -> CGSize {
-        return size
+        return screenSize
     }
 }

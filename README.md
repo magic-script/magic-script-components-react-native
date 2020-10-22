@@ -27,16 +27,14 @@ npm install -g magic-script-cli
 ```
 magic-script init
 ````
-and follow instructions in the wizard:
-
-![Wizard](./docs/screens/mxs_wizard.gif)
+and follow instructions in the wizard. 
 
 Remember to select: 
 - **Components** app, 
 - **Landscape** app type,
 - **iOS** or **Android** platform.
 
-<p>&nbsp;</p>
+<img src="./docs/screens/mxs_wizard.gif" height="160">
 
 ## Build and run the project
 

@@ -19,6 +19,8 @@
 npm install -g magic-script-cli
 ```
 
+<p>&nbsp;</p>
+
 ## Create a react native project
 
 1.  To create a sample project, type: 
@@ -26,12 +28,15 @@ npm install -g magic-script-cli
 magic-script init
 ````
 and follow instructions in the wizard:
+
 ![Wizard](./docs/screens/mxs_wizard.gif)
 
 Remember to select: 
 - **Components** app, 
 - **Landscape** app type,
 - **iOS** or **Android** platform.
+
+<p>&nbsp;</p>
 
 ## Build and run the project
 

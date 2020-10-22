@@ -58,7 +58,7 @@ class PlaneSpec: QuickSpec {
 
                 it("should invoke assert for wrong vec4") {
                     let referenceVector = SCNVector4(0, 0, 0, 2.0)
-                    expect { _ = Plane(vector: referenceVector) }.to(throwAssertion())
+                    expect(_ = Plane(vector: referenceVector)).to(throwAssertion())
                 }
             }
 

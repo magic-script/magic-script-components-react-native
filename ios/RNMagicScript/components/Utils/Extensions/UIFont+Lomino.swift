@@ -20,17 +20,19 @@ extension UIFont {
 
     public static func font(with style: FontStyle, weight: FontWeight, size: CGFloat) -> UIFont {
         let name: String = UIFont.fontName(from: style, weight: weight)
-        guard let font = UIFont(name: name, size: size) else {
-            // return system font in case Lomino font not installed
-            let systemFont = UIFont.systemFont(ofSize: size, weight: UIFont.UIFontWeight(from: weight))
-            if style == .italic {
-                return systemFont.with(traits: .traitItalic)
-            }
-            
-            return systemFont
+        if let font = UIFont(name: name, size: size) {
+            return font
         }
         
-        return font
+        let systemFontName: String = UIFont.systemFontName(from: style, weight: weight)
+        print("systemFontName: \(systemFontName)")
+        let systemFont: UIFont = UIFont(name: systemFontName, size: size) ?? UIFont.systemFont(ofSize: 20.0, weight: UIFont.UIFontWeight(from: weight))
+        
+        if style == .italic {
+            return systemFont.with(traits: .traitItalic)
+        }
+        
+        return systemFont
     }
 
     public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
@@ -55,6 +57,37 @@ extension UIFont {
             return (style == .normal) ? "LominoUIApp-Bold" : "LominoUIApp-BoldItalic"
         case .extraBold:
             return (style == .normal) ? "LominoUIApp-ExtraBold" : "LominoUIApp-ExtraBoldItalic"
+        }
+    }
+    
+    fileprivate static func systemFontName(from style: FontStyle, weight: FontWeight) -> String {
+        var name: String
+        if #available(iOS 14.0, *) {
+            name = "HelveticaNeue"//.SFUIText"
+        } else {
+            name = "HelveticaNeue"
+        }
+        
+        let fontWeight = UIFontWeight(from: weight)
+        if let weightName = UIFont.name(of: fontWeight) {
+            name += "-" + weightName
+        }
+        
+        return name
+    }
+    
+    fileprivate static func name(of weight: UIFont.Weight) -> String? {
+        switch weight {
+            case .ultraLight: return "UltraLight"
+            case .thin: return "Thin"
+            case .light: return "Light"
+            case .regular: return nil
+            case .medium: return "Medium"
+            case .semibold: return "Semibold"
+            case .bold: return "Bold"
+            case .heavy: return "Heavy"
+            case .black: return "Black"
+            default: return nil
         }
     }
 

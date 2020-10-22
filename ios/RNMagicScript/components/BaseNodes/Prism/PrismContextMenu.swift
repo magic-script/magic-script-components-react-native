@@ -28,10 +28,12 @@ struct PrismContextMenuBuilder {
 class PrismContextMenu: UiNode {
     var text: String = "" {
         didSet {
-            titleNode.text = text
-            titleNode.layoutIfNeeded()
-            setNeedsLayout()
-            updateLayout()
+            if titleNode.text != text {
+                titleNode.text = text
+                titleNode.layoutIfNeeded()
+                setNeedsLayout()
+                updateLayout()
+            }
         }
     }
 

@@ -12,7 +12,9 @@
 ## Prerequisites
 
 Make sure you have:
-- properly set up an environment for **React Native** (see [`React Native CLI Quickstart`](https://reactnative.dev/docs/environment-setup) for iOS or Android),
+
+- properly set up an environment for **React Native** (see [`React Native CLI Quickstart`](https://reactnative.dev/docs/environment-setup) for iOS|Android),
+
 - installed either [`yarn`](https://classic.yarnpkg.com/en/docs/install/) or [`npm`](https://www.npmjs.com/get-npm),
 
 - installed [`MagicScript Command Line Toolkit`](https://github.com/magic-script/magic-script-cli):

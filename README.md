@@ -11,9 +11,11 @@
 
 ## Prerequisites
 
--  Make sure you have installed either [`yarn`](https://classic.yarnpkg.com/en/docs/install/) or [`npm`](https://www.npmjs.com/get-npm).
+Make sure you have:
+- properly set up an environment for **React Native** (see [`React Native CLI Quickstart`](https://reactnative.dev/docs/environment-setup) for iOS or Android),
+- installed either [`yarn`](https://classic.yarnpkg.com/en/docs/install/) or [`npm`](https://www.npmjs.com/get-npm),
 
-- Install [`magic-script-cli`](https://github.com/magic-script/magic-script-cli):
+- installed [`MagicScript Command Line Toolkit`](https://github.com/magic-script/magic-script-cli):
 
 ```
 npm install -g magic-script-cli
@@ -23,11 +25,10 @@ npm install -g magic-script-cli
 
 ## Create a react native project
 
-1.  To create a sample project, type: 
+To create a sample project, type the command below and follow instructions in the wizard.
 ```
 magic-script init
 ````
-and follow instructions in the wizard. 
 
 Remember to select: 
 - **Components** app, 

@@ -9,105 +9,51 @@
 
 # MagicScript Components ReactNative
 
+## Prerequisites
 
-### Create a project
+Make sure you have:
 
-The instruction assumes that you have the following tools installed and you have set environment variables properly:
-- npm or yarn 
-- react-native-cli
+- properly set up an environment for **React Native** (see [React Native CLI Quickstart](https://reactnative.dev/docs/environment-setup) for iOS|Android),
 
-**Steps:**
+- installed either [yarn](https://classic.yarnpkg.com/en/docs/install/) or [npm](https://www.npmjs.com/get-npm),
 
-1. Create a new project: 
-`react-native init AwesomeProject --version 0.60.5`
-2. Go to the project directory
-3. Add Magic Script Components ReactNative library to the project:
-	 `yarn add magic-script-components-react-native`
-4. Add Magic Script Components library to the project:
-	`yarn add magic-script-components`
-5. Execute `react-native link` in order to link the libraries,
-6. In the main project directory add `proxy_mobile` folder from [https://github.com/magic-script/magic-script-components-catalog](https://github.com/magic-script/magic-script-components-catalog/tree/master/)
+- installed [MagicScript Command Line Toolkit](https://github.com/magic-script/magic-script-cli):
 
+```
+npm install -g magic-script-cli
+```
 
-### Pre-configuration for Android
+<p>&nbsp;</p>
 
-The instruction assumes that you have the following tools installed and you have set environment variables properly:
-- npm or yarn
-- react-native-cli
-- Android Studio (or a standalone Android SDK)
-- Java JDK
+## Create a react native project
 
-**Steps:**
+To create a sample project, type the command below and follow instructions in the wizard.
+```
+magic-script init
+````
 
-1. In the `./android/build.gradle` file set `minSdkVersion` to 24
-2. Open `android/app/src/main/AndroidManifest.xml` file and add the following **between** the `<application>` tags:
+Remember to select: 
+- **Components** app, 
+- **Landscape** app type,
+- **iOS** or **Android** platform.
 
+<img src="./docs/screens/mxs_wizard.gif" height="160">
 
-	```
-	<meta-data
-    android:name="com.google.ar.core"
-    android:value="required" />
-	```
+## Build and run the project
 
-	Add the permission to use the Camera:
-	`<uses-permission android:name="android.permission.CAMERA" />`
+1. Move to the root directory of the project
 
-	And optionally this **above** the `<application>` tag:
-	`<uses-feature
-        android:name="android.hardware.camera.ar"
-        android:required="true" />`
-        
-	*This tag indicates that this application requires ARCore. This results in the application
-only being visible in the Google Play Store on devices that support ARCore)
+```
+cd AwesomeProject
+```
 
-	You can compare your AndroidManifest file with [this one](https://github.com/magic-script/magic-script-components-catalog/blob/master/android/app/src/main/AndroidManifest.xml)
+2. To build and run the project, type:
+```
+magic-script build ios
+```
+or
+```
+magic-script build android
+```
 
-### Pre-configuration for iOS
-
-The instruction assumes that you have the following tools installed and you have set environment variables properly:
-- npm or yarn 
-- react-native-cli
-- XCode version > 10
-- CocoaPods version > 1.7.5
-
-1. Create Empty.swift file inside project and `Create bridging header file`
-2. In Podfile file update `platform :ios, ‘9.0’` to `platform :ios, ‘12.0’`
-3. Declare `Privacy - Camera Usage Description` in Info.plist
-4. Declare `Privacy - Location When In Use Usage Description` in Info.plist
-5. Open terminal, navigate to `./ios` directory and execute `pod install` in order to install necessary Pods
-
-### General pre-configuration & project building
-
-**Steps**
-1. Run `yarn` or `npm install` to install the dependencies
-2. Replace App.js content with the following:
-	```
-	import React from 'react';
-	import { View, Text } from 'magic-script-components';
-
-	class MyApp extends React.Component {
-	  render() {
-	    return (
-	      <View>
-	          <Text localPosition={[0, 0, 0]} alignment={'center-center'}>Welcome in AR!</Text>
-	      </View>
-	    );
-	  }
-	}
-	export default MyApp
-	
-	```
-3. Replace `index.js` content with the following:
-	```
-	import React from 'react';
-	import { MagicScript } from './proxy_mobile';
-	import MyApp from './App';
-
-	MagicScript.registerApp('AwesomeProject', <MyApp />, false);
-	
-	```
-4. In order to build & install the application on Android or iOS device, execute one of the following in root directory:
-
-	`react-native run-android`
-	or
-	`react-native run-ios`
+This will build the app for the specified platform and will try to run in on a local emulator.

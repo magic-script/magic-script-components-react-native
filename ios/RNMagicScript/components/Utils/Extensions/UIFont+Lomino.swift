@@ -25,6 +25,8 @@ extension UIFont {
             return font
         }
         
+        // Perform extra check for iOS 14 as there is an issue with system font
+        // (more info: https://stackoverflow.com/questions/64448087/missing-characters-in-scntext-ios-14)
         if #available(iOS 14.0, *) {
             let systemFontName: String = UIFont.avenirNextFontName(from: style, weight: weight)
             return UIFont(name: systemFontName, size: size)!

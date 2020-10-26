@@ -116,7 +116,7 @@ class GroupContainerSpec: QuickSpec {
                     let items = self.prepareSampleTransformNodes()
                     items.forEach { group.addItem($0) }
                     let targetBounds = CGRect(x: 0.3, y: -0.5, width: 2.63, height: 1.45)
-                    expect(group.getBounds()).to(beCloseTo(targetBounds))
+                    expect(group.getBounds()).to(beCloseTo(targetBounds, epsilon: 0.002))
                 }
 
                 it("should return size") {

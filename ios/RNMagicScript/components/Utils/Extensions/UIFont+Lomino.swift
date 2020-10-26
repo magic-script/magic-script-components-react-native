@@ -19,15 +19,19 @@ import UIKit
 extension UIFont {
 
     public static func font(with style: FontStyle, weight: FontWeight, size: CGFloat) -> UIFont {
-        let name: String = UIFont.fontName(from: style, weight: weight)
+        // Check Lomino font first
+        let name: String = UIFont.lominoFontName(from: style, weight: weight)
         if let font = UIFont(name: name, size: size) {
             return font
         }
         
-        let systemFontName: String = UIFont.systemFontName(from: style, weight: weight)
-        print("systemFontName: \(systemFontName)")
-        let systemFont: UIFont = UIFont(name: systemFontName, size: size) ?? UIFont.systemFont(ofSize: 20.0, weight: UIFont.UIFontWeight(from: weight))
+        if #available(iOS 14.0, *) {
+            let systemFontName: String = UIFont.avenirNextFontName(from: style, weight: weight)
+            return UIFont(name: systemFontName, size: size)!
+        }
         
+        // Then use system font
+        let systemFont: UIFont = UIFont.systemFont(ofSize: size, weight: UIFont.UIFontWeight(from: weight))
         if style == .italic {
             return systemFont.with(traits: .traitItalic)
         }
@@ -35,15 +39,7 @@ extension UIFont {
         return systemFont
     }
 
-    public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
-            return self
-        }
-
-        return UIFont(descriptor: descriptor, size: 0)
-    }
-
-    fileprivate static func fontName(from style: FontStyle, weight: FontWeight) -> String {
+    fileprivate static func lominoFontName(from style: FontStyle, weight: FontWeight) -> String {
         switch weight {
         case .extraLight:
             return (style == .normal) ? "LominoUIApp-Light" : "LominoUIApp-LightItalic"
@@ -60,34 +56,20 @@ extension UIFont {
         }
     }
     
-    fileprivate static func systemFontName(from style: FontStyle, weight: FontWeight) -> String {
-        var name: String
-        if #available(iOS 14.0, *) {
-            name = "HelveticaNeue"//.SFUIText"
-        } else {
-            name = "HelveticaNeue"
-        }
-        
-        let fontWeight = UIFontWeight(from: weight)
-        if let weightName = UIFont.name(of: fontWeight) {
-            name += "-" + weightName
-        }
-        
-        return name
-    }
-    
-    fileprivate static func name(of weight: UIFont.Weight) -> String? {
+    fileprivate static func avenirNextFontName(from style: FontStyle, weight: FontWeight) -> String {
         switch weight {
-            case .ultraLight: return "UltraLight"
-            case .thin: return "Thin"
-            case .light: return "Light"
-            case .regular: return nil
-            case .medium: return "Medium"
-            case .semibold: return "Semibold"
-            case .bold: return "Bold"
-            case .heavy: return "Heavy"
-            case .black: return "Black"
-            default: return nil
+        case .extraLight:
+            return (style == .normal) ? "AvenirNext-UltraLight" : "AvenirNext-UltraLightItalic"
+        case .light:
+            return (style == .normal) ? "AvenirNext-UltraLight" : "AvenirNext-UltraLightItalic"
+        case .regular:
+            return (style == .normal) ? "AvenirNext-Regular" : "AvenirNext-Italic"
+        case .medium:
+            return (style == .normal) ? "AvenirNext-Medium" : "AvenirNext-MediumItalic"
+        case .bold:
+            return (style == .normal) ? "AvenirNext-Bold" : "AvenirNext-BoldItalic"
+        case .extraBold:
+            return (style == .normal) ? "AvenirNext-Heavy" : "AvenirNext-HeavyItalic"
         }
     }
 
@@ -106,5 +88,16 @@ extension UIFont {
         case .extraBold:
             return UIFont.Weight.heavy
         }
+    }
+}
+
+// MARK: - Traits
+extension UIFont {
+    public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
+        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
+            return self
+        }
+
+        return UIFont(descriptor: descriptor, size: 0)
     }
 }

@@ -19,29 +19,29 @@ import UIKit
 extension UIFont {
 
     public static func font(with style: FontStyle, weight: FontWeight, size: CGFloat) -> UIFont {
-        let name: String = UIFont.fontName(from: style, weight: weight)
-        guard let font = UIFont(name: name, size: size) else {
-            // return system font in case Lomino font not installed
-            let systemFont = UIFont.systemFont(ofSize: size, weight: UIFont.UIFontWeight(from: weight))
-            if style == .italic {
-                return systemFont.with(traits: .traitItalic)
-            }
-            
-            return systemFont
+        // Check Lomino font first
+        let name: String = UIFont.lominoFontName(from: style, weight: weight)
+        if let font = UIFont(name: name, size: size) {
+            return font
         }
         
-        return font
-    }
-
-    public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
-            return self
+        // Perform extra check for iOS 14 as there is an issue with system font
+        // (more info: https://stackoverflow.com/questions/64448087/missing-characters-in-scntext-ios-14)
+        if #available(iOS 14.0, *) {
+            let systemFontName: String = UIFont.avenirNextFontName(from: style, weight: weight)
+            return UIFont(name: systemFontName, size: size)!
         }
-
-        return UIFont(descriptor: descriptor, size: 0)
+        
+        // Then use system font
+        let systemFont: UIFont = UIFont.systemFont(ofSize: size, weight: UIFont.UIFontWeight(from: weight))
+        if style == .italic {
+            return systemFont.with(traits: .traitItalic)
+        }
+        
+        return systemFont
     }
 
-    fileprivate static func fontName(from style: FontStyle, weight: FontWeight) -> String {
+    fileprivate static func lominoFontName(from style: FontStyle, weight: FontWeight) -> String {
         switch weight {
         case .extraLight:
             return (style == .normal) ? "LominoUIApp-Light" : "LominoUIApp-LightItalic"
@@ -55,6 +55,23 @@ extension UIFont {
             return (style == .normal) ? "LominoUIApp-Bold" : "LominoUIApp-BoldItalic"
         case .extraBold:
             return (style == .normal) ? "LominoUIApp-ExtraBold" : "LominoUIApp-ExtraBoldItalic"
+        }
+    }
+    
+    fileprivate static func avenirNextFontName(from style: FontStyle, weight: FontWeight) -> String {
+        switch weight {
+        case .extraLight:
+            return (style == .normal) ? "AvenirNext-UltraLight" : "AvenirNext-UltraLightItalic"
+        case .light:
+            return (style == .normal) ? "AvenirNext-UltraLight" : "AvenirNext-UltraLightItalic"
+        case .regular:
+            return (style == .normal) ? "AvenirNext-Regular" : "AvenirNext-Italic"
+        case .medium:
+            return (style == .normal) ? "AvenirNext-Medium" : "AvenirNext-MediumItalic"
+        case .bold:
+            return (style == .normal) ? "AvenirNext-Bold" : "AvenirNext-BoldItalic"
+        case .extraBold:
+            return (style == .normal) ? "AvenirNext-Heavy" : "AvenirNext-HeavyItalic"
         }
     }
 
@@ -73,5 +90,16 @@ extension UIFont {
         case .extraBold:
             return UIFont.Weight.heavy
         }
+    }
+}
+
+// MARK: - Traits
+extension UIFont {
+    public func with(traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
+        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
+            return self
+        }
+
+        return UIFont(descriptor: descriptor, size: 0)
     }
 }

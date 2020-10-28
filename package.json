@@ -1,7 +1,12 @@
 {
   "name": "magic-script-components-react-native",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Magic Script Components package for React Native.",
+  "homepage": "https://components.magicscript.org",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/magic-script/magic-script-components-react-native"
+  },
   "main": "index.js",
   "scripts": {
     "test": "jest -i --coverage --json --outputFile=coverage/coverage.json"

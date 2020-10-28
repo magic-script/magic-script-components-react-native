@@ -37,7 +37,7 @@ Remember to select:
 - **Landscape** app type,
 - **iOS** or **Android** platform.
 
-<img src="https://github.com/magic-script/magic-script-components-react-native/blob/master/docs/screens/mxs_wizard.gif" height="160">
+<img src="https://rawcdn.githack.com/magic-script/magic-script-components-react-native/2a12dbc27a9d3684ff24f4395a131da6d47ee071/docs/screens/mxs_wizard.gif" height="160">
 
 ## Build and run the project
 

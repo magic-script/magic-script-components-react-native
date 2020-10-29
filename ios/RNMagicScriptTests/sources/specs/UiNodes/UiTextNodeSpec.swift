@@ -246,8 +246,8 @@ class UiTextNodeSpec: QuickSpec {
 
             context("when wrap disabled") {
                 let referenceBoundsSize = CGSize.zero
-                let shortTextRefereneceSizeForBounds = CGSize(width: 0.0426, height: 0.0144)
-                let veryLongTextRefereneceSizeForBounds = CGSize(width: 0.4986, height: 0.0144)
+                let shortTextRefereneceSizeForBounds: CGSize = is_iOS14() ? CGSize(width: 0.0444, height: 0.0168) : CGSize(width: 0.0426, height: 0.0144)
+                let veryLongTextRefereneceSizeForBounds: CGSize = is_iOS14() ? CGSize(width: 0.5202, height: 0.0168) : CGSize(width: 0.4986, height: 0.0144)
 
                 it("should change bounds when text length increases") {
                     node.update(["boundsSize" : ["wrap": false]])
@@ -290,8 +290,8 @@ class UiTextNodeSpec: QuickSpec {
 
             context("when boundsSize.height not set") {
                 let referenceBoundsSize = CGSize(width: 0.1, height: 0)
-                let refereneceBoundsSizeWhenWrapDisabled = CGSize(width: 0.1, height: 0.0144)
-                let refereneceBoundsSizeWhenWrapEnabled = CGSize(width: 0.1, height: 0.072)
+                let refereneceBoundsSizeWhenWrapDisabled = is_iOS14() ? CGSize(width: 0.1, height: 0.0168) : CGSize(width: 0.1, height: 0.0144)
+                let refereneceBoundsSizeWhenWrapEnabled = is_iOS14() ? CGSize(width: 0.1, height: 0.1152) : CGSize(width: 0.1, height: 0.072)
 
                 it("should change bounds when wrap changes") {
                     node.update(["boundsSize" : ["boundsSize": referenceBoundsSize.toArrayOfFloat, "wrap": false]])
@@ -322,6 +322,14 @@ class UiTextNodeSpec: QuickSpec {
                     expect(referenceLabelNodeChildNodesCount + 2).to(equal(labelNode.childNodes.count))
                 }
             }
+        }
+    }
+    
+    private func is_iOS14() -> Bool {
+        if #available(iOS 14.0, *) {
+            return true
+        } else {
+            return false
         }
     }
 }

@@ -34,9 +34,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupScene()
         
-        //        setupPrismWithModels()
-        //        setupPrismForHitTest()
-        setupPrismForDialog()
+//        setupPrismWithModels()
+//        setupPrismForHitTest()
+//        setupPrismForDialog()
+        setupPrismForFontTest()
 
         setupARView()
         arView.register(self)
@@ -105,7 +106,6 @@ class ViewController: UIViewController {
 
         NodesManager.instance.updateLayout()
     }
-
 
     fileprivate func setupPrismForHitTest() {
         let prismId = "prism_hit_test"
@@ -235,6 +235,35 @@ class ViewController: UIViewController {
         NodesManager.instance.updateLayout()
     }
 
+    fileprivate func setupPrismForFontTest() {
+        let prismId = "prism_hit_test"
+        let prism: Prism = Prism()
+        prism.size = SCNVector3(1.0, 1.0, 1.0)
+        prism.debug = true
+        
+        NodesManager.instance.registerPrism(prism, prismId: prismId)
+        NodesManager.instance.addNode(prismId, toParent: sceneId)
+        
+        let styles: [FontStyle] = [.normal, .italic]
+        let weights: [FontWeight] = [.extraLight, .light, .regular, .medium, .bold, .extraBold]
+        
+        for style in styles {
+            let y: Float = (style == .normal) ? 0.3 : -0.1
+            for (index, weight) in weights.enumerated() {
+                let text : UiTextNode = createComponent([
+                    "text": "\(weight.rawValue): abcdefghijklmnopqrstuwvxyz",
+                    "textSize": 0.04,
+                    "localPosition": [-0.3, y - Float(index) * 0.05, 0],
+                ], nodeId: "text_\(weight.rawValue)", parentId: prismId)
+                text.style = style
+                text.weight = weight
+                text.updateLayout()
+            }
+        }
+        
+        NodesManager.instance.updateLayout()
+    }
+    
     fileprivate func loadModel(_ filePath: String, index: Int, parentId: String) {
         let columns: Int = 2
         let x: CGFloat = -0.3 + CGFloat(index % columns) * 0.3

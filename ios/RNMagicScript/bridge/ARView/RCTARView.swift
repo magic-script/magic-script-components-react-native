@@ -124,7 +124,16 @@ import SceneKit
     }
 
     fileprivate func createARView() -> ARSCNView {
-        let view = ARSCNView()
+        
+        var options: [String : Any] = [:]
+    #if targetEnvironment(simulator)
+        options[SCNView.Option.preferredRenderingAPI.rawValue] = NSNumber(value: SCNRenderingAPI.openGLES2.rawValue)
+    #endif
+        
+        let view = ARSCNView(frame: CGRect.zero, options: options)
+    #if targetEnvironment(simulator)
+        view.scene = SCNScene()
+    #endif
         view.autoenablesDefaultLighting = true
         view.automaticallyUpdatesLighting = true
         view.backgroundColor = UIColor(white: 55.0 / 255.0, alpha: 1.0)

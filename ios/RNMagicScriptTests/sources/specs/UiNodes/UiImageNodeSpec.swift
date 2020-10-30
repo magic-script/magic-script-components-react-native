@@ -100,6 +100,8 @@ class UiImageNodeSpec: QuickSpec {
                     referenceValues.forEach { mode in
                         node.update(["fit" : mode.rawValue])
                         expect(node.fit).to(equal(mode))
+                        expect(node.isLayoutNeeded).to(beTrue())
+                        node.layoutIfNeeded()
                         expect(node.isLayoutNeeded).to(beFalse())
                     }
                 }

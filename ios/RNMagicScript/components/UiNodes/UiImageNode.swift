@@ -47,7 +47,7 @@ import SceneKit
         didSet { updateDisplay(); setNeedsLayout() }
     }
     @objc var fit: ImageFitMode = .stretch {
-        didSet { updateDisplay() }
+        didSet { setNeedsLayout() }
     }
     @objc var useDefaultIcon: Bool = false {
         didSet { updateDisplay(); setNeedsLayout() }
@@ -120,29 +120,38 @@ import SceneKit
     }
 
     @objc override func updateLayout() {
-        let size = getSize()
+        let canvasSize = getSize()
+        let targetSize = getTargetSize(canvasSize: canvasSize, fitMode: fit)
+        let size: CGSize = (fit == .aspectFit) ? targetSize : canvasSize
         let scale = SCNVector3(Float(size.width), Float(size.height), 1.0)
         imageNode.scale = scale
         frameNode?.scale = scale
+        planeGeometry.firstMaterial?.diffuse.contentsTransform = getTextureTransform(canvasSize: canvasSize, targetSize: targetSize)
     }
 
     fileprivate func updateDisplay() {
         planeGeometry.firstMaterial?.diffuse.contents = image ?? color
         planeGeometry.firstMaterial?.multiply.contents = (image != nil) ? color : nil
         planeGeometry.firstMaterial?.isDoubleSided = NodeConfiguration.isDoubleSided
-        planeGeometry.firstMaterial?.diffuse.contentsTransform = getTextureTransform(canvasSize: getSize())
     }
     
-    fileprivate func getTextureTransform(canvasSize: CGSize) -> SCNMatrix4 {
-        guard let imageSize = image?.size, fit != .stretch else {
-            return SCNMatrix4MakeScale(1.0, 1.0, 1.0)
+    fileprivate func getTargetSize(canvasSize: CGSize, fitMode: ImageFitMode) -> CGSize {
+        guard let imageSize = image?.size, fitMode != .stretch else {
+            return canvasSize
         }
         
         let ratioH: CGFloat = canvasSize.width / imageSize.width
         let ratioV: CGFloat = canvasSize.height / imageSize.height
-        let factor: CGFloat = (fit == .aspectFill) ? max(ratioH, ratioV) : min(ratioH, ratioV)
+        let factor: CGFloat = (fitMode == .aspectFill) ? max(ratioH, ratioV) : min(ratioH, ratioV)
         
-        let targetSize = CGSize(width: factor * imageSize.width, height: factor * imageSize.height)
+        return CGSize(width: factor * imageSize.width, height: factor * imageSize.height)
+    }
+    
+    fileprivate func getTextureTransform(canvasSize: CGSize, targetSize: CGSize) -> SCNMatrix4 {
+        guard let _ = image, fit == .aspectFill else {
+            return SCNMatrix4MakeScale(1.0, 1.0, 1.0)
+        }
+
         let sx: Float = Float(canvasSize.width / targetSize.width)
         let sy: Float = Float(canvasSize.height / targetSize.height)
         

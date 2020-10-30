@@ -24,13 +24,8 @@ import UIKit
     
     var image: UIImage { return getImage() }
 
-    func getImage(forceDefaultImage: Bool? = nil) -> UIImage {
-        let bundle: Bundle
-        if let forceDefaultImage = forceDefaultImage, forceDefaultImage == true {
-            bundle = Bundle.resourcesBundle!
-        } else {
-            bundle = SystemIcon.bundle
-        }
+    func getImage(forceDefaultImage: Bool = false) -> UIImage {
+        let bundle: Bundle = forceDefaultImage ? Bundle.resourcesBundle! : SystemIcon.bundle
         let image = UIImage(named: imageName, in: bundle, compatibleWith: UIScreen.main.traitCollection)
         guard let result = image else {
             print("Unable to load image \"\(imageName)\".")

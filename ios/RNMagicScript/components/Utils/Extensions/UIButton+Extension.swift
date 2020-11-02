@@ -12,7 +12,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// 
+//
 
 import UIKit
 
@@ -34,7 +34,7 @@ extension UIButton {
 
     func update(image: UIImage?) {
         if let buttonImage = image {
-            self.setImage(UIImage.image(with: buttonImage, scaledToSize: CGSize(width: 28.0, height: 28.0)), for: UIControl.State.normal)
+            self.setImage(UIImage.image(with: buttonImage, scaledToSize: CGSize(width: 18.0, height: 18.0)), for: UIControl.State.normal)
             self.imageView?.contentMode = .scaleAspectFit
             self.setNeedsLayout()
         }

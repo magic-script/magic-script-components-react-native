@@ -27,7 +27,8 @@ class DialogView: UIView {
     }
 
     static var height: CGFloat {
-        return DialogView.width * 0.75
+        let margin: CGFloat = 16.0
+        return max(UIScreen.height, UIScreen.width) - 2 * margin
     }
 
     var dialogData: DialogDataProviding? {
@@ -113,21 +114,21 @@ class DialogView: UIView {
                                                    target: self,
                                                    action: #selector(cancelButtonAction(_:)))
 
-        let buttonsContainer = UIView()
-        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
-        buttonsContainer.addSubview(cancelButton)
-        buttonsContainer.addSubview(confirmButton)
-
         let margin: CGFloat = 16.0
+        
+        let buttonsContainer: UIStackView = UIStackView()
+        buttonsContainer.axis = .horizontal
+        buttonsContainer.alignment = .center
+        buttonsContainer.spacing = margin
+        buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
+        buttonsContainer.addArrangedSubview(cancelButton)
+        buttonsContainer.addArrangedSubview(confirmButton)
 
         NSLayoutConstraint.activate([
             cancelButton.topAnchor.constraint(equalTo: buttonsContainer.topAnchor, constant: 0),
             cancelButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor, constant: 0),
-            cancelButton.leftAnchor.constraint(equalTo: buttonsContainer.leftAnchor, constant: margin),
-            cancelButton.rightAnchor.constraint(equalTo: confirmButton.leftAnchor, constant: -margin),
             confirmButton.topAnchor.constraint(equalTo: buttonsContainer.topAnchor, constant: 0),
             confirmButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor, constant: 0),
-            confirmButton.rightAnchor.constraint(equalTo: buttonsContainer.rightAnchor, constant: -margin),
         ])
 
         addSubview(buttonsContainer)
@@ -144,6 +145,11 @@ class DialogView: UIView {
             buttonsContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -margin),
             buttonsContainer.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
+        
+        // if vertical content is too big, make sure the action buttons are compacted
+        messageTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        cancelButton.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        confirmButton.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
         setExpirationTimer()
     }
@@ -177,9 +183,9 @@ class DialogView: UIView {
 
         switch dialogData?.buttonType {
         case .textWithIcon:
-            confirmButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 24.0)
+            confirmButton.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 16.0, bottom: 8.0, right: 24.0)
             confirmButton.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: -8.0)
-            cancelButton.contentEdgeInsets = UIEdgeInsets(top: 4.0, left: 16.0, bottom: 4.0, right: 24.0)
+            cancelButton.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 16.0, bottom: 8.0, right: 24.0)
             cancelButton.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: -8.0)
             confirmButton.layer.cornerRadius = confirmButton.bounds.height / 2
             confirmButton.layer.borderWidth = 2

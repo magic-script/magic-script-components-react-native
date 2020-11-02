@@ -27,14 +27,15 @@ class DialogPresenter: DialogPresenting {
     }
 
     fileprivate func addBackgroudView() {
-        backgroundView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.width, height: UIScreen.height))
+        backgroundView = UIView()
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.35)
         parentView.addSubview(backgroundView)
         NSLayoutConstraint.activate([
-            backgroundView.leftAnchor.constraint(lessThanOrEqualTo: parentView.leftAnchor),
-            backgroundView.rightAnchor.constraint(lessThanOrEqualTo: parentView.rightAnchor),
-            backgroundView.topAnchor.constraint(lessThanOrEqualTo: parentView.topAnchor),
-            backgroundView.bottomAnchor.constraint(lessThanOrEqualTo: parentView.bottomAnchor)
+            backgroundView.leftAnchor.constraint(equalTo: parentView.leftAnchor, constant: 0.0),
+            backgroundView.rightAnchor.constraint(equalTo: parentView.rightAnchor, constant: 0.0),
+            backgroundView.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 0.0),
+            backgroundView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor, constant: 0.0)
         ])
     }
 
@@ -54,8 +55,8 @@ class DialogPresenter: DialogPresenting {
             NSLayoutConstraint.activate([
                 dialogView.widthAnchor.constraint(equalToConstant: DialogView.width),
                 dialogView.heightAnchor.constraint(lessThanOrEqualToConstant: min(dialogView.frame.height, DialogView.height)),
-                dialogView.centerXAnchor.constraint(lessThanOrEqualTo: backgroundView.centerXAnchor),
-                dialogView.centerYAnchor.constraint(lessThanOrEqualTo: backgroundView.centerYAnchor)
+                dialogView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+                dialogView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor)
             ])
             presentedDialogs[dialog.id] = dialogView
         }

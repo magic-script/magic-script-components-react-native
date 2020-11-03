@@ -36,8 +36,8 @@ class ViewController: UIViewController {
         
 //        setupPrismWithModels()
 //        setupPrismForHitTest()
-//        setupPrismForDialog()
-        setupPrismForFontTest()
+        setupPrismForDialog()
+//        setupPrismForFontTest()
 
         setupARView()
         arView.register(self)
@@ -89,7 +89,16 @@ class ViewController: UIViewController {
             "text": "Dialog"
         ], nodeId: "button_dialog", parentId: prismId)
 
-        dialogNode = UiDialogNode(props: ["buttonType": "text-with-icon", "title": "Dialog title", "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", "confirmText": "Confirm", "confirmIcon": "check", "cancelText": "Confirm", "cancelIcon": "close", "scrolling": true	])
+        dialogNode = UiDialogNode(props: [
+            "buttonType": "text-with-icon",
+            "title": "Dialog title",
+            "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "confirmText": "Confirm",
+            "confirmIcon": "check",
+            "cancelText": "Cancel",
+            "cancelIcon": "close",
+            "scrolling": true
+        ])
         dialogNode?.onDialogConfirmed = { [weak self] dialog in
             if let dialogId = self?.dialogNodeId { NodesManager.instance.removeNode(dialogId, fromParent: prismId) }
         }

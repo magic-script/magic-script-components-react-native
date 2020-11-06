@@ -20,23 +20,9 @@ import SceneKit
     static fileprivate let defaultTextSize: CGFloat = 0.055
     static fileprivate let defaultLabelGap: CGFloat = 0.095
 
-    fileprivate var _startingColor: UIColor = .white
-    @objc var startingColor: UIColor {
-        get { return _startingColor }
-        set { _startingColor = newValue; updateHEXValue() }
-    }
-
-    fileprivate var _color: UIColor? = nil
-    @objc var color: UIColor {
-        get {
-            guard let selectedColor = _color else { return startingColor }
-            return selectedColor
-        }
-        set {
-            _color = newValue
-            if let colorBlockGeometry = colorBlockNode.geometry as? SCNPlane {
-                colorBlockGeometry.firstMaterial?.diffuse.contents = color
-            }
+    @objc var color: UIColor = .white {
+        didSet {
+            colorBlockNode.geometry?.firstMaterial?.diffuse.contents = color
             updateHEXValue()
             setNeedsLayout()
         }
@@ -88,10 +74,6 @@ import SceneKit
 
     @objc override func update(_ props: [String: Any]) {
         super.update(props)
-
-        if let startingColor = Convert.toColor(props["startingColor"]) {
-            self.startingColor = startingColor
-        }
 
         if let color = Convert.toColor(props["color"]) {
             self.color = color

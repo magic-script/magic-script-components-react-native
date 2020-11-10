@@ -38,7 +38,7 @@ import SceneKit
     @objc var minLabel: String? {
         didSet {
             minLabelNode.text = minLabel
-            minLabelNode.reload()
+            setNeedsLayout()
         }
     }
     @objc var max: CGFloat {
@@ -48,14 +48,14 @@ import SceneKit
     @objc var maxLabel: String? {
         didSet {
             maxLabelNode.text = maxLabel
-            maxLabelNode.reload()
+            setNeedsLayout()
         }
     }
     @objc var value: CGFloat {
         get { return _value }
         set {
             let clampedValue: CGFloat = Math.clamp(newValue, _min, _max)
-            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded(); }
+            if (_value != clampedValue) { _value = clampedValue; setNeedsLayout(); layoutIfNeeded() }
         }
     }
     @objc var foregroundColor: UIColor = UIColor.white {

@@ -271,7 +271,7 @@ class UiSliderNodeSpec: QuickSpec {
                     expect(minLabelNode.text).to(equal(minLabelReferenceText))
                     let maxLabelNode = node.contentNode.childNodes[3] as! LabelNode
                     expect(maxLabelNode.text).to(equal(maxLabelReferenceText))
-                    expect(node.isLayoutNeeded).to(beFalse())
+                    expect(node.isLayoutNeeded).to(beTrue())
                 }
             }
         }

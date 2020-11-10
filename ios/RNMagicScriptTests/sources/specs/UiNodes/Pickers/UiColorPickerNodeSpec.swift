@@ -31,7 +31,6 @@ class UiColorPickerNodeSpec: QuickSpec {
 
             context("initial properties") {
                 it("should have set default values") {
-                    expect(node.startingColor).to(beCloseTo(UIColor.white))
                     expect(node.color).to(beCloseTo(UIColor.white))
                     expect(node.height).to(beCloseTo(0.0))
                 }
@@ -44,13 +43,6 @@ class UiColorPickerNodeSpec: QuickSpec {
             }
 
             context("update properties") {
-                it("should update 'startingColor' prop") {
-                    let referenceColor = UIColor.red
-                    node.update(["startingColor" : referenceColor.toArrayOfFloat])
-                    expect(node.startingColor).to(beCloseTo(referenceColor))
-                    expect(node.isLayoutNeeded).to(beFalse())
-                }
-
                 it("should update 'color' prop") {
                     let referenceColor = UIColor(white: 0.5, alpha: 0.5)
                     node.update(["color" : referenceColor.toArrayOfFloat])

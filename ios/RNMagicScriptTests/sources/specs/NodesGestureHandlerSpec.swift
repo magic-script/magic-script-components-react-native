@@ -52,7 +52,7 @@ class NodesGestureHandlerSpec: QuickSpec {
                         let dataProvider = SimpleDataProvider()
                         var result = false
                         sut.onInputFocused = { input in
-                            expect(input as! SimpleDataProvider).to(equal(dataProvider))
+                            expect(input as? SimpleDataProvider).to(equal(dataProvider))
                             result = true
                         }
                         sut.handleNodeTap(dataProvider)

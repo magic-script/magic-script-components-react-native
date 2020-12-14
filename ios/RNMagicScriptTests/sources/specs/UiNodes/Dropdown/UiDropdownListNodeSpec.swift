@@ -398,6 +398,16 @@ class UiDropdownListNodeSpec: QuickSpec {
                     expect(node.hitTest(ray: ray)!.node).to(beIdenticalTo(items[0]))
                 }
             }
+            
+            context("focus intercepting") {
+                it("should implement FocusIntercepting interface") {
+                    expect(node.isFocusIntercepted).to(beFalse())
+                    node.enterFocus()
+                    expect(node.isFocusIntercepted).to(beTrue())
+                    node.leaveFocus()
+                    expect(node.isFocusIntercepted).to(beFalse())
+                }
+            }
         }
     }
 

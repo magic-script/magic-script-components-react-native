@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3DEF99B5FD3ABA197D66C4F6 /* Pods_RNMagicScriptHostApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D90B77C03B61C2B979129A93 /* Pods_RNMagicScriptHostApplication.framework */; };
 		3FDF269A199C97F94F40505D /* Pods_RNMagicScriptTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A28791FDC1824D1E2A2F18 /* Pods_RNMagicScriptTests.framework */; };
+		44050D9325873EBF0004F8FB /* FocusIntercepting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44050D9225873EBF0004F8FB /* FocusIntercepting.swift */; };
+		44050D9625873EC70004F8FB /* FocusIntercepting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44050D9225873EBF0004F8FB /* FocusIntercepting.swift */; };
 		4415977C23C8868C008EDD3C /* SCNNinePatchSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */; };
 		4415DA3023A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
 		4415DA3123A146F00096072B /* SCNNode+Enumerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */; };
@@ -638,6 +640,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNMagicScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNMagicScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E12ED9B0BE34039931966BA /* Pods-RNMagicScriptTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNMagicScriptTests.release.xcconfig"; path = "Target Support Files/Pods-RNMagicScriptTests/Pods-RNMagicScriptTests.release.xcconfig"; sourceTree = "<group>"; };
+		44050D9225873EBF0004F8FB /* FocusIntercepting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusIntercepting.swift; sourceTree = "<group>"; };
 		4415977B23C8868C008EDD3C /* SCNNinePatchSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNNinePatchSpec.swift; sourceTree = "<group>"; };
 		4415DA2F23A146F00096072B /* SCNNode+Enumerate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Enumerate.swift"; sourceTree = "<group>"; };
 		441EA5A12347797A00EDD033 /* SystemIcon+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemIcon+Names.swift"; sourceTree = "<group>"; };
@@ -1433,6 +1436,7 @@
 				C46014B023C7356F002A63D4 /* PlaneDection */,
 				44AFAC25232B9BCF005AC8EF /* Bundle.swift */,
 				44AFAC19232B9BCF005AC8EF /* FileDownloader.swift */,
+				44050D9225873EBF0004F8FB /* FocusIntercepting.swift */,
 				44AFAC1A232B9BCF005AC8EF /* ImageAssets.swift */,
 				C4C3D7482355D3E500ECEEDA /* TapSimulating.swift */,
 				C419CF922359A7B2000094C3 /* NodeConfiguration.swift */,
@@ -2394,6 +2398,7 @@
 				C4633E23246DDDE200944F14 /* OperationMode.swift in Sources */,
 				44AFAD33232BCAE3005AC8EF /* NodesManager.swift in Sources */,
 				44A59E89233DF884006A15D0 /* MultiLineTextAccessoryView.swift in Sources */,
+				44050D9625873EC70004F8FB /* FocusIntercepting.swift in Sources */,
 				C4B73CB4238BAB610080D3F3 /* TransformNodeContainer.swift in Sources */,
 				44890E1A2413EFB500903629 /* PrismOutlineNode.swift in Sources */,
 				44AFAD1B232BCAE3005AC8EF /* UiLineNode.swift in Sources */,
@@ -2828,6 +2833,7 @@
 				C428C0A8237D560500771FBC /* UiDialogNode.swift in Sources */,
 				44301CC223AC165C001A1766 /* GroupContainer.swift in Sources */,
 				44890E192413EFB500903629 /* PrismOutlineNode.swift in Sources */,
+				44050D9325873EBF0004F8FB /* FocusIntercepting.swift in Sources */,
 				44739B992398034300EC31A0 /* NumberFormatter+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

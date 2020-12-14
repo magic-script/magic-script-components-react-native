@@ -31,9 +31,17 @@ class UiNodeSelector: NodeSelecting  {
     }
 
     func hitTest(ray: Ray) -> HitTestResult? {
-        let topNodes: [BaseNode] = rootNode.childNodes.filter { $0 is BaseNode }.map { $0 as! BaseNode }
+        // Check if any component has intercepted focus (e.g. DropdownListNode)
+        if let node = focusInterceptedNodes().first {
+            if let hitResult = node.hitTest(ray: ray) {
+                return hitResult
+            }
+            return (node: node, point: .zero)
+        }
+        
+        // Check hit test in a standard way
         var hitResults: [HitTestResult] = []
-
+        let topNodes: [BaseNode] = rootNode.childNodes.compactMap { $0 as? BaseNode }
         for node in topNodes {
             if let hitResult = node.hitTest(ray: ray) {
                 hitResults.append(hitResult)
@@ -64,5 +72,16 @@ class UiNodeSelector: NodeSelecting  {
         }
 
         return node as? Dragging
+    }
+    
+    func focusInterceptedNodes() -> [BaseNode] {
+        var result: [BaseNode] = []
+        rootNode.enumerateBaseNodes { node in
+            if let focusedNode = node as? FocusIntercepting, focusedNode.isFocusIntercepted {
+                result.append(node)
+            }
+        }
+        
+        return result
     }
 }

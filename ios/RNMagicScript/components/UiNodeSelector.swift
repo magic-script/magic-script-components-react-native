@@ -32,31 +32,21 @@ class UiNodeSelector: NodeSelecting  {
 
     func hitTest(ray: Ray) -> HitTestResult? {
         // Check if any component has intercepted focus (e.g. DropdownListNode)
-        if let node = focusInterceptedNodes().first {
-            if let hitResult = node.hitTest(ray: ray) {
-                return hitResult
-            }
-            return (node: node, point: .zero)
+        let focusInterceptedNodes = collectFocusInterceptedNodes()
+        let focusInterceptedHitResults: [HitTestResult] = focusInterceptedNodes.compactMap { $0.hitTest(ray: ray) }
+        if let hitResult = getClosestHitResult(focusInterceptedHitResults, ray: ray) {
+            return hitResult
+        }
+        
+        // If there is no hitResults for focus-intercepted nodes, we still want to return any focus-intercepted node
+        if let firstNode = focusInterceptedNodes.first {
+            return (node: firstNode, point: .zero)
         }
         
         // Check hit test in a standard way
-        var hitResults: [HitTestResult] = []
         let topNodes: [BaseNode] = rootNode.childNodes.compactMap { $0 as? BaseNode }
-        for node in topNodes {
-            if let hitResult = node.hitTest(ray: ray) {
-                hitResults.append(hitResult)
-            }
-        }
-
-        hitResults.sort { (hitResult1, hitResult2) -> Bool in
-            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
-            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
-            let dist1 = (worldPosition1 - ray.begin).lengthSq()
-            let dist2 = (worldPosition2 - ray.begin).lengthSq()
-            return dist1 < dist2
-        }
-
-        return hitResults.first
+        let hitResults: [HitTestResult] = topNodes.compactMap { $0.hitTest(ray: ray) }
+        return getClosestHitResult(hitResults, ray: ray)
     }
 
     func draggingHitTest(ray: Ray) -> Dragging? {
@@ -74,7 +64,7 @@ class UiNodeSelector: NodeSelecting  {
         return node as? Dragging
     }
     
-    func focusInterceptedNodes() -> [BaseNode] {
+    func collectFocusInterceptedNodes() -> [BaseNode] {
         var result: [BaseNode] = []
         rootNode.enumerateBaseNodes { node in
             if let focusedNode = node as? FocusIntercepting, focusedNode.isFocusIntercepted {
@@ -83,5 +73,15 @@ class UiNodeSelector: NodeSelecting  {
         }
         
         return result
+    }
+    
+    private func getClosestHitResult(_ hitResults: [HitTestResult], ray: Ray) -> HitTestResult? {
+        return hitResults.sorted { (hitResult1, hitResult2) -> Bool in
+            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
+            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
+            let dist1 = (worldPosition1 - ray.begin).lengthSq()
+            let dist2 = (worldPosition2 - ray.begin).lengthSq()
+            return dist1 < dist2
+        }.first
     }
 }

@@ -136,7 +136,13 @@ class UiNodeSelectorSpec: QuickSpec {
                 
                 it("should return the node that is intercepting focus") {
                     let dropdown = UiDropdownListNode(props: ["localPosition": [3, 1, 0]])
+                    dropdown.text = "Dropdown List"
+                    for i in 0..<10 {
+                        let itemNode = UiDropdownListItemNode(props: ["label": "Item \(i + 1)"])
+                        dropdown.addChild(itemNode)
+                    }
                     rootNode.addChildNode(dropdown)
+                    dropdown.layoutIfNeeded()
                     
                     let ray = Ray(begin: SCNVector3(0, 0, 1), direction: SCNVector3(0, 0, -1), length: 2)
                     let result1 = nodeSelector.hitTest(ray: ray)
@@ -147,6 +153,15 @@ class UiNodeSelectorSpec: QuickSpec {
                     let result2 = nodeSelector.hitTest(ray: ray)
                     expect(result2).notTo(beNil())
                     expect(result2!.node).to(beIdenticalTo(dropdown))
+                    expect(result2!.point).to(beCloseTo(.zero))
+                    
+                    dropdown.leaveFocus()
+                    dropdown.enterFocus()
+                    let ray3 = Ray(begin: SCNVector3(3, 0.95, 1), direction: SCNVector3(0, 0, -1), length: 2)
+                    let result3 = nodeSelector.hitTest(ray: ray3)
+                    expect(result3).notTo(beNil())
+                    expect(result3!.node).to(beIdenticalTo(dropdown))
+                    expect(result3!.point).notTo(beCloseTo(.zero))
                 }
             }
         }

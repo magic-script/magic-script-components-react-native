@@ -31,24 +31,22 @@ class UiNodeSelector: NodeSelecting  {
     }
 
     func hitTest(ray: Ray) -> HitTestResult? {
-        let topNodes: [BaseNode] = rootNode.childNodes.filter { $0 is BaseNode }.map { $0 as! BaseNode }
-        var hitResults: [HitTestResult] = []
-
-        for node in topNodes {
-            if let hitResult = node.hitTest(ray: ray) {
-                hitResults.append(hitResult)
-            }
+        // Check if any component has intercepted focus (e.g. DropdownListNode)
+        let focusInterceptedNodes = collectFocusInterceptedNodes()
+        let focusInterceptedHitResults: [HitTestResult] = focusInterceptedNodes.compactMap { $0.hitTest(ray: ray) }
+        if let hitResult = getClosestHitResult(focusInterceptedHitResults, ray: ray) {
+            return hitResult
         }
-
-        hitResults.sort { (hitResult1, hitResult2) -> Bool in
-            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
-            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
-            let dist1 = (worldPosition1 - ray.begin).lengthSq()
-            let dist2 = (worldPosition2 - ray.begin).lengthSq()
-            return dist1 < dist2
+        
+        // If there is no hitResults for focus-intercepted nodes, we still want to return any focus-intercepted node
+        if let firstNode = focusInterceptedNodes.first {
+            return (node: firstNode, point: .zero)
         }
-
-        return hitResults.first
+        
+        // Check hit test in a standard way
+        let topNodes: [BaseNode] = rootNode.childNodes.compactMap { $0 as? BaseNode }
+        let hitResults: [HitTestResult] = topNodes.compactMap { $0.hitTest(ray: ray) }
+        return getClosestHitResult(hitResults, ray: ray)
     }
 
     func draggingHitTest(ray: Ray) -> Dragging? {
@@ -64,5 +62,26 @@ class UiNodeSelector: NodeSelecting  {
         }
 
         return node as? Dragging
+    }
+    
+    func collectFocusInterceptedNodes() -> [BaseNode] {
+        var result: [BaseNode] = []
+        rootNode.enumerateBaseNodes { node in
+            if let focusedNode = node as? FocusIntercepting, focusedNode.isFocusIntercepted {
+                result.append(node)
+            }
+        }
+        
+        return result
+    }
+    
+    private func getClosestHitResult(_ hitResults: [HitTestResult], ray: Ray) -> HitTestResult? {
+        return hitResults.sorted { (hitResult1, hitResult2) -> Bool in
+            let worldPosition1 = hitResult1.node.convertPosition(hitResult1.point, to: nil)
+            let worldPosition2 = hitResult2.node.convertPosition(hitResult2.point, to: nil)
+            let dist1 = (worldPosition1 - ray.begin).lengthSq()
+            let dist2 = (worldPosition2 - ray.begin).lengthSq()
+            return dist1 < dist2
+        }.first
     }
 }

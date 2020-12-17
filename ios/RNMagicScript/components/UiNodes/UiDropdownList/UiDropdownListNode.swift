@@ -344,3 +344,5 @@ extension UiDropdownListNode: DropdownListItemTapHandling {
 }
 
 extension UiDropdownListNode: TapSimulating { }
+
+extension UiDropdownListNode: FocusIntercepting { }

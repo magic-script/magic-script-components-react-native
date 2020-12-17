@@ -38,11 +38,6 @@ class UiNodeSelector: NodeSelecting  {
             return hitResult
         }
         
-        // If there is no hitResults for focus-intercepted nodes, we still want to return any focus-intercepted node
-        if let firstNode = focusInterceptedNodes.first {
-            return (node: firstNode, point: .zero)
-        }
-        
         // Check hit test in a standard way
         let topNodes: [BaseNode] = rootNode.childNodes.compactMap { $0 as? BaseNode }
         let hitResults: [HitTestResult] = topNodes.compactMap { $0.hitTest(ray: ray) }

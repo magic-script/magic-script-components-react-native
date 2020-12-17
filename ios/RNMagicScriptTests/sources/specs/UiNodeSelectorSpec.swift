@@ -152,10 +152,9 @@ class UiNodeSelectorSpec: QuickSpec {
                     dropdown.enterFocus()
                     let result2 = nodeSelector.hitTest(ray: ray)
                     expect(result2).notTo(beNil())
-                    expect(result2!.node).to(beIdenticalTo(dropdown))
-                    expect(result2!.point).to(beCloseTo(.zero))
-                    
+                    expect(result2!.node).to(beIdenticalTo(node1))
                     dropdown.leaveFocus()
+                    
                     dropdown.enterFocus()
                     let ray3 = Ray(begin: SCNVector3(3, 0.95, 1), direction: SCNVector3(0, 0, -1), length: 2)
                     let result3 = nodeSelector.hitTest(ray: ray3)

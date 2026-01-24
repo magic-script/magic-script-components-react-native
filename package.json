@@ -23,7 +23,7 @@
   "dependencies": {
     "react-reconciler": "^0.21.0",
     "chroma-js": "^2.1.0",
-    "lodash": "4.17.19",
+    "lodash": "4.17.23",
     "react-native-fs": "^2.16.6"
   },
   "devDependencies": {
